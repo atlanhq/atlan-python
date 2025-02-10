@@ -1,3 +1,159 @@
+## 4.2.1 (February 6, 2024)
+
+### New Features
+
+- Added an optional boolean parameter `test=True` to `CredentialClient.creator()` method.
+
+## 4.2.0 (February 4, 2024)
+
+### New Features
+
+- Added support for `ApplicationField.creator()`.
+- Added support for `CredentialClient.creator()`.
+- Added support for optional parameters (`host` and `port`) in `Connection.creator()`.
+
+### Breaking Changes
+
+- Changed the default setting for tracking `IndexSearch` logs (`save_search_log=False`). Previously, it was set to `True`, which was causing frequent Out of Memory (OOM) issues in Metastore pods.
+
+### QOL Improvements
+
+- Generated the latest typedef models.
+- Refactored `OpenLineageClient.create_connection()` to use the new `CredentialClient.creator()`.
+
+## 4.1.0 (January 28, 2025)
+
+### New Features
+
+- Added support for the following workflow packages:
+
+  **Connectors**
+  - OracleCrawler
+
+  **Utils**
+  - LineageBuilder
+  - LineageGenerator
+  - APITokenConnectionAdmin
+
+- Extended the `WorkflowClient.run()` method to accept raw workflow `JSON` strings.
+
+### Bug Fixes
+
+- Updated the maximum API token Time-to-Expire (TTE) to `5` years. Previously, the value was set to `13` years (`409,968,000` seconds), which was reverted to `5` years due to an integer overflow issue in Keycloak. For more details, see [Keycloak Issue #19671](https://github.com/keycloak/keycloak/issues/19671).
+
+### QOL Improvements
+
+- Added support for Python `3.10`, `3.11`, `3.12` and `3.13`.
+- Increased the default read timeout for `AtlanClient` to `900` seconds (`15` minutes).
+
+## 4.0.2 (January 22, 2025)
+
+### New Features
+
+- Added the ability to the custom package logger to log unhandled exceptions.
+- Added support for creating `OpenLineage` connections (`OpenLineageClient.create_connection()`).
+
+### Bug Fixes
+
+- Fixed handling of deleted `AtlanTagName`s in `Purpose` asset deserialization. Previously, a `ValueError` was raised.
+
+### QOL Improvements
+
+- Added an "Installing for development" section to the `README.md`.
+- Removed `pyatlan-codeql.yaml` in favor of using the organization-level CodeQL workflow to avoid configuration conflicts and failures.
+
+## 4.0.1 (January 14, 2025)
+
+### New Features
+
+- Added a new connector type (`CUSTOM`).
+- Added support for the `DatabricksCrawler` and `DatabricksMiner` workflow packages.
+- Added the `creator()` method for the following assets:
+  - `Custom`
+  - `Dataverse`
+  - `TablePartition`
+
+### Bug Fixes
+
+- Fixed `_user_id` handling issue in `pyatlan.pkg.utils.get_client()`.
+
+### QOL Improvements
+
+- Enhanced test coverage with additional unit tests for the `append_terms`, `replace_terms`, and `remove_terms` methods.
+
+## 4.0.0 (January 7, 2025)
+
+### New Features
+
+- Added support for the `MongoDBCrawler` workflow package.
+- Added `creator()` and `updater()` methods for the `Procedure` asset.
+
+### Bug Fixes
+
+- Fixed `WorkflowClient.find_by_type()` method to use regular expressions.
+- Fixed `AttributeDef.cardinality` and `AttributeDef.type_name` handling for the new `multi_value_select` attribute option.
+- Fixed issues with the `AssetClient.append_terms()`, `remove_terms()`, and `replace_terms()` methods:
+  - These methods now use `SaveSemantic.APPEND/REPLACE/REMOVE`, which is more optimized and faster than the previous approach that required full asset retrieval with relationships for updates.
+- Fixed `S3Object.create_with_prefix()` and `creator()` to ensure the `s3_bucket_name` field is correctly set.
+
+### Breaking Changes
+
+- The default behavior of `AssetClient.get_by_guid()` and `AssetClient.get_by_qualified_name()` has changed:
+
+  - By default, these methods now ignore relationships during asset retrieval (`ignore_relationships: bool = True`). Previously, this was set to `False`.
+  - This change is intentional, aiming to prevent users from retrieving more information than necessary, thereby reducing the overall runtime of requests.
+  - Users can now use the `attributes` and `related_attributes` optional parameters to specify the exact details required for each search result. This ensures precise and efficient searches. See:
+  [Advanced Examples - Read](https://developer.atlan.com/snippets/advanced-examples/read).
+
+  ```python
+  # In this example, we are retrieving the "userDescription" attribute
+  # for both the glossary and its terms (related attribute).
+  # You can also retrieve other attributes as illustrated below:
+
+  glossary = client.asset.get_by_guid(
+        guid="b4113341-251b-4adc-81fb-2420501c30e6",
+        asset_type=AtlasGlossary,
+        min_ext_info=False,
+        ignore_relationships=True,
+        attributes=[AtlasGlossary.USER_DESCRIPTION, AtlasGlossary.TERMS],
+        related_attributes=[AtlasGlossaryTerm.USER_DESCRIPTION]
+    )
+
+  glossary = client.asset.get_by_qualified_name(
+      asset_type=AtlasGlossary,
+      qualified_name="pXkf3RUvsIOIG8xnn0W3O",
+      min_ext_info=False,
+      ignore_relationships=True,
+      attributes=[AtlasGlossary.USER_DESCRIPTION, AtlasGlossary.TERMS],
+      related_attributes=[AtlasGlossaryTerm.USER_DESCRIPTION]
+  )
+  ```
+
+### QOL Improvements
+
+- Added an [OSV](https://osv.dev) vulnerability-scan workflow job to GitHub Actions.
+
+## 3.1.2 (December 31, 2024)
+
+### New features
+
+- Enabled the use of the `Retry-After` header for handling rate-limit retries.
+- Added support for [OpenTelemetry](https://opentelemetry.io) logging in custom packages.
+- Added `creator()` methods for Insights assets (`Collection`, `Folder`, `Query`).
+- Added support for the following new connector types:
+  - ANAPLAN
+  - AWS_ECS
+  - AWS_BATCH
+  - AWS_LAMBDA
+  - AWS_SAGEMAKER
+  - DATAVERSE
+
+### QOL improvements
+
+- Generated the latest typedef models.
+- Upgraded `jinja2` from `3.1.4` to `3.1.5` to address a security vulnerability.
+- Fixed pagination assertions in `AuditSearch` unit tests and integration tests.
+
 ## 3.1.1 (December 26, 2024)
 
 ### Bug fixes

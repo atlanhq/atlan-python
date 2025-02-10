@@ -6,6 +6,23 @@
             __pydantic_self__.business_attributes
         )
 
+    @root_validator(pre=True)
+    def parse_custom_attributes(cls, values):
+        if "attributes" in values:
+            attributes = values["attributes"]
+            if "__customAttributes" in attributes:
+                # Pop the __customAttributes from attributes
+                custom_attributes = attributes.pop("__customAttributes")
+                try:
+                    # Try to parse the JSON string if it's a string
+                    if isinstance(custom_attributes, str):
+                        custom_attributes = loads(custom_attributes)
+                    # Add the parsed custom attributes to the Column
+                    values["custom_attributes"] = custom_attributes
+                except JSONDecodeError:
+                    pass
+        return values
+
     def json(self, *args, **kwargs) -> str:
         self.business_attributes = self._metadata_proxy.business_attributes
         return super().json(**kwargs)

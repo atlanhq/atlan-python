@@ -8,14 +8,21 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan.model.packages import (
+    APITokenConnectionAdmin,
     AssetExportBasic,
     AssetImport,
     BigQueryCrawler,
     ConfluentKafkaCrawler,
     ConnectionDelete,
+    DatabricksCrawler,
+    DatabricksMiner,
     DbtCrawler,
     DynamoDBCrawler,
     GlueCrawler,
+    LineageBuilder,
+    LineageGenerator,
+    MongoDBCrawler,
+    OracleCrawler,
     PostgresCrawler,
     PowerBICrawler,
     RelationalAssetsBuilder,
@@ -72,6 +79,27 @@ ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS = "asset_export_basic_enriched_gcs.json"
 RELATIONAL_ASSETS_BUILDER_S3 = "relational_assets_builder_s3.json"
 RELATIONAL_ASSETS_BUILDER_ADLS = "relational_assets_builder_adls.json"
 RELATIONAL_ASSETS_BUILDER_GCS = "relational_assets_builder_gcs.json"
+MONGODB_BASIC = "mongodb_basic.json"
+DATABRICKS_BASIC_JDBC = "databricks_basic_jdbc.json"
+DATABRICKS_BASIC_REST = "databricks_basic_rest.json"
+DATABRICKS_AWS = "databricks_aws.json"
+DATABRICKS_AZURE = "databricks_azure.json"
+DATABRICKS_OFFLINE = "databricks_offline.json"
+DATABRICKS_MINER_REST = "databricks_miner_rest.json"
+DATABRICKS_MINER_OFFLINE = "databricks_miner_offline.json"
+DATABRICKS_MINER_SYSTEM_TABLE = "databricks_miner_system_table.json"
+DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
+DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
+    "databricks_miner_popularity_system_table.json"
+)
+ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
+ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
+LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
+LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
+LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
+LINEAGE_GENERATOR_DEFAULT = "lineage_generator_default.json"
+LINEAGE_GENERATOR_FULL = "lineage_generator_full.json"
+API_TOKEN_CONNECTION_ADMIN = "api_token_connection_admin.json"
 
 
 class NonSerializable:
@@ -475,6 +503,69 @@ def test_snowflake_miner_package(mock_package_env):
     assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
 
 
+def test_databricks_miner_package(mock_package_env):
+    databricks_miner_rest = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .to_workflow()
+    )
+    request_json = loads(databricks_miner_rest.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_MINER_REST)
+
+    databricks_miner_offline = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .offline(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_offline.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_OFFLINE)
+
+    databricks_miner_system_table = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .system_table(warehouse_id="test-warehouse-id")
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_system_table.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_SYSTEM_TABLE)
+
+    databricks_miner_popularity_rest = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .popularity_configuration(
+            start_date="1234567890",
+            window_days=10,
+            excluded_users=["test-user-1", "test-user-2"],
+        )
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_popularity_rest.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_REST)
+
+    databricks_miner_popularity_system_table = (
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .popularity_configuration(
+            start_date="1234567890",
+            window_days=10,
+            excluded_users=["test-user-1", "test-user-2"],
+            warehouse_id="test-warehouse-id",
+            extraction_method=DatabricksMiner.ExtractionMethod.SYSTEM_TABLE,
+        )
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_miner_popularity_system_table.json(by_alias=True, exclude_none=True)
+    )
+
+    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
+
+
 def test_big_query_package(mock_package_env):
     big_query_direct = (
         BigQueryCrawler(
@@ -621,6 +712,31 @@ def test_postgres_package(mock_package_env):
     assert request_json == load_json(POSTGRES_S3_OFFLINE)
 
 
+def test_mongodb_package(mock_package_env):
+    mongodb_basic = (
+        MongoDBCrawler(
+            connection_name="test-sdk-mongodb",
+            admin_roles=["admin-guid-1234"],
+        )
+        .direct(hostname="test-hostname", port=1234)
+        .basic_auth(
+            username="test-user",
+            password="test-pass",
+            native_host="test-native-host",
+            default_db="test-default-db",
+            auth_db="test-auth-db",
+            is_ssl=False,
+        )
+        .include(assets=["test-asset-1", "test-asset-2"])
+        .exclude(assets=["test-asset-1", "test-asset-2"])
+        .exclude_regex(regex="TEST*")
+        .to_workflow()
+    )
+
+    request_json = loads(mongodb_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(MONGODB_BASIC)
+
+
 def test_connection_delete_package(mock_package_env):
     # With PURGE (hard delete)
     connection_delete_hard = ConnectionDelete(
@@ -635,6 +751,133 @@ def test_connection_delete_package(mock_package_env):
     ).to_workflow()
     request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
+
+
+def test_databricks_crawler(mock_package_env):
+    databricks_basic_jdbc = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .basic_auth(
+            personal_access_token="test-pat",
+            http_path="test-http-path",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.JDBC)
+        .include(assets={"test-include": ["ti1", "ti2"]})
+        .exclude(assets={"test-exclude": ["te1", "te2"]})
+        .exclude_regex(regex="TEST*")
+        .enable_view_lineage(False)
+        .enable_source_level_filtering(True)
+        .to_workflow()
+    )
+    request_json = loads(databricks_basic_jdbc.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_BASIC_JDBC)
+
+    databricks_basic_rest = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .basic_auth(
+            personal_access_token="test-pat",
+            http_path="test-http-path",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_basic_rest.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_BASIC_REST)
+
+    databricks_aws = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .aws_service(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_aws.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_AWS)
+
+    databricks_azure = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname")
+        .azure_service(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+        )
+        .metadata_extraction_method(type=DatabricksCrawler.ExtractionMethod.REST)
+        .include_for_rest_api(assets=["ti1", "ti2"])
+        .exclude_for_rest_api(assets=["te1", "te2"])
+        .sql_warehouse(warehouse_ids=["3d939b0cc668be06", "9a289b0cc838ce62"])
+        .import_tags(True)
+        .enable_source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(databricks_azure.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_AZURE)
+
+    databricks_offline = (
+        DatabricksCrawler(
+            connection_name="test-databricks-basic",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .s3(
+            bucket_name="test-bucket",
+            bucket_prefix="test-prefix",
+            bucket_region="test-region",
+        )
+        .to_workflow()
+    )
+    request_json = loads(databricks_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(DATABRICKS_OFFLINE)
 
 
 def test_asset_import(mock_package_env):
@@ -1164,6 +1407,166 @@ def test_relational_assets_builder(mock_package_env):
         relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
     )
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
+
+
+def test_oracle_crawler(mock_package_env):
+    oracle_crawler_basic = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .direct(hostname="test-hostname", port=1234)
+        .basic_auth(
+            username="test-username",
+            password="test-password",
+            sid="test-sid",
+            database_name="test-db",
+        )
+        .include(assets={"t1": ["t11", "t12", "t13"]})
+        .exclude(assets={"t2": ["t21", "t22", "t23"]})
+        .exclude_regex("TEST*")
+        .jdbc_internal_methods(True)
+        .source_level_filtering(True)
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_basic.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_BASIC)
+
+    oracle_crawler_offline = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .s3(bucket_name="test-bucket", bucket_prefix="test-prefix")
+        .to_workflow()
+    )
+    request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
+
+
+def test_lineage_builder(mock_package_env):
+    lineage_builder_s3 = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .s3(
+            access_key="test-access-key",
+            secret_key="test-secret-key",
+            region="test-region",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_s3.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_S3)
+
+    lineage_builder_gcs = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .gcs(
+            project_id="test-project-id",
+            service_account_json="test-service-account-json",
+            bucket="test-bucket",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_gcs.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_GCS)
+
+    lineage_builder_adls = (
+        LineageBuilder()
+        .object_store(prefix="text-prefix", object_key="test-object-key")
+        .adls(
+            client_id="test-client-id",
+            client_secret="test-client-secret",
+            tenant_id="test-tenant-id",
+            account_name="test-account-name",
+            container="test-container",
+        )
+        .options(
+            input_handling=AssetInputHandling.UPSERT,
+            fail_on_errors=True,
+            case_sensitive_match=False,
+            field_separator=",",
+            batch_size=25,
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_builder_adls.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_BUILDER_ADLS)
+
+
+def test_lineage_generator_nt(mock_package_env):
+    lineage_generator_default = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(
+        lineage_generator_default.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(LINEAGE_GENERATOR_DEFAULT)
+
+    lineage_generator_full = (
+        LineageGenerator().config(
+            source_asset_type=LineageGenerator.SourceAssetType.MongoDBCollection,
+            source_qualified_name="mongo/qn",
+            target_asset_type=LineageGenerator.TargetAssetType.View,
+            target_qualified_name="view/qn",
+            case_sensitive_match=True,
+            match_on_schema=True,
+            output_type=LineageGenerator.OutputType.DELETE,
+            generate_on_child_assets=True,
+            regex_match="t1",
+            regex_replace="t2",
+            regex_match_schema="t3",
+            regex_replace_schema="t4",
+            regex_match_schema_name="t5",
+            regex_replace_schema_name="t6",
+            match_prefix="t7",
+            match_suffix="t8",
+            file_advanced_seperator="t9",
+            file_advanced_position="10",
+            process_connection_qn="test/qn",
+        )
+    ).to_workflow()
+
+    request_json = loads(lineage_generator_full.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(LINEAGE_GENERATOR_FULL)
+
+
+def test_api_token_connection_admin(mock_package_env):
+    token_connection_admin = (
+        APITokenConnectionAdmin()
+        .config(
+            connection_qualified_name="default/snowflake/1234567890",
+            api_token_guid="92588c67-5ddf-4a45-8b5c-dd92f4b84e99",
+        )
+        .to_workflow()
+    )
+    request_json = loads(token_connection_admin.json(by_alias=True, exclude_none=True))
+    assert request_json == load_json(API_TOKEN_CONNECTION_ADMIN)
 
 
 @pytest.mark.parametrize(

@@ -84,7 +84,7 @@ class AtlanTagName:
         if display_text := AtlanTagCache.get_name_for_id(data):
             return AtlanTagName(display_text)
         else:
-            raise ValueError(f"{data} is not a valid AtlanTag")
+            return cls.get_deleted_sentinel()
 
     @staticmethod
     def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
@@ -237,11 +237,7 @@ class AtlanTag(AtlanObject):
     def type_name_is_tag_name(cls, value):
         if isinstance(value, AtlanTagName):
             return value
-        try:
-            value = AtlanTagName._convert_to_display_text(value)
-        except ValueError:
-            value = AtlanTagName.get_deleted_sentinel()
-        return value
+        return AtlanTagName._convert_to_display_text(value)
 
     def __init__(self, *args, **kwargs):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
@@ -395,7 +391,11 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         replace_attributes = []
         exclude_attributes = set()
 
-        attribute_name, attribute_value = attribute, getattr(asset, attribute, None)
+        # Updated to use `asset.attribute` instead of `asset` to align with the API.
+        # This change ensures the correct value is retrieved regardless of the naming conventions.
+        attribute_name, attribute_value = attribute, getattr(
+            asset.attributes, attribute, None
+        )
 
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
@@ -418,7 +418,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                     {to_camel_case(attribute_name): append_attributes}
                 )
             if replace_attributes:
-                setattr(asset, attribute_name, replace_attributes)
+                # Updated to use `asset.attribute` instead of `asset` to align with the API.
+                # This change ensures the correct value is retrieved regardless of the naming conventions.
+                setattr(asset.attributes, attribute_name, replace_attributes)
 
             # If 'remove', 'append', or both attributes are present and there are no 'replace' attributes,
             # add the attribute to the set to exclude it from the bulk request payload.

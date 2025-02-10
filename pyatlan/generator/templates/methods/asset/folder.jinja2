@@ -1,0 +1,36 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        collection_qualified_name: str,
+    ) -> Folder: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        parent_folder_qualified_name: str,
+    ) -> Folder: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        collection_qualified_name: Optional[str] = None,
+        parent_folder_qualified_name: Optional[str] = None,
+    ) -> Folder:
+        validate_required_fields(["name"], [name])
+        return Folder(
+            attributes=Folder.Attributes.creator(
+                name=name,
+                collection_qualified_name=collection_qualified_name,
+                parent_folder_qualified_name=parent_folder_qualified_name,
+            )
+        )

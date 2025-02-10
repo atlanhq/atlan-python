@@ -51,6 +51,8 @@ SL_SORT_BY_QUALIFIED_NAME = SortItem(
 AUDIT_SORT_BY_GUID = SortItem(field="entityId", order=SortOrder.ASCENDING)
 AUDIT_SORT_BY_LATEST = SortItem("created", order=SortOrder.DESCENDING)
 MODULE_NAME = TestId.make_unique("Client")
+TEST_USER_DESCRIPTION = "Automated testing of the Python SDK. (USER)"
+TEST_SYSTEM_DESCRIPTION = "Automated testing of the Python SDK. (SYSTEM)"
 
 
 @pytest.fixture(scope="module")
@@ -72,6 +74,38 @@ def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
         yield token
     finally:
         delete_token(client, token)
+
+
+@pytest.fixture(scope="module")
+def glossary(
+    client: AtlanClient,
+) -> Generator[AtlasGlossary, None, None]:
+
+    g = AtlasGlossary.creator(name=StrictStr(MODULE_NAME))
+    g.description = TEST_SYSTEM_DESCRIPTION
+    g.user_description = TEST_USER_DESCRIPTION
+    response = client.asset.save(g)
+    result = response.assets_created(AtlasGlossary)[0]
+    assert result
+    yield result
+    delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
+
+
+@pytest.fixture(scope="module")
+def term(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryTerm, None, None]:
+    t = AtlasGlossaryTerm.creator(
+        name=StrictStr(MODULE_NAME),
+        glossary_guid=StrictStr(glossary.guid),
+    )
+    t.description = f"{TEST_SYSTEM_DESCRIPTION} Term"
+    t.user_description = f"{TEST_USER_DESCRIPTION} Term"
+    response = client.asset.save(t)
+    result = response.assets_created(AtlasGlossaryTerm)[0]
+    assert result
+    yield result
+    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
 
 @dataclass()
@@ -144,7 +178,7 @@ def _test_update_certificate(
     assert test_asset.qualified_name
     assert test_asset.name
     test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type
+        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
     assert test_asset.qualified_name
     assert test_asset.name
@@ -160,7 +194,7 @@ def _test_update_certificate(
         glossary_guid=glossary_guid if glossary_guid else None,
     )
     test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type
+        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
     assert test_asset.certificate_status == CertificateStatus.DRAFT
     assert test_asset.certificate_status_message == message
@@ -181,7 +215,7 @@ def _test_remove_certificate(
         glossary_guid=glossary_guid if glossary_guid else None,
     )
     test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type
+        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
     assert test_asset.certificate_status is None
     assert test_asset.certificate_status_message is None
@@ -204,7 +238,7 @@ def _test_update_announcement(
         glossary_guid=glossary_guid if glossary_guid else None,
     )
     test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type
+        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
     assert test_asset.get_announcment() == test_announcement
 
@@ -224,20 +258,25 @@ def _test_remove_announcement(
         glossary_guid=glossary_guid if glossary_guid else None,
     )
     test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type
+        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
     assert test_asset.get_announcment() is None
 
 
 def test_append_terms_with_guid(
-    client: AtlanClient, term1: AtlasGlossaryTerm, database: Database
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             guid=database.guid, asset_type=Database, terms=[term1]
         )
     )
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -248,12 +287,15 @@ def test_append_terms_with_qualified_name(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
         )
     )
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -264,6 +306,7 @@ def test_append_terms_using_ref_by_guid_for_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -271,7 +314,9 @@ def test_append_terms_using_ref_by_guid_for_term(
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
         )
     )
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -283,6 +328,7 @@ def test_replace_a_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -297,7 +343,9 @@ def test_replace_a_term(
         )
     )
 
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
@@ -317,6 +365,7 @@ def test_replace_all_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -331,7 +380,9 @@ def test_replace_all_term(
         )
     )
 
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     deleted_terms = [
@@ -347,6 +398,7 @@ def test_remove_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
+    time.sleep(5)
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -366,7 +418,9 @@ def test_remove_term(
         )
     )
 
-    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(
+        guid=database.guid, asset_type=Database, ignore_relationships=False
+    )
     assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
@@ -391,14 +445,16 @@ def test_find_connections_by_name(client: AtlanClient):
 
 
 def test_get_asset_by_guid_good_guid(client: AtlanClient, glossary: AtlasGlossary):
-    glossary = client.asset.get_by_guid(glossary.guid, AtlasGlossary)
+    glossary = client.asset.get_by_guid(
+        glossary.guid, AtlasGlossary, ignore_relationships=False
+    )
     assert isinstance(glossary, AtlasGlossary)
 
 
 def test_get_asset_by_guid_without_asset_type(
     client: AtlanClient, glossary: AtlasGlossary
 ):
-    glossary = client.asset.get_by_guid(glossary.guid)
+    glossary = client.asset.get_by_guid(glossary.guid, ignore_relationships=False)
     assert isinstance(glossary, AtlasGlossary)
 
 
@@ -417,7 +473,152 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
         NotFoundError,
         match=f"ATLAN-PYTHON-404-002 Asset with GUID {guid} is not of the type requested: Table.",
     ):
-        client.asset.get_by_guid(guid, Table)
+        client.asset.get_by_guid(guid, Table, ignore_relationships=False)
+
+
+def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
+    time.sleep(5)
+    # Default - should call `GET_ENTITY_BY_GUID` API
+    result = client.asset.get_by_guid(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    # Ensure no relationship attributes are present
+    assert result.anchor is None
+
+    # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
+    result = client.asset.get_by_guid(
+        guid=term.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    assert result.anchor
+    # These are not returned by the `GET_ENTITY_BY_GUID` API
+    assert result.anchor.description is None
+    assert result.anchor.user_description is None
+
+    # Should call IndexSearch API without any relationship attributes
+    result = client.asset.get_by_guid(
+        guid=term.guid,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],  # type: ignore[arg-type]
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    # Ensure no relationship attributes are present
+    assert result.anchor is None
+
+    # Should call IndexSearch API
+    result = client.asset.get_by_guid(
+        guid=term.guid,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+        attributes=["description", "userDescription", "anchor"],
+        related_attributes=[  # type: ignore[arg-type]
+            AtlasGlossary.DESCRIPTION,
+            AtlasGlossary.USER_DESCRIPTION,
+        ],
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    assert result.anchor
+    assert result.anchor.description == f"{TEST_SYSTEM_DESCRIPTION}"
+    assert result.anchor.user_description == f"{TEST_USER_DESCRIPTION}"
+
+
+def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
+    time.sleep(5)
+    # Default - should call `GET_ENTITY_BY_GUID` API
+    assert term and term.qualified_name
+    result = client.asset.get_by_qualified_name(
+        qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    # Ensure no relationship attributes are present
+    assert result.anchor is None
+
+    # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
+    result = client.asset.get_by_qualified_name(
+        qualified_name=term.qualified_name,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    assert result.anchor
+    # These are not returned by the `GET_ENTITY_BY_GUID` API
+    assert result.anchor.description is None
+    assert result.anchor.user_description is None
+
+    # Should call IndexSearch API without any relationship attributes
+    result = client.asset.get_by_qualified_name(
+        qualified_name=term.qualified_name,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+        attributes=[AtlasGlossaryTerm.DESCRIPTION, AtlasGlossaryTerm.USER_DESCRIPTION],  # type: ignore[arg-type]
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    # Ensure no relationship attributes are present
+    assert result.anchor is None
+
+    # Should call IndexSearch API
+    result = client.asset.get_by_qualified_name(
+        qualified_name=term.qualified_name,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+        attributes=["description", "userDescription", "anchor"],
+        related_attributes=[  # type: ignore[arg-type]
+            AtlasGlossary.DESCRIPTION,
+            AtlasGlossary.USER_DESCRIPTION,
+        ],
+    )
+    assert isinstance(result, AtlasGlossaryTerm)
+    assert result.guid == term.guid
+    assert hasattr(result, "attributes")
+    assert result.attributes.name == term.name
+    assert result.attributes.qualified_name == term.qualified_name
+    assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
+    assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
+    assert result.anchor
+    assert result.anchor.description == f"{TEST_SYSTEM_DESCRIPTION}"
+    assert result.anchor.user_description == f"{TEST_USER_DESCRIPTION}"
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
@@ -428,7 +629,7 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
         match="ATLAN-PYTHON-404-000 Server responded with a not found "
         "error ATLAS-404-00-005: Given instance guid 76d54dd6 is invalid/not found",
     ):
-        client.asset.get_by_guid("76d54dd6", AtlasGlossary)
+        client.asset.get_by_guid("76d54dd6", AtlasGlossary, ignore_relationships=False)
 
 
 def test_upsert_when_no_changes(client: AtlanClient, glossary: AtlasGlossary):
@@ -463,7 +664,9 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     client.asset.add_atlan_tags(
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
-    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
     classification = glossary_term.atlan_tags[0]
@@ -504,7 +707,9 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     client.asset.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
-    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert not glossary_term.atlan_tags
 
 

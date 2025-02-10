@@ -309,22 +309,30 @@ def validate_type(name: str, _type, value):
     :param name: the name of the variable to be used in the error message
     :param _type: the type of the variable to be validated
     :param value: the value to be validated that it is of the specified type
-
     """
     if _type is int:
         if isinstance(value, _type) and not isinstance(value, bool):
             return
     elif isinstance(_type, tuple):
-        if any(isinstance(value, t) for t in _type):
+        if None in _type and value is None:
             return
+        if any(isinstance(value, t) for t in _type if t is not None):
+            return
+    elif _type is None and value is None:
+        return
     elif isinstance(value, _type):
         return
 
-    type_name = (
-        ", ".join(t.__name__ for t in _type[:-1]) + f" or {_type[-1].__name__}"
-        if isinstance(_type, tuple) and len(_type) > 1
-        else _type.__name__ if isinstance(_type, tuple) else _type.__name__  # type: ignore[attr-defined]
-    )
+    # Construct the type name string, handling None explicitly
+    if isinstance(_type, tuple):
+        type_names = [t.__name__ if t is not None else "None" for t in _type]
+        type_name = (
+            ", ".join(type_names[:-1]) + f" or {type_names[-1]}"
+            if len(type_names) > 1
+            else type_names[0]
+        )
+    else:
+        type_name = _type.__name__ if _type is not None else "None"
 
     raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(name, type_name)
 
@@ -335,7 +343,10 @@ class AuthorizationFilter(logging.Filter):
     """
 
     def filter(self, record: logging.LogRecord) -> bool:
-        if record.args and hasattr(record.args, "__iter__"):
+        if isinstance(record.args, dict) and "access_token" in record.args:
+            record.args = record.args.copy()
+            record.args["access_token"] = "***REDACTED***"  # noqa: S105
+        elif record.args and hasattr(record.args, "__iter__"):
             for arg in record.args:
                 if (
                     isinstance(arg, dict)

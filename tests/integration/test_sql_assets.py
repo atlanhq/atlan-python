@@ -12,9 +12,11 @@ from pyatlan.model.assets import (
     Column,
     Connection,
     Database,
+    Procedure,
     Readme,
     Schema,
     Table,
+    TablePartition,
     View,
 )
 from pyatlan.model.contract import DataContractSpec
@@ -91,7 +93,7 @@ class TestConnection:
         assert response.guid_assignments
         assert c.guid in response.guid_assignments
         c = response.mutated_entities.CREATE[0]
-        c = client.asset.get_by_guid(c.guid, Connection)
+        c = client.asset.get_by_guid(c.guid, Connection, ignore_relationships=False)
         assert isinstance(c, Connection)
         TestConnection.connection = c
 
@@ -148,7 +150,7 @@ class TestDatabase:
         assert response.guid_assignments
         assert database.guid in response.guid_assignments
         database = response.mutated_entities.CREATE[0]
-        client.asset.get_by_guid(database.guid, Database)
+        client.asset.get_by_guid(database.guid, Database, ignore_relationships=False)
         TestDatabase.database = database
 
     @pytest.mark.order(after="test_create")
@@ -196,10 +198,14 @@ class TestSchema:
         response = upsert(schema)
         assert (schemas := response.assets_created(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(schemas[0].guid, Schema)
+        schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
         assert (databases := response.assets_updated(asset_type=Database))
         assert len(databases) == 1
-        database = client.asset.get_by_guid(databases[0].guid, Database)
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
         assert database.attributes.schemas
         schemas = database.attributes.schemas
         assert len(schemas) == 1
@@ -227,10 +233,14 @@ class TestSchema:
         response = upsert(schema)
         assert (schemas := response.assets_created(asset_type=Schema))
         assert len(schemas) == 1
-        overload_schema = client.asset.get_by_guid(schemas[0].guid, Schema)
+        overload_schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
         assert (databases := response.assets_updated(asset_type=Database))
         assert len(databases) == 1
-        database = client.asset.get_by_guid(databases[0].guid, Database)
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
         assert database.attributes.schemas
         schemas = database.attributes.schemas
         assert len(schemas) == 2
@@ -299,10 +309,14 @@ class TestTable:
         response = upsert(table)
         assert (tables := response.assets_created(asset_type=Table))
         assert len(tables) == 1
-        table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table)
+        table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
         assert (schemas := response.assets_updated(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema)
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
         assert schema.attributes.tables
         tables = schema.attributes.tables
         assert len(tables) == 1
@@ -335,10 +349,14 @@ class TestTable:
         response = upsert(table)
         assert (tables := response.assets_created(asset_type=Table))
         assert len(tables) == 1
-        overload_table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table)
+        overload_table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
         assert (schemas := response.assets_updated(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema)
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
         assert schema.attributes.tables
         tables = schema.attributes.tables
         assert len(tables) == 2
@@ -395,7 +413,9 @@ class TestTable:
         popularity_insight: PopularityInsights,
     ):
         assert TestTable.table
-        asset = client.asset.get_by_guid(guid=TestTable.table.guid, asset_type=Table)
+        asset = client.asset.get_by_guid(
+            guid=TestTable.table.guid, asset_type=Table, ignore_relationships=False
+        )
         assert asset.source_read_recent_user_record_list
         asset_popularity = asset.source_read_recent_user_record_list[0]
         self.verify_popularity(asset_popularity, popularity_insight)
@@ -531,6 +551,185 @@ class TestView:
 
 
 @pytest.mark.order(after="TestView")
+class TestProcedure:
+    procedure: Optional[Procedure] = None
+    _DEFINITION = """
+    BEGIN
+    insert into `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME_copy`
+    select * from `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME`;
+    END
+    """
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+        procedure = response.mutated_entities.CREATE[0]
+        TestProcedure.procedure = procedure
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure_Overload")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure
+        assert procedure.qualified_name
+        assert procedure.name
+        assert procedure.definition
+        description = f"{procedure.description} more stuff"
+        procedure = Procedure.updater(
+            qualified_name=procedure.qualified_name,
+            name=procedure.name,
+            definition=procedure.definition,
+        )
+        procedure.description = description
+        response = upsert(procedure)
+        verify_asset_updated(response, Procedure)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure.trim_to_required()
+        response = upsert(procedure)
+        assert response.mutated_entities is None
+
+
+@pytest.mark.order(after="TestView")
+class TestTablePartition:
+    table_partition: Optional[TablePartition] = None
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition")
+        assert TestTable.table is not None
+        assert TestTable.table.qualified_name
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+        table_partition = response.mutated_entities.CREATE[0]
+        TestTablePartition.table_partition = table_partition
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition_Overload")
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestTable.table is not None
+        assert TestTable.table.name
+        assert TestTable.table.qualified_name
+
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition
+        assert table_partition.qualified_name
+        assert table_partition.name
+        description = f"{table_partition.description} more stuff"
+        table_partition = TablePartition.updater(
+            qualified_name=table_partition.qualified_name,
+            name=table_partition.name,
+        )
+        table_partition.description = description
+        response = upsert(table_partition)
+        verify_asset_updated(response, TablePartition)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition.trim_to_required()
+        response = upsert(table_partition)
+        assert response.mutated_entities is None
+
+
+@pytest.mark.order(after="TestView")
 class TestColumn:
     column: Optional[Column] = None
 
@@ -551,8 +750,12 @@ class TestColumn:
         response = client.asset.save(column)
         assert (columns := response.assets_created(asset_type=Column))
         assert len(columns) == 1
-        column = client.asset.get_by_guid(asset_type=Column, guid=columns[0].guid)
-        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid)
+        column = client.asset.get_by_guid(
+            asset_type=Column, guid=columns[0].guid, ignore_relationships=False
+        )
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
         assert table.attributes.columns
         columns = table.attributes.columns
         assert len(columns) == 1
@@ -624,9 +827,11 @@ class TestColumn:
         assert (columns := response.assets_created(asset_type=Column))
         assert len(columns) == 1
         overload_column = client.asset.get_by_guid(
-            asset_type=Column, guid=columns[0].guid
+            asset_type=Column, guid=columns[0].guid, ignore_relationships=False
         )
-        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid)
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
         assert table.attributes.columns
         columns = table.attributes.columns
 
@@ -692,7 +897,9 @@ class TestReadme:
         assert len(reaadmes) == 1
         assert (columns := response.assets_updated(asset_type=Column))
         assert len(columns) == 1
-        readme = client.asset.get_by_guid(guid=reaadmes[0].guid, asset_type=Readme)
+        readme = client.asset.get_by_guid(
+            guid=reaadmes[0].guid, asset_type=Readme, ignore_relationships=False
+        )
         assert readme.description == self.CONTENT
         TestReadme.readme = readme
 

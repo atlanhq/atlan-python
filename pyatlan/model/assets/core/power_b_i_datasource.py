@@ -36,6 +36,10 @@ class PowerBIDatasource(PowerBI):
     Connection details of the datasource.
     """
 
+    POWER_BI_DATAFLOWS: ClassVar[RelationField] = RelationField("powerBIDataflows")
+    """
+    TBC
+    """
     DATASETS: ClassVar[RelationField] = RelationField("datasets")
     """
     TBC
@@ -43,6 +47,7 @@ class PowerBIDatasource(PowerBI):
 
     _convenience_properties: ClassVar[List[str]] = [
         "connection_details",
+        "power_b_i_dataflows",
         "datasets",
     ]
 
@@ -55,6 +60,16 @@ class PowerBIDatasource(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.connection_details = connection_details
+
+    @property
+    def power_b_i_dataflows(self) -> Optional[List[PowerBIDataflow]]:
+        return None if self.attributes is None else self.attributes.power_b_i_dataflows
+
+    @power_b_i_dataflows.setter
+    def power_b_i_dataflows(self, power_b_i_dataflows: Optional[List[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_dataflows = power_b_i_dataflows
 
     @property
     def datasets(self) -> Optional[List[PowerBIDataset]]:
@@ -70,6 +85,9 @@ class PowerBIDatasource(PowerBI):
         connection_details: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
+        power_b_i_dataflows: Optional[List[PowerBIDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
         datasets: Optional[List[PowerBIDataset]] = Field(
             default=None, description=""
         )  # relationship
@@ -84,4 +102,5 @@ class PowerBIDatasource(PowerBI):
     )
 
 
+from .power_b_i_dataflow import PowerBIDataflow  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa

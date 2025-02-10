@@ -16,6 +16,7 @@ from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .app import App
 from .application import Application
+from .application_field import ApplicationField
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -77,6 +78,7 @@ from .power_b_i import PowerBI
 from .power_b_i_column import PowerBIColumn
 from .power_b_i_dashboard import PowerBIDashboard
 from .power_b_i_dataflow import PowerBIDataflow
+from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn
 from .power_b_i_dataset import PowerBIDataset
 from .power_b_i_datasource import PowerBIDatasource
 from .power_b_i_measure import PowerBIMeasure
@@ -146,6 +148,7 @@ Fivetran.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 AirflowDag.Attributes.update_forward_refs(**localns)
 AirflowTask.Attributes.update_forward_refs(**localns)
+ApplicationField.Attributes.update_forward_refs(**localns)
 Application.Attributes.update_forward_refs(**localns)
 AdfDataflow.Attributes.update_forward_refs(**localns)
 AdfDataset.Attributes.update_forward_refs(**localns)
@@ -211,6 +214,7 @@ PowerBIDataset.Attributes.update_forward_refs(**localns)
 PowerBIDashboard.Attributes.update_forward_refs(**localns)
 PowerBIDataflow.Attributes.update_forward_refs(**localns)
 PowerBIPage.Attributes.update_forward_refs(**localns)
+PowerBIDataflowEntityColumn.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
 MongoDBCollection.Attributes.update_forward_refs(**localns)
 DynamoDBSecondaryIndex.Attributes.update_forward_refs(**localns)

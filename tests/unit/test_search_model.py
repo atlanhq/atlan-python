@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from datetime import datetime
+from re import escape
 from typing import Dict, Literal, Set, Union
 
 import pytest
@@ -111,9 +112,11 @@ INCOMPATIPLE_QUERY: Dict[type, Set[TermAttributes]] = {
     ],
 )
 def test_term_without_parameters_value_raises_exception(parameters, expected):
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(
+        TypeError,
+        match=escape(expected),
+    ):
         Term(**parameters)
-    assert exc_info.value.args[0] == expected
 
 
 @pytest.mark.parametrize(
@@ -287,7 +290,7 @@ def test_index_search_request():
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], '
-        '"requestMetadata": {"saveSearchLog": true, "utmTags": ["project_sdk_python"]}}'
+        '"requestMetadata": {"saveSearchLog": false, "utmTags": ["project_sdk_python"]}}'
     )
 
 

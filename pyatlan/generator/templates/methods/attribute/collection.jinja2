@@ -1,0 +1,14 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            client: AtlanClient,
+            name: str,
+        ) -> Collection.Attributes:
+            validate_required_fields(["name"], [name])
+            return Collection.Attributes(
+                name=name,
+                qualified_name=Collection._generate_qualified_name(client),
+            )

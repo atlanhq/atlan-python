@@ -1,0 +1,31 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            app_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> AnaplanPage.Attributes:
+            validate_required_fields(
+                ["name", "app_qualified_name"],
+                [name, app_qualified_name],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    app_qualified_name, "app_qualified_name", 4
+                )
+
+            return AnaplanPage.Attributes(
+                name=name,
+                qualified_name=f"{app_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name or connection_qn,
+                connector_name=connector_name,
+                anaplan_app_qualified_name=app_qualified_name,
+                anaplan_app=AnaplanApp.ref_by_qualified_name(app_qualified_name),
+            )

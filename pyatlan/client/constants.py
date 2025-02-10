@@ -512,6 +512,18 @@ UPDATE_CREDENTIAL_BY_GUID = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+CREATE_CREDENTIALS = API(
+    CREDENTIALS_API,
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    EndPoint.HERACLES,
+)
+DELETE_CREDENTIALS_BY_GUID = API(
+    CREDENTIALS_API + "/{credential_guid}/archive",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 AUDIT_API = "entity/auditSearch"
 AUDIT_SEARCH = API(AUDIT_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 SEARCH_LOG_API = "search/searchlog"

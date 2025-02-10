@@ -90,6 +90,7 @@ def s3object(
         name=OBJECT_NAME,
         connection_qualified_name=connection.qualified_name,
         aws_arn=OBJECT_ARN,
+        s3_bucket_name=bucket.name,
         s3_bucket_qualified_name=bucket.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -110,6 +111,7 @@ def s3object_with_name(
         name=OBJECT_NAME,
         connection_qualified_name=connection.qualified_name,
         prefix=OBJECT_PREFIX,
+        s3_bucket_name=bucket_with_name.name,
         s3_bucket_qualified_name=bucket_with_name.qualified_name,
     )
     response = client.asset.save(to_create)
@@ -136,6 +138,7 @@ def _assert_object(s3object, bucket, with_name=False):
     assert s3object.qualified_name
     assert s3object.name == OBJECT_NAME
     assert s3object.connector_name == AtlanConnectorType.S3.value
+    assert s3object.s3_bucket_name == bucket.name
     assert s3object.s3_bucket_qualified_name == bucket.qualified_name
     if with_name:
         assert s3object.aws_arn is None
@@ -181,7 +184,9 @@ def _assert_update_bucket(client, bucket, with_name=False):
 
 
 def _assert_retrieve_bucket(client, bucket, s3object, with_name=False):
-    b = client.asset.get_by_guid(bucket.guid, asset_type=S3Bucket)
+    b = client.asset.get_by_guid(
+        bucket.guid, asset_type=S3Bucket, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == bucket.guid
@@ -244,7 +249,9 @@ def _assert_delete_object(client, s3object):
 
 
 def _assert_read_delete_object(client, s3object):
-    deleted = client.asset.get_by_guid(s3object.guid, asset_type=S3Object)
+    deleted = client.asset.get_by_guid(
+        s3object.guid, asset_type=S3Object, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == s3object.guid
     assert deleted.qualified_name == s3object.qualified_name
@@ -258,7 +265,9 @@ def _assert_restore_object(client, s3object):
     )
     assert s3object.qualified_name
     restored = client.asset.get_by_qualified_name(
-        asset_type=S3Object, qualified_name=s3object.qualified_name
+        asset_type=S3Object,
+        qualified_name=s3object.qualified_name,
+        ignore_relationships=False,
     )
     assert restored
     assert restored.guid == s3object.guid

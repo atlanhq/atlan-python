@@ -10,7 +10,7 @@
         "utmTags": [
           "project_sdk_python"
         ],
-        "saveSearchLog": true
+        "saveSearchLog":false
       },
       "showHighlights": false,
       "dsl": {
@@ -64,7 +64,7 @@
       },
       "allowDeletedRelations": false,
       "query": "{\"from\":0,\"size\":100,\"aggregations\":{\"max_update_time\":{\"max\":{\"field\":\"__modificationTimestamp\"}}},\"track_total_hits\":true,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"__typeName.keyword\":{\"value\":\"Column\",\"case_insensitive\":false}}},{\"term\":{\"__state\":{\"value\":\"ACTIVE\",\"case_insensitive\":false}}},{\"prefix\":{\"qualifiedName\":{\"value\":\"default/snowflake/1234567890/TEST1/TEST2/TEST3\",\"case_insensitive\":false}}}]}},\"sort\":[{\"__guid\":{\"order\":\"asc\"}}]}",
-      "saveSearchLog": true,
+      "saveSearchLog":false,
       "utmTags": [
         "project_sdk_python"
       ]

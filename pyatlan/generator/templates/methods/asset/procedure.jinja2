@@ -1,0 +1,68 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        definition: str,
+    ) -> Procedure: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        schema_qualified_name: str,
+        schema_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        connection_qualified_name: str,
+        definition: str,
+    ) -> Procedure: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        definition: str,
+        schema_qualified_name: str,
+        schema_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> Procedure:
+        attributes = Procedure.Attributes.create(
+            name=name,
+            definition=definition,
+            schema_qualified_name=schema_qualified_name,
+            schema_name=schema_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def updater(cls, *, name: str, qualified_name: str, definition: str) -> Procedure:
+        validate_required_fields(
+            ["name", "qualified_name", "definition"],
+            [name, qualified_name, definition],
+        )
+        procedure = Procedure(
+            attributes=Procedure.Attributes(qualified_name=qualified_name, name=name)
+        )
+        procedure.definition = definition
+        return procedure
+
+    def trim_to_required(self: Procedure) -> Procedure:
+        return self.updater(
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
+            definition=self.definition or "",
+        )

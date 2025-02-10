@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+    TextField,
+)
 
 from .power_b_i import PowerBI
 
@@ -29,8 +34,10 @@ class PowerBIDataflow(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "workspaceQualifiedName",
+        "workspaceQualifiedName.keyword",
+        "workspaceQualifiedName",
     )
     """
     Unique name of the workspace in which this dataflow exists.
@@ -72,7 +79,17 @@ class PowerBIDataflow(PowerBI):
     """
     TBC
     """
+    POWER_BI_DATAFLOW_ENTITY_COLUMNS: ClassVar[RelationField] = RelationField(
+        "powerBIDataflowEntityColumns"
+    )
+    """
+    TBC
+    """
     TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    POWER_BI_DATASOURCES: ClassVar[RelationField] = RelationField("powerBIDatasources")
     """
     TBC
     """
@@ -98,7 +115,9 @@ class PowerBIDataflow(PowerBI):
         "workspace",
         "power_b_i_processes",
         "datasets",
+        "power_b_i_dataflow_entity_columns",
         "tables",
+        "power_b_i_datasources",
         "power_b_i_dataflow_children",
         "power_b_i_dataflow_parents",
     ]
@@ -212,6 +231,27 @@ class PowerBIDataflow(PowerBI):
         self.attributes.datasets = datasets
 
     @property
+    def power_b_i_dataflow_entity_columns(
+        self,
+    ) -> Optional[List[PowerBIDataflowEntityColumn]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_dataflow_entity_columns
+        )
+
+    @power_b_i_dataflow_entity_columns.setter
+    def power_b_i_dataflow_entity_columns(
+        self,
+        power_b_i_dataflow_entity_columns: Optional[List[PowerBIDataflowEntityColumn]],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_dataflow_entity_columns = (
+            power_b_i_dataflow_entity_columns
+        )
+
+    @property
     def tables(self) -> Optional[List[PowerBITable]]:
         return None if self.attributes is None else self.attributes.tables
 
@@ -220,6 +260,20 @@ class PowerBIDataflow(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tables = tables
+
+    @property
+    def power_b_i_datasources(self) -> Optional[List[PowerBIDatasource]]:
+        return (
+            None if self.attributes is None else self.attributes.power_b_i_datasources
+        )
+
+    @power_b_i_datasources.setter
+    def power_b_i_datasources(
+        self, power_b_i_datasources: Optional[List[PowerBIDatasource]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_datasources = power_b_i_datasources
 
     @property
     def power_b_i_dataflow_children(self) -> Optional[List[PowerBIDataflow]]:
@@ -274,7 +328,15 @@ class PowerBIDataflow(PowerBI):
         datasets: Optional[List[PowerBIDataset]] = Field(
             default=None, description=""
         )  # relationship
+        power_b_i_dataflow_entity_columns: Optional[
+            List[PowerBIDataflowEntityColumn]
+        ] = Field(
+            default=None, description=""
+        )  # relationship
         tables: Optional[List[PowerBITable]] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_datasources: Optional[List[PowerBIDatasource]] = Field(
             default=None, description=""
         )  # relationship
         power_b_i_dataflow_children: Optional[List[PowerBIDataflow]] = Field(
@@ -294,7 +356,9 @@ class PowerBIDataflow(PowerBI):
     )
 
 
+from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn  # noqa
 from .power_b_i_dataset import PowerBIDataset  # noqa
+from .power_b_i_datasource import PowerBIDatasource  # noqa
 from .power_b_i_table import PowerBITable  # noqa
 from .power_b_i_workspace import PowerBIWorkspace  # noqa
 from .process import Process  # noqa

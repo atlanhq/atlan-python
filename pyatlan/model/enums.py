@@ -137,6 +137,7 @@ class AtlanConnectionCategory(str, Enum):
     DATA_QUALITY = "data-quality"
     SCHEMA_REGISTRY = "schema-registry"
     APP = "app"
+    CUSTOM = "custom"
 
 
 class AtlanConnectorType(str, Enum):
@@ -337,9 +338,16 @@ class AtlanConnectorType(str, Enum):
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
     APP = ("app", AtlanConnectionCategory.APP)
     BIGID = ("bigid", AtlanConnectionCategory.SAAS)
+    ANAPLAN = ("anaplan", AtlanConnectionCategory.BI)
+    AWS_BATCH = ("aws-batch", AtlanConnectionCategory.ELT)
+    AWS_ECS = ("aws-ecs", AtlanConnectionCategory.ELT)
+    AWS_LAMBDA = ("aws-lambda", AtlanConnectionCategory.ELT)
+    AWS_SAGEMAKER = ("aws-sagemaker", AtlanConnectionCategory.ELT)
+    CUSTOM = ("custom", AtlanConnectionCategory.CUSTOM)
     SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
     SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
     RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
+
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
@@ -2215,6 +2223,7 @@ class WorkflowPackage(str, Enum):
     SIGMA = "atlan-sigma"
     SNOWFLAKE = "atlan-snowflake"
     SNOWFLAKE_MINER = "atlan-snowflake-miner"
+    MONGODB = "atlan-mongodb"
     SODA = "atlan-soda"
     SYNAPSE = "atlan-synapse"
     TABLEAU = "atlan-tableau"
@@ -2222,9 +2231,13 @@ class WorkflowPackage(str, Enum):
     TERADATA_MINER = "atlan-teradata-miner"
     THOUGHTSPOT = "atlan-thoughtspot"
     TRINO = "atlan-trino"
+    # CSA packages
     ASSET_IMPORT = "csa-asset-import"
     ASSET_EXPORT_BASIC = "csa-asset-export-basic"
     RELATIONAL_ASSETS_BUILDER = "csa-relational-assets-builder"
+    LINEAGE_BUILDER = "csa-lineage-builder"
+    LINEAGE_GENERATOR = "csa-lineage-generator"
+    API_TOKEN_CONNECTION_ADMIN = "csa-api-token-connection-admin"  # noqa: S105
 
 
 class AssetInputHandling(str, Enum):

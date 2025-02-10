@@ -29,10 +29,21 @@ You can interact with all of the following different kinds of assets:
     asset/airflow
     asset/airflowdag
     asset/airflowtask
+    asset/anaplan
+    asset/anaplanapp
+    asset/anaplandimension
+    asset/anaplanlineitem
+    asset/anaplanlist
+    asset/anaplanmodel
+    asset/anaplanmodule
+    asset/anaplanpage
+    asset/anaplanview
+    asset/anaplanworkspace
     asset/anomalo
     asset/anomalocheck
     asset/app
     asset/application
+    asset/applicationfield
     asset/asset
     asset/atlasglossary
     asset/atlasglossarycategory
@@ -44,10 +55,12 @@ You can interact with all of the following different kinds of assets:
     asset/azureeventhubconsumergroup
     asset/azureservicebus
     asset/azureservicebusnamespace
+    asset/azureservicebusschema
     asset/azureservicebustopic
     asset/bi
     asset/biprocess
     asset/badge
+    asset/bigquerytag
     asset/businesspolicy
     asset/businesspolicyexception
     asset/businesspolicyincident
@@ -83,6 +96,8 @@ You can interact with all of the following different kinds of assets:
     asset/cubedimension
     asset/cubefield
     asset/cubehierarchy
+    asset/custom
+    asset/customentity
     asset/datacontract
     asset/datadomain
     asset/datamesh
@@ -93,6 +108,9 @@ You can interact with all of the following different kinds of assets:
     asset/datastudioasset
     asset/database
     asset/databricksunitycatalogtag
+    asset/dataverse
+    asset/dataverseattribute
+    asset/dataverseentity
     asset/dbt
     asset/dbtcolumnprocess
     asset/dbtmetric
@@ -189,6 +207,7 @@ You can interact with all of the following different kinds of assets:
     asset/powerbicolumn
     asset/powerbidashboard
     asset/powerbidataflow
+    asset/powerbidataflowentitycolumn
     asset/powerbidataset
     asset/powerbidatasource
     asset/powerbimeasure

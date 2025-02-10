@@ -8,7 +8,12 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+    TextField,
+)
 
 from .tableau import Tableau
 
@@ -35,8 +40,8 @@ class TableauMetric(Tableau):
     """
     Unique name of the site in which this metric exists.
     """
-    PROJECT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "projectQualifiedName", "projectQualifiedName"
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "projectQualifiedName", "projectQualifiedName.keyword", "projectQualifiedName"
     )
     """
     Unique name of the project in which this metric exists.

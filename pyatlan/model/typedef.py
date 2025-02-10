@@ -30,12 +30,22 @@ _complete_type_list: AssetTypes = {
     "ADLSAccount",
     "ADLSContainer",
     "ADLSObject",
+    "AnaplanPage",
+    "AnaplanList",
+    "AnaplanLineItem",
+    "AnaplanWorkspace",
+    "AnaplanModule",
+    "AnaplanModel",
+    "AnaplanApp",
+    "AnaplanDimension",
+    "AnaplanView",
     "APIObject",
     "APIQuery",
     "APIField",
     "APIPath",
     "APISpec",
     "Application",
+    "ApplicationField",
     "Collection",
     "Query",
     "BIProcess",
@@ -43,7 +53,10 @@ _complete_type_list: AssetTypes = {
     "Column",
     "ColumnProcess",
     "Connection",
+    "CustomEntity",
     "DataStudioAsset",
+    "DataverseAttribute",
+    "DataverseEntity",
     "Database",
     "DbtColumnProcess",
     "DbtMetric",
@@ -343,6 +356,7 @@ class EnumDef(TypeDef):
 
 class AttributeDef(AtlanObject):
     class Options(AtlanObject):
+        _attr_def: AttributeDef = PrivateAttr(default=None)
         custom_metadata_version: str = Field(
             description="Indicates the version of the custom metadata structure. This determines which other options "
             "are available and used.",
@@ -473,6 +487,15 @@ class AttributeDef(AtlanObject):
             "Only assets of one of these types will have this attribute available.",
         )
 
+        def __setattr__(self, name, value):
+            super().__setattr__(name, value)
+            if self._attr_def and name == "multi_value_select":
+                self._attr_def.cardinality = Cardinality.SET
+                if self._attr_def.type_name and "array<" not in str(
+                    self._attr_def.type_name
+                ):
+                    self._attr_def.type_name = f"array<{self._attr_def.type_name}>"
+
         @staticmethod
         def create(
             attribute_type: AtlanCustomAttributePrimitiveType,
@@ -561,7 +584,7 @@ class AttributeDef(AtlanObject):
         description="When true, this attribute must be unique across all assets.",
     )
     options: Optional[AttributeDef.Options] = Field(
-        default=None, description="Extensible options for the attribute."
+        default_factory=Options, description="Extensible options for the attribute."
     )
     search_weight: Optional[float] = Field(default=None, description="TBC")
     skip_scrubbing: Optional[bool] = Field(
@@ -789,6 +812,10 @@ class AttributeDef(AtlanObject):
                 "applicable_domains", "Set[str]"
             )
         self.options.applicable_domains = json.dumps(list(domains))
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.options._attr_def = self
 
     @staticmethod
     def create(

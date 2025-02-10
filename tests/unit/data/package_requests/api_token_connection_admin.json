@@ -1,0 +1,76 @@
+{
+    "metadata": {
+      "annotations": {
+        "orchestration.atlan.com/allowSchedule": "true",
+        "orchestration.atlan.com/categories": "kotlin,utility",
+        "orchestration.atlan.com/dependentPackage": "",
+        "orchestration.atlan.com/docsUrl": "https://solutions.atlan.com/api-token-connection-admin/",
+        "orchestration.atlan.com/emoji": "🚀",
+        "orchestration.atlan.com/icon": "http://assets.atlan.com/assets/ph-key-light.svg",
+        "orchestration.atlan.com/logo": "http://assets.atlan.com/assets/ph-key-light.svg",
+        "orchestration.atlan.com/name": "API Token Connection Admin",
+        "package.argoproj.io/author": "Atlan CSA",
+        "package.argoproj.io/description": "Assigns an API token as a connection admin for an existing connection.",
+        "package.argoproj.io/homepage": "https://packages.atlan.com/-/web/detail/@csa/api-token-connection-admin",
+        "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",
+        "package.argoproj.io/name": "@csa/api-token-connection-admin",
+        "package.argoproj.io/parent": ".",
+        "package.argoproj.io/registry": "https://packages.atlan.com",
+        "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",
+        "package.argoproj.io/support": "support@atlan.com",
+        "orchestration.atlan.com/atlanName": "csa-api-token-connection-admin-123456"
+      },
+      "labels": {
+        "orchestration.atlan.com/certified": "true",
+        "orchestration.atlan.com/source": "atlan",
+        "orchestration.atlan.com/sourceCategory": "utility",
+        "orchestration.atlan.com/type": "custom",
+        "orchestration.atlan.com/preview": "true",
+        "orchestration.atlan.com/verified": "true",
+        "package.argoproj.io/installer": "argopm",
+        "package.argoproj.io/name": "a-t-rcsas-l-a-s-hapi-token-connection-admin",
+        "package.argoproj.io/registry": "httpsc-o-l-o-ns-l-a-s-hs-l-a-s-hpackages.atlan.com",
+        "orchestration.atlan.com/atlan-ui": "true"
+      },
+      "name": "csa-api-token-connection-admin-123456",
+      "namespace": "default"
+    },
+    "spec": {
+      "entrypoint": "main",
+      "templates": [
+        {
+          "name": "main",
+          "dag": {
+            "tasks": [
+              {
+                "name": "run",
+                "arguments": {
+                  "parameters": [
+                    {
+                      "name": "connection_qualified_name",
+                      "value": "default/snowflake/1234567890"
+                    },
+                    {
+                      "name": "api_token_guid",
+                      "value": "92588c67-5ddf-4a45-8b5c-dd92f4b84e99"
+                    }
+                  ]
+                },
+                "templateRef": {
+                  "name": "csa-api-token-connection-admin",
+                  "template": "main",
+                  "clusterScope": true
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "workflowMetadata": {
+        "annotations": {
+          "package.argoproj.io/name": "@csa/api-token-connection-admin"
+        }
+      }
+    },
+    "payload": []
+}

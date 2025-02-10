@@ -270,7 +270,9 @@ def test_category(
     assert category.guid
     assert category.name == MODULE_NAME
     assert category.qualified_name
-    c = client.asset.get_by_guid(category.guid, AtlasGlossaryCategory)
+    c = client.asset.get_by_guid(
+        category.guid, AtlasGlossaryCategory, ignore_relationships=False
+    )
     assert c
     assert c.guid == category.guid
     assert c.anchor
@@ -311,7 +313,9 @@ def test_term1(
     assert term1.name == TERM_NAME1
     assert term1.qualified_name
     assert term1.qualified_name != TERM_NAME1
-    t = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert t
     assert t.guid == term1.guid
     assert t.attributes.anchor
@@ -336,7 +340,9 @@ def test_term2(
     assert term2.name == TERM_NAME2
     assert term2.qualified_name
     assert term2.qualified_name != TERM_NAME2
-    t = client.asset.get_by_guid(term2.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(
+        term2.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert t
     assert t.guid == term2.guid
     assert t.attributes.anchor
@@ -361,7 +367,9 @@ def test_term3(
     assert term3.name == TERM_NAME3
     assert term3.qualified_name
     assert term3.qualified_name != TERM_NAME3
-    t = client.asset.get_by_guid(term3.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(
+        term3.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert t
     assert t.guid == term3.guid
     assert t.attributes.anchor
@@ -386,7 +394,9 @@ def test_term4(
     assert term4.name == TERM_NAME4
     assert term4.qualified_name
     assert term4.qualified_name != TERM_NAME4
-    t = client.asset.get_by_guid(term4.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(
+        term4.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert t
     assert t.guid == term4.guid
     assert t.attributes.anchor
@@ -401,7 +411,9 @@ def test_read_glossary(
     term3: AtlasGlossaryTerm,
     term4: AtlasGlossaryTerm,
 ):
-    g = client.asset.get_by_guid(glossary.guid, asset_type=AtlasGlossary)
+    g = client.asset.get_by_guid(
+        glossary.guid, asset_type=AtlasGlossary, ignore_relationships=False
+    )
     assert g
     assert isinstance(g, AtlasGlossary)
     assert g.guid == glossary.guid
@@ -540,7 +552,9 @@ def test_term_trim_to_required(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
 ):
-    term1 = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    term1 = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     term1 = term1.trim_to_required()
     response = client.asset.save(term1)
     assert response.mutated_entities is None
@@ -801,7 +815,9 @@ def test_create_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    result = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert result
     assert result.see_also
     assert len(result.see_also) == 2
@@ -836,7 +852,9 @@ def test_remove_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    result = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert result
     assert result.see_also
     active_relationships = []
@@ -871,7 +889,9 @@ def test_append_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    result = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert result
     assert result.see_also
     active_relationships = []
@@ -907,7 +927,9 @@ def test_append_relationship_again(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    result = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
     assert result
     assert result.see_also
     active_relationships = []

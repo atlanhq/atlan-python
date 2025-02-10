@@ -4,10 +4,11 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -15,12 +16,96 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
 
 
 class TablePartition(SQL):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the table partition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        database_name: str,
+        database_qualified_name: str,
+        schema_name: str,
+        schema_qualified_name: str,
+        table_name: str,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the TablePartition
+        :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+        :param database_name: simple name of the Database in which to create the TablePartition
+        :param database_qualified_name: unique name of the Database in which to create the TablePartition
+        :param schema_name: simple name of the Schema in which to create the TablePartition
+        :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+        :param table_name: simple name of the Table in which to create the TablePartition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: Optional[str] = None,
+        database_name: Optional[str] = None,
+        database_qualified_name: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        schema_qualified_name: Optional[str] = None,
+        table_name: Optional[str] = None,
+        table_qualified_name: str,
+    ) -> TablePartition:
+        """
+        Builds the minimal object necessary to create a table partition.
+
+        :param name: name of the TablePartition
+        :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+        :param database_name: simple name of the Database in which to create the TablePartition
+        :param database_qualified_name: unique name of the Database in which to create the TablePartition
+        :param schema_name: simple name of the Schema in which to create the TablePartition
+        :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+        :param table_name: simple name of the Table in which to create the TablePartition
+        :param table_qualified_name: unique name of the table in which this table partition exists
+        :returns: the minimal request necessary to create the table partition
+        """
+        attributes = TablePartition.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            database_name=database_name,
+            database_qualified_name=database_qualified_name,
+            schema_name=schema_name,
+            schema_qualified_name=schema_qualified_name,
+            table_name=table_name,
+            table_qualified_name=table_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="TablePartition", allow_mutation=False)
 
@@ -389,6 +474,76 @@ class TablePartition(SQL):
         parent_table_partition: Optional[TablePartition] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: Optional[str] = None,
+            database_name: Optional[str] = None,
+            database_qualified_name: Optional[str] = None,
+            schema_name: Optional[str] = None,
+            schema_qualified_name: Optional[str] = None,
+            table_name: Optional[str] = None,
+            table_qualified_name: str,
+        ) -> TablePartition.Attributes:
+            """
+            Builds the minimal object necessary to create a table partition.
+
+            :param name: name of the TablePartition
+            :param connection_qualified_name: unique name of the connection in which to create the TablePartition
+            :param database_name: simple name of the Database in which to create the TablePartition
+            :param database_qualified_name: unique name of the Database in which to create the TablePartition
+            :param schema_name: simple name of the Schema in which to create the TablePartition
+            :param schema_qualified_name: unique name of the Schema in which to create the TablePartition
+            :param table_name: simple name of the Table in which to create the TablePartition
+            :param table_qualified_name: unique name of the table in which this table partition exists
+            :returns: the minimal request necessary to create the table partition
+            """
+            validate_required_fields(
+                ["name", "table_qualified_name"],
+                [name, table_qualified_name],
+            )
+            assert table_qualified_name  # noqa: S101
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    table_qualified_name, "table_qualified_name", 6
+                )
+
+            fields = table_qualified_name.split("/")
+
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database_name = database_name or fields[3]
+            schema_name = schema_name or fields[4]
+            table_name = table_name or fields[5]
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            schema_qualified_name = (
+                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            )
+
+            qualified_name = f"{schema_qualified_name}/{name}"
+
+            return TablePartition.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                schema_name=schema_name,
+                schema_qualified_name=schema_qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                table_name=table_name,
+                table_qualified_name=table_qualified_name,
+            )
 
     attributes: TablePartition.Attributes = Field(
         default_factory=lambda: TablePartition.Attributes(),

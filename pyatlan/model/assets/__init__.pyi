@@ -36,6 +36,7 @@ __all__ = [
     "Stakeholder",
     "AirflowDag",
     "AirflowTask",
+    "ApplicationField",
     "Application",
     "AdfDataflow",
     "AdfDataset",
@@ -101,6 +102,7 @@ __all__ = [
     "PowerBIDashboard",
     "PowerBIDataflow",
     "PowerBIPage",
+    "PowerBIDataflowEntityColumn",
     "SnowflakeDynamicTable",
     "MongoDBCollection",
     "DynamoDBSecondaryIndex",
@@ -129,6 +131,7 @@ __all__ = [
     "ObjectStore",
     "SaaS",
     "MultiDimensionalDataset",
+    "Custom",
     "EventStore",
     "NoSQL",
     "Insight",
@@ -144,6 +147,7 @@ __all__ = [
     "Preset",
     "Mode",
     "Sigma",
+    "Anaplan",
     "Tableau",
     "Looker",
     "Domo",
@@ -157,6 +161,7 @@ __all__ = [
     "Cognos",
     "Superset",
     "Qlik",
+    "Dataverse",
     "Cognite",
     "Salesforce",
     "ReadmeTemplate",
@@ -164,6 +169,8 @@ __all__ = [
     "CubeHierarchy",
     "CubeField",
     "CubeDimension",
+    "CustomEntity",
+    "BigqueryTag",
     "Kafka",
     "AzureServiceBus",
     "DynamoDB",
@@ -197,6 +204,15 @@ __all__ = [
     "SigmaDataElementField",
     "SigmaPage",
     "SigmaDataElement",
+    "AnaplanPage",
+    "AnaplanList",
+    "AnaplanLineItem",
+    "AnaplanWorkspace",
+    "AnaplanModule",
+    "AnaplanModel",
+    "AnaplanApp",
+    "AnaplanDimension",
+    "AnaplanView",
     "TableauWorkbook",
     "TableauDatasourceField",
     "TableauCalculatedField",
@@ -271,6 +287,8 @@ __all__ = [
     "QlikChart",
     "QlikDataset",
     "QlikSheet",
+    "DataverseAttribute",
+    "DataverseEntity",
     "CogniteEvent",
     "CogniteAsset",
     "CogniteSequence",
@@ -286,6 +304,7 @@ __all__ = [
     "KafkaTopic",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
+    "AzureServiceBusSchema",
     "AzureServiceBusTopic",
     "QlikStream",
     "DynamoDBLocalSecondaryIndex",
@@ -305,14 +324,26 @@ from .a_p_i_path import APIPath
 from .a_p_i_query import APIQuery
 from .a_p_i_spec import APISpec
 from .a_w_s import AWS
+from .anaplan import Anaplan
+from .anaplan_app import AnaplanApp
+from .anaplan_dimension import AnaplanDimension
+from .anaplan_line_item import AnaplanLineItem
+from .anaplan_list import AnaplanList
+from .anaplan_model import AnaplanModel
+from .anaplan_module import AnaplanModule
+from .anaplan_page import AnaplanPage
+from .anaplan_view import AnaplanView
+from .anaplan_workspace import AnaplanWorkspace
 from .auth_service import AuthService
 from .azure import Azure
 from .azure_event_hub import AzureEventHub
 from .azure_event_hub_consumer_group import AzureEventHubConsumerGroup
 from .azure_service_bus import AzureServiceBus
 from .azure_service_bus_namespace import AzureServiceBusNamespace
+from .azure_service_bus_schema import AzureServiceBusSchema
 from .azure_service_bus_topic import AzureServiceBusTopic
 from .badge import Badge
+from .bigquery_tag import BigqueryTag
 from .business_policy import BusinessPolicy
 from .business_policy_exception import BusinessPolicyException
 from .business_policy_incident import BusinessPolicyIncident
@@ -350,6 +381,7 @@ from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App
 from .core.application import Application
+from .core.application_field import ApplicationField
 from .core.asset import Asset
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
@@ -411,6 +443,7 @@ from .core.power_b_i import PowerBI
 from .core.power_b_i_column import PowerBIColumn
 from .core.power_b_i_dashboard import PowerBIDashboard
 from .core.power_b_i_dataflow import PowerBIDataflow
+from .core.power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn
 from .core.power_b_i_dataset import PowerBIDataset
 from .core.power_b_i_datasource import PowerBIDatasource
 from .core.power_b_i_measure import PowerBIMeasure
@@ -447,9 +480,14 @@ from .cube import Cube
 from .cube_dimension import CubeDimension
 from .cube_field import CubeField
 from .cube_hierarchy import CubeHierarchy
+from .custom import Custom
+from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
+from .dataverse import Dataverse
+from .dataverse_attribute import DataverseAttribute
+from .dataverse_entity import DataverseEntity
 from .dbt_column_process import DbtColumnProcess
 from .dbt_process import DbtProcess
 from .dbt_tag import DbtTag

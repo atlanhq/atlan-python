@@ -24,7 +24,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Term
+from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Regexp, Term
 from pyatlan.model.workflow import (
     ReRunRequest,
     ScheduleQueriesSearchRequest,
@@ -85,10 +85,11 @@ class WorkflowClient:
         :raises ValidationError: If the provided prefix is invalid workflow package
         :raises AtlanError: on any API communication issue
         """
+        regex = prefix.value.replace("-", "[-]") + "[-][0-9]{10}"
         query = Bool(
             filter=[
                 NestedQuery(
-                    query=Prefix(field="metadata.name.keyword", value=prefix.value),
+                    query=Regexp(field="metadata.name.keyword", value=regex),
                     path="metadata",
                 )
             ]
@@ -244,7 +245,7 @@ class WorkflowClient:
                 detail = results[0].source
             else:
                 raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow
+                    workflow.value
                 )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
@@ -322,9 +323,20 @@ class WorkflowClient:
         )
         return WorkflowRunResponse(**raw_json)
 
-    @validate_arguments
+    @overload
     def run(
         self, workflow: Workflow, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
+
+    @overload
+    def run(
+        self, workflow: str, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
+
+    def run(
+        self,
+        workflow: Union[Workflow, str],
+        workflow_schedule: Optional[WorkflowSchedule] = None,
     ) -> WorkflowResponse:
         """
         Run the Atlan workflow with a specific configuration.
@@ -334,7 +346,7 @@ class WorkflowClient:
         Running the workflow multiple times with the same configuration may lead to duplicate assets.
         Consider using the "rerun()" method instead to re-execute an existing workflow.
 
-        :param workflow: The workflow to run.
+        :param workflow: workflow object to run or a raw workflow JSON string.
         :param workflow_schedule: (Optional) a WorkflowSchedule object containing:
             - A cron schedule expression, e.g: `5 4 * * *`.
             - The time zone for the cron schedule, e.g: `Europe/Paris`.
@@ -343,6 +355,14 @@ class WorkflowClient:
         :raises ValidationError: If the provided `workflow` is invalid.
         :raises AtlanError: on any API communication issue.
         """
+        validate_type(name="workflow", _type=(Workflow, str), value=workflow)
+        validate_type(
+            name="workflow_schedule",
+            _type=(WorkflowSchedule, None),
+            value=workflow_schedule,
+        )
+        if isinstance(workflow, str):
+            workflow = Workflow.parse_raw(workflow)
         if workflow_schedule:
             self._add_schedule(workflow, workflow_schedule)
         raw_json = self._client._call_api(

@@ -83,6 +83,7 @@ from pyatlan.model.enums import (
     AtlanDeleteType,
     CertificateStatus,
     EntityStatus,
+    SaveSemantic,
     SortOrder,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
@@ -351,13 +352,15 @@ class AssetClient:
             allow_multiple=True,
         )
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_qualified_name(
         self,
         qualified_name: str,
         asset_type: Type[A],
         min_ext_info: bool = False,
-        ignore_relationships: bool = False,
+        ignore_relationships: bool = True,
+        attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        related_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its qualified_name.
@@ -366,15 +369,48 @@ class AssetClient:
         :param asset_type: type of asset to be retrieved ( must be the actual asset type not a super type)
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
+        :param attributes: a specific list of attributes to retrieve for the asset
+        :param related_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import FluentSearch
+
         query_params = {
             "attr:qualifiedName": qualified_name,
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
+        attributes = attributes or []
+        related_attributes = related_attributes or []
+
+        if (attributes and len(attributes)) or (
+            related_attributes and len(related_attributes)
+        ):
+            client = AtlanClient.get_default_client()
+            search = (
+                FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
+            )
+            for attribute in attributes:
+                search = search.include_on_results(attribute)
+            for relation_attribute in related_attributes:
+                search = search.include_on_relations(relation_attribute)
+            results = search.execute(client=client)
+            if results and results.current_page():
+                first_result = results.current_page()[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
+                )
+
         raw_json = self._client._call_api(
             GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
             query_params,
@@ -390,13 +426,15 @@ class AssetClient:
             )
         return asset
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_guid(
         self,
         guid: str,
         asset_type: Type[A] = Asset,  # type: ignore[assignment]
         min_ext_info: bool = False,
-        ignore_relationships: bool = False,
+        ignore_relationships: bool = True,
+        attributes: Optional[Union[List[str], List[AtlanField]]] = None,
+        related_attributes: Optional[Union[List[str], List[AtlanField]]] = None,
     ) -> A:
         """
         Retrieves an asset by its GUID.
@@ -405,14 +443,42 @@ class AssetClient:
         :param asset_type: type of asset to be retrieved, defaults to `Asset`
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
+        :param attributes: a specific list of attributes to retrieve for the asset
+        :param related_attributes: a specific list of relationships attributes to retrieve for the asset
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import FluentSearch
+
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
+        attributes = attributes or []
+        related_attributes = related_attributes or []
+
+        if (attributes and len(attributes)) or (
+            related_attributes and len(related_attributes)
+        ):
+            client = AtlanClient.get_default_client()
+            search = FluentSearch().select().where(Asset.GUID.eq(guid))
+            for attribute in attributes:
+                search = search.include_on_results(attribute)
+            for relation_attribute in related_attributes:
+                search = search.include_on_relations(relation_attribute)
+            results = search.execute(client=client)
+            if results and results.current_page():
+                first_result = results.current_page()[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
 
         raw_json = self._client._call_api(
             GET_ENTITY_BY_GUID.format_path_with_params(guid),
@@ -743,7 +809,9 @@ class AssetClient:
         if not asset_type.can_be_archived():
             return False
         existing = self.get_by_qualified_name(
-            asset_type=asset_type, qualified_name=qualified_name
+            asset_type=asset_type,
+            qualified_name=qualified_name,
+            ignore_relationships=False,
         )
         if not existing:
             # Nothing to restore, so cannot be restored
@@ -1263,29 +1331,64 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to link the terms
         :returns: the asset that was updated (note that it will NOT contain details of the appended terms)
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import FluentSearch
+
+        client = AtlanClient.get_default_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            asset = self.get_by_qualified_name(
-                qualified_name=qualified_name, asset_type=asset_type
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-        if not terms:
-            return asset
-        replacement_terms: List[AtlasGlossaryTerm] = []
-        if existing_terms := asset.assigned_terms:
-            replacement_terms.extend(
-                term for term in existing_terms if term.relationship_status != "DELETED"
-            )
-        replacement_terms.extend(terms)
-        asset.assigned_terms = replacement_terms
-        response = self.save(entity=asset)
+
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
+                )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
+        for i, term in enumerate(terms):
+            if hasattr(term, "guid") and term.guid:
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(
+                    guid=term.guid, semantic=SaveSemantic.APPEND
+                )
+            elif hasattr(term, "qualified_name") and term.qualified_name:
+                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
+                    qualified_name=term.qualified_name, semantic=SaveSemantic.APPEND
+                )
+        updated_asset.assigned_terms = terms
+        response = self.save(entity=updated_asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
-        return asset
+        return updated_asset
 
     @validate_arguments
     def replace_terms(
@@ -1305,21 +1408,64 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to replace the terms
         :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)
         """
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import FluentSearch
+
+        client = AtlanClient.get_default_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            asset = self.get_by_qualified_name(
-                qualified_name=qualified_name, asset_type=asset_type
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-        asset.assigned_terms = terms
-        response = self.save(entity=asset)
+
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
+                )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
+        for i, term in enumerate(terms):
+            if hasattr(term, "guid") and term.guid:
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(
+                    guid=term.guid, semantic=SaveSemantic.REPLACE
+                )
+            elif hasattr(term, "qualified_name") and term.qualified_name:
+                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
+                    qualified_name=term.qualified_name, semantic=SaveSemantic.REPLACE
+                )
+        updated_asset.assigned_terms = terms
+        response = self.save(entity=updated_asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
-        return asset
+        return updated_asset
 
     @validate_arguments
     def remove_terms(
@@ -1341,32 +1487,64 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset from which to remove the terms
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
-        if not terms:
-            raise ErrorCode.MISSING_TERMS.exception_with_parameters()
+        from pyatlan.client.atlan import AtlanClient
+        from pyatlan.model.fluent_search import FluentSearch
+
+        client = AtlanClient.get_default_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.GUID.eq(guid))
+                .execute(client=client)
+            )
         elif qualified_name:
-            asset = self.get_by_qualified_name(
-                qualified_name=qualified_name, asset_type=asset_type
+            results = (
+                FluentSearch()
+                .select()
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
+                .execute(client=client)
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-        replacement_terms: List[AtlasGlossaryTerm] = []
-        guids_to_be_removed = {t.guid for t in terms}
-        if existing_terms := asset.assigned_terms:
-            replacement_terms.extend(
-                term
-                for term in existing_terms
-                if term.relationship_status != "DELETED"
-                and term.guid not in guids_to_be_removed
-            )
-        asset.assigned_terms = replacement_terms
-        response = self.save(entity=asset)
+
+        if results and results.current_page():
+            first_result = results.current_page()[0]
+            if not isinstance(first_result, asset_type):
+                if guid is None:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+        else:
+            if guid is None:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                    qualified_name, asset_type.__name__
+                )
+            else:
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
+        qualified_name = first_result.qualified_name
+        name = first_result.name
+        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
+        for i, term in enumerate(terms):
+            if hasattr(term, "guid") and term.guid:
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(
+                    guid=term.guid, semantic=SaveSemantic.REMOVE
+                )
+            elif hasattr(term, "qualified_name") and term.qualified_name:
+                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
+                    qualified_name=term.qualified_name, semantic=SaveSemantic.REMOVE
+                )
+        updated_asset.assigned_terms = terms
+        response = self.save(entity=updated_asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
-        return asset
+        return updated_asset
 
     @validate_arguments
     def find_connections_by_name(
