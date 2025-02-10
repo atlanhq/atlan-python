@@ -218,6 +218,14 @@ class ADLSObject(ADLS):
     """
     Unique name of the container this object exists within.
     """
+    ADLS_CONTAINER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsContainerName",
+        "adlsContainerName",
+        "adlsContainerName.text",
+    )
+    """
+    Name of the container this object exists within.
+    """
 
     ADLS_CONTAINER: ClassVar[RelationField] = RelationField("adlsContainer")
     """
@@ -242,6 +250,7 @@ class ADLSObject(ADLS):
         "adls_object_lease_state",
         "adls_object_metadata",
         "adls_container_qualified_name",
+        "adls_container_name",
         "adls_container",
     ]
 
@@ -484,6 +493,16 @@ class ADLSObject(ADLS):
         self.attributes.adls_container_qualified_name = adls_container_qualified_name
 
     @property
+    def adls_container_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.adls_container_name
+
+    @adls_container_name.setter
+    def adls_container_name(self, adls_container_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_container_name = adls_container_name
+
+    @property
     def adls_container(self) -> Optional[ADLSContainer]:
         return None if self.attributes is None else self.attributes.adls_container
 
@@ -533,6 +552,7 @@ class ADLSObject(ADLS):
         adls_container_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        adls_container_name: Optional[str] = Field(default=None, description="")
         adls_container: Optional[ADLSContainer] = Field(
             default=None, description=""
         )  # relationship
@@ -566,6 +586,7 @@ class ADLSObject(ADLS):
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
+                adls_container_name=adls_container_qualified_name.split("/")[-1],
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
@@ -573,6 +594,7 @@ class ADLSObject(ADLS):
                     adls_container_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
+                adls_account_name=adls_account_qualified_name.split("/")[-1],
             )
 
     attributes: ADLSObject.Attributes = Field(
