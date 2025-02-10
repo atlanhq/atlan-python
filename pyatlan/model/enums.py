@@ -337,6 +337,9 @@ class AtlanConnectorType(str, Enum):
     IBM_DB2 = ("ibmdb2", AtlanConnectionCategory.DATABASE)
     APP = ("app", AtlanConnectionCategory.APP)
     BIGID = ("bigid", AtlanConnectionCategory.SAAS)
+    SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
+    SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
+    RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
