@@ -5,12 +5,12 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
+    CREATE_CREDENTIALS,
+    DELETE_CREDENTIALS_BY_GUID,
     GET_ALL_CREDENTIALS,
     GET_CREDENTIAL_BY_GUID,
     TEST_CREDENTIAL,
     UPDATE_CREDENTIAL_BY_GUID,
-    CREATE_CREDENTIALS,
-    DELETE_CREDENTIALS_BY_GUID,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
@@ -37,17 +37,19 @@ class CredentialClient:
         self._client = client
 
     @validate_arguments
-    def creator(self, credential: Credential) -> CredentialResponse:
+    def creator(self, credential: Credential, test: bool = True) -> CredentialResponse:
         """
         Create a new credential.
 
         :param credential: provide full details of the credential's to be created.
+        :param test: whether to validate the credentials (`True`) or skip validation
+        (`False`) before creation, defaults to `True`.
         :returns: A CredentialResponse instance.
         :raises ValidationError: If the provided `credential` is invalid.
         """
         raw_json = self._client._call_api(
             api=CREATE_CREDENTIALS.format_path_with_params(),
-            query_params={"testCredential": "true"},
+            query_params={"testCredential": test},
             request_obj=credential,
         )
         return CredentialResponse(**raw_json)

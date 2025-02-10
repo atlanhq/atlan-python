@@ -1,3 +1,9 @@
+## 4.2.1 (February 6, 2024)
+
+### New Features
+
+- Added an optional boolean parameter `test=True` to `CredentialClient.creator()` method.
+
 ## 4.2.0 (February 4, 2024)
 
 ### New Features
