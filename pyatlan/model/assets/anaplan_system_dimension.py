@@ -25,8 +25,13 @@ class AnaplanSystemDimension(Anaplan):
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = AnaplanSystemDimension.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name
+        attributes = AnaplanSystemDimension.Attributes(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=AtlanConnectorType.get_connector_name(
+                connection_qualified_name
+            ),
         )
         return cls(attributes=attributes)
 
@@ -44,34 +49,6 @@ class AnaplanSystemDimension(Anaplan):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
-
-    class Attributes(Anaplan.Attributes):
-
-        @classmethod
-        @init_guid
-        def create(
-            cls, *, name: str, connection_qualified_name: str
-        ) -> AnaplanSystemDimension.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
-            return AnaplanSystemDimension.Attributes(
-                name=name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
-            )
-
-    attributes: AnaplanSystemDimension.Attributes = Field(
-        default_factory=lambda: AnaplanSystemDimension.Attributes(),
-        description=(
-            "Map of attributes in the instance and their values. "
-            "The specific keys of this map will vary by type, "
-            "so are described in the sub-types of this schema."
-        ),
-    )
 
 
 AnaplanSystemDimension.Attributes.update_forward_refs()
