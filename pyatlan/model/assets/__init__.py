@@ -184,7 +184,6 @@ __PYATLAN_ASSETS__ = {
     "a_p_i_object": ["APIObject"],
     "a_p_i_path": ["APIPath"],
     "a_p_i_field": ["APIField"],
-    "source_tag": ["sourceTag"],
     "data_studio_asset": ["DataStudioAsset"],
     "s3_bucket": ["S3Bucket"],
     "s3_object": ["S3Object"],

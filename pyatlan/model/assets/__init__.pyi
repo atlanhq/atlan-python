@@ -181,7 +181,6 @@ __all__ = [
     "APIObject",
     "APIPath",
     "APIField",
-    "sourceTag",
     "DataStudioAsset",
     "S3Bucket",
     "S3Object",
@@ -598,7 +597,6 @@ from .sisense_datamodel import SisenseDatamodel
 from .sisense_datamodel_table import SisenseDatamodelTable
 from .sisense_folder import SisenseFolder
 from .sisense_widget import SisenseWidget
-from .source_tag import sourceTag
 from .superset import Superset
 from .superset_chart import SupersetChart
 from .superset_dashboard import SupersetDashboard
