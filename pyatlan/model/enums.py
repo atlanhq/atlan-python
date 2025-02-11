@@ -344,6 +344,9 @@ class AtlanConnectorType(str, Enum):
     AWS_LAMBDA = ("aws-lambda", AtlanConnectionCategory.ELT)
     AWS_SAGEMAKER = ("aws-sagemaker", AtlanConnectionCategory.ELT)
     CUSTOM = ("custom", AtlanConnectionCategory.CUSTOM)
+    SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
+    SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
+    RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
