@@ -1186,6 +1186,13 @@
         <span class="s2">&quot;Check the details of the server&#39;s message to correct your request.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">UNABLE_TO_CREATE_CREDENTIAL</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-071&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Credentials cannot include a `username` or `password` when `test` is `False`.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Set `test` to `True` or remove `username` and `password`.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
