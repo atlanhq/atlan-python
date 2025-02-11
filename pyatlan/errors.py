@@ -615,6 +615,13 @@ class ErrorCode(Enum):
         "Check the details of the server's message to correct your request.",
         InvalidRequestError,
     )
+    UNABLE_TO_CREATE_CREDENTIAL = (
+        400,
+        "ATLAN-PYTHON-400-071",
+        "Credentials cannot include a `username` or `password` when `test` is `False`.",
+        "Set `test` to `True` or remove `username` and `password`.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
