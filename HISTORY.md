@@ -1,3 +1,19 @@
+## 4.2.2 (February 11, 2024)
+
+### New Features
+
+- Added support for `AnaplanSystemDimension.creator()`.
+- Added support for new connector types:
+  - `RDS`
+  - `SHARE_POINT`
+  - `SHARED_DRIVE`
+
+### QOL Improvements
+
+- Generated the latest typedef models.
+- Upgraded pre-commit `black` to `24.4.2`
+- Enhanced `Credential.creator()` validation to prevent creating fake credentials when `test=False`.
+
 ## 4.2.1 (February 6, 2024)
 
 ### New Features
