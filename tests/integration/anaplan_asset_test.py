@@ -5,6 +5,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     AnaplanApp,
+    AnaplanSystemDimension,
     AnaplanDimension,
     AnaplanLineItem,
     AnaplanList,
@@ -40,6 +41,7 @@ ANAPLAN_MODULE_NAME = f"{MODULE_NAME}-anaplan-module"
 ANAPLAN_MODULE_NAME_OVERLOAD = f"{MODULE_NAME}-anaplan-module-overload"
 ANAPLAN_LIST_NAME = f"{MODULE_NAME}-anaplan-list"
 ANAPLAN_LIST_NAME_OVERLOAD = f"{MODULE_NAME}-anaplan-list-overload"
+ANAPLAN_SYSTEM_DIMENSION_NAME = f"{MODULE_NAME}-anaplan-system-dimension"
 ANAPLAN_DIMENSION_NAME = f"{MODULE_NAME}-anaplan-dimension"
 ANAPLAN_DIMENSION_NAME_OVERLOAD = f"{MODULE_NAME}-anaplan-dimension-overload"
 ANAPLAN_LINEITEM_NAME = f"{MODULE_NAME}-anaplan-lineitem"
@@ -89,6 +91,36 @@ def test_anaplan_workspace(
     assert anaplan_workspace.name == ANAPLAN_WORKSPACE_NAME
     assert anaplan_workspace.connection_qualified_name == connection.qualified_name
     assert anaplan_workspace.connector_name == AtlanConnectorType.ANAPLAN.value
+
+
+@pytest.fixture(scope="module")
+def anaplan_system_dimension(
+    client: AtlanClient, connection: Connection
+) -> Generator[AnaplanSystemDimension, None, None]:
+    assert connection.qualified_name
+    to_create = AnaplanSystemDimension.creator(
+        name=ANAPLAN_SYSTEM_DIMENSION_NAME,
+        connection_qualified_name=connection.qualified_name,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=AnaplanSystemDimension)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=AnaplanSystemDimension)
+
+
+def test_anaplan_system_dimension(
+    client: AtlanClient,
+    connection: Connection,
+    anaplan_system_dimension: AnaplanSystemDimension,
+):
+    assert anaplan_system_dimension
+    assert anaplan_system_dimension.guid
+    assert anaplan_system_dimension.qualified_name
+    assert anaplan_system_dimension.name == ANAPLAN_SYSTEM_DIMENSION_NAME
+    assert (
+        anaplan_system_dimension.connection_qualified_name == connection.qualified_name
+    )
+    assert anaplan_system_dimension.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")

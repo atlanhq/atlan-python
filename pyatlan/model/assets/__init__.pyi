@@ -64,8 +64,8 @@ __all__ = [
     "Column",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "CosmosMongoDB",
@@ -211,6 +211,7 @@ __all__ = [
     "AnaplanModule",
     "AnaplanModel",
     "AnaplanApp",
+    "AnaplanSystemDimension",
     "AnaplanDimension",
     "AnaplanView",
     "TableauWorkbook",
@@ -332,6 +333,7 @@ from .anaplan_list import AnaplanList
 from .anaplan_model import AnaplanModel
 from .anaplan_module import AnaplanModule
 from .anaplan_page import AnaplanPage
+from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace
 from .auth_service import AuthService
