@@ -47,6 +47,12 @@ class CredentialClient:
         :returns: A CredentialResponse instance.
         :raises ValidationError: If the provided `credential` is invalid.
         """
+
+        if not test and (
+            credential.username is not None or credential.password is not None
+        ):
+            raise ErrorCode.UNABLE_TO_CREATE_CREDENTIAL.exception_with_parameters()
+
         raw_json = self._client._call_api(
             api=CREATE_CREDENTIALS.format_path_with_params(),
             query_params={"testCredential": test},

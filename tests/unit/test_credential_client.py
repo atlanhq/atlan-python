@@ -356,6 +356,33 @@ def test_creator_success(
     assert response.level is None
 
 
+@pytest.mark.parametrize(
+    "credential_data",
+    [
+        (
+            Credential(
+                name="test-name",
+                description="test-desc",
+                connector_config_name="test-ccn",
+                connector="test-conn",
+                connector_type="test-ct",
+                auth_type="test-at",
+                host="test-host",
+                port=123,
+                username="test-user",
+                password="test-password",
+                extra={"some": "value"},
+            )
+        ),
+    ],
+)
+def test_cred_creator_with_test_false_with_username_password(
+    credential_data, client: CredentialClient
+):
+    with pytest.raises(Exception, match="ATLAN-PYTHON-400-071"):
+        client.creator(credential=credential_data, test=False)
+
+
 @pytest.mark.parametrize("test_guid", [[123], set(), dict()])
 def test_cred_purge_by_guid_wrong_params_raises_validation_error(
     test_guid, client: CredentialClient
