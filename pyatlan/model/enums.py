@@ -349,7 +349,6 @@ class AtlanConnectorType(str, Enum):
     RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
 
 
-
 class AtlanCustomAttributePrimitiveType(str, Enum):
     STRING = "string"
     INTEGER = "int"
