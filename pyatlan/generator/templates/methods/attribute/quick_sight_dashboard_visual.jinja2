@@ -1,0 +1,54 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            quick_sight_id: str,
+            quick_sight_sheet_id: str,
+            quick_sight_sheet_name: str,
+            quick_sight_dashboard_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> QuickSightDashboardVisual.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "quick_sight_id",
+                    "quick_sight_sheet_name",
+                    "quick_sight_sheet_id",
+                    "quick_sight_dashboard_qualified_name",
+                ],
+                [
+                    name,
+                    quick_sight_id,
+                    quick_sight_sheet_name,
+                    quick_sight_sheet_id,
+                    quick_sight_dashboard_qualified_name,
+                ],
+            )
+            assert quick_sight_dashboard_qualified_name
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    quick_sight_dashboard_qualified_name,
+                    "quick_sight_dashboard_qualified_name",
+                    4,
+                )
+            connection_qualified_name = connection_qualified_name or connection_qn
+            return QuickSightDashboardVisual.Attributes(
+                name=name,
+                qualified_name=f"{quick_sight_dashboard_qualified_name}/{quick_sight_sheet_id}/{quick_sight_id}",
+                quick_sight_id=quick_sight_id,
+                quick_sight_sheet_id=quick_sight_sheet_id,
+                quick_sight_sheet_name=quick_sight_sheet_name,
+                quick_sight_dashboard_qualified_name=quick_sight_dashboard_qualified_name,
+                quick_sight_dashboard=QuickSightDashboard.ref_by_qualified_name(
+                    quick_sight_dashboard_qualified_name
+                ),
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_name,
+            )
