@@ -141,30 +141,26 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+        """Convert raw asset data into the appropriate asset type."""
         if isinstance(data, Asset):
             return data
 
-        # Handle the case where asset data is a list
-        if isinstance(data, list):
+        if isinstance(data, list):  # Recursively process lists
             return [cls._convert_to_real_type_(item) for item in data]
 
         data_type = (
             data.get("type_name") if "type_name" in data else data.get("typeName")
         )
-
-        if data_type is None:
+        if not data_type:
             if issubclass(cls, Asset):
                 return cls(**data)
-            raise ValueError("Missing 'type' in Asset")
+            raise ValueError("Missing 'type_name' in asset data")
 
-        sub = cls._subtypes_.get(data_type)
-        if sub is None:
-            sub = getattr(sys.modules["pyatlan.model.assets"], data_type)
+        sub_type = cls._subtypes_.get(data_type) or getattr(
+            sys.modules.get("pyatlan.model.assets", {}), data_type, None
+        )
 
-        if sub is None:
-            raise TypeError(f"Unsupport sub-type: {data_type}")
-
-        return sub(**data)
+        return sub_type(**data) if sub_type else None  # Gracefully handle missing types
 
     if TYPE_CHECKING:
         from pyatlan.model.lineage import FluentLineage
