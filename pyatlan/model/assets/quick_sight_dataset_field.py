@@ -4,22 +4,65 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import QuickSightDatasetFieldType
+from pyatlan.model.enums import AtlanConnectorType, QuickSightDatasetFieldType
 from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .quick_sight import QuickSight
 
 
 class QuickSightDatasetField(QuickSight):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_dataset_qualified_name: str,
+    ) -> QuickSightDatasetField: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_dataset_qualified_name: str,
+        quick_sight_dataset_field_type: QuickSightDatasetFieldType,
+        connection_qualified_name: str,
+    ) -> QuickSightDatasetField: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_dataset_qualified_name: str,
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> QuickSightDatasetField:
+        validate_required_fields(
+            ["name", "quick_sight_dataset_qualified_name"],
+            [name, quick_sight_dataset_qualified_name],
+        )
+        attributes = QuickSightDatasetField.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
+            quick_sight_dataset_field_type=quick_sight_dataset_field_type,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="QuickSightDatasetField", allow_mutation=False)
 
@@ -114,6 +157,43 @@ class QuickSightDatasetField(QuickSight):
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            quick_sight_dataset_qualified_name: str,
+            quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> QuickSightDatasetField.Attributes:
+            validate_required_fields(
+                ["name", "quick_sight_dataset_qualified_name"],
+                [name, quick_sight_dataset_qualified_name],
+            )
+            assert quick_sight_dataset_qualified_name
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    quick_sight_dataset_qualified_name,
+                    "quick_sight_dataset_qualified_name",
+                    4,
+                )
+            connection_qualified_name = connection_qualified_name or connection_qn
+            fields = quick_sight_dataset_qualified_name.split("/")
+            quick_sight_id_database = fields[3]
+            return QuickSightDatasetField.Attributes(
+                name=name,
+                quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
+                qualified_name=f"{quick_sight_dataset_qualified_name}/{quick_sight_id_database}-{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_name,
+                quick_sight_dataset_field_type=quick_sight_dataset_field_type,
+            )
 
     attributes: QuickSightDatasetField.Attributes = Field(
         default_factory=lambda: QuickSightDatasetField.Attributes(),

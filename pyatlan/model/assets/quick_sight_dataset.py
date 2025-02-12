@@ -4,18 +4,62 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import QuickSightDatasetImportMode
+from pyatlan.model.enums import AtlanConnectorType, QuickSightDatasetImportMode
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .quick_sight import QuickSight
 
 
 class QuickSightDataset(QuickSight):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+    ) -> QuickSightDataset: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_dataset_import_mode: QuickSightDatasetImportMode,
+    ) -> QuickSightDataset: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = None,
+    ) -> QuickSightDataset:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "quick_sight_id"],
+            [name, connection_qualified_name, quick_sight_id],
+        )
+        attributes = QuickSightDataset.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            quick_sight_id=quick_sight_id,
+            quick_sight_dataset_import_mode=quick_sight_dataset_import_mode,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="QuickSightDataset", allow_mutation=False)
 
@@ -144,6 +188,33 @@ class QuickSightDataset(QuickSight):
         quick_sight_dataset_fields: Optional[List[QuickSightDatasetField]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            quick_sight_id: str,
+            quick_sight_dataset_import_mode: Optional[
+                QuickSightDatasetImportMode
+            ] = None,
+        ) -> QuickSightDataset.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "quick_sight_id"],
+                [name, connection_qualified_name, quick_sight_id],
+            )
+            return QuickSightDataset.Attributes(
+                name=name,
+                quick_sight_id=quick_sight_id,
+                qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+                quick_sight_dataset_import_mode=quick_sight_dataset_import_mode,
+            )
 
     attributes: QuickSightDataset.Attributes = Field(
         default_factory=lambda: QuickSightDataset.Attributes(),
