@@ -37,6 +37,7 @@ class QuickSightDataset(QuickSight):
         connection_qualified_name: str,
         quick_sight_id: str,
         quick_sight_dataset_import_mode: QuickSightDatasetImportMode,
+        quick_sight_dataset_folders: List[str],
     ) -> QuickSightDataset: ...
 
     @classmethod
@@ -48,6 +49,7 @@ class QuickSightDataset(QuickSight):
         connection_qualified_name: str,
         quick_sight_id: str,
         quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = None,
+        quick_sight_dataset_folders: Optional[List[str]] = None,
     ) -> QuickSightDataset:
         validate_required_fields(
             ["name", "connection_qualified_name", "quick_sight_id"],
@@ -58,6 +60,7 @@ class QuickSightDataset(QuickSight):
             connection_qualified_name=connection_qualified_name,
             quick_sight_id=quick_sight_id,
             quick_sight_dataset_import_mode=quick_sight_dataset_import_mode,
+            quick_sight_dataset_folders=quick_sight_dataset_folders,
         )
         return cls(attributes=attributes)
 
@@ -200,11 +203,19 @@ class QuickSightDataset(QuickSight):
             quick_sight_dataset_import_mode: Optional[
                 QuickSightDatasetImportMode
             ] = None,
+            quick_sight_dataset_folders: Optional[List[str]] = None,
         ) -> QuickSightDataset.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "quick_sight_id"],
                 [name, connection_qualified_name, quick_sight_id],
             )
+            folders = None
+            if quick_sight_dataset_folders:
+                folders = [
+                    QuickSightFolder.ref_by_qualified_name(quick_sight_folder_qn)
+                    for quick_sight_folder_qn in quick_sight_dataset_folders
+                ]
+
             return QuickSightDataset.Attributes(
                 name=name,
                 quick_sight_id=quick_sight_id,
@@ -214,6 +225,7 @@ class QuickSightDataset(QuickSight):
                     connection_qualified_name
                 ),
                 quick_sight_dataset_import_mode=quick_sight_dataset_import_mode,
+                quick_sight_dataset_folders=folders,
             )
 
     attributes: QuickSightDataset.Attributes = Field(

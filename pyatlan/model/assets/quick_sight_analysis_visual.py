@@ -26,6 +26,7 @@ class QuickSightAnalysisVisual(QuickSight):
         name: str,
         quick_sight_id: str,
         quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
         quick_sight_analysis_qualified_name: str,
     ) -> QuickSightAnalysisVisual: ...
 
@@ -37,6 +38,7 @@ class QuickSightAnalysisVisual(QuickSight):
         name: str,
         quick_sight_id: str,
         quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
         quick_sight_analysis_qualified_name: str,
         connection_qualified_name: str,
     ) -> QuickSightAnalysisVisual: ...
@@ -49,6 +51,7 @@ class QuickSightAnalysisVisual(QuickSight):
         name: str,
         quick_sight_id: str,
         quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
         quick_sight_analysis_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> QuickSightAnalysisVisual:
@@ -56,12 +59,14 @@ class QuickSightAnalysisVisual(QuickSight):
             [
                 "name",
                 "quick_sight_id",
+                "quick_sight_sheet_name",
                 "quick_sight_sheet_id",
                 "quick_sight_analysis_qualified_name",
             ],
             [
                 name,
                 quick_sight_id,
+                quick_sight_sheet_name,
                 quick_sight_sheet_id,
                 quick_sight_analysis_qualified_name,
             ],
@@ -70,6 +75,7 @@ class QuickSightAnalysisVisual(QuickSight):
             name=name,
             quick_sight_id=quick_sight_id,
             quick_sight_sheet_id=quick_sight_sheet_id,
+            quick_sight_sheet_name=quick_sight_sheet_name,
             quick_sight_analysis_qualified_name=quick_sight_analysis_qualified_name,
             connection_qualified_name=connection_qualified_name,
         )
@@ -151,6 +157,7 @@ class QuickSightAnalysisVisual(QuickSight):
             name: str,
             quick_sight_id: str,
             quick_sight_sheet_id: str,
+            quick_sight_sheet_name: str,
             quick_sight_analysis_qualified_name: str,
             connection_qualified_name: Optional[str] = None,
         ) -> QuickSightAnalysisVisual.Attributes:
@@ -159,12 +166,14 @@ class QuickSightAnalysisVisual(QuickSight):
                     "name",
                     "quick_sight_id",
                     "quick_sight_sheet_id",
+                    "quick_sight_sheet_name",
                     "quick_sight_analysis_qualified_name",
                 ],
                 [
                     name,
                     quick_sight_id,
                     quick_sight_sheet_id,
+                    quick_sight_sheet_name,
                     quick_sight_analysis_qualified_name,
                 ],
             )
@@ -185,6 +194,7 @@ class QuickSightAnalysisVisual(QuickSight):
                 qualified_name=f"{quick_sight_analysis_qualified_name}/{quick_sight_sheet_id}/{quick_sight_id}",
                 quick_sight_id=quick_sight_id,
                 quick_sight_sheet_id=quick_sight_sheet_id,
+                quick_sight_sheet_name=quick_sight_sheet_name,
                 quick_sight_analysis_qualified_name=quick_sight_analysis_qualified_name,
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_name,

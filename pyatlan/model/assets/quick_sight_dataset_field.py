@@ -29,6 +29,7 @@ class QuickSightDatasetField(QuickSight):
         *,
         name: str,
         quick_sight_dataset_qualified_name: str,
+        quick_sight_id: str,
     ) -> QuickSightDatasetField: ...
 
     @overload
@@ -38,6 +39,7 @@ class QuickSightDatasetField(QuickSight):
         *,
         name: str,
         quick_sight_dataset_qualified_name: str,
+        quick_sight_id: str,
         quick_sight_dataset_field_type: QuickSightDatasetFieldType,
         connection_qualified_name: str,
     ) -> QuickSightDatasetField: ...
@@ -48,16 +50,18 @@ class QuickSightDatasetField(QuickSight):
         cls,
         *,
         name: str,
+        quick_sight_id: str,
         quick_sight_dataset_qualified_name: str,
         quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> QuickSightDatasetField:
         validate_required_fields(
-            ["name", "quick_sight_dataset_qualified_name"],
-            [name, quick_sight_dataset_qualified_name],
+            ["name", "quick_sight_id", "quick_sight_dataset_qualified_name"],
+            [name, quick_sight_id, quick_sight_dataset_qualified_name],
         )
         attributes = QuickSightDatasetField.Attributes.creator(
             name=name,
+            quick_sight_id=quick_sight_id,
             connection_qualified_name=connection_qualified_name,
             quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
             quick_sight_dataset_field_type=quick_sight_dataset_field_type,
@@ -165,12 +169,13 @@ class QuickSightDatasetField(QuickSight):
             *,
             name: str,
             quick_sight_dataset_qualified_name: str,
+            quick_sight_id: str,
             quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> QuickSightDatasetField.Attributes:
             validate_required_fields(
-                ["name", "quick_sight_dataset_qualified_name"],
-                [name, quick_sight_dataset_qualified_name],
+                ["name", "quick_sight_id", "quick_sight_dataset_qualified_name"],
+                [name, quick_sight_id, quick_sight_dataset_qualified_name],
             )
             assert quick_sight_dataset_qualified_name
             if connection_qualified_name:
@@ -184,12 +189,14 @@ class QuickSightDatasetField(QuickSight):
                     4,
                 )
             connection_qualified_name = connection_qualified_name or connection_qn
-            fields = quick_sight_dataset_qualified_name.split("/")
-            quick_sight_id_database = fields[3]
             return QuickSightDatasetField.Attributes(
                 name=name,
                 quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
-                qualified_name=f"{quick_sight_dataset_qualified_name}/{quick_sight_id_database}-{name}",
+                quick_sight_id=quick_sight_id,
+                quick_sight_dataset=QuickSightDataset.ref_by_qualified_name(
+                    quick_sight_dataset_qualified_name
+                ),
+                qualified_name=f"{quick_sight_dataset_qualified_name}/{quick_sight_id}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_name,
                 quick_sight_dataset_field_type=quick_sight_dataset_field_type,
