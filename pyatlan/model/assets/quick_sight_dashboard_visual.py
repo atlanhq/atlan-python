@@ -4,17 +4,76 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordTextField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .quick_sight import QuickSight
 
 
 class QuickSightDashboardVisual(QuickSight):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_dashboard_qualified_name: str,
+    ) -> QuickSightDashboardVisual: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_dashboard_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> QuickSightDashboardVisual: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_dashboard_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> QuickSightDashboardVisual:
+        validate_required_fields(
+            [
+                "name",
+                "quick_sight_id",
+                "quick_sight_sheet_id",
+                "quick_sight_dashboard_qualified_name",
+            ],
+            [
+                name,
+                quick_sight_id,
+                quick_sight_sheet_id,
+                quick_sight_dashboard_qualified_name,
+            ],
+        )
+        attributes = QuickSightDashboardVisual.Attributes.creator(
+            name=name,
+            quick_sight_id=quick_sight_id,
+            quick_sight_sheet_id=quick_sight_sheet_id,
+            quick_sight_dashboard_qualified_name=quick_sight_dashboard_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="QuickSightDashboardVisual", allow_mutation=False)
 
@@ -89,6 +148,53 @@ class QuickSightDashboardVisual(QuickSight):
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            quick_sight_id: str,
+            quick_sight_sheet_id: str,
+            quick_sight_dashboard_qualified_name: str,
+            connection_qualified_name: Optional[str] = None,
+        ) -> QuickSightDashboardVisual.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "quick_sight_id",
+                    "quick_sight_sheet_id",
+                    "quick_sight_dashboard_qualified_name",
+                ],
+                [
+                    name,
+                    quick_sight_id,
+                    quick_sight_sheet_id,
+                    quick_sight_dashboard_qualified_name,
+                ],
+            )
+            assert quick_sight_dashboard_qualified_name
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    quick_sight_dashboard_qualified_name,
+                    "quick_sight_dashboard_qualified_name",
+                    4,
+                )
+            connection_qualified_name = connection_qualified_name or connection_qn
+            return QuickSightDashboardVisual.Attributes(
+                name=name,
+                qualified_name=f"{quick_sight_dashboard_qualified_name}/{quick_sight_sheet_id}/{quick_sight_id}",
+                quick_sight_id=quick_sight_id,
+                quick_sight_sheet_id=quick_sight_sheet_id,
+                quick_sight_dashboard_qualified_name=quick_sight_dashboard_qualified_name,
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_name,
+            )
 
     attributes: QuickSightDashboardVisual.Attributes = Field(
         default_factory=lambda: QuickSightDashboardVisual.Attributes(),

@@ -9,13 +9,35 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import NumericField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .quick_sight import QuickSight
 
 
 class QuickSightDashboard(QuickSight):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+    ) -> QuickSightDashboard:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "quick_sight_id"],
+            [name, connection_qualified_name, quick_sight_id],
+        )
+        attributes = QuickSightDashboard.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            quick_sight_id=quick_sight_id,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="QuickSightDashboard", allow_mutation=False)
 
@@ -149,6 +171,29 @@ class QuickSightDashboard(QuickSight):
         quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]] = (
             Field(default=None, description="")
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            quick_sight_id: str,
+        ) -> QuickSightDashboard.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "quick_sight_id"],
+                [name, connection_qualified_name, quick_sight_id],
+            )
+            return QuickSightDashboard.Attributes(
+                name=name,
+                quick_sight_id=quick_sight_id,
+                qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: QuickSightDashboard.Attributes = Field(
         default_factory=lambda: QuickSightDashboard.Attributes(),
