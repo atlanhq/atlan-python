@@ -5,13 +5,13 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     AnaplanApp,
-    AnaplanSystemDimension,
     AnaplanDimension,
     AnaplanLineItem,
     AnaplanList,
     AnaplanModel,
     AnaplanModule,
     AnaplanPage,
+    AnaplanSystemDimension,
     AnaplanView,
     AnaplanWorkspace,
     Connection,
