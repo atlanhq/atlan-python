@@ -484,16 +484,6 @@ class SearchLogResults(Iterable):
                 raw_json, 200, str(err)
             ) from err
 
-    def _filter_processed_entities(self):
-        """
-        Removes entities that have already been processed to avoid duplicates.
-        """
-        self._log_entries = [
-            entity
-            for entity in self._log_entries
-            if self._get_sl_unique_key(entity) not in self._processed_log_entries
-        ]
-
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
         Adjusts the query to include timestamp filters for search log bulk extraction.
@@ -553,10 +543,30 @@ class SearchLogResults(Iterable):
             and filter_.gte is not None
         )
 
+    def _filter_processed_entities(self):
+        """
+        Remove log entries that have already been processed to avoid duplicates.
+        """
+        self._log_entries = [
+            entity
+            for entity in self._log_entries
+            if entity is not None
+            and self._get_sl_unique_key(entity) not in self._processed_log_entries
+        ]
+
     def _update_first_last_record_creation_times(self):
-        if self._log_entries and len(self._log_entries) > 1:
-            self._first_record_creation_time = self._log_entries[0].created_at
-            self._last_record_creation_time = self._log_entries[-1].created_at
+        self._first_record_creation_time = self._last_record_creation_time = -2
+
+        if not isinstance(self._log_entries, list) or len(self._log_entries) <= 1:
+            return
+
+        first_entry, last_entry = self._log_entries[0], self._log_entries[-1]
+
+        if first_entry:
+            self._first_record_creation_time = first_entry.created_at
+
+        if last_entry:
+            self._last_record_creation_time = last_entry.created_at
 
     @staticmethod
     def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
