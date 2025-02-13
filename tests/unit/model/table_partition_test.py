@@ -2,7 +2,6 @@ import pytest
 
 from pyatlan.model.assets import TablePartition
 from tests.unit.model.constants import (
-    TABLE_PARTITION_NAME,
     CONNECTION_QUALIFIED_NAME,
     CONNECTOR_TYPE,
     DATABASE_NAME,
@@ -10,6 +9,7 @@ from tests.unit.model.constants import (
     SCHEMA_NAME,
     SCHEMA_QUALIFIED_NAME,
     TABLE_NAME,
+    TABLE_PARTITION_NAME,
     TABLE_QUALIFIED_NAME,
 )
 

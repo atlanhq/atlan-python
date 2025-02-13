@@ -2,10 +2,10 @@ import pytest
 
 from pyatlan.model.assets import CustomEntity
 from tests.unit.model.constants import (
-    CUSTOM_ENTITY_NAME,
-    CUSTOM_ENTITY_QUALIFIED_NAME,
     CUSTOM_CONNECTION_QUALIFIED_NAME,
     CUSTOM_CONNECTOR_TYPE,
+    CUSTOM_ENTITY_NAME,
+    CUSTOM_ENTITY_QUALIFIED_NAME,
 )
 
 
