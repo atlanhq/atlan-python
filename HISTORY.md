@@ -1,3 +1,9 @@
+## 4.2.4 (February 13, 2024)
+
+### Bug Fixes
+
+- Added safeguards for search pagination methods.
+
 ## 4.2.3 (February 13, 2024)
 
 ### QOL Improvements
