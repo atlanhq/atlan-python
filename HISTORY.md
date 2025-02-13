@@ -1,3 +1,10 @@
+## 4.2.3 (February 13, 2024)
+
+### QOL Improvements
+
+- Refactored the `Asset._convert_to_real_type_()` method for improved clarity and robustness.
+  In certain cases, asset types may be undefined or invalid—likely due to an unhandled backend edge case. To handle this gracefully, the method now ignores deserialization of `Asset` API responses in such scenarios instead of raising `AttributeError` or `TypeError` exceptions.
+
 ## 4.2.2 (February 11, 2024)
 
 ### New Features
