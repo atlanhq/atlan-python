@@ -1932,16 +1932,24 @@ class SearchResults(ABC, Iterable):
         self._assets = parse_obj_as(List[Asset], entities)
 
     def _update_first_last_record_creation_times(self):
-        self._first_record_creation_time = -2
-        if self._assets and len(self._assets) > 1:
-            self._first_record_creation_time = self._assets[0].create_time
-            self._last_record_creation_time = self._assets[-1].create_time
-        else:
-            self._last_record_creation_time = -2
+        self._first_record_creation_time = self._last_record_creation_time = -2
+
+        if not isinstance(self._assets, list) or len(self._assets) <= 1:
+            return
+
+        first_asset, last_asset = self._assets[0], self._assets[-1]
+
+        if first_asset:
+            self._first_record_creation_time = first_asset.create_time
+
+        if last_asset:
+            self._last_record_creation_time = last_asset.create_time
 
     def _filter_processed_assets(self):
         self._assets = [
-            asset for asset in self._assets if asset.guid not in self._processed_guids
+            asset
+            for asset in self._assets
+            if asset is not None and asset.guid not in self._processed_guids
         ]
 
     def __iter__(self) -> Generator[Asset, None, None]:
@@ -2057,7 +2065,9 @@ class IndexSearchResults(SearchResults, Iterable):
             # in a previous page of results.
             # If it has,then exclude it from the current results;
             # otherwise, we may encounter duplicate asset records.
-            self._processed_guids.update(asset.guid for asset in self._assets)
+            self._processed_guids.update(
+                asset.guid for asset in self._assets if asset is not None
+            )
         return self._get_next_page() if self._assets else False
 
     def _get_next_page(self):

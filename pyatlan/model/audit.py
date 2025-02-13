@@ -342,16 +342,6 @@ class AuditSearchResults(Iterable):
                 raw_json, 200, str(err)
             ) from err
 
-    def _filter_processed_entities(self):
-        """
-        Removes entities that have already been processed to avoid duplicates.
-        """
-        self._entity_audits = [
-            entity
-            for entity in self._entity_audits
-            if entity.event_key not in self._processed_entity_keys
-        ]
-
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
         Adjusts the query to include timestamp filters for audit bulk extraction.
@@ -412,9 +402,29 @@ class AuditSearchResults(Iterable):
         )
 
     def _update_first_last_record_creation_times(self):
-        if self._entity_audits and len(self._entity_audits) > 1:
-            self._first_record_creation_time = self._entity_audits[0].created
-            self._last_record_creation_time = self._entity_audits[-1].created
+        self._first_record_creation_time = self._last_record_creation_time = -2
+
+        if not isinstance(self._entity_audits, list) or len(self._entity_audits) <= 1:
+            return
+
+        first_audit, last_audit = self._entity_audits[0], self._entity_audits[-1]
+
+        if first_audit:
+            self._first_record_creation_time = first_audit.created
+
+        if last_audit:
+            self._last_record_creation_time = last_audit.created
+
+    def _filter_processed_entities(self):
+        """
+        Remove entities that have already been processed to avoid duplicates.
+        """
+        self._entity_audits = [
+            entity
+            for entity in self._entity_audits
+            if entity is not None
+            and entity.event_key not in self._processed_entity_keys
+        ]
 
     @staticmethod
     def presorted_by_timestamp(sorts: Optional[List[SortItem]]) -> bool:
