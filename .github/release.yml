@@ -5,23 +5,23 @@ changelog:
     authors:
       - octocat
   categories:
-    - title: 🎉 New features
+    - title: 🎉 New Features
       labels:
         - feature
         - enhancement
-    - title: ⛑️ Breaking changes
+    - title: ⛑️ Breaking Changes
       labels:
         - breaking
     - title: 🧪 Experimental
       labels:
         - experimental
-    - title: 🐞 Bug fixes
+    - title: 🐞 Bug Fixes
       labels:
         - bug
         - bugfix
     - title: 📦 Packages
       labels:
         - packages
-    - title: 🥗 QOL improvements
+    - title: 🥗 QOL Improvements
       labels:
         - "*"
