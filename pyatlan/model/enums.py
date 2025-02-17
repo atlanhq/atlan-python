@@ -347,7 +347,8 @@ class AtlanConnectorType(str, Enum):
     SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
     SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
     RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
-
+    CRATEDB = ('cratedb', AtlanConnectionCategory.DATABASE)
+    KX = ('kx', AtlanConnectionCategory.DATABASE)
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
     STRING = "string"
@@ -1890,6 +1891,8 @@ class AtlanIcon(str, Enum):
     YARN = "PhYarn"
     YIN_YANG = "PhYinYang"
     YOUTUBE_LOGO = "PhYoutubeLogo"
+    CRATE_DB = "CrateDb"
+    KX = "Kx"
 
 
 class AtlanTagColor(str, Enum):
