@@ -2021,6 +2021,7 @@ def test_atlan_call_api_server_error_messages(
                 "location": "Test.Class.TestException"
             }
         ],
+        "errorCause": "something went wrong",
         "errorId": "95d80a45999cabc"
     }
     """
@@ -2049,22 +2050,27 @@ def test_atlan_call_api_server_error_messages_with_causes(
         test_error = loads(test_error_msg)
         error_code = test_error.get("errorCode")
         error_message = test_error.get("errorMessage")
-        error_cause = test_error.get("causes")[0]
+        error_cause = test_error.get("errorCause")
+        error_id = test_error.get("errorId")
+        error_causes = test_error.get("causes")[0]
         glossary = AtlasGlossary.creator(name="test-glossary")
-        error_cause = (
+        error_causes = (
             "ErrorType: testException, "
             "Message: test error message, "
-            "Location: Test.Class.TestException (errorId: 95d80a45999cabc) "
+            "Location: Test.Class.TestException"
         )
-        assert error and error_code and error_message and error_cause
-        error_info = error.error_message.format(error_code, error_message, error_cause)
+        assert error and error_code and error_message and error_cause and error_causes
+        error_info = error.exception_with_parameters(
+            error_code,
+            error_message,
+            error_causes,
+            error_cause=error_cause,
+            backend_error_id=error_id,
+        )
 
         with pytest.raises(
             AtlanError,
-            match=escape(
-                f"ATLAN-PYTHON-{code}-000 {error_info}"
-                f"Suggestion: {error.user_action}"
-            ),
+            match=escape(str(error_info)),
         ):
             client.asset.save(glossary)
 

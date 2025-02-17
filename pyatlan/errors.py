@@ -23,6 +23,9 @@ class ErrorInfo(Protocol):
     # Unique identifier for the error
     # (provided by the back-end)
     backend_error_id: str
+    # A human-readable explanation
+    # of what caused the error
+    error_cause: str
 
 
 class AtlanError(Exception):
@@ -34,11 +37,13 @@ class AtlanError(Exception):
         super().__init__(message)
         self.error_code = error_code
         self.error_code.backend_error_id = kwargs.get("backend_error_id", "")
+        self.error_code.error_cause = kwargs.get("error_cause", "")
 
     def __str__(self):
         return (
             f"{self.error_code.error_id or ''}"
             f"{' ' if self.error_code.error_id else ''}{super().__str__()}"
+            f"{' errorCause: ' + self.error_code.error_cause if self.error_code.error_cause else ''}"
             f"{' (errorId: ' + self.error_code.backend_error_id + ')' if self.error_code.backend_error_id else ''}"
             f" Suggestion: {self.error_code.user_action}"
         )
