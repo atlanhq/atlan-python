@@ -1891,7 +1891,7 @@ class AtlanIcon(str, Enum):
     YARN = "PhYarn"
     YIN_YANG = "PhYinYang"
     YOUTUBE_LOGO = "PhYoutubeLogo"
-    CRATE_DB = "CrateDb"
+    CRATEDB = "CrateDb"
     KX = "Kx"
 
 
