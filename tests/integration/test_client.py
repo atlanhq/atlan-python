@@ -347,17 +347,8 @@ def test_replace_a_term(
         guid=database.guid, asset_type=Database, ignore_relationships=False
     )
     assert database.assigned_terms
-    assert len(database.assigned_terms) == 2
-    deleted_terms = [
-        t for t in database.assigned_terms if t.relationship_status == "DELETED"
-    ]
-    assert len(deleted_terms) == 1
-    assert deleted_terms[0].guid == term1.guid
-    active_terms = [
-        t for t in database.assigned_terms if t.relationship_status != "DELETED"
-    ]
-    assert len(active_terms) == 1
-    assert active_terms[0].guid == term2.guid
+    assert len(database.assigned_terms) == 1
+    assert database.assigned_terms[0].guid == term2.guid
 
 
 def test_replace_all_term(
@@ -383,13 +374,8 @@ def test_replace_all_term(
     database = client.asset.get_by_guid(
         guid=database.guid, asset_type=Database, ignore_relationships=False
     )
-    assert database.assigned_terms
-    assert len(database.assigned_terms) == 1
-    deleted_terms = [
-        t for t in database.assigned_terms if t.relationship_status == "DELETED"
-    ]
-    assert len(deleted_terms) == 1
-    assert deleted_terms[0].guid == term1.guid
+    assert database.assigned_terms == []
+    assert len(database.assigned_terms) == 0
 
 
 def test_remove_term(
@@ -422,16 +408,8 @@ def test_remove_term(
         guid=database.guid, asset_type=Database, ignore_relationships=False
     )
     assert database.assigned_terms
-    assert len(database.assigned_terms) == 2
-    deleted_terms = [
-        t for t in database.assigned_terms if t.relationship_status == "DELETED"
-    ]
-    assert len(deleted_terms) == 1
-    assert deleted_terms[0].guid == term1.guid
-    active_terms = [
-        t for t in database.assigned_terms if t.relationship_status != "DELETED"
-    ]
-    assert active_terms[0].guid == term2.guid
+    assert len(database.assigned_terms) == 1
+    assert database.assigned_terms[0].guid == term2.guid
 
 
 def test_find_connections_by_name(client: AtlanClient):
