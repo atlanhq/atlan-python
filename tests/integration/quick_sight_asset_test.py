@@ -43,7 +43,7 @@ QUICKSIGHT_ANALYSIS_VISUAL_NAME = f"{MODULE_NAME}-QUICKSIGHT-ANALYSIS-VISUAL"
 QUICKSIGHT_ANALYSIS_VISUAL_ID = f"{MODULE_NAME}-ANALYSIS-VISUAL-ID"
 QUICKSIGHT_SHEET_NAME = f"{MODULE_NAME}-QUICKSIGHT-SHEET-NAME"
 QUICKSIGHT_SHEET_ID = f"{MODULE_NAME}-SHEET-ID"
-
+QUICK_SIGHT_DESCRIPTION = "Test-description"
 
 response = block(AtlanClient(), AssetMutationResponse())
 
@@ -191,7 +191,9 @@ def quick_sight_dashboard_visual(
     delete_asset(client, guid=result.guid, asset_type=QuickSightDashboardVisual)
 
 
-def test_sight_folder(connection: Connection, quick_sight_folder: QuickSightFolder):
+def test_sight_folder(
+    client: AtlanClient, connection: Connection, quick_sight_folder: QuickSightFolder
+):
     assert quick_sight_folder
     assert quick_sight_folder.guid
     assert quick_sight_folder.qualified_name
@@ -201,8 +203,25 @@ def test_sight_folder(connection: Connection, quick_sight_folder: QuickSightFold
     assert quick_sight_folder.connector_name == AtlanConnectorType.QUICKSIGHT.value
     assert quick_sight_folder.quick_sight_folder_type == QuickSightFolderType.SHARED
 
+    to_update = quick_sight_folder.updater(
+        name=quick_sight_folder.name, qualified_name=quick_sight_folder.qualified_name
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
 
-def test_sight_dataset(connection: Connection, quick_sight_dataset: QuickSightDataset):
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_folder.qualified_name, asset_type=QuickSightFolder
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_FOLDER_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_folder.qualified_name
+
+
+def test_sight_dataset(
+    client: AtlanClient, connection: Connection, quick_sight_dataset: QuickSightDataset
+):
     assert quick_sight_dataset
     assert quick_sight_dataset.guid
     assert quick_sight_dataset.qualified_name
@@ -215,9 +234,26 @@ def test_sight_dataset(connection: Connection, quick_sight_dataset: QuickSightDa
         == QuickSightDatasetImportMode.SPICE
     )
 
+    to_update = quick_sight_dataset.updater(
+        name=quick_sight_dataset.name, qualified_name=quick_sight_dataset.qualified_name
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_dataset.qualified_name, asset_type=QuickSightDataset
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_DATASET_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_dataset.qualified_name
+
 
 def test_sight_dashboard(
-    connection: Connection, quick_sight_dashboard: QuickSightDashboard
+    client: AtlanClient,
+    connection: Connection,
+    quick_sight_dashboard: QuickSightDashboard,
 ):
     assert quick_sight_dashboard
     assert quick_sight_dashboard.guid
@@ -227,9 +263,28 @@ def test_sight_dashboard(
     assert quick_sight_dashboard.connection_qualified_name == connection.qualified_name
     assert quick_sight_dashboard.connector_name == AtlanConnectorType.QUICKSIGHT.value
 
+    to_update = quick_sight_dashboard.updater(
+        name=quick_sight_dashboard.name,
+        qualified_name=quick_sight_dashboard.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_dashboard.qualified_name,
+        asset_type=QuickSightDashboard,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_DASHBOARD_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_dashboard.qualified_name
+
 
 def test_sight_analysis(
-    connection: Connection, quick_sight_analysis: QuickSightAnalysis
+    client: AtlanClient,
+    connection: Connection,
+    quick_sight_analysis: QuickSightAnalysis,
 ):
     assert quick_sight_analysis
     assert quick_sight_analysis.guid
@@ -239,8 +294,26 @@ def test_sight_analysis(
     assert quick_sight_analysis.connection_qualified_name == connection.qualified_name
     assert quick_sight_analysis.connector_name == AtlanConnectorType.QUICKSIGHT.value
 
+    to_update = quick_sight_analysis.updater(
+        name=quick_sight_analysis.name,
+        qualified_name=quick_sight_analysis.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_analysis.qualified_name,
+        asset_type=QuickSightAnalysis,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_ANALYSIS_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_analysis.qualified_name
+
 
 def test_sight_dataset_field(
+    client: AtlanClient,
     connection: Connection,
     quick_sight_dataset_field: QuickSightDatasetField,
     quick_sight_dataset: QuickSightDataset,
@@ -265,8 +338,26 @@ def test_sight_dataset_field(
         == QuickSightDatasetFieldType.STRING
     )
 
+    to_update = quick_sight_dataset_field.updater(
+        name=quick_sight_dataset_field.name,
+        qualified_name=quick_sight_dataset_field.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_dataset_field.qualified_name,
+        asset_type=QuickSightDatasetField,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_DATASET_FIELD_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_dataset_field.qualified_name
+
 
 def test_sight_analysis_visual(
+    client: AtlanClient,
     connection: Connection,
     quick_sight_analysis_visual: QuickSightAnalysisVisual,
     quick_sight_analysis: QuickSightAnalysis,
@@ -291,8 +382,26 @@ def test_sight_analysis_visual(
     assert quick_sight_analysis_visual.quick_sight_sheet_id == QUICKSIGHT_SHEET_ID
     assert quick_sight_analysis_visual.quick_sight_sheet_name == QUICKSIGHT_SHEET_NAME
 
+    to_update = quick_sight_analysis_visual.updater(
+        name=quick_sight_analysis_visual.name,
+        qualified_name=quick_sight_analysis_visual.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_analysis_visual.qualified_name,
+        asset_type=QuickSightAnalysisVisual,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_ANALYSIS_VISUAL_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_analysis_visual.qualified_name
+
 
 def test_sight_dashboard_visual(
+    client: AtlanClient,
     connection: Connection,
     quick_sight_dashboard_visual: QuickSightDashboardVisual,
     quick_sight_dashboard: QuickSightDashboard,
@@ -316,3 +425,20 @@ def test_sight_dashboard_visual(
     )
     assert quick_sight_dashboard_visual.quick_sight_sheet_id == QUICKSIGHT_SHEET_ID
     assert quick_sight_dashboard_visual.quick_sight_sheet_name == QUICKSIGHT_SHEET_NAME
+
+    to_update = quick_sight_dashboard_visual.updater(
+        name=quick_sight_dashboard_visual.name,
+        qualified_name=quick_sight_dashboard_visual.qualified_name,
+    )
+    to_update.description = QUICK_SIGHT_DESCRIPTION
+    response = client.asset.save(to_update)
+    assert response and response.mutated_entities
+
+    asset = client.asset.get_by_qualified_name(
+        qualified_name=quick_sight_dashboard_visual.qualified_name,
+        asset_type=QuickSightDashboardVisual,
+    )
+    assert asset
+    assert asset.name == QUICKSIGHT_DASHBOARD_VISUAL_NAME
+    assert asset.description == QUICK_SIGHT_DESCRIPTION
+    assert asset.qualified_name == quick_sight_dashboard_visual.qualified_name
