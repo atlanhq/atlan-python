@@ -38,7 +38,7 @@ def test_create_with_missing_parameters_raise_value_error(
     name: str, connection_qualified_name: str, quick_sight_id: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        QuickSightAnalysis.create(
+        QuickSightAnalysis.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
             quick_sight_id=quick_sight_id,
