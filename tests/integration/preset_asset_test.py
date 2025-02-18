@@ -17,10 +17,8 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
-from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
-from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("PRESET")
 
@@ -37,8 +35,6 @@ CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
 ANNOUNCEMENT_TITLE = "Python SDK testing."
 ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
-
-response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")

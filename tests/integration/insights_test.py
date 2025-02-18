@@ -8,9 +8,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Collection, Folder, Query, Schema
 from pyatlan.model.enums import AtlanConnectorType, EntityStatus
 from pyatlan.model.fluent_search import FluentSearch
-from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
-from tests.integration.utils import block
 
 PREFIX = TestId.make_unique("INS")
 
@@ -24,8 +22,6 @@ CONNECTION_NAME = "development"
 DB_NAME = "analytics"
 SCHEMA_NAME = "WIDE_WORLD_IMPORTERS"
 USER_DESCRIPTION = "Automated testing of the Python SDK."
-
-response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")
