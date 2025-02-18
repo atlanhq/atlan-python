@@ -58,7 +58,7 @@ from tests.unit.model.constants import (
         ),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
+def test_creator_with_missing_parameters_raise_value_error(
     name: str,
     quick_sight_id: str,
     quick_sight_sheet_id: str,
@@ -76,7 +76,7 @@ def test_create_with_missing_parameters_raise_value_error(
         )
 
 
-def test_create():
+def test_creator():
     sut = QuickSightAnalysisVisual.creator(
         name=QUICK_SIGHT_NAME,
         quick_sight_id=QUICK_SIGHT_ID_ANALYSIS_VISUAL,
@@ -94,7 +94,7 @@ def test_create():
     assert sut.quick_sight_sheet_name == QUICK_SIGHT_SHEET_NAME
 
 
-def test_create_with_extra_params():
+def test_overload_creator():
     sut = QuickSightAnalysisVisual.creator(
         name=QUICK_SIGHT_NAME,
         quick_sight_id=QUICK_SIGHT_ID_ANALYSIS_VISUAL,
@@ -112,3 +112,21 @@ def test_create_with_extra_params():
     assert sut.quick_sight_sheet_id == QUICK_SIGHT_SHEET_ID
     assert sut.quick_sight_sheet_name == QUICK_SIGHT_SHEET_NAME
     assert sut.connection_qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
+
+
+def test_updater():
+    sut = QuickSightAnalysisVisual.updater(
+        qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME
+    )
+
+    assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
+    assert sut.name == QUICK_SIGHT_NAME
+
+
+def test_trim_to_required():
+    sut = QuickSightAnalysisVisual.updater(
+        name=QUICK_SIGHT_NAME, qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
+    ).trim_to_required()
+
+    assert sut.name == QUICK_SIGHT_NAME
+    assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
