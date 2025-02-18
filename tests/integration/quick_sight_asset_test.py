@@ -19,10 +19,8 @@ from pyatlan.model.enums import (
     QuickSightDatasetImportMode,
     QuickSightFolderType,
 )
-from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
-from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("QUICKSIGHT")
 
@@ -43,9 +41,7 @@ QUICKSIGHT_ANALYSIS_VISUAL_NAME = f"{MODULE_NAME}-QUICKSIGHT-ANALYSIS-VISUAL"
 QUICKSIGHT_ANALYSIS_VISUAL_ID = f"{MODULE_NAME}-ANALYSIS-VISUAL-ID"
 QUICKSIGHT_SHEET_NAME = f"{MODULE_NAME}-QUICKSIGHT-SHEET-NAME"
 QUICKSIGHT_SHEET_ID = f"{MODULE_NAME}-SHEET-ID"
-QUICK_SIGHT_DESCRIPTION = "Test-description"
-
-response = block(AtlanClient(), AssetMutationResponse())
+QUICK_SIGHT_DESCRIPTION = "Automated testing of the Python SDK."
 
 
 @pytest.fixture(scope="module")

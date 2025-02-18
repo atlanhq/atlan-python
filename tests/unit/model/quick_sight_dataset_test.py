@@ -35,7 +35,7 @@ from tests.unit.model.constants import (
         ),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
+def test_creator_with_missing_parameters_raise_value_error(
     name: str, connection_qualified_name: str, quick_sight_id: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
@@ -46,7 +46,7 @@ def test_create_with_missing_parameters_raise_value_error(
         )
 
 
-def test_create():
+def test_creator():
     sut = QuickSightDataset.creator(
         name=QUICK_SIGHT_NAME,
         connection_qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,
@@ -60,7 +60,7 @@ def test_create():
     assert sut.connector_name == QUICK_SIGHT_CONNECTOR_TYPE
 
 
-def test_create_with_extra_params():
+def test_overload_creator():
     sut = QuickSightDataset.creator(
         name=QUICK_SIGHT_NAME,
         connection_qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,
@@ -77,3 +77,21 @@ def test_create_with_extra_params():
     )
     assert sut.qualified_name == QUICK_SIGHT_QUALIFIED_NAME
     assert sut.connector_name == QUICK_SIGHT_CONNECTOR_TYPE
+
+
+def test_updater():
+    sut = QuickSightDataset.updater(
+        qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME
+    )
+
+    assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
+    assert sut.name == QUICK_SIGHT_NAME
+
+
+def test_trim_to_required():
+    sut = QuickSightDataset.updater(
+        name=QUICK_SIGHT_NAME, qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
+    ).trim_to_required()
+
+    assert sut.name == QUICK_SIGHT_NAME
+    assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
