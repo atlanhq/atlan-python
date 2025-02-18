@@ -19,10 +19,8 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
-from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
-from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("API")
 
@@ -58,9 +56,6 @@ API_FIELD_TYPE = "Int"
 API_FIELD_TYPE_SECONDARY = "Int"
 API_FIELD_IS_OBJECT_REFERENCE = True
 API_FIELD_REFERENCE_OBJECT_NAME = f"{MODULE_NAME}-api-object-reference"
-
-
-response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")
