@@ -498,6 +498,7 @@ class AtlanClient(BaseSettings):
         LOGGER.debug("Call         : %s %s", api.method, path)
         LOGGER.debug("Content-type_ : %s", api.consumes)
         LOGGER.debug("Accept       : %s", api.produces)
+        LOGGER.debug("User-Agent   : %s", f"Atlan-PythonSDK/{VERSION}")
 
     def _call_api(
         self,
