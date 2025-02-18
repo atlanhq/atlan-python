@@ -25,11 +25,10 @@ from pyatlan.model.enums import (
     EntityStatus,
 )
 from pyatlan.model.fluent_search import FluentSearch
-from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 from tests.integration.client import TestId, delete_asset
 from tests.integration.custom_metadata_test import create_custom_metadata
-from tests.integration.utils import block, wait_for_successful_custometadatadef_purge
+from tests.integration.utils import wait_for_successful_custometadatadef_purge
 
 DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
     '{"condition":"AND","isGroupLocked":false,"rules":[]}'
@@ -58,8 +57,6 @@ CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
 ANNOUNCEMENT_TITLE = "Python SDK testing."
 ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
-
-response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")
