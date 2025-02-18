@@ -42,7 +42,7 @@ def test_create_with_missing_parameters_raise_value_error(
     message: str,
 ):
     with pytest.raises(ValueError, match=message):
-        QuickSightDatasetField.create(
+        QuickSightDatasetField.creator(
             name=name,
             quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
             quick_sight_id=quick_sight_id,
