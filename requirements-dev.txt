@@ -2,7 +2,7 @@ flake8~=7.0.0
 mypy~=1.9.0
 black~=24.4.0
 types-requests==2.31.0.2
-pytest~=8.1.1
+pytest~=8.3.4
 pytest-order~=1.2.0
 pytest-timer[termcolor]==1.0.0
 pytest-sugar==1.0.0
