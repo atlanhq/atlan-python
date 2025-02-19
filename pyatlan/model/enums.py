@@ -347,6 +347,8 @@ class AtlanConnectorType(str, Enum):
     SHARED_DRIVE = ("shared-drive", AtlanConnectionCategory.OBJECT_STORE)
     SHARE_POINT = ("share-point", AtlanConnectionCategory.SAAS)
     RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
+    CRATEDB = ("cratedb", AtlanConnectionCategory.DATABASE)
+    KX = ("kx", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
