@@ -9,6 +9,7 @@ from itertools import chain
 from typing import Any, Dict, List, Literal, Optional, Sequence, Union
 
 from pydantic.v1 import (
+    BaseModel,
     ConfigDict,
     Field,
     StrictBool,
@@ -93,8 +94,7 @@ def get_with_string(attribute: TermAttributes):
     return with_string
 
 
-@dataclass
-class Query(ABC):
+class Query(BaseModel):
     def __add__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
@@ -122,11 +122,9 @@ class Query(ABC):
     def _clone(self):
         return copy.deepcopy(self)
 
-    @abstractmethod
     def to_dict(self) -> Dict[Any, Any]: ...
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class MatchAll(Query):
     type_name: Literal["match_all"] = "match_all"
     boost: Optional[float] = None
@@ -152,7 +150,6 @@ class MatchAll(Query):
 EMPTY_QUERY = MatchAll()
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class MatchNone(Query):
     type_name: Literal["match_none"] = "match_none"
 
@@ -173,7 +170,6 @@ class MatchNone(Query):
         return {"match_none": {}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Exists(Query):
     field: str
     type_name: Literal["exists"] = "exists"
@@ -338,7 +334,6 @@ class Exists(Query):
         return {self.type_name: {"field": self.field}}
 
 
-@dataclass(config=ConfigDict(extra=Extra.forbid))
 class NestedQuery(Query):
     path: str
     query: Query
@@ -355,7 +350,6 @@ class NestedQuery(Query):
         return {self.type_name: parameters}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Term(Query):
     field: str
     value: SearchFieldType
@@ -490,7 +484,6 @@ class Term(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass
 class Terms(Query):
     field: str
     values: List[str]
@@ -509,7 +502,6 @@ class Terms(Query):
         return {self.type_name: terms}
 
 
-@dataclass
 class SpanWithin(Query):
     little: Optional[Query] = None
     big: Optional[Query] = None
@@ -527,7 +519,6 @@ class SpanWithin(Query):
         return {self.type_name: span_within}
 
 
-@dataclass
 class SpanTerm(Query):
     field: str
     value: SearchFieldType
@@ -541,7 +532,6 @@ class SpanTerm(Query):
         return {self.type_name: span_term}
 
 
-@dataclass
 class SpanNear(Query):
     clauses: Optional[Sequence[Query]] = None
     in_order: Optional[bool] = None
@@ -559,7 +549,6 @@ class SpanNear(Query):
         return {self.type_name: span_near}
 
 
-@dataclass
 class Span(Query):
     span_within: Optional[Query] = None
     span_near: Optional[Query] = None
@@ -574,7 +563,6 @@ class Span(Query):
         return {self.type_name: span}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Bool(Query):
     must: List[Query] = Field(default_factory=list)
     should: List[Query] = Field(default_factory=list)
@@ -701,7 +689,6 @@ class Bool(Query):
         return {"bool": clauses}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Prefix(Query):
     field: str
     value: SearchFieldType
@@ -796,7 +783,6 @@ class Prefix(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Range(Query):
     field: str
     gt: Optional[SearchFieldType] = None
@@ -961,7 +947,6 @@ class Range(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Wildcard(Query):
     field: str
     value: StrictStr
@@ -1052,7 +1037,6 @@ class Wildcard(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Regexp(Query):
     field: str
     value: StrictStr
@@ -1146,7 +1130,6 @@ class Regexp(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Fuzzy(Query):
     field: str
     value: StrictStr
@@ -1466,7 +1449,6 @@ class Fuzzy(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Match(Query):
     field: str
     query: StrictStr
