@@ -1,3 +1,21 @@
+## 4.2.5 (February 19, 2024)
+
+### New Features
+
+- Added the SDK version number to the `_api_logger()` method.
+- Added handling of the `errorCause` property to `AtlanError`.
+- Added `creator()` methods for `Quicksight` assets.
+- Added support for new connector types:
+  - `KX`
+  - `CRATEDB`
+
+### QOL Improvements
+
+- Updated GitHub Actions to the latest version.
+- Fixed broken integration tests for adding, replacing, and removing glossary terms.
+- Added a new job to the `pyatlan-publish.yml` workflow to publish the SDK image to Docker Hub.
+- Introduced `dependabot.yml` to manage dependencies and actions, and removed unused secret variables.
+
 ## 4.2.4 (February 13, 2024)
 
 ### Bug Fixes
