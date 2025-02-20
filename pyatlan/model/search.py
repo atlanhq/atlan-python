@@ -1866,8 +1866,10 @@ class DSL(AtlanObject):
     size: int = Field(default=300)
     aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: Optional[bool] = Field(default=True, alias="track_total_hits")
-    post_filter: Optional[Query] = Field(default=None, alias="post_filter")
-    query: Optional[Query]
+    post_filter: Optional[Union[dict[str, Any], Query]] = Field(
+        default=None, alias="post_filter"
+    )
+    query: Optional[Union[dict[str, Any], Query]]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
     sort: List[SortItem] = Field(default_factory=list, alias="sort")
 
