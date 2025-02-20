@@ -2,7 +2,6 @@
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
 import copy
-from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
@@ -20,7 +19,6 @@ from pydantic.v1 import (
     validate_arguments,
     validator,
 )
-from pydantic.v1.config import Extra
 from pydantic.v1.dataclasses import dataclass
 
 from pyatlan.model.aggregation import Aggregation
@@ -1843,20 +1841,25 @@ class SortItem:
         return v
 
 
-class DSL(AtlanObject):
+class DSL(BaseModel):
     from_: int = Field(default=0, alias="from")
     size: int = Field(default=300)
     aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: Optional[bool] = Field(default=True, alias="track_total_hits")
-    post_filter: Optional[Query] = Field(default=None, alias="post_filter")
-    query: Optional[Query]
+    post_filter: Optional[Union[dict[str, Any], Query]] = Field(
+        default=None, alias="post_filter"
+    )
+    query: Optional[Union[dict[str, Any], Query]]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
     sort: List[SortItem] = Field(default_factory=list, alias="sort")
 
-    class Config:
-        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+    # class Config:
+    #     json_encoders = {SortItem: lambda v: v.to_dict()}
 
     def __init__(__pydantic_self__, **data: Any) -> None:
+        for key in ("query", "post_filter", "sort"):
+            if key in data and isinstance(data[key], Query):
+                data[key] = data[key].to_dict()
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(
             [
@@ -1867,6 +1870,44 @@ class DSL(AtlanObject):
                 "aggregations",
             ]
         )
+
+    # QUERY_TYPE_MAPPING = {
+    # "term": Term,
+    # "match": Match
+    # }
+    # @classmethod
+    # def _deserialize_query(cls, data: Dict[str, Any]) -> Query:
+    #     if isinstance(data, dict):
+    #         for key in data:
+    #             if key in cls.QUERY_TYPE_MAPPING:
+    #                 return cls.QUERY_TYPE_MAPPING[key].parse_obj(data)
+    #     return Query.parse_obj(data)  # Fallback if unknown type
+
+    # @classmethod
+    # def _deserialize_post_filter(cls, data: Dict[str, Any]) -> Query:
+    #     """Handles post_filter deserialization similarly."""
+    #     return cls._deserialize_query(data)
+
+    # @classmethod
+    # def _deserialize_sort(cls, data: Any) -> Any:
+    #     """Handles sort field deserialization."""
+    #     return data  # Assuming SortItem is already handled elsewhere
+
+    # @classmethod
+    # def _deserialize(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    #     """Root validator for deserialization."""
+    #     for key in ("query", "post_filter", "sort"):
+    #         if key in values and isinstance(values[key], dict):
+    #             if key in ["query", "post_filter"]:
+    #                 values[key] = cls._deserialize_query(values[key])
+    #             elif key == "sort":
+    #                 values[key] = cls._deserialize_sort(values[key])
+    #     return values
+
+    # @classmethod
+    # def root_validator(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    #     """Pydantic v1 Root Validator"""
+    #     return cls._deserialize(values)
 
     @validator("query", always=True)
     def validate_query(cls, v, values):
@@ -1958,7 +1999,7 @@ class IndexSearchRequest(SearchRequest):
     )
 
     class Config:
-        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+        json_encoders = {Term: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         dsl = data.get("dsl")

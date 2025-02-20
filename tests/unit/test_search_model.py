@@ -293,6 +293,17 @@ def test_index_search_request():
         '"requestMetadata": {"saveSearchLog": false, "utmTags": ["project_sdk_python"]}}'
     )
 
+    # deserialization test
+    data = {
+        "query": {"term": {"__typeName.keyword": {"value": "Schema"}}},
+        "from": 0,
+        "size": 300,
+        "track_total_hits": True,
+        "sort": [],
+    }
+    test_dsl = DSL(**data)
+    assert test_dsl.query == data["query"]  # TODO: <-- make sure its Query object
+
 
 def test_audit_search_request():
     dsl = DSL(
