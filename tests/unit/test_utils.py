@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import (
     ComparisonCategory,
     get_base_type,
@@ -262,3 +263,32 @@ def test_validate_type_with_invalid_values(name, the_type, value, message):
 )
 def test_validate_type_with_valid_values(name, the_type, value):
     validate_type(name=name, _type=the_type, value=value)
+
+
+@pytest.mark.parametrize(
+    "prefix, name, expected_key",
+    [
+        ("", "file.txt", "file.txt"),
+        ("folder", "file.txt", "folder/file.txt"),
+        ("folder/", "//file.txt", "folder/file.txt"),
+        ("folder/", "/////file.txt//", "folder/file.txt"),
+        ("/folder/", "file.txt", "/folder/file.txt"),
+        ("folder/subfolder", "file.txt", "folder/subfolder/file.txt"),
+        ("folder/subfolder/", "file.txt", "folder/subfolder/file.txt"),
+        ("/", "file.txt", "/file.txt"),
+        ("/", "file.txt/", "/file.txt"),
+        # Additional edge cases
+        ("//tmp/iicer-miner/", "file.txt", "//tmp/iicer-miner/file.txt"),
+        ("//logs/", "output.log", "//logs/output.log"),
+        ("test-bucket//", "file.txt", "test-bucket//file.txt"),
+        ("//", "file.txt", "//file.txt"),
+        ("//", "/file.txt", "//file.txt"),
+        ("/tmp/", "/data/file.txt", "/tmp/data/file.txt"),
+        ("/data//", "nested/file.txt", "/data//nested/file.txt"),
+        ("///deep/path/", "/to/file.txt", "///deep/path/to/file.txt"),
+        ("/tmp/iics-miner/input/", "file.txt", "/tmp/iics-miner/input/file.txt"),
+    ],
+)
+def test_contruct_object_key(prefix, name, expected_key):
+    key = construct_object_key(prefix, name)
+    assert key == expected_key
