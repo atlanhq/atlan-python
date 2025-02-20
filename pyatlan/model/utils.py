@@ -55,3 +55,17 @@ def to_snake_case(value):
         else:
             res.append(c)
     return "".join(res).replace(" _", "_").replace(" ", "_")
+
+
+def construct_object_key(prefix: str, name: str) -> str:
+    """
+    Construct an object key by joining a prefix and a name.
+    If the prefix is empty, the name is returned as-is.
+    """
+    if not prefix:
+        return name  # Preserve the key as-is if no prefix
+
+    # Ensure correct joining while preserving leading slashes
+    if prefix.endswith("/") or name.startswith("/"):
+        return f"{prefix}{name.strip('/')}"
+    return f"{prefix}/{name.strip('/')}"
