@@ -1569,3 +1569,26 @@ def test_with_active_term():
     assert isinstance(term4, Term) is True
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
+
+def test_dsl_serialization_and_deserialization():
+    
+    dsl1 = DSL(
+        from_=0,
+        aggregations={"test1": {"test2": {"field": "__test_field"}}},
+        size = 300,
+        sort=[SortItem(field ="created", order=SortOrder.ASCENDING, nested_path="test")],
+        query=Term(field="__typeName.keyword", value="Schema"),
+        track_total_hits=False
+    )
+
+    data = {
+        "aggregations":{"test1": {"test2": {"field": "__test_field"}}},
+        "query": {"term": {"__typeName.keyword": {"value": "Schema"}}},
+        "from": 0,
+        "size": 300,
+        "track_total_hits": False,
+        "sort": [{"created": {"order": "asc", "nested": {"path": "test"}}}]
+    }
+    test_dsl = DSL(**data)
+
+    assert test_dsl.json(exclude_unset=True, by_alias=True) == dsl1.json(exclude_unset=True, by_alias=True)
