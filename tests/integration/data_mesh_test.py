@@ -4,6 +4,7 @@ from typing import Generator
 
 import pytest
 
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
@@ -484,6 +485,19 @@ def test_find_product_by_name(client: AtlanClient, product: DataProduct):
     assert response
     assert response.guid == product.guid
     assert response.daap_status == DataProductStatus.ACTIVE
+
+
+@pytest.mark.order(after="test_retrieve_product")
+def test_product_get_assets(client: AtlanClient, product: DataProduct):
+    test_product = client.asset.get_by_guid(
+        product.guid, asset_type=DataProduct, ignore_relationships=False
+    )
+    assert test_product
+    assert test_product.data_product_assets_d_s_l
+    asset_list = test_product.get_assets()
+
+    assert asset_list.count > 0
+    assert isinstance(asset_list, IndexSearchResults)
 
 
 @pytest.mark.order(after="test_retrieve_contract")
