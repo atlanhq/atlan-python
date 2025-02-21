@@ -1854,6 +1854,16 @@ class SortItem:
             parameters["nested"] = {"path": self.nested_path}
         return {self.field: parameters}
 
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> "SortItem":
+
+        field, params = list(d.items())[0]
+
+        order = params.get("order", SortOrder.ASCENDING)
+        nested_path = params.get("nested", {}).get("path", None)
+
+        return cls(field=field, order=order, nested_path=nested_path)
+
     @validator("order", always=True)
     def validate_order(cls, v, values):
         if not v and "field" in values:
@@ -1871,7 +1881,9 @@ class DSL(AtlanObject):
     )
     query: Optional[Union[Dict[str, Any], Query]]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
-    sort: List[SortItem] = Field(default_factory=list, alias="sort")
+    sort: Union[List[Dict[str, Any]], List[SortItem]] = Field(
+        default_factory=list, alias="sort"
+    )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1897,6 +1909,10 @@ class DSL(AtlanObject):
 
     @validator("sort", always=True)
     def validate_sort(cls, sort, values):
+
+        if all(isinstance(item, dict) for item in sort):
+            sort = [SortItem.from_dict(item) for item in sort]
+
         missing_guid_sort = True
         sort_by_guid = "__guid"
         auditsearch_sort_by_guid = "entityId"
