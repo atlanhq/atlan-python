@@ -1881,9 +1881,7 @@ class DSL(AtlanObject):
     )
     query: Optional[Union[Dict[str, Any], Query]]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
-    sort: Union[List[Dict[str, Any]], List[SortItem]] = Field(
-        default_factory=list, alias="sort"
-    )
+    sort: List[SortItem] = Field(default_factory=list, alias="sort")
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
@@ -1906,6 +1904,15 @@ class DSL(AtlanObject):
             return v
         else:
             raise ValueError("Either query or post_filter is required")
+
+    # Transforming dictionaries into SortItem instances to facilitate deserialization.
+    # This conversion occurs prior to invoking the initializer and validator_sort(),
+    # preventing potential validation-related issues from arising.
+    @validator("sort", pre=True)
+    def dict_to_SortItem(cls, sort):
+        if all(isinstance(item, dict) for item in sort):
+            sort = [SortItem.from_dict(item) for item in sort]
+        return sort
 
     @validator("sort", always=True)
     def validate_sort(cls, sort, values):
