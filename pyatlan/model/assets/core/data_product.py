@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import ClassVar, List, Optional, Set
 from warnings import warn
@@ -99,6 +100,16 @@ class DataProduct(DataMesh):
                 DataProductsAssetsDSL.get_asset_selection(asset_selection)
             )
         return product
+
+    def get_assets(self):
+        from pyatlan.client.atlan import AtlanClient
+
+        client = AtlanClient().get_default_client()
+        dp_dsl = self.data_product_assets_d_s_l
+        json_object = json.loads(dp_dsl)
+        request = IndexSearchRequest(**json_object["query"])
+        response = client.asset.search(request)
+        return response
 
     @classmethod
     def create_for_modification(
