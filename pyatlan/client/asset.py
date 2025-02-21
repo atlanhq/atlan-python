@@ -846,9 +846,9 @@ class AssetClient:
         asset_type: Type[A],
         qualified_name: str,
         atlan_tag_names: List[str],
-        propagate: bool = True,
+        propagate: bool = False,
         remove_propagation_on_delete: bool = True,
-        restrict_lineage_propagation: bool = True,
+        restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         atlan_tags = AtlanTags(
@@ -876,9 +876,9 @@ class AssetClient:
         asset_type: Type[A],
         qualified_name: str,
         atlan_tag_names: List[str],
-        propagate: bool = True,
+        propagate: bool = False,
         remove_propagation_on_delete: bool = True,
-        restrict_lineage_propagation: bool = True,
+        restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
     ) -> None:
         """
@@ -915,7 +915,7 @@ class AssetClient:
         asset_type: Type[A],
         qualified_name: str,
         atlan_tag_names: List[str],
-        propagate: bool = True,
+        propagate: bool = False,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
         restrict_propagation_through_hierarchy: bool = False,

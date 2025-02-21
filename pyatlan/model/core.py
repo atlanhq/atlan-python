@@ -207,15 +207,25 @@ class AtlanTag(AtlanObject):
         example=EntityStatus.ACTIVE,
         alias="entityStatus",
     )
-    propagate: Optional[bool] = Field(default=None, description="")
+    propagate: Optional[bool] = Field(
+        default=False,
+        description="whether to propagate the Atlan tag (True) or not (False)",
+    )
     remove_propagations_on_entity_delete: Optional[bool] = Field(
-        default=None, description="", alias="removePropagationsOnEntityDelete"
+        default=True,
+        description=(
+            "whether to remove the propagated Atlan tags when the Atlan tag "
+            "is removed from this asset (True) or not (False)"
+        ),
+        alias="removePropagationsOnEntityDelete",
     )
     restrict_propagation_through_lineage: Optional[bool] = Field(
-        default=None, description="", alias="restrictPropagationThroughLineage"
+        default=False,
+        description="whether to avoid propagating through lineage (True) or do propagate through lineage (False)",
+        alias="restrictPropagationThroughLineage",
     )
     restrict_propagation_through_hierarchy: Optional[bool] = Field(
-        default=None,
+        default=False,
         description=(
             "Whether to prevent this Atlan tag from propagating through "
             "hierarchy (True) or allow it to propagate through hierarchy (False)"
@@ -269,13 +279,7 @@ class AtlanTag(AtlanObject):
         :param source_tag_attachment: (optional) source-specific details for the tag
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         """
-        tag = AtlanTag(
-            type_name=atlan_tag_name,
-            propagate=True,
-            remove_propagations_on_entity_delete=True,
-            restrict_propagation_through_lineage=False,
-            restrict_propagation_through_hierarchy=False,
-        )
+        tag = AtlanTag(type_name=atlan_tag_name)
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
