@@ -1905,8 +1905,11 @@ class DSL(AtlanObject):
         else:
             raise ValueError("Either query or post_filter is required")
 
+    # Transforming dictionaries into SortItem instances to facilitate deserialization.
+    # This conversion occurs prior to invoking the initializer and validator_sort(),
+    # preventing potential validation-related issues from arising.
     @validator("sort", pre=True)
-    def validate_sort_pre(cls, sort):
+    def dict_to_SortItem(cls, sort):
         if all(isinstance(item, dict) for item in sort):
             sort = [SortItem.from_dict(item) for item in sort]
         return sort
