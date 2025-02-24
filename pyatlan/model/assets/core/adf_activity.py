@@ -37,7 +37,9 @@ class AdfActivity(ADF):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADF_ACTIVITY_TYPE: ClassVar[KeywordField] = KeywordField("adfActivityType", "adfActivityType")
+    ADF_ACTIVITY_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adfActivityType", "adfActivityType"
+    )
     """
     The type of the ADF activity.
     """
@@ -47,7 +49,9 @@ class AdfActivity(ADF):
     """
     The list of ADF activities on which this ADF activity depends on.
     """
-    ADF_ACTIVITY_POLICY_TIMEOUT: ClassVar[TextField] = TextField("adfActivityPolicyTimeout", "adfActivityPolicyTimeout")
+    ADF_ACTIVITY_POLICY_TIMEOUT: ClassVar[TextField] = TextField(
+        "adfActivityPolicyTimeout", "adfActivityPolicyTimeout"
+    )
     """
     The timout defined for the ADF activity.
     """
@@ -57,31 +61,45 @@ class AdfActivity(ADF):
     """
     The retry interval in seconds for the ADF activity.
     """
-    ADF_ACTIVITY_STATE: ClassVar[KeywordField] = KeywordField("adfActivityState", "adfActivityState")
+    ADF_ACTIVITY_STATE: ClassVar[KeywordField] = KeywordField(
+        "adfActivityState", "adfActivityState"
+    )
     """
     Defines the state (Active or Inactive) of an ADF activity whether it is active or not.
     """
-    ADF_ACTIVITY_SOURCES: ClassVar[TextField] = TextField("adfActivitySources", "adfActivitySources")
+    ADF_ACTIVITY_SOURCES: ClassVar[TextField] = TextField(
+        "adfActivitySources", "adfActivitySources"
+    )
     """
     The list of names of sources for the ADF activity.
     """
-    ADF_ACTIVITY_SINKS: ClassVar[TextField] = TextField("adfActivitySinks", "adfActivitySinks")
+    ADF_ACTIVITY_SINKS: ClassVar[TextField] = TextField(
+        "adfActivitySinks", "adfActivitySinks"
+    )
     """
     The list of names of sinks for the ADF activity.
     """
-    ADF_ACTIVITY_SOURCE_TYPE: ClassVar[TextField] = TextField("adfActivitySourceType", "adfActivitySourceType")
+    ADF_ACTIVITY_SOURCE_TYPE: ClassVar[TextField] = TextField(
+        "adfActivitySourceType", "adfActivitySourceType"
+    )
     """
     Defines the type of the source of the ADF activtity.
     """
-    ADF_ACTIVITY_SINK_TYPE: ClassVar[TextField] = TextField("adfActivitySinkType", "adfActivitySinkType")
+    ADF_ACTIVITY_SINK_TYPE: ClassVar[TextField] = TextField(
+        "adfActivitySinkType", "adfActivitySinkType"
+    )
     """
     Defines the type of the sink of the ADF activtity.
     """
-    ADF_ACTIVITY_RUNS: ClassVar[KeywordField] = KeywordField("adfActivityRuns", "adfActivityRuns")
+    ADF_ACTIVITY_RUNS: ClassVar[KeywordField] = KeywordField(
+        "adfActivityRuns", "adfActivityRuns"
+    )
     """
     List of objects of activity runs for a particular activity.
     """
-    ADF_ACTIVITY_NOTEBOOK_PATH: ClassVar[TextField] = TextField("adfActivityNotebookPath", "adfActivityNotebookPath")
+    ADF_ACTIVITY_NOTEBOOK_PATH: ClassVar[TextField] = TextField(
+        "adfActivityNotebookPath", "adfActivityNotebookPath"
+    )
     """
     Defines the path of the notebook in the databricks notebook activity.
     """
@@ -103,7 +121,9 @@ class AdfActivity(ADF):
     """
     Indicates whether to import only first row only or not in Lookup activity.
     """
-    ADF_ACTIVITY_BATCH_COUNT: ClassVar[NumericField] = NumericField("adfActivityBatchCount", "adfActivityBatchCount")
+    ADF_ACTIVITY_BATCH_COUNT: ClassVar[NumericField] = NumericField(
+        "adfActivityBatchCount", "adfActivityBatchCount"
+    )
     """
     Defines the batch count of activity to runs in ForEach activity.
     """
@@ -113,7 +133,9 @@ class AdfActivity(ADF):
     """
     Indicates whether the activity processing is sequential or not inside the ForEach activity.
     """
-    ADF_ACTIVITY_SUB_ACTIVITIES: ClassVar[TextField] = TextField("adfActivitySubActivities", "adfActivitySubActivities")
+    ADF_ACTIVITY_SUB_ACTIVITIES: ClassVar[TextField] = TextField(
+        "adfActivitySubActivities", "adfActivitySubActivities"
+    )
     """
     The list of activities to be run inside a ForEach activity.
     """
@@ -192,17 +214,29 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_preceding_dependency(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.adf_activity_preceding_dependency
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_preceding_dependency
+        )
 
     @adf_activity_preceding_dependency.setter
-    def adf_activity_preceding_dependency(self, adf_activity_preceding_dependency: Optional[Set[str]]):
+    def adf_activity_preceding_dependency(
+        self, adf_activity_preceding_dependency: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_activity_preceding_dependency = adf_activity_preceding_dependency
+        self.attributes.adf_activity_preceding_dependency = (
+            adf_activity_preceding_dependency
+        )
 
     @property
     def adf_activity_policy_timeout(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_policy_timeout
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_policy_timeout
+        )
 
     @adf_activity_policy_timeout.setter
     def adf_activity_policy_timeout(self, adf_activity_policy_timeout: Optional[str]):
@@ -212,13 +246,21 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_polict_retry_interval(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.adf_activity_polict_retry_interval
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_polict_retry_interval
+        )
 
     @adf_activity_polict_retry_interval.setter
-    def adf_activity_polict_retry_interval(self, adf_activity_polict_retry_interval: Optional[int]):
+    def adf_activity_polict_retry_interval(
+        self, adf_activity_polict_retry_interval: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_activity_polict_retry_interval = adf_activity_polict_retry_interval
+        self.attributes.adf_activity_polict_retry_interval = (
+            adf_activity_polict_retry_interval
+        )
 
     @property
     def adf_activity_state(self) -> Optional[AdfActivityState]:
@@ -252,7 +294,11 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_source_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_source_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_source_type
+        )
 
     @adf_activity_source_type.setter
     def adf_activity_source_type(self, adf_activity_source_type: Optional[str]):
@@ -262,7 +308,9 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_sink_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_sink_type
+        return (
+            None if self.attributes is None else self.attributes.adf_activity_sink_type
+        )
 
     @adf_activity_sink_type.setter
     def adf_activity_sink_type(self, adf_activity_sink_type: Optional[str]):
@@ -282,7 +330,11 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_notebook_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_notebook_path
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_notebook_path
+        )
 
     @adf_activity_notebook_path.setter
     def adf_activity_notebook_path(self, adf_activity_notebook_path: Optional[str]):
@@ -292,7 +344,11 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_main_class_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_main_class_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_main_class_name
+        )
 
     @adf_activity_main_class_name.setter
     def adf_activity_main_class_name(self, adf_activity_main_class_name: Optional[str]):
@@ -302,17 +358,27 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_python_file_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_python_file_path
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_python_file_path
+        )
 
     @adf_activity_python_file_path.setter
-    def adf_activity_python_file_path(self, adf_activity_python_file_path: Optional[str]):
+    def adf_activity_python_file_path(
+        self, adf_activity_python_file_path: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_activity_python_file_path = adf_activity_python_file_path
 
     @property
     def adf_activity_first_row_only(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.adf_activity_first_row_only
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_first_row_only
+        )
 
     @adf_activity_first_row_only.setter
     def adf_activity_first_row_only(self, adf_activity_first_row_only: Optional[bool]):
@@ -322,7 +388,11 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_batch_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.adf_activity_batch_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_batch_count
+        )
 
     @adf_activity_batch_count.setter
     def adf_activity_batch_count(self, adf_activity_batch_count: Optional[int]):
@@ -332,7 +402,11 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_is_sequential(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.adf_activity_is_sequential
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_is_sequential
+        )
 
     @adf_activity_is_sequential.setter
     def adf_activity_is_sequential(self, adf_activity_is_sequential: Optional[bool]):
@@ -342,27 +416,45 @@ class AdfActivity(ADF):
 
     @property
     def adf_activity_sub_activities(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.adf_activity_sub_activities
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_sub_activities
+        )
 
     @adf_activity_sub_activities.setter
-    def adf_activity_sub_activities(self, adf_activity_sub_activities: Optional[Set[str]]):
+    def adf_activity_sub_activities(
+        self, adf_activity_sub_activities: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_activity_sub_activities = adf_activity_sub_activities
 
     @property
     def adf_activity_reference_dataflow(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_activity_reference_dataflow
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_activity_reference_dataflow
+        )
 
     @adf_activity_reference_dataflow.setter
-    def adf_activity_reference_dataflow(self, adf_activity_reference_dataflow: Optional[str]):
+    def adf_activity_reference_dataflow(
+        self, adf_activity_reference_dataflow: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_activity_reference_dataflow = adf_activity_reference_dataflow
+        self.attributes.adf_activity_reference_dataflow = (
+            adf_activity_reference_dataflow
+        )
 
     @property
     def adf_pipeline_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_pipeline_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_pipeline_qualified_name
+        )
 
     @adf_pipeline_qualified_name.setter
     def adf_pipeline_qualified_name(self, adf_pipeline_qualified_name: Optional[str]):
@@ -422,29 +514,57 @@ class AdfActivity(ADF):
 
     class Attributes(ADF.Attributes):
         adf_activity_type: Optional[str] = Field(default=None, description="")
-        adf_activity_preceding_dependency: Optional[Set[str]] = Field(default=None, description="")
+        adf_activity_preceding_dependency: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         adf_activity_policy_timeout: Optional[str] = Field(default=None, description="")
-        adf_activity_polict_retry_interval: Optional[int] = Field(default=None, description="")
-        adf_activity_state: Optional[AdfActivityState] = Field(default=None, description="")
+        adf_activity_polict_retry_interval: Optional[int] = Field(
+            default=None, description=""
+        )
+        adf_activity_state: Optional[AdfActivityState] = Field(
+            default=None, description=""
+        )
         adf_activity_sources: Optional[Set[str]] = Field(default=None, description="")
         adf_activity_sinks: Optional[Set[str]] = Field(default=None, description="")
         adf_activity_source_type: Optional[str] = Field(default=None, description="")
         adf_activity_sink_type: Optional[str] = Field(default=None, description="")
-        adf_activity_runs: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        adf_activity_runs: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         adf_activity_notebook_path: Optional[str] = Field(default=None, description="")
-        adf_activity_main_class_name: Optional[str] = Field(default=None, description="")
-        adf_activity_python_file_path: Optional[str] = Field(default=None, description="")
-        adf_activity_first_row_only: Optional[bool] = Field(default=None, description="")
+        adf_activity_main_class_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_activity_python_file_path: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_activity_first_row_only: Optional[bool] = Field(
+            default=None, description=""
+        )
         adf_activity_batch_count: Optional[int] = Field(default=None, description="")
         adf_activity_is_sequential: Optional[bool] = Field(default=None, description="")
-        adf_activity_sub_activities: Optional[Set[str]] = Field(default=None, description="")
-        adf_activity_reference_dataflow: Optional[str] = Field(default=None, description="")
+        adf_activity_sub_activities: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        adf_activity_reference_dataflow: Optional[str] = Field(
+            default=None, description=""
+        )
         adf_pipeline_qualified_name: Optional[str] = Field(default=None, description="")
-        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(default=None, description="")  # relationship
-        adf_datasets: Optional[List[AdfDataset]] = Field(default=None, description="")  # relationship
-        processes: Optional[List[Process]] = Field(default=None, description="")  # relationship
-        adf_pipeline: Optional[AdfPipeline] = Field(default=None, description="")  # relationship
-        adf_dataflow: Optional[AdfDataflow] = Field(default=None, description="")  # relationship
+        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_datasets: Optional[List[AdfDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_pipeline: Optional[AdfPipeline] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_dataflow: Optional[AdfDataflow] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AdfActivity.Attributes = Field(
         default_factory=lambda: AdfActivity.Attributes(),

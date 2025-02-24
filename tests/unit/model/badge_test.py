@@ -78,14 +78,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Badge.create_for_modification(qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME)
+    sut = Badge.create_for_modification(
+        qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME
+    )
 
     assert sut.qualified_name == BADGE_QUALIFIED_NAME
     assert sut.name == BADGE_NAME
 
 
 def test_trim_to_required():
-    sut = Badge.create_for_modification(qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME).trim_to_required()
+    sut = Badge.create_for_modification(
+        qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME
+    ).trim_to_required()
 
     assert sut.qualified_name == BADGE_QUALIFIED_NAME
     assert sut.name == BADGE_NAME

@@ -27,7 +27,9 @@ class AssetExportBasic(AbstractCustomPackage):
         self._export_scope = None
         self._parameters = []
 
-    def glossaries_only(self, include_archived: Optional[bool] = None) -> AssetExportBasic:
+    def glossaries_only(
+        self, include_archived: Optional[bool] = None
+    ) -> AssetExportBasic:
         """
         Set up the package to export only glossaries.
 
@@ -80,7 +82,9 @@ class AssetExportBasic(AbstractCustomPackage):
         self._add_optional_params(params)
         return self
 
-    def products_only(self, include_archived: Optional[bool] = None) -> AssetExportBasic:
+    def products_only(
+        self, include_archived: Optional[bool] = None
+    ) -> AssetExportBasic:
         """
         Set up the package to export only data products.
 
@@ -204,7 +208,9 @@ class AssetExportBasic(AbstractCustomPackage):
         )
         return self
 
-    def gcs(self, project_id: str, service_account_json: str, bucket: str) -> AssetExportBasic:
+    def gcs(
+        self, project_id: str, service_account_json: str, bucket: str
+    ) -> AssetExportBasic:
         """
         Set up package to export to Google Cloud Storage.
 
@@ -277,7 +283,9 @@ class AssetExportBasic(AbstractCustomPackage):
             self._parameters.append(
                 {
                     "name": "email_addresses",
-                    "value": ",".join(self._email_addresses),  # Join the email addresses if they are in a list
+                    "value": ",".join(
+                        self._email_addresses
+                    ),  # Join the email addresses if they are in a list
                 }
             )
 

@@ -15,22 +15,22 @@ from pyatlan.model.credential import (
     CredentialTestResponse,
 )
 
-TEST_MISSING_TOKEN_ID = "ATLAN-PYTHON-400-032 No ID was provided when attempting to update the API token."
-TEST_INVALID_CREDENTIALS = "ATLAN-PYTHON-400-054 Credentials provided did not work: failed"
-TEST_INVALID_GUID_GET_VALIDATION_ERR = "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
-TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
-    "1 validation error for PurgeByGuid\nguid\n  str type expected (type=type_error.str)"
+TEST_MISSING_TOKEN_ID = (
+    "ATLAN-PYTHON-400-032 No ID was provided when attempting to update the API token."
 )
-TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
-    "1 validation error for Test\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CREDENTIALS = (
+    "ATLAN-PYTHON-400-054 Credentials provided did not work: failed"
 )
-TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
-    "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_GUID_GET_VALIDATION_ERR = (
+    "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
-TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
-    "1 validation error for Creator\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = "1 validation error for PurgeByGuid\nguid\n  str type expected (type=type_error.str)"
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = "1 validation error for Test\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = "1 validation error for Creator\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
+    "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 )
-TEST_INVALID_API_CALLER_PARAMETER_TYPE = "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 
 
 @pytest.fixture()
@@ -90,21 +90,27 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 
 @pytest.mark.parametrize("test_guid", [[123], set(), dict()])
-def test_cred_get_wrong_params_raises_validation_error(test_guid, client: CredentialClient):
+def test_cred_get_wrong_params_raises_validation_error(
+    test_guid, client: CredentialClient
+):
     with pytest.raises(ValidationError) as err:
         client.get(guid=test_guid)
     assert TEST_INVALID_GUID_GET_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
-def test_cred_test_wrong_params_raises_validation_error(test_credentials, client: CredentialClient):
+def test_cred_test_wrong_params_raises_validation_error(
+    test_credentials, client: CredentialClient
+):
     with pytest.raises(ValidationError) as err:
         client.test(credential=test_credentials)
     assert TEST_INVALID_CRED_TEST_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
-def test_cred_test_and_update_wrong_params_raises_validation_error(test_credentials, client: CredentialClient):
+def test_cred_test_and_update_wrong_params_raises_validation_error(
+    test_credentials, client: CredentialClient
+):
     with pytest.raises(ValidationError) as err:
         client.test_and_update(credential=test_credentials)
     assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR == str(err.value)
@@ -174,7 +180,9 @@ def test_cred_test_update_when_given_cred(
         {"message": "successful"},
         credential_response.dict(),
     ]
-    cred_response = client.test_and_update(credential=Credential(id=credential_response.id))
+    cred_response = client.test_and_update(
+        credential=Credential(id=credential_response.id)
+    )
     assert isinstance(cred_response, CredentialResponse)
     cred = cred_response.to_credential()
     _assert_cred_response(cred, credential_response)
@@ -188,7 +196,9 @@ def test_cred_test_update_when_given_cred(
         ({"invalid": "field"}, 10, 0, {"records": []}),
     ],
 )
-def test_cred_get_all_success(test_filter, test_limit, test_offset, test_response, mock_api_caller):
+def test_cred_get_all_success(
+    test_filter, test_limit, test_offset, test_response, mock_api_caller
+):
     mock_api_caller._call_api.return_value = test_response
     client = CredentialClient(mock_api_caller)
 
@@ -283,7 +293,9 @@ def test_cred_get_all_no_results(mock_api_caller):
 
 
 @pytest.mark.parametrize("create_credentials", ["invalid_cred", 123])
-def test_cred_creator_wrong_params_raises_validation_error(create_credentials, client: CredentialClient):
+def test_cred_creator_wrong_params_raises_validation_error(
+    create_credentials, client: CredentialClient
+):
     with pytest.raises(ValidationError) as err:
         client.creator(credential=create_credentials)
     assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR == str(err.value)
@@ -351,13 +363,17 @@ def test_creator_success(
         ),
     ],
 )
-def test_cred_creator_with_test_false_with_username_password(credential_data, client: CredentialClient):
+def test_cred_creator_with_test_false_with_username_password(
+    credential_data, client: CredentialClient
+):
     with pytest.raises(Exception, match="ATLAN-PYTHON-400-071"):
         client.creator(credential=credential_data, test=False)
 
 
 @pytest.mark.parametrize("test_guid", [[123], set(), dict()])
-def test_cred_purge_by_guid_wrong_params_raises_validation_error(test_guid, client: CredentialClient):
+def test_cred_purge_by_guid_wrong_params_raises_validation_error(
+    test_guid, client: CredentialClient
+):
     with pytest.raises(ValidationError) as err:
         client.purge_by_guid(guid=test_guid)
     assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR == str(err.value)

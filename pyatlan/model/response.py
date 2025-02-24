@@ -44,29 +44,47 @@ class AssetMutationResponse(AtlanObject):
         default=None,
         description="Map of assigned unique identifiers for the changed assets.",
     )
-    mutated_entities: Optional[MutatedEntities] = Field(default=None, description="Assets that were changed.")
+    mutated_entities: Optional[MutatedEntities] = Field(
+        default=None, description="Assets that were changed."
+    )
     partial_updated_entities: Optional[List[Asset]] = Field(
         default=None, description="Assets that were partially updated"
     )
 
     def assets_created(self, asset_type: Type[A]) -> List[A]:
         if self.mutated_entities and self.mutated_entities.CREATE:
-            return [asset for asset in self.mutated_entities.CREATE if isinstance(asset, asset_type)]
+            return [
+                asset
+                for asset in self.mutated_entities.CREATE
+                if isinstance(asset, asset_type)
+            ]
         return []
 
     def assets_updated(self, asset_type: Type[A]) -> List[A]:
         if self.mutated_entities and self.mutated_entities.UPDATE:
-            return [asset for asset in self.mutated_entities.UPDATE if isinstance(asset, asset_type)]
+            return [
+                asset
+                for asset in self.mutated_entities.UPDATE
+                if isinstance(asset, asset_type)
+            ]
         return []
 
     def assets_deleted(self, asset_type: Type[A]) -> List[A]:
         if self.mutated_entities and self.mutated_entities.DELETE:
-            return [asset for asset in self.mutated_entities.DELETE if isinstance(asset, asset_type)]
+            return [
+                asset
+                for asset in self.mutated_entities.DELETE
+                if isinstance(asset, asset_type)
+            ]
         return []
 
     def assets_partially_updated(self, asset_type: Type[A]) -> List[A]:
         if self.mutated_entities and self.mutated_entities.PARTIAL_UPDATE:
-            return [asset for asset in self.mutated_entities.PARTIAL_UPDATE if isinstance(asset, asset_type)]
+            return [
+                asset
+                for asset in self.mutated_entities.PARTIAL_UPDATE
+                if isinstance(asset, asset_type)
+            ]
         return []
 
 

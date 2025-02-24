@@ -29,16 +29,20 @@ class ModelAttributeAssociation(Model):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODEL_ATTRIBUTE_ASSOCIATION_TO_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "modelAttributeAssociationToQualifiedName",
-        "modelAttributeAssociationToQualifiedName",
+    MODEL_ATTRIBUTE_ASSOCIATION_TO_QUALIFIED_NAME: ClassVar[KeywordField] = (
+        KeywordField(
+            "modelAttributeAssociationToQualifiedName",
+            "modelAttributeAssociationToQualifiedName",
+        )
     )
     """
     Unique name of the association to which this attribute is related.
     """
-    MODEL_ATTRIBUTE_ASSOCIATION_FROM_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "modelAttributeAssociationFromQualifiedName",
-        "modelAttributeAssociationFromQualifiedName",
+    MODEL_ATTRIBUTE_ASSOCIATION_FROM_QUALIFIED_NAME: ClassVar[KeywordField] = (
+        KeywordField(
+            "modelAttributeAssociationFromQualifiedName",
+            "modelAttributeAssociationFromQualifiedName",
+        )
     )
     """
     Unique name of the association from which this attribute is related.
@@ -50,11 +54,15 @@ class ModelAttributeAssociation(Model):
     Unique name of the entity association to which this attribute is related.
     """
 
-    MODEL_ATTRIBUTE_ASSOCIATION_FROM: ClassVar[RelationField] = RelationField("modelAttributeAssociationFrom")
+    MODEL_ATTRIBUTE_ASSOCIATION_FROM: ClassVar[RelationField] = RelationField(
+        "modelAttributeAssociationFrom"
+    )
     """
     TBC
     """
-    MODEL_ATTRIBUTE_ASSOCIATION_TO: ClassVar[RelationField] = RelationField("modelAttributeAssociationTo")
+    MODEL_ATTRIBUTE_ASSOCIATION_TO: ClassVar[RelationField] = RelationField(
+        "modelAttributeAssociationTo"
+    )
     """
     TBC
     """
@@ -69,7 +77,11 @@ class ModelAttributeAssociation(Model):
 
     @property
     def model_attribute_association_to_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_attribute_association_to_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_association_to_qualified_name
+        )
 
     @model_attribute_association_to_qualified_name.setter
     def model_attribute_association_to_qualified_name(
@@ -77,11 +89,17 @@ class ModelAttributeAssociation(Model):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_association_to_qualified_name = model_attribute_association_to_qualified_name
+        self.attributes.model_attribute_association_to_qualified_name = (
+            model_attribute_association_to_qualified_name
+        )
 
     @property
     def model_attribute_association_from_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_attribute_association_from_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_association_from_qualified_name
+        )
 
     @model_attribute_association_from_qualified_name.setter
     def model_attribute_association_from_qualified_name(
@@ -95,40 +113,72 @@ class ModelAttributeAssociation(Model):
 
     @property
     def model_entity_association_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_entity_association_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_association_qualified_name
+        )
 
     @model_entity_association_qualified_name.setter
-    def model_entity_association_qualified_name(self, model_entity_association_qualified_name: Optional[str]):
+    def model_entity_association_qualified_name(
+        self, model_entity_association_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_association_qualified_name = model_entity_association_qualified_name
+        self.attributes.model_entity_association_qualified_name = (
+            model_entity_association_qualified_name
+        )
 
     @property
     def model_attribute_association_from(self) -> Optional[ModelAttribute]:
-        return None if self.attributes is None else self.attributes.model_attribute_association_from
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_association_from
+        )
 
     @model_attribute_association_from.setter
-    def model_attribute_association_from(self, model_attribute_association_from: Optional[ModelAttribute]):
+    def model_attribute_association_from(
+        self, model_attribute_association_from: Optional[ModelAttribute]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_association_from = model_attribute_association_from
+        self.attributes.model_attribute_association_from = (
+            model_attribute_association_from
+        )
 
     @property
     def model_attribute_association_to(self) -> Optional[ModelAttribute]:
-        return None if self.attributes is None else self.attributes.model_attribute_association_to
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_association_to
+        )
 
     @model_attribute_association_to.setter
-    def model_attribute_association_to(self, model_attribute_association_to: Optional[ModelAttribute]):
+    def model_attribute_association_to(
+        self, model_attribute_association_to: Optional[ModelAttribute]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_attribute_association_to = model_attribute_association_to
 
     class Attributes(Model.Attributes):
-        model_attribute_association_to_qualified_name: Optional[str] = Field(default=None, description="")
-        model_attribute_association_from_qualified_name: Optional[str] = Field(default=None, description="")
-        model_entity_association_qualified_name: Optional[str] = Field(default=None, description="")
-        model_attribute_association_from: Optional[ModelAttribute] = Field(default=None, description="")  # relationship
-        model_attribute_association_to: Optional[ModelAttribute] = Field(default=None, description="")  # relationship
+        model_attribute_association_to_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_attribute_association_from_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_entity_association_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_attribute_association_from: Optional[ModelAttribute] = Field(
+            default=None, description=""
+        )  # relationship
+        model_attribute_association_to: Optional[ModelAttribute] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: ModelAttributeAssociation.Attributes = Field(
         default_factory=lambda: ModelAttributeAssociation.Attributes(),

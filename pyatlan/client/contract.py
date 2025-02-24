@@ -16,7 +16,9 @@ class ContractClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @validate_arguments
@@ -35,6 +37,8 @@ class ContractClient:
         """
         response = self._client._call_api(
             CONTRACT_INIT_API,
-            request_obj=InitRequest(asset_type=asset.type_name, asset_qualified_name=asset.qualified_name),
+            request_obj=InitRequest(
+                asset_type=asset.type_name, asset_qualified_name=asset.qualified_name
+            ),
         )
         return response.get("contract")

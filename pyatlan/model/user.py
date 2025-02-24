@@ -19,20 +19,34 @@ class AtlanUser(AtlanObject):
             default=None,
             description="Designation for the user, such as an honorific or title.",
         )
-        skills: Optional[List[str]] = Field(default=None, description="Skills the user possesses.")
-        slack: Optional[List[str]] = Field(default=None, description="Unique Slack member identifier.")
-        jira: Optional[List[str]] = Field(default=None, description="Unique JIRA user identifier.")
+        skills: Optional[List[str]] = Field(
+            default=None, description="Skills the user possesses."
+        )
+        slack: Optional[List[str]] = Field(
+            default=None, description="Unique Slack member identifier."
+        )
+        jira: Optional[List[str]] = Field(
+            default=None, description="Unique JIRA user identifier."
+        )
         invited_at: Optional[List[str]] = Field(
             default=None,
             description="Time at which the user was invited (as a formatted string).",
         )
-        invited_by: Optional[List[str]] = Field(default=None, description="User who invited this user.")
+        invited_by: Optional[List[str]] = Field(
+            default=None, description="User who invited this user."
+        )
         invited_by_name: Optional[List[str]] = Field(default=None, description="TBC")
 
     class Persona(AtlanObject):
-        id: Optional[str] = Field(default=None, description="Unique identifier (GUID) of the persona.")
-        name: Optional[str] = Field(default=None, description="Internal name of the persona.")
-        display_name: Optional[str] = Field(default=None, description="Human-readable name of the persona.")
+        id: Optional[str] = Field(
+            default=None, description="Unique identifier (GUID) of the persona."
+        )
+        name: Optional[str] = Field(
+            default=None, description="Internal name of the persona."
+        )
+        display_name: Optional[str] = Field(
+            default=None, description="Human-readable name of the persona."
+        )
 
     class LoginEvent(AtlanObject):
         client_id: Optional[str] = Field(
@@ -40,13 +54,17 @@ class AtlanUser(AtlanObject):
             description="Where the login occurred (usually `atlan-frontend`).",
         )
         details: Optional[Any] = Field(default=None, description="TBC")
-        ip_address: Optional[str] = Field(default=None, description="IP address from which the user logged in.")
+        ip_address: Optional[str] = Field(
+            default=None, description="IP address from which the user logged in."
+        )
         realm_id: Optional[str] = Field(default=None, description="TBC")
         session_id: Optional[str] = Field(
             default=None,
             description="Unique identifier (GUID) of the session for the login.",
         )
-        time: Optional[int] = Field(description="Time (epoch) when the login occurred, in milliseconds.")
+        time: Optional[int] = Field(
+            description="Time (epoch) when the login occurred, in milliseconds."
+        )
         type: Optional[str] = Field(
             default=None,
             description="Type of login event that occurred (usually `LOGIN`).",
@@ -63,7 +81,9 @@ class AtlanUser(AtlanObject):
         user_id: Optional[str] = Field(default=None, description="TBC")
 
     class AdminEvent(AtlanObject):
-        operation_type: Optional[str] = Field(default=None, description="Type of admin operation that occurred.")
+        operation_type: Optional[str] = Field(
+            default=None, description="Type of admin operation that occurred."
+        )
         realm_id: Optional[str] = Field(default=None, description="TBC")
         representation: Optional[str] = Field(default=None, description="TBC")
         resource_path: Optional[str] = Field(default=None, description="TBC")
@@ -75,11 +95,19 @@ class AtlanUser(AtlanObject):
             default=None,
             description="Time (epoch) when the admin operation occurred, in milliseconds.",
         )
-        auth_details: Optional[AtlanUser.AuthDetails] = Field(default=None, description="TBC")
+        auth_details: Optional[AtlanUser.AuthDetails] = Field(
+            default=None, description="TBC"
+        )
 
-    username: Optional[str] = Field(default=None, description="Username of the user within Atlan.")
-    id: Optional[str] = Field(default=None, description="Unique identifier (GUID) of the user within Atlan.")
-    workspace_role: Optional[str] = Field(default=None, description="Name of the role of the user within Atlan.")
+    username: Optional[str] = Field(
+        default=None, description="Username of the user within Atlan."
+    )
+    id: Optional[str] = Field(
+        default=None, description="Unique identifier (GUID) of the user within Atlan."
+    )
+    workspace_role: Optional[str] = Field(
+        default=None, description="Name of the role of the user within Atlan."
+    )
     email: Optional[str] = Field(default=None, description="Email address of the user.")
     email_verified: Optional[bool] = Field(
         default=None,
@@ -89,9 +117,15 @@ class AtlanUser(AtlanObject):
         default=None,
         description="When true, the user is enabled. When false, the user has been deactivated.",
     )
-    first_name: Optional[str] = Field(default=None, description="First name of the user.")
-    last_name: Optional[str] = Field(default=None, description="Last name (surname) of the user.")
-    attributes: Optional[AtlanUser.Attributes] = Field(default=None, description="Detailed attributes of the user.")
+    first_name: Optional[str] = Field(
+        default=None, description="First name of the user."
+    )
+    last_name: Optional[str] = Field(
+        default=None, description="Last name (surname) of the user."
+    )
+    attributes: Optional[AtlanUser.Attributes] = Field(
+        default=None, description="Detailed attributes of the user."
+    )
     created_timestamp: Optional[int] = Field(
         default=None,
         description="Time (epoch) at which the user was created, in milliseconds.",
@@ -100,14 +134,18 @@ class AtlanUser(AtlanObject):
         default=None,
         description="Time (epoch) at which the user last logged into Atlan.",
     )
-    group_count: Optional[int] = Field(default=None, description="Number of groups to which the user belongs.")
+    group_count: Optional[int] = Field(
+        default=None, description="Number of groups to which the user belongs."
+    )
     default_roles: Optional[List[str]] = Field(default=None, description="TBC")
     roles: Optional[List[str]] = Field(default=None, description="TBC")
     decentralized_roles: Optional[Any] = Field(default=None, description="TBC")
     personas: Optional[List[AtlanUser.Persona]] = Field(
         default=None, description="Personas the user is associated with."
     )
-    purposes: Optional[List[Any]] = Field(default=None, description="Purposes the user is associated with.")
+    purposes: Optional[List[Any]] = Field(
+        default=None, description="Purposes the user is associated with."
+    )
     admin_events: Optional[List[AtlanUser.AdminEvent]] = Field(
         default=None, description="List of administration-related events for this user."
     )
@@ -145,8 +183,12 @@ AtlanUser.AdminEvent.update_forward_refs()
 
 
 class UserMinimalResponse(AtlanObject):
-    username: Optional[str] = Field(default=None, description="Username of the user within Atlan.")
-    id: Optional[str] = Field(default=None, description="Unique identifier (GUID) of the user within Atlan.")
+    username: Optional[str] = Field(
+        default=None, description="Username of the user within Atlan."
+    )
+    id: Optional[str] = Field(
+        default=None, description="Unique identifier (GUID) of the user within Atlan."
+    )
     email: Optional[str] = Field(default=None, description="Email address of the user.")
     email_verified: Optional[bool] = Field(
         default=None,
@@ -156,9 +198,15 @@ class UserMinimalResponse(AtlanObject):
         default=None,
         description="When true, the user is enabled. When false, the user has been deactivated.",
     )
-    first_name: Optional[str] = Field(default=None, description="First name of the user.")
-    last_name: Optional[str] = Field(default=None, description="Last name (surname) of the user.")
-    attributes: Optional[AtlanUser.Attributes] = Field(default=None, description="Detailed attributes of the user.")
+    first_name: Optional[str] = Field(
+        default=None, description="First name of the user."
+    )
+    last_name: Optional[str] = Field(
+        default=None, description="Last name (surname) of the user."
+    )
+    attributes: Optional[AtlanUser.Attributes] = Field(
+        default=None, description="Detailed attributes of the user."
+    )
     created_timestamp: Optional[int] = Field(
         default=None,
         description="Time (epoch) at which the use was created, in milliseconds.",
@@ -175,7 +223,9 @@ class UserResponse(AtlanObject):
     _endpoint: API = PrivateAttr()
     _client: ApiCaller = PrivateAttr()
     _criteria: UserRequest = PrivateAttr()
-    total_record: Optional[int] = Field(default=None, description="Total number of users.")
+    total_record: Optional[int] = Field(
+        default=None, description="Total number of users."
+    )
     filter_record: Optional[int] = Field(
         default=None,
         description="Number of users in the filtered response.",
@@ -214,7 +264,9 @@ class UserResponse(AtlanObject):
         try:
             self.records = parse_obj_as(List[AtlanUser], raw_json.get("records"))
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
         return True
 
     def __iter__(self) -> Generator[AtlanUser, None, None]:  # type: ignore[override]
@@ -274,17 +326,25 @@ class CreateUserRequest(AtlanObject):
     class CreateUser(AtlanObject):
         email: str = Field(description="Email address of the user.")
         role_name: str = Field(description="Name of the workspace role for the user.")
-        role_id: str = Field(description="Unique identifier (GUID) of the workspace role for the user.")
+        role_id: str = Field(
+            description="Unique identifier (GUID) of the workspace role for the user."
+        )
 
-    users: List[CreateUserRequest.CreateUser] = Field(description="List of users to create.")
+    users: List[CreateUserRequest.CreateUser] = Field(
+        description="List of users to create."
+    )
 
 
 class AddToGroupsRequest(AtlanObject):
-    groups: Optional[List[str]] = Field(description="List of groups (their GUIDs) to add the user to.")
+    groups: Optional[List[str]] = Field(
+        description="List of groups (their GUIDs) to add the user to."
+    )
 
 
 class ChangeRoleRequest(AtlanObject):
-    role_id: str = Field(description="Unique identifier (GUID) of the new workspace role for the user.")
+    role_id: str = Field(
+        description="Unique identifier (GUID) of the new workspace role for the user."
+    )
 
 
 class UserProvider(Protocol):

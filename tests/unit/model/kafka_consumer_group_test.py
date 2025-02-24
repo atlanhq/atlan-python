@@ -17,9 +17,13 @@ from tests.unit.model.constants import (
         (KAFKA_TOPIC_QUALIFIED_NAMES, None, "kafka_topic_qualified_names is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(name: str, kafka_topic_qualified_names: str, message: str):
+def test_creator_with_missing_parameters_raise_value_error(
+    name: str, kafka_topic_qualified_names: str, message: str
+):
     with pytest.raises(ValueError, match=message):
-        KafkaConsumerGroup.creator(name=name, kafka_topic_qualified_names=kafka_topic_qualified_names)
+        KafkaConsumerGroup.creator(
+            name=name, kafka_topic_qualified_names=kafka_topic_qualified_names
+        )
 
 
 def test_creator():
@@ -42,7 +46,9 @@ def test_creator():
         (KAFKA_CONSUMER_GROUP_NAME, None, "name is required"),
     ],
 )
-def test_updater_with_invalid_parameter_raises_value_error(qualified_name: str, name: str, message: str):
+def test_updater_with_invalid_parameter_raises_value_error(
+    qualified_name: str, name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         KafkaConsumerGroup.updater(qualified_name=qualified_name, name=name)
 

@@ -395,7 +395,9 @@ class AtlanClient(BaseSettings):
                             if not line:
                                 continue
                             if not line.startswith("data: "):
-                                raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(line)
+                                raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
+                                    line
+                                )
                             events.append(json.loads(line.split("data: ")[1]))
                     if text_response:
                         response_ = response.text
@@ -420,8 +422,14 @@ class AtlanClient(BaseSettings):
             else:
                 with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                     error_info = json.loads(response.text)
-                    error_code = error_info.get("errorCode", 0) or error_info.get("code", 0) or error_info.get("status")
-                    error_message = error_info.get("errorMessage", "") or error_info.get("message", "")
+                    error_code = (
+                        error_info.get("errorCode", 0)
+                        or error_info.get("code", 0)
+                        or error_info.get("status")
+                    )
+                    error_message = error_info.get(
+                        "errorMessage", ""
+                    ) or error_info.get("message", "")
                     error_cause = error_info.get("errorCause", [])
                     causes = error_info.get("causes", [])
                     backend_error_id = error_info.get("errorId")
@@ -434,14 +442,17 @@ class AtlanClient(BaseSettings):
                         for cause in causes
                     ]
                     # Join the error cause details into a single string, separated by newlines
-                    error_cause_details_str = "\n".join(error_cause_details) if error_cause_details else ""
+                    error_cause_details_str = (
+                        "\n".join(error_cause_details) if error_cause_details else ""
+                    )
 
                     # Retry with impersonation (if _user_id is present)
                     # on authentication failure (token may have expired)
                     if (
                         self._user_id
                         and not self._has_retried_for_401
-                        and response.status_code == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
+                        and response.status_code
+                        == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
                         try:
                             return self._handle_401_token_refresh(
@@ -460,7 +471,9 @@ class AtlanClient(BaseSettings):
                             )
 
                     if error_code and error_message:
-                        error = ERROR_CODE_FOR_HTTP_STATUS.get(response.status_code, ErrorCode.ERROR_PASSTHROUGH)
+                        error = ERROR_CODE_FOR_HTTP_STATUS.get(
+                            response.status_code, ErrorCode.ERROR_PASSTHROUGH
+                        )
                         # Raise exception with error details and causes
                         raise error.exception_with_parameters(
                             error_code,
@@ -513,7 +526,9 @@ class AtlanClient(BaseSettings):
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
         path = self._create_path(api)
-        params = self._create_params(api, query_params=None, request_obj=None, exclude_unset=True)
+        params = self._create_params(
+            api, query_params=None, request_obj=None, exclude_unset=True
+        )
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return self._call_api_internal(api, path, params, binary_data=post_data)
@@ -548,7 +563,9 @@ class AtlanClient(BaseSettings):
         params["headers"].pop("authorization", None)
         return self._call_api_internal(api, path, params, download_file_path=file_path)
 
-    def _create_params(self, api: API, query_params, request_obj, exclude_unset: bool = True):
+    def _create_params(
+        self, api: API, query_params, request_obj, exclude_unset: bool = True
+    ):
         params = copy.deepcopy(self._request_params)
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
@@ -556,7 +573,9 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(by_alias=True, exclude_unset=exclude_unset)
+                params["data"] = request_obj.json(
+                    by_alias=True, exclude_unset=exclude_unset
+                )
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
             else:
@@ -621,7 +640,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.role.get(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+        return self.role.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_roles(self) -> RoleResponse:
         """Deprecated - use self.role.get_all() instead."""
@@ -683,7 +704,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.group.get(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+        return self.group.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_groups(
         self,
@@ -816,7 +839,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+        return self.user.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_users(
         self,
@@ -973,7 +998,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.save_merging_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
+        return self.asset.save_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
     def save_merging_cm(
         self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
@@ -985,9 +1012,13 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.save_merging_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
+        return self.asset.save_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
-    def update_merging_cm(self, entity: Asset, replace_atlan_tags: bool = False) -> AssetMutationResponse:
+    def update_merging_cm(
+        self, entity: Asset, replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
         """Deprecated - use asset.update_merging_cm() instead."""
         warn(
             "This method is deprecated, please use 'asset.update_merging_cm' instead, which offers identical "
@@ -995,7 +1026,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.update_merging_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
+        return self.asset.update_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
     def upsert_replacing_cm(
         self, entity: Union[Asset, List[Asset]], replace_atlan_tagss: bool = False
@@ -1007,7 +1040,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.save_replacing_cm(entity=entity, replace_atlan_tags=replace_atlan_tagss)
+        return self.asset.save_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tagss
+        )
 
     def save_replacing_cm(
         self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
@@ -1019,9 +1054,13 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.save_replacing_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
+        return self.asset.save_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
-    def update_replacing_cm(self, entity: Asset, replace_atlan_tags: bool = False) -> AssetMutationResponse:
+    def update_replacing_cm(
+        self, entity: Asset, replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
         """Deprecated - use asset.update_replacing_cm() instead."""
         warn(
             "This method is deprecated, please use 'asset.update_replacing_cm' instead, which offers identical "
@@ -1029,9 +1068,13 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.update_replacing_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
+        return self.asset.update_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
-    def purge_entity_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
+    def purge_entity_by_guid(
+        self, guid: Union[str, List[str]]
+    ) -> AssetMutationResponse:
         """Deprecated - use asset.purge_by_guid() instead."""
         warn(
             "This method is deprecated, please use 'asset.purge_by_guid' instead, which offers identical "
@@ -1041,7 +1084,9 @@ class AtlanClient(BaseSettings):
         )
         return self.asset.purge_by_guid(guid=guid)
 
-    def delete_entity_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
+    def delete_entity_by_guid(
+        self, guid: Union[str, List[str]]
+    ) -> AssetMutationResponse:
         """Deprecated - use asset.delete_by_guid() instead."""
         warn(
             "This method is deprecated, please use 'asset.delete_by_guid' instead, which offers identical "
@@ -1078,7 +1123,9 @@ class AtlanClient(BaseSettings):
         )
         return self.typedef.get_all()
 
-    def get_typedefs(self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]) -> TypeDefResponse:
+    def get_typedefs(
+        self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]
+    ) -> TypeDefResponse:
         """Deprecated - use typedef.get() instead."""
         warn(
             "This method is deprecated, please use 'typedef.get' instead, which offers identical functionality.",
@@ -1143,7 +1190,9 @@ class AtlanClient(BaseSettings):
         )
 
     @validate_arguments
-    def remove_atlan_tag(self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str) -> None:
+    def remove_atlan_tag(
+        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
+    ) -> None:
         """Deprecated - use asset.remove_atlan_tag() instead."""
         warn(
             "This method is deprecated, please use 'asset.remove_atlan_tag' instead, which offers identical "
@@ -1182,7 +1231,9 @@ class AtlanClient(BaseSettings):
         )
 
     @validate_arguments
-    def remove_certificate(self, asset_type: Type[A], qualified_name: str, name: str) -> Optional[A]:
+    def remove_certificate(
+        self, asset_type: Type[A], qualified_name: str, name: str
+    ) -> Optional[A]:
         """Deprecated - use asset.remove_certificate() instead."""
         warn(
             "This method is deprecated, please use 'asset.remove_certificate' instead, which offers identical "
@@ -1190,7 +1241,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.remove_certificate(asset_type=asset_type, qualified_name=qualified_name, name=name)
+        return self.asset.remove_certificate(
+            asset_type=asset_type, qualified_name=qualified_name, name=name
+        )
 
     @validate_arguments
     def update_announcement(
@@ -1215,7 +1268,9 @@ class AtlanClient(BaseSettings):
         )
 
     @validate_arguments
-    def remove_announcement(self, asset_type: Type[A], qualified_name: str, name: str) -> Optional[A]:
+    def remove_announcement(
+        self, asset_type: Type[A], qualified_name: str, name: str
+    ) -> Optional[A]:
         """Deprecated - use asset.remove_announcement() instead."""
         warn(
             "This method is deprecated, please use 'asset.remove_announcement' instead, which offers identical "
@@ -1223,9 +1278,13 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.remove_announcement(asset_type=asset_type, qualified_name=qualified_name, name=name)
+        return self.asset.remove_announcement(
+            asset_type=asset_type, qualified_name=qualified_name, name=name
+        )
 
-    def update_custom_metadata_attributes(self, guid: str, custom_metadata: CustomMetadataDict):
+    def update_custom_metadata_attributes(
+        self, guid: str, custom_metadata: CustomMetadataDict
+    ):
         """Deprecated - use asset.update_custom_metadata_attributes() instead."""
         warn(
             "This method is deprecated, please use 'asset.update_custom_metadata_attributes' instead, which offers "
@@ -1233,7 +1292,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        self.asset.update_custom_metadata_attributes(guid=guid, custom_metadata=custom_metadata)
+        self.asset.update_custom_metadata_attributes(
+            guid=guid, custom_metadata=custom_metadata
+        )
 
     def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
         """Deprecated - use asset.replace_custom_metadata() instead."""
@@ -1269,7 +1330,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.append_terms(asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name)
+        return self.asset.append_terms(
+            asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
+        )
 
     @validate_arguments
     def replace_terms(
@@ -1286,7 +1349,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.replace_terms(asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name)
+        return self.asset.replace_terms(
+            asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
+        )
 
     @validate_arguments
     def remove_terms(
@@ -1302,7 +1367,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.remove_terms(asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name)
+        return self.asset.remove_terms(
+            asset_type=asset_type, terms=terms, guid=guid, qualified_name=qualified_name
+        )
 
     @validate_arguments
     def find_connections_by_name(
@@ -1318,9 +1385,13 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.find_connections_by_name(name=name, connector_type=connector_type, attributes=attributes)
+        return self.asset.find_connections_by_name(
+            name=name, connector_type=connector_type, attributes=attributes
+        )
 
-    def get_lineage_list(self, lineage_request: LineageListRequest) -> LineageListResults:
+    def get_lineage_list(
+        self, lineage_request: LineageListRequest
+    ) -> LineageListResults:
         """Deprecated - use asset.get_lineage_list() instead."""
         warn(
             "This method is deprecated, please use 'asset.get_lineage_list' instead, which offers identical "
@@ -1330,23 +1401,31 @@ class AtlanClient(BaseSettings):
         )
         return self.asset.get_lineage_list(lineage_request=lineage_request)
 
-    def add_api_token_as_admin(self, asset_guid: str, impersonation_token: str) -> Optional[AssetMutationResponse]:
+    def add_api_token_as_admin(
+        self, asset_guid: str, impersonation_token: str
+    ) -> Optional[AssetMutationResponse]:
         """Deprecated - use user.add_as_admin() instead."""
         warn(
             "This method is deprecated, please use 'user.add_as_admin' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.add_as_admin(asset_guid=asset_guid, impersonation_token=impersonation_token)
+        return self.user.add_as_admin(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
-    def add_api_token_as_viewer(self, asset_guid: str, impersonation_token: str) -> Optional[AssetMutationResponse]:
+    def add_api_token_as_viewer(
+        self, asset_guid: str, impersonation_token: str
+    ) -> Optional[AssetMutationResponse]:
         """Deprecated - use user.add_as_viewer() instead."""
         warn(
             "This method is deprecated, please use 'user.add_as_viewer' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.add_as_viewer(asset_guid=asset_guid, impersonation_token=impersonation_token)
+        return self.user.add_as_viewer(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
     def get_api_tokens(
         self,
@@ -1362,7 +1441,9 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.token.get(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+        return self.token.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_api_token_by_name(self, display_name: str) -> Optional[ApiToken]:
         """Deprecated - use token.get_by_name() instead."""
@@ -1431,7 +1512,9 @@ class AtlanClient(BaseSettings):
         )
         self.token.purge(guid=guid)
 
-    def get_keycloak_events(self, keycloak_request: KeycloakEventRequest) -> KeycloakEventResponse:
+    def get_keycloak_events(
+        self, keycloak_request: KeycloakEventRequest
+    ) -> KeycloakEventResponse:
         """Deprecated - use admin.get_keycloak_events() instead."""
         warn(
             "This method is deprecated, please use 'admin.get_keycloak_events' instead, which offers identical "
@@ -1499,7 +1582,9 @@ class AtlanClient(BaseSettings):
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> List[AtlasGlossaryCategory]:
         """Deprecated - use asset.find_category_fast_by_name() instead."""
@@ -1529,13 +1614,17 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.find_category_by_name(name=name, glossary_name=glossary_name, attributes=attributes)
+        return self.asset.find_category_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
 
     @validate_arguments
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """Deprecated - use asset.find_category_by_name() instead."""
@@ -1565,10 +1654,14 @@ class AtlanClient(BaseSettings):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.find_term_by_name(name=name, glossary_name=glossary_name, attributes=attributes)
+        return self.asset.find_term_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
 
     @contextlib.contextmanager
-    def max_retries(self, max_retries: Retry = CONNECTION_RETRY) -> Generator[None, None, None]:
+    def max_retries(
+        self, max_retries: Retry = CONNECTION_RETRY
+    ) -> Generator[None, None, None]:
         """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
         The original Retry information will be restored when the context is exited."""
         if self.base_url == "INTERNAL":

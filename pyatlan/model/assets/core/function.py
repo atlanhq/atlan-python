@@ -34,19 +34,27 @@ class Function(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FUNCTION_DEFINITION: ClassVar[TextField] = TextField("functionDefinition", "functionDefinition")
+    FUNCTION_DEFINITION: ClassVar[TextField] = TextField(
+        "functionDefinition", "functionDefinition"
+    )
     """
     Code or set of statements that determine the output of the function.
     """
-    FUNCTION_RETURN_TYPE: ClassVar[KeywordField] = KeywordField("functionReturnType", "functionReturnType")
+    FUNCTION_RETURN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "functionReturnType", "functionReturnType"
+    )
     """
     Data type of the value returned by the function.
     """
-    FUNCTION_ARGUMENTS: ClassVar[KeywordField] = KeywordField("functionArguments", "functionArguments")
+    FUNCTION_ARGUMENTS: ClassVar[KeywordField] = KeywordField(
+        "functionArguments", "functionArguments"
+    )
     """
     Arguments that are passed in to the function.
     """
-    FUNCTION_LANGUAGE: ClassVar[KeywordField] = KeywordField("functionLanguage", "functionLanguage")
+    FUNCTION_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "functionLanguage", "functionLanguage"
+    )
     """
     Programming language in which the function is written.
     """
@@ -54,19 +62,27 @@ class Function(SQL):
     """
     Type of function.
     """
-    FUNCTION_IS_EXTERNAL: ClassVar[BooleanField] = BooleanField("functionIsExternal", "functionIsExternal")
+    FUNCTION_IS_EXTERNAL: ClassVar[BooleanField] = BooleanField(
+        "functionIsExternal", "functionIsExternal"
+    )
     """
     Whether the function is stored or executed externally (true) or internally (false).
     """
-    FUNCTION_IS_DMF: ClassVar[BooleanField] = BooleanField("functionIsDMF", "functionIsDMF")
+    FUNCTION_IS_DMF: ClassVar[BooleanField] = BooleanField(
+        "functionIsDMF", "functionIsDMF"
+    )
     """
     Whether the function is a data metric function.
     """
-    FUNCTION_IS_SECURE: ClassVar[BooleanField] = BooleanField("functionIsSecure", "functionIsSecure")
+    FUNCTION_IS_SECURE: ClassVar[BooleanField] = BooleanField(
+        "functionIsSecure", "functionIsSecure"
+    )
     """
     Whether sensitive information of the function is omitted for unauthorized users (true) or not (false).
     """
-    FUNCTION_IS_MEMOIZABLE: ClassVar[BooleanField] = BooleanField("functionIsMemoizable", "functionIsMemoizable")
+    FUNCTION_IS_MEMOIZABLE: ClassVar[BooleanField] = BooleanField(
+        "functionIsMemoizable", "functionIsMemoizable"
+    )
     """
     Whether the function must re-compute if there are no underlying changes in the values (false) or not (true).
     """
@@ -171,7 +187,9 @@ class Function(SQL):
 
     @property
     def function_is_memoizable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.function_is_memoizable
+        return (
+            None if self.attributes is None else self.attributes.function_is_memoizable
+        )
 
     @function_is_memoizable.setter
     def function_is_memoizable(self, function_is_memoizable: Optional[bool]):
@@ -199,7 +217,9 @@ class Function(SQL):
         function_is_d_m_f: Optional[bool] = Field(default=None, description="")
         function_is_secure: Optional[bool] = Field(default=None, description="")
         function_is_memoizable: Optional[bool] = Field(default=None, description="")
-        function_schema: Optional[Schema] = Field(default=None, description="")  # relationship
+        function_schema: Optional[Schema] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Function.Attributes = Field(
         default_factory=lambda: Function.Attributes(),

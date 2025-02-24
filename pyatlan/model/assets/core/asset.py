@@ -46,7 +46,9 @@ class Asset(Referenceable):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
 
     def trim_to_required(self: SelfAsset) -> SelfAsset:
-        return self.create_for_modification(qualified_name=self.qualified_name or "", name=self.name or "")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name or "", name=self.name or ""
+        )
 
     def trim_to_reference(self: SelfAsset) -> SelfAsset:
         if self.guid and self.guid.strip():
@@ -75,7 +77,9 @@ class Asset(Referenceable):
     @init_guid
     def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -83,7 +87,9 @@ class Asset(Referenceable):
 
     @classmethod
     @init_guid
-    def updater(cls: type[SelfAsset], qualified_name: str = "", name: str = "") -> SelfAsset:
+    def updater(
+        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
+    ) -> SelfAsset:
         if cls.__name__ == "Asset":
             raise ErrorCode.METHOD_CAN_NOT_BE_INVOKED_ON_ASSET.exception_with_parameters()
         validate_required_fields(
@@ -93,16 +99,22 @@ class Asset(Referenceable):
         return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
-    def create_for_modification(cls: type[SelfAsset], qualified_name: str = "", name: str = "") -> SelfAsset:
+    def create_for_modification(
+        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
+    ) -> SelfAsset:
         warn(
-            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
         return cls.updater(qualified_name=qualified_name, name=name)
 
     @classmethod
-    def ref_by_guid(cls: type[SelfAsset], guid: str, semantic: SaveSemantic = SaveSemantic.REPLACE) -> SelfAsset:
+    def ref_by_guid(
+        cls: type[SelfAsset], guid: str, semantic: SaveSemantic = SaveSemantic.REPLACE
+    ) -> SelfAsset:
         retval: SelfAsset = cls(attributes=cls.Attributes())
         retval.guid = guid
         retval.semantic = semantic
@@ -114,7 +126,9 @@ class Asset(Referenceable):
         qualified_name: str,
         semantic: SaveSemantic = SaveSemantic.REPLACE,
     ) -> SelfAsset:
-        ret_value: SelfAsset = cls(attributes=cls.Attributes(name="", qualified_name=qualified_name))
+        ret_value: SelfAsset = cls(
+            attributes=cls.Attributes(name="", qualified_name=qualified_name)
+        )
         ret_value.unique_attributes = {"qualifiedName": qualified_name}
         ret_value.semantic = semantic
         return ret_value
@@ -132,7 +146,9 @@ class Asset(Referenceable):
         if isinstance(data, list):  # Recursively process lists
             return [cls._convert_to_real_type_(item) for item in data]
 
-        data_type = data.get("type_name") if "type_name" in data else data.get("typeName")
+        data_type = (
+            data.get("type_name") if "type_name" in data else data.get("typeName")
+        )
         if not data_type:
             if issubclass(cls, Asset):
                 return cls(**data)
@@ -172,7 +188,12 @@ class Asset(Referenceable):
         return FluentLineage(starting_guid=guid)
 
     def has_announcement(self) -> bool:
-        return bool(self.attributes and (self.attributes.announcement_title or self.attributes.announcement_type))
+        return bool(
+            self.attributes
+            and (
+                self.attributes.announcement_title or self.attributes.announcement_type
+            )
+        )
 
     def set_announcement(self, announcement: Announcement) -> None:
         self.attributes.announcement_type = announcement.announcement_type.value
@@ -182,7 +203,9 @@ class Asset(Referenceable):
     def get_announcment(self) -> Optional[Announcement]:
         if self.attributes.announcement_type and self.attributes.announcement_title:
             return Announcement(
-                announcement_type=AnnouncementType[self.attributes.announcement_type.upper()],
+                announcement_type=AnnouncementType[
+                    self.attributes.announcement_type.upper()
+                ],
                 announcement_title=self.attributes.announcement_title,
                 announcement_message=self.attributes.announcement_message,
             )
@@ -216,15 +239,21 @@ class Asset(Referenceable):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField("name", "name.keyword", "name", "name.stemmed")
+    NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
+        "name", "name.keyword", "name", "name.stemmed"
+    )
     """
     Name of this asset. Fallback for display purposes, if displayName is empty.
     """
-    DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField("displayName", "displayName.keyword", "displayName")
+    DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "displayName", "displayName.keyword", "displayName"
+    )
     """
     Human-readable name of this asset used for display purposes (in user interface).
     """
-    DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField("description", "description.keyword", "description")
+    DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
+        "description", "description.keyword", "description"
+    )
     """
     Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.
     """  # noqa: E501
@@ -244,35 +273,51 @@ class Asset(Referenceable):
     """
     Status of this asset's certification.
     """
-    CERTIFICATE_STATUS_MESSAGE: ClassVar[TextField] = TextField("certificateStatusMessage", "certificateStatusMessage")
+    CERTIFICATE_STATUS_MESSAGE: ClassVar[TextField] = TextField(
+        "certificateStatusMessage", "certificateStatusMessage"
+    )
     """
     Human-readable descriptive message used to provide further detail to certificateStatus.
     """
-    CERTIFICATE_UPDATED_BY: ClassVar[KeywordField] = KeywordField("certificateUpdatedBy", "certificateUpdatedBy")
+    CERTIFICATE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "certificateUpdatedBy", "certificateUpdatedBy"
+    )
     """
     Name of the user who last updated the certification of this asset.
     """
-    CERTIFICATE_UPDATED_AT: ClassVar[NumericField] = NumericField("certificateUpdatedAt", "certificateUpdatedAt")
+    CERTIFICATE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "certificateUpdatedAt", "certificateUpdatedAt"
+    )
     """
     Time (epoch) at which the certification was last updated, in milliseconds.
     """
-    ANNOUNCEMENT_TITLE: ClassVar[TextField] = TextField("announcementTitle", "announcementTitle")
+    ANNOUNCEMENT_TITLE: ClassVar[TextField] = TextField(
+        "announcementTitle", "announcementTitle"
+    )
     """
     Brief title for the announcement on this asset. Required when announcementType is specified.
     """
-    ANNOUNCEMENT_MESSAGE: ClassVar[TextField] = TextField("announcementMessage", "announcementMessage")
+    ANNOUNCEMENT_MESSAGE: ClassVar[TextField] = TextField(
+        "announcementMessage", "announcementMessage"
+    )
     """
     Detailed message to include in the announcement on this asset.
     """
-    ANNOUNCEMENT_TYPE: ClassVar[KeywordField] = KeywordField("announcementType", "announcementType")
+    ANNOUNCEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "announcementType", "announcementType"
+    )
     """
     Type of announcement on this asset.
     """
-    ANNOUNCEMENT_UPDATED_AT: ClassVar[NumericField] = NumericField("announcementUpdatedAt", "announcementUpdatedAt")
+    ANNOUNCEMENT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "announcementUpdatedAt", "announcementUpdatedAt"
+    )
     """
     Time (epoch) at which the announcement was last updated, in milliseconds.
     """
-    ANNOUNCEMENT_UPDATED_BY: ClassVar[KeywordField] = KeywordField("announcementUpdatedBy", "announcementUpdatedBy")
+    ANNOUNCEMENT_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "announcementUpdatedBy", "announcementUpdatedBy"
+    )
     """
     Name of the user who last updated the announcement.
     """
@@ -300,7 +345,9 @@ class Asset(Referenceable):
     """
     List of groups who can view assets contained in a collection. (This is only used for certain asset types.)
     """
-    CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField("connectorName", "connectorName")
+    CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField(
+        "connectorName", "connectorName"
+    )
     """
     Type of the connector through which this asset is accessible.
     """
@@ -322,7 +369,9 @@ class Asset(Referenceable):
     """
     Whether this asset has lineage (true) or not (false).
     """
-    IS_DISCOVERABLE: ClassVar[BooleanField] = BooleanField("isDiscoverable", "isDiscoverable")
+    IS_DISCOVERABLE: ClassVar[BooleanField] = BooleanField(
+        "isDiscoverable", "isDiscoverable"
+    )
     """
     Whether this asset is discoverable through the UI (true) or not (false).
     """
@@ -334,7 +383,9 @@ class Asset(Referenceable):
     """
     Subtype of this asset.
     """
-    VIEW_SCORE: ClassVar[NumericRankField] = NumericRankField("viewScore", "viewScore", "viewScore.rank_feature")
+    VIEW_SCORE: ClassVar[NumericRankField] = NumericRankField(
+        "viewScore", "viewScore", "viewScore.rank_feature"
+    )
     """
     View score for this asset.
     """
@@ -348,19 +399,27 @@ class Asset(Referenceable):
     """
     List of owners of this asset, in the source system.
     """
-    SOURCE_CREATED_BY: ClassVar[KeywordField] = KeywordField("sourceCreatedBy", "sourceCreatedBy")
+    SOURCE_CREATED_BY: ClassVar[KeywordField] = KeywordField(
+        "sourceCreatedBy", "sourceCreatedBy"
+    )
     """
     Name of the user who created this asset, in the source system.
     """
-    SOURCE_CREATED_AT: ClassVar[NumericField] = NumericField("sourceCreatedAt", "sourceCreatedAt")
+    SOURCE_CREATED_AT: ClassVar[NumericField] = NumericField(
+        "sourceCreatedAt", "sourceCreatedAt"
+    )
     """
     Time (epoch) at which this asset was created in the source system, in milliseconds.
     """
-    SOURCE_UPDATED_AT: ClassVar[NumericField] = NumericField("sourceUpdatedAt", "sourceUpdatedAt")
+    SOURCE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "sourceUpdatedAt", "sourceUpdatedAt"
+    )
     """
     Time (epoch) at which this asset was last updated in the source system, in milliseconds.
     """
-    SOURCE_UPDATED_BY: ClassVar[KeywordField] = KeywordField("sourceUpdatedBy", "sourceUpdatedBy")
+    SOURCE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "sourceUpdatedBy", "sourceUpdatedBy"
+    )
     """
     Name of the user who last updated this asset, in the source system.
     """
@@ -368,15 +427,21 @@ class Asset(Referenceable):
     """
     URL to the resource within the source application, used to create a button to view this asset in the source application.
     """  # noqa: E501
-    SOURCE_EMBED_URL: ClassVar[KeywordField] = KeywordField("sourceEmbedURL", "sourceEmbedURL")
+    SOURCE_EMBED_URL: ClassVar[KeywordField] = KeywordField(
+        "sourceEmbedURL", "sourceEmbedURL"
+    )
     """
     URL to create an embed for a resource (for example, an image of a dashboard) within Atlan.
     """
-    LAST_SYNC_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField("lastSyncWorkflowName", "lastSyncWorkflowName")
+    LAST_SYNC_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField(
+        "lastSyncWorkflowName", "lastSyncWorkflowName"
+    )
     """
     Name of the crawler that last synchronized this asset.
     """
-    LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField("lastSyncRunAt", "lastSyncRunAt")
+    LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "lastSyncRunAt", "lastSyncRunAt"
+    )
     """
     Time (epoch) at which this asset was last crawled, in milliseconds.
     """
@@ -388,31 +453,45 @@ class Asset(Referenceable):
     """
     List of roles who administer this asset. (This is only used for Connection assets.)
     """
-    SOURCE_READ_COUNT: ClassVar[NumericField] = NumericField("sourceReadCount", "sourceReadCount")
+    SOURCE_READ_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceReadCount", "sourceReadCount"
+    )
     """
     Total count of all read operations at source.
     """
-    SOURCE_READ_USER_COUNT: ClassVar[NumericField] = NumericField("sourceReadUserCount", "sourceReadUserCount")
+    SOURCE_READ_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceReadUserCount", "sourceReadUserCount"
+    )
     """
     Total number of unique users that read data from asset.
     """
-    SOURCE_LAST_READ_AT: ClassVar[NumericField] = NumericField("sourceLastReadAt", "sourceLastReadAt")
+    SOURCE_LAST_READ_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastReadAt", "sourceLastReadAt"
+    )
     """
     Timestamp of most recent read operation.
     """
-    LAST_ROW_CHANGED_AT: ClassVar[NumericField] = NumericField("lastRowChangedAt", "lastRowChangedAt")
+    LAST_ROW_CHANGED_AT: ClassVar[NumericField] = NumericField(
+        "lastRowChangedAt", "lastRowChangedAt"
+    )
     """
     Time (epoch) of the last operation that inserted, updated, or deleted rows, in milliseconds.
     """
-    SOURCE_TOTAL_COST: ClassVar[NumericField] = NumericField("sourceTotalCost", "sourceTotalCost")
+    SOURCE_TOTAL_COST: ClassVar[NumericField] = NumericField(
+        "sourceTotalCost", "sourceTotalCost"
+    )
     """
     Total cost of all operations at source.
     """
-    SOURCE_COST_UNIT: ClassVar[KeywordField] = KeywordField("sourceCostUnit", "sourceCostUnit")
+    SOURCE_COST_UNIT: ClassVar[KeywordField] = KeywordField(
+        "sourceCostUnit", "sourceCostUnit"
+    )
     """
     The unit of measure for sourceTotalCost.
     """
-    SOURCE_READ_QUERY_COST: ClassVar[NumericField] = NumericField("sourceReadQueryCost", "sourceReadQueryCost")
+    SOURCE_READ_QUERY_COST: ClassVar[NumericField] = NumericField(
+        "sourceReadQueryCost", "sourceReadQueryCost"
+    )
     """
     Total cost of read queries at source.
     """
@@ -428,7 +507,9 @@ class Asset(Referenceable):
     """
     List of usernames with extra insights for the most recent users who read this asset.
     """
-    SOURCE_READ_TOP_USER_LIST: ClassVar[KeywordField] = KeywordField("sourceReadTopUserList", "sourceReadTopUserList")
+    SOURCE_READ_TOP_USER_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadTopUserList", "sourceReadTopUserList"
+    )
     """
     List of usernames of the users who read this asset the most.
     """
@@ -520,15 +601,21 @@ class Asset(Referenceable):
     """
     Name of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField("assetDbtJobSchedule", "assetDbtJobSchedule")
+    ASSET_DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobSchedule", "assetDbtJobSchedule"
+    )
     """
     Schedule of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField("assetDbtJobStatus", "assetDbtJobStatus")
+    ASSET_DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobStatus", "assetDbtJobStatus"
+    )
     """
     Status of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField("assetDbtTestStatus", "assetDbtTestStatus")
+    ASSET_DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetDbtTestStatus", "assetDbtTestStatus"
+    )
     """
     All associated dbt test statuses.
     """
@@ -538,11 +625,15 @@ class Asset(Referenceable):
     """
     Human-readable cron schedule of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField("assetDbtJobLastRun", "assetDbtJobLastRun")
+    ASSET_DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRun", "assetDbtJobLastRun"
+    )
     """
     Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.
     """
-    ASSET_DBT_JOB_LAST_RUN_URL: ClassVar[KeywordField] = KeywordField("assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl")
+    ASSET_DBT_JOB_LAST_RUN_URL: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl"
+    )
     """
     URL of the last run of the job that materialized this asset in dbt.
     """
@@ -589,9 +680,11 @@ class Asset(Referenceable):
     """
     Total duration the job that materialized this asset in dbt spent being queued.
     """
-    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[KeywordField] = KeywordField(
-        "assetDbtJobLastRunQueuedDurationHumanized",
-        "assetDbtJobLastRunQueuedDurationHumanized",
+    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDbtJobLastRunQueuedDurationHumanized",
+            "assetDbtJobLastRunQueuedDurationHumanized",
+        )
     )
     """
     Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued.
@@ -602,9 +695,11 @@ class Asset(Referenceable):
     """
     Run duration of the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[KeywordField] = KeywordField(
-        "assetDbtJobLastRunRunDurationHumanized",
-        "assetDbtJobLastRunRunDurationHumanized",
+    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDbtJobLastRunRunDurationHumanized",
+            "assetDbtJobLastRunRunDurationHumanized",
+        )
     )
     """
     Human-readable run duration of the last run of the job that materialized this asset in dbt.
@@ -623,10 +718,12 @@ class Asset(Referenceable):
     """
     SHA hash in git for the last run of the job that materialized this asset in dbt.
     """
-    ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[KeywordTextField] = KeywordTextField(
-        "assetDbtJobLastRunStatusMessage",
-        "assetDbtJobLastRunStatusMessage.keyword",
-        "assetDbtJobLastRunStatusMessage",
+    ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "assetDbtJobLastRunStatusMessage",
+            "assetDbtJobLastRunStatusMessage.keyword",
+            "assetDbtJobLastRunStatusMessage",
+        )
     )
     """
     Status message of the last run of the job that materialized this asset in dbt.
@@ -673,7 +770,9 @@ class Asset(Referenceable):
     """
     Whether notifications were sent from the last run of the job that materialized this asset in dbt (true) or not (false).
     """  # noqa: E501
-    ASSET_DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField("assetDbtJobNextRun", "assetDbtJobNextRun")
+    ASSET_DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "assetDbtJobNextRun", "assetDbtJobNextRun"
+    )
     """
     Time (epoch) when the next run of the job that materializes this asset in dbt is scheduled.
     """
@@ -699,7 +798,9 @@ class Asset(Referenceable):
     """
     Version of the environment in which this asset is materialized in dbt.
     """
-    ASSET_DBT_TAGS: ClassVar[KeywordTextField] = KeywordTextField("assetDbtTags", "assetDbtTags", "assetDbtTags.text")
+    ASSET_DBT_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtTags", "assetDbtTags", "assetDbtTags.text"
+    )
     """
     List of tags attached to this asset in dbt.
     """
@@ -721,7 +822,9 @@ class Asset(Referenceable):
     """
     URL for sample data for this asset.
     """
-    ASSET_TAGS: ClassVar[KeywordTextField] = KeywordTextField("assetTags", "assetTags", "assetTags.text")
+    ASSET_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetTags", "assetTags", "assetTags.text"
+    )
     """
     List of tags attached to this asset.
     """
@@ -761,11 +864,15 @@ class Asset(Referenceable):
     """
     List of unique Monte Carlo monitor names attached to this asset.
     """
-    ASSET_MC_MONITOR_STATUSES: ClassVar[KeywordField] = KeywordField("assetMcMonitorStatuses", "assetMcMonitorStatuses")
+    ASSET_MC_MONITOR_STATUSES: ClassVar[KeywordField] = KeywordField(
+        "assetMcMonitorStatuses", "assetMcMonitorStatuses"
+    )
     """
     Statuses of all associated Monte Carlo monitors.
     """
-    ASSET_MC_MONITOR_TYPES: ClassVar[KeywordField] = KeywordField("assetMcMonitorTypes", "assetMcMonitorTypes")
+    ASSET_MC_MONITOR_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcMonitorTypes", "assetMcMonitorTypes"
+    )
     """
     Types of all associated Monte Carlo monitors.
     """
@@ -775,7 +882,9 @@ class Asset(Referenceable):
     """
     Schedules of all associated Monte Carlo monitors.
     """
-    ASSET_MC_INCIDENT_TYPES: ClassVar[KeywordField] = KeywordField("assetMcIncidentTypes", "assetMcIncidentTypes")
+    ASSET_MC_INCIDENT_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentTypes", "assetMcIncidentTypes"
+    )
     """
     List of Monte Carlo incident types associated with this asset.
     """
@@ -797,15 +906,21 @@ class Asset(Referenceable):
     """
     List of Monte Carlo incident priorities associated with this asset.
     """
-    ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField("assetMcIncidentStates", "assetMcIncidentStates")
+    ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentStates", "assetMcIncidentStates"
+    )
     """
     List of Monte Carlo incident states associated with this asset.
     """
-    ASSET_MC_IS_MONITORED: ClassVar[BooleanField] = BooleanField("assetMcIsMonitored", "assetMcIsMonitored")
+    ASSET_MC_IS_MONITORED: ClassVar[BooleanField] = BooleanField(
+        "assetMcIsMonitored", "assetMcIsMonitored"
+    )
     """
     Tracks whether this asset is monitored by MC or not
     """
-    ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField("assetMcLastSyncRunAt", "assetMcLastSyncRunAt")
+    ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
+    )
     """
     Time (epoch) at which this asset was last synced from Monte Carlo.
     """
@@ -813,7 +928,9 @@ class Asset(Referenceable):
     """
     Users who have starred this asset.
     """
-    STARRED_DETAILS_LIST: ClassVar[KeywordField] = KeywordField("starredDetailsList", "starredDetailsList")
+    STARRED_DETAILS_LIST: ClassVar[KeywordField] = KeywordField(
+        "starredDetailsList", "starredDetailsList"
+    )
     """
     List of usernames with extra information of the users who have starred an asset.
     """
@@ -821,11 +938,15 @@ class Asset(Referenceable):
     """
     Number of users who have starred this asset.
     """
-    ASSET_ANOMALO_DQ_STATUS: ClassVar[KeywordField] = KeywordField("assetAnomaloDQStatus", "assetAnomaloDQStatus")
+    ASSET_ANOMALO_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetAnomaloDQStatus", "assetAnomaloDQStatus"
+    )
     """
     Status of data quality from Anomalo.
     """
-    ASSET_ANOMALO_CHECK_COUNT: ClassVar[NumericField] = NumericField("assetAnomaloCheckCount", "assetAnomaloCheckCount")
+    ASSET_ANOMALO_CHECK_COUNT: ClassVar[NumericField] = NumericField(
+        "assetAnomaloCheckCount", "assetAnomaloCheckCount"
+    )
     """
     Total number of checks present in Anomalo for this asset.
     """
@@ -859,15 +980,21 @@ class Asset(Referenceable):
     """
     All associated Anomalo failed check types.
     """
-    ASSET_ANOMALO_SOURCE_URL: ClassVar[TextField] = TextField("assetAnomaloSourceUrl", "assetAnomaloSourceUrl")
+    ASSET_ANOMALO_SOURCE_URL: ClassVar[TextField] = TextField(
+        "assetAnomaloSourceUrl", "assetAnomaloSourceUrl"
+    )
     """
     URL of the source in Anomalo.
     """
-    ASSET_SODA_DQ_STATUS: ClassVar[KeywordField] = KeywordField("assetSodaDQStatus", "assetSodaDQStatus")
+    ASSET_SODA_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetSodaDQStatus", "assetSodaDQStatus"
+    )
     """
     Status of data quality from Soda.
     """
-    ASSET_SODA_CHECK_COUNT: ClassVar[NumericField] = NumericField("assetSodaCheckCount", "assetSodaCheckCount")
+    ASSET_SODA_CHECK_COUNT: ClassVar[NumericField] = NumericField(
+        "assetSodaCheckCount", "assetSodaCheckCount"
+    )
     """
     Number of checks done via Soda.
     """
@@ -877,15 +1004,21 @@ class Asset(Referenceable):
     """
 
     """
-    ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField("assetSodaLastScanAt", "assetSodaLastScanAt")
+    ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
+        "assetSodaLastScanAt", "assetSodaLastScanAt"
+    )
     """
 
     """
-    ASSET_SODA_CHECK_STATUSES: ClassVar[TextField] = TextField("assetSodaCheckStatuses", "assetSodaCheckStatuses")
+    ASSET_SODA_CHECK_STATUSES: ClassVar[TextField] = TextField(
+        "assetSodaCheckStatuses", "assetSodaCheckStatuses"
+    )
     """
     All associated Soda check statuses.
     """
-    ASSET_SODA_SOURCE_URL: ClassVar[KeywordField] = KeywordField("assetSodaSourceURL", "assetSodaSourceURL")
+    ASSET_SODA_SOURCE_URL: ClassVar[KeywordField] = KeywordField(
+        "assetSodaSourceURL", "assetSodaSourceURL"
+    )
     """
 
     """
@@ -897,11 +1030,15 @@ class Asset(Referenceable):
     """
     TBC
     """
-    IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField("isAIGenerated", "isAIGenerated")
+    IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
+        "isAIGenerated", "isAIGenerated"
+    )
     """
 
     """
-    ASSET_COVER_IMAGE: ClassVar[TextField] = TextField("assetCoverImage", "assetCoverImage")
+    ASSET_COVER_IMAGE: ClassVar[TextField] = TextField(
+        "assetCoverImage", "assetCoverImage"
+    )
     """
     TBC
     """
@@ -919,11 +1056,15 @@ class Asset(Referenceable):
     """
     Whether this asset has contract (true) or not (false).
     """
-    ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField("assetPolicyGUIDs", "assetPolicyGUIDs")
+    ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "assetPolicyGUIDs", "assetPolicyGUIDs"
+    )
     """
     Array of policy ids governing this asset
     """
-    ASSET_POLICIES_COUNT: ClassVar[NumericField] = NumericField("assetPoliciesCount", "assetPoliciesCount")
+    ASSET_POLICIES_COUNT: ClassVar[NumericField] = NumericField(
+        "assetPoliciesCount", "assetPoliciesCount"
+    )
     """
     Count of policies inside the asset
     """
@@ -950,11 +1091,15 @@ class Asset(Referenceable):
     Qualified name of the ApplicationField that contains this asset.
     """
 
-    SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField("schemaRegistrySubjects")
+    SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
+        "schemaRegistrySubjects"
+    )
     """
     TBC
     """
-    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[RelationField] = RelationField("dataContractLatestCertified")
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[RelationField] = RelationField(
+        "dataContractLatestCertified"
+    )
     """
     TBC
     """
@@ -962,15 +1107,21 @@ class Asset(Referenceable):
     """
     TBC
     """
-    USER_DEF_RELATIONSHIP_TO: ClassVar[RelationField] = RelationField("userDefRelationshipTo")
+    USER_DEF_RELATIONSHIP_TO: ClassVar[RelationField] = RelationField(
+        "userDefRelationshipTo"
+    )
     """
     TBC
     """
-    OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField("outputPortDataProducts")
+    OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
+        "outputPortDataProducts"
+    )
     """
     TBC
     """
-    USER_DEF_RELATIONSHIP_FROM: ClassVar[RelationField] = RelationField("userDefRelationshipFrom")
+    USER_DEF_RELATIONSHIP_FROM: ClassVar[RelationField] = RelationField(
+        "userDefRelationshipFrom"
+    )
     """
     TBC
     """
@@ -1010,7 +1161,9 @@ class Asset(Referenceable):
     """
     TBC
     """
-    INPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField("inputPortDataProducts")
+    INPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
+        "inputPortDataProducts"
+    )
     """
     TBC
     """
@@ -1247,7 +1400,11 @@ class Asset(Referenceable):
 
     @property
     def certificate_status_message(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.certificate_status_message
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.certificate_status_message
+        )
 
     @certificate_status_message.setter
     def certificate_status_message(self, certificate_status_message: Optional[str]):
@@ -1257,7 +1414,9 @@ class Asset(Referenceable):
 
     @property
     def certificate_updated_by(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.certificate_updated_by
+        return (
+            None if self.attributes is None else self.attributes.certificate_updated_by
+        )
 
     @certificate_updated_by.setter
     def certificate_updated_by(self, certificate_updated_by: Optional[str]):
@@ -1267,7 +1426,9 @@ class Asset(Referenceable):
 
     @property
     def certificate_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.certificate_updated_at
+        return (
+            None if self.attributes is None else self.attributes.certificate_updated_at
+        )
 
     @certificate_updated_at.setter
     def certificate_updated_at(self, certificate_updated_at: Optional[datetime]):
@@ -1307,7 +1468,9 @@ class Asset(Referenceable):
 
     @property
     def announcement_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.announcement_updated_at
+        return (
+            None if self.attributes is None else self.attributes.announcement_updated_at
+        )
 
     @announcement_updated_at.setter
     def announcement_updated_at(self, announcement_updated_at: Optional[datetime]):
@@ -1317,7 +1480,9 @@ class Asset(Referenceable):
 
     @property
     def announcement_updated_by(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.announcement_updated_by
+        return (
+            None if self.attributes is None else self.attributes.announcement_updated_by
+        )
 
     @announcement_updated_by.setter
     def announcement_updated_by(self, announcement_updated_by: Optional[str]):
@@ -1407,7 +1572,11 @@ class Asset(Referenceable):
 
     @property
     def connection_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.connection_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_qualified_name
+        )
 
     @connection_qualified_name.setter
     def connection_qualified_name(self, connection_qualified_name: Optional[str]):
@@ -1547,7 +1716,9 @@ class Asset(Referenceable):
 
     @property
     def last_sync_workflow_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.last_sync_workflow_name
+        return (
+            None if self.attributes is None else self.attributes.last_sync_workflow_name
+        )
 
     @last_sync_workflow_name.setter
     def last_sync_workflow_name(self, last_sync_workflow_name: Optional[str]):
@@ -1597,7 +1768,9 @@ class Asset(Referenceable):
 
     @property
     def source_read_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_read_user_count
+        return (
+            None if self.attributes is None else self.attributes.source_read_user_count
+        )
 
     @source_read_user_count.setter
     def source_read_user_count(self, source_read_user_count: Optional[int]):
@@ -1647,7 +1820,9 @@ class Asset(Referenceable):
 
     @property
     def source_read_query_cost(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.source_read_query_cost
+        return (
+            None if self.attributes is None else self.attributes.source_read_query_cost
+        )
 
     @source_read_query_cost.setter
     def source_read_query_cost(self, source_read_query_cost: Optional[float]):
@@ -1657,17 +1832,27 @@ class Asset(Referenceable):
 
     @property
     def source_read_recent_user_list(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.source_read_recent_user_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_recent_user_list
+        )
 
     @source_read_recent_user_list.setter
-    def source_read_recent_user_list(self, source_read_recent_user_list: Optional[Set[str]]):
+    def source_read_recent_user_list(
+        self, source_read_recent_user_list: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_read_recent_user_list = source_read_recent_user_list
 
     @property
     def source_read_recent_user_record_list(self) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_read_recent_user_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_recent_user_record_list
+        )
 
     @source_read_recent_user_record_list.setter
     def source_read_recent_user_record_list(
@@ -1675,11 +1860,17 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_read_recent_user_record_list = source_read_recent_user_record_list
+        self.attributes.source_read_recent_user_record_list = (
+            source_read_recent_user_record_list
+        )
 
     @property
     def source_read_top_user_list(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.source_read_top_user_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_top_user_list
+        )
 
     @source_read_top_user_list.setter
     def source_read_top_user_list(self, source_read_top_user_list: Optional[Set[str]]):
@@ -1689,19 +1880,31 @@ class Asset(Referenceable):
 
     @property
     def source_read_top_user_record_list(self) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_read_top_user_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_top_user_record_list
+        )
 
     @source_read_top_user_record_list.setter
-    def source_read_top_user_record_list(self, source_read_top_user_record_list: Optional[List[PopularityInsights]]):
+    def source_read_top_user_record_list(
+        self, source_read_top_user_record_list: Optional[List[PopularityInsights]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_read_top_user_record_list = source_read_top_user_record_list
+        self.attributes.source_read_top_user_record_list = (
+            source_read_top_user_record_list
+        )
 
     @property
     def source_read_popular_query_record_list(
         self,
     ) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_read_popular_query_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_popular_query_record_list
+        )
 
     @source_read_popular_query_record_list.setter
     def source_read_popular_query_record_list(
@@ -1709,13 +1912,19 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_read_popular_query_record_list = source_read_popular_query_record_list
+        self.attributes.source_read_popular_query_record_list = (
+            source_read_popular_query_record_list
+        )
 
     @property
     def source_read_expensive_query_record_list(
         self,
     ) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_read_expensive_query_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_expensive_query_record_list
+        )
 
     @source_read_expensive_query_record_list.setter
     def source_read_expensive_query_record_list(
@@ -1724,11 +1933,17 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_read_expensive_query_record_list = source_read_expensive_query_record_list
+        self.attributes.source_read_expensive_query_record_list = (
+            source_read_expensive_query_record_list
+        )
 
     @property
     def source_read_slow_query_record_list(self) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_read_slow_query_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_read_slow_query_record_list
+        )
 
     @source_read_slow_query_record_list.setter
     def source_read_slow_query_record_list(
@@ -1736,14 +1951,22 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_read_slow_query_record_list = source_read_slow_query_record_list
+        self.attributes.source_read_slow_query_record_list = (
+            source_read_slow_query_record_list
+        )
 
     @property
     def source_query_compute_cost_list(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.source_query_compute_cost_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_query_compute_cost_list
+        )
 
     @source_query_compute_cost_list.setter
-    def source_query_compute_cost_list(self, source_query_compute_cost_list: Optional[Set[str]]):
+    def source_query_compute_cost_list(
+        self, source_query_compute_cost_list: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_query_compute_cost_list = source_query_compute_cost_list
@@ -1752,7 +1975,11 @@ class Asset(Referenceable):
     def source_query_compute_cost_record_list(
         self,
     ) -> Optional[List[PopularityInsights]]:
-        return None if self.attributes is None else self.attributes.source_query_compute_cost_record_list
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_query_compute_cost_record_list
+        )
 
     @source_query_compute_cost_record_list.setter
     def source_query_compute_cost_record_list(
@@ -1760,7 +1987,9 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.source_query_compute_cost_record_list = source_query_compute_cost_record_list
+        self.attributes.source_query_compute_cost_record_list = (
+            source_query_compute_cost_record_list
+        )
 
     @property
     def dbt_qualified_name(self) -> Optional[str]:
@@ -1774,13 +2003,21 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_workflow_last_updated(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_workflow_last_updated
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_workflow_last_updated
+        )
 
     @asset_dbt_workflow_last_updated.setter
-    def asset_dbt_workflow_last_updated(self, asset_dbt_workflow_last_updated: Optional[str]):
+    def asset_dbt_workflow_last_updated(
+        self, asset_dbt_workflow_last_updated: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_workflow_last_updated = asset_dbt_workflow_last_updated
+        self.attributes.asset_dbt_workflow_last_updated = (
+            asset_dbt_workflow_last_updated
+        )
 
     @property
     def asset_dbt_alias(self) -> Optional[str]:
@@ -1814,7 +2051,9 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_account_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_account_name
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_account_name
+        )
 
     @asset_dbt_account_name.setter
     def asset_dbt_account_name(self, asset_dbt_account_name: Optional[str]):
@@ -1824,7 +2063,9 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_project_name
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_project_name
+        )
 
     @asset_dbt_project_name.setter
     def asset_dbt_project_name(self, asset_dbt_project_name: Optional[str]):
@@ -1834,7 +2075,9 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_package_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_package_name
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_package_name
+        )
 
     @asset_dbt_package_name.setter
     def asset_dbt_package_name(self, asset_dbt_package_name: Optional[str]):
@@ -1854,7 +2097,9 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_schedule(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_schedule
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_job_schedule
+        )
 
     @asset_dbt_job_schedule.setter
     def asset_dbt_job_schedule(self, asset_dbt_job_schedule: Optional[str]):
@@ -1874,7 +2119,9 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_test_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_test_status
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_test_status
+        )
 
     @asset_dbt_test_status.setter
     def asset_dbt_test_status(self, asset_dbt_test_status: Optional[str]):
@@ -1884,17 +2131,27 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_schedule_cron_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_schedule_cron_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_schedule_cron_humanized
+        )
 
     @asset_dbt_job_schedule_cron_humanized.setter
-    def asset_dbt_job_schedule_cron_humanized(self, asset_dbt_job_schedule_cron_humanized: Optional[str]):
+    def asset_dbt_job_schedule_cron_humanized(
+        self, asset_dbt_job_schedule_cron_humanized: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_schedule_cron_humanized = asset_dbt_job_schedule_cron_humanized
+        self.attributes.asset_dbt_job_schedule_cron_humanized = (
+            asset_dbt_job_schedule_cron_humanized
+        )
 
     @property
     def asset_dbt_job_last_run(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_job_last_run
+        )
 
     @asset_dbt_job_last_run.setter
     def asset_dbt_job_last_run(self, asset_dbt_job_last_run: Optional[datetime]):
@@ -1904,7 +2161,11 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_url
+        )
 
     @asset_dbt_job_last_run_url.setter
     def asset_dbt_job_last_run_url(self, asset_dbt_job_last_run_url: Optional[str]):
@@ -1914,57 +2175,101 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_created_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_created_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_created_at
+        )
 
     @asset_dbt_job_last_run_created_at.setter
-    def asset_dbt_job_last_run_created_at(self, asset_dbt_job_last_run_created_at: Optional[datetime]):
+    def asset_dbt_job_last_run_created_at(
+        self, asset_dbt_job_last_run_created_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_created_at = asset_dbt_job_last_run_created_at
+        self.attributes.asset_dbt_job_last_run_created_at = (
+            asset_dbt_job_last_run_created_at
+        )
 
     @property
     def asset_dbt_job_last_run_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_updated_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_updated_at
+        )
 
     @asset_dbt_job_last_run_updated_at.setter
-    def asset_dbt_job_last_run_updated_at(self, asset_dbt_job_last_run_updated_at: Optional[datetime]):
+    def asset_dbt_job_last_run_updated_at(
+        self, asset_dbt_job_last_run_updated_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_updated_at = asset_dbt_job_last_run_updated_at
+        self.attributes.asset_dbt_job_last_run_updated_at = (
+            asset_dbt_job_last_run_updated_at
+        )
 
     @property
     def asset_dbt_job_last_run_dequed_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_dequed_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_dequed_at
+        )
 
     @asset_dbt_job_last_run_dequed_at.setter
-    def asset_dbt_job_last_run_dequed_at(self, asset_dbt_job_last_run_dequed_at: Optional[datetime]):
+    def asset_dbt_job_last_run_dequed_at(
+        self, asset_dbt_job_last_run_dequed_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_dequed_at = asset_dbt_job_last_run_dequed_at
+        self.attributes.asset_dbt_job_last_run_dequed_at = (
+            asset_dbt_job_last_run_dequed_at
+        )
 
     @property
     def asset_dbt_job_last_run_started_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_started_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_started_at
+        )
 
     @asset_dbt_job_last_run_started_at.setter
-    def asset_dbt_job_last_run_started_at(self, asset_dbt_job_last_run_started_at: Optional[datetime]):
+    def asset_dbt_job_last_run_started_at(
+        self, asset_dbt_job_last_run_started_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_started_at = asset_dbt_job_last_run_started_at
+        self.attributes.asset_dbt_job_last_run_started_at = (
+            asset_dbt_job_last_run_started_at
+        )
 
     @property
     def asset_dbt_job_last_run_total_duration(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_total_duration
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_total_duration
+        )
 
     @asset_dbt_job_last_run_total_duration.setter
-    def asset_dbt_job_last_run_total_duration(self, asset_dbt_job_last_run_total_duration: Optional[str]):
+    def asset_dbt_job_last_run_total_duration(
+        self, asset_dbt_job_last_run_total_duration: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_total_duration = asset_dbt_job_last_run_total_duration
+        self.attributes.asset_dbt_job_last_run_total_duration = (
+            asset_dbt_job_last_run_total_duration
+        )
 
     @property
     def asset_dbt_job_last_run_total_duration_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_total_duration_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_total_duration_humanized
+        )
 
     @asset_dbt_job_last_run_total_duration_humanized.setter
     def asset_dbt_job_last_run_total_duration_humanized(
@@ -1978,17 +2283,29 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_queued_duration(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_queued_duration
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_queued_duration
+        )
 
     @asset_dbt_job_last_run_queued_duration.setter
-    def asset_dbt_job_last_run_queued_duration(self, asset_dbt_job_last_run_queued_duration: Optional[str]):
+    def asset_dbt_job_last_run_queued_duration(
+        self, asset_dbt_job_last_run_queued_duration: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_queued_duration = asset_dbt_job_last_run_queued_duration
+        self.attributes.asset_dbt_job_last_run_queued_duration = (
+            asset_dbt_job_last_run_queued_duration
+        )
 
     @property
     def asset_dbt_job_last_run_queued_duration_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_queued_duration_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_queued_duration_humanized
+        )
 
     @asset_dbt_job_last_run_queued_duration_humanized.setter
     def asset_dbt_job_last_run_queued_duration_humanized(
@@ -2002,17 +2319,29 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_run_duration(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_run_duration
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_run_duration
+        )
 
     @asset_dbt_job_last_run_run_duration.setter
-    def asset_dbt_job_last_run_run_duration(self, asset_dbt_job_last_run_run_duration: Optional[str]):
+    def asset_dbt_job_last_run_run_duration(
+        self, asset_dbt_job_last_run_run_duration: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_run_duration = asset_dbt_job_last_run_run_duration
+        self.attributes.asset_dbt_job_last_run_run_duration = (
+            asset_dbt_job_last_run_run_duration
+        )
 
     @property
     def asset_dbt_job_last_run_run_duration_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_run_duration_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_run_duration_humanized
+        )
 
     @asset_dbt_job_last_run_run_duration_humanized.setter
     def asset_dbt_job_last_run_run_duration_humanized(
@@ -2020,91 +2349,159 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_run_duration_humanized = asset_dbt_job_last_run_run_duration_humanized
+        self.attributes.asset_dbt_job_last_run_run_duration_humanized = (
+            asset_dbt_job_last_run_run_duration_humanized
+        )
 
     @property
     def asset_dbt_job_last_run_git_branch(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_git_branch
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_git_branch
+        )
 
     @asset_dbt_job_last_run_git_branch.setter
-    def asset_dbt_job_last_run_git_branch(self, asset_dbt_job_last_run_git_branch: Optional[str]):
+    def asset_dbt_job_last_run_git_branch(
+        self, asset_dbt_job_last_run_git_branch: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_git_branch = asset_dbt_job_last_run_git_branch
+        self.attributes.asset_dbt_job_last_run_git_branch = (
+            asset_dbt_job_last_run_git_branch
+        )
 
     @property
     def asset_dbt_job_last_run_git_sha(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_git_sha
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_git_sha
+        )
 
     @asset_dbt_job_last_run_git_sha.setter
-    def asset_dbt_job_last_run_git_sha(self, asset_dbt_job_last_run_git_sha: Optional[str]):
+    def asset_dbt_job_last_run_git_sha(
+        self, asset_dbt_job_last_run_git_sha: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_git_sha = asset_dbt_job_last_run_git_sha
 
     @property
     def asset_dbt_job_last_run_status_message(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_status_message
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_status_message
+        )
 
     @asset_dbt_job_last_run_status_message.setter
-    def asset_dbt_job_last_run_status_message(self, asset_dbt_job_last_run_status_message: Optional[str]):
+    def asset_dbt_job_last_run_status_message(
+        self, asset_dbt_job_last_run_status_message: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_status_message = asset_dbt_job_last_run_status_message
+        self.attributes.asset_dbt_job_last_run_status_message = (
+            asset_dbt_job_last_run_status_message
+        )
 
     @property
     def asset_dbt_job_last_run_owner_thread_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_owner_thread_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_owner_thread_id
+        )
 
     @asset_dbt_job_last_run_owner_thread_id.setter
-    def asset_dbt_job_last_run_owner_thread_id(self, asset_dbt_job_last_run_owner_thread_id: Optional[str]):
+    def asset_dbt_job_last_run_owner_thread_id(
+        self, asset_dbt_job_last_run_owner_thread_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_owner_thread_id = asset_dbt_job_last_run_owner_thread_id
+        self.attributes.asset_dbt_job_last_run_owner_thread_id = (
+            asset_dbt_job_last_run_owner_thread_id
+        )
 
     @property
     def asset_dbt_job_last_run_executed_by_thread_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_executed_by_thread_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_executed_by_thread_id
+        )
 
     @asset_dbt_job_last_run_executed_by_thread_id.setter
-    def asset_dbt_job_last_run_executed_by_thread_id(self, asset_dbt_job_last_run_executed_by_thread_id: Optional[str]):
+    def asset_dbt_job_last_run_executed_by_thread_id(
+        self, asset_dbt_job_last_run_executed_by_thread_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_executed_by_thread_id = asset_dbt_job_last_run_executed_by_thread_id
+        self.attributes.asset_dbt_job_last_run_executed_by_thread_id = (
+            asset_dbt_job_last_run_executed_by_thread_id
+        )
 
     @property
     def asset_dbt_job_last_run_artifacts_saved(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_artifacts_saved
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_artifacts_saved
+        )
 
     @asset_dbt_job_last_run_artifacts_saved.setter
-    def asset_dbt_job_last_run_artifacts_saved(self, asset_dbt_job_last_run_artifacts_saved: Optional[bool]):
+    def asset_dbt_job_last_run_artifacts_saved(
+        self, asset_dbt_job_last_run_artifacts_saved: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_artifacts_saved = asset_dbt_job_last_run_artifacts_saved
+        self.attributes.asset_dbt_job_last_run_artifacts_saved = (
+            asset_dbt_job_last_run_artifacts_saved
+        )
 
     @property
     def asset_dbt_job_last_run_artifact_s3_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_artifact_s3_path
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_artifact_s3_path
+        )
 
     @asset_dbt_job_last_run_artifact_s3_path.setter
-    def asset_dbt_job_last_run_artifact_s3_path(self, asset_dbt_job_last_run_artifact_s3_path: Optional[str]):
+    def asset_dbt_job_last_run_artifact_s3_path(
+        self, asset_dbt_job_last_run_artifact_s3_path: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_artifact_s3_path = asset_dbt_job_last_run_artifact_s3_path
+        self.attributes.asset_dbt_job_last_run_artifact_s3_path = (
+            asset_dbt_job_last_run_artifact_s3_path
+        )
 
     @property
     def asset_dbt_job_last_run_has_docs_generated(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_has_docs_generated
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_has_docs_generated
+        )
 
     @asset_dbt_job_last_run_has_docs_generated.setter
-    def asset_dbt_job_last_run_has_docs_generated(self, asset_dbt_job_last_run_has_docs_generated: Optional[bool]):
+    def asset_dbt_job_last_run_has_docs_generated(
+        self, asset_dbt_job_last_run_has_docs_generated: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_has_docs_generated = asset_dbt_job_last_run_has_docs_generated
+        self.attributes.asset_dbt_job_last_run_has_docs_generated = (
+            asset_dbt_job_last_run_has_docs_generated
+        )
 
     @property
     def asset_dbt_job_last_run_has_sources_generated(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_has_sources_generated
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_has_sources_generated
+        )
 
     @asset_dbt_job_last_run_has_sources_generated.setter
     def asset_dbt_job_last_run_has_sources_generated(
@@ -2112,21 +2509,33 @@ class Asset(Referenceable):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_has_sources_generated = asset_dbt_job_last_run_has_sources_generated
+        self.attributes.asset_dbt_job_last_run_has_sources_generated = (
+            asset_dbt_job_last_run_has_sources_generated
+        )
 
     @property
     def asset_dbt_job_last_run_notifications_sent(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_last_run_notifications_sent
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_last_run_notifications_sent
+        )
 
     @asset_dbt_job_last_run_notifications_sent.setter
-    def asset_dbt_job_last_run_notifications_sent(self, asset_dbt_job_last_run_notifications_sent: Optional[bool]):
+    def asset_dbt_job_last_run_notifications_sent(
+        self, asset_dbt_job_last_run_notifications_sent: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_last_run_notifications_sent = asset_dbt_job_last_run_notifications_sent
+        self.attributes.asset_dbt_job_last_run_notifications_sent = (
+            asset_dbt_job_last_run_notifications_sent
+        )
 
     @property
     def asset_dbt_job_next_run(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_next_run
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_job_next_run
+        )
 
     @asset_dbt_job_next_run.setter
     def asset_dbt_job_next_run(self, asset_dbt_job_next_run: Optional[datetime]):
@@ -2136,17 +2545,29 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_next_run_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_job_next_run_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_job_next_run_humanized
+        )
 
     @asset_dbt_job_next_run_humanized.setter
-    def asset_dbt_job_next_run_humanized(self, asset_dbt_job_next_run_humanized: Optional[str]):
+    def asset_dbt_job_next_run_humanized(
+        self, asset_dbt_job_next_run_humanized: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_job_next_run_humanized = asset_dbt_job_next_run_humanized
+        self.attributes.asset_dbt_job_next_run_humanized = (
+            asset_dbt_job_next_run_humanized
+        )
 
     @property
     def asset_dbt_environment_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_environment_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_environment_name
+        )
 
     @asset_dbt_environment_name.setter
     def asset_dbt_environment_name(self, asset_dbt_environment_name: Optional[str]):
@@ -2156,13 +2577,21 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_environment_dbt_version(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_environment_dbt_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_environment_dbt_version
+        )
 
     @asset_dbt_environment_dbt_version.setter
-    def asset_dbt_environment_dbt_version(self, asset_dbt_environment_dbt_version: Optional[str]):
+    def asset_dbt_environment_dbt_version(
+        self, asset_dbt_environment_dbt_version: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_environment_dbt_version = asset_dbt_environment_dbt_version
+        self.attributes.asset_dbt_environment_dbt_version = (
+            asset_dbt_environment_dbt_version
+        )
 
     @property
     def asset_dbt_tags(self) -> Optional[Set[str]]:
@@ -2176,23 +2605,39 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_semantic_layer_proxy_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_semantic_layer_proxy_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_semantic_layer_proxy_url
+        )
 
     @asset_dbt_semantic_layer_proxy_url.setter
-    def asset_dbt_semantic_layer_proxy_url(self, asset_dbt_semantic_layer_proxy_url: Optional[str]):
+    def asset_dbt_semantic_layer_proxy_url(
+        self, asset_dbt_semantic_layer_proxy_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_semantic_layer_proxy_url = asset_dbt_semantic_layer_proxy_url
+        self.attributes.asset_dbt_semantic_layer_proxy_url = (
+            asset_dbt_semantic_layer_proxy_url
+        )
 
     @property
     def asset_dbt_source_freshness_criteria(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_dbt_source_freshness_criteria
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_dbt_source_freshness_criteria
+        )
 
     @asset_dbt_source_freshness_criteria.setter
-    def asset_dbt_source_freshness_criteria(self, asset_dbt_source_freshness_criteria: Optional[str]):
+    def asset_dbt_source_freshness_criteria(
+        self, asset_dbt_source_freshness_criteria: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_dbt_source_freshness_criteria = asset_dbt_source_freshness_criteria
+        self.attributes.asset_dbt_source_freshness_criteria = (
+            asset_dbt_source_freshness_criteria
+        )
 
     @property
     def sample_data_url(self) -> Optional[str]:
@@ -2216,7 +2661,9 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_names
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_incident_names
+        )
 
     @asset_mc_incident_names.setter
     def asset_mc_incident_names(self, asset_mc_incident_names: Optional[Set[str]]):
@@ -2226,27 +2673,43 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_qualified_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_qualified_names
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_qualified_names
+        )
 
     @asset_mc_incident_qualified_names.setter
-    def asset_mc_incident_qualified_names(self, asset_mc_incident_qualified_names: Optional[Set[str]]):
+    def asset_mc_incident_qualified_names(
+        self, asset_mc_incident_qualified_names: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_mc_incident_qualified_names = asset_mc_incident_qualified_names
+        self.attributes.asset_mc_incident_qualified_names = (
+            asset_mc_incident_qualified_names
+        )
 
     @property
     def asset_mc_alert_qualified_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_alert_qualified_names
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_alert_qualified_names
+        )
 
     @asset_mc_alert_qualified_names.setter
-    def asset_mc_alert_qualified_names(self, asset_mc_alert_qualified_names: Optional[Set[str]]):
+    def asset_mc_alert_qualified_names(
+        self, asset_mc_alert_qualified_names: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_alert_qualified_names = asset_mc_alert_qualified_names
 
     @property
     def asset_mc_monitor_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_monitor_names
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_monitor_names
+        )
 
     @asset_mc_monitor_names.setter
     def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[Set[str]]):
@@ -2256,17 +2719,29 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_qualified_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_monitor_qualified_names
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_monitor_qualified_names
+        )
 
     @asset_mc_monitor_qualified_names.setter
-    def asset_mc_monitor_qualified_names(self, asset_mc_monitor_qualified_names: Optional[Set[str]]):
+    def asset_mc_monitor_qualified_names(
+        self, asset_mc_monitor_qualified_names: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_mc_monitor_qualified_names = asset_mc_monitor_qualified_names
+        self.attributes.asset_mc_monitor_qualified_names = (
+            asset_mc_monitor_qualified_names
+        )
 
     @property
     def asset_mc_monitor_statuses(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_monitor_statuses
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_monitor_statuses
+        )
 
     @asset_mc_monitor_statuses.setter
     def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[Set[str]]):
@@ -2276,7 +2751,9 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_monitor_types
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_monitor_types
+        )
 
     @asset_mc_monitor_types.setter
     def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[Set[str]]):
@@ -2286,17 +2763,27 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_schedule_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_monitor_schedule_types
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_monitor_schedule_types
+        )
 
     @asset_mc_monitor_schedule_types.setter
-    def asset_mc_monitor_schedule_types(self, asset_mc_monitor_schedule_types: Optional[Set[str]]):
+    def asset_mc_monitor_schedule_types(
+        self, asset_mc_monitor_schedule_types: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_mc_monitor_schedule_types = asset_mc_monitor_schedule_types
+        self.attributes.asset_mc_monitor_schedule_types = (
+            asset_mc_monitor_schedule_types
+        )
 
     @property
     def asset_mc_incident_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_types
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_incident_types
+        )
 
     @asset_mc_incident_types.setter
     def asset_mc_incident_types(self, asset_mc_incident_types: Optional[Set[str]]):
@@ -2306,37 +2793,59 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_sub_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_sub_types
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_sub_types
+        )
 
     @asset_mc_incident_sub_types.setter
-    def asset_mc_incident_sub_types(self, asset_mc_incident_sub_types: Optional[Set[str]]):
+    def asset_mc_incident_sub_types(
+        self, asset_mc_incident_sub_types: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_sub_types = asset_mc_incident_sub_types
 
     @property
     def asset_mc_incident_severities(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_severities
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_severities
+        )
 
     @asset_mc_incident_severities.setter
-    def asset_mc_incident_severities(self, asset_mc_incident_severities: Optional[Set[str]]):
+    def asset_mc_incident_severities(
+        self, asset_mc_incident_severities: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
 
     @property
     def asset_mc_incident_priorities(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_priorities
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_priorities
+        )
 
     @asset_mc_incident_priorities.setter
-    def asset_mc_incident_priorities(self, asset_mc_incident_priorities: Optional[Set[str]]):
+    def asset_mc_incident_priorities(
+        self, asset_mc_incident_priorities: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_priorities = asset_mc_incident_priorities
 
     @property
     def asset_mc_incident_states(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_mc_incident_states
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_incident_states
+        )
 
     @asset_mc_incident_states.setter
     def asset_mc_incident_states(self, asset_mc_incident_states: Optional[Set[str]]):
@@ -2346,7 +2855,9 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_is_monitored(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.asset_mc_is_monitored
+        return (
+            None if self.attributes is None else self.attributes.asset_mc_is_monitored
+        )
 
     @asset_mc_is_monitored.setter
     def asset_mc_is_monitored(self, asset_mc_is_monitored: Optional[bool]):
@@ -2356,7 +2867,11 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_last_sync_run_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_mc_last_sync_run_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_mc_last_sync_run_at
+        )
 
     @asset_mc_last_sync_run_at.setter
     def asset_mc_last_sync_run_at(self, asset_mc_last_sync_run_at: Optional[datetime]):
@@ -2379,7 +2894,9 @@ class Asset(Referenceable):
         return None if self.attributes is None else self.attributes.starred_details_list
 
     @starred_details_list.setter
-    def starred_details_list(self, starred_details_list: Optional[List[StarredDetails]]):
+    def starred_details_list(
+        self, starred_details_list: Optional[List[StarredDetails]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.starred_details_list = starred_details_list
@@ -2396,7 +2913,11 @@ class Asset(Referenceable):
 
     @property
     def asset_anomalo_d_q_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_d_q_status
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_d_q_status
+        )
 
     @asset_anomalo_d_q_status.setter
     def asset_anomalo_d_q_status(self, asset_anomalo_d_q_status: Optional[str]):
@@ -2406,7 +2927,11 @@ class Asset(Referenceable):
 
     @property
     def asset_anomalo_check_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_check_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_check_count
+        )
 
     @asset_anomalo_check_count.setter
     def asset_anomalo_check_count(self, asset_anomalo_check_count: Optional[int]):
@@ -2416,17 +2941,29 @@ class Asset(Referenceable):
 
     @property
     def asset_anomalo_failed_check_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_failed_check_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_failed_check_count
+        )
 
     @asset_anomalo_failed_check_count.setter
-    def asset_anomalo_failed_check_count(self, asset_anomalo_failed_check_count: Optional[int]):
+    def asset_anomalo_failed_check_count(
+        self, asset_anomalo_failed_check_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_anomalo_failed_check_count = asset_anomalo_failed_check_count
+        self.attributes.asset_anomalo_failed_check_count = (
+            asset_anomalo_failed_check_count
+        )
 
     @property
     def asset_anomalo_check_statuses(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_check_statuses
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_check_statuses
+        )
 
     @asset_anomalo_check_statuses.setter
     def asset_anomalo_check_statuses(self, asset_anomalo_check_statuses: Optional[str]):
@@ -2436,37 +2973,65 @@ class Asset(Referenceable):
 
     @property
     def asset_anomalo_last_check_run_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_last_check_run_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_last_check_run_at
+        )
 
     @asset_anomalo_last_check_run_at.setter
-    def asset_anomalo_last_check_run_at(self, asset_anomalo_last_check_run_at: Optional[datetime]):
+    def asset_anomalo_last_check_run_at(
+        self, asset_anomalo_last_check_run_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_anomalo_last_check_run_at = asset_anomalo_last_check_run_at
+        self.attributes.asset_anomalo_last_check_run_at = (
+            asset_anomalo_last_check_run_at
+        )
 
     @property
     def asset_anomalo_applied_check_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_applied_check_types
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_applied_check_types
+        )
 
     @asset_anomalo_applied_check_types.setter
-    def asset_anomalo_applied_check_types(self, asset_anomalo_applied_check_types: Optional[Set[str]]):
+    def asset_anomalo_applied_check_types(
+        self, asset_anomalo_applied_check_types: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_anomalo_applied_check_types = asset_anomalo_applied_check_types
+        self.attributes.asset_anomalo_applied_check_types = (
+            asset_anomalo_applied_check_types
+        )
 
     @property
     def asset_anomalo_failed_check_types(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_failed_check_types
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_failed_check_types
+        )
 
     @asset_anomalo_failed_check_types.setter
-    def asset_anomalo_failed_check_types(self, asset_anomalo_failed_check_types: Optional[Set[str]]):
+    def asset_anomalo_failed_check_types(
+        self, asset_anomalo_failed_check_types: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_anomalo_failed_check_types = asset_anomalo_failed_check_types
+        self.attributes.asset_anomalo_failed_check_types = (
+            asset_anomalo_failed_check_types
+        )
 
     @property
     def asset_anomalo_source_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_anomalo_source_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_anomalo_source_url
+        )
 
     @asset_anomalo_source_url.setter
     def asset_anomalo_source_url(self, asset_anomalo_source_url: Optional[str]):
@@ -2476,7 +3041,9 @@ class Asset(Referenceable):
 
     @property
     def asset_soda_d_q_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_soda_d_q_status
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_d_q_status
+        )
 
     @asset_soda_d_q_status.setter
     def asset_soda_d_q_status(self, asset_soda_d_q_status: Optional[str]):
@@ -2486,7 +3053,9 @@ class Asset(Referenceable):
 
     @property
     def asset_soda_check_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.asset_soda_check_count
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_check_count
+        )
 
     @asset_soda_check_count.setter
     def asset_soda_check_count(self, asset_soda_check_count: Optional[int]):
@@ -2496,17 +3065,25 @@ class Asset(Referenceable):
 
     @property
     def asset_soda_last_sync_run_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_soda_last_sync_run_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_soda_last_sync_run_at
+        )
 
     @asset_soda_last_sync_run_at.setter
-    def asset_soda_last_sync_run_at(self, asset_soda_last_sync_run_at: Optional[datetime]):
+    def asset_soda_last_sync_run_at(
+        self, asset_soda_last_sync_run_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_soda_last_sync_run_at = asset_soda_last_sync_run_at
 
     @property
     def asset_soda_last_scan_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.asset_soda_last_scan_at
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_last_scan_at
+        )
 
     @asset_soda_last_scan_at.setter
     def asset_soda_last_scan_at(self, asset_soda_last_scan_at: Optional[datetime]):
@@ -2516,7 +3093,11 @@ class Asset(Referenceable):
 
     @property
     def asset_soda_check_statuses(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_soda_check_statuses
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_soda_check_statuses
+        )
 
     @asset_soda_check_statuses.setter
     def asset_soda_check_statuses(self, asset_soda_check_statuses: Optional[str]):
@@ -2526,7 +3107,9 @@ class Asset(Referenceable):
 
     @property
     def asset_soda_source_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.asset_soda_source_url
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_source_url
+        )
 
     @asset_soda_source_url.setter
     def asset_soda_source_url(self, asset_soda_source_url: Optional[str]):
@@ -2586,7 +3169,11 @@ class Asset(Referenceable):
 
     @property
     def lexicographical_sort_order(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.lexicographical_sort_order
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.lexicographical_sort_order
+        )
 
     @lexicographical_sort_order.setter
     def lexicographical_sort_order(self, lexicographical_sort_order: Optional[str]):
@@ -2606,7 +3193,9 @@ class Asset(Referenceable):
 
     @property
     def asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.asset_policy_g_u_i_ds
+        return (
+            None if self.attributes is None else self.attributes.asset_policy_g_u_i_ds
+        )
 
     @asset_policy_g_u_i_ds.setter
     def asset_policy_g_u_i_ds(self, asset_policy_g_u_i_ds: Optional[Set[str]]):
@@ -2636,17 +3225,29 @@ class Asset(Referenceable):
 
     @property
     def non_compliant_asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.non_compliant_asset_policy_g_u_i_ds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.non_compliant_asset_policy_g_u_i_ds
+        )
 
     @non_compliant_asset_policy_g_u_i_ds.setter
-    def non_compliant_asset_policy_g_u_i_ds(self, non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]]):
+    def non_compliant_asset_policy_g_u_i_ds(
+        self, non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.non_compliant_asset_policy_g_u_i_ds = non_compliant_asset_policy_g_u_i_ds
+        self.attributes.non_compliant_asset_policy_g_u_i_ds = (
+            non_compliant_asset_policy_g_u_i_ds
+        )
 
     @property
     def application_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.application_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_qualified_name
+        )
 
     @application_qualified_name.setter
     def application_qualified_name(self, application_qualified_name: Optional[str]):
@@ -2656,30 +3257,50 @@ class Asset(Referenceable):
 
     @property
     def application_field_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.application_field_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.application_field_qualified_name
+        )
 
     @application_field_qualified_name.setter
-    def application_field_qualified_name(self, application_field_qualified_name: Optional[str]):
+    def application_field_qualified_name(
+        self, application_field_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_field_qualified_name = application_field_qualified_name
+        self.attributes.application_field_qualified_name = (
+            application_field_qualified_name
+        )
 
     @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
-        return None if self.attributes is None else self.attributes.schema_registry_subjects
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.schema_registry_subjects
+        )
 
     @schema_registry_subjects.setter
-    def schema_registry_subjects(self, schema_registry_subjects: Optional[List[SchemaRegistrySubject]]):
+    def schema_registry_subjects(
+        self, schema_registry_subjects: Optional[List[SchemaRegistrySubject]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
     def data_contract_latest_certified(self) -> Optional[DataContract]:
-        return None if self.attributes is None else self.attributes.data_contract_latest_certified
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_latest_certified
+        )
 
     @data_contract_latest_certified.setter
-    def data_contract_latest_certified(self, data_contract_latest_certified: Optional[DataContract]):
+    def data_contract_latest_certified(
+        self, data_contract_latest_certified: Optional[DataContract]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_latest_certified = data_contract_latest_certified
@@ -2696,30 +3317,48 @@ class Asset(Referenceable):
 
     @property
     def user_def_relationship_to(self) -> Optional[List[Referenceable]]:
-        return None if self.attributes is None else self.attributes.user_def_relationship_to
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_to
+        )
 
     @user_def_relationship_to.setter
-    def user_def_relationship_to(self, user_def_relationship_to: Optional[List[Referenceable]]):
+    def user_def_relationship_to(
+        self, user_def_relationship_to: Optional[List[Referenceable]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.user_def_relationship_to = user_def_relationship_to
 
     @property
     def output_port_data_products(self) -> Optional[List[DataProduct]]:
-        return None if self.attributes is None else self.attributes.output_port_data_products
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_port_data_products
+        )
 
     @output_port_data_products.setter
-    def output_port_data_products(self, output_port_data_products: Optional[List[DataProduct]]):
+    def output_port_data_products(
+        self, output_port_data_products: Optional[List[DataProduct]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_port_data_products = output_port_data_products
 
     @property
     def user_def_relationship_from(self) -> Optional[List[Referenceable]]:
-        return None if self.attributes is None else self.attributes.user_def_relationship_from
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.user_def_relationship_from
+        )
 
     @user_def_relationship_from.setter
-    def user_def_relationship_from(self, user_def_relationship_from: Optional[List[Referenceable]]):
+    def user_def_relationship_from(
+        self, user_def_relationship_from: Optional[List[Referenceable]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.user_def_relationship_from = user_def_relationship_from
@@ -2826,10 +3465,16 @@ class Asset(Referenceable):
 
     @property
     def input_port_data_products(self) -> Optional[List[DataProduct]]:
-        return None if self.attributes is None else self.attributes.input_port_data_products
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.input_port_data_products
+        )
 
     @input_port_data_products.setter
-    def input_port_data_products(self, input_port_data_products: Optional[List[DataProduct]]):
+    def input_port_data_products(
+        self, input_port_data_products: Optional[List[DataProduct]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_port_data_products = input_port_data_products
@@ -2850,14 +3495,18 @@ class Asset(Referenceable):
         description: Optional[str] = Field(default=None, description="")
         user_description: Optional[str] = Field(default=None, description="")
         tenant_id: Optional[str] = Field(default=None, description="")
-        certificate_status: Optional[CertificateStatus] = Field(default=None, description="")
+        certificate_status: Optional[CertificateStatus] = Field(
+            default=None, description=""
+        )
         certificate_status_message: Optional[str] = Field(default=None, description="")
         certificate_updated_by: Optional[str] = Field(default=None, description="")
         certificate_updated_at: Optional[datetime] = Field(default=None, description="")
         announcement_title: Optional[str] = Field(default=None, description="")
         announcement_message: Optional[str] = Field(default=None, description="")
         announcement_type: Optional[str] = Field(default=None, description="")
-        announcement_updated_at: Optional[datetime] = Field(default=None, description="")
+        announcement_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         announcement_updated_by: Optional[str] = Field(default=None, description="")
         owner_users: Optional[Set[str]] = Field(default=None, description="")
         owner_groups: Optional[Set[str]] = Field(default=None, description="")
@@ -2890,21 +3539,41 @@ class Asset(Referenceable):
         source_last_read_at: Optional[datetime] = Field(default=None, description="")
         last_row_changed_at: Optional[datetime] = Field(default=None, description="")
         source_total_cost: Optional[float] = Field(default=None, description="")
-        source_cost_unit: Optional[SourceCostUnitType] = Field(default=None, description="")
-        source_read_query_cost: Optional[float] = Field(default=None, description="")
-        source_read_recent_user_list: Optional[Set[str]] = Field(default=None, description="")
-        source_read_recent_user_record_list: Optional[List[PopularityInsights]] = Field(default=None, description="")
-        source_read_top_user_list: Optional[Set[str]] = Field(default=None, description="")
-        source_read_top_user_record_list: Optional[List[PopularityInsights]] = Field(default=None, description="")
-        source_read_popular_query_record_list: Optional[List[PopularityInsights]] = Field(default=None, description="")
-        source_read_expensive_query_record_list: Optional[List[PopularityInsights]] = Field(
+        source_cost_unit: Optional[SourceCostUnitType] = Field(
             default=None, description=""
         )
-        source_read_slow_query_record_list: Optional[List[PopularityInsights]] = Field(default=None, description="")
-        source_query_compute_cost_list: Optional[Set[str]] = Field(default=None, description="")
-        source_query_compute_cost_record_list: Optional[List[PopularityInsights]] = Field(default=None, description="")
+        source_read_query_cost: Optional[float] = Field(default=None, description="")
+        source_read_recent_user_list: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        source_read_recent_user_record_list: Optional[List[PopularityInsights]] = Field(
+            default=None, description=""
+        )
+        source_read_top_user_list: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        source_read_top_user_record_list: Optional[List[PopularityInsights]] = Field(
+            default=None, description=""
+        )
+        source_read_popular_query_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
+        source_read_expensive_query_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
+        source_read_slow_query_record_list: Optional[List[PopularityInsights]] = Field(
+            default=None, description=""
+        )
+        source_query_compute_cost_list: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        source_query_compute_cost_record_list: Optional[List[PopularityInsights]] = (
+            Field(default=None, description="")
+        )
         dbt_qualified_name: Optional[str] = Field(default=None, description="")
-        asset_dbt_workflow_last_updated: Optional[str] = Field(default=None, description="")
+        asset_dbt_workflow_last_updated: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_dbt_alias: Optional[str] = Field(default=None, description="")
         asset_dbt_meta: Optional[str] = Field(default=None, description="")
         asset_dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -2915,68 +3584,158 @@ class Asset(Referenceable):
         asset_dbt_job_schedule: Optional[str] = Field(default=None, description="")
         asset_dbt_job_status: Optional[str] = Field(default=None, description="")
         asset_dbt_test_status: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(default=None, description="")
+        asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
         asset_dbt_job_last_run_url: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_created_at: Optional[datetime] = Field(default=None, description="")
-        asset_dbt_job_last_run_updated_at: Optional[datetime] = Field(default=None, description="")
-        asset_dbt_job_last_run_dequed_at: Optional[datetime] = Field(default=None, description="")
-        asset_dbt_job_last_run_started_at: Optional[datetime] = Field(default=None, description="")
-        asset_dbt_job_last_run_total_duration: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_total_duration_humanized: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_queued_duration: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_queued_duration_humanized: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_run_duration: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_run_duration_humanized: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_git_branch: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_git_sha: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_status_message: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_owner_thread_id: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_executed_by_thread_id: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_artifacts_saved: Optional[bool] = Field(default=None, description="")
-        asset_dbt_job_last_run_artifact_s3_path: Optional[str] = Field(default=None, description="")
-        asset_dbt_job_last_run_has_docs_generated: Optional[bool] = Field(default=None, description="")
-        asset_dbt_job_last_run_has_sources_generated: Optional[bool] = Field(default=None, description="")
-        asset_dbt_job_last_run_notifications_sent: Optional[bool] = Field(default=None, description="")
+        asset_dbt_job_last_run_created_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_dequed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_started_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_total_duration: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_total_duration_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_queued_duration: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_queued_duration_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_run_duration: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_run_duration_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_git_branch: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_git_sha: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_status_message: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_owner_thread_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_executed_by_thread_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_artifacts_saved: Optional[bool] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_artifact_s3_path: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_has_docs_generated: Optional[bool] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_has_sources_generated: Optional[bool] = Field(
+            default=None, description=""
+        )
+        asset_dbt_job_last_run_notifications_sent: Optional[bool] = Field(
+            default=None, description=""
+        )
         asset_dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
-        asset_dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
+        asset_dbt_job_next_run_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_dbt_environment_name: Optional[str] = Field(default=None, description="")
-        asset_dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
+        asset_dbt_environment_dbt_version: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_dbt_tags: Optional[Set[str]] = Field(default=None, description="")
-        asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(default=None, description="")
-        asset_dbt_source_freshness_criteria: Optional[str] = Field(default=None, description="")
+        asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_dbt_source_freshness_criteria: Optional[str] = Field(
+            default=None, description=""
+        )
         sample_data_url: Optional[str] = Field(default=None, description="")
         asset_tags: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_names: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_qualified_names: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_alert_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_incident_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_alert_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_mc_monitor_names: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_monitor_qualified_names: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_monitor_statuses: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_monitor_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_monitor_statuses: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_mc_monitor_types: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_monitor_schedule_types: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_types: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_sub_types: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_severities: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_priorities: Optional[Set[str]] = Field(default=None, description="")
-        asset_mc_incident_states: Optional[Set[str]] = Field(default=None, description="")
+        asset_mc_monitor_schedule_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_sub_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_severities: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_priorities: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_mc_incident_states: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_mc_is_monitored: Optional[bool] = Field(default=None, description="")
-        asset_mc_last_sync_run_at: Optional[datetime] = Field(default=None, description="")
+        asset_mc_last_sync_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         starred_by: Optional[Set[str]] = Field(default=None, description="")
-        starred_details_list: Optional[List[StarredDetails]] = Field(default=None, description="")
+        starred_details_list: Optional[List[StarredDetails]] = Field(
+            default=None, description=""
+        )
         starred_count: Optional[int] = Field(default=None, description="")
         asset_anomalo_d_q_status: Optional[str] = Field(default=None, description="")
         asset_anomalo_check_count: Optional[int] = Field(default=None, description="")
-        asset_anomalo_failed_check_count: Optional[int] = Field(default=None, description="")
-        asset_anomalo_check_statuses: Optional[str] = Field(default=None, description="")
-        asset_anomalo_last_check_run_at: Optional[datetime] = Field(default=None, description="")
-        asset_anomalo_applied_check_types: Optional[Set[str]] = Field(default=None, description="")
-        asset_anomalo_failed_check_types: Optional[Set[str]] = Field(default=None, description="")
+        asset_anomalo_failed_check_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_check_statuses: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_last_check_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_applied_check_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_anomalo_failed_check_types: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_anomalo_source_url: Optional[str] = Field(default=None, description="")
         asset_soda_d_q_status: Optional[str] = Field(default=None, description="")
         asset_soda_check_count: Optional[int] = Field(default=None, description="")
-        asset_soda_last_sync_run_at: Optional[datetime] = Field(default=None, description="")
-        asset_soda_last_scan_at: Optional[datetime] = Field(default=None, description="")
+        asset_soda_last_sync_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_soda_last_scan_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         asset_soda_check_statuses: Optional[str] = Field(default=None, description="")
         asset_soda_source_url: Optional[str] = Field(default=None, description="")
         asset_icon: Optional[str] = Field(default=None, description="")
@@ -2989,29 +3748,65 @@ class Asset(Referenceable):
         asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         asset_policies_count: Optional[int] = Field(default=None, description="")
         domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
-        non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
+        non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         application_qualified_name: Optional[str] = Field(default=None, description="")
-        application_field_qualified_name: Optional[str] = Field(default=None, description="")
+        application_field_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
-        data_contract_latest_certified: Optional[DataContract] = Field(default=None, description="")  # relationship
-        anomalo_checks: Optional[List[AnomaloCheck]] = Field(default=None, description="")  # relationship
-        user_def_relationship_to: Optional[List[Referenceable]] = Field(default=None, description="")  # relationship
-        output_port_data_products: Optional[List[DataProduct]] = Field(default=None, description="")  # relationship
-        user_def_relationship_from: Optional[List[Referenceable]] = Field(default=None, description="")  # relationship
+        data_contract_latest_certified: Optional[DataContract] = Field(
+            default=None, description=""
+        )  # relationship
+        anomalo_checks: Optional[List[AnomaloCheck]] = Field(
+            default=None, description=""
+        )  # relationship
+        user_def_relationship_to: Optional[List[Referenceable]] = Field(
+            default=None, description=""
+        )  # relationship
+        output_port_data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        user_def_relationship_from: Optional[List[Referenceable]] = Field(
+            default=None, description=""
+        )  # relationship
         readme: Optional[Readme] = Field(default=None, description="")  # relationship
-        application_field: Optional[ApplicationField] = Field(default=None, description="")  # relationship
-        data_contract_latest: Optional[DataContract] = Field(default=None, description="")  # relationship
-        meanings: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
-        mc_monitors: Optional[List[MCMonitor]] = Field(default=None, description="")  # relationship
-        application: Optional[Application] = Field(default=None, description="")  # relationship
-        files: Optional[List[File]] = Field(default=None, description="")  # relationship
-        mc_incidents: Optional[List[MCIncident]] = Field(default=None, description="")  # relationship
-        links: Optional[List[Link]] = Field(default=None, description="")  # relationship
-        metrics: Optional[List[Metric]] = Field(default=None, description="")  # relationship
-        input_port_data_products: Optional[List[DataProduct]] = Field(default=None, description="")  # relationship
-        soda_checks: Optional[List[SodaCheck]] = Field(default=None, description="")  # relationship
+        application_field: Optional[ApplicationField] = Field(
+            default=None, description=""
+        )  # relationship
+        data_contract_latest: Optional[DataContract] = Field(
+            default=None, description=""
+        )  # relationship
+        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
+            default=None, description=""
+        )  # relationship
+        mc_monitors: Optional[List[MCMonitor]] = Field(
+            default=None, description=""
+        )  # relationship
+        application: Optional[Application] = Field(
+            default=None, description=""
+        )  # relationship
+        files: Optional[List[File]] = Field(
+            default=None, description=""
+        )  # relationship
+        mc_incidents: Optional[List[MCIncident]] = Field(
+            default=None, description=""
+        )  # relationship
+        links: Optional[List[Link]] = Field(
+            default=None, description=""
+        )  # relationship
+        metrics: Optional[List[Metric]] = Field(
+            default=None, description=""
+        )  # relationship
+        input_port_data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        soda_checks: Optional[List[SodaCheck]] = Field(
+            default=None, description=""
+        )  # relationship
 
         def remove_description(self):
             self.description = None

@@ -33,7 +33,9 @@ class Mode(BI):
     """
 
     """
-    MODE_TOKEN: ClassVar[KeywordTextField] = KeywordTextField("modeToken", "modeToken", "modeToken.text")
+    MODE_TOKEN: ClassVar[KeywordTextField] = KeywordTextField(
+        "modeToken", "modeToken", "modeToken.text"
+    )
     """
 
     """
@@ -130,7 +132,9 @@ class Mode(BI):
 
     @property
     def mode_workspace_username(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_workspace_username
+        return (
+            None if self.attributes is None else self.attributes.mode_workspace_username
+        )
 
     @mode_workspace_username.setter
     def mode_workspace_username(self, mode_workspace_username: Optional[str]):
@@ -140,10 +144,16 @@ class Mode(BI):
 
     @property
     def mode_workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mode_workspace_qualified_name
+        )
 
     @mode_workspace_qualified_name.setter
-    def mode_workspace_qualified_name(self, mode_workspace_qualified_name: Optional[str]):
+    def mode_workspace_qualified_name(
+        self, mode_workspace_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
@@ -160,7 +170,11 @@ class Mode(BI):
 
     @property
     def mode_report_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_report_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mode_report_qualified_name
+        )
 
     @mode_report_qualified_name.setter
     def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
@@ -180,7 +194,11 @@ class Mode(BI):
 
     @property
     def mode_query_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_query_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mode_query_qualified_name
+        )
 
     @mode_query_qualified_name.setter
     def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
@@ -193,7 +211,9 @@ class Mode(BI):
         mode_token: Optional[str] = Field(default=None, description="")
         mode_workspace_name: Optional[str] = Field(default=None, description="")
         mode_workspace_username: Optional[str] = Field(default=None, description="")
-        mode_workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        mode_workspace_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         mode_report_name: Optional[str] = Field(default=None, description="")
         mode_report_qualified_name: Optional[str] = Field(default=None, description="")
         mode_query_name: Optional[str] = Field(default=None, description="")

@@ -17,7 +17,9 @@ from tests.unit.model.constants import (
         (ANAPLAN_LINE_ITEM_NAME, None, "module_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, module_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, module_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         AnaplanLineItem.creator(name=name, module_qualified_name=module_qualified_name)
 
@@ -45,7 +47,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        AnaplanLineItem.create_for_modification(qualified_name=qualified_name, name=name)
+        AnaplanLineItem.create_for_modification(
+            qualified_name=qualified_name, name=name
+        )
 
 
 def test_create_for_modification():

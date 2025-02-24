@@ -33,15 +33,21 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def adls_account(client: AtlanClient, connection: Connection) -> Generator[ADLSAccount, None, None]:
+def adls_account(
+    client: AtlanClient, connection: Connection
+) -> Generator[ADLSAccount, None, None]:
     assert connection.qualified_name
-    to_create = ADLSAccount.create(name=ADLS_ACCOUNT_NAME, connection_qualified_name=connection.qualified_name)
+    to_create = ADLSAccount.create(
+        name=ADLS_ACCOUNT_NAME, connection_qualified_name=connection.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSAccount)[0]
     yield result
@@ -62,9 +68,13 @@ def test_adls_account(
 
 
 @pytest.fixture(scope="module")
-def adls_container(client: AtlanClient, adls_account: ADLSAccount) -> Generator[ADLSContainer, None, None]:
+def adls_container(
+    client: AtlanClient, adls_account: ADLSAccount
+) -> Generator[ADLSContainer, None, None]:
     assert adls_account.qualified_name
-    to_create = ADLSContainer.create(name=CONTAINER_NAME, adls_account_qualified_name=adls_account.qualified_name)
+    to_create = ADLSContainer.create(
+        name=CONTAINER_NAME, adls_account_qualified_name=adls_account.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSContainer)[0]
     yield result
@@ -110,14 +120,19 @@ def test_overload_adls_container(
     assert adls_container_overload
     assert adls_container_overload.guid
     assert adls_container_overload.qualified_name
-    assert adls_container_overload.adls_account_qualified_name == adls_account.qualified_name
+    assert (
+        adls_container_overload.adls_account_qualified_name
+        == adls_account.qualified_name
+    )
     assert adls_container_overload.adls_account_name == adls_account.name
     assert adls_container_overload.name == CONTAINER_NAME_OVERLOAD
     assert adls_container_overload.connector_name == AtlanConnectorType.ADLS.value
 
 
 @pytest.fixture(scope="module")
-def adls_object(client: AtlanClient, adls_container: ADLSContainer) -> Generator[ADLSObject, None, None]:
+def adls_object(
+    client: AtlanClient, adls_container: ADLSContainer
+) -> Generator[ADLSObject, None, None]:
     assert adls_container.qualified_name
     to_create = ADLSObject.create(
         name=OBJECT_NAME,
@@ -162,13 +177,17 @@ def test_overload_adls_object(
     assert adls_object_overload
     assert adls_object_overload.guid
     assert adls_object_overload.qualified_name
-    assert adls_object_overload.adls_container_qualified_name == adls_container_overload.qualified_name
+    assert (
+        adls_object_overload.adls_container_qualified_name
+        == adls_container_overload.qualified_name
+    )
     assert adls_object_overload.adls_container_name == adls_container_overload.name
     assert adls_object_overload.name == OBJECT_NAME_OVERLOAD
     assert adls_object_overload.connector_name == AtlanConnectorType.ADLS.value
     assert adls_container_overload.qualified_name
-    assert adls_object_overload.adls_account_qualified_name == get_parent_qualified_name(
-        adls_container_overload.qualified_name
+    assert (
+        adls_object_overload.adls_account_qualified_name
+        == get_parent_qualified_name(adls_container_overload.qualified_name)
     )
     assert adls_object_overload.adls_account_name == adls_account.name
 
@@ -187,7 +206,9 @@ def test_adls_object(
     assert adls_object.name == OBJECT_NAME
     assert adls_object.connector_name == AtlanConnectorType.ADLS.value
     assert adls_container.qualified_name
-    assert adls_object.adls_account_qualified_name == get_parent_qualified_name(adls_container.qualified_name)
+    assert adls_object.adls_account_qualified_name == get_parent_qualified_name(
+        adls_container.qualified_name
+    )
     assert adls_object.adls_account_name == adls_account.name
 
 
@@ -233,7 +254,9 @@ def test_retrieve_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    b = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        adls_object.guid, asset_type=ADLSObject, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == adls_object.guid
@@ -303,7 +326,9 @@ def test_read_deleted_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    deleted = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        adls_object.guid, asset_type=ADLSObject, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == adls_object.guid
     assert deleted.qualified_name == adls_object.qualified_name
@@ -318,7 +343,9 @@ def test_restore_object(
     adls_object: ADLSObject,
 ):
     assert adls_object.qualified_name
-    assert client.asset.restore(asset_type=ADLSObject, qualified_name=adls_object.qualified_name)
+    assert client.asset.restore(
+        asset_type=ADLSObject, qualified_name=adls_object.qualified_name
+    )
     assert adls_object.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=ADLSObject,

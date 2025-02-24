@@ -42,7 +42,9 @@ class PowerBIReport(PowerBI):
     """
     Unique name of the workspace in which this report exists.
     """
-    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasetQualifiedName", "datasetQualifiedName")
+    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
     """
     Unique name of the dataset used to build this report.
     """
@@ -85,7 +87,11 @@ class PowerBIReport(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -95,7 +101,9 @@ class PowerBIReport(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dataset_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
 
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
@@ -168,10 +176,18 @@ class PowerBIReport(PowerBI):
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
         page_count: Optional[int] = Field(default=None, description="")
-        workspace: Optional[PowerBIWorkspace] = Field(default=None, description="")  # relationship
-        tiles: Optional[List[PowerBITile]] = Field(default=None, description="")  # relationship
-        pages: Optional[List[PowerBIPage]] = Field(default=None, description="")  # relationship
-        dataset: Optional[PowerBIDataset] = Field(default=None, description="")  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
+        tiles: Optional[List[PowerBITile]] = Field(
+            default=None, description=""
+        )  # relationship
+        pages: Optional[List[PowerBIPage]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBIReport.Attributes = Field(
         default_factory=lambda: PowerBIReport.Attributes(),

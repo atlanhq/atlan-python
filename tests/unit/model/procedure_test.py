@@ -49,7 +49,9 @@ def test_creator():
     assert sut.database_name == DATABASE_NAME
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
-    assert sut.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/_procedures_/{PROCEDURE_NAME}"
+    assert (
+        sut.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/_procedures_/{PROCEDURE_NAME}"
+    )
     assert sut.schema_qualified_name == SCHEMA_QUALIFIED_NAME
     assert sut.schema_name == SCHEMA_NAME
     assert sut.connector_name == CONNECTOR_TYPE
@@ -71,7 +73,9 @@ def test_overload_creator():
     assert sut.database_name == DATABASE_NAME
     assert sut.connection_qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.database_qualified_name == DATABASE_QUALIFIED_NAME
-    assert sut.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/_procedures_/{PROCEDURE_NAME}"
+    assert (
+        sut.qualified_name == f"{SCHEMA_QUALIFIED_NAME}/_procedures_/{PROCEDURE_NAME}"
+    )
     assert sut.schema_qualified_name == SCHEMA_QUALIFIED_NAME
     assert sut.schema_name == SCHEMA_NAME
     assert sut.connector_name == CONNECTOR_TYPE

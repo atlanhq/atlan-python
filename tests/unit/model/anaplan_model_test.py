@@ -17,9 +17,13 @@ from tests.unit.model.constants import (
         (ANAPLAN_MODEL_NAME, None, "workspace_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, workspace_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, workspace_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
-        AnaplanModel.creator(name=name, workspace_qualified_name=workspace_qualified_name)
+        AnaplanModel.creator(
+            name=name, workspace_qualified_name=workspace_qualified_name
+        )
 
 
 def test_create():
@@ -49,7 +53,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = AnaplanModel.create_for_modification(qualified_name=ANAPLAN_MODEL_QUALIFIED_NAME, name=ANAPLAN_MODEL_NAME)
+    sut = AnaplanModel.create_for_modification(
+        qualified_name=ANAPLAN_MODEL_QUALIFIED_NAME, name=ANAPLAN_MODEL_NAME
+    )
 
     assert sut.qualified_name == ANAPLAN_MODEL_QUALIFIED_NAME
     assert sut.name == ANAPLAN_MODEL_NAME

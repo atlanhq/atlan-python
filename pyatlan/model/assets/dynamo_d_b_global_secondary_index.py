@@ -49,7 +49,9 @@ class DynamoDBGlobalSecondaryIndex(DynamoDBSecondaryIndex):
         self.attributes.dynamo_dbtable = dynamo_dbtable
 
     class Attributes(DynamoDBSecondaryIndex.Attributes):
-        dynamo_dbtable: Optional[DynamoDBTable] = Field(default=None, description="")  # relationship
+        dynamo_dbtable: Optional[DynamoDBTable] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: DynamoDBGlobalSecondaryIndex.Attributes = Field(
         default_factory=lambda: DynamoDBGlobalSecondaryIndex.Attributes(),

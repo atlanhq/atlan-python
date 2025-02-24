@@ -34,7 +34,9 @@ class AccessControl(Asset, type_name="AccessControl"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    IS_ACCESS_CONTROL_ENABLED: ClassVar[BooleanField] = BooleanField("isAccessControlEnabled", "isAccessControlEnabled")
+    IS_ACCESS_CONTROL_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "isAccessControlEnabled", "isAccessControlEnabled"
+    )
     """
     TBC
     """
@@ -44,11 +46,15 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
-    DENY_ASSET_TABS: ClassVar[KeywordField] = KeywordField("denyAssetTabs", "denyAssetTabs")
+    DENY_ASSET_TABS: ClassVar[KeywordField] = KeywordField(
+        "denyAssetTabs", "denyAssetTabs"
+    )
     """
     TBC
     """
-    DENY_ASSET_FILTERS: ClassVar[TextField] = TextField("denyAssetFilters", "denyAssetFilters")
+    DENY_ASSET_FILTERS: ClassVar[TextField] = TextField(
+        "denyAssetFilters", "denyAssetFilters"
+    )
     """
     TBC
     """
@@ -56,19 +62,27 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
-    DENY_ASSET_TYPES: ClassVar[TextField] = TextField("denyAssetTypes", "denyAssetTypes")
+    DENY_ASSET_TYPES: ClassVar[TextField] = TextField(
+        "denyAssetTypes", "denyAssetTypes"
+    )
     """
     TBC
     """
-    DENY_NAVIGATION_PAGES: ClassVar[TextField] = TextField("denyNavigationPages", "denyNavigationPages")
+    DENY_NAVIGATION_PAGES: ClassVar[TextField] = TextField(
+        "denyNavigationPages", "denyNavigationPages"
+    )
     """
     TBC
     """
-    DEFAULT_NAVIGATION: ClassVar[TextField] = TextField("defaultNavigation", "defaultNavigation")
+    DEFAULT_NAVIGATION: ClassVar[TextField] = TextField(
+        "defaultNavigation", "defaultNavigation"
+    )
     """
     TBC
     """
-    DISPLAY_PREFERENCES: ClassVar[KeywordField] = KeywordField("displayPreferences", "displayPreferences")
+    DISPLAY_PREFERENCES: ClassVar[KeywordField] = KeywordField(
+        "displayPreferences", "displayPreferences"
+    )
     """
     TBC
     """
@@ -93,7 +107,11 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def is_access_control_enabled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_access_control_enabled
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.is_access_control_enabled
+        )
 
     @is_access_control_enabled.setter
     def is_access_control_enabled(self, is_access_control_enabled: Optional[bool]):
@@ -103,10 +121,16 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def deny_custom_metadata_guids(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.deny_custom_metadata_guids
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.deny_custom_metadata_guids
+        )
 
     @deny_custom_metadata_guids.setter
-    def deny_custom_metadata_guids(self, deny_custom_metadata_guids: Optional[Set[str]]):
+    def deny_custom_metadata_guids(
+        self, deny_custom_metadata_guids: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.deny_custom_metadata_guids = deny_custom_metadata_guids
@@ -153,7 +177,9 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def deny_navigation_pages(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.deny_navigation_pages
+        return (
+            None if self.attributes is None else self.attributes.deny_navigation_pages
+        )
 
     @deny_navigation_pages.setter
     def deny_navigation_pages(self, deny_navigation_pages: Optional[Set[str]]):
@@ -193,7 +219,9 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     class Attributes(Asset.Attributes):
         is_access_control_enabled: Optional[bool] = Field(default=None, description="")
-        deny_custom_metadata_guids: Optional[Set[str]] = Field(default=None, description="")
+        deny_custom_metadata_guids: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         deny_asset_tabs: Optional[Set[str]] = Field(default=None, description="")
         deny_asset_filters: Optional[Set[str]] = Field(default=None, description="")
         channel_link: Optional[str] = Field(default=None, description="")
@@ -201,7 +229,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         deny_navigation_pages: Optional[Set[str]] = Field(default=None, description="")
         default_navigation: Optional[str] = Field(default=None, description="")
         display_preferences: Optional[Set[str]] = Field(default=None, description="")
-        policies: Optional[List[AuthPolicy]] = Field(default=None, description="")  # relationship
+        policies: Optional[List[AuthPolicy]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AccessControl.Attributes = Field(
         default_factory=lambda: AccessControl.Attributes(),

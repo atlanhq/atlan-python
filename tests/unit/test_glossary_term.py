@@ -57,7 +57,9 @@ def test_create_atttributes_without_required_parameters_raises_value_error(
         ("Glossary", None, None, "123"),
     ],
 )
-def test_create_atttributes_with_required_parameters(name, anchor, glossary_qualified_name, glossary_guid):
+def test_create_atttributes_with_required_parameters(
+    name, anchor, glossary_qualified_name, glossary_guid
+):
     sut = AtlasGlossaryTerm.Attributes.create(
         name=name,
         anchor=anchor,
@@ -68,7 +70,9 @@ def test_create_atttributes_with_required_parameters(name, anchor, glossary_qual
     if anchor:
         assert anchor == sut.anchor
     if glossary_qualified_name:
-        assert sut.anchor.unique_attributes == {"qualifiedName": glossary_qualified_name}
+        assert sut.anchor.unique_attributes == {
+            "qualifiedName": glossary_qualified_name
+        }
     if glossary_guid:
         assert sut.anchor.guid == glossary_guid
 
@@ -127,7 +131,9 @@ def test_create_without_required_parameters_raises_value_error(
         ("Glossary", None, None, "123"),
     ],
 )
-def test_create_with_required_parameters(name, anchor, glossary_qualified_name, glossary_guid):
+def test_create_with_required_parameters(
+    name, anchor, glossary_qualified_name, glossary_guid
+):
     sut = AtlasGlossaryTerm.create(
         name=name,
         anchor=anchor,
@@ -138,6 +144,8 @@ def test_create_with_required_parameters(name, anchor, glossary_qualified_name, 
     if anchor:
         assert anchor == sut.attributes.anchor
     if glossary_qualified_name:
-        assert sut.attributes.anchor.unique_attributes == {"qualifiedName": glossary_qualified_name}
+        assert sut.attributes.anchor.unique_attributes == {
+            "qualifiedName": glossary_qualified_name
+        }
     if glossary_guid:
         assert sut.attributes.anchor.guid == glossary_guid

@@ -16,7 +16,9 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
     _PACKAGE_ICON = "http://assets.atlan.com/assets/ph-key-light.svg"
     _PACKAGE_LOGO = "http://assets.atlan.com/assets/ph-key-light.svg"
 
-    def config(self, connection_qualified_name: str, api_token_guid: str) -> APITokenConnectionAdmin:
+    def config(
+        self, connection_qualified_name: str, api_token_guid: str
+    ) -> APITokenConnectionAdmin:
         """
         Set up the API token connection admin with the specified configuration.
 
@@ -26,7 +28,9 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
 
         :returns: package, with the specified configuration.
         """
-        self._parameters.append({"name": "connection_qualified_name", "value": connection_qualified_name})
+        self._parameters.append(
+            {"name": "connection_qualified_name", "value": connection_qualified_name}
+        )
         self._parameters.append({"name": "api_token_guid", "value": api_token_guid})
         return self
 

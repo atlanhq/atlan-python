@@ -112,27 +112,47 @@ class SisenseDatamodelTable(Sisense):
 
     @property
     def sisense_datamodel_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_qualified_name
+        )
 
     @sisense_datamodel_qualified_name.setter
-    def sisense_datamodel_qualified_name(self, sisense_datamodel_qualified_name: Optional[str]):
+    def sisense_datamodel_qualified_name(
+        self, sisense_datamodel_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_qualified_name = sisense_datamodel_qualified_name
+        self.attributes.sisense_datamodel_qualified_name = (
+            sisense_datamodel_qualified_name
+        )
 
     @property
     def sisense_datamodel_table_column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_column_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_column_count
+        )
 
     @sisense_datamodel_table_column_count.setter
-    def sisense_datamodel_table_column_count(self, sisense_datamodel_table_column_count: Optional[int]):
+    def sisense_datamodel_table_column_count(
+        self, sisense_datamodel_table_column_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_column_count = sisense_datamodel_table_column_count
+        self.attributes.sisense_datamodel_table_column_count = (
+            sisense_datamodel_table_column_count
+        )
 
     @property
     def sisense_datamodel_table_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_type
+        )
 
     @sisense_datamodel_table_type.setter
     def sisense_datamodel_table_type(self, sisense_datamodel_table_type: Optional[str]):
@@ -142,53 +162,93 @@ class SisenseDatamodelTable(Sisense):
 
     @property
     def sisense_datamodel_table_expression(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_expression
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_expression
+        )
 
     @sisense_datamodel_table_expression.setter
-    def sisense_datamodel_table_expression(self, sisense_datamodel_table_expression: Optional[str]):
+    def sisense_datamodel_table_expression(
+        self, sisense_datamodel_table_expression: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_expression = sisense_datamodel_table_expression
+        self.attributes.sisense_datamodel_table_expression = (
+            sisense_datamodel_table_expression
+        )
 
     @property
     def sisense_datamodel_table_is_materialized(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_is_materialized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_is_materialized
+        )
 
     @sisense_datamodel_table_is_materialized.setter
-    def sisense_datamodel_table_is_materialized(self, sisense_datamodel_table_is_materialized: Optional[bool]):
+    def sisense_datamodel_table_is_materialized(
+        self, sisense_datamodel_table_is_materialized: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_is_materialized = sisense_datamodel_table_is_materialized
+        self.attributes.sisense_datamodel_table_is_materialized = (
+            sisense_datamodel_table_is_materialized
+        )
 
     @property
     def sisense_datamodel_table_is_hidden(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_is_hidden
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_is_hidden
+        )
 
     @sisense_datamodel_table_is_hidden.setter
-    def sisense_datamodel_table_is_hidden(self, sisense_datamodel_table_is_hidden: Optional[bool]):
+    def sisense_datamodel_table_is_hidden(
+        self, sisense_datamodel_table_is_hidden: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_is_hidden = sisense_datamodel_table_is_hidden
+        self.attributes.sisense_datamodel_table_is_hidden = (
+            sisense_datamodel_table_is_hidden
+        )
 
     @property
     def sisense_datamodel_table_schedule(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_schedule
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_schedule
+        )
 
     @sisense_datamodel_table_schedule.setter
-    def sisense_datamodel_table_schedule(self, sisense_datamodel_table_schedule: Optional[str]):
+    def sisense_datamodel_table_schedule(
+        self, sisense_datamodel_table_schedule: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_schedule = sisense_datamodel_table_schedule
+        self.attributes.sisense_datamodel_table_schedule = (
+            sisense_datamodel_table_schedule
+        )
 
     @property
     def sisense_datamodel_table_live_query_settings(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_live_query_settings
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_live_query_settings
+        )
 
     @sisense_datamodel_table_live_query_settings.setter
-    def sisense_datamodel_table_live_query_settings(self, sisense_datamodel_table_live_query_settings: Optional[str]):
+    def sisense_datamodel_table_live_query_settings(
+        self, sisense_datamodel_table_live_query_settings: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_table_live_query_settings = sisense_datamodel_table_live_query_settings
+        self.attributes.sisense_datamodel_table_live_query_settings = (
+            sisense_datamodel_table_live_query_settings
+        )
 
     @property
     def sisense_widgets(self) -> Optional[List[SisenseWidget]]:
@@ -211,16 +271,36 @@ class SisenseDatamodelTable(Sisense):
         self.attributes.sisense_datamodel = sisense_datamodel
 
     class Attributes(Sisense.Attributes):
-        sisense_datamodel_qualified_name: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_table_column_count: Optional[int] = Field(default=None, description="")
-        sisense_datamodel_table_type: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_table_expression: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_table_is_materialized: Optional[bool] = Field(default=None, description="")
-        sisense_datamodel_table_is_hidden: Optional[bool] = Field(default=None, description="")
-        sisense_datamodel_table_schedule: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_table_live_query_settings: Optional[str] = Field(default=None, description="")
-        sisense_widgets: Optional[List[SisenseWidget]] = Field(default=None, description="")  # relationship
-        sisense_datamodel: Optional[SisenseDatamodel] = Field(default=None, description="")  # relationship
+        sisense_datamodel_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_column_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_expression: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_is_materialized: Optional[bool] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_is_hidden: Optional[bool] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_schedule: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_table_live_query_settings: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
+            default=None, description=""
+        )  # relationship
+        sisense_datamodel: Optional[SisenseDatamodel] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SisenseDatamodelTable.Attributes = Field(
         default_factory=lambda: SisenseDatamodelTable.Attributes(),

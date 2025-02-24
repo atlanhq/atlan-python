@@ -70,7 +70,11 @@ class DataverseEntity(Dataverse):
 
     @property
     def dataverse_entity_schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dataverse_entity_schema_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dataverse_entity_schema_name
+        )
 
     @dataverse_entity_schema_name.setter
     def dataverse_entity_schema_name(self, dataverse_entity_schema_name: Optional[str]):
@@ -80,7 +84,11 @@ class DataverseEntity(Dataverse):
 
     @property
     def dataverse_entity_table_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dataverse_entity_table_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dataverse_entity_table_type
+        )
 
     @dataverse_entity_table_type.setter
     def dataverse_entity_table_type(self, dataverse_entity_table_type: Optional[str]):
@@ -93,19 +101,27 @@ class DataverseEntity(Dataverse):
         return None if self.attributes is None else self.attributes.dataverse_attributes
 
     @dataverse_attributes.setter
-    def dataverse_attributes(self, dataverse_attributes: Optional[List[DataverseAttribute]]):
+    def dataverse_attributes(
+        self, dataverse_attributes: Optional[List[DataverseAttribute]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dataverse_attributes = dataverse_attributes
 
     class Attributes(Dataverse.Attributes):
-        dataverse_entity_schema_name: Optional[str] = Field(default=None, description="")
+        dataverse_entity_schema_name: Optional[str] = Field(
+            default=None, description=""
+        )
         dataverse_entity_table_type: Optional[str] = Field(default=None, description="")
-        dataverse_attributes: Optional[List[DataverseAttribute]] = Field(default=None, description="")  # relationship
+        dataverse_attributes: Optional[List[DataverseAttribute]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def creator(cls, *, name: str, connection_qualified_name: str) -> DataverseEntity.Attributes:
+        def creator(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> DataverseEntity.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"],
                 [name, connection_qualified_name],
@@ -114,7 +130,9 @@ class DataverseEntity(Dataverse):
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: DataverseEntity.Attributes = Field(

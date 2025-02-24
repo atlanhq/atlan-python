@@ -35,7 +35,9 @@ class TableauDatasource(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
     """
     Unique name of the site in which this datasource exists.
     """
@@ -51,11 +53,15 @@ class TableauDatasource(Tableau):
     """
     Unique name of the top-level project in which this datasource exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField("workbookQualifiedName", "workbookQualifiedName")
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
     """
     Unique name of the workbook in which this datasource exists.
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
     """
     List of top-level projects with their nested child projects.
     """
@@ -75,19 +81,27 @@ class TableauDatasource(Tableau):
     """
     Users that have marked this datasource as cerified, in Tableau.
     """
-    CERTIFICATION_NOTE: ClassVar[TextField] = TextField("certificationNote", "certificationNote")
+    CERTIFICATION_NOTE: ClassVar[TextField] = TextField(
+        "certificationNote", "certificationNote"
+    )
     """
     Notes related to this datasource being cerfified, in Tableau.
     """
-    CERTIFIER_DISPLAY_NAME: ClassVar[TextField] = TextField("certifierDisplayName", "certifierDisplayName")
+    CERTIFIER_DISPLAY_NAME: ClassVar[TextField] = TextField(
+        "certifierDisplayName", "certifierDisplayName"
+    )
     """
     Name of the user who cerified this datasource, in Tableau.
     """
-    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField("upstreamTables", "upstreamTables")
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
     """
     List of tables that are upstream of this datasource.
     """
-    UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField("upstreamDatasources", "upstreamDatasources")
+    UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField(
+        "upstreamDatasources", "upstreamDatasources"
+    )
     """
     List of datasources that are upstream of this datasource.
     """
@@ -136,7 +150,9 @@ class TableauDatasource(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
 
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
@@ -146,17 +162,27 @@ class TableauDatasource(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workbook_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
 
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
@@ -226,7 +252,9 @@ class TableauDatasource(Tableau):
 
     @property
     def certifier_display_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.certifier_display_name
+        return (
+            None if self.attributes is None else self.attributes.certifier_display_name
+        )
 
     @certifier_display_name.setter
     def certifier_display_name(self, certifier_display_name: Optional[str]):
@@ -239,7 +267,9 @@ class TableauDatasource(Tableau):
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]):
+    def upstream_tables(
+        self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
@@ -249,7 +279,9 @@ class TableauDatasource(Tableau):
         return None if self.attributes is None else self.attributes.upstream_datasources
 
     @upstream_datasources.setter
-    def upstream_datasources(self, upstream_datasources: Optional[List[Dict[str, Optional[str]]]]):
+    def upstream_datasources(
+        self, upstream_datasources: Optional[List[Dict[str, Optional[str]]]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_datasources = upstream_datasources
@@ -287,20 +319,34 @@ class TableauDatasource(Tableau):
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
+        top_level_project_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         is_published: Optional[bool] = Field(default=None, description="")
         has_extracts: Optional[bool] = Field(default=None, description="")
         is_certified: Optional[bool] = Field(default=None, description="")
         certifier: Optional[Dict[str, str]] = Field(default=None, description="")
         certification_note: Optional[str] = Field(default=None, description="")
         certifier_display_name: Optional[str] = Field(default=None, description="")
-        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(default=None, description="")
-        upstream_datasources: Optional[List[Dict[str, Optional[str]]]] = Field(default=None, description="")
-        project: Optional[TableauProject] = Field(default=None, description="")  # relationship
-        workbook: Optional[TableauWorkbook] = Field(default=None, description="")  # relationship
-        fields: Optional[List[TableauDatasourceField]] = Field(default=None, description="")  # relationship
+        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(
+            default=None, description=""
+        )
+        upstream_datasources: Optional[List[Dict[str, Optional[str]]]] = Field(
+            default=None, description=""
+        )
+        project: Optional[TableauProject] = Field(
+            default=None, description=""
+        )  # relationship
+        workbook: Optional[TableauWorkbook] = Field(
+            default=None, description=""
+        )  # relationship
+        fields: Optional[List[TableauDatasourceField]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: TableauDatasource.Attributes = Field(
         default_factory=lambda: TableauDatasource.Attributes(),

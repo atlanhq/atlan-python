@@ -96,7 +96,9 @@ VALUES_FOR_TEXT_QUERIES = {
 
 @pytest.fixture(scope="module")
 def snowflake_conn(client: AtlanClient):
-    return client.asset.find_connections_by_name("development", AtlanConnectorType.SNOWFLAKE)[0]
+    return client.asset.find_connections_by_name(
+        "development", AtlanConnectorType.SNOWFLAKE
+    )[0]
 
 
 @pytest.fixture(scope="module")
@@ -179,7 +181,11 @@ def test_search_source_synced_assets(client: AtlanClient):
             FluentSearch()
             .select()
             .where(CompoundQuery.asset_type(Table))
-            .where(CompoundQuery.tagged_with_value(EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"))
+            .where(
+                CompoundQuery.tagged_with_value(
+                    EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"
+                )
+            )
             .execute(client=client)
         )
         if isinstance(table, Table)
@@ -190,11 +196,15 @@ def test_search_source_synced_assets(client: AtlanClient):
 def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
     # Make sure no tags are assigned initially
     assert table.guid
-    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table, ignore_relationships=False)
+    table = client.asset.get_by_guid(
+        guid=table.guid, asset_type=Table, ignore_relationships=False
+    )
     assert not table.atlan_tags
     assert table.name and table.qualified_name
 
-    source_tag_name = SourceTagName("snowflake/development@@ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL")
+    source_tag_name = SourceTagName(
+        "snowflake/development@@ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL"
+    )
     to_update = table.updater(table.qualified_name, table.name)
     to_update.atlan_tags = [
         AtlanTag.of(atlan_tag_name=AtlanTagName(EXISTING_TAG)),
@@ -202,14 +212,21 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
             atlan_tag_name=AtlanTagName(EXISTING_SOURCE_SYNCED_TAG),
             source_tag_attachment=SourceTagAttachment.by_name(
                 name=source_tag_name,
-                source_tag_values=[SourceTagAttachmentValue(tag_attachment_value="Not Restricted")],
+                source_tag_values=[
+                    SourceTagAttachmentValue(tag_attachment_value="Not Restricted")
+                ],
             ),
         ),
     ]
     response = client.asset.save(to_update, replace_atlan_tags=True)
 
     assert (tables := response.assets_updated(asset_type=Table)) and len(tables) == 1
-    assert tables and len(tables) == 1 and tables[0].atlan_tags and len(tables[0].atlan_tags) == 2
+    assert (
+        tables
+        and len(tables) == 1
+        and tables[0].atlan_tags
+        and len(tables[0].atlan_tags) == 2
+    )
     for tag in tables[0].atlan_tags:
         assert str(tag.type_name) in (EXISTING_TAG, EXISTING_SOURCE_SYNCED_TAG)
 
@@ -223,19 +240,30 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
             .select()
             .where(CompoundQuery.asset_type(Table))
             .where(Table.QUALIFIED_NAME.eq(table.qualified_name))
-            .where(CompoundQuery.tagged_with_value(EXISTING_SOURCE_SYNCED_TAG, "Not Restricted"))
+            .where(
+                CompoundQuery.tagged_with_value(
+                    EXISTING_SOURCE_SYNCED_TAG, "Not Restricted"
+                )
+            )
             .execute(client=client)
         )
         if isinstance(table, Table)
     ]
 
-    assert tables and len(tables) == 1 and tables[0].atlan_tags and len(tables[0].atlan_tags) == 2
+    assert (
+        tables
+        and len(tables) == 1
+        and tables[0].atlan_tags
+        and len(tables[0].atlan_tags) == 2
+    )
     for tag in tables[0].atlan_tags:
         assert str(tag.type_name) in (EXISTING_TAG, EXISTING_SOURCE_SYNCED_TAG)
     _assert_source_tag(tables, EXISTING_SOURCE_SYNCED_TAG, "Not Restricted")
 
 
-def test_search_source_specific_custom_attributes(client: AtlanClient, snowflake_column_qn: str):
+def test_search_source_specific_custom_attributes(
+    client: AtlanClient, snowflake_column_qn: str
+):
     # Test with get_by_qualified_name()
     asset = client.asset.get_by_qualified_name(
         asset_type=Column,
@@ -303,7 +331,9 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         Asset.NAME.wildcard("jsdk_*"),
         Asset.NAME.wildcard("gsdk_*"),
     ]
-    query = CompoundQuery(where_nots=exclude_sdk_terms, where_somes=[CompoundQuery.active_assets()]).to_query()
+    query = CompoundQuery(
+        where_nots=exclude_sdk_terms, where_somes=[CompoundQuery.active_assets()]
+    ).to_query()
 
     # Test search() with DSL: using default offset-based pagination
     # when results are less than the predefined threshold (i.e: 100,000 assets)
@@ -398,7 +428,10 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         ]
         _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS)
         assert mock_logger.call_count < TOTAL_ASSETS
-        assert "Result size (%s) exceeds threshold (%s)." in mock_logger.call_args_list[0][0][0]
+        assert (
+            "Result size (%s) exceeds threshold (%s)."
+            in mock_logger.call_args_list[0][0][0]
+        )
         mock_logger.reset_mock()
 
 
@@ -488,7 +521,12 @@ def test_exists_query_factory(client: AtlanClient, with_name):
 
 @pytest.mark.parametrize(
     "text_query_value, method, clazz",
-    [(method, method, query) for query in [Match] for method in sorted(dir(query)) if method.startswith("with_")],
+    [
+        (method, method, query)
+        for query in [Match]
+        for method in sorted(dir(query))
+        if method.startswith("with_")
+    ],
     indirect=["text_query_value"],
 )
 def test_text_queries_factory(client: AtlanClient, text_query_value, method, clazz):
@@ -546,7 +584,9 @@ def test_bucket_aggregation(client: AtlanClient):
 
 
 def test_nested_bucket_aggregation(client: AtlanClient):
-    nested_aggs_level_2 = Asset.TYPE_NAME.bucket_by(nested={"asset_guid": Asset.GUID.bucket_by()})
+    nested_aggs_level_2 = Asset.TYPE_NAME.bucket_by(
+        nested={"asset_guid": Asset.GUID.bucket_by()}
+    )
     nested_aggs = Asset.TYPE_NAME.bucket_by(nested={"asset_name": nested_aggs_level_2})
     request = (
         FluentSearch.select()
@@ -589,7 +629,11 @@ def test_aggregation_source_value(client: AtlanClient):
         .aggregate(
             "asset_type",
             Asset.TYPE_NAME.bucket_by(
-                nested={"asset_description": Asset.DESCRIPTION.bucket_by(include_source_value=True)},
+                nested={
+                    "asset_description": Asset.DESCRIPTION.bucket_by(
+                        include_source_value=True
+                    )
+                },
             ),
         )
         .sort(Asset.CREATE_TIME.order())
@@ -618,15 +662,22 @@ def test_aggregation_source_value(client: AtlanClient):
             assert bucket.doc_count
             assert bucket.nested_results
             if SearchableField.EMBEDDED_SOURCE_VALUE in bucket.nested_results:
-                nested_results = bucket.nested_results[SearchableField.EMBEDDED_SOURCE_VALUE]
+                nested_results = bucket.nested_results[
+                    SearchableField.EMBEDDED_SOURCE_VALUE
+                ]
                 assert (
-                    nested_results and nested_results.hits and nested_results.hits.hits and nested_results.hits.hits[0]
+                    nested_results
+                    and nested_results.hits
+                    and nested_results.hits.hits
+                    and nested_results.hits.hits[0]
                 )
                 assert bucket.get_source_value(Asset.DESCRIPTION)
                 source_value_found = True
 
     if not source_value_found:
-        pytest.fail("Failed to retrieve the source value for asset description in the aggregation")
+        pytest.fail(
+            "Failed to retrieve the source value for asset description in the aggregation"
+        )
 
 
 def test_metric_aggregation(client: AtlanClient):
@@ -664,7 +715,9 @@ def test_index_search_with_no_aggregation_results(client: AtlanClient):
 
 def test_default_sorting(client: AtlanClient):
     # Empty sorting
-    request = (FluentSearch().where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))).to_request()
+    request = (
+        FluentSearch().where(Asset.QUALIFIED_NAME.eq("test-qn", case_insensitive=True))
+    ).to_request()
     response = client.asset.search(criteria=request)
     sort_options = response._criteria.dsl.sort  # type: ignore
     assert response
@@ -723,7 +776,9 @@ def test_read_timeout(client: AtlanClient):
 
 def test_connect_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
-    with client_connection(connect_timeout=0.0001, retry=Retry(total=0)) as timed_client:
+    with client_connection(
+        connect_timeout=0.0001, retry=Retry(total=0)
+    ) as timed_client:
         with pytest.raises(
             requests.exceptions.ConnectionError,
             match=".(timed out\. \(connect timeout=0\.0001\))|(Failed to establish a new connection.)",  # noqa W605

@@ -39,10 +39,12 @@ class MicroStrategyVisualization(MicroStrategy):
     """
     Type of visualization.
     """
-    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName",
-        "microStrategyDossierQualifiedName.text",
+    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "microStrategyDossierQualifiedName",
+            "microStrategyDossierQualifiedName",
+            "microStrategyDossierQualifiedName.text",
+        )
     )
     """
     Unique name of the dossier in which this visualization exists.
@@ -56,11 +58,15 @@ class MicroStrategyVisualization(MicroStrategy):
     Simple name of the dossier in which this visualization exists.
     """
 
-    MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField("microStrategyDossier")
+    MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField(
+        "microStrategyDossier"
+    )
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField("microStrategyProject")
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
     """
     TBC
     """
@@ -75,27 +81,47 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_visualization_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.micro_strategy_visualization_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualization_type
+        )
 
     @micro_strategy_visualization_type.setter
-    def micro_strategy_visualization_type(self, micro_strategy_visualization_type: Optional[str]):
+    def micro_strategy_visualization_type(
+        self, micro_strategy_visualization_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_visualization_type = micro_strategy_visualization_type
+        self.attributes.micro_strategy_visualization_type = (
+            micro_strategy_visualization_type
+        )
 
     @property
     def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.micro_strategy_dossier_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_qualified_name
+        )
 
     @micro_strategy_dossier_qualified_name.setter
-    def micro_strategy_dossier_qualified_name(self, micro_strategy_dossier_qualified_name: Optional[str]):
+    def micro_strategy_dossier_qualified_name(
+        self, micro_strategy_dossier_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier_qualified_name = micro_strategy_dossier_qualified_name
+        self.attributes.micro_strategy_dossier_qualified_name = (
+            micro_strategy_dossier_qualified_name
+        )
 
     @property
     def micro_strategy_dossier_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.micro_strategy_dossier_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_name
+        )
 
     @micro_strategy_dossier_name.setter
     def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
@@ -105,30 +131,46 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
-        return None if self.attributes is None else self.attributes.micro_strategy_dossier
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossier
+        )
 
     @micro_strategy_dossier.setter
-    def micro_strategy_dossier(self, micro_strategy_dossier: Optional[MicroStrategyDossier]):
+    def micro_strategy_dossier(
+        self, micro_strategy_dossier: Optional[MicroStrategyDossier]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_dossier = micro_strategy_dossier
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return None if self.attributes is None else self.attributes.micro_strategy_project
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
 
     @micro_strategy_project.setter
-    def micro_strategy_project(self, micro_strategy_project: Optional[MicroStrategyProject]):
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_visualization_type: Optional[str] = Field(default=None, description="")
-        micro_strategy_dossier_qualified_name: Optional[str] = Field(default=None, description="")
+        micro_strategy_visualization_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        micro_strategy_dossier_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         micro_strategy_dossier_name: Optional[str] = Field(default=None, description="")
-        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(default=None, description="")  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(default=None, description="")  # relationship
+        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
+            default=None, description=""
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MicroStrategyVisualization.Attributes = Field(
         default_factory=lambda: MicroStrategyVisualization.Attributes(),

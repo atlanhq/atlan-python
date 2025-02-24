@@ -39,15 +39,21 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def preset_workspace(client: AtlanClient, connection: Connection) -> Generator[PresetWorkspace, None, None]:
+def preset_workspace(
+    client: AtlanClient, connection: Connection
+) -> Generator[PresetWorkspace, None, None]:
     assert connection.qualified_name
-    to_create = PresetWorkspace.create(name=PRESET_WORKSPACE_NAME, connection_qualified_name=connection.qualified_name)
+    to_create = PresetWorkspace.create(
+        name=PRESET_WORKSPACE_NAME, connection_qualified_name=connection.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=PresetWorkspace)[0]
     yield result
@@ -120,13 +126,17 @@ def test_overload_preset_dashboard(
     assert preset_dashboard_overload
     assert preset_dashboard_overload.guid
     assert preset_dashboard_overload.qualified_name
-    assert preset_dashboard_overload.connection_qualified_name == connection.qualified_name
+    assert (
+        preset_dashboard_overload.connection_qualified_name == connection.qualified_name
+    )
     assert preset_dashboard_overload.name == PRESET_DASHBOARD_NAME_OVERLOAD
     assert preset_dashboard_overload.connector_name == AtlanConnectorType.PRESET.value
 
 
 @pytest.fixture(scope="module")
-def preset_chart(client: AtlanClient, preset_dashboard: PresetDashboard) -> Generator[PresetChart, None, None]:
+def preset_chart(
+    client: AtlanClient, preset_dashboard: PresetDashboard
+) -> Generator[PresetChart, None, None]:
     assert preset_dashboard.qualified_name
     to_create = PresetChart.create(
         name=PRESET_CHART_NAME,
@@ -146,7 +156,9 @@ def test_preset_chart(
     assert preset_chart
     assert preset_chart.guid
     assert preset_chart.qualified_name
-    assert preset_chart.preset_dashboard_qualified_name == preset_dashboard.qualified_name
+    assert (
+        preset_chart.preset_dashboard_qualified_name == preset_dashboard.qualified_name
+    )
     assert preset_chart.name == PRESET_CHART_NAME
     assert preset_chart.connector_name == AtlanConnectorType.PRESET.value
 
@@ -178,7 +190,10 @@ def test_overload_preset_chart(
     assert preset_chart_overload
     assert preset_chart_overload.guid
     assert preset_chart_overload.qualified_name
-    assert preset_chart_overload.preset_dashboard_qualified_name == preset_dashboard_overload.qualified_name
+    assert (
+        preset_chart_overload.preset_dashboard_qualified_name
+        == preset_dashboard_overload.qualified_name
+    )
     assert preset_chart_overload.name == PRESET_CHART_NAME_OVERLOAD
     assert preset_chart_overload.connector_name == AtlanConnectorType.PRESET.value
 
@@ -238,7 +253,9 @@ def test_overload_preset_dataset(
     assert preset_dataset_overload
     assert preset_dataset_overload.guid
     assert preset_dataset_overload.qualified_name
-    assert preset_dataset_overload.connection_qualified_name == connection.qualified_name
+    assert (
+        preset_dataset_overload.connection_qualified_name == connection.qualified_name
+    )
     assert preset_dataset_overload.name == PRESET_DATASET_NAME_OVERLOAD
     assert preset_dataset_overload.connector_name == AtlanConnectorType.PRESET.value
 
@@ -314,7 +331,9 @@ def test_retrieve_preset_dashboard(
     client: AtlanClient,
     preset_dashboard: PresetDashboard,
 ):
-    b = client.asset.get_by_guid(preset_dashboard.guid, asset_type=PresetDashboard, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        preset_dashboard.guid, asset_type=PresetDashboard, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == preset_dashboard.guid
@@ -356,7 +375,9 @@ def test_update_preset_dashboard_again(
 
 
 @pytest.mark.order(after="test_update_preset_dashboard_again")
-def test_delete_preset_dashboard(client: AtlanClient, preset_dashboard: PresetDashboard):
+def test_delete_preset_dashboard(
+    client: AtlanClient, preset_dashboard: PresetDashboard
+):
     response = client.asset.delete_by_guid(preset_dashboard.guid)
     assert response
     assert not response.assets_created(asset_type=PresetDashboard)
@@ -376,7 +397,9 @@ def test_restore_dashboard(
     preset_dashboard: PresetDashboard,
 ):
     assert preset_dashboard.qualified_name
-    assert client.asset.restore(asset_type=PresetDashboard, qualified_name=preset_dashboard.qualified_name)
+    assert client.asset.restore(
+        asset_type=PresetDashboard, qualified_name=preset_dashboard.qualified_name
+    )
     assert preset_dashboard.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=PresetDashboard,

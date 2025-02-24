@@ -68,7 +68,15 @@ def get_current_view_of_asset(
         exclude_atlan_tags=not include_atlan_tags,
     )
     response = client.asset.search(criteria=request)
-    return result if (result := (response.current_page()[0] if len(response.current_page()) > 0 else None)) else None
+    return (
+        result
+        if (
+            result := (
+                response.current_page()[0] if len(response.current_page()) > 0 else None
+            )
+        )
+        else None
+    )
 
 
 def has_description(asset: Asset) -> bool:
@@ -101,7 +109,9 @@ def has_lineage(asset: Asset) -> bool:
     """
     # If possible, look directly on inputs and outputs rather than the __hasLineage flag
     if isinstance(asset, Catalog):
-        return (asset.input_to_processes is not None) or (asset.output_from_processes is not None)
+        return (asset.input_to_processes is not None) or (
+            asset.output_from_processes is not None
+        )
     else:
         return bool(asset.has_lineage)
 

@@ -49,7 +49,9 @@ class CogniteTimeSeries(Cognite):
         self.attributes.cognite_asset = cognite_asset
 
     class Attributes(Cognite.Attributes):
-        cognite_asset: Optional[CogniteAsset] = Field(default=None, description="")  # relationship
+        cognite_asset: Optional[CogniteAsset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: CogniteTimeSeries.Attributes = Field(
         default_factory=lambda: CogniteTimeSeries.Attributes(),

@@ -37,7 +37,9 @@ class PowerBIWorkspace(PowerBI):
     """
     Number of reports in this workspace.
     """
-    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField("dashboardCount", "dashboardCount")
+    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "dashboardCount", "dashboardCount"
+    )
     """
     Number of dashboards in this workspace.
     """
@@ -45,7 +47,9 @@ class PowerBIWorkspace(PowerBI):
     """
     Number of datasets in this workspace.
     """
-    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField("dataflowCount", "dataflowCount")
+    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
+        "dataflowCount", "dataflowCount"
+    )
     """
     Number of dataflows in this workspace.
     """
@@ -175,10 +179,18 @@ class PowerBIWorkspace(PowerBI):
         dashboard_count: Optional[int] = Field(default=None, description="")
         dataset_count: Optional[int] = Field(default=None, description="")
         dataflow_count: Optional[int] = Field(default=None, description="")
-        reports: Optional[List[PowerBIReport]] = Field(default=None, description="")  # relationship
-        datasets: Optional[List[PowerBIDataset]] = Field(default=None, description="")  # relationship
-        dashboards: Optional[List[PowerBIDashboard]] = Field(default=None, description="")  # relationship
-        dataflows: Optional[List[PowerBIDataflow]] = Field(default=None, description="")  # relationship
+        reports: Optional[List[PowerBIReport]] = Field(
+            default=None, description=""
+        )  # relationship
+        datasets: Optional[List[PowerBIDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        dashboards: Optional[List[PowerBIDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBIWorkspace.Attributes = Field(
         default_factory=lambda: PowerBIWorkspace.Attributes(),

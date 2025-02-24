@@ -26,9 +26,15 @@ TOKENS_API = "apikeys"
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
 
 # Group APIs
-GET_GROUPS = API(GROUP_API_V2, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-CREATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-UPDATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_GROUPS = API(
+    GROUP_API_V2, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+CREATE_GROUP = API(
+    GROUP_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+UPDATE_GROUP = API(
+    GROUP_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 DELETE_GROUP = API(
     GROUP_API + "/{group_guid}/delete",
     HTTPMethod.POST,
@@ -76,10 +82,14 @@ CHANGE_USER_ROLE = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
-GET_CURRENT_USER = API(f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_CURRENT_USER = API(
+    f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 # SQL parsing APIs
-PARSE_QUERY = API(f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA)
+PARSE_QUERY = API(
+    f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA
+)
 
 # For running SQL queries
 EVENT_STREAM = "text/event-stream"
@@ -93,16 +103,28 @@ RUN_QUERY = API(
 )
 
 # File upload APIs
-UPLOAD_IMAGE = API(IMAGE_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+UPLOAD_IMAGE = API(
+    IMAGE_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 # Keycloak event APIs
-KEYCLOAK_EVENTS = API(f"{LOGS_API}/login", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-ADMIN_EVENTS = API(f"{LOGS_API}/main", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+KEYCLOAK_EVENTS = API(
+    f"{LOGS_API}/login", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+ADMIN_EVENTS = API(
+    f"{LOGS_API}/main", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 # API token APIs
-GET_API_TOKENS = API(TOKENS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-UPSERT_API_TOKEN = API(TOKENS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-DELETE_API_TOKEN = API(TOKENS_API, HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_API_TOKENS = API(
+    TOKENS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+UPSERT_API_TOKEN = API(
+    TOKENS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+DELETE_API_TOKEN = API(
+    TOKENS_API, HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 GET_TOKEN = API(
     "/auth/realms/default/protocol/openid-connect/token",
@@ -134,19 +156,29 @@ ENTITY_BULK_API = f"{ENTITY_API}bulk/"
 BULK_SET_CLASSIFICATIONS = "bulk/setClassifications"
 BULK_HEADERS = "bulk/headers"
 
-BULK_UPDATE = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+BULK_UPDATE = API(
+    ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 # Lineage APIs
-GET_LINEAGE = API("lineage/getlineage", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-GET_LINEAGE_LIST = API("lineage/list", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_LINEAGE = API(
+    "lineage/getlineage", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+GET_LINEAGE_LIST = API(
+    "lineage/list", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 # Entity APIs
-GET_ENTITY_BY_GUID = API(f"{ENTITY_API}guid", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_ENTITY_BY_GUID = API(
+    f"{ENTITY_API}guid", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 GET_ENTITY_BY_UNIQUE_ATTRIBUTE = API(
     f"{ENTITY_API}uniqueAttribute/type",
     HTTPMethod.GET,
     HTTPStatus.OK,
     endpoint=EndPoint.ATLAS,
 )
-GET_ENTITIES_BY_GUIDS = API(ENTITY_BULK_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_ENTITIES_BY_GUIDS = API(
+    ENTITY_BULK_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 GET_ENTITIES_BY_UNIQUE_ATTRIBUTE = API(
     f"{ENTITY_BULK_API}uniqueAttribute/type",
     HTTPMethod.GET,
@@ -166,9 +198,13 @@ GET_ENTITY_HEADER_BY_UNIQUE_ATTRIBUTE = API(
     endpoint=EndPoint.ATLAS,
 )
 
-GET_AUDIT_EVENTS = API(ENTITY_API + "{guid}/audit", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_AUDIT_EVENTS = API(
+    ENTITY_API + "{guid}/audit", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 CREATE_ENTITY = API(ENTITY_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-CREATE_ENTITIES = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+CREATE_ENTITIES = API(
+    ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 UPDATE_ENTITY = API(ENTITY_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 UPDATE_ENTITY_BY_ATTRIBUTE = API(
     f"{ENTITY_API}uniqueAttribute/type/",
@@ -176,7 +212,9 @@ UPDATE_ENTITY_BY_ATTRIBUTE = API(
     HTTPStatus.NO_CONTENT,
     endpoint=EndPoint.ATLAS,
 )
-UPDATE_ENTITIES = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+UPDATE_ENTITIES = API(
+    ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE = API(
     f"{ENTITY_API}uniqueAttribute/type/",
     HTTPMethod.PUT,
@@ -189,15 +227,21 @@ PARTIAL_UPDATE_ENTITY_BY_GUID = API(
     HTTPStatus.OK,
     endpoint=EndPoint.ATLAS,
 )
-DELETE_ENTITY_BY_GUID = API(f"{ENTITY_API}guid", HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+DELETE_ENTITY_BY_GUID = API(
+    f"{ENTITY_API}guid", HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 DELETE_ENTITY_BY_ATTRIBUTE = API(
     f"{ENTITY_API}uniqueAttribute/type/",
     HTTPMethod.DELETE,
     HTTPStatus.NO_CONTENT,
     endpoint=EndPoint.ATLAS,
 )
-DELETE_ENTITIES_BY_GUIDS = API(ENTITY_BULK_API, HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-PURGE_ENTITIES_BY_GUIDS = API(ENTITY_PURGE_API, HTTPMethod.PUT, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+DELETE_ENTITIES_BY_GUIDS = API(
+    ENTITY_BULK_API, HTTPMethod.DELETE, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+PURGE_ENTITIES_BY_GUIDS = API(
+    ENTITY_PURGE_API, HTTPMethod.PUT, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 
 # Classification APIs
 GET_CLASSIFICATIONS = API(
@@ -255,12 +299,15 @@ DELETE_CLASSIFICATION = API(
     endpoint=EndPoint.ATLAS,
 )
 DELETE_CLASSIFICATION_BY_TYPE_AND_ATTRIBUTE = API(
-    ENTITY_API + "uniqueAttribute/type/{type_name}/classification/{classification_name}",
+    ENTITY_API
+    + "uniqueAttribute/type/{type_name}/classification/{classification_name}",
     HTTPMethod.DELETE,
     HTTPStatus.NO_CONTENT,
     endpoint=EndPoint.ATLAS,
 )
-GET_BULK_HEADERS = API(ENTITY_API + BULK_HEADERS, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_BULK_HEADERS = API(
+    ENTITY_API + BULK_HEADERS, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 
 # Business Attributes APIs
 ADD_BUSINESS_ATTRIBUTE = API(
@@ -312,7 +359,9 @@ IMPORT_BUSINESS_METADATA = API(
 # Glossary APIS
 GLOSSARY_URI = "glossary"
 
-GET_ALL_GLOSSARIES = API(GLOSSARY_URI, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+GET_ALL_GLOSSARIES = API(
+    GLOSSARY_URI, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 
 # Labels APIs
 ADD_LABELS = API(
@@ -378,18 +427,28 @@ SCHEDULE_QUERY_WORKFLOWS_MISSED = API(
     endpoint=EndPoint.HERACLES,
 )
 
-WORKFLOW_INDEX_SEARCH = API(WORKFLOW_INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-WORKFLOW_INDEX_RUN_SEARCH = API(WORKFLOW_INDEX_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+WORKFLOW_INDEX_SEARCH = API(
+    WORKFLOW_INDEX_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+WORKFLOW_INDEX_RUN_SEARCH = API(
+    WORKFLOW_INDEX_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 # triggers a workflow using the current user's credentials
 WORKFLOW_RERUN_API = "workflows/submit"
-WORKFLOW_RERUN = API(WORKFLOW_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+WORKFLOW_RERUN = API(
+    WORKFLOW_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 # triggers a workflow using the workflow owner's credentials
 WORKFLOW_OWNER_RERUN_API = "workflows/triggerAsOwner"
-WORKFLOW_OWNER_RERUN = API(WORKFLOW_OWNER_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+WORKFLOW_OWNER_RERUN = API(
+    WORKFLOW_OWNER_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 
 WORKFLOW_RUN_API = "workflows?submit=true"
-WORKFLOW_RUN = API(WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+WORKFLOW_RUN = API(
+    WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 WORKFLOW_API = "workflows"
 WORKFLOW_UPDATE = API(
     WORKFLOW_API + "/{workflow_name}",
@@ -444,7 +503,9 @@ GET_CREDENTIAL_BY_GUID = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
-GET_ALL_CREDENTIALS = API(CREDENTIALS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_ALL_CREDENTIALS = API(
+    CREDENTIALS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 UPDATE_CREDENTIAL_BY_GUID = API(
     CREDENTIALS_API + "/{credential_guid}",
     HTTPMethod.POST,
@@ -466,7 +527,9 @@ DELETE_CREDENTIALS_BY_GUID = API(
 AUDIT_API = "entity/auditSearch"
 AUDIT_SEARCH = API(AUDIT_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 SEARCH_LOG_API = "search/searchlog"
-SEARCH_LOG = API(SEARCH_LOG_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
+SEARCH_LOG = API(
+    SEARCH_LOG_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
 TASK_API = "task/search"
 TASK_SEARCH = API(TASK_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
 
@@ -477,14 +540,30 @@ TYPEDEF_BY_GUID = f"{TYPES_API}typedef/guid/"
 GET_BY_NAME_TEMPLATE = TYPES_API + "{path_type}/name/{name}"
 GET_BY_GUID_TEMPLATE = TYPES_API + "{path_type}/guid/{guid}"
 
-GET_TYPE_DEF_BY_NAME = API(TYPEDEF_BY_NAME, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-GET_TYPE_DEF_BY_GUID = API(TYPEDEF_BY_GUID, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-GET_ALL_TYPE_DEFS = API(TYPEDEFS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-GET_ALL_TYPE_DEF_HEADERS = API(f"{TYPEDEFS_API}headers", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-UPDATE_TYPE_DEFS = API(TYPEDEFS_API, HTTPMethod.PUT, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-CREATE_TYPE_DEFS = API(TYPEDEFS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS)
-DELETE_TYPE_DEFS = API(TYPEDEFS_API, HTTPMethod.DELETE, HTTPStatus.NO_CONTENT, endpoint=EndPoint.ATLAS)
-DELETE_TYPE_DEF_BY_NAME = API(TYPEDEF_BY_NAME, HTTPMethod.DELETE, HTTPStatus.NO_CONTENT, endpoint=EndPoint.ATLAS)
+GET_TYPE_DEF_BY_NAME = API(
+    TYPEDEF_BY_NAME, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+GET_TYPE_DEF_BY_GUID = API(
+    TYPEDEF_BY_GUID, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+GET_ALL_TYPE_DEFS = API(
+    TYPEDEFS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+GET_ALL_TYPE_DEF_HEADERS = API(
+    f"{TYPEDEFS_API}headers", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+UPDATE_TYPE_DEFS = API(
+    TYPEDEFS_API, HTTPMethod.PUT, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+CREATE_TYPE_DEFS = API(
+    TYPEDEFS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.ATLAS
+)
+DELETE_TYPE_DEFS = API(
+    TYPEDEFS_API, HTTPMethod.DELETE, HTTPStatus.NO_CONTENT, endpoint=EndPoint.ATLAS
+)
+DELETE_TYPE_DEF_BY_NAME = API(
+    TYPEDEF_BY_NAME, HTTPMethod.DELETE, HTTPStatus.NO_CONTENT, endpoint=EndPoint.ATLAS
+)
 
 SSO_API = "idp/"
 SSO_GROUP_MAPPER = SSO_API + "{sso_alias}/mappers"
@@ -495,8 +574,12 @@ GET_SSO_GROUP_MAPPING = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
-GET_ALL_SSO_GROUP_MAPPING = API(SSO_GROUP_MAPPER, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
-CREATE_SSO_GROUP_MAPPING = API(SSO_GROUP_MAPPER, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+GET_ALL_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+CREATE_SSO_GROUP_MAPPING = API(
+    SSO_GROUP_MAPPER, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 UPDATE_SSO_GROUP_MAPPING = API(
     SSO_GROUP_MAPPER + "/{group_map_id}",
     HTTPMethod.POST,

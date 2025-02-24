@@ -57,7 +57,9 @@ def wait_for_consistency():
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
@@ -68,7 +70,9 @@ def database(
     connection: Connection,
     upsert: Callable[[Asset], AssetMutationResponse],
 ):
-    to_create = Database.creator(name=DATABASE_NAME, connection_qualified_name=connection.qualified_name)
+    to_create = Database.creator(
+        name=DATABASE_NAME, connection_qualified_name=connection.qualified_name
+    )
     result = upsert(to_create)
     assert result
     database = result.assets_created(asset_type=Database)[0]
@@ -441,7 +445,9 @@ def owner_group(
 
 
 def test_connection(client: AtlanClient, connection: Connection):
-    results = client.asset.find_connections_by_name(name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE)
+    results = client.asset.find_connections_by_name(
+        name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
+    )
     assert results and len(results) == 1
     assert results[0].guid == connection.guid
     assert results[0].qualified_name == connection.qualified_name
@@ -602,7 +608,9 @@ def test_update_table1(
 
     response = client.asset.save(to_update, replace_atlan_tags=True)
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3  # table + 2x terms
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3
+    )  # table + 2x terms
     expected_types = {asset.type_name for asset in response.mutated_entities.UPDATE}
     assert expected_types == {Table.__name__, AtlasGlossaryTerm.__name__}
     assert (tables := response.assets_updated(asset_type=Table))
@@ -646,7 +654,9 @@ def test_update_table3(
     response = client.asset.save(to_update, replace_atlan_tags=True)
 
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3  # table + 2x terms
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3
+    )  # table + 2x terms
     expected_types = {asset.type_name for asset in response.mutated_entities.UPDATE}
     assert expected_types == {Table.__name__, AtlasGlossaryTerm.__name__}
     assert (tables := response.assets_updated(asset_type=Table))
@@ -688,7 +698,9 @@ def test_update_table1_column1(
     response = client.asset.save(to_update, replace_atlan_tags=True)
 
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3  # column + 2x terms
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 3
+    )  # column + 2x terms
     expected_types = {asset.type_name for asset in response.mutated_entities.UPDATE}
     assert expected_types == {Column.__name__, AtlasGlossaryTerm.__name__}
     assert (columns := response.assets_updated(asset_type=Column))
@@ -725,7 +737,9 @@ def test_update_view1_column1(
     response = client.asset.save(to_update, replace_atlan_tags=True)
 
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 2  # column + term
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 2
+    )  # column + term
     expected_types = {asset.type_name for asset in response.mutated_entities.UPDATE}
     assert expected_types == {Column.__name__, AtlasGlossaryTerm.__name__}
     assert (columns := response.assets_updated(asset_type=Column))
@@ -762,9 +776,13 @@ def test_suggestions_default(
     assert response.atlan_tags[1].value == ATLAN_TAG_NAME1
     assert response.assigned_terms and len(response.assigned_terms) == 2
     assert response.assigned_terms[0].count == 2
-    assert response.assigned_terms[0].value == AtlasGlossaryTerm.ref_by_qualified_name(term2.qualified_name)
+    assert response.assigned_terms[0].value == AtlasGlossaryTerm.ref_by_qualified_name(
+        term2.qualified_name
+    )
     assert response.assigned_terms[1].count == 1
-    assert response.assigned_terms[1].value == AtlasGlossaryTerm.ref_by_qualified_name(term1.qualified_name)
+    assert response.assigned_terms[1].value == AtlasGlossaryTerm.ref_by_qualified_name(
+        term1.qualified_name
+    )
 
 
 def test_suggestions_accross_types(
@@ -777,7 +795,12 @@ def test_suggestions_accross_types(
     assert term1 and term1.qualified_name
     assert term2 and term2.qualified_name
     assert owner_group and owner_group.name
-    response = Suggestions(includes=Suggestions.TYPE.all()).finder(view1).with_other_type("Table").get()
+    response = (
+        Suggestions(includes=Suggestions.TYPE.all())
+        .finder(view1)
+        .with_other_type("Table")
+        .get()
+    )
 
     assert response
     assert response.owner_groups and len(response.owner_groups) == 1
@@ -849,7 +872,9 @@ def test_apply_t2c1(
     )
 
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 2  # column + term
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 2
+    )  # column + term
     one = response.mutated_entities.UPDATE[0]
     assert one and one.owner_groups == {owner_group.name}
     # System description should be untouched (still empty)
@@ -874,7 +899,9 @@ def test_apply_v2c1(
     )
 
     assert response and response.mutated_entities
-    assert response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 1
+    assert (
+        response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 1
+    )
     one = response.mutated_entities.UPDATE[0]
     assert one and one.owner_groups == set()
     # System description should be untouched (still empty)

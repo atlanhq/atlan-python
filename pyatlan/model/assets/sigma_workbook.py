@@ -29,7 +29,9 @@ class SigmaWorkbook(Sigma):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SIGMA_PAGE_COUNT: ClassVar[NumericField] = NumericField("sigmaPageCount", "sigmaPageCount")
+    SIGMA_PAGE_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaPageCount", "sigmaPageCount"
+    )
     """
     Number of pages in this workbook.
     """
@@ -66,7 +68,9 @@ class SigmaWorkbook(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_page_count: Optional[int] = Field(default=None, description="")
-        sigma_pages: Optional[List[SigmaPage]] = Field(default=None, description="")  # relationship
+        sigma_pages: Optional[List[SigmaPage]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SigmaWorkbook.Attributes = Field(
         default_factory=lambda: SigmaWorkbook.Attributes(),

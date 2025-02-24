@@ -118,8 +118,12 @@ class SparkJob(Spark):
     class Attributes(Spark.Attributes):
         spark_app_name: Optional[str] = Field(default=None, description="")
         spark_master: Optional[str] = Field(default=None, description="")
-        outputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
-        inputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
+        outputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
+        inputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
 
     attributes: SparkJob.Attributes = Field(

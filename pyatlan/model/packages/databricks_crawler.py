@@ -93,12 +93,20 @@ class DatabricksCrawler(AbstractCrawler):
         :returns: crawler, set up to extract from S3 bucket
         """
         self._parameters.append(dict(name="extraction-method", value="s3"))
-        self._parameters.append(dict(name="offline-extraction-bucket", value=bucket_name))
-        self._parameters.append(dict(name="offline-extraction-prefix", value=bucket_prefix))
-        self._parameters.append(dict(name="offline-extraction-region", value=bucket_region))
+        self._parameters.append(
+            dict(name="offline-extraction-bucket", value=bucket_name)
+        )
+        self._parameters.append(
+            dict(name="offline-extraction-prefix", value=bucket_prefix)
+        )
+        self._parameters.append(
+            dict(name="offline-extraction-region", value=bucket_region)
+        )
         return self
 
-    def basic_auth(self, personal_access_token: str, http_path: str) -> DatabricksCrawler:
+    def basic_auth(
+        self, personal_access_token: str, http_path: str
+    ) -> DatabricksCrawler:
         """
         Set up the crawler to use basic authentication.
 
@@ -135,7 +143,9 @@ class DatabricksCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def azure_service(self, client_id: str, client_secret: str, tenant_id: str) -> DatabricksCrawler:
+    def azure_service(
+        self, client_id: str, client_secret: str, tenant_id: str
+    ) -> DatabricksCrawler:
         """
         Set up the crawler to use Azure service principal.
 
@@ -213,7 +223,9 @@ class DatabricksCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
+        self._parameters.append(
+            dict(dict(name="include-filter", value=to_include or "{}"))
+        )
         return self
 
     def exclude(self, assets: dict) -> DatabricksCrawler:
@@ -242,7 +254,9 @@ class DatabricksCrawler(AbstractCrawler):
         """
         include_assets = assets or []
         to_include = self.build_flat_hierarchical_filter(include_assets)
-        self._parameters.append(dict(dict(name="include-filter-rest", value=to_include or "{}")))
+        self._parameters.append(
+            dict(dict(name="include-filter-rest", value=to_include or "{}"))
+        )
         return self
 
     def exclude_for_rest_api(self, assets: List[str]) -> DatabricksCrawler:
@@ -257,7 +271,9 @@ class DatabricksCrawler(AbstractCrawler):
         """
         exclude_assets = assets or []
         to_exclude = self.build_flat_hierarchical_filter(exclude_assets)
-        self._parameters.append(dict(name="exclude-filter-rest", value=to_exclude or "{}"))
+        self._parameters.append(
+            dict(name="exclude-filter-rest", value=to_exclude or "{}")
+        )
         return self
 
     def sql_warehouse(self, warehouse_ids: List[str]) -> DatabricksCrawler:
@@ -301,8 +317,12 @@ class DatabricksCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credentials-fetch-strategy", "value": "credential_guid"})
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
+        )
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             dict(
                 name="advanced-config-strategy",
@@ -312,7 +332,9 @@ class DatabricksCrawler(AbstractCrawler):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
 

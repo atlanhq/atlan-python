@@ -88,11 +88,15 @@ class CompoundQuery:
         :returns: a query that will only match assets of a subtype of the types provided
         """
         if isinstance(one_of, list):
-            return Referenceable.SUPER_TYPE_NAMES.within(list(map(lambda x: x.__name__, one_of)))
+            return Referenceable.SUPER_TYPE_NAMES.within(
+                list(map(lambda x: x.__name__, one_of))
+            )
         return Referenceable.SUPER_TYPE_NAMES.eq(one_of.__name__)
 
     @staticmethod
-    def tagged(with_one_of: Optional[List[str]] = None, directly: bool = False) -> Query:
+    def tagged(
+        with_one_of: Optional[List[str]] = None, directly: bool = False
+    ) -> Query:
         """
         Returns a query that will only match assets that have at least one of the Atlan tags
         provided. This will match irrespective of the Atlan tag being directly applied to the
@@ -111,11 +115,17 @@ class CompoundQuery:
                 if tag_id := AtlanTagCache.get_id_for_name(name):
                     values.append(tag_id)
                 else:
-                    raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(name)
+                    raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        name
+                    )
         if directly:
             if values:
-                return FluentSearch(wheres=[Referenceable.ATLAN_TAGS.within(values)]).to_query()
-            return FluentSearch(wheres=[Referenceable.ATLAN_TAGS.has_any_value()]).to_query()
+                return FluentSearch(
+                    wheres=[Referenceable.ATLAN_TAGS.within(values)]
+                ).to_query()
+            return FluentSearch(
+                wheres=[Referenceable.ATLAN_TAGS.has_any_value()]
+            ).to_query()
         if values:
             return FluentSearch(
                 where_somes=[
@@ -133,7 +143,9 @@ class CompoundQuery:
         ).to_query()
 
     @staticmethod
-    def tagged_with_value(atlan_tag_name: str, value: str, directly: bool = False) -> Query:
+    def tagged_with_value(
+        atlan_tag_name: str, value: str, directly: bool = False
+    ) -> Query:
         """
         Returns a query that will match assets that have a
         specific value for the specified tag (for source-synced tags).
@@ -154,12 +166,19 @@ class CompoundQuery:
         client = AtlanClient.get_default_client()
         synced_tags = [
             tag
-            for tag in (FluentSearch().select().where(Tag.MAPPED_CLASSIFICATION_NAME.eq(tag_id)).execute(client=client))
+            for tag in (
+                FluentSearch()
+                .select()
+                .where(Tag.MAPPED_CLASSIFICATION_NAME.eq(tag_id))
+                .execute(client=client)
+            )
         ]
         if len(synced_tags) > 1:
             synced_tag_qn = synced_tags[0].qualified_name or ""
             LOGGER.warning(
-                ("Multiple mapped source-synced tags found for tag %s -- using only the first: %s",),
+                (
+                    "Multiple mapped source-synced tags found for tag %s -- using only the first: %s",
+                ),
                 atlan_tag_name,
                 synced_tag_qn,
             )
@@ -169,14 +188,22 @@ class CompoundQuery:
             synced_tag_qn = "NON_EXISTENT"
 
         # Contruct little spans
-        little_spans.append(SpanTerm(field="__classificationsText.text", value="tagAttachmentValue"))
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentValue")
+        )
         for token in value.split(" "):
-            little_spans.append(SpanTerm(field="__classificationsText.text", value=token))
-        little_spans.append(SpanTerm(field="__classificationsText.text", value="tagAttachmentKey"))
+            little_spans.append(
+                SpanTerm(field="__classificationsText.text", value=token)
+            )
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey")
+        )
 
         # Contruct big spans
         big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
-        big_spans.append(SpanTerm(field="__classificationsText.text", value=synced_tag_qn))
+        big_spans.append(
+            SpanTerm(field="__classificationsText.text", value=synced_tag_qn)
+        )
 
         # Contruct final span query
         span = SpanWithin(
@@ -186,7 +213,12 @@ class CompoundQuery:
 
         # Without atlan tag propagation
         if directly:
-            return FluentSearch().where(Referenceable.ATLAN_TAGS.eq(tag_id)).where(span).to_query()
+            return (
+                FluentSearch()
+                .where(Referenceable.ATLAN_TAGS.eq(tag_id))
+                .where(span)
+                .to_query()
+            )
         # With atlan tag propagation
         return (
             FluentSearch()

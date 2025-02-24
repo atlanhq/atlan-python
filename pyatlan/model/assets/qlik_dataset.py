@@ -41,7 +41,9 @@ class QlikDataset(Qlik):
     """
     Technical name of this asset.
     """
-    QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField("qlikDatasetType", "qlikDatasetType")
+    QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetType", "qlikDatasetType"
+    )
     """
     Type of this data asset, for example: qix-df, snowflake, etc.
     """
@@ -51,7 +53,9 @@ class QlikDataset(Qlik):
     """
     URI of this dataset.
     """
-    QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField("qlikDatasetSubtype", "qlikDatasetSubtype")
+    QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetSubtype", "qlikDatasetSubtype"
+    )
     """
     Subtype this dataset asset.
     """
@@ -71,7 +75,11 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_dataset_technical_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_technical_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.qlik_dataset_technical_name
+        )
 
     @qlik_dataset_technical_name.setter
     def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
@@ -124,7 +132,9 @@ class QlikDataset(Qlik):
         qlik_dataset_type: Optional[str] = Field(default=None, description="")
         qlik_dataset_uri: Optional[str] = Field(default=None, description="")
         qlik_dataset_subtype: Optional[str] = Field(default=None, description="")
-        qlik_space: Optional[QlikSpace] = Field(default=None, description="")  # relationship
+        qlik_space: Optional[QlikSpace] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: QlikDataset.Attributes = Field(
         default_factory=lambda: QlikDataset.Attributes(),

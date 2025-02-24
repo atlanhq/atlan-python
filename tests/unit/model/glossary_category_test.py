@@ -8,7 +8,9 @@ from tests.unit.model.constants import (
     GLOSSARY_QUALIFIED_NAME,
 )
 
-ANCHOR = AtlasGlossary.create_for_modification(qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME)
+ANCHOR = AtlasGlossary.create_for_modification(
+    qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME
+)
 GLOSSARY_GUID = "123"
 PARENT_CATEGORY = AtlasGlossaryCategory.create_for_modification(
     qualified_name="123", name="Category", glossary_guid=GLOSSARY_GUID

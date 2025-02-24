@@ -34,7 +34,9 @@ class AdfLinkedservice(ADF):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADF_LINKEDSERVICE_TYPE: ClassVar[KeywordField] = KeywordField("adfLinkedserviceType", "adfLinkedserviceType")
+    ADF_LINKEDSERVICE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adfLinkedserviceType", "adfLinkedserviceType"
+    )
     """
     Defines the type of the linked service.
     """
@@ -62,7 +64,9 @@ class AdfLinkedservice(ADF):
     """
     Indicates whether the service version is above 3.2 or not in the cosmos linked service.
     """
-    ADF_LINKEDSERVICE_VERSION: ClassVar[TextField] = TextField("adfLinkedserviceVersion", "adfLinkedserviceVersion")
+    ADF_LINKEDSERVICE_VERSION: ClassVar[TextField] = TextField(
+        "adfLinkedserviceVersion", "adfLinkedserviceVersion"
+    )
     """
     Defines the version of the linked service in the cosmos linked service.
     """
@@ -78,7 +82,9 @@ class AdfLinkedservice(ADF):
     """
     Defines the type of credential, authentication being used in the ADLS, snowflake, azure sql linked service.
     """
-    ADF_LINKEDSERVICE_TENANT: ClassVar[TextField] = TextField("adfLinkedserviceTenant", "adfLinkedserviceTenant")
+    ADF_LINKEDSERVICE_TENANT: ClassVar[TextField] = TextField(
+        "adfLinkedserviceTenant", "adfLinkedserviceTenant"
+    )
     """
     Defines the tenant of cloud being used in the ADLS linked service.
     """
@@ -100,7 +106,9 @@ class AdfLinkedservice(ADF):
     """
     Defines the resource id in the Azure databricks delta lake linked service.
     """
-    ADF_LINKEDSERVICE_USER_NAME: ClassVar[TextField] = TextField("adfLinkedserviceUserName", "adfLinkedserviceUserName")
+    ADF_LINKEDSERVICE_USER_NAME: ClassVar[TextField] = TextField(
+        "adfLinkedserviceUserName", "adfLinkedserviceUserName"
+    )
     """
     Defines the name of the db user in the snowflake linked service.
     """
@@ -110,7 +118,9 @@ class AdfLinkedservice(ADF):
     """
     Defines the name of the warehouse in the snowflake linked service.
     """
-    ADF_LINKEDSERVICE_ROLE_NAME: ClassVar[TextField] = TextField("adfLinkedserviceRoleName", "adfLinkedserviceRoleName")
+    ADF_LINKEDSERVICE_ROLE_NAME: ClassVar[TextField] = TextField(
+        "adfLinkedserviceRoleName", "adfLinkedserviceRoleName"
+    )
     """
     Defines the name of the role in the snowflake linked service.
     """
@@ -156,7 +166,9 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_type
+        return (
+            None if self.attributes is None else self.attributes.adf_linkedservice_type
+        )
 
     @adf_linkedservice_type.setter
     def adf_linkedservice_type(self, adf_linkedservice_type: Optional[str]):
@@ -166,47 +178,79 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_annotations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_annotations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_annotations
+        )
 
     @adf_linkedservice_annotations.setter
-    def adf_linkedservice_annotations(self, adf_linkedservice_annotations: Optional[Set[str]]):
+    def adf_linkedservice_annotations(
+        self, adf_linkedservice_annotations: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_linkedservice_annotations = adf_linkedservice_annotations
 
     @property
     def adf_linkedservice_account_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_account_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_account_name
+        )
 
     @adf_linkedservice_account_name.setter
-    def adf_linkedservice_account_name(self, adf_linkedservice_account_name: Optional[str]):
+    def adf_linkedservice_account_name(
+        self, adf_linkedservice_account_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_linkedservice_account_name = adf_linkedservice_account_name
 
     @property
     def adf_linkedservice_database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_database_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_database_name
+        )
 
     @adf_linkedservice_database_name.setter
-    def adf_linkedservice_database_name(self, adf_linkedservice_database_name: Optional[str]):
+    def adf_linkedservice_database_name(
+        self, adf_linkedservice_database_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_database_name = adf_linkedservice_database_name
+        self.attributes.adf_linkedservice_database_name = (
+            adf_linkedservice_database_name
+        )
 
     @property
     def adf_linkedservice_version_above(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_version_above
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_version_above
+        )
 
     @adf_linkedservice_version_above.setter
-    def adf_linkedservice_version_above(self, adf_linkedservice_version_above: Optional[bool]):
+    def adf_linkedservice_version_above(
+        self, adf_linkedservice_version_above: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_version_above = adf_linkedservice_version_above
+        self.attributes.adf_linkedservice_version_above = (
+            adf_linkedservice_version_above
+        )
 
     @property
     def adf_linkedservice_version(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_version
+        )
 
     @adf_linkedservice_version.setter
     def adf_linkedservice_version(self, adf_linkedservice_version: Optional[str]):
@@ -216,27 +260,47 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_azure_cloud_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_azure_cloud_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_azure_cloud_type
+        )
 
     @adf_linkedservice_azure_cloud_type.setter
-    def adf_linkedservice_azure_cloud_type(self, adf_linkedservice_azure_cloud_type: Optional[str]):
+    def adf_linkedservice_azure_cloud_type(
+        self, adf_linkedservice_azure_cloud_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_azure_cloud_type = adf_linkedservice_azure_cloud_type
+        self.attributes.adf_linkedservice_azure_cloud_type = (
+            adf_linkedservice_azure_cloud_type
+        )
 
     @property
     def adf_linkedservice_credential_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_credential_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_credential_type
+        )
 
     @adf_linkedservice_credential_type.setter
-    def adf_linkedservice_credential_type(self, adf_linkedservice_credential_type: Optional[str]):
+    def adf_linkedservice_credential_type(
+        self, adf_linkedservice_credential_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_credential_type = adf_linkedservice_credential_type
+        self.attributes.adf_linkedservice_credential_type = (
+            adf_linkedservice_credential_type
+        )
 
     @property
     def adf_linkedservice_tenant(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_tenant
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_tenant
+        )
 
     @adf_linkedservice_tenant.setter
     def adf_linkedservice_tenant(self, adf_linkedservice_tenant: Optional[str]):
@@ -246,17 +310,29 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_domain_endpoint(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_domain_endpoint
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_domain_endpoint
+        )
 
     @adf_linkedservice_domain_endpoint.setter
-    def adf_linkedservice_domain_endpoint(self, adf_linkedservice_domain_endpoint: Optional[str]):
+    def adf_linkedservice_domain_endpoint(
+        self, adf_linkedservice_domain_endpoint: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_domain_endpoint = adf_linkedservice_domain_endpoint
+        self.attributes.adf_linkedservice_domain_endpoint = (
+            adf_linkedservice_domain_endpoint
+        )
 
     @property
     def adf_linkedservice_cluster_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_cluster_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_cluster_id
+        )
 
     @adf_linkedservice_cluster_id.setter
     def adf_linkedservice_cluster_id(self, adf_linkedservice_cluster_id: Optional[str]):
@@ -266,17 +342,27 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_resource_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_resource_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_resource_id
+        )
 
     @adf_linkedservice_resource_id.setter
-    def adf_linkedservice_resource_id(self, adf_linkedservice_resource_id: Optional[str]):
+    def adf_linkedservice_resource_id(
+        self, adf_linkedservice_resource_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_linkedservice_resource_id = adf_linkedservice_resource_id
 
     @property
     def adf_linkedservice_user_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_user_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_user_name
+        )
 
     @adf_linkedservice_user_name.setter
     def adf_linkedservice_user_name(self, adf_linkedservice_user_name: Optional[str]):
@@ -286,17 +372,29 @@ class AdfLinkedservice(ADF):
 
     @property
     def adf_linkedservice_warehouse_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_warehouse_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_warehouse_name
+        )
 
     @adf_linkedservice_warehouse_name.setter
-    def adf_linkedservice_warehouse_name(self, adf_linkedservice_warehouse_name: Optional[str]):
+    def adf_linkedservice_warehouse_name(
+        self, adf_linkedservice_warehouse_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adf_linkedservice_warehouse_name = adf_linkedservice_warehouse_name
+        self.attributes.adf_linkedservice_warehouse_name = (
+            adf_linkedservice_warehouse_name
+        )
 
     @property
     def adf_linkedservice_role_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_linkedservice_role_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_linkedservice_role_name
+        )
 
     @adf_linkedservice_role_name.setter
     def adf_linkedservice_role_name(self, adf_linkedservice_role_name: Optional[str]):
@@ -346,24 +444,52 @@ class AdfLinkedservice(ADF):
 
     class Attributes(ADF.Attributes):
         adf_linkedservice_type: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_annotations: Optional[Set[str]] = Field(default=None, description="")
-        adf_linkedservice_account_name: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_database_name: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_version_above: Optional[bool] = Field(default=None, description="")
+        adf_linkedservice_annotations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_account_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_database_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_version_above: Optional[bool] = Field(
+            default=None, description=""
+        )
         adf_linkedservice_version: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_azure_cloud_type: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_credential_type: Optional[str] = Field(default=None, description="")
+        adf_linkedservice_azure_cloud_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_credential_type: Optional[str] = Field(
+            default=None, description=""
+        )
         adf_linkedservice_tenant: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_domain_endpoint: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_cluster_id: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_resource_id: Optional[str] = Field(default=None, description="")
+        adf_linkedservice_domain_endpoint: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_cluster_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        adf_linkedservice_resource_id: Optional[str] = Field(
+            default=None, description=""
+        )
         adf_linkedservice_user_name: Optional[str] = Field(default=None, description="")
-        adf_linkedservice_warehouse_name: Optional[str] = Field(default=None, description="")
+        adf_linkedservice_warehouse_name: Optional[str] = Field(
+            default=None, description=""
+        )
         adf_linkedservice_role_name: Optional[str] = Field(default=None, description="")
-        adf_datasets: Optional[List[AdfDataset]] = Field(default=None, description="")  # relationship
-        adf_activities: Optional[List[AdfActivity]] = Field(default=None, description="")  # relationship
-        adf_dataflows: Optional[List[AdfDataflow]] = Field(default=None, description="")  # relationship
-        adf_pipelines: Optional[List[AdfPipeline]] = Field(default=None, description="")  # relationship
+        adf_datasets: Optional[List[AdfDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_activities: Optional[List[AdfActivity]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_dataflows: Optional[List[AdfDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_pipelines: Optional[List[AdfPipeline]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AdfLinkedservice.Attributes = Field(
         default_factory=lambda: AdfLinkedservice.Attributes(),

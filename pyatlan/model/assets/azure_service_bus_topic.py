@@ -29,11 +29,15 @@ class AzureServiceBusTopic(AzureServiceBus):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AZURE_SERVICE_BUS_SCHEMAS: ClassVar[RelationField] = RelationField("azureServiceBusSchemas")
+    AZURE_SERVICE_BUS_SCHEMAS: ClassVar[RelationField] = RelationField(
+        "azureServiceBusSchemas"
+    )
     """
     TBC
     """
-    AZURE_SERVICE_BUS_NAMESPACE: ClassVar[RelationField] = RelationField("azureServiceBusNamespace")
+    AZURE_SERVICE_BUS_NAMESPACE: ClassVar[RelationField] = RelationField(
+        "azureServiceBusNamespace"
+    )
     """
     TBC
     """
@@ -45,20 +49,32 @@ class AzureServiceBusTopic(AzureServiceBus):
 
     @property
     def azure_service_bus_schemas(self) -> Optional[List[AzureServiceBusSchema]]:
-        return None if self.attributes is None else self.attributes.azure_service_bus_schemas
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_schemas
+        )
 
     @azure_service_bus_schemas.setter
-    def azure_service_bus_schemas(self, azure_service_bus_schemas: Optional[List[AzureServiceBusSchema]]):
+    def azure_service_bus_schemas(
+        self, azure_service_bus_schemas: Optional[List[AzureServiceBusSchema]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_service_bus_schemas = azure_service_bus_schemas
 
     @property
     def azure_service_bus_namespace(self) -> Optional[AzureServiceBusNamespace]:
-        return None if self.attributes is None else self.attributes.azure_service_bus_namespace
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_namespace
+        )
 
     @azure_service_bus_namespace.setter
-    def azure_service_bus_namespace(self, azure_service_bus_namespace: Optional[AzureServiceBusNamespace]):
+    def azure_service_bus_namespace(
+        self, azure_service_bus_namespace: Optional[AzureServiceBusNamespace]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_service_bus_namespace = azure_service_bus_namespace

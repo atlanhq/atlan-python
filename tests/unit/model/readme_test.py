@@ -30,7 +30,9 @@ README_QUALIFIED_NAME = "2f8d68d2-8cd7-41e0-9d3b-cf27cd30f7ef/readme"
         ),
     ],
 )
-def test_create_readme_without_required_parameters_raises_exception(asset, content, asset_name, error, message):
+def test_create_readme_without_required_parameters_raises_exception(
+    asset, content, asset_name, error, message
+):
     with pytest.raises(error, match=message):
         Readme.create(asset=asset, content=content, asset_name=asset_name)
 
@@ -79,14 +81,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Readme.create_for_modification(qualified_name=README_QUALIFIED_NAME, name=README_NAME)
+    sut = Readme.create_for_modification(
+        qualified_name=README_QUALIFIED_NAME, name=README_NAME
+    )
 
     assert sut.qualified_name == README_QUALIFIED_NAME
     assert sut.name == README_NAME
 
 
 def test_trim_to_required():
-    sut = Readme.create_for_modification(qualified_name=README_QUALIFIED_NAME, name=README_NAME).trim_to_required()
+    sut = Readme.create_for_modification(
+        qualified_name=README_QUALIFIED_NAME, name=README_NAME
+    ).trim_to_required()
 
     assert sut.qualified_name == README_QUALIFIED_NAME
     assert sut.name == README_NAME

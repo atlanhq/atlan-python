@@ -36,9 +36,11 @@ class BusinessPolicyIncident(Incident):
     """
     count of noncompliant assets in the incident
     """
-    BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
-        "businessPolicyIncidentRelatedPolicyGUIDs",
-        "businessPolicyIncidentRelatedPolicyGUIDs",
+    BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS: ClassVar[KeywordField] = (
+        KeywordField(
+            "businessPolicyIncidentRelatedPolicyGUIDs",
+            "businessPolicyIncidentRelatedPolicyGUIDs",
+        )
     )
     """
     policy ids related to this incident
@@ -58,17 +60,29 @@ class BusinessPolicyIncident(Incident):
 
     @property
     def business_policy_incident_noncompliant_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.business_policy_incident_noncompliant_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_incident_noncompliant_count
+        )
 
     @business_policy_incident_noncompliant_count.setter
-    def business_policy_incident_noncompliant_count(self, business_policy_incident_noncompliant_count: Optional[int]):
+    def business_policy_incident_noncompliant_count(
+        self, business_policy_incident_noncompliant_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_incident_noncompliant_count = business_policy_incident_noncompliant_count
+        self.attributes.business_policy_incident_noncompliant_count = (
+            business_policy_incident_noncompliant_count
+        )
 
     @property
     def business_policy_incident_related_policy_g_u_i_ds(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.business_policy_incident_related_policy_g_u_i_ds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_incident_related_policy_g_u_i_ds
+        )
 
     @business_policy_incident_related_policy_g_u_i_ds.setter
     def business_policy_incident_related_policy_g_u_i_ds(
@@ -82,18 +96,32 @@ class BusinessPolicyIncident(Incident):
 
     @property
     def business_policy_incident_filter_d_s_l(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.business_policy_incident_filter_d_s_l
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_incident_filter_d_s_l
+        )
 
     @business_policy_incident_filter_d_s_l.setter
-    def business_policy_incident_filter_d_s_l(self, business_policy_incident_filter_d_s_l: Optional[str]):
+    def business_policy_incident_filter_d_s_l(
+        self, business_policy_incident_filter_d_s_l: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_incident_filter_d_s_l = business_policy_incident_filter_d_s_l
+        self.attributes.business_policy_incident_filter_d_s_l = (
+            business_policy_incident_filter_d_s_l
+        )
 
     class Attributes(Incident.Attributes):
-        business_policy_incident_noncompliant_count: Optional[int] = Field(default=None, description="")
-        business_policy_incident_related_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
-        business_policy_incident_filter_d_s_l: Optional[str] = Field(default=None, description="")
+        business_policy_incident_noncompliant_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        business_policy_incident_related_policy_g_u_i_ds: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        business_policy_incident_filter_d_s_l: Optional[str] = Field(
+            default=None, description=""
+        )
 
     attributes: BusinessPolicyIncident.Attributes = Field(
         default_factory=lambda: BusinessPolicyIncident.Attributes(),

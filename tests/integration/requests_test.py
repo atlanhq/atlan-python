@@ -23,7 +23,11 @@ def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
     if not token:
         tokens = client.token.get().records
         assert tokens
-        delete_tokens = [token for token in tokens if token.display_name and "psdk_Requests" in token.display_name]
+        delete_tokens = [
+            token
+            for token in tokens
+            if token.display_name and "psdk_Requests" in token.display_name
+        ]
         for token in delete_tokens:
             assert token and token.guid
             client.token.purge(token.guid)

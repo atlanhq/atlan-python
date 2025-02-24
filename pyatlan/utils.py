@@ -58,7 +58,9 @@ def get_parent_qualified_name(qualified_name: str) -> str:
     return "/".join(qn[:-1])
 
 
-def list_attributes_to_params(attributes_list: list, query_params: Optional[dict] = None) -> dict:
+def list_attributes_to_params(
+    attributes_list: list, query_params: Optional[dict] = None
+) -> dict:
     if query_params is None:
         query_params = {}
 
@@ -70,7 +72,9 @@ def list_attributes_to_params(attributes_list: list, query_params: Optional[dict
     return query_params
 
 
-def attributes_to_params(attributes: List[tuple[str, object]], query_params: Optional[dict] = None) -> dict:
+def attributes_to_params(
+    attributes: List[tuple[str, object]], query_params: Optional[dict] = None
+) -> dict:
     if query_params is None:
         query_params = {}
 
@@ -108,15 +112,27 @@ def type_coerce(obj, obj_type):
 
 
 def type_coerce_list(obj, obj_type):
-    return [type_coerce(entry, obj_type) for entry in obj] if isinstance(obj, list) else None
+    return (
+        [type_coerce(entry, obj_type) for entry in obj]
+        if isinstance(obj, list)
+        else None
+    )
 
 
 def type_coerce_dict(obj, obj_type):
-    return {k: type_coerce(v, obj_type) for k, v in obj.items()} if isinstance(obj, dict) else None
+    return (
+        {k: type_coerce(v, obj_type) for k, v in obj.items()}
+        if isinstance(obj, dict)
+        else None
+    )
 
 
 def type_coerce_dict_list(obj, obj_type):
-    return {k: type_coerce_list(v, obj_type) for k, v in obj.items()} if isinstance(obj, dict) else None
+    return (
+        {k: type_coerce_list(v, obj_type) for k, v in obj.items()}
+        if isinstance(obj, dict)
+        else None
+    )
 
 
 def validate_required_fields(field_names: List[str], values: List[Any]):
@@ -229,8 +245,12 @@ def unflatten_custom_metadata(
     return retval
 
 
-def unflatten_custom_metadata_for_entity(entity: Dict[str, Any], attributes: Optional[List[str]]):
-    if custom_metadata := unflatten_custom_metadata(attributes=attributes, asset_attributes=entity.get("attributes")):
+def unflatten_custom_metadata_for_entity(
+    entity: Dict[str, Any], attributes: Optional[List[str]]
+):
+    if custom_metadata := unflatten_custom_metadata(
+        attributes=attributes, asset_attributes=entity.get("attributes")
+    ):
         entity["businessAttributes"] = custom_metadata
 
 
@@ -266,7 +286,9 @@ def _get_embedded_type(attribute_type: str):
 def get_base_type(attribute_type: str):
     base_type = attribute_type
     if "<" in attribute_type:
-        if attribute_type.startswith("array<") and attribute_type.startswith("array<map<"):
+        if attribute_type.startswith("array<") and attribute_type.startswith(
+            "array<map<"
+        ):
             return _get_embedded_type(attribute_type[len("array<") : -1])  # noqa: E203
         elif attribute_type.startswith("array<") or attribute_type.startswith("map<"):
             return _get_embedded_type(attribute_type)
@@ -306,7 +328,11 @@ def validate_type(name: str, _type, value):
     # Construct the type name string, handling None explicitly
     if isinstance(_type, tuple):
         type_names = [t.__name__ if t is not None else "None" for t in _type]
-        type_name = ", ".join(type_names[:-1]) + f" or {type_names[-1]}" if len(type_names) > 1 else type_names[0]
+        type_name = (
+            ", ".join(type_names[:-1]) + f" or {type_names[-1]}"
+            if len(type_names) > 1
+            else type_names[0]
+        )
     else:
         type_name = _type.__name__ if _type is not None else "None"
 
@@ -324,7 +350,11 @@ class AuthorizationFilter(logging.Filter):
             record.args["access_token"] = "***REDACTED***"  # noqa: S105
         elif record.args and hasattr(record.args, "__iter__"):
             for arg in record.args:
-                if isinstance(arg, dict) and "headers" in arg and "authorization" in arg["headers"]:
+                if (
+                    isinstance(arg, dict)
+                    and "headers" in arg
+                    and "authorization" in arg["headers"]
+                ):
                     arg["headers"]["authorization"] = "***REDACTED***"
 
         return True
@@ -346,7 +376,9 @@ class JsonFormatter(logging.Formatter):
             "asctime": self.formatTime(record, self.datefmt),
             "name": record.name,
             "levelname": record.levelname,
-            "message": (record.msg if isinstance(record.msg, dict) else record.getMessage()),
+            "message": (
+                record.msg if isinstance(record.msg, dict) else record.getMessage()
+            ),
         }
         return json.dumps(log_record, ensure_ascii=False)
 
@@ -407,7 +439,9 @@ class RequestIdAdapter(logging.LoggerAdapter):
         :param contextvar: the ContextVar from which to obtain the value to be used for 'requestid'
 
         """
-        super().__init__(logger, ContextVarWrapper(contextvar=contextvar, key_name=REQUESTID))
+        super().__init__(
+            logger, ContextVarWrapper(contextvar=contextvar, key_name=REQUESTID)
+        )
 
     def process(self, msg, kwargs):
         return f"[{self.extra['requestid']}] {msg}", kwargs
@@ -416,7 +450,11 @@ class RequestIdAdapter(logging.LoggerAdapter):
 def validate_single_required_field(field_names: List[str], values: List[Any]):
     indexes = [idx for idx, value in enumerate(values) if value is not None]
     if not indexes:
-        raise ValueError(f"One of the following parameters are required: {', '.join(field_names)}")
+        raise ValueError(
+            f"One of the following parameters are required: {', '.join(field_names)}"
+        )
     if len(indexes) > 1:
         names = [field_names[idx] for idx in indexes]
-        raise ValueError(f"Only one of the following parameters are allowed: {', '.join(names)}")
+        raise ValueError(
+            f"Only one of the following parameters are allowed: {', '.join(names)}"
+        )

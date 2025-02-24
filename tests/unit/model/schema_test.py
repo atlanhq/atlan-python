@@ -25,13 +25,17 @@ from tests.unit.model.constants import (
         ),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, database_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, database_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         Schema.create(name=name, database_qualified_name=database_qualified_name)
 
 
 def test_create():
-    sut = Schema.create(name=SCHEMA_NAME, database_qualified_name=DATABASE_QUALIFIED_NAME)
+    sut = Schema.create(
+        name=SCHEMA_NAME, database_qualified_name=DATABASE_QUALIFIED_NAME
+    )
 
     assert sut.name == SCHEMA_NAME
     assert sut.database_name == DATABASE_NAME
@@ -74,14 +78,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Schema.create_for_modification(qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME)
+    sut = Schema.create_for_modification(
+        qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME
+    )
 
     assert sut.qualified_name == SCHEMA_QUALIFIED_NAME
     assert sut.name == SCHEMA_NAME
 
 
 def test_trim_to_required():
-    sut = Schema.create_for_modification(qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME).trim_to_required()
+    sut = Schema.create_for_modification(
+        qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME
+    ).trim_to_required()
 
     assert sut.qualified_name == SCHEMA_QUALIFIED_NAME
     assert sut.name == SCHEMA_NAME

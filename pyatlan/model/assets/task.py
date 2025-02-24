@@ -36,7 +36,9 @@ class Task(Asset, type_name="Task"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    TASK_RECIPIENT: ClassVar[KeywordField] = KeywordField("taskRecipient", "taskRecipient")
+    TASK_RECIPIENT: ClassVar[KeywordField] = KeywordField(
+        "taskRecipient", "taskRecipient"
+    )
     """
     recipient of the task
     """
@@ -44,7 +46,9 @@ class Task(Asset, type_name="Task"):
     """
     type of task
     """
-    TASK_REQUESTOR: ClassVar[KeywordField] = KeywordField("taskRequestor", "taskRequestor")
+    TASK_REQUESTOR: ClassVar[KeywordField] = KeywordField(
+        "taskRequestor", "taskRequestor"
+    )
     """
     requestor of the task
     """
@@ -52,11 +56,15 @@ class Task(Asset, type_name="Task"):
     """
     flag to make task read/unread
     """
-    TASK_REQUESTOR_COMMENT: ClassVar[TextField] = TextField("taskRequestorComment", "taskRequestorComment")
+    TASK_REQUESTOR_COMMENT: ClassVar[TextField] = TextField(
+        "taskRequestorComment", "taskRequestorComment"
+    )
     """
     comment of requestor for the task
     """
-    TASK_RELATED_ASSET_GUID: ClassVar[KeywordField] = KeywordField("taskRelatedAssetGuid", "taskRelatedAssetGuid")
+    TASK_RELATED_ASSET_GUID: ClassVar[KeywordField] = KeywordField(
+        "taskRelatedAssetGuid", "taskRelatedAssetGuid"
+    )
     """
     assetId to preview
     """
@@ -64,7 +72,9 @@ class Task(Asset, type_name="Task"):
     """
     contains the payload that is proposed to the task
     """
-    TASK_EXPIRES_AT: ClassVar[NumericField] = NumericField("taskExpiresAt", "taskExpiresAt")
+    TASK_EXPIRES_AT: ClassVar[NumericField] = NumericField(
+        "taskExpiresAt", "taskExpiresAt"
+    )
     """
     Time (epoch) at which the task expires .
     """
@@ -72,23 +82,33 @@ class Task(Asset, type_name="Task"):
     """
     List of actions associated with this task.
     """
-    TASK_EXECUTION_COMMENT: ClassVar[TextField] = TextField("taskExecutionComment", "taskExecutionComment")
+    TASK_EXECUTION_COMMENT: ClassVar[TextField] = TextField(
+        "taskExecutionComment", "taskExecutionComment"
+    )
     """
     comment for the action executed by user
     """
-    TASK_EXECUTION_ACTION: ClassVar[KeywordField] = KeywordField("taskExecutionAction", "taskExecutionAction")
+    TASK_EXECUTION_ACTION: ClassVar[KeywordField] = KeywordField(
+        "taskExecutionAction", "taskExecutionAction"
+    )
     """
     action executed by the recipient
     """
-    TASK_INTEGRATION_CONFIG: ClassVar[TextField] = TextField("taskIntegrationConfig", "taskIntegrationConfig")
+    TASK_INTEGRATION_CONFIG: ClassVar[TextField] = TextField(
+        "taskIntegrationConfig", "taskIntegrationConfig"
+    )
     """
     contains external integration config for the task
     """
-    TASK_CREATED_BY: ClassVar[KeywordField] = KeywordField("taskCreatedBy", "taskCreatedBy")
+    TASK_CREATED_BY: ClassVar[KeywordField] = KeywordField(
+        "taskCreatedBy", "taskCreatedBy"
+    )
     """
     username of the user who created this task
     """
-    TASK_UPDATED_BY: ClassVar[KeywordField] = KeywordField("taskUpdatedBy", "taskUpdatedBy")
+    TASK_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "taskUpdatedBy", "taskUpdatedBy"
+    )
     """
     username of the user who updated this task
     """
@@ -152,7 +172,9 @@ class Task(Asset, type_name="Task"):
 
     @property
     def task_requestor_comment(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.task_requestor_comment
+        return (
+            None if self.attributes is None else self.attributes.task_requestor_comment
+        )
 
     @task_requestor_comment.setter
     def task_requestor_comment(self, task_requestor_comment: Optional[str]):
@@ -162,7 +184,9 @@ class Task(Asset, type_name="Task"):
 
     @property
     def task_related_asset_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.task_related_asset_guid
+        return (
+            None if self.attributes is None else self.attributes.task_related_asset_guid
+        )
 
     @task_related_asset_guid.setter
     def task_related_asset_guid(self, task_related_asset_guid: Optional[str]):
@@ -202,7 +226,9 @@ class Task(Asset, type_name="Task"):
 
     @property
     def task_execution_comment(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.task_execution_comment
+        return (
+            None if self.attributes is None else self.attributes.task_execution_comment
+        )
 
     @task_execution_comment.setter
     def task_execution_comment(self, task_execution_comment: Optional[str]):
@@ -212,7 +238,9 @@ class Task(Asset, type_name="Task"):
 
     @property
     def task_execution_action(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.task_execution_action
+        return (
+            None if self.attributes is None else self.attributes.task_execution_action
+        )
 
     @task_execution_action.setter
     def task_execution_action(self, task_execution_action: Optional[str]):
@@ -222,7 +250,9 @@ class Task(Asset, type_name="Task"):
 
     @property
     def task_integration_config(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.task_integration_config
+        return (
+            None if self.attributes is None else self.attributes.task_integration_config
+        )
 
     @task_integration_config.setter
     def task_integration_config(self, task_integration_config: Optional[str]):

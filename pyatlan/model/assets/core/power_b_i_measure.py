@@ -42,11 +42,15 @@ class PowerBIMeasure(PowerBI):
     """
     Unique name of the workspace in which this measure exists.
     """
-    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasetQualifiedName", "datasetQualifiedName")
+    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
     """
     Unique name of the dataset in which this measure exists.
     """
-    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField("powerBIMeasureExpression", "powerBIMeasureExpression")
+    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
+        "powerBIMeasureExpression", "powerBIMeasureExpression"
+    )
     """
     DAX expression for this measure.
     """
@@ -72,7 +76,11 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -82,7 +90,9 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dataset_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
 
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
@@ -92,7 +102,11 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def power_b_i_measure_expression(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.power_b_i_measure_expression
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_measure_expression
+        )
 
     @power_b_i_measure_expression.setter
     def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
@@ -102,10 +116,16 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def power_b_i_is_external_measure(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.power_b_i_is_external_measure
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_is_external_measure
+        )
 
     @power_b_i_is_external_measure.setter
-    def power_b_i_is_external_measure(self, power_b_i_is_external_measure: Optional[bool]):
+    def power_b_i_is_external_measure(
+        self, power_b_i_is_external_measure: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
@@ -123,9 +143,15 @@ class PowerBIMeasure(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        power_b_i_measure_expression: Optional[str] = Field(default=None, description="")
-        power_b_i_is_external_measure: Optional[bool] = Field(default=None, description="")
-        table: Optional[PowerBITable] = Field(default=None, description="")  # relationship
+        power_b_i_measure_expression: Optional[str] = Field(
+            default=None, description=""
+        )
+        power_b_i_is_external_measure: Optional[bool] = Field(
+            default=None, description=""
+        )
+        table: Optional[PowerBITable] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBIMeasure.Attributes = Field(
         default_factory=lambda: PowerBIMeasure.Attributes(),

@@ -37,7 +37,9 @@ class OpenLineageOutputDataset(OpenLineageDataset):
         return "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/OutputDataset"
 
     @classmethod
-    def creator(cls, namespace: str, asset_name: str, producer: str) -> OpenLineageOutputDataset:
+    def creator(
+        cls, namespace: str, asset_name: str, producer: str
+    ) -> OpenLineageOutputDataset:
         """
         Builds the minimal object necessary to create
         an OpenLineage dataset use-able as a lineage target.
@@ -49,7 +51,9 @@ class OpenLineageOutputDataset(OpenLineageDataset):
         :returns: the minimal request necessary to create the output dataset
         """
 
-        return OpenLineageOutputDataset(namespace=namespace, name=asset_name, producer=producer)
+        return OpenLineageOutputDataset(
+            namespace=namespace, name=asset_name, producer=producer
+        )
 
     @root_validator(pre=True)
     def transform_to_fields_into_facets(cls, values: dict) -> dict:
@@ -65,7 +69,11 @@ class OpenLineageOutputDataset(OpenLineageDataset):
         for entry in to_fields:
             for key, value in entry.items():
                 # Build the OpenLineageColumnLineageDatasetFacet with input_fields
-                fields_additional = OpenLineageColumnLineageDatasetFacetFieldsAdditional(input_fields=value)
+                fields_additional = (
+                    OpenLineageColumnLineageDatasetFacetFieldsAdditional(
+                        input_fields=value
+                    )
+                )
                 # Add to the column lineage dict
                 column_lineage_data[key] = fields_additional
 

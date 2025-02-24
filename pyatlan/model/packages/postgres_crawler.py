@@ -115,7 +115,9 @@ class PostgresCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_user_auth(self, username: str, access_key: str, secret_key: str) -> PostgresCrawler:
+    def iam_user_auth(
+        self, username: str, access_key: str, secret_key: str
+    ) -> PostgresCrawler:
         """
         Set up the crawler to use IAM user-based authentication.
 
@@ -134,7 +136,9 @@ class PostgresCrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def iam_role_auth(self, username: str, arn: str, external_id: str) -> PostgresCrawler:
+    def iam_role_auth(
+        self, username: str, arn: str, external_id: str
+    ) -> PostgresCrawler:
         """
         Set up the crawler to use IAM role-based authentication.
 
@@ -218,11 +222,15 @@ class PostgresCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

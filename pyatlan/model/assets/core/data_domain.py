@@ -43,7 +43,9 @@ class DataDomain(DataMesh):
         parent_domain_qualified_name: Optional[StrictStr] = None,
     ) -> DataDomain:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -77,7 +79,9 @@ class DataDomain(DataMesh):
         name: str = "",
     ) -> SelfAsset:
         warn(
-            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -164,10 +168,18 @@ class DataDomain(DataMesh):
         self.attributes.sub_domains = sub_domains
 
     class Attributes(DataMesh.Attributes):
-        stakeholders: Optional[List[Stakeholder]] = Field(default=None, description="")  # relationship
-        parent_domain: Optional[DataDomain] = Field(default=None, description="")  # relationship
-        data_products: Optional[List[DataProduct]] = Field(default=None, description="")  # relationship
-        sub_domains: Optional[List[DataDomain]] = Field(default=None, description="")  # relationship
+        stakeholders: Optional[List[Stakeholder]] = Field(
+            default=None, description=""
+        )  # relationship
+        parent_domain: Optional[DataDomain] = Field(
+            default=None, description=""
+        )  # relationship
+        data_products: Optional[List[DataProduct]] = Field(
+            default=None, description=""
+        )  # relationship
+        sub_domains: Optional[List[DataDomain]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -183,8 +195,12 @@ class DataDomain(DataMesh):
 
             # In case of sub-domain
             if parent_domain_qualified_name:
-                parent_domain = DataDomain.ref_by_qualified_name(parent_domain_qualified_name)
-                super_domain_qualified_name = DataMesh.get_super_domain_qualified_name(parent_domain_qualified_name)
+                parent_domain = DataDomain.ref_by_qualified_name(
+                    parent_domain_qualified_name
+                )
+                super_domain_qualified_name = DataMesh.get_super_domain_qualified_name(
+                    parent_domain_qualified_name
+                )
 
             return DataDomain.Attributes(
                 name=name,

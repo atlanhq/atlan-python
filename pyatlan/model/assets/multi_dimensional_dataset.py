@@ -29,11 +29,15 @@ class MultiDimensionalDataset(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CUBE_NAME: ClassVar[KeywordTextField] = KeywordTextField("cubeName", "cubeName.keyword", "cubeName")
+    CUBE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "cubeName", "cubeName.keyword", "cubeName"
+    )
     """
     Simple name of the cube in which this asset exists, or empty if it is itself a cube.
     """
-    CUBE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("cubeQualifiedName", "cubeQualifiedName")
+    CUBE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "cubeQualifiedName", "cubeQualifiedName"
+    )
     """
     Unique name of the cube in which this asset exists, or empty if it is itself a cube.
     """
@@ -103,10 +107,16 @@ class MultiDimensionalDataset(Catalog):
 
     @property
     def cube_dimension_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cube_dimension_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cube_dimension_qualified_name
+        )
 
     @cube_dimension_qualified_name.setter
-    def cube_dimension_qualified_name(self, cube_dimension_qualified_name: Optional[str]):
+    def cube_dimension_qualified_name(
+        self, cube_dimension_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cube_dimension_qualified_name = cube_dimension_qualified_name
@@ -123,10 +133,16 @@ class MultiDimensionalDataset(Catalog):
 
     @property
     def cube_hierarchy_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cube_hierarchy_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cube_hierarchy_qualified_name
+        )
 
     @cube_hierarchy_qualified_name.setter
-    def cube_hierarchy_qualified_name(self, cube_hierarchy_qualified_name: Optional[str]):
+    def cube_hierarchy_qualified_name(
+        self, cube_hierarchy_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cube_hierarchy_qualified_name = cube_hierarchy_qualified_name
@@ -135,9 +151,13 @@ class MultiDimensionalDataset(Catalog):
         cube_name: Optional[str] = Field(default=None, description="")
         cube_qualified_name: Optional[str] = Field(default=None, description="")
         cube_dimension_name: Optional[str] = Field(default=None, description="")
-        cube_dimension_qualified_name: Optional[str] = Field(default=None, description="")
+        cube_dimension_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         cube_hierarchy_name: Optional[str] = Field(default=None, description="")
-        cube_hierarchy_qualified_name: Optional[str] = Field(default=None, description="")
+        cube_hierarchy_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
 
     attributes: MultiDimensionalDataset.Attributes = Field(
         default_factory=lambda: MultiDimensionalDataset.Attributes(),

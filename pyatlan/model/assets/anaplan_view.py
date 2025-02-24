@@ -46,7 +46,9 @@ class AnaplanView(Anaplan):
         module_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanView:
-        validate_required_fields(["name", "module_qualified_name"], [name, module_qualified_name])
+        validate_required_fields(
+            ["name", "module_qualified_name"], [name, module_qualified_name]
+        )
         attributes = AnaplanView.Attributes.create(
             name=name,
             module_qualified_name=module_qualified_name,
@@ -71,15 +73,21 @@ class AnaplanView(Anaplan):
     """
     TBC
     """
-    ANAPLAN_PAGE_DIMENSIONS: ClassVar[RelationField] = RelationField("anaplanPageDimensions")
+    ANAPLAN_PAGE_DIMENSIONS: ClassVar[RelationField] = RelationField(
+        "anaplanPageDimensions"
+    )
     """
     TBC
     """
-    ANAPLAN_ROW_DIMENSIONS: ClassVar[RelationField] = RelationField("anaplanRowDimensions")
+    ANAPLAN_ROW_DIMENSIONS: ClassVar[RelationField] = RelationField(
+        "anaplanRowDimensions"
+    )
     """
     TBC
     """
-    ANAPLAN_COLUMN_DIMENSIONS: ClassVar[RelationField] = RelationField("anaplanColumnDimensions")
+    ANAPLAN_COLUMN_DIMENSIONS: ClassVar[RelationField] = RelationField(
+        "anaplanColumnDimensions"
+    )
     """
     TBC
     """
@@ -103,38 +111,58 @@ class AnaplanView(Anaplan):
 
     @property
     def anaplan_page_dimensions(self) -> Optional[List[AnaplanDimension]]:
-        return None if self.attributes is None else self.attributes.anaplan_page_dimensions
+        return (
+            None if self.attributes is None else self.attributes.anaplan_page_dimensions
+        )
 
     @anaplan_page_dimensions.setter
-    def anaplan_page_dimensions(self, anaplan_page_dimensions: Optional[List[AnaplanDimension]]):
+    def anaplan_page_dimensions(
+        self, anaplan_page_dimensions: Optional[List[AnaplanDimension]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anaplan_page_dimensions = anaplan_page_dimensions
 
     @property
     def anaplan_row_dimensions(self) -> Optional[List[AnaplanDimension]]:
-        return None if self.attributes is None else self.attributes.anaplan_row_dimensions
+        return (
+            None if self.attributes is None else self.attributes.anaplan_row_dimensions
+        )
 
     @anaplan_row_dimensions.setter
-    def anaplan_row_dimensions(self, anaplan_row_dimensions: Optional[List[AnaplanDimension]]):
+    def anaplan_row_dimensions(
+        self, anaplan_row_dimensions: Optional[List[AnaplanDimension]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anaplan_row_dimensions = anaplan_row_dimensions
 
     @property
     def anaplan_column_dimensions(self) -> Optional[List[AnaplanDimension]]:
-        return None if self.attributes is None else self.attributes.anaplan_column_dimensions
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anaplan_column_dimensions
+        )
 
     @anaplan_column_dimensions.setter
-    def anaplan_column_dimensions(self, anaplan_column_dimensions: Optional[List[AnaplanDimension]]):
+    def anaplan_column_dimensions(
+        self, anaplan_column_dimensions: Optional[List[AnaplanDimension]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anaplan_column_dimensions = anaplan_column_dimensions
 
     class Attributes(Anaplan.Attributes):
-        anaplan_module: Optional[AnaplanModule] = Field(default=None, description="")  # relationship
-        anaplan_page_dimensions: Optional[List[AnaplanDimension]] = Field(default=None, description="")  # relationship
-        anaplan_row_dimensions: Optional[List[AnaplanDimension]] = Field(default=None, description="")  # relationship
+        anaplan_module: Optional[AnaplanModule] = Field(
+            default=None, description=""
+        )  # relationship
+        anaplan_page_dimensions: Optional[List[AnaplanDimension]] = Field(
+            default=None, description=""
+        )  # relationship
+        anaplan_row_dimensions: Optional[List[AnaplanDimension]] = Field(
+            default=None, description=""
+        )  # relationship
         anaplan_column_dimensions: Optional[List[AnaplanDimension]] = Field(
             default=None, description=""
         )  # relationship
@@ -153,7 +181,9 @@ class AnaplanView(Anaplan):
                 [name, module_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     module_qualified_name, "module_qualified_name", 6
@@ -175,7 +205,9 @@ class AnaplanView(Anaplan):
                 anaplan_model_name=model_name,
                 anaplan_module_qualified_name=module_qualified_name,
                 anaplan_module_name=module_name,
-                anaplan_module=AnaplanModule.ref_by_qualified_name(module_qualified_name),
+                anaplan_module=AnaplanModule.ref_by_qualified_name(
+                    module_qualified_name
+                ),
             )
 
     attributes: AnaplanView.Attributes = Field(

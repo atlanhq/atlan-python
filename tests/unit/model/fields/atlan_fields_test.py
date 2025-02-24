@@ -21,7 +21,9 @@ TEXT_FIELD_NAME = "text_field_name"
 class TestSearchableField:
     @pytest.fixture()
     def sut(self) -> SearchableField:
-        return SearchableField(atlan_field_name=ATLAN_FIELD_NAME, elastic_field_name=ELASTIC_FIELD_NAME)
+        return SearchableField(
+            atlan_field_name=ATLAN_FIELD_NAME, elastic_field_name=ELASTIC_FIELD_NAME
+        )
 
     def test_internal_field_name(self, sut: SearchableField):
         assert sut.internal_field_name == ATLAN_FIELD_NAME
@@ -50,7 +52,9 @@ class TestSearchableField:
 class TestKeywordField:
     @pytest.fixture()
     def sut(self) -> KeywordField:
-        return KeywordField(atlan_field_name=ATLAN_FIELD_NAME, keyword_field_name=KEYWORD_FIELD_NAME)
+        return KeywordField(
+            atlan_field_name=ATLAN_FIELD_NAME, keyword_field_name=KEYWORD_FIELD_NAME
+        )
 
     def test_internal_field_name(self, sut: KeywordField):
         assert sut.internal_field_name == ATLAN_FIELD_NAME

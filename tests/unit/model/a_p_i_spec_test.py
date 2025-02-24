@@ -16,13 +16,17 @@ from tests.unit.model.constants import (
         (API_SPEC_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, connection_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         APISpec.create(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
-    sut = APISpec.create(name=API_SPEC_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME)
+    sut = APISpec.create(
+        name=API_SPEC_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME
+    )
 
     assert sut.name == API_SPEC_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
@@ -45,14 +49,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = APISpec.create_for_modification(qualified_name=API_QUALIFIED_NAME, name=API_SPEC_NAME)
+    sut = APISpec.create_for_modification(
+        qualified_name=API_QUALIFIED_NAME, name=API_SPEC_NAME
+    )
 
     assert sut.qualified_name == API_QUALIFIED_NAME
     assert sut.name == API_SPEC_NAME
 
 
 def test_trim_to_required():
-    sut = APISpec.create_for_modification(name=API_SPEC_NAME, qualified_name=API_QUALIFIED_NAME).trim_to_required()
+    sut = APISpec.create_for_modification(
+        name=API_SPEC_NAME, qualified_name=API_QUALIFIED_NAME
+    ).trim_to_required()
 
     assert sut.name == API_SPEC_NAME
     assert sut.qualified_name == API_QUALIFIED_NAME

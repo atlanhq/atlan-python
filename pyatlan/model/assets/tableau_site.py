@@ -49,7 +49,9 @@ class TableauSite(Tableau):
         self.attributes.projects = projects
 
     class Attributes(Tableau.Attributes):
-        projects: Optional[List[TableauProject]] = Field(default=None, description="")  # relationship
+        projects: Optional[List[TableauProject]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: TableauSite.Attributes = Field(
         default_factory=lambda: TableauSite.Attributes(),

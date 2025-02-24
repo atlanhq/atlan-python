@@ -49,7 +49,9 @@ class AirflowDag(Airflow):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AIRFLOW_DAG_SCHEDULE: ClassVar[KeywordField] = KeywordField("airflowDagSchedule", "airflowDagSchedule")
+    AIRFLOW_DAG_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "airflowDagSchedule", "airflowDagSchedule"
+    )
     """
     Schedule for the DAG.
     """
@@ -83,7 +85,11 @@ class AirflowDag(Airflow):
 
     @property
     def airflow_dag_schedule_delta(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.airflow_dag_schedule_delta
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_dag_schedule_delta
+        )
 
     @airflow_dag_schedule_delta.setter
     def airflow_dag_schedule_delta(self, airflow_dag_schedule_delta: Optional[int]):
@@ -104,7 +110,9 @@ class AirflowDag(Airflow):
     class Attributes(Airflow.Attributes):
         airflow_dag_schedule: Optional[str] = Field(default=None, description="")
         airflow_dag_schedule_delta: Optional[int] = Field(default=None, description="")
-        airflow_tasks: Optional[List[AirflowTask]] = Field(default=None, description="")  # relationship
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -114,12 +122,16 @@ class AirflowDag(Airflow):
             name: str,
             connection_qualified_name: str,
         ) -> AirflowDag.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return AirflowDag.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: AirflowDag.Attributes = Field(

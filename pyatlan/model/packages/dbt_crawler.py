@@ -78,8 +78,12 @@ class DbtCrawler(AbstractCrawler):
         }
         self._credentials_body.update(local_creds)
         self._parameters.append(dict(name="extraction-method", value="api"))
-        self._parameters.append(dict(name="deployment-type", value="multi" if multi_tenant else "single"))
-        self._parameters.append({"name": "api-credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            dict(name="deployment-type", value="multi" if multi_tenant else "single")
+        )
+        self._parameters.append(
+            {"name": "api-credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(dict(name="control-config-strategy", value="default"))
         return self
 
@@ -160,8 +164,12 @@ class DbtCrawler(AbstractCrawler):
         expression and for dbt Cloud provide a string-encoded map
         :returns: crawler, set to include only those assets specified
         """
-        self._parameters.append(dict(name="include-filter", value=filter if filter else "{}"))
-        self._parameters.append(dict(name="include-filter-core", value=filter if filter else "*"))
+        self._parameters.append(
+            dict(name="include-filter", value=filter if filter else "{}")
+        )
+        self._parameters.append(
+            dict(name="include-filter-core", value=filter if filter else "*")
+        )
         return self
 
     def exclude(self, filter: str = "") -> DbtCrawler:
@@ -172,15 +180,21 @@ class DbtCrawler(AbstractCrawler):
         expression and for dbt Cloud provide a string-encoded map
         :return: the builder, set to exclude only those assets specified
         """
-        self._parameters.append(dict(name="exclude-filter", value=filter if filter else "{}"))
-        self._parameters.append(dict(name="exclude-filter-core", value=filter if filter else "*"))
+        self._parameters.append(
+            dict(name="exclude-filter", value=filter if filter else "{}")
+        )
+        self._parameters.append(
+            dict(name="exclude-filter-core", value=filter if filter else "*")
+        )
         return self
 
     def _set_required_metadata_params(self):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
 

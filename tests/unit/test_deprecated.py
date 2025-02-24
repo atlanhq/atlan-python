@@ -29,7 +29,9 @@ from tests.unit.model.constants import (
 )
 
 GLOSSARY = AtlasGlossary.create(name=GLOSSARY_NAME)
-GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY)
+GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(
+    name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY
+)
 GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSARY)
 
 
@@ -51,7 +53,9 @@ def test_get_groups(mock_group_client, client: AtlanClient):
     sort = "sort"
     count = False
     offset = 3
-    client.get_groups(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+    client.get_groups(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
 
     mock_group_client.assert_called_once_with(
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
@@ -100,7 +104,9 @@ def test_get_roles(mock_role_client, client: AtlanClient):
     count = False
     offset = 3
 
-    client.get_roles(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+    client.get_roles(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
 
     mock_role_client.assert_called_once_with(
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
@@ -122,7 +128,9 @@ def test_get_api_tokens(mock_token_client, client: AtlanClient):
     count = False
     offset = 3
 
-    client.get_api_tokens(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+    client.get_api_tokens(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
 
     mock_token_client.assert_called_once_with(
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
@@ -176,7 +184,9 @@ def test_update_api_token(mock_token_client, client: AtlanClient):
     description = "something"
     personas = {"something"}
 
-    client.update_api_token(guid=guid, display_name=display_name, description=description, personas=personas)
+    client.update_api_token(
+        guid=guid, display_name=display_name, description=description, personas=personas
+    )
 
     mock_token_client.assert_called_once_with(
         guid=guid, display_name=display_name, description=description, personas=personas
@@ -296,7 +306,9 @@ def test_get_users(mock_type_def_client, client: AtlanClient):
     count = False
     offset = 6
 
-    client.get_users(limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset)
+    client.get_users(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
 
     mock_type_def_client.assert_called_once_with(
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
@@ -633,7 +645,9 @@ def test_get_user_by_username(mock_type_def_client, client: AtlanClient):
         ),
     ],
 )
-def test_asset_deprecated_methods(deprecated_name: str, current_name: str, values, client: AtlanClient):
+def test_asset_deprecated_methods(
+    deprecated_name: str, current_name: str, values, client: AtlanClient
+):
     with patch.object(AssetClient, current_name) as mock:
         func = getattr(client, deprecated_name)
         func(**values)

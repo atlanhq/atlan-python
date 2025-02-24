@@ -21,7 +21,9 @@ def test_create_with_missing_parameters_raise_value_error(
     name: str, preset_dashboard_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        PresetDataset.create(name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name)
+        PresetDataset.create(
+            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
+        )
 
 
 def test_create():
@@ -33,7 +35,9 @@ def test_create():
     assert sut.name == PRESET_DATASET_NAME
     assert sut.preset_dashboard_qualified_name == PRESET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == PRESET_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
+    assert (
+        sut.qualified_name == f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
+    )
     assert sut.connector_name == PRESET_CONNECTOR_TYPE
 
 
@@ -47,7 +51,9 @@ def test_creator():
     assert sut.name == PRESET_DATASET_NAME
     assert sut.preset_dashboard_qualified_name == PRESET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == PRESET_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
+    assert (
+        sut.qualified_name == f"{PRESET_DASHBOARD_QUALIFIED_NAME}/{PRESET_DATASET_NAME}"
+    )
     assert sut.connector_name == PRESET_CONNECTOR_TYPE
 
 
@@ -66,7 +72,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = PresetDataset.create_for_modification(qualified_name=PRESET_DATASET_QUALIFIED_NAME, name=PRESET_DATASET_NAME)
+    sut = PresetDataset.create_for_modification(
+        qualified_name=PRESET_DATASET_QUALIFIED_NAME, name=PRESET_DATASET_NAME
+    )
 
     assert sut.qualified_name == PRESET_DATASET_QUALIFIED_NAME
     assert sut.name == PRESET_DATASET_NAME

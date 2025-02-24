@@ -45,7 +45,9 @@ def data_product_asset_selection():
     ).to_request()
 
 
-def _assert_product(product: DataProduct, qualified_name: str = DATA_PRODUCT_QUALIFIED_NAME) -> None:
+def _assert_product(
+    product: DataProduct, qualified_name: str = DATA_PRODUCT_QUALIFIED_NAME
+) -> None:
     assert product.name == DATA_PRODUCT_NAME
     assert product.qualified_name == qualified_name
 
@@ -87,36 +89,50 @@ def test_create_with_missing_parameters_raise_value_error(
         )
 
 
-def test_create(data_product_asset_selection: IndexSearchRequest, data_product_assets_dsl_json):
+def test_create(
+    data_product_asset_selection: IndexSearchRequest, data_product_assets_dsl_json
+):
     test_product = DataProduct.create(
         name=DATA_PRODUCT_NAME,
         asset_selection=data_product_asset_selection,
         domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
-    assert test_product.data_domain.unique_attributes == {"qualifiedName": DATA_DOMAIN_QUALIFIED_NAME}
+    assert test_product.data_domain.unique_attributes == {
+        "qualifiedName": DATA_DOMAIN_QUALIFIED_NAME
+    }
     assert test_product.parent_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
     assert test_product.super_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
-    test_asset_dsl = dumps(loads(test_product.data_product_assets_d_s_l), sort_keys=True)
+    test_asset_dsl = dumps(
+        loads(test_product.data_product_assets_d_s_l), sort_keys=True
+    )
     expected_asset_dsl = dumps(data_product_assets_dsl_json, sort_keys=True)
     assert test_asset_dsl == expected_asset_dsl
     assert test_product.data_product_assets_playbook_filter == ASSETS_PLAYBOOK_FILTER
     _assert_product(test_product)
 
 
-def test_create_under_sub_domain(data_product_asset_selection: IndexSearchRequest, data_product_assets_dsl_json):
+def test_create_under_sub_domain(
+    data_product_asset_selection: IndexSearchRequest, data_product_assets_dsl_json
+):
     test_product = DataProduct.create(
         name=DATA_PRODUCT_NAME,
         asset_selection=data_product_asset_selection,
         domain_qualified_name=DATA_SUB_DOMAIN_QUALIFIED_NAME,
     )
-    assert test_product.data_domain.unique_attributes == {"qualifiedName": DATA_SUB_DOMAIN_QUALIFIED_NAME}
+    assert test_product.data_domain.unique_attributes == {
+        "qualifiedName": DATA_SUB_DOMAIN_QUALIFIED_NAME
+    }
     assert test_product.parent_domain_qualified_name == DATA_SUB_DOMAIN_QUALIFIED_NAME
     assert test_product.super_domain_qualified_name == DATA_DOMAIN_QUALIFIED_NAME
-    test_asset_dsl = dumps(loads(test_product.data_product_assets_d_s_l), sort_keys=True)
+    test_asset_dsl = dumps(
+        loads(test_product.data_product_assets_d_s_l), sort_keys=True
+    )
     expected_asset_dsl = dumps(data_product_assets_dsl_json, sort_keys=True)
     assert test_asset_dsl == expected_asset_dsl
     assert test_product.data_product_assets_playbook_filter == ASSETS_PLAYBOOK_FILTER
-    _assert_product(test_product, qualified_name=DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME)
+    _assert_product(
+        test_product, qualified_name=DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME
+    )
     assert test_product.daap_status == DataProductStatus.ACTIVE
 
 

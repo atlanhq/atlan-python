@@ -33,10 +33,16 @@ def find_asset(
     :returns: the asset, if found
     """
 
-    connections = client.asset.find_connections_by_name(name=connection_name, connector_type=connector_type)
-    qualified_names = [f"{connection.qualified_name}/{asset_name}" for connection in connections]
+    connections = client.asset.find_connections_by_name(
+        name=connection_name, connector_type=connector_type
+    )
+    qualified_names = [
+        f"{connection.qualified_name}/{asset_name}" for connection in connections
+    ]
     search_request = (
-        FluentSearch(_includes_on_results=attributes).where(Asset.QUALIFIED_NAME.within(qualified_names))
+        FluentSearch(_includes_on_results=attributes).where(
+            Asset.QUALIFIED_NAME.within(qualified_names)
+        )
     ).to_request()
     if results := client.asset.search(search_request):
         return results.current_page()[0]
@@ -78,7 +84,9 @@ def main():
         connector_type=AtlanConnectorType.SNOWFLAKE,
         connection_name="development",
         asset_name="RAW/WIDEWORLDIMPORTERS_PURCHASING/SUPPLIERS",
-        attributes=CustomMetadataCache.get_attributes_for_search_results(CUSTOM_METADATA_NAME),
+        attributes=CustomMetadataCache.get_attributes_for_search_results(
+            CUSTOM_METADATA_NAME
+        ),
     ):
         logger.info("Found asset: %s", asset)
         updated = update_custom_metadata(
@@ -91,10 +99,14 @@ def main():
         # Note that the updated asset will NOT show the custom metadata, if you want
         # to see the custom metadata you need to re-retrieve the asset itself
         assert updated  # noqa: S101
-        result = client.asset.get_by_guid(guid=updated.guid, asset_type=type(updated), ignore_relationships=True)
+        result = client.asset.get_by_guid(
+            guid=updated.guid, asset_type=type(updated), ignore_relationships=True
+        )
         logger.info("Asset's custom metadata was updated: %s", result)
     else:
-        logger.warning("Unable to find asset: (development)/RAW/WIDEWORLDIMPORTERS_PURCHASING/SUPPLIERS")
+        logger.warning(
+            "Unable to find asset: (development)/RAW/WIDEWORLDIMPORTERS_PURCHASING/SUPPLIERS"
+        )
 
 
 if __name__ == "__main__":

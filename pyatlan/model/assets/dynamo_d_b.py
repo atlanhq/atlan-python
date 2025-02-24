@@ -30,15 +30,21 @@ class DynamoDB(NoSQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField("dynamoDBStatus", "dynamoDBStatus")
+    DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dynamoDBStatus", "dynamoDBStatus"
+    )
     """
     Status of the DynamoDB Asset
     """
-    DYNAMO_DB_PARTITION_KEY: ClassVar[KeywordField] = KeywordField("dynamoDBPartitionKey", "dynamoDBPartitionKey")
+    DYNAMO_DB_PARTITION_KEY: ClassVar[KeywordField] = KeywordField(
+        "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+    )
     """
     Specifies the partition key of the DynamoDB Table/Index
     """
-    DYNAMO_DB_SORT_KEY: ClassVar[KeywordField] = KeywordField("dynamoDBSortKey", "dynamoDBSortKey")
+    DYNAMO_DB_SORT_KEY: ClassVar[KeywordField] = KeywordField(
+        "dynamoDBSortKey", "dynamoDBSortKey"
+    )
     """
     Specifies the sort key of the DynamoDB Table/Index
     """
@@ -75,7 +81,11 @@ class DynamoDB(NoSQL):
 
     @property
     def dynamo_d_b_partition_key(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_partition_key
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_partition_key
+        )
 
     @dynamo_d_b_partition_key.setter
     def dynamo_d_b_partition_key(self, dynamo_d_b_partition_key: Optional[str]):
@@ -95,30 +105,50 @@ class DynamoDB(NoSQL):
 
     @property
     def dynamo_d_b_read_capacity_units(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_read_capacity_units
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_read_capacity_units
+        )
 
     @dynamo_d_b_read_capacity_units.setter
-    def dynamo_d_b_read_capacity_units(self, dynamo_d_b_read_capacity_units: Optional[int]):
+    def dynamo_d_b_read_capacity_units(
+        self, dynamo_d_b_read_capacity_units: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dynamo_d_b_read_capacity_units = dynamo_d_b_read_capacity_units
 
     @property
     def dynamo_d_b_write_capacity_units(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_write_capacity_units
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_write_capacity_units
+        )
 
     @dynamo_d_b_write_capacity_units.setter
-    def dynamo_d_b_write_capacity_units(self, dynamo_d_b_write_capacity_units: Optional[int]):
+    def dynamo_d_b_write_capacity_units(
+        self, dynamo_d_b_write_capacity_units: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_write_capacity_units = dynamo_d_b_write_capacity_units
+        self.attributes.dynamo_d_b_write_capacity_units = (
+            dynamo_d_b_write_capacity_units
+        )
 
     class Attributes(NoSQL.Attributes):
-        dynamo_d_b_status: Optional[DynamoDBStatus] = Field(default=None, description="")
+        dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
+            default=None, description=""
+        )
         dynamo_d_b_partition_key: Optional[str] = Field(default=None, description="")
         dynamo_d_b_sort_key: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_read_capacity_units: Optional[int] = Field(default=None, description="")
-        dynamo_d_b_write_capacity_units: Optional[int] = Field(default=None, description="")
+        dynamo_d_b_read_capacity_units: Optional[int] = Field(
+            default=None, description=""
+        )
+        dynamo_d_b_write_capacity_units: Optional[int] = Field(
+            default=None, description=""
+        )
 
     attributes: DynamoDB.Attributes = Field(
         default_factory=lambda: DynamoDB.Attributes(),

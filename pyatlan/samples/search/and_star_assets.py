@@ -46,9 +46,15 @@ def list_users_in_group(name: str) -> List[str]:
     """
     usernames: List[str] = []
     if groups := client.group.get_by_name(alias=name):
-        if groups[0].id is not None and (response := client.group.get_members(guid=groups[0].id)):
+        if groups[0].id is not None and (
+            response := client.group.get_members(guid=groups[0].id)
+        ):
             if response.records and len(response.records) > 0:
-                usernames.extend(str(user.username) for user in response.records if user.username is not None)
+                usernames.extend(
+                    str(user.username)
+                    for user in response.records
+                    if user.username is not None
+                )
     return usernames
 
 
@@ -68,12 +74,16 @@ def star_asset(asset: Asset, usernames: List[str]) -> None:
         if user not in starred_by:
             starred_by.add(user)
             starred_count += 1
-            starred_details_list.append(StarredDetails(asset_starred_by=user, asset_starred_at=datetime.now()))
+            starred_details_list.append(
+                StarredDetails(asset_starred_by=user, asset_starred_at=datetime.now())
+            )
     to_update = asset.trim_to_required()
     to_update.starred_details_list = starred_details_list
     to_update.starred_count = starred_count
     to_update.starred_by = starred_by
-    logger.info("Updating '%s' (%s) with total stars: %s", asset.name, asset.guid, starred_count)
+    logger.info(
+        "Updating '%s' (%s) with total stars: %s", asset.name, asset.guid, starred_count
+    )
     client.asset.save(to_update)
 
 

@@ -15,9 +15,9 @@ class OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields(AtlanObjec
 
 
 class OpenLineageColumnLineageDatasetFacetFieldsAdditional(AtlanObject):
-    input_fields: Optional[List[OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields]] = Field(
-        default_factory=list
-    )
+    input_fields: Optional[
+        List[OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields]
+    ] = Field(default_factory=list)
     transformation_description: Optional[str] = Field(default=None)
     transformation_type: Optional[str] = Field(default=None)
 
@@ -43,13 +43,13 @@ class OpenLineageColumnLineageDatasetFacet(OpenLineageBaseFacet):
     This facet contains column lineage of a dataset.
     """
 
-    fields: Dict[str, OpenLineageColumnLineageDatasetFacetFieldsAdditional] = Field(default_factory=dict)
+    fields: Dict[str, OpenLineageColumnLineageDatasetFacetFieldsAdditional] = Field(
+        default_factory=dict
+    )
 
     @staticmethod
     def _get_schema() -> str:
-        return (
-            "https://openlineage.io/spec/facets/1-1-0/ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet"
-        )
+        return "https://openlineage.io/spec/facets/1-1-0/ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet"
 
 
 class OpenLineageDatasetFacets(AtlanObject):

@@ -31,7 +31,9 @@ class Workflow(Asset, type_name="Workflow"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKFLOW_TEMPLATE_GUID: ClassVar[KeywordField] = KeywordField("workflowTemplateGuid", "workflowTemplateGuid")
+    WORKFLOW_TEMPLATE_GUID: ClassVar[KeywordField] = KeywordField(
+        "workflowTemplateGuid", "workflowTemplateGuid"
+    )
     """
     GUID of the workflow template from which this workflow was created.
     """
@@ -39,7 +41,9 @@ class Workflow(Asset, type_name="Workflow"):
     """
     Type of the workflow.
     """
-    WORKFLOW_ACTION_CHOICES: ClassVar[KeywordField] = KeywordField("workflowActionChoices", "workflowActionChoices")
+    WORKFLOW_ACTION_CHOICES: ClassVar[KeywordField] = KeywordField(
+        "workflowActionChoices", "workflowActionChoices"
+    )
     """
     List of workflow action choices.
     """
@@ -47,23 +51,33 @@ class Workflow(Asset, type_name="Workflow"):
     """
     Details of the workflow.
     """
-    WORKFLOW_STATUS: ClassVar[KeywordField] = KeywordField("workflowStatus", "workflowStatus")
+    WORKFLOW_STATUS: ClassVar[KeywordField] = KeywordField(
+        "workflowStatus", "workflowStatus"
+    )
     """
     Status of the workflow.
     """
-    WORKFLOW_RUN_EXPIRES_IN: ClassVar[TextField] = TextField("workflowRunExpiresIn", "workflowRunExpiresIn")
+    WORKFLOW_RUN_EXPIRES_IN: ClassVar[TextField] = TextField(
+        "workflowRunExpiresIn", "workflowRunExpiresIn"
+    )
     """
     Time duration after which a run of this workflow will expire.
     """
-    WORKFLOW_CREATED_BY: ClassVar[KeywordField] = KeywordField("workflowCreatedBy", "workflowCreatedBy")
+    WORKFLOW_CREATED_BY: ClassVar[KeywordField] = KeywordField(
+        "workflowCreatedBy", "workflowCreatedBy"
+    )
     """
     Username of the user who created this workflow.
     """
-    WORKFLOW_UPDATED_BY: ClassVar[KeywordField] = KeywordField("workflowUpdatedBy", "workflowUpdatedBy")
+    WORKFLOW_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "workflowUpdatedBy", "workflowUpdatedBy"
+    )
     """
     Username of the user who updated this workflow.
     """
-    WORKFLOW_DELETED_AT: ClassVar[NumericField] = NumericField("workflowDeletedAt", "workflowDeletedAt")
+    WORKFLOW_DELETED_AT: ClassVar[NumericField] = NumericField(
+        "workflowDeletedAt", "workflowDeletedAt"
+    )
     """
     Deletion time of this workflow.
     """
@@ -82,7 +96,9 @@ class Workflow(Asset, type_name="Workflow"):
 
     @property
     def workflow_template_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workflow_template_guid
+        return (
+            None if self.attributes is None else self.attributes.workflow_template_guid
+        )
 
     @workflow_template_guid.setter
     def workflow_template_guid(self, workflow_template_guid: Optional[str]):
@@ -102,7 +118,9 @@ class Workflow(Asset, type_name="Workflow"):
 
     @property
     def workflow_action_choices(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.workflow_action_choices
+        return (
+            None if self.attributes is None else self.attributes.workflow_action_choices
+        )
 
     @workflow_action_choices.setter
     def workflow_action_choices(self, workflow_action_choices: Optional[Set[str]]):
@@ -132,7 +150,9 @@ class Workflow(Asset, type_name="Workflow"):
 
     @property
     def workflow_run_expires_in(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workflow_run_expires_in
+        return (
+            None if self.attributes is None else self.attributes.workflow_run_expires_in
+        )
 
     @workflow_run_expires_in.setter
     def workflow_run_expires_in(self, workflow_run_expires_in: Optional[str]):
@@ -173,7 +193,9 @@ class Workflow(Asset, type_name="Workflow"):
     class Attributes(Asset.Attributes):
         workflow_template_guid: Optional[str] = Field(default=None, description="")
         workflow_type: Optional[WorkflowType] = Field(default=None, description="")
-        workflow_action_choices: Optional[Set[str]] = Field(default=None, description="")
+        workflow_action_choices: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         workflow_config: Optional[str] = Field(default=None, description="")
         workflow_status: Optional[WorkflowStatus] = Field(default=None, description="")
         workflow_run_expires_in: Optional[str] = Field(default=None, description="")

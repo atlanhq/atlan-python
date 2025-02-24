@@ -29,11 +29,15 @@ class QuickSight(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_ID: ClassVar[KeywordField] = KeywordField("quickSightId", "quickSightId")
+    QUICK_SIGHT_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightId", "quickSightId"
+    )
     """
 
     """
-    QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField("quickSightSheetId", "quickSightSheetId")
+    QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightSheetId", "quickSightSheetId"
+    )
     """
 
     """
@@ -72,7 +76,9 @@ class QuickSight(BI):
 
     @property
     def quick_sight_sheet_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.quick_sight_sheet_name
+        return (
+            None if self.attributes is None else self.attributes.quick_sight_sheet_name
+        )
 
     @quick_sight_sheet_name.setter
     def quick_sight_sheet_name(self, quick_sight_sheet_name: Optional[str]):

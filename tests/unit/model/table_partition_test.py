@@ -21,7 +21,9 @@ from tests.unit.model.constants import (
         (TABLE_PARTITION_NAME, None, "table_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, table_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, table_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         TablePartition.creator(
             name=name,

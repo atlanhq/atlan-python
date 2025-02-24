@@ -50,21 +50,29 @@ CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     # TODO: proper connection delete workflow
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def database(client: AtlanClient, connection: Connection) -> Generator[Database, None, None]:
-    db = create_database(client=client, connection=connection, database_name=DATABASE_NAME)
+def database(
+    client: AtlanClient, connection: Connection
+) -> Generator[Database, None, None]:
+    db = create_database(
+        client=client, connection=connection, database_name=DATABASE_NAME
+    )
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
 
 
 def create_database(client: AtlanClient, connection, database_name: str):
-    to_create = Database.create(name=database_name, connection_qualified_name=connection.qualified_name)
+    to_create = Database.create(
+        name=database_name, connection_qualified_name=connection.qualified_name
+    )
     to_create.certificate_status = CERTIFICATE_STATUS
     to_create.certificate_status_message = CERTIFICATE_MESSAGE
     result = client.asset.save(to_create)
@@ -78,7 +86,9 @@ def schema(
     database: Database,
 ) -> Generator[Schema, None, None]:
     assert database.qualified_name
-    to_create = Schema.create(name=SCHEMA_NAME, database_qualified_name=database.qualified_name)
+    to_create = Schema.create(
+        name=SCHEMA_NAME, database_qualified_name=database.qualified_name
+    )
     result = client.asset.save(to_create)
     sch = result.assets_created(asset_type=Schema)[0]
     yield sch
@@ -93,7 +103,9 @@ def table(
     schema: Schema,
 ) -> Generator[Table, None, None]:
     assert schema.qualified_name
-    to_create = Table.create(name=TABLE_NAME, schema_qualified_name=schema.qualified_name)
+    to_create = Table.create(
+        name=TABLE_NAME, schema_qualified_name=schema.qualified_name
+    )
     result = client.asset.save(to_create)
     tbl = result.assets_created(asset_type=Table)[0]
     yield tbl
@@ -108,7 +120,9 @@ def mview(
     schema: Schema,
 ) -> Generator[MaterialisedView, None, None]:
     assert schema.qualified_name
-    to_create = MaterialisedView.create(name=MVIEW_NAME, schema_qualified_name=schema.qualified_name)
+    to_create = MaterialisedView.create(
+        name=MVIEW_NAME, schema_qualified_name=schema.qualified_name
+    )
     result = client.asset.save(to_create)
     mv = result.assets_created(asset_type=MaterialisedView)[0]
     yield mv
@@ -428,7 +442,9 @@ def test_fetch_lineage_start_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = FluentLineage(starting_guid=table.guid, includes_on_results=Asset.NAME, size=1).request
+    lineage = FluentLineage(
+        starting_guid=table.guid, includes_on_results=Asset.NAME, size=1
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -445,7 +461,9 @@ def test_fetch_lineage_start_list(
     assert isinstance(results[3], View)
     assert results[3].depth == 2
     assert results[3].guid == view.guid
-    lineage = FluentLineage(starting_guid=table.guid, direction=LineageDirection.UPSTREAM).request
+    lineage = FluentLineage(
+        starting_guid=table.guid, direction=LineageDirection.UPSTREAM
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
@@ -526,7 +544,9 @@ def test_fetch_lineage_middle_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = FluentLineage(starting_guid=mview.guid, includes_on_results=Asset.NAME, size=5).request
+    lineage = FluentLineage(
+        starting_guid=mview.guid, includes_on_results=Asset.NAME, size=5
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -536,7 +556,9 @@ def test_fetch_lineage_middle_list(
     assert isinstance(results[0], Process)
     assert isinstance(results[1], View)
     assert results[1].guid == view.guid
-    lineage = FluentLineage(starting_guid=mview.guid, direction=LineageDirection.UPSTREAM, size=5).request
+    lineage = FluentLineage(
+        starting_guid=mview.guid, direction=LineageDirection.UPSTREAM, size=5
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -559,11 +581,15 @@ def test_fetch_lineage_end_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = FluentLineage(starting_guid=view.guid, includes_on_results=Asset.NAME, size=10).request
+    lineage = FluentLineage(
+        starting_guid=view.guid, includes_on_results=Asset.NAME, size=10
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
-    lineage = FluentLineage(starting_guid=view.guid, direction=LineageDirection.UPSTREAM).request
+    lineage = FluentLineage(
+        starting_guid=view.guid, direction=LineageDirection.UPSTREAM
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -670,16 +696,22 @@ def test_restore_lineage(
 ):
     assert lineage_start.qualified_name
     assert lineage_start.name
-    to_restore = Process.create_for_modification(lineage_start.qualified_name, lineage_start.name)
+    to_restore = Process.create_for_modification(
+        lineage_start.qualified_name, lineage_start.name
+    )
     to_restore.status = EntityStatus.ACTIVE
     client.asset.save(to_restore)
-    restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process, ignore_relationships=False)
+    restored = client.asset.get_by_guid(
+        lineage_start.guid, asset_type=Process, ignore_relationships=False
+    )
     assert restored
     count = 0
     # TODO: replace with exponential back-off and jitter
     while restored.status == EntityStatus.DELETED:
         time.sleep(2)
-        restored = client.asset.get_by_guid(lineage_start.guid, asset_type=Process, ignore_relationships=False)
+        restored = client.asset.get_by_guid(
+            lineage_start.guid, asset_type=Process, ignore_relationships=False
+        )
         count += 1
     assert restored.guid == lineage_start.guid
     assert restored.qualified_name == lineage_start.qualified_name

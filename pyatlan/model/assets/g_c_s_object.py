@@ -53,7 +53,9 @@ class GCSObject(GCS):
         gcs_bucket_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> GCSObject:
-        validate_required_fields(["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name])
+        validate_required_fields(
+            ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+        )
         attributes = GCSObject.Attributes.create(
             name=name,
             gcs_bucket_qualified_name=gcs_bucket_qualified_name,
@@ -65,11 +67,15 @@ class GCSObject(GCS):
     @init_guid
     def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name)
+        return cls.creator(
+            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+        )
 
     type_name: str = Field(default="GCSObject", allow_mutation=False)
 
@@ -98,11 +104,15 @@ class GCSObject(GCS):
     """
     Unique name of the bucket in which this object exists.
     """
-    GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField("gcsObjectSize", "gcsObjectSize")
+    GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "gcsObjectSize", "gcsObjectSize"
+    )
     """
     Object size in bytes.
     """
-    GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField("gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text")
+    GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
+    )
     """
     Key of this object, in GCS.
     """
@@ -112,19 +122,27 @@ class GCSObject(GCS):
     """
     Media link to this object.
     """
-    GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField("gcsObjectHoldType", "gcsObjectHoldType")
+    GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectHoldType", "gcsObjectHoldType"
+    )
     """
     Type of hold on this object.
     """
-    GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField("gcsObjectGenerationId", "gcsObjectGenerationId")
+    GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField(
+        "gcsObjectGenerationId", "gcsObjectGenerationId"
+    )
     """
     Generation ID of this object.
     """
-    GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField("gcsObjectCRC32CHash", "gcsObjectCRC32CHash")
+    GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
+    )
     """
     CRC32C hash of this object.
     """
-    GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField("gcsObjectMD5Hash", "gcsObjectMD5Hash")
+    GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectMD5Hash", "gcsObjectMD5Hash"
+    )
     """
     MD5 hash of this object.
     """
@@ -134,7 +152,9 @@ class GCSObject(GCS):
     """
     Time (epoch) at which this object's data was last modified, in milliseconds.
     """
-    GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField("gcsObjectContentType", "gcsObjectContentType")
+    GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentType", "gcsObjectContentType"
+    )
     """
     Type of content in this object.
     """
@@ -199,7 +219,11 @@ class GCSObject(GCS):
 
     @property
     def gcs_bucket_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_qualified_name
+        )
 
     @gcs_bucket_qualified_name.setter
     def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
@@ -229,7 +253,9 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_media_link(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_media_link
+        return (
+            None if self.attributes is None else self.attributes.gcs_object_media_link
+        )
 
     @gcs_object_media_link.setter
     def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
@@ -249,7 +275,11 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_generation_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.gcs_object_generation_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_generation_id
+        )
 
     @gcs_object_generation_id.setter
     def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
@@ -259,7 +289,11 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_c_r_c32_c_hash
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_c_r_c32_c_hash
+        )
 
     @gcs_object_c_r_c32_c_hash.setter
     def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
@@ -279,17 +313,27 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.gcs_object_data_last_modified_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_data_last_modified_time
+        )
 
     @gcs_object_data_last_modified_time.setter
-    def gcs_object_data_last_modified_time(self, gcs_object_data_last_modified_time: Optional[datetime]):
+    def gcs_object_data_last_modified_time(
+        self, gcs_object_data_last_modified_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_data_last_modified_time = gcs_object_data_last_modified_time
+        self.attributes.gcs_object_data_last_modified_time = (
+            gcs_object_data_last_modified_time
+        )
 
     @property
     def gcs_object_content_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_content_type
+        return (
+            None if self.attributes is None else self.attributes.gcs_object_content_type
+        )
 
     @gcs_object_content_type.setter
     def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
@@ -299,7 +343,11 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_encoding(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_content_encoding
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_encoding
+        )
 
     @gcs_object_content_encoding.setter
     def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
@@ -309,17 +357,27 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_disposition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_content_disposition
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_disposition
+        )
 
     @gcs_object_content_disposition.setter
-    def gcs_object_content_disposition(self, gcs_object_content_disposition: Optional[str]):
+    def gcs_object_content_disposition(
+        self, gcs_object_content_disposition: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
 
     @property
     def gcs_object_content_language(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_object_content_language
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_language
+        )
 
     @gcs_object_content_language.setter
     def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
@@ -329,13 +387,21 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.gcs_object_retention_expiration_date
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_retention_expiration_date
+        )
 
     @gcs_object_retention_expiration_date.setter
-    def gcs_object_retention_expiration_date(self, gcs_object_retention_expiration_date: Optional[datetime]):
+    def gcs_object_retention_expiration_date(
+        self, gcs_object_retention_expiration_date: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_retention_expiration_date = gcs_object_retention_expiration_date
+        self.attributes.gcs_object_retention_expiration_date = (
+            gcs_object_retention_expiration_date
+        )
 
     @property
     def gcs_bucket(self) -> Optional[GCSBucket]:
@@ -357,13 +423,21 @@ class GCSObject(GCS):
         gcs_object_generation_id: Optional[int] = Field(default=None, description="")
         gcs_object_c_r_c32_c_hash: Optional[str] = Field(default=None, description="")
         gcs_object_m_d5_hash: Optional[str] = Field(default=None, description="")
-        gcs_object_data_last_modified_time: Optional[datetime] = Field(default=None, description="")
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
         gcs_object_content_type: Optional[str] = Field(default=None, description="")
         gcs_object_content_encoding: Optional[str] = Field(default=None, description="")
-        gcs_object_content_disposition: Optional[str] = Field(default=None, description="")
+        gcs_object_content_disposition: Optional[str] = Field(
+            default=None, description=""
+        )
         gcs_object_content_language: Optional[str] = Field(default=None, description="")
-        gcs_object_retention_expiration_date: Optional[datetime] = Field(default=None, description="")
-        gcs_bucket: Optional[GCSBucket] = Field(default=None, description="")  # relationship
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        gcs_bucket: Optional[GCSBucket] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -374,9 +448,13 @@ class GCSObject(GCS):
             gcs_bucket_qualified_name: str,
             connection_qualified_name: Optional[str] = None,
         ) -> GCSObject.Attributes:
-            validate_required_fields(["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name])
+            validate_required_fields(
+                ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+            )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     gcs_bucket_qualified_name, "gcs_bucket_qualified_name", 4

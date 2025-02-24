@@ -64,8 +64,12 @@ class BIProcess(Process):
         self.attributes.inputs = inputs
 
     class Attributes(Process.Attributes):
-        outputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
-        inputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
+        outputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
+        inputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: BIProcess.Attributes = Field(
         default_factory=lambda: BIProcess.Attributes(),

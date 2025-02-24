@@ -42,7 +42,9 @@ def _assert_search_log_results(results, response_json, sorts, bulk=False):
         assert log.user_agent == response_json["logs"][0]["userAgent"]
         assert log.ip_address == response_json["logs"][0]["ipAddress"]
         assert log.host == response_json["logs"][0]["host"]
-        expected_timestamp = datetime.fromtimestamp(response_json["logs"][0]["timestamp"] / 1000, tz=timezone.utc)
+        expected_timestamp = datetime.fromtimestamp(
+            response_json["logs"][0]["timestamp"] / 1000, tz=timezone.utc
+        )
         assert log.timestamp == expected_timestamp
         assert log.entity_guids_all == response_json["logs"][0]["entityGuidsAll"]
 
@@ -92,7 +94,10 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
     # to verify if the results are empty
     assert mock_api_caller._call_api.call_count == 2
     assert mock_logger.call_count == 1
-    assert "Search log bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
+    assert (
+        "Search log bulk search option is enabled."
+        in mock_logger.call_args_list[0][0][0]
+    )
     mock_logger.reset_mock()
     mock_api_caller.reset_mock()
 
@@ -112,10 +117,15 @@ def test_search_log_pagination(mock_logger, mock_api_caller, search_logs_json):
             exclude_users=["atlansupport"],
         )
         response = client.search(criteria=search_log_request)
-        _assert_search_log_results(response, search_logs_json, expected_sorts, bulk=False)
+        _assert_search_log_results(
+            response, search_logs_json, expected_sorts, bulk=False
+        )
         assert mock_logger.call_count == 1
         assert mock_api_caller._call_api.call_count == 3
-        assert "Result size (%s) exceeds threshold (%s)" in mock_logger.call_args_list[0][0][0]
+        assert (
+            "Result size (%s) exceeds threshold (%s)"
+            in mock_logger.call_args_list[0][0][0]
+        )
 
         # Test exception for bulk=False with user-defined sorting and results exceeding the threshold
         search_log_request = SearchLogRequest.views_by_guid(

@@ -64,11 +64,15 @@ class ModelAttribute(Model):
     """
     Precision of the attribute.
     """
-    MODEL_ATTRIBUTE_SCALE: ClassVar[NumericField] = NumericField("modelAttributeScale", "modelAttributeScale")
+    MODEL_ATTRIBUTE_SCALE: ClassVar[NumericField] = NumericField(
+        "modelAttributeScale", "modelAttributeScale"
+    )
     """
     Scale of the attribute.
     """
-    MODEL_ATTRIBUTE_DATA_TYPE: ClassVar[KeywordField] = KeywordField("modelAttributeDataType", "modelAttributeDataType")
+    MODEL_ATTRIBUTE_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modelAttributeDataType", "modelAttributeDataType"
+    )
     """
     Type of the attribute.
     """
@@ -79,15 +83,21 @@ class ModelAttribute(Model):
     When true, this attribute has relationships with other attributes.
     """
 
-    MODEL_ATTRIBUTE_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField("modelAttributeImplementedByAssets")
+    MODEL_ATTRIBUTE_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField(
+        "modelAttributeImplementedByAssets"
+    )
     """
     TBC
     """
-    MODEL_ATTRIBUTE_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField("modelAttributeRelatedToAttributes")
+    MODEL_ATTRIBUTE_RELATED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "modelAttributeRelatedToAttributes"
+    )
     """
     TBC
     """
-    MODEL_ATTRIBUTE_ENTITIES: ClassVar[RelationField] = RelationField("modelAttributeEntities")
+    MODEL_ATTRIBUTE_ENTITIES: ClassVar[RelationField] = RelationField(
+        "modelAttributeEntities"
+    )
     """
     TBC
     """
@@ -97,7 +107,9 @@ class ModelAttribute(Model):
     """
     TBC
     """
-    MODEL_ATTRIBUTE_MAPPED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField("modelAttributeMappedToAttributes")
+    MODEL_ATTRIBUTE_MAPPED_TO_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "modelAttributeMappedToAttributes"
+    )
     """
     TBC
     """
@@ -127,7 +139,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_is_nullable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.model_attribute_is_nullable
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_is_nullable
+        )
 
     @model_attribute_is_nullable.setter
     def model_attribute_is_nullable(self, model_attribute_is_nullable: Optional[bool]):
@@ -137,7 +153,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_is_primary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.model_attribute_is_primary
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_is_primary
+        )
 
     @model_attribute_is_primary.setter
     def model_attribute_is_primary(self, model_attribute_is_primary: Optional[bool]):
@@ -147,7 +167,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_is_foreign(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.model_attribute_is_foreign
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_is_foreign
+        )
 
     @model_attribute_is_foreign.setter
     def model_attribute_is_foreign(self, model_attribute_is_foreign: Optional[bool]):
@@ -157,7 +181,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_is_derived(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.model_attribute_is_derived
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_is_derived
+        )
 
     @model_attribute_is_derived.setter
     def model_attribute_is_derived(self, model_attribute_is_derived: Optional[bool]):
@@ -167,7 +195,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_precision(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.model_attribute_precision
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_precision
+        )
 
     @model_attribute_precision.setter
     def model_attribute_precision(self, model_attribute_precision: Optional[int]):
@@ -177,7 +209,9 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_scale(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.model_attribute_scale
+        return (
+            None if self.attributes is None else self.attributes.model_attribute_scale
+        )
 
     @model_attribute_scale.setter
     def model_attribute_scale(self, model_attribute_scale: Optional[int]):
@@ -187,7 +221,11 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_attribute_data_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_data_type
+        )
 
     @model_attribute_data_type.setter
     def model_attribute_data_type(self, model_attribute_data_type: Optional[str]):
@@ -197,45 +235,75 @@ class ModelAttribute(Model):
 
     @property
     def model_attribute_has_relationships(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.model_attribute_has_relationships
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_has_relationships
+        )
 
     @model_attribute_has_relationships.setter
-    def model_attribute_has_relationships(self, model_attribute_has_relationships: Optional[bool]):
+    def model_attribute_has_relationships(
+        self, model_attribute_has_relationships: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_has_relationships = model_attribute_has_relationships
+        self.attributes.model_attribute_has_relationships = (
+            model_attribute_has_relationships
+        )
 
     @property
     def model_attribute_implemented_by_assets(self) -> Optional[List[Catalog]]:
-        return None if self.attributes is None else self.attributes.model_attribute_implemented_by_assets
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_implemented_by_assets
+        )
 
     @model_attribute_implemented_by_assets.setter
-    def model_attribute_implemented_by_assets(self, model_attribute_implemented_by_assets: Optional[List[Catalog]]):
+    def model_attribute_implemented_by_assets(
+        self, model_attribute_implemented_by_assets: Optional[List[Catalog]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_implemented_by_assets = model_attribute_implemented_by_assets
+        self.attributes.model_attribute_implemented_by_assets = (
+            model_attribute_implemented_by_assets
+        )
 
     @property
     def model_attribute_related_to_attributes(
         self,
     ) -> Optional[List[ModelAttributeAssociation]]:
-        return None if self.attributes is None else self.attributes.model_attribute_related_to_attributes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_related_to_attributes
+        )
 
     @model_attribute_related_to_attributes.setter
     def model_attribute_related_to_attributes(
         self,
-        model_attribute_related_to_attributes: Optional[List[ModelAttributeAssociation]],
+        model_attribute_related_to_attributes: Optional[
+            List[ModelAttributeAssociation]
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_related_to_attributes = model_attribute_related_to_attributes
+        self.attributes.model_attribute_related_to_attributes = (
+            model_attribute_related_to_attributes
+        )
 
     @property
     def model_attribute_entities(self) -> Optional[List[ModelEntity]]:
-        return None if self.attributes is None else self.attributes.model_attribute_entities
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_entities
+        )
 
     @model_attribute_entities.setter
-    def model_attribute_entities(self, model_attribute_entities: Optional[List[ModelEntity]]):
+    def model_attribute_entities(
+        self, model_attribute_entities: Optional[List[ModelEntity]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_attribute_entities = model_attribute_entities
@@ -244,20 +312,32 @@ class ModelAttribute(Model):
     def model_attribute_related_from_attributes(
         self,
     ) -> Optional[List[ModelAttributeAssociation]]:
-        return None if self.attributes is None else self.attributes.model_attribute_related_from_attributes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_related_from_attributes
+        )
 
     @model_attribute_related_from_attributes.setter
     def model_attribute_related_from_attributes(
         self,
-        model_attribute_related_from_attributes: Optional[List[ModelAttributeAssociation]],
+        model_attribute_related_from_attributes: Optional[
+            List[ModelAttributeAssociation]
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_related_from_attributes = model_attribute_related_from_attributes
+        self.attributes.model_attribute_related_from_attributes = (
+            model_attribute_related_from_attributes
+        )
 
     @property
     def model_attribute_mapped_to_attributes(self) -> Optional[List[ModelAttribute]]:
-        return None if self.attributes is None else self.attributes.model_attribute_mapped_to_attributes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_mapped_to_attributes
+        )
 
     @model_attribute_mapped_to_attributes.setter
     def model_attribute_mapped_to_attributes(
@@ -265,11 +345,17 @@ class ModelAttribute(Model):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_mapped_to_attributes = model_attribute_mapped_to_attributes
+        self.attributes.model_attribute_mapped_to_attributes = (
+            model_attribute_mapped_to_attributes
+        )
 
     @property
     def model_attribute_mapped_from_attributes(self) -> Optional[List[ModelAttribute]]:
-        return None if self.attributes is None else self.attributes.model_attribute_mapped_from_attributes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_attribute_mapped_from_attributes
+        )
 
     @model_attribute_mapped_from_attributes.setter
     def model_attribute_mapped_from_attributes(
@@ -277,27 +363,35 @@ class ModelAttribute(Model):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_attribute_mapped_from_attributes = model_attribute_mapped_from_attributes
+        self.attributes.model_attribute_mapped_from_attributes = (
+            model_attribute_mapped_from_attributes
+        )
 
     class Attributes(Model.Attributes):
-        model_attribute_is_nullable: Optional[bool] = Field(default=None, description="")
+        model_attribute_is_nullable: Optional[bool] = Field(
+            default=None, description=""
+        )
         model_attribute_is_primary: Optional[bool] = Field(default=None, description="")
         model_attribute_is_foreign: Optional[bool] = Field(default=None, description="")
         model_attribute_is_derived: Optional[bool] = Field(default=None, description="")
         model_attribute_precision: Optional[int] = Field(default=None, description="")
         model_attribute_scale: Optional[int] = Field(default=None, description="")
         model_attribute_data_type: Optional[str] = Field(default=None, description="")
-        model_attribute_has_relationships: Optional[bool] = Field(default=None, description="")
+        model_attribute_has_relationships: Optional[bool] = Field(
+            default=None, description=""
+        )
         model_attribute_implemented_by_assets: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
-        model_attribute_related_to_attributes: Optional[List[ModelAttributeAssociation]] = Field(
+        model_attribute_related_to_attributes: Optional[
+            List[ModelAttributeAssociation]
+        ] = Field(default=None, description="")  # relationship
+        model_attribute_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship
-        model_attribute_entities: Optional[List[ModelEntity]] = Field(default=None, description="")  # relationship
-        model_attribute_related_from_attributes: Optional[List[ModelAttributeAssociation]] = Field(
-            default=None, description=""
-        )  # relationship
+        model_attribute_related_from_attributes: Optional[
+            List[ModelAttributeAssociation]
+        ] = Field(default=None, description="")  # relationship
         model_attribute_mapped_to_attributes: Optional[List[ModelAttribute]] = Field(
             default=None, description=""
         )  # relationship

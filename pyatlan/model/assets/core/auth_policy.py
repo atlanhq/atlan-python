@@ -58,7 +58,9 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         """,
     ) -> SelfAsset:
         warn(
-            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -81,15 +83,21 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """
     TBC
     """
-    POLICY_SERVICE_NAME: ClassVar[KeywordField] = KeywordField("policyServiceName", "policyServiceName")
+    POLICY_SERVICE_NAME: ClassVar[KeywordField] = KeywordField(
+        "policyServiceName", "policyServiceName"
+    )
     """
     TBC
     """
-    POLICY_CATEGORY: ClassVar[KeywordField] = KeywordField("policyCategory", "policyCategory")
+    POLICY_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policyCategory", "policyCategory"
+    )
     """
     TBC
     """
-    POLICY_SUB_CATEGORY: ClassVar[KeywordField] = KeywordField("policySubCategory", "policySubCategory")
+    POLICY_SUB_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policySubCategory", "policySubCategory"
+    )
     """
     TBC
     """
@@ -105,31 +113,45 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """
     TBC
     """
-    POLICY_ACTIONS: ClassVar[KeywordField] = KeywordField("policyActions", "policyActions")
+    POLICY_ACTIONS: ClassVar[KeywordField] = KeywordField(
+        "policyActions", "policyActions"
+    )
     """
     TBC
     """
-    POLICY_RESOURCES: ClassVar[KeywordField] = KeywordField("policyResources", "policyResources")
+    POLICY_RESOURCES: ClassVar[KeywordField] = KeywordField(
+        "policyResources", "policyResources"
+    )
     """
     TBC
     """
-    POLICY_RESOURCE_CATEGORY: ClassVar[KeywordField] = KeywordField("policyResourceCategory", "policyResourceCategory")
+    POLICY_RESOURCE_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policyResourceCategory", "policyResourceCategory"
+    )
     """
     TBC
     """
-    POLICY_PRIORITY: ClassVar[NumericField] = NumericField("policyPriority", "policyPriority")
+    POLICY_PRIORITY: ClassVar[NumericField] = NumericField(
+        "policyPriority", "policyPriority"
+    )
     """
     TBC
     """
-    IS_POLICY_ENABLED: ClassVar[BooleanField] = BooleanField("isPolicyEnabled", "isPolicyEnabled")
+    IS_POLICY_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "isPolicyEnabled", "isPolicyEnabled"
+    )
     """
     TBC
     """
-    POLICY_MASK_TYPE: ClassVar[KeywordField] = KeywordField("policyMaskType", "policyMaskType")
+    POLICY_MASK_TYPE: ClassVar[KeywordField] = KeywordField(
+        "policyMaskType", "policyMaskType"
+    )
     """
     TBC
     """
-    POLICY_VALIDITY_SCHEDULE: ClassVar[KeywordField] = KeywordField("policyValiditySchedule", "policyValiditySchedule")
+    POLICY_VALIDITY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "policyValiditySchedule", "policyValiditySchedule"
+    )
     """
     TBC
     """
@@ -139,11 +161,15 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """
     TBC
     """
-    POLICY_DELEGATE_ADMIN: ClassVar[BooleanField] = BooleanField("policyDelegateAdmin", "policyDelegateAdmin")
+    POLICY_DELEGATE_ADMIN: ClassVar[BooleanField] = BooleanField(
+        "policyDelegateAdmin", "policyDelegateAdmin"
+    )
     """
     TBC
     """
-    POLICY_CONDITIONS: ClassVar[KeywordField] = KeywordField("policyConditions", "policyConditions")
+    POLICY_CONDITIONS: ClassVar[KeywordField] = KeywordField(
+        "policyConditions", "policyConditions"
+    )
     """
     TBC
     """
@@ -266,7 +292,11 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_resource_category(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.policy_resource_category
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.policy_resource_category
+        )
 
     @policy_resource_category.setter
     def policy_resource_category(self, policy_resource_category: Optional[str]):
@@ -306,17 +336,27 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_validity_schedule(self) -> Optional[List[AuthPolicyValiditySchedule]]:
-        return None if self.attributes is None else self.attributes.policy_validity_schedule
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.policy_validity_schedule
+        )
 
     @policy_validity_schedule.setter
-    def policy_validity_schedule(self, policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]]):
+    def policy_validity_schedule(
+        self, policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_validity_schedule = policy_validity_schedule
 
     @property
     def policy_resource_signature(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.policy_resource_signature
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.policy_resource_signature
+        )
 
     @policy_resource_signature.setter
     def policy_resource_signature(self, policy_resource_signature: Optional[str]):
@@ -326,7 +366,9 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_delegate_admin(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.policy_delegate_admin
+        return (
+            None if self.attributes is None else self.attributes.policy_delegate_admin
+        )
 
     @policy_delegate_admin.setter
     def policy_delegate_admin(self, policy_delegate_admin: Optional[bool]):
@@ -368,16 +410,24 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         policy_priority: Optional[int] = Field(default=None, description="")
         is_policy_enabled: Optional[bool] = Field(default=None, description="")
         policy_mask_type: Optional[str] = Field(default=None, description="")
-        policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]] = Field(default=None, description="")
+        policy_validity_schedule: Optional[List[AuthPolicyValiditySchedule]] = Field(
+            default=None, description=""
+        )
         policy_resource_signature: Optional[str] = Field(default=None, description="")
         policy_delegate_admin: Optional[bool] = Field(default=None, description="")
-        policy_conditions: Optional[List[AuthPolicyCondition]] = Field(default=None, description="")
-        access_control: Optional[AccessControl] = Field(default=None, description="")  # relationship
+        policy_conditions: Optional[List[AuthPolicyCondition]] = Field(
+            default=None, description=""
+        )
+        access_control: Optional[AccessControl] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         def __create(cls, name: str) -> AuthPolicy.Attributes:
             validate_required_fields(["name"], [name])
-            return AuthPolicy.Attributes(qualified_name=name, name=name, display_name="")
+            return AuthPolicy.Attributes(
+                qualified_name=name, name=name, display_name=""
+            )
 
     attributes: AuthPolicy.Attributes = Field(
         default_factory=lambda: AuthPolicy.Attributes(),

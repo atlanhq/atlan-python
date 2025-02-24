@@ -41,7 +41,9 @@ def create_custom_metadata_structure():
     """
     try:
         CustomMetadataCache.get_id_for_name(CUSTOM_METADATA_NAME)
-        logger.info(f"{CUSTOM_METADATA_NAME} custom metadata structure has already been created.")
+        logger.info(
+            f"{CUSTOM_METADATA_NAME} custom metadata structure has already been created."
+        )
     except NotFoundError:
         cm_def = CustomMetadataDef.create(display_name=CUSTOM_METADATA_NAME)
         cm_def.attribute_defs = [

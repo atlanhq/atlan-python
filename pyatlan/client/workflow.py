@@ -54,7 +54,9 @@ class WorkflowClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @staticmethod
@@ -66,10 +68,14 @@ class WorkflowClient:
                 return parse_obj_as(List[response_type], raw_json)
             return parse_obj_as(response_type, raw_json)
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
 
     @validate_arguments
-    def find_by_type(self, prefix: WorkflowPackage, max_results: int = 10) -> List[WorkflowSearchResult]:
+    def find_by_type(
+        self, prefix: WorkflowPackage, max_results: int = 10
+    ) -> List[WorkflowSearchResult]:
         """
         Find workflows based on their type (prefix). Note: Only workflows that have been run will be found.
 
@@ -238,7 +244,9 @@ class WorkflowClient:
             if results := self.find_by_type(workflow):
                 detail = results[0].source
             else:
-                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(workflow.value)
+                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
+                    workflow.value
+                )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
         else:
@@ -246,17 +254,25 @@ class WorkflowClient:
         return detail
 
     @overload
-    def rerun(self, workflow: WorkflowPackage, idempotent: bool = False) -> WorkflowRunResponse: ...
+    def rerun(
+        self, workflow: WorkflowPackage, idempotent: bool = False
+    ) -> WorkflowRunResponse: ...
 
     @overload
-    def rerun(self, workflow: WorkflowSearchResultDetail, idempotent: bool = False) -> WorkflowRunResponse: ...
+    def rerun(
+        self, workflow: WorkflowSearchResultDetail, idempotent: bool = False
+    ) -> WorkflowRunResponse: ...
 
     @overload
-    def rerun(self, workflow: WorkflowSearchResult, idempotent: bool = False) -> WorkflowRunResponse: ...
+    def rerun(
+        self, workflow: WorkflowSearchResult, idempotent: bool = False
+    ) -> WorkflowRunResponse: ...
 
     def rerun(
         self,
-        workflow: Union[WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult],
+        workflow: Union[
+            WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult
+        ],
         idempotent: bool = False,
     ) -> WorkflowRunResponse:
         """
@@ -282,7 +298,11 @@ class WorkflowClient:
             # since it takes some time to start or stop
             sleep(10)
             if (
-                (current_run_details := self._find_current_run(workflow_name=detail.metadata.name))
+                (
+                    current_run_details := self._find_current_run(
+                        workflow_name=detail.metadata.name
+                    )
+                )
                 and current_run_details.source
                 and current_run_details.source.metadata
                 and current_run_details.source.spec
@@ -294,7 +314,9 @@ class WorkflowClient:
                     status=current_run_details.source.status,
                 )
         if detail and detail.metadata:
-            request = ReRunRequest(namespace=detail.metadata.namespace, resource_name=detail.metadata.name)
+            request = ReRunRequest(
+                namespace=detail.metadata.namespace, resource_name=detail.metadata.name
+            )
         raw_json = self._client._call_api(
             WORKFLOW_RERUN,
             request_obj=request,
@@ -302,10 +324,14 @@ class WorkflowClient:
         return WorkflowRunResponse(**raw_json)
 
     @overload
-    def run(self, workflow: Workflow, workflow_schedule: Optional[WorkflowSchedule] = None) -> WorkflowResponse: ...
+    def run(
+        self, workflow: Workflow, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
 
     @overload
-    def run(self, workflow: str, workflow_schedule: Optional[WorkflowSchedule] = None) -> WorkflowResponse: ...
+    def run(
+        self, workflow: str, workflow_schedule: Optional[WorkflowSchedule] = None
+    ) -> WorkflowResponse: ...
 
     def run(
         self,
@@ -356,7 +382,9 @@ class WorkflowClient:
         :raises AtlanError: on any API communication issue.
         """
         raw_json = self._client._call_api(
-            WORKFLOW_UPDATE.format_path({"workflow_name": workflow.metadata and workflow.metadata.name}),
+            WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow.metadata and workflow.metadata.name}
+            ),
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
@@ -482,13 +510,19 @@ class WorkflowClient:
         )
 
     @overload
-    def add_schedule(self, workflow: WorkflowResponse, workflow_schedule: WorkflowSchedule) -> WorkflowResponse: ...
+    def add_schedule(
+        self, workflow: WorkflowResponse, workflow_schedule: WorkflowSchedule
+    ) -> WorkflowResponse: ...
 
     @overload
-    def add_schedule(self, workflow: WorkflowPackage, workflow_schedule: WorkflowSchedule) -> WorkflowResponse: ...
+    def add_schedule(
+        self, workflow: WorkflowPackage, workflow_schedule: WorkflowSchedule
+    ) -> WorkflowResponse: ...
 
     @overload
-    def add_schedule(self, workflow: WorkflowSearchResult, workflow_schedule: WorkflowSchedule) -> WorkflowResponse: ...
+    def add_schedule(
+        self, workflow: WorkflowSearchResult, workflow_schedule: WorkflowSchedule
+    ) -> WorkflowResponse: ...
 
     @overload
     def add_schedule(
@@ -530,7 +564,10 @@ class WorkflowClient:
         self._add_schedule(workflow_to_update, workflow_schedule)
         raw_json = self._client._call_api(
             WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_to_update.metadata and workflow_to_update.metadata.name}
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
             ),
             request_obj=workflow_to_update,
         )
@@ -546,7 +583,9 @@ class WorkflowClient:
     def remove_schedule(self, workflow: WorkflowSearchResult) -> WorkflowResponse: ...
 
     @overload
-    def remove_schedule(self, workflow: WorkflowSearchResultDetail) -> WorkflowResponse: ...
+    def remove_schedule(
+        self, workflow: WorkflowSearchResultDetail
+    ) -> WorkflowResponse: ...
 
     def remove_schedule(
         self,
@@ -576,10 +615,15 @@ class WorkflowClient:
         )
         workflow_to_update = self._handle_workflow_types(workflow)
         if workflow_to_update.metadata and workflow_to_update.metadata.annotations:
-            workflow_to_update.metadata.annotations.pop(self._WORKFLOW_RUN_SCHEDULE, None)
+            workflow_to_update.metadata.annotations.pop(
+                self._WORKFLOW_RUN_SCHEDULE, None
+            )
         raw_json = self._client._call_api(
             WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_to_update.metadata and workflow_to_update.metadata.name}
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
             ),
             request_obj=workflow_to_update,
         )
@@ -612,7 +656,9 @@ class WorkflowClient:
         return self._parse_response(raw_json, WorkflowScheduleResponse)
 
     @validate_arguments
-    def find_schedule_query(self, saved_query_id: str, max_results: int = 10) -> List[WorkflowSearchResult]:
+    def find_schedule_query(
+        self, saved_query_id: str, max_results: int = 10
+    ) -> List[WorkflowSearchResult]:
         """
         Find scheduled query workflows by their saved query identifier.
 
@@ -625,7 +671,9 @@ class WorkflowClient:
             filter=[
                 NestedQuery(
                     path="metadata",
-                    query=Prefix(field="metadata.name.keyword", value=f"asq-{saved_query_id}"),
+                    query=Prefix(
+                        field="metadata.name.keyword", value=f"asq-{saved_query_id}"
+                    ),
                 ),
                 NestedQuery(
                     path="metadata",
@@ -680,6 +728,10 @@ class WorkflowClient:
             "startDate": request.start_date,
             "endDate": request.end_date,
         }
-        SEARCH_API = SCHEDULE_QUERY_WORKFLOWS_MISSED if missed else SCHEDULE_QUERY_WORKFLOWS_SEARCH
+        SEARCH_API = (
+            SCHEDULE_QUERY_WORKFLOWS_MISSED
+            if missed
+            else SCHEDULE_QUERY_WORKFLOWS_SEARCH
+        )
         raw_json = self._client._call_api(SEARCH_API, query_params=query_params)
         return self._parse_response(raw_json, WorkflowRunResponse)

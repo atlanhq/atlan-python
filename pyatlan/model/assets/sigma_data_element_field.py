@@ -55,23 +55,39 @@ class SigmaDataElementField(Sigma):
 
     @property
     def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.sigma_data_element_field_is_hidden
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_field_is_hidden
+        )
 
     @sigma_data_element_field_is_hidden.setter
-    def sigma_data_element_field_is_hidden(self, sigma_data_element_field_is_hidden: Optional[bool]):
+    def sigma_data_element_field_is_hidden(
+        self, sigma_data_element_field_is_hidden: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_field_is_hidden = sigma_data_element_field_is_hidden
+        self.attributes.sigma_data_element_field_is_hidden = (
+            sigma_data_element_field_is_hidden
+        )
 
     @property
     def sigma_data_element_field_formula(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_data_element_field_formula
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_data_element_field_formula
+        )
 
     @sigma_data_element_field_formula.setter
-    def sigma_data_element_field_formula(self, sigma_data_element_field_formula: Optional[str]):
+    def sigma_data_element_field_formula(
+        self, sigma_data_element_field_formula: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_field_formula = sigma_data_element_field_formula
+        self.attributes.sigma_data_element_field_formula = (
+            sigma_data_element_field_formula
+        )
 
     @property
     def sigma_data_element(self) -> Optional[SigmaDataElement]:
@@ -84,9 +100,15 @@ class SigmaDataElementField(Sigma):
         self.attributes.sigma_data_element = sigma_data_element
 
     class Attributes(Sigma.Attributes):
-        sigma_data_element_field_is_hidden: Optional[bool] = Field(default=None, description="")
-        sigma_data_element_field_formula: Optional[str] = Field(default=None, description="")
-        sigma_data_element: Optional[SigmaDataElement] = Field(default=None, description="")  # relationship
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            default=None, description=""
+        )
+        sigma_data_element_field_formula: Optional[str] = Field(
+            default=None, description=""
+        )
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SigmaDataElementField.Attributes = Field(
         default_factory=lambda: SigmaDataElementField.Attributes(),

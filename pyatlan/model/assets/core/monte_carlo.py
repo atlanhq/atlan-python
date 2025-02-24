@@ -33,7 +33,9 @@ class MonteCarlo(DataQuality):
     """
     List of labels for this Monte Carlo asset.
     """
-    MC_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField("mcAssetQualifiedNames", "mcAssetQualifiedNames")
+    MC_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "mcAssetQualifiedNames", "mcAssetQualifiedNames"
+    )
     """
     List of unique names of assets that are part of this Monte Carlo asset.
     """
@@ -55,7 +57,11 @@ class MonteCarlo(DataQuality):
 
     @property
     def mc_asset_qualified_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.mc_asset_qualified_names
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_asset_qualified_names
+        )
 
     @mc_asset_qualified_names.setter
     def mc_asset_qualified_names(self, mc_asset_qualified_names: Optional[Set[str]]):
@@ -65,7 +71,9 @@ class MonteCarlo(DataQuality):
 
     class Attributes(DataQuality.Attributes):
         mc_labels: Optional[Set[str]] = Field(default=None, description="")
-        mc_asset_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        mc_asset_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
 
     attributes: MonteCarlo.Attributes = Field(
         default_factory=lambda: MonteCarlo.Attributes(),

@@ -37,11 +37,15 @@ class API(Catalog):
     """
     Type of API, for example: OpenAPI, GraphQL, etc.
     """
-    API_SPEC_VERSION: ClassVar[KeywordField] = KeywordField("apiSpecVersion", "apiSpecVersion")
+    API_SPEC_VERSION: ClassVar[KeywordField] = KeywordField(
+        "apiSpecVersion", "apiSpecVersion"
+    )
     """
     Version of the API specification.
     """
-    API_SPEC_NAME: ClassVar[KeywordTextField] = KeywordTextField("apiSpecName", "apiSpecName.keyword", "apiSpecName")
+    API_SPEC_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecName", "apiSpecName.keyword", "apiSpecName"
+    )
     """
     Simple name of the API spec, if this asset is contained in an API spec.
     """
@@ -51,19 +55,27 @@ class API(Catalog):
     """
     Unique name of the API spec, if this asset is contained in an API spec.
     """
-    API_EXTERNAL_DOCS: ClassVar[KeywordField] = KeywordField("apiExternalDocs", "apiExternalDocs")
+    API_EXTERNAL_DOCS: ClassVar[KeywordField] = KeywordField(
+        "apiExternalDocs", "apiExternalDocs"
+    )
     """
     External documentation of the API.
     """
-    API_IS_AUTH_OPTIONAL: ClassVar[BooleanField] = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
+    API_IS_AUTH_OPTIONAL: ClassVar[BooleanField] = BooleanField(
+        "apiIsAuthOptional", "apiIsAuthOptional"
+    )
     """
     Whether authentication is optional (true) or required (false).
     """
-    API_IS_OBJECT_REFERENCE: ClassVar[BooleanField] = BooleanField("apiIsObjectReference", "apiIsObjectReference")
+    API_IS_OBJECT_REFERENCE: ClassVar[BooleanField] = BooleanField(
+        "apiIsObjectReference", "apiIsObjectReference"
+    )
     """
     If this asset refers to an APIObject
     """
-    API_OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
+    API_OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "apiObjectQualifiedName", "apiObjectQualifiedName"
+    )
     """
     Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true.
     """
@@ -111,7 +123,9 @@ class API(Catalog):
 
     @property
     def api_spec_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.api_spec_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.api_spec_qualified_name
+        )
 
     @api_spec_qualified_name.setter
     def api_spec_qualified_name(self, api_spec_qualified_name: Optional[str]):
@@ -141,7 +155,9 @@ class API(Catalog):
 
     @property
     def api_is_object_reference(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.api_is_object_reference
+        return (
+            None if self.attributes is None else self.attributes.api_is_object_reference
+        )
 
     @api_is_object_reference.setter
     def api_is_object_reference(self, api_is_object_reference: Optional[bool]):
@@ -151,7 +167,11 @@ class API(Catalog):
 
     @property
     def api_object_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.api_object_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_object_qualified_name
+        )
 
     @api_object_qualified_name.setter
     def api_object_qualified_name(self, api_object_qualified_name: Optional[str]):
@@ -164,7 +184,9 @@ class API(Catalog):
         api_spec_version: Optional[str] = Field(default=None, description="")
         api_spec_name: Optional[str] = Field(default=None, description="")
         api_spec_qualified_name: Optional[str] = Field(default=None, description="")
-        api_external_docs: Optional[Dict[str, str]] = Field(default=None, description="")
+        api_external_docs: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         api_is_auth_optional: Optional[bool] = Field(default=None, description="")
         api_is_object_reference: Optional[bool] = Field(default=None, description="")
         api_object_qualified_name: Optional[str] = Field(default=None, description="")

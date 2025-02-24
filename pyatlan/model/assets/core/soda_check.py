@@ -45,15 +45,21 @@ class SodaCheck(Soda):
     """
     Status of the check in Soda.
     """
-    SODA_CHECK_DEFINITION: ClassVar[TextField] = TextField("sodaCheckDefinition", "sodaCheckDefinition")
+    SODA_CHECK_DEFINITION: ClassVar[TextField] = TextField(
+        "sodaCheckDefinition", "sodaCheckDefinition"
+    )
     """
     Definition of the check in Soda.
     """
-    SODA_CHECK_LAST_SCAN_AT: ClassVar[NumericField] = NumericField("sodaCheckLastScanAt", "sodaCheckLastScanAt")
+    SODA_CHECK_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
+        "sodaCheckLastScanAt", "sodaCheckLastScanAt"
+    )
     """
 
     """
-    SODA_CHECK_INCIDENT_COUNT: ClassVar[NumericField] = NumericField("sodaCheckIncidentCount", "sodaCheckIncidentCount")
+    SODA_CHECK_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
+        "sodaCheckIncidentCount", "sodaCheckIncidentCount"
+    )
     """
 
     """
@@ -89,7 +95,11 @@ class SodaCheck(Soda):
 
     @property
     def soda_check_evaluation_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.soda_check_evaluation_status
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.soda_check_evaluation_status
+        )
 
     @soda_check_evaluation_status.setter
     def soda_check_evaluation_status(self, soda_check_evaluation_status: Optional[str]):
@@ -99,7 +109,9 @@ class SodaCheck(Soda):
 
     @property
     def soda_check_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.soda_check_definition
+        return (
+            None if self.attributes is None else self.attributes.soda_check_definition
+        )
 
     @soda_check_definition.setter
     def soda_check_definition(self, soda_check_definition: Optional[str]):
@@ -109,7 +121,9 @@ class SodaCheck(Soda):
 
     @property
     def soda_check_last_scan_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.soda_check_last_scan_at
+        return (
+            None if self.attributes is None else self.attributes.soda_check_last_scan_at
+        )
 
     @soda_check_last_scan_at.setter
     def soda_check_last_scan_at(self, soda_check_last_scan_at: Optional[datetime]):
@@ -119,7 +133,11 @@ class SodaCheck(Soda):
 
     @property
     def soda_check_incident_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.soda_check_incident_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.soda_check_incident_count
+        )
 
     @soda_check_incident_count.setter
     def soda_check_incident_count(self, soda_check_incident_count: Optional[int]):
@@ -149,12 +167,20 @@ class SodaCheck(Soda):
 
     class Attributes(Soda.Attributes):
         soda_check_id: Optional[str] = Field(default=None, description="")
-        soda_check_evaluation_status: Optional[str] = Field(default=None, description="")
+        soda_check_evaluation_status: Optional[str] = Field(
+            default=None, description=""
+        )
         soda_check_definition: Optional[str] = Field(default=None, description="")
-        soda_check_last_scan_at: Optional[datetime] = Field(default=None, description="")
+        soda_check_last_scan_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         soda_check_incident_count: Optional[int] = Field(default=None, description="")
-        soda_check_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
-        soda_check_assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
+        soda_check_columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        soda_check_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SodaCheck.Attributes = Field(
         default_factory=lambda: SodaCheck.Attributes(),

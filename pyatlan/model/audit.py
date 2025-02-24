@@ -175,7 +175,9 @@ class CustomMetadataAttributesAuditDetail(AtlanObject):
                 CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id): properties
                 for attr_id, properties in values[ATTRIBUTES].items()
             }
-            archived_attributes = {key: value for key, value in attributes.items() if "-archived-" in key}
+            archived_attributes = {
+                key: value for key, value in attributes.items() if "-archived-" in key
+            }
             for key in archived_attributes:
                 del attributes[key]
             values[ATTRIBUTES] = attributes
@@ -194,8 +196,12 @@ class EntityAudit(AtlanObject):
     entity_qualified_name: str = Field(description="Unique name of the asset.")
     type_name: str = Field(description="Type of the asset.")
     entity_id: str = Field(description="Unique identifier (GUID) of the asset.")
-    timestamp: datetime = Field(description="Time (epoch) at which the activity started, in milliseconds.")
-    created: datetime = Field(description="Time (epoch) at which the activity completed, in milliseconds.")
+    timestamp: datetime = Field(
+        description="Time (epoch) at which the activity started, in milliseconds."
+    )
+    created: datetime = Field(
+        description="Time (epoch) at which the activity completed, in milliseconds."
+    )
     user: str = Field(description="User who carried out the activity.")
     action: AuditActionType = Field(description="The type of activity that was done.")
     details: Optional[Any] = Field(default=None, description="Unused.")
@@ -271,7 +277,9 @@ class AuditSearchResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if size:
             self._size = size
 
@@ -281,7 +289,9 @@ class AuditSearchResults(Iterable):
             # in a previous page of results.
             # If it has,then exclude it from the current results;
             # otherwise, we may encounter duplicate audit entity records.
-            self._processed_entity_keys.update(entity.event_key for entity in self._entity_audits)
+            self._processed_entity_keys.update(
+                entity.event_key for entity in self._entity_audits
+            )
         return self._get_next_page() if self._entity_audits else False
 
     def _get_next_page(self):
@@ -293,7 +303,9 @@ class AuditSearchResults(Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
 
         if is_bulk_search:
             self._prepare_query_for_timestamp_paging(query)
@@ -318,13 +330,17 @@ class AuditSearchResults(Iterable):
             return None
 
         try:
-            self._entity_audits = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
+            self._entity_audits = parse_obj_as(
+                List[EntityAudit], raw_json[ENTITY_AUDITS]
+            )
             if is_bulk_search:
                 self._update_first_last_record_creation_times()
                 self._filter_processed_entities()
             return raw_json
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
 
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
@@ -338,7 +354,9 @@ class AuditSearchResults(Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
-            rewritten_filters.append(self._get_paging_timestamp_query(self._last_record_creation_time))
+            rewritten_filters.append(
+                self._get_paging_timestamp_query(self._last_record_creation_time)
+            )
             if isinstance(query, Bool):
                 rewritten_query = Bool(
                     filter=rewritten_filters,
@@ -377,7 +395,11 @@ class AuditSearchResults(Iterable):
 
     @staticmethod
     def _is_paging_timestamp_query(filter_: Query) -> bool:
-        return isinstance(filter_, Range) and filter_.field == "created" and filter_.gte is not None
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == "created"
+            and filter_.gte is not None
+        )
 
     def _update_first_last_record_creation_times(self):
         self._first_record_creation_time = self._last_record_creation_time = -2
@@ -400,7 +422,8 @@ class AuditSearchResults(Iterable):
         self._entity_audits = [
             entity
             for entity in self._entity_audits
-            if entity is not None and entity.event_key not in self._processed_entity_keys
+            if entity is not None
+            and entity.event_key not in self._processed_entity_keys
         ]
 
     @staticmethod
@@ -433,7 +456,9 @@ class AuditSearchResults(Iterable):
             return creation_asc_sort
 
         rewritten_sorts = [
-            sort for sort in sorts if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+            sort
+            for sort in sorts
+            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
         ]
         return creation_asc_sort + rewritten_sorts
 

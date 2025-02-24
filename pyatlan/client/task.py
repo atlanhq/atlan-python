@@ -19,7 +19,9 @@ class TaskClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @staticmethod
@@ -29,7 +31,9 @@ class TaskClient:
             try:
                 atlan_tasks = parse_obj_as(List[AtlanTask], raw_json.get("tasks"))
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         return atlan_tasks
 
     @staticmethod
@@ -40,7 +44,10 @@ class TaskClient:
         if not missing_sort:
             # If there is some sort, see whether time is already included
             for option in sort:
-                if option.field and option.field == AtlanTask.START_TIME.numeric_field_name:
+                if (
+                    option.field
+                    and option.field == AtlanTask.START_TIME.numeric_field_name
+                ):
                     missing_time_sort = False
                     break
 

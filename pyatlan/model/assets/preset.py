@@ -29,7 +29,9 @@ class Preset(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_WORKSPACE_ID: ClassVar[NumericField] = NumericField("presetWorkspaceId", "presetWorkspaceId")
+    PRESET_WORKSPACE_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceId", "presetWorkspaceId"
+    )
     """
     Identifier of the workspace in which this asset exists, in Preset.
     """
@@ -41,7 +43,9 @@ class Preset(BI):
     """
     Unique name of the workspace in which this asset exists.
     """
-    PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField("presetDashboardId", "presetDashboardId")
+    PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
+        "presetDashboardId", "presetDashboardId"
+    )
     """
     Identifier of the dashboard in which this asset exists, in Preset.
     """
@@ -73,13 +77,21 @@ class Preset(BI):
 
     @property
     def preset_workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_qualified_name
+        )
 
     @preset_workspace_qualified_name.setter
-    def preset_workspace_qualified_name(self, preset_workspace_qualified_name: Optional[str]):
+    def preset_workspace_qualified_name(
+        self, preset_workspace_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_qualified_name = preset_workspace_qualified_name
+        self.attributes.preset_workspace_qualified_name = (
+            preset_workspace_qualified_name
+        )
 
     @property
     def preset_dashboard_id(self) -> Optional[int]:
@@ -93,19 +105,31 @@ class Preset(BI):
 
     @property
     def preset_dashboard_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_qualified_name
+        )
 
     @preset_dashboard_qualified_name.setter
-    def preset_dashboard_qualified_name(self, preset_dashboard_qualified_name: Optional[str]):
+    def preset_dashboard_qualified_name(
+        self, preset_dashboard_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_qualified_name = preset_dashboard_qualified_name
+        self.attributes.preset_dashboard_qualified_name = (
+            preset_dashboard_qualified_name
+        )
 
     class Attributes(BI.Attributes):
         preset_workspace_id: Optional[int] = Field(default=None, description="")
-        preset_workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        preset_workspace_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         preset_dashboard_id: Optional[int] = Field(default=None, description="")
-        preset_dashboard_qualified_name: Optional[str] = Field(default=None, description="")
+        preset_dashboard_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
 
     attributes: Preset.Attributes = Field(
         default_factory=lambda: Preset.Attributes(),

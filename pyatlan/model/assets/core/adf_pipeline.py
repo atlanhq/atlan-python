@@ -40,11 +40,15 @@ class AdfPipeline(ADF):
     """
     Defines the count of activities in the pipline.
     """
-    ADF_PIPELINE_RUNS: ClassVar[KeywordField] = KeywordField("adfPipelineRuns", "adfPipelineRuns")
+    ADF_PIPELINE_RUNS: ClassVar[KeywordField] = KeywordField(
+        "adfPipelineRuns", "adfPipelineRuns"
+    )
     """
     List of objects of pipeline runs for a particular pipeline.
     """
-    ADF_PIPELINE_ANNOTATIONS: ClassVar[TextField] = TextField("adfPipelineAnnotations", "adfPipelineAnnotations")
+    ADF_PIPELINE_ANNOTATIONS: ClassVar[TextField] = TextField(
+        "adfPipelineAnnotations", "adfPipelineAnnotations"
+    )
     """
     The list of annotation assigned to a pipeline.
     """
@@ -78,7 +82,11 @@ class AdfPipeline(ADF):
 
     @property
     def adf_pipeline_activity_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.adf_pipeline_activity_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_pipeline_activity_count
+        )
 
     @adf_pipeline_activity_count.setter
     def adf_pipeline_activity_count(self, adf_pipeline_activity_count: Optional[int]):
@@ -98,7 +106,11 @@ class AdfPipeline(ADF):
 
     @property
     def adf_pipeline_annotations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.adf_pipeline_annotations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adf_pipeline_annotations
+        )
 
     @adf_pipeline_annotations.setter
     def adf_pipeline_annotations(self, adf_pipeline_annotations: Optional[Set[str]]):
@@ -148,12 +160,24 @@ class AdfPipeline(ADF):
 
     class Attributes(ADF.Attributes):
         adf_pipeline_activity_count: Optional[int] = Field(default=None, description="")
-        adf_pipeline_runs: Optional[List[Dict[str, str]]] = Field(default=None, description="")
-        adf_pipeline_annotations: Optional[Set[str]] = Field(default=None, description="")
-        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(default=None, description="")  # relationship
-        adf_datasets: Optional[List[AdfDataset]] = Field(default=None, description="")  # relationship
-        adf_activities: Optional[List[AdfActivity]] = Field(default=None, description="")  # relationship
-        adf_dataflows: Optional[List[AdfDataflow]] = Field(default=None, description="")  # relationship
+        adf_pipeline_runs: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
+        adf_pipeline_annotations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_datasets: Optional[List[AdfDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_activities: Optional[List[AdfActivity]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_dataflows: Optional[List[AdfDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AdfPipeline.Attributes = Field(
         default_factory=lambda: AdfPipeline.Attributes(),

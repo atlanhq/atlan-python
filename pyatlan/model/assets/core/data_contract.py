@@ -31,7 +31,9 @@ class DataContract(Catalog):
 
     @overload
     @classmethod
-    def creator(cls, asset_qualified_name: str, contract_spec: Union[DataContractSpec, str]) -> DataContract: ...
+    def creator(
+        cls, asset_qualified_name: str, contract_spec: Union[DataContractSpec, str]
+    ) -> DataContract: ...
 
     @classmethod
     @init_guid
@@ -66,36 +68,52 @@ class DataContract(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_CONTRACT_JSON: ClassVar[TextField] = TextField("dataContractJson", "dataContractJson")
+    DATA_CONTRACT_JSON: ClassVar[TextField] = TextField(
+        "dataContractJson", "dataContractJson"
+    )
     """
     (Deprecated) Replaced by dataContractSpec attribute.
     """
-    DATA_CONTRACT_SPEC: ClassVar[TextField] = TextField("dataContractSpec", "dataContractSpec")
+    DATA_CONTRACT_SPEC: ClassVar[TextField] = TextField(
+        "dataContractSpec", "dataContractSpec"
+    )
     """
     Actual content of the contract in YAML string format. Any changes to this string should create a new instance (with new sequential version number).
     """  # noqa: E501
-    DATA_CONTRACT_VERSION: ClassVar[NumericField] = NumericField("dataContractVersion", "dataContractVersion")
+    DATA_CONTRACT_VERSION: ClassVar[NumericField] = NumericField(
+        "dataContractVersion", "dataContractVersion"
+    )
     """
     Version of the contract.
     """
-    DATA_CONTRACT_ASSET_GUID: ClassVar[KeywordField] = KeywordField("dataContractAssetGuid", "dataContractAssetGuid")
+    DATA_CONTRACT_ASSET_GUID: ClassVar[KeywordField] = KeywordField(
+        "dataContractAssetGuid", "dataContractAssetGuid"
+    )
     """
     Unique identifier of the asset associated with this data contract.
     """
 
-    DATA_CONTRACT_ASSET_CERTIFIED: ClassVar[RelationField] = RelationField("dataContractAssetCertified")
+    DATA_CONTRACT_ASSET_CERTIFIED: ClassVar[RelationField] = RelationField(
+        "dataContractAssetCertified"
+    )
     """
     TBC
     """
-    DATA_CONTRACT_NEXT_VERSION: ClassVar[RelationField] = RelationField("dataContractNextVersion")
+    DATA_CONTRACT_NEXT_VERSION: ClassVar[RelationField] = RelationField(
+        "dataContractNextVersion"
+    )
     """
     TBC
     """
-    DATA_CONTRACT_ASSET_LATEST: ClassVar[RelationField] = RelationField("dataContractAssetLatest")
+    DATA_CONTRACT_ASSET_LATEST: ClassVar[RelationField] = RelationField(
+        "dataContractAssetLatest"
+    )
     """
     TBC
     """
-    DATA_CONTRACT_PREVIOUS_VERSION: ClassVar[RelationField] = RelationField("dataContractPreviousVersion")
+    DATA_CONTRACT_PREVIOUS_VERSION: ClassVar[RelationField] = RelationField(
+        "dataContractPreviousVersion"
+    )
     """
     TBC
     """
@@ -133,7 +151,9 @@ class DataContract(Catalog):
 
     @property
     def data_contract_version(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.data_contract_version
+        return (
+            None if self.attributes is None else self.attributes.data_contract_version
+        )
 
     @data_contract_version.setter
     def data_contract_version(self, data_contract_version: Optional[int]):
@@ -143,7 +163,11 @@ class DataContract(Catalog):
 
     @property
     def data_contract_asset_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_contract_asset_guid
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_guid
+        )
 
     @data_contract_asset_guid.setter
     def data_contract_asset_guid(self, data_contract_asset_guid: Optional[str]):
@@ -153,27 +177,43 @@ class DataContract(Catalog):
 
     @property
     def data_contract_asset_certified(self) -> Optional[Asset]:
-        return None if self.attributes is None else self.attributes.data_contract_asset_certified
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_certified
+        )
 
     @data_contract_asset_certified.setter
-    def data_contract_asset_certified(self, data_contract_asset_certified: Optional[Asset]):
+    def data_contract_asset_certified(
+        self, data_contract_asset_certified: Optional[Asset]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_asset_certified = data_contract_asset_certified
 
     @property
     def data_contract_next_version(self) -> Optional[DataContract]:
-        return None if self.attributes is None else self.attributes.data_contract_next_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_next_version
+        )
 
     @data_contract_next_version.setter
-    def data_contract_next_version(self, data_contract_next_version: Optional[DataContract]):
+    def data_contract_next_version(
+        self, data_contract_next_version: Optional[DataContract]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_next_version = data_contract_next_version
 
     @property
     def data_contract_asset_latest(self) -> Optional[Asset]:
-        return None if self.attributes is None else self.attributes.data_contract_asset_latest
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_asset_latest
+        )
 
     @data_contract_asset_latest.setter
     def data_contract_asset_latest(self, data_contract_asset_latest: Optional[Asset]):
@@ -183,10 +223,16 @@ class DataContract(Catalog):
 
     @property
     def data_contract_previous_version(self) -> Optional[DataContract]:
-        return None if self.attributes is None else self.attributes.data_contract_previous_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_contract_previous_version
+        )
 
     @data_contract_previous_version.setter
-    def data_contract_previous_version(self, data_contract_previous_version: Optional[DataContract]):
+    def data_contract_previous_version(
+        self, data_contract_previous_version: Optional[DataContract]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_contract_previous_version = data_contract_previous_version
@@ -196,10 +242,18 @@ class DataContract(Catalog):
         data_contract_spec: Optional[str] = Field(default=None, description="")
         data_contract_version: Optional[int] = Field(default=None, description="")
         data_contract_asset_guid: Optional[str] = Field(default=None, description="")
-        data_contract_asset_certified: Optional[Asset] = Field(default=None, description="")  # relationship
-        data_contract_next_version: Optional[DataContract] = Field(default=None, description="")  # relationship
-        data_contract_asset_latest: Optional[Asset] = Field(default=None, description="")  # relationship
-        data_contract_previous_version: Optional[DataContract] = Field(default=None, description="")  # relationship
+        data_contract_asset_certified: Optional[Asset] = Field(
+            default=None, description=""
+        )  # relationship
+        data_contract_next_version: Optional[DataContract] = Field(
+            default=None, description=""
+        )  # relationship
+        data_contract_asset_latest: Optional[Asset] = Field(
+            default=None, description=""
+        )  # relationship
+        data_contract_previous_version: Optional[DataContract] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -240,7 +294,9 @@ class DataContract(Catalog):
                     )
                     contract_spec = contract_spec.to_yaml()
                 else:
-                    is_dataset_found = search(r"dataset:\s*([^\s#]+)", contract_spec or default_dataset)
+                    is_dataset_found = search(
+                        r"dataset:\s*([^\s#]+)", contract_spec or default_dataset
+                    )
                     dataset = None
                     if is_dataset_found:
                         dataset = is_dataset_found.group(1)

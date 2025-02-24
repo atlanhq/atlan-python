@@ -46,7 +46,9 @@ class APIObject(API):
         connection_qualified_name: str,
         api_field_count: Optional[int] = None,
     ) -> APIObject:
-        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
         attributes = APIObject.Attributes.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
@@ -67,7 +69,9 @@ class APIObject(API):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    API_FIELD_COUNT: ClassVar[NumericField] = NumericField("apiFieldCount", "apiFieldCount")
+    API_FIELD_COUNT: ClassVar[NumericField] = NumericField(
+        "apiFieldCount", "apiFieldCount"
+    )
     """
     Count of the APIField of this object.
     """
@@ -104,7 +108,9 @@ class APIObject(API):
 
     class Attributes(API.Attributes):
         api_field_count: Optional[int] = Field(default=None, description="")
-        api_fields: Optional[List[APIField]] = Field(default=None, description="")  # relationship
+        api_fields: Optional[List[APIField]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -115,12 +121,16 @@ class APIObject(API):
             connection_qualified_name: str,
             api_field_count: Optional[int] = None,
         ) -> APIObject.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return APIObject.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
                 api_field_count=api_field_count,
             )
 

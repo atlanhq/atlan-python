@@ -46,7 +46,9 @@ class AnaplanLineItem(Anaplan):
         module_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanLineItem:
-        validate_required_fields(["name", "module_qualified_name"], [name, module_qualified_name])
+        validate_required_fields(
+            ["name", "module_qualified_name"], [name, module_qualified_name]
+        )
         attributes = AnaplanLineItem.Attributes.create(
             name=name,
             module_qualified_name=module_qualified_name,
@@ -67,7 +69,9 @@ class AnaplanLineItem(Anaplan):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ANAPLAN_LINE_ITEM_FORMULA: ClassVar[KeywordField] = KeywordField("anaplanLineItemFormula", "anaplanLineItemFormula")
+    ANAPLAN_LINE_ITEM_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "anaplanLineItemFormula", "anaplanLineItemFormula"
+    )
     """
     Formula of the AnaplanLineItem from the source system.
     """
@@ -94,7 +98,11 @@ class AnaplanLineItem(Anaplan):
 
     @property
     def anaplan_line_item_formula(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anaplan_line_item_formula
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anaplan_line_item_formula
+        )
 
     @anaplan_line_item_formula.setter
     def anaplan_line_item_formula(self, anaplan_line_item_formula: Optional[str]):
@@ -134,9 +142,15 @@ class AnaplanLineItem(Anaplan):
 
     class Attributes(Anaplan.Attributes):
         anaplan_line_item_formula: Optional[str] = Field(default=None, description="")
-        anaplan_module: Optional[AnaplanModule] = Field(default=None, description="")  # relationship
-        anaplan_lists: Optional[List[AnaplanList]] = Field(default=None, description="")  # relationship
-        anaplan_dimensions: Optional[List[AnaplanDimension]] = Field(default=None, description="")  # relationship
+        anaplan_module: Optional[AnaplanModule] = Field(
+            default=None, description=""
+        )  # relationship
+        anaplan_lists: Optional[List[AnaplanList]] = Field(
+            default=None, description=""
+        )  # relationship
+        anaplan_dimensions: Optional[List[AnaplanDimension]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -152,7 +166,9 @@ class AnaplanLineItem(Anaplan):
                 [name, module_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     module_qualified_name, "module_qualified_name", 6
@@ -174,7 +190,9 @@ class AnaplanLineItem(Anaplan):
                 anaplan_model_name=model_name,
                 anaplan_module_qualified_name=module_qualified_name,
                 anaplan_module_name=module_name,
-                anaplan_module=AnaplanModule.ref_by_qualified_name(module_qualified_name),
+                anaplan_module=AnaplanModule.ref_by_qualified_name(
+                    module_qualified_name
+                ),
             )
 
     attributes: AnaplanLineItem.Attributes = Field(

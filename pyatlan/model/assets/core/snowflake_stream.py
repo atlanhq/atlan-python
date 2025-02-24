@@ -35,7 +35,9 @@ class SnowflakeStream(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SNOWFLAKE_STREAM_TYPE: ClassVar[KeywordField] = KeywordField("snowflakeStreamType", "snowflakeStreamType")
+    SNOWFLAKE_STREAM_TYPE: ClassVar[KeywordField] = KeywordField(
+        "snowflakeStreamType", "snowflakeStreamType"
+    )
     """
     Type of this stream, for example: standard, append-only, insert-only, etc.
     """
@@ -45,11 +47,15 @@ class SnowflakeStream(SQL):
     """
     Type of the source of this stream.
     """
-    SNOWFLAKE_STREAM_MODE: ClassVar[KeywordField] = KeywordField("snowflakeStreamMode", "snowflakeStreamMode")
+    SNOWFLAKE_STREAM_MODE: ClassVar[KeywordField] = KeywordField(
+        "snowflakeStreamMode", "snowflakeStreamMode"
+    )
     """
     Mode of this stream.
     """
-    SNOWFLAKE_STREAM_IS_STALE: ClassVar[BooleanField] = BooleanField("snowflakeStreamIsStale", "snowflakeStreamIsStale")
+    SNOWFLAKE_STREAM_IS_STALE: ClassVar[BooleanField] = BooleanField(
+        "snowflakeStreamIsStale", "snowflakeStreamIsStale"
+    )
     """
     Whether this stream is stale (true) or not (false).
     """
@@ -76,7 +82,9 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.snowflake_stream_type
+        return (
+            None if self.attributes is None else self.attributes.snowflake_stream_type
+        )
 
     @snowflake_stream_type.setter
     def snowflake_stream_type(self, snowflake_stream_type: Optional[str]):
@@ -86,7 +94,11 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_source_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.snowflake_stream_source_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_source_type
+        )
 
     @snowflake_stream_source_type.setter
     def snowflake_stream_source_type(self, snowflake_stream_source_type: Optional[str]):
@@ -96,7 +108,9 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_mode(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.snowflake_stream_mode
+        return (
+            None if self.attributes is None else self.attributes.snowflake_stream_mode
+        )
 
     @snowflake_stream_mode.setter
     def snowflake_stream_mode(self, snowflake_stream_mode: Optional[str]):
@@ -106,7 +120,11 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_is_stale(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.snowflake_stream_is_stale
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_is_stale
+        )
 
     @snowflake_stream_is_stale.setter
     def snowflake_stream_is_stale(self, snowflake_stream_is_stale: Optional[bool]):
@@ -116,10 +134,16 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_stale_after(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.snowflake_stream_stale_after
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_stale_after
+        )
 
     @snowflake_stream_stale_after.setter
-    def snowflake_stream_stale_after(self, snowflake_stream_stale_after: Optional[datetime]):
+    def snowflake_stream_stale_after(
+        self, snowflake_stream_stale_after: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
@@ -136,11 +160,17 @@ class SnowflakeStream(SQL):
 
     class Attributes(SQL.Attributes):
         snowflake_stream_type: Optional[str] = Field(default=None, description="")
-        snowflake_stream_source_type: Optional[str] = Field(default=None, description="")
+        snowflake_stream_source_type: Optional[str] = Field(
+            default=None, description=""
+        )
         snowflake_stream_mode: Optional[str] = Field(default=None, description="")
         snowflake_stream_is_stale: Optional[bool] = Field(default=None, description="")
-        snowflake_stream_stale_after: Optional[datetime] = Field(default=None, description="")
-        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
+        snowflake_stream_stale_after: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        atlan_schema: Optional[Schema] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SnowflakeStream.Attributes = Field(
         default_factory=lambda: SnowflakeStream.Attributes(),

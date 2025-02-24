@@ -53,7 +53,10 @@ def test_create_parent_object():
 
     assert sut.name == API_FIELD_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert sut.connector_name == API_CONNECTOR_TYPE
     assert sut.api_object.qualified_name == API_FIELD_PARENT_OBJECT_QUALIFIED_NAME
 
@@ -67,7 +70,10 @@ def test_create_parent_query():
 
     assert sut.name == API_FIELD_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{API_FIELD_PARENT_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert sut.connector_name == API_CONNECTOR_TYPE
     assert sut.api_query.qualified_name == API_FIELD_PARENT_QUERY_QUALIFIED_NAME
 
@@ -87,7 +93,10 @@ def test_overload_creator_parent_object():
 
     assert sut.name == API_FIELD_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert sut.connector_name == API_CONNECTOR_TYPE
     assert sut.api_field_type == "api-object-ref"
     assert sut.api_field_type_secondary == "Object"
@@ -111,7 +120,10 @@ def test_overload_creator_parent_query():
 
     assert sut.name == API_FIELD_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
-    assert sut.qualified_name == f"{API_FIELD_PARENT_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_QUERY_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert sut.connector_name == API_CONNECTOR_TYPE
     assert sut.api_field_type == "api-object-ref"
     assert sut.api_field_type_secondary == "Object"
@@ -144,7 +156,10 @@ def test_create_for_modification():
         name=API_FIELD_NAME,
     )
 
-    assert sut.qualified_name == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )
     assert sut.name == API_FIELD_NAME
 
 
@@ -155,4 +170,7 @@ def test_trim_to_required():
     ).trim_to_required()
 
     assert sut.name == API_FIELD_NAME
-    assert sut.qualified_name == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    assert (
+        sut.qualified_name
+        == f"{API_FIELD_PARENT_OBJECT_QUALIFIED_NAME}/{API_FIELD_NAME}"
+    )

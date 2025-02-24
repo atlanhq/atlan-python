@@ -31,7 +31,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = AtlasGlossary.create_for_modification(qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME)
+    sut = AtlasGlossary.create_for_modification(
+        qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME
+    )
 
     assert sut.qualified_name == GLOSSARY_QUALIFIED_NAME
     assert sut.name == GLOSSARY_NAME

@@ -29,7 +29,9 @@ class QlikSpace(Qlik):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_SPACE_TYPE: ClassVar[KeywordField] = KeywordField("qlikSpaceType", "qlikSpaceType")
+    QLIK_SPACE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikSpaceType", "qlikSpaceType"
+    )
     """
     Type of this space, for exmaple: Private, Shared, etc.
     """
@@ -81,8 +83,12 @@ class QlikSpace(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(default=None, description="")
-        qlik_datasets: Optional[List[QlikDataset]] = Field(default=None, description="")  # relationship
-        qlik_apps: Optional[List[QlikApp]] = Field(default=None, description="")  # relationship
+        qlik_datasets: Optional[List[QlikDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        qlik_apps: Optional[List[QlikApp]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: QlikSpace.Attributes = Field(
         default_factory=lambda: QlikSpace.Attributes(),

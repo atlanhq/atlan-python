@@ -82,64 +82,84 @@ class FivetranConnector(Fivetran):
     """
     Number of tables synced in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_TIME_SECONDS: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncExtractTimeSeconds",
-        "fivetranConnectorLastSyncExtractTimeSeconds",
+    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_TIME_SECONDS: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncExtractTimeSeconds",
+            "fivetranConnectorLastSyncExtractTimeSeconds",
+        )
     )
     """
     Extract time in seconds in the latest sync on fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncExtractVolumeMegabytes",
-        "fivetranConnectorLastSyncExtractVolumeMegabytes",
+    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncExtractVolumeMegabytes",
+            "fivetranConnectorLastSyncExtractVolumeMegabytes",
+        )
     )
     """
     Extracted data volume in metabytes in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_TIME_SECONDS: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncLoadTimeSeconds",
-        "fivetranConnectorLastSyncLoadTimeSeconds",
+    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_TIME_SECONDS: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncLoadTimeSeconds",
+            "fivetranConnectorLastSyncLoadTimeSeconds",
+        )
     )
     """
     Load time in seconds in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_VOLUME_MEGABYTES: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncLoadVolumeMegabytes",
-        "fivetranConnectorLastSyncLoadVolumeMegabytes",
+    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_VOLUME_MEGABYTES: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncLoadVolumeMegabytes",
+            "fivetranConnectorLastSyncLoadVolumeMegabytes",
+        )
     )
     """
     Loaded data volume in metabytes in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_TIME_SECONDS: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncProcessTimeSeconds",
-        "fivetranConnectorLastSyncProcessTimeSeconds",
+    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_TIME_SECONDS: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncProcessTimeSeconds",
+            "fivetranConnectorLastSyncProcessTimeSeconds",
+        )
     )
     """
     Process time in seconds in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_VOLUME_MEGABYTES: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncProcessVolumeMegabytes",
-        "fivetranConnectorLastSyncProcessVolumeMegabytes",
+    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_VOLUME_MEGABYTES: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncProcessVolumeMegabytes",
+            "fivetranConnectorLastSyncProcessVolumeMegabytes",
+        )
     )
     """
     Process volume in metabytes in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_LAST_SYNC_TOTAL_TIME_SECONDS: ClassVar[NumericField] = NumericField(
-        "fivetranConnectorLastSyncTotalTimeSeconds",
-        "fivetranConnectorLastSyncTotalTimeSeconds",
+    FIVETRAN_CONNECTOR_LAST_SYNC_TOTAL_TIME_SECONDS: ClassVar[NumericField] = (
+        NumericField(
+            "fivetranConnectorLastSyncTotalTimeSeconds",
+            "fivetranConnectorLastSyncTotalTimeSeconds",
+        )
     )
     """
     Total sync time in seconds in the latest sync on Fivetran
     """
-    FIVETRAN_CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField("fivetranConnectorName", "fivetranConnectorName")
+    FIVETRAN_CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField(
+        "fivetranConnectorName", "fivetranConnectorName"
+    )
     """
     Connector name added by the user on Fivetran
     """
-    FIVETRAN_CONNECTOR_TYPE: ClassVar[KeywordField] = KeywordField("fivetranConnectorType", "fivetranConnectorType")
+    FIVETRAN_CONNECTOR_TYPE: ClassVar[KeywordField] = KeywordField(
+        "fivetranConnectorType", "fivetranConnectorType"
+    )
     """
     Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc.
     """
-    FIVETRAN_CONNECTOR_URL: ClassVar[KeywordField] = KeywordField("fivetranConnectorURL", "fivetranConnectorURL")
+    FIVETRAN_CONNECTOR_URL: ClassVar[KeywordField] = KeywordField(
+        "fivetranConnectorURL", "fivetranConnectorURL"
+    )
     """
     URL to open the connector details on Fivetran
     """
@@ -213,42 +233,54 @@ class FivetranConnector(Fivetran):
     """
     Total Monthly Active Rows used by the connector in the past month
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsChangePercentageFree",
         "fivetranConnectorMonthlyActiveRowsChangePercentageFree",
     )
     """
     Increase in the percentage of free MAR compared to the previous month
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsChangePercentagePaid",
         "fivetranConnectorMonthlyActiveRowsChangePercentagePaid",
     )
     """
     Increase in the percentage of paid MAR compared to the previous month
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsChangePercentageTotal",
         "fivetranConnectorMonthlyActiveRowsChangePercentageTotal",
     )
     """
     Increase in the percentage of total MAR compared to the previous month
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsFreePercentageOfAccount",
         "fivetranConnectorMonthlyActiveRowsFreePercentageOfAccount",
     )
     """
     Percentage of the account's total free MAR used by this connector
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsPaidPercentageOfAccount",
         "fivetranConnectorMonthlyActiveRowsPaidPercentageOfAccount",
     )
     """
     Percentage of the account's total paid MAR used by this connector
     """
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT: ClassVar[NumericField] = NumericField(
+    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT: ClassVar[
+        NumericField
+    ] = NumericField(
         "fivetranConnectorMonthlyActiveRowsTotalPercentageOfAccount",
         "fivetranConnectorMonthlyActiveRowsTotalPercentageOfAccount",
     )
@@ -329,57 +361,101 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_last_sync_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_id
+        )
 
     @fivetran_connector_last_sync_id.setter
-    def fivetran_connector_last_sync_id(self, fivetran_connector_last_sync_id: Optional[str]):
+    def fivetran_connector_last_sync_id(
+        self, fivetran_connector_last_sync_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_id = fivetran_connector_last_sync_id
+        self.attributes.fivetran_connector_last_sync_id = (
+            fivetran_connector_last_sync_id
+        )
 
     @property
     def fivetran_connector_last_sync_started_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_started_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_started_at
+        )
 
     @fivetran_connector_last_sync_started_at.setter
-    def fivetran_connector_last_sync_started_at(self, fivetran_connector_last_sync_started_at: Optional[datetime]):
+    def fivetran_connector_last_sync_started_at(
+        self, fivetran_connector_last_sync_started_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_started_at = fivetran_connector_last_sync_started_at
+        self.attributes.fivetran_connector_last_sync_started_at = (
+            fivetran_connector_last_sync_started_at
+        )
 
     @property
     def fivetran_connector_last_sync_finished_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_finished_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_finished_at
+        )
 
     @fivetran_connector_last_sync_finished_at.setter
-    def fivetran_connector_last_sync_finished_at(self, fivetran_connector_last_sync_finished_at: Optional[datetime]):
+    def fivetran_connector_last_sync_finished_at(
+        self, fivetran_connector_last_sync_finished_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_finished_at = fivetran_connector_last_sync_finished_at
+        self.attributes.fivetran_connector_last_sync_finished_at = (
+            fivetran_connector_last_sync_finished_at
+        )
 
     @property
     def fivetran_connector_last_sync_reason(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_reason
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_reason
+        )
 
     @fivetran_connector_last_sync_reason.setter
-    def fivetran_connector_last_sync_reason(self, fivetran_connector_last_sync_reason: Optional[str]):
+    def fivetran_connector_last_sync_reason(
+        self, fivetran_connector_last_sync_reason: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_reason = fivetran_connector_last_sync_reason
+        self.attributes.fivetran_connector_last_sync_reason = (
+            fivetran_connector_last_sync_reason
+        )
 
     @property
     def fivetran_connector_last_sync_task_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_task_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_task_type
+        )
 
     @fivetran_connector_last_sync_task_type.setter
-    def fivetran_connector_last_sync_task_type(self, fivetran_connector_last_sync_task_type: Optional[str]):
+    def fivetran_connector_last_sync_task_type(
+        self, fivetran_connector_last_sync_task_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_task_type = fivetran_connector_last_sync_task_type
+        self.attributes.fivetran_connector_last_sync_task_type = (
+            fivetran_connector_last_sync_task_type
+        )
 
     @property
     def fivetran_connector_last_sync_rescheduled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_rescheduled_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_rescheduled_at
+        )
 
     @fivetran_connector_last_sync_rescheduled_at.setter
     def fivetran_connector_last_sync_rescheduled_at(
@@ -387,21 +463,35 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_rescheduled_at = fivetran_connector_last_sync_rescheduled_at
+        self.attributes.fivetran_connector_last_sync_rescheduled_at = (
+            fivetran_connector_last_sync_rescheduled_at
+        )
 
     @property
     def fivetran_connector_last_sync_tables_synced(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_tables_synced
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_tables_synced
+        )
 
     @fivetran_connector_last_sync_tables_synced.setter
-    def fivetran_connector_last_sync_tables_synced(self, fivetran_connector_last_sync_tables_synced: Optional[int]):
+    def fivetran_connector_last_sync_tables_synced(
+        self, fivetran_connector_last_sync_tables_synced: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_tables_synced = fivetran_connector_last_sync_tables_synced
+        self.attributes.fivetran_connector_last_sync_tables_synced = (
+            fivetran_connector_last_sync_tables_synced
+        )
 
     @property
     def fivetran_connector_last_sync_extract_time_seconds(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_extract_time_seconds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_extract_time_seconds
+        )
 
     @fivetran_connector_last_sync_extract_time_seconds.setter
     def fivetran_connector_last_sync_extract_time_seconds(
@@ -416,7 +506,9 @@ class FivetranConnector(Fivetran):
     @property
     def fivetran_connector_last_sync_extract_volume_megabytes(self) -> Optional[float]:
         return (
-            None if self.attributes is None else self.attributes.fivetran_connector_last_sync_extract_volume_megabytes
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_extract_volume_megabytes
         )
 
     @fivetran_connector_last_sync_extract_volume_megabytes.setter
@@ -431,7 +523,11 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_last_sync_load_time_seconds(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_load_time_seconds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_load_time_seconds
+        )
 
     @fivetran_connector_last_sync_load_time_seconds.setter
     def fivetran_connector_last_sync_load_time_seconds(
@@ -439,11 +535,17 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_last_sync_load_time_seconds = fivetran_connector_last_sync_load_time_seconds
+        self.attributes.fivetran_connector_last_sync_load_time_seconds = (
+            fivetran_connector_last_sync_load_time_seconds
+        )
 
     @property
     def fivetran_connector_last_sync_load_volume_megabytes(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_load_volume_megabytes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_load_volume_megabytes
+        )
 
     @fivetran_connector_last_sync_load_volume_megabytes.setter
     def fivetran_connector_last_sync_load_volume_megabytes(
@@ -457,7 +559,11 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_last_sync_process_time_seconds(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_process_time_seconds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_process_time_seconds
+        )
 
     @fivetran_connector_last_sync_process_time_seconds.setter
     def fivetran_connector_last_sync_process_time_seconds(
@@ -472,7 +578,9 @@ class FivetranConnector(Fivetran):
     @property
     def fivetran_connector_last_sync_process_volume_megabytes(self) -> Optional[float]:
         return (
-            None if self.attributes is None else self.attributes.fivetran_connector_last_sync_process_volume_megabytes
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_process_volume_megabytes
         )
 
     @fivetran_connector_last_sync_process_volume_megabytes.setter
@@ -487,7 +595,11 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_last_sync_total_time_seconds(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_last_sync_total_time_seconds
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_last_sync_total_time_seconds
+        )
 
     @fivetran_connector_last_sync_total_time_seconds.setter
     def fivetran_connector_last_sync_total_time_seconds(
@@ -501,7 +613,9 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_name
+        return (
+            None if self.attributes is None else self.attributes.fivetran_connector_name
+        )
 
     @fivetran_connector_name.setter
     def fivetran_connector_name(self, fivetran_connector_name: Optional[str]):
@@ -511,7 +625,9 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_type
+        return (
+            None if self.attributes is None else self.attributes.fivetran_connector_type
+        )
 
     @fivetran_connector_type.setter
     def fivetran_connector_type(self, fivetran_connector_type: Optional[str]):
@@ -521,7 +637,9 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_url
+        return (
+            None if self.attributes is None else self.attributes.fivetran_connector_url
+        )
 
     @fivetran_connector_url.setter
     def fivetran_connector_url(self, fivetran_connector_url: Optional[str]):
@@ -531,113 +649,199 @@ class FivetranConnector(Fivetran):
 
     @property
     def fivetran_connector_destination_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_destination_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_destination_name
+        )
 
     @fivetran_connector_destination_name.setter
-    def fivetran_connector_destination_name(self, fivetran_connector_destination_name: Optional[str]):
+    def fivetran_connector_destination_name(
+        self, fivetran_connector_destination_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_destination_name = fivetran_connector_destination_name
+        self.attributes.fivetran_connector_destination_name = (
+            fivetran_connector_destination_name
+        )
 
     @property
     def fivetran_connector_destination_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_destination_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_destination_type
+        )
 
     @fivetran_connector_destination_type.setter
-    def fivetran_connector_destination_type(self, fivetran_connector_destination_type: Optional[str]):
+    def fivetran_connector_destination_type(
+        self, fivetran_connector_destination_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_destination_type = fivetran_connector_destination_type
+        self.attributes.fivetran_connector_destination_type = (
+            fivetran_connector_destination_type
+        )
 
     @property
     def fivetran_connector_destination_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_destination_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_destination_url
+        )
 
     @fivetran_connector_destination_url.setter
-    def fivetran_connector_destination_url(self, fivetran_connector_destination_url: Optional[str]):
+    def fivetran_connector_destination_url(
+        self, fivetran_connector_destination_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_destination_url = fivetran_connector_destination_url
+        self.attributes.fivetran_connector_destination_url = (
+            fivetran_connector_destination_url
+        )
 
     @property
     def fivetran_connector_sync_setup_on(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_sync_setup_on
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_sync_setup_on
+        )
 
     @fivetran_connector_sync_setup_on.setter
-    def fivetran_connector_sync_setup_on(self, fivetran_connector_sync_setup_on: Optional[datetime]):
+    def fivetran_connector_sync_setup_on(
+        self, fivetran_connector_sync_setup_on: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_sync_setup_on = fivetran_connector_sync_setup_on
+        self.attributes.fivetran_connector_sync_setup_on = (
+            fivetran_connector_sync_setup_on
+        )
 
     @property
     def fivetran_connector_sync_frequency(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_sync_frequency
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_sync_frequency
+        )
 
     @fivetran_connector_sync_frequency.setter
-    def fivetran_connector_sync_frequency(self, fivetran_connector_sync_frequency: Optional[str]):
+    def fivetran_connector_sync_frequency(
+        self, fivetran_connector_sync_frequency: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_sync_frequency = fivetran_connector_sync_frequency
+        self.attributes.fivetran_connector_sync_frequency = (
+            fivetran_connector_sync_frequency
+        )
 
     @property
     def fivetran_connector_sync_paused(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_sync_paused
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_sync_paused
+        )
 
     @fivetran_connector_sync_paused.setter
-    def fivetran_connector_sync_paused(self, fivetran_connector_sync_paused: Optional[bool]):
+    def fivetran_connector_sync_paused(
+        self, fivetran_connector_sync_paused: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fivetran_connector_sync_paused = fivetran_connector_sync_paused
 
     @property
     def fivetran_connector_sync_setup_user_full_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_sync_setup_user_full_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_sync_setup_user_full_name
+        )
 
     @fivetran_connector_sync_setup_user_full_name.setter
-    def fivetran_connector_sync_setup_user_full_name(self, fivetran_connector_sync_setup_user_full_name: Optional[str]):
+    def fivetran_connector_sync_setup_user_full_name(
+        self, fivetran_connector_sync_setup_user_full_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_sync_setup_user_full_name = fivetran_connector_sync_setup_user_full_name
+        self.attributes.fivetran_connector_sync_setup_user_full_name = (
+            fivetran_connector_sync_setup_user_full_name
+        )
 
     @property
     def fivetran_connector_sync_setup_user_email(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_sync_setup_user_email
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_sync_setup_user_email
+        )
 
     @fivetran_connector_sync_setup_user_email.setter
-    def fivetran_connector_sync_setup_user_email(self, fivetran_connector_sync_setup_user_email: Optional[str]):
+    def fivetran_connector_sync_setup_user_email(
+        self, fivetran_connector_sync_setup_user_email: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_sync_setup_user_email = fivetran_connector_sync_setup_user_email
+        self.attributes.fivetran_connector_sync_setup_user_email = (
+            fivetran_connector_sync_setup_user_email
+        )
 
     @property
     def fivetran_connector_monthly_active_rows_free(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_monthly_active_rows_free
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_monthly_active_rows_free
+        )
 
     @fivetran_connector_monthly_active_rows_free.setter
-    def fivetran_connector_monthly_active_rows_free(self, fivetran_connector_monthly_active_rows_free: Optional[int]):
+    def fivetran_connector_monthly_active_rows_free(
+        self, fivetran_connector_monthly_active_rows_free: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_free = fivetran_connector_monthly_active_rows_free
+        self.attributes.fivetran_connector_monthly_active_rows_free = (
+            fivetran_connector_monthly_active_rows_free
+        )
 
     @property
     def fivetran_connector_monthly_active_rows_paid(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_monthly_active_rows_paid
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_monthly_active_rows_paid
+        )
 
     @fivetran_connector_monthly_active_rows_paid.setter
-    def fivetran_connector_monthly_active_rows_paid(self, fivetran_connector_monthly_active_rows_paid: Optional[int]):
+    def fivetran_connector_monthly_active_rows_paid(
+        self, fivetran_connector_monthly_active_rows_paid: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_paid = fivetran_connector_monthly_active_rows_paid
+        self.attributes.fivetran_connector_monthly_active_rows_paid = (
+            fivetran_connector_monthly_active_rows_paid
+        )
 
     @property
     def fivetran_connector_monthly_active_rows_total(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_monthly_active_rows_total
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_monthly_active_rows_total
+        )
 
     @fivetran_connector_monthly_active_rows_total.setter
-    def fivetran_connector_monthly_active_rows_total(self, fivetran_connector_monthly_active_rows_total: Optional[int]):
+    def fivetran_connector_monthly_active_rows_total(
+        self, fivetran_connector_monthly_active_rows_total: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_total = fivetran_connector_monthly_active_rows_total
+        self.attributes.fivetran_connector_monthly_active_rows_total = (
+            fivetran_connector_monthly_active_rows_total
+        )
 
     @property
     def fivetran_connector_monthly_active_rows_change_percentage_free(
@@ -656,9 +860,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_free = (
-            fivetran_connector_monthly_active_rows_change_percentage_free
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_free = fivetran_connector_monthly_active_rows_change_percentage_free
 
     @property
     def fivetran_connector_monthly_active_rows_change_percentage_paid(
@@ -677,9 +879,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_paid = (
-            fivetran_connector_monthly_active_rows_change_percentage_paid
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_paid = fivetran_connector_monthly_active_rows_change_percentage_paid
 
     @property
     def fivetran_connector_monthly_active_rows_change_percentage_total(
@@ -698,9 +898,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_total = (
-            fivetran_connector_monthly_active_rows_change_percentage_total
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_total = fivetran_connector_monthly_active_rows_change_percentage_total
 
     @property
     def fivetran_connector_monthly_active_rows_free_percentage_of_account(
@@ -715,13 +913,13 @@ class FivetranConnector(Fivetran):
     @fivetran_connector_monthly_active_rows_free_percentage_of_account.setter
     def fivetran_connector_monthly_active_rows_free_percentage_of_account(
         self,
-        fivetran_connector_monthly_active_rows_free_percentage_of_account: Optional[float],
+        fivetran_connector_monthly_active_rows_free_percentage_of_account: Optional[
+            float
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_free_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_free_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_free_percentage_of_account = fivetran_connector_monthly_active_rows_free_percentage_of_account
 
     @property
     def fivetran_connector_monthly_active_rows_paid_percentage_of_account(
@@ -736,13 +934,13 @@ class FivetranConnector(Fivetran):
     @fivetran_connector_monthly_active_rows_paid_percentage_of_account.setter
     def fivetran_connector_monthly_active_rows_paid_percentage_of_account(
         self,
-        fivetran_connector_monthly_active_rows_paid_percentage_of_account: Optional[float],
+        fivetran_connector_monthly_active_rows_paid_percentage_of_account: Optional[
+            float
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_paid_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_paid_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_paid_percentage_of_account = fivetran_connector_monthly_active_rows_paid_percentage_of_account
 
     @property
     def fivetran_connector_monthly_active_rows_total_percentage_of_account(
@@ -757,53 +955,83 @@ class FivetranConnector(Fivetran):
     @fivetran_connector_monthly_active_rows_total_percentage_of_account.setter
     def fivetran_connector_monthly_active_rows_total_percentage_of_account(
         self,
-        fivetran_connector_monthly_active_rows_total_percentage_of_account: Optional[float],
+        fivetran_connector_monthly_active_rows_total_percentage_of_account: Optional[
+            float
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_total_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_total_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_total_percentage_of_account = fivetran_connector_monthly_active_rows_total_percentage_of_account
 
     @property
     def fivetran_connector_total_tables_synced(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_total_tables_synced
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_total_tables_synced
+        )
 
     @fivetran_connector_total_tables_synced.setter
-    def fivetran_connector_total_tables_synced(self, fivetran_connector_total_tables_synced: Optional[int]):
+    def fivetran_connector_total_tables_synced(
+        self, fivetran_connector_total_tables_synced: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_total_tables_synced = fivetran_connector_total_tables_synced
+        self.attributes.fivetran_connector_total_tables_synced = (
+            fivetran_connector_total_tables_synced
+        )
 
     @property
     def fivetran_connector_top_tables_by_m_a_r(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_top_tables_by_m_a_r
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_top_tables_by_m_a_r
+        )
 
     @fivetran_connector_top_tables_by_m_a_r.setter
-    def fivetran_connector_top_tables_by_m_a_r(self, fivetran_connector_top_tables_by_m_a_r: Optional[str]):
+    def fivetran_connector_top_tables_by_m_a_r(
+        self, fivetran_connector_top_tables_by_m_a_r: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_top_tables_by_m_a_r = fivetran_connector_top_tables_by_m_a_r
+        self.attributes.fivetran_connector_top_tables_by_m_a_r = (
+            fivetran_connector_top_tables_by_m_a_r
+        )
 
     @property
     def fivetran_connector_usage_cost(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_usage_cost
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_usage_cost
+        )
 
     @fivetran_connector_usage_cost.setter
-    def fivetran_connector_usage_cost(self, fivetran_connector_usage_cost: Optional[float]):
+    def fivetran_connector_usage_cost(
+        self, fivetran_connector_usage_cost: Optional[float]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fivetran_connector_usage_cost = fivetran_connector_usage_cost
 
     @property
     def fivetran_connector_credits_used(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.fivetran_connector_credits_used
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.fivetran_connector_credits_used
+        )
 
     @fivetran_connector_credits_used.setter
-    def fivetran_connector_credits_used(self, fivetran_connector_credits_used: Optional[float]):
+    def fivetran_connector_credits_used(
+        self, fivetran_connector_credits_used: Optional[float]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_credits_used = fivetran_connector_credits_used
+        self.attributes.fivetran_connector_credits_used = (
+            fivetran_connector_credits_used
+        )
 
     @property
     def processes(self) -> Optional[List[Process]]:
@@ -816,57 +1044,117 @@ class FivetranConnector(Fivetran):
         self.attributes.processes = processes
 
     class Attributes(Fivetran.Attributes):
-        fivetran_connector_last_sync_id: Optional[str] = Field(default=None, description="")
-        fivetran_connector_last_sync_started_at: Optional[datetime] = Field(default=None, description="")
-        fivetran_connector_last_sync_finished_at: Optional[datetime] = Field(default=None, description="")
-        fivetran_connector_last_sync_reason: Optional[str] = Field(default=None, description="")
-        fivetran_connector_last_sync_task_type: Optional[str] = Field(default=None, description="")
-        fivetran_connector_last_sync_rescheduled_at: Optional[datetime] = Field(default=None, description="")
-        fivetran_connector_last_sync_tables_synced: Optional[int] = Field(default=None, description="")
-        fivetran_connector_last_sync_extract_time_seconds: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_extract_volume_megabytes: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_load_time_seconds: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_load_volume_megabytes: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_process_time_seconds: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_process_volume_megabytes: Optional[float] = Field(default=None, description="")
-        fivetran_connector_last_sync_total_time_seconds: Optional[float] = Field(default=None, description="")
+        fivetran_connector_last_sync_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_started_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_finished_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_reason: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_task_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_rescheduled_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_tables_synced: Optional[int] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_extract_time_seconds: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_extract_volume_megabytes: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_load_time_seconds: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_load_volume_megabytes: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_process_time_seconds: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_process_volume_megabytes: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_last_sync_total_time_seconds: Optional[float] = Field(
+            default=None, description=""
+        )
         fivetran_connector_name: Optional[str] = Field(default=None, description="")
         fivetran_connector_type: Optional[str] = Field(default=None, description="")
         fivetran_connector_url: Optional[str] = Field(default=None, description="")
-        fivetran_connector_destination_name: Optional[str] = Field(default=None, description="")
-        fivetran_connector_destination_type: Optional[str] = Field(default=None, description="")
-        fivetran_connector_destination_url: Optional[str] = Field(default=None, description="")
-        fivetran_connector_sync_setup_on: Optional[datetime] = Field(default=None, description="")
-        fivetran_connector_sync_frequency: Optional[str] = Field(default=None, description="")
-        fivetran_connector_sync_paused: Optional[bool] = Field(default=None, description="")
-        fivetran_connector_sync_setup_user_full_name: Optional[str] = Field(default=None, description="")
-        fivetran_connector_sync_setup_user_email: Optional[str] = Field(default=None, description="")
-        fivetran_connector_monthly_active_rows_free: Optional[int] = Field(default=None, description="")
-        fivetran_connector_monthly_active_rows_paid: Optional[int] = Field(default=None, description="")
-        fivetran_connector_monthly_active_rows_total: Optional[int] = Field(default=None, description="")
-        fivetran_connector_monthly_active_rows_change_percentage_free: Optional[float] = Field(
+        fivetran_connector_destination_name: Optional[str] = Field(
             default=None, description=""
         )
-        fivetran_connector_monthly_active_rows_change_percentage_paid: Optional[float] = Field(
+        fivetran_connector_destination_type: Optional[str] = Field(
             default=None, description=""
         )
-        fivetran_connector_monthly_active_rows_change_percentage_total: Optional[float] = Field(
+        fivetran_connector_destination_url: Optional[str] = Field(
             default=None, description=""
         )
-        fivetran_connector_monthly_active_rows_free_percentage_of_account: Optional[float] = Field(
+        fivetran_connector_sync_setup_on: Optional[datetime] = Field(
             default=None, description=""
         )
-        fivetran_connector_monthly_active_rows_paid_percentage_of_account: Optional[float] = Field(
+        fivetran_connector_sync_frequency: Optional[str] = Field(
             default=None, description=""
         )
-        fivetran_connector_monthly_active_rows_total_percentage_of_account: Optional[float] = Field(
+        fivetran_connector_sync_paused: Optional[bool] = Field(
             default=None, description=""
         )
-        fivetran_connector_total_tables_synced: Optional[int] = Field(default=None, description="")
-        fivetran_connector_top_tables_by_m_a_r: Optional[str] = Field(default=None, description="")
-        fivetran_connector_usage_cost: Optional[float] = Field(default=None, description="")
-        fivetran_connector_credits_used: Optional[float] = Field(default=None, description="")
-        processes: Optional[List[Process]] = Field(default=None, description="")  # relationship
+        fivetran_connector_sync_setup_user_full_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_sync_setup_user_email: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_monthly_active_rows_free: Optional[int] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_monthly_active_rows_paid: Optional[int] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_monthly_active_rows_total: Optional[int] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_monthly_active_rows_change_percentage_free: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_monthly_active_rows_change_percentage_paid: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_monthly_active_rows_change_percentage_total: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_monthly_active_rows_free_percentage_of_account: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_monthly_active_rows_paid_percentage_of_account: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_monthly_active_rows_total_percentage_of_account: Optional[
+            float
+        ] = Field(default=None, description="")
+        fivetran_connector_total_tables_synced: Optional[int] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_top_tables_by_m_a_r: Optional[str] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_usage_cost: Optional[float] = Field(
+            default=None, description=""
+        )
+        fivetran_connector_credits_used: Optional[float] = Field(
+            default=None, description=""
+        )
+        processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: FivetranConnector.Attributes = Field(
         default_factory=lambda: FivetranConnector.Attributes(),

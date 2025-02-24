@@ -45,7 +45,9 @@ class AbstractPackage:
                             WorkflowTask(
                                 name="run",
                                 arguments=WorkflowParameters(
-                                    parameters=parse_obj_as(List[NameValuePair], self._parameters)
+                                    parameters=parse_obj_as(
+                                        List[NameValuePair], self._parameters
+                                    )
                                 ),
                                 template_ref=WorkflowTemplateRef(
                                     name=self._PACKAGE_PREFIX,
@@ -57,13 +59,19 @@ class AbstractPackage:
                     ),
                 )
             ],
-            workflow_metadata=WorkflowMetadata(annotations={"package.argoproj.io/name": self._PACKAGE_NAME}),
+            workflow_metadata=WorkflowMetadata(
+                annotations={"package.argoproj.io/name": self._PACKAGE_NAME}
+            ),
         )
         payload = [
             PackageParameter(
                 parameter="credentialGuid",
                 type="credential",
-                body=loads(Credential(**self._credentials_body).json(by_alias=True, exclude_none=True)),
+                body=loads(
+                    Credential(**self._credentials_body).json(
+                        by_alias=True, exclude_none=True
+                    )
+                ),
             )
         ]
         return Workflow(

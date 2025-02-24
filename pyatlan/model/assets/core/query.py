@@ -82,7 +82,9 @@ class Query(SQL):
         else:
             parent = Folder.ref_by_qualified_name(parent_qualified_name)  # type: ignore[assignment]
 
-        query = Query(attributes=Query.Attributes(qualified_name=qualified_name, name=name))
+        query = Query(
+            attributes=Query.Attributes(qualified_name=qualified_name, name=name)
+        )
         query.parent = parent
         query.collection_qualified_name = collection_qualified_name
         query.parent_qualified_name = parent_qualified_name
@@ -109,7 +111,9 @@ class Query(SQL):
         self.default_schema_qualified_name = schema_qualified_name
         self.is_visual_query = False
         self.raw_query_text = query
-        self.variables_schema_base64 = b64encode(_DEFAULT_VARIABLE_SCHEMA.encode("utf-8")).decode("utf-8")
+        self.variables_schema_base64 = b64encode(
+            _DEFAULT_VARIABLE_SCHEMA.encode("utf-8")
+        ).decode("utf-8")
 
     type_name: str = Field(default="Query", allow_mutation=False)
 
@@ -152,7 +156,9 @@ class Query(SQL):
     """
     Unique name of the default database to use for this query.
     """
-    VARIABLES_SCHEMA_BASE64: ClassVar[TextField] = TextField("variablesSchemaBase64", "variablesSchemaBase64")
+    VARIABLES_SCHEMA_BASE64: ClassVar[TextField] = TextField(
+        "variablesSchemaBase64", "variablesSchemaBase64"
+    )
     """
     Base64-encoded string of the variables to use in this query.
     """
@@ -160,7 +166,9 @@ class Query(SQL):
     """
     Whether this query is private (true) or shared (false).
     """
-    IS_SQL_SNIPPET: ClassVar[BooleanField] = BooleanField("isSqlSnippet", "isSqlSnippet")
+    IS_SQL_SNIPPET: ClassVar[BooleanField] = BooleanField(
+        "isSqlSnippet", "isSqlSnippet"
+    )
     """
     Whether this query is a SQL snippet (true) or not (false).
     """
@@ -178,7 +186,9 @@ class Query(SQL):
     """
     Unique name of the collection in which this query exists.
     """
-    IS_VISUAL_QUERY: ClassVar[BooleanField] = BooleanField("isVisualQuery", "isVisualQuery")
+    IS_VISUAL_QUERY: ClassVar[BooleanField] = BooleanField(
+        "isVisualQuery", "isVisualQuery"
+    )
     """
     Whether this query is a visual query (true) or not (false).
     """
@@ -257,27 +267,43 @@ class Query(SQL):
 
     @property
     def default_schema_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.default_schema_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.default_schema_qualified_name
+        )
 
     @default_schema_qualified_name.setter
-    def default_schema_qualified_name(self, default_schema_qualified_name: Optional[str]):
+    def default_schema_qualified_name(
+        self, default_schema_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.default_schema_qualified_name = default_schema_qualified_name
 
     @property
     def default_database_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.default_database_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.default_database_qualified_name
+        )
 
     @default_database_qualified_name.setter
-    def default_database_qualified_name(self, default_database_qualified_name: Optional[str]):
+    def default_database_qualified_name(
+        self, default_database_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.default_database_qualified_name = default_database_qualified_name
+        self.attributes.default_database_qualified_name = (
+            default_database_qualified_name
+        )
 
     @property
     def variables_schema_base64(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.variables_schema_base64
+        return (
+            None if self.attributes is None else self.attributes.variables_schema_base64
+        )
 
     @variables_schema_base64.setter
     def variables_schema_base64(self, variables_schema_base64: Optional[str]):
@@ -307,7 +333,9 @@ class Query(SQL):
 
     @property
     def parent_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.parent_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.parent_qualified_name
+        )
 
     @parent_qualified_name.setter
     def parent_qualified_name(self, parent_qualified_name: Optional[str]):
@@ -317,7 +345,11 @@ class Query(SQL):
 
     @property
     def collection_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.collection_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.collection_qualified_name
+        )
 
     @collection_qualified_name.setter
     def collection_qualified_name(self, collection_qualified_name: Optional[str]):
@@ -337,7 +369,11 @@ class Query(SQL):
 
     @property
     def visual_builder_schema_base64(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.visual_builder_schema_base64
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.visual_builder_schema_base64
+        )
 
     @visual_builder_schema_base64.setter
     def visual_builder_schema_base64(self, visual_builder_schema_base64: Optional[str]):
@@ -389,19 +425,33 @@ class Query(SQL):
         raw_query: Optional[str] = Field(default=None, description="")
         long_raw_query: Optional[str] = Field(default=None, description="")
         raw_query_text: Optional[str] = Field(default=None, description="")
-        default_schema_qualified_name: Optional[str] = Field(default=None, description="")
-        default_database_qualified_name: Optional[str] = Field(default=None, description="")
+        default_schema_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        default_database_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         variables_schema_base64: Optional[str] = Field(default=None, description="")
         is_private: Optional[bool] = Field(default=None, description="")
         is_sql_snippet: Optional[bool] = Field(default=None, description="")
         parent_qualified_name: Optional[str] = Field(default=None, description="")
         collection_qualified_name: Optional[str] = Field(default=None, description="")
         is_visual_query: Optional[bool] = Field(default=None, description="")
-        visual_builder_schema_base64: Optional[str] = Field(default=None, description="")
-        parent: Optional[Namespace] = Field(default=None, description="")  # relationship
-        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
-        tables: Optional[List[Table]] = Field(default=None, description="")  # relationship
-        views: Optional[List[View]] = Field(default=None, description="")  # relationship
+        visual_builder_schema_base64: Optional[str] = Field(
+            default=None, description=""
+        )
+        parent: Optional[Namespace] = Field(
+            default=None, description=""
+        )  # relationship
+        columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        tables: Optional[List[Table]] = Field(
+            default=None, description=""
+        )  # relationship
+        views: Optional[List[View]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -424,13 +474,17 @@ class Query(SQL):
             if not parent_folder_qualified_name:
                 qualified_name = f"{collection_qualified_name}/{name}"
                 parent_qn = collection_qualified_name
-                parent = Collection.ref_by_qualified_name(collection_qualified_name or "")
+                parent = Collection.ref_by_qualified_name(
+                    collection_qualified_name or ""
+                )
 
             else:
                 tokens = parent_folder_qualified_name.split("/")
                 if len(tokens) < 4:
                     raise ValueError("Invalid collection_qualified_name")
-                collection_qualified_name = f"{tokens[0]}/{tokens[1]}/{tokens[2]}/{tokens[3]}"
+                collection_qualified_name = (
+                    f"{tokens[0]}/{tokens[1]}/{tokens[2]}/{tokens[3]}"
+                )
                 qualified_name = f"{parent_folder_qualified_name}/{name}"
                 parent_qn = parent_folder_qualified_name
                 parent = Folder.ref_by_qualified_name(parent_folder_qualified_name)  # type: ignore[assignment]

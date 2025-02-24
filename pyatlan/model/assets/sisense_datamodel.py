@@ -36,7 +36,9 @@ class SisenseDatamodel(Sisense):
     """
     Number of tables in this datamodel.
     """
-    SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField("sisenseDatamodelServer", "sisenseDatamodelServer")
+    SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelServer", "sisenseDatamodelServer"
+    )
     """
     Hostname of the server on which this datamodel was created.
     """
@@ -65,7 +67,9 @@ class SisenseDatamodel(Sisense):
     """
     Time (epoch) when this datamodel was last published, in milliseconds.
     """
-    SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField("sisenseDatamodelType", "sisenseDatamodelType")
+    SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelType", "sisenseDatamodelType"
+    )
     """
     Type of this datamodel, for example: 'extract' or 'custom'.
     """
@@ -76,7 +80,9 @@ class SisenseDatamodel(Sisense):
     Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
     """  # noqa: E501
 
-    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField("sisenseDatamodelTables")
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
+        "sisenseDatamodelTables"
+    )
     """
     TBC
     """
@@ -100,17 +106,27 @@ class SisenseDatamodel(Sisense):
 
     @property
     def sisense_datamodel_table_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_table_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_count
+        )
 
     @sisense_datamodel_table_count.setter
-    def sisense_datamodel_table_count(self, sisense_datamodel_table_count: Optional[int]):
+    def sisense_datamodel_table_count(
+        self, sisense_datamodel_table_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodel_table_count = sisense_datamodel_table_count
 
     @property
     def sisense_datamodel_server(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_server
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_server
+        )
 
     @sisense_datamodel_server.setter
     def sisense_datamodel_server(self, sisense_datamodel_server: Optional[str]):
@@ -120,7 +136,11 @@ class SisenseDatamodel(Sisense):
 
     @property
     def sisense_datamodel_revision(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_revision
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_revision
+        )
 
     @sisense_datamodel_revision.setter
     def sisense_datamodel_revision(self, sisense_datamodel_revision: Optional[str]):
@@ -130,17 +150,29 @@ class SisenseDatamodel(Sisense):
 
     @property
     def sisense_datamodel_last_build_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_last_build_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_build_time
+        )
 
     @sisense_datamodel_last_build_time.setter
-    def sisense_datamodel_last_build_time(self, sisense_datamodel_last_build_time: Optional[datetime]):
+    def sisense_datamodel_last_build_time(
+        self, sisense_datamodel_last_build_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_build_time = sisense_datamodel_last_build_time
+        self.attributes.sisense_datamodel_last_build_time = (
+            sisense_datamodel_last_build_time
+        )
 
     @property
     def sisense_datamodel_last_successful_build_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_last_successful_build_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_successful_build_time
+        )
 
     @sisense_datamodel_last_successful_build_time.setter
     def sisense_datamodel_last_successful_build_time(
@@ -148,21 +180,33 @@ class SisenseDatamodel(Sisense):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_successful_build_time = sisense_datamodel_last_successful_build_time
+        self.attributes.sisense_datamodel_last_successful_build_time = (
+            sisense_datamodel_last_successful_build_time
+        )
 
     @property
     def sisense_datamodel_last_publish_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_last_publish_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_publish_time
+        )
 
     @sisense_datamodel_last_publish_time.setter
-    def sisense_datamodel_last_publish_time(self, sisense_datamodel_last_publish_time: Optional[datetime]):
+    def sisense_datamodel_last_publish_time(
+        self, sisense_datamodel_last_publish_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_last_publish_time = sisense_datamodel_last_publish_time
+        self.attributes.sisense_datamodel_last_publish_time = (
+            sisense_datamodel_last_publish_time
+        )
 
     @property
     def sisense_datamodel_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_type
+        return (
+            None if self.attributes is None else self.attributes.sisense_datamodel_type
+        )
 
     @sisense_datamodel_type.setter
     def sisense_datamodel_type(self, sisense_datamodel_type: Optional[str]):
@@ -172,20 +216,34 @@ class SisenseDatamodel(Sisense):
 
     @property
     def sisense_datamodel_relation_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_relation_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_relation_type
+        )
 
     @sisense_datamodel_relation_type.setter
-    def sisense_datamodel_relation_type(self, sisense_datamodel_relation_type: Optional[str]):
+    def sisense_datamodel_relation_type(
+        self, sisense_datamodel_relation_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_datamodel_relation_type = sisense_datamodel_relation_type
+        self.attributes.sisense_datamodel_relation_type = (
+            sisense_datamodel_relation_type
+        )
 
     @property
     def sisense_datamodel_tables(self) -> Optional[List[SisenseDatamodelTable]]:
-        return None if self.attributes is None else self.attributes.sisense_datamodel_tables
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_tables
+        )
 
     @sisense_datamodel_tables.setter
-    def sisense_datamodel_tables(self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]):
+    def sisense_datamodel_tables(
+        self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
@@ -201,18 +259,30 @@ class SisenseDatamodel(Sisense):
         self.attributes.sisense_dashboards = sisense_dashboards
 
     class Attributes(Sisense.Attributes):
-        sisense_datamodel_table_count: Optional[int] = Field(default=None, description="")
+        sisense_datamodel_table_count: Optional[int] = Field(
+            default=None, description=""
+        )
         sisense_datamodel_server: Optional[str] = Field(default=None, description="")
         sisense_datamodel_revision: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_last_build_time: Optional[datetime] = Field(default=None, description="")
-        sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(default=None, description="")
-        sisense_datamodel_last_publish_time: Optional[datetime] = Field(default=None, description="")
+        sisense_datamodel_last_build_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sisense_datamodel_last_publish_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
         sisense_datamodel_type: Optional[str] = Field(default=None, description="")
-        sisense_datamodel_relation_type: Optional[str] = Field(default=None, description="")
+        sisense_datamodel_relation_type: Optional[str] = Field(
+            default=None, description=""
+        )
         sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_dashboards: Optional[List[SisenseDashboard]] = Field(default=None, description="")  # relationship
+        sisense_dashboards: Optional[List[SisenseDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SisenseDatamodel.Attributes = Field(
         default_factory=lambda: SisenseDatamodel.Attributes(),

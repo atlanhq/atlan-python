@@ -48,7 +48,9 @@ class TestCustomMetadataDict:
         return CustomMetadataDict(CM_NAME)
 
     def test_init_when_invalid_name_throws_not_found_error(self, mock_cache):
-        mock_cache.get_id_for_name.side_effect = ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters("123")
+        mock_cache.get_id_for_name.side_effect = (
+            ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters("123")
+        )
         with pytest.raises(NotFoundError):
             CustomMetadataDict(CM_NAME)
         mock_cache.get_id_for_name.assert_called_with(CM_NAME)
@@ -65,11 +67,15 @@ class TestCustomMetadataDict:
         assert sut.modified is True
 
     def test_get_item_with_invalid_name_raises_key_error(self, sut):
-        with pytest.raises(KeyError, match="'garb' is not a valid property name for Something"):
+        with pytest.raises(
+            KeyError, match="'garb' is not a valid property name for Something"
+        ):
             sut["garb"]
 
     def test_set_item_with_invalid_name_raises_key_error(self, sut):
-        with pytest.raises(KeyError, match="'garb' is not a valid property name for Something"):
+        with pytest.raises(
+            KeyError, match="'garb' is not a valid property name for Something"
+        ):
             sut["garb"] = ATTR_FIRST_NAME_ID
 
     @pytest.mark.parametrize("name", [ATTR_FIRST_NAME, ATTR_FIRST_NAME])
@@ -117,7 +123,9 @@ class TestCustomMetadataDict:
         assert 0 == len(sentinel)
         assert sentinel.modified is False
         assert sentinel._name == "(DELETED)"
-        with pytest.raises(KeyError, match=r"'abc' is not a valid property name for \(DELETED\)"):
+        with pytest.raises(
+            KeyError, match=r"'abc' is not a valid property name for \(DELETED\)"
+        ):
             sentinel["abc"] = 1
 
 
@@ -126,11 +134,15 @@ class TestCustomMetadataProxy:
     def sut(self, mock_cache):
         yield CustomMetadataProxy(business_attributes=None)
 
-    def test_when_intialialized_with_no_business_attributes_then_modified_is_false(self, sut):
+    def test_when_intialialized_with_no_business_attributes_then_modified_is_false(
+        self, sut
+    ):
         assert sut.modified is False
         assert sut.business_attributes is None
 
-    def test_when_intialialized_with_no_business_attributes_then_business_attributes_returns_none(self, sut):
+    def test_when_intialialized_with_no_business_attributes_then_business_attributes_returns_none(
+        self, sut
+    ):
         assert sut.business_attributes is None
 
     def test_set_custom_metadata(self, sut):
@@ -181,7 +193,9 @@ class TestCustomMetadataProxy:
         assert ba == {CM_ID: {ATTR_FIRST_NAME_ID: donna, ATTR_LAST_NAME_ID: joey}}
 
     def test_when_invalid_metadata_set_then_delete_sentinel_is_used(self, mock_cache):
-        mock_cache.get_name_for_id.side_effect = ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(CM_ID)
+        mock_cache.get_name_for_id.side_effect = (
+            ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(CM_ID)
+        )
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
 
         sut = CustomMetadataProxy(business_attributes=ba)

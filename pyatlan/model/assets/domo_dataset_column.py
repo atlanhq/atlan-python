@@ -29,7 +29,9 @@ class DomoDatasetColumn(Domo):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DOMO_DATASET_COLUMN_TYPE: ClassVar[KeywordField] = KeywordField("domoDatasetColumnType", "domoDatasetColumnType")
+    DOMO_DATASET_COLUMN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "domoDatasetColumnType", "domoDatasetColumnType"
+    )
     """
     Type of Domo Dataset Column.
     """
@@ -53,7 +55,11 @@ class DomoDatasetColumn(Domo):
 
     @property
     def domo_dataset_column_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.domo_dataset_column_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.domo_dataset_column_type
+        )
 
     @domo_dataset_column_type.setter
     def domo_dataset_column_type(self, domo_dataset_column_type: Optional[str]):
@@ -63,7 +69,11 @@ class DomoDatasetColumn(Domo):
 
     @property
     def domo_dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.domo_dataset_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.domo_dataset_qualified_name
+        )
 
     @domo_dataset_qualified_name.setter
     def domo_dataset_qualified_name(self, domo_dataset_qualified_name: Optional[str]):
@@ -84,7 +94,9 @@ class DomoDatasetColumn(Domo):
     class Attributes(Domo.Attributes):
         domo_dataset_column_type: Optional[str] = Field(default=None, description="")
         domo_dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        domo_dataset: Optional[DomoDataset] = Field(default=None, description="")  # relationship
+        domo_dataset: Optional[DomoDataset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: DomoDatasetColumn.Attributes = Field(
         default_factory=lambda: DomoDatasetColumn.Attributes(),

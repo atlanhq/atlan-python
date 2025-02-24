@@ -46,13 +46,17 @@ QUICK_SIGHT_DESCRIPTION = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def quick_sight_folder(client: AtlanClient, connection: Connection) -> Generator[QuickSightFolder, None, None]:
+def quick_sight_folder(
+    client: AtlanClient, connection: Connection
+) -> Generator[QuickSightFolder, None, None]:
     assert connection.qualified_name
     to_create = QuickSightFolder.creator(
         name=QUICKSIGHT_FOLDER_NAME,
@@ -183,7 +187,9 @@ def quick_sight_dashboard_visual(
     delete_asset(client, guid=result.guid, asset_type=QuickSightDashboardVisual)
 
 
-def test_sight_folder(client: AtlanClient, connection: Connection, quick_sight_folder: QuickSightFolder):
+def test_sight_folder(
+    client: AtlanClient, connection: Connection, quick_sight_folder: QuickSightFolder
+):
     assert quick_sight_folder
     assert quick_sight_folder.guid
     assert quick_sight_folder.qualified_name
@@ -209,7 +215,9 @@ def test_sight_folder(client: AtlanClient, connection: Connection, quick_sight_f
     assert asset.qualified_name == quick_sight_folder.qualified_name
 
 
-def test_sight_dataset(client: AtlanClient, connection: Connection, quick_sight_dataset: QuickSightDataset):
+def test_sight_dataset(
+    client: AtlanClient, connection: Connection, quick_sight_dataset: QuickSightDataset
+):
     assert quick_sight_dataset
     assert quick_sight_dataset.guid
     assert quick_sight_dataset.qualified_name
@@ -217,7 +225,10 @@ def test_sight_dataset(client: AtlanClient, connection: Connection, quick_sight_
     assert quick_sight_dataset.quick_sight_id == QUICKSIGHT_DATASET_ID
     assert quick_sight_dataset.connection_qualified_name == connection.qualified_name
     assert quick_sight_dataset.connector_name == AtlanConnectorType.QUICKSIGHT.value
-    assert quick_sight_dataset.quick_sight_dataset_import_mode == QuickSightDatasetImportMode.SPICE
+    assert (
+        quick_sight_dataset.quick_sight_dataset_import_mode
+        == QuickSightDatasetImportMode.SPICE
+    )
 
     to_update = quick_sight_dataset.updater(
         name=quick_sight_dataset.name, qualified_name=quick_sight_dataset.qualified_name
@@ -308,10 +319,20 @@ def test_sight_dataset_field(
     assert quick_sight_dataset_field.qualified_name
     assert quick_sight_dataset_field.name == QUICKSIGHT_DATASET_FIELD_NAME
     assert quick_sight_dataset_field.quick_sight_id == QUICKSIGHT_DATASET_FIELD_ID
-    assert quick_sight_dataset_field.connection_qualified_name == connection.qualified_name
-    assert quick_sight_dataset_field.connector_name == AtlanConnectorType.QUICKSIGHT.value
-    assert quick_sight_dataset_field.quick_sight_dataset_qualified_name == quick_sight_dataset.qualified_name
-    assert quick_sight_dataset_field.quick_sight_dataset_field_type == QuickSightDatasetFieldType.STRING
+    assert (
+        quick_sight_dataset_field.connection_qualified_name == connection.qualified_name
+    )
+    assert (
+        quick_sight_dataset_field.connector_name == AtlanConnectorType.QUICKSIGHT.value
+    )
+    assert (
+        quick_sight_dataset_field.quick_sight_dataset_qualified_name
+        == quick_sight_dataset.qualified_name
+    )
+    assert (
+        quick_sight_dataset_field.quick_sight_dataset_field_type
+        == QuickSightDatasetFieldType.STRING
+    )
 
     to_update = quick_sight_dataset_field.updater(
         name=quick_sight_dataset_field.name,
@@ -342,9 +363,18 @@ def test_sight_analysis_visual(
     assert quick_sight_analysis_visual.qualified_name
     assert quick_sight_analysis_visual.name == QUICKSIGHT_ANALYSIS_VISUAL_NAME
     assert quick_sight_analysis_visual.quick_sight_id == QUICKSIGHT_ANALYSIS_VISUAL_ID
-    assert quick_sight_analysis_visual.connection_qualified_name == connection.qualified_name
-    assert quick_sight_analysis_visual.connector_name == AtlanConnectorType.QUICKSIGHT.value
-    assert quick_sight_analysis_visual.quick_sight_analysis_qualified_name == quick_sight_analysis.qualified_name
+    assert (
+        quick_sight_analysis_visual.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert (
+        quick_sight_analysis_visual.connector_name
+        == AtlanConnectorType.QUICKSIGHT.value
+    )
+    assert (
+        quick_sight_analysis_visual.quick_sight_analysis_qualified_name
+        == quick_sight_analysis.qualified_name
+    )
     assert quick_sight_analysis_visual.quick_sight_sheet_id == QUICKSIGHT_SHEET_ID
     assert quick_sight_analysis_visual.quick_sight_sheet_name == QUICKSIGHT_SHEET_NAME
 
@@ -377,9 +407,18 @@ def test_sight_dashboard_visual(
     assert quick_sight_dashboard_visual.qualified_name
     assert quick_sight_dashboard_visual.name == QUICKSIGHT_DASHBOARD_VISUAL_NAME
     assert quick_sight_dashboard_visual.quick_sight_id == QUICKSIGHT_DASHBOARD_VISUAL_ID
-    assert quick_sight_dashboard_visual.connection_qualified_name == connection.qualified_name
-    assert quick_sight_dashboard_visual.connector_name == AtlanConnectorType.QUICKSIGHT.value
-    assert quick_sight_dashboard_visual.quick_sight_dashboard_qualified_name == quick_sight_dashboard.qualified_name
+    assert (
+        quick_sight_dashboard_visual.connection_qualified_name
+        == connection.qualified_name
+    )
+    assert (
+        quick_sight_dashboard_visual.connector_name
+        == AtlanConnectorType.QUICKSIGHT.value
+    )
+    assert (
+        quick_sight_dashboard_visual.quick_sight_dashboard_qualified_name
+        == quick_sight_dashboard.qualified_name
+    )
     assert quick_sight_dashboard_visual.quick_sight_sheet_id == QUICKSIGHT_SHEET_ID
     assert quick_sight_dashboard_visual.quick_sight_sheet_name == QUICKSIGHT_SHEET_NAME
 

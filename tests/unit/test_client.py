@@ -82,7 +82,9 @@ from tests.unit.model.constants import (
 )
 
 GLOSSARY = AtlasGlossary.create(name=GLOSSARY_NAME)
-GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY)
+GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(
+    name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY
+)
 GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSARY)
 UNIQUE_USERS = "uniqueUsers"
 UNIQUE_ASSETS = "uniqueAssets"
@@ -120,9 +122,7 @@ TEST_ANNOUNCEMENT = Announcement(
     announcement_message="test-msg",
     announcement_type=AnnouncementType.INFORMATION,
 )
-TEST_MISSING_GLOSSARY_GUID_ERROR = (
-    "ATLAN-PYTHON-400-055 'glossary_guid' keyword argument is missing for asset type: {0}"
-)
+TEST_MISSING_GLOSSARY_GUID_ERROR = "ATLAN-PYTHON-400-055 'glossary_guid' keyword argument is missing for asset type: {0}"
 
 
 @pytest.fixture(autouse=True)
@@ -350,7 +350,9 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
             client = AtlanClient()
             guid = "123"
 
-            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
 
             assert asset == table
             assert asset.assigned_terms is None
@@ -378,7 +380,9 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
 
             client = AtlanClient()
             guid = "123"
-            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
 
             assert asset.assigned_terms == terms
             mock_execute.assert_called_once()
@@ -410,7 +414,9 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
             client = AtlanClient()
             guid = "123"
 
-            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
 
             updated_terms = asset.assigned_terms
             assert updated_terms is not None
@@ -546,7 +552,9 @@ def test_replace_terms():
             client = AtlanClient()
             guid = "123"
 
-            asset = client.asset.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.replace_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
 
             assert asset.assigned_terms == terms
             mock_execute.assert_called_once()
@@ -660,8 +668,12 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
     table.name = "table-test"
     table.qualified_name = "table_qn"
 
-    existing_term = AtlasGlossaryTerm(qualified_name="term_to_remove", guid="b4113341-251b-4adc-81fb-2420501c30e6")
-    other_term = AtlasGlossaryTerm(qualified_name="other_term", guid="b267858d-8316-4c41-a56a-6e9b840cef4a")
+    existing_term = AtlasGlossaryTerm(
+        qualified_name="term_to_remove", guid="b4113341-251b-4adc-81fb-2420501c30e6"
+    )
+    other_term = AtlasGlossaryTerm(
+        qualified_name="other_term", guid="b267858d-8316-4c41-a56a-6e9b840cef4a"
+    )
     table.attributes.meanings = [existing_term, other_term]
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
@@ -669,7 +681,9 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
             mock_execute.return_value.current_page = lambda: [table]
 
             def mock_save_side_effect(entity):
-                entity.assigned_terms = [t for t in table.attributes.meanings if t != existing_term]
+                entity.assigned_terms = [
+                    t for t in table.attributes.meanings if t != existing_term
+                ]
                 return Mock(assets_updated=lambda asset_type: [entity])
 
             mock_save.side_effect = mock_save_side_effect
@@ -677,7 +691,9 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
             client = AtlanClient()
             guid = "123"
 
-            asset = client.asset.remove_terms(guid=guid, asset_type=asset_type, terms=[existing_term])
+            asset = client.asset.remove_terms(
+                guid=guid, asset_type=asset_type, terms=[existing_term]
+            )
 
             updated_terms = asset.assigned_terms
             assert updated_terms is not None
@@ -688,7 +704,9 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
 
 
 def test_register_client_with_bad_parameter_raises_value_error(client):
-    with pytest.raises(InvalidRequestError, match="client must be an instance of AtlanClient"):
+    with pytest.raises(
+        InvalidRequestError, match="client must be an instance of AtlanClient"
+    ):
         AtlanClient.set_default_client("")
     assert AtlanClient.get_default_client() is client
 
@@ -726,7 +744,9 @@ def test_register_client(client):
         ),
     ],
 )
-def test_find_glossary_by_name_with_bad_values_raises_value_error(name, attributes, message, client: AtlanClient):
+def test_find_glossary_by_name_with_bad_values_raises_value_error(
+    name, attributes, message, client: AtlanClient
+):
     with pytest.raises(ValueError, match=message):
         client.asset.find_glossary_by_name(name=name, attributes=attributes)
 
@@ -790,7 +810,9 @@ def test_find_connections_by_name_when_none_found_raises_not_found_error(mock_se
         NotFoundError,
         match=f"The Connection asset could not be found by name: {CONNECTION_NAME}.",
     ):
-        client.asset.find_connections_by_name(name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE)
+        client.asset.find_connections_by_name(
+            name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
+        )
 
 
 @patch.object(AssetClient, "search")
@@ -810,8 +832,13 @@ def test_find_glossary(mock_search, caplog):
 
     client = AtlanClient()
 
-    assert GLOSSARY == client.asset.find_glossary_by_name(name=GLOSSARY_NAME, attributes=attributes)
-    assert f"More than 1 AtlasGlossary found with the name '{GLOSSARY_NAME}', returning only the first." in caplog.text
+    assert GLOSSARY == client.asset.find_glossary_by_name(
+        name=GLOSSARY_NAME, attributes=attributes
+    )
+    assert (
+        f"More than 1 AtlasGlossary found with the name '{GLOSSARY_NAME}', returning only the first."
+        in caplog.text
+    )
     assert request
     assert request.attributes
     assert attributes == request.attributes
@@ -1023,12 +1050,16 @@ def test_find_category_by_name_when_bad_parameter_raises_value_error(
     sut = client
 
     with pytest.raises(ValueError, match=message):
-        sut.asset.find_category_by_name(name=name, glossary_name=glossary_name, attributes=attributes)
+        sut.asset.find_category_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
 
 
 def test_find_category_by_name():
     attributes = ["name"]
-    with patch.multiple(AssetClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT) as values:
+    with patch.multiple(
+        AssetClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
+    ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
         mock_find_category_fast_by_name = values["find_category_fast_by_name"]
@@ -1075,24 +1106,34 @@ def test_find_category_by_name_qn_guid_correctly_populated(
 
     # Glossary
     assert category.anchor.guid == category_json_attributes.get("anchor").get("guid")
-    assert category.anchor.name == category_json_attributes.get("anchor").get("attributes").get("name")
-    assert category.anchor.qualified_name == category_json_attributes.get("anchor").get("uniqueAttributes").get(
-        "qualifiedName"
-    )
-
-    # Glossary category
-    assert category.parent_category.guid == category_json_attributes.get("parentCategory").get("guid")
-    assert category.parent_category.name == category_json_attributes.get("parentCategory").get("attributes").get("name")
-    assert category.parent_category.qualified_name == category_json_attributes.get("parentCategory").get(
+    assert category.anchor.name == category_json_attributes.get("anchor").get(
+        "attributes"
+    ).get("name")
+    assert category.anchor.qualified_name == category_json_attributes.get("anchor").get(
         "uniqueAttributes"
     ).get("qualifiedName")
 
+    # Glossary category
+    assert category.parent_category.guid == category_json_attributes.get(
+        "parentCategory"
+    ).get("guid")
+    assert category.parent_category.name == category_json_attributes.get(
+        "parentCategory"
+    ).get("attributes").get("name")
+    assert category.parent_category.qualified_name == category_json_attributes.get(
+        "parentCategory"
+    ).get("uniqueAttributes").get("qualifiedName")
+
     # Glossary term
-    assert category.terms[0].guid == category_json_attributes.get("terms")[0].get("guid")
-    assert category.terms[0].name == category_json_attributes.get("terms")[0].get("attributes").get("name")
-    assert category.terms[0].qualified_name == category_json_attributes.get("terms")[0].get("uniqueAttributes").get(
-        "qualifiedName"
+    assert category.terms[0].guid == category_json_attributes.get("terms")[0].get(
+        "guid"
     )
+    assert category.terms[0].name == category_json_attributes.get("terms")[0].get(
+        "attributes"
+    ).get("name")
+    assert category.terms[0].qualified_name == category_json_attributes.get("terms")[
+        0
+    ].get("uniqueAttributes").get("qualifiedName")
     mock_api_caller.reset_mock()
 
 
@@ -1164,7 +1205,9 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
         NotFoundError,
         match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
     ):
-        client.asset.find_term_fast_by_name(name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME)
+        client.asset.find_term_fast_by_name(
+            name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+        )
 
 
 @patch.object(AssetClient, "search")
@@ -1179,7 +1222,9 @@ def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
         NotFoundError,
         match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
     ):
-        client.asset.find_term_fast_by_name(name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME)
+        client.asset.find_term_fast_by_name(
+            name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+        )
     mock_search.return_value.current_page.assert_called_once()
 
 
@@ -1284,12 +1329,16 @@ def test_find_term_by_name_when_bad_parameter_raises_value_error(
     sut = client
 
     with pytest.raises(ValueError, match=message):
-        sut.asset.find_term_by_name(name=name, glossary_name=glossary_name, attributes=attributes)
+        sut.asset.find_term_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
 
 
 def test_find_term_by_name():
     attributes = ["name"]
-    with patch.multiple(AssetClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT) as values:
+    with patch.multiple(
+        AssetClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
+    ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
         mock_find_term_fast_by_name = values["find_term_fast_by_name"]
@@ -1349,7 +1398,9 @@ def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers
     mock_sl_api_call.return_value = sl_most_recent_viewers_json
     recent_viewers_aggs = sl_most_recent_viewers_json["aggregations"]
     recent_viewers_aggs_buckets = recent_viewers_aggs[UNIQUE_USERS]["buckets"]
-    request = SearchLogRequest.most_recent_viewers(guid="test-guid-123", exclude_users=["testuser"])
+    request = SearchLogRequest.most_recent_viewers(
+        guid="test-guid-123", exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     viewers = response.user_views
@@ -1371,7 +1422,9 @@ def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_j
     mock_sl_api_call.return_value = sl_most_viewed_assets_json
     viewed_assets_aggs = sl_most_viewed_assets_json["aggregations"]
     viewed_assets_aggs_buckets = viewed_assets_aggs[UNIQUE_ASSETS]["buckets"][0]
-    request = SearchLogRequest.most_viewed_assets(max_assets=10, exclude_users=["testuser"])
+    request = SearchLogRequest.most_viewed_assets(
+        max_assets=10, exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     detail = response.asset_views
@@ -1389,7 +1442,9 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     client = AtlanClient()
     mock_sl_api_call.return_value = sl_detailed_log_entries_json
     sl_detailed_log_entries = sl_detailed_log_entries_json["logs"]
-    request = SearchLogRequest.views_by_guid(guid="test-guid-123", size=10, exclude_users=["testuser"])
+    request = SearchLogRequest.views_by_guid(
+        guid="test-guid-123", size=10, exclude_users=["testuser"]
+    )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
     response = client.search_log.search(request)
     log_entries = response.current_page()
@@ -1418,12 +1473,16 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     assert log_entries[0].request_relation_attributes
 
 
-def test_asset_get_lineage_list_response_with_custom_metadata(mock_api_caller, mock_cm_cache, lineage_list_json):
+def test_asset_get_lineage_list_response_with_custom_metadata(
+    mock_api_caller, mock_cm_cache, lineage_list_json
+):
     client = AssetClient(mock_api_caller)
     mock_cm_cache.get_name_for_id.return_value = CM_NAME
     mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
 
-    lineage_request = LineageListRequest(guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM)
+    lineage_request = LineageListRequest(
+        guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM
+    )
     lineage_request.attributes = [CM_NAME]
     lineage_response = client.get_lineage_list(lineage_request=lineage_request)
 
@@ -1511,13 +1570,15 @@ def test_user_groups_pagination(mock_api_caller, user_groups_json):
     mock_api_caller.reset_mock()
 
 
-def test_index_search_with_no_aggregation_results(mock_api_caller, aggregations_null_json):
+def test_index_search_with_no_aggregation_results(
+    mock_api_caller, aggregations_null_json
+):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [aggregations_null_json]
     request = (
-        FluentSearch(aggregations={"test1": {"test2": {"field": "__test_field"}}}).where(
-            Column.QUALIFIED_NAME.startswith("test-qn")
-        )
+        FluentSearch(
+            aggregations={"test1": {"test2": {"field": "__test_field"}}}
+        ).where(Column.QUALIFIED_NAME.startswith("test-qn"))
     ).to_request()
     response = client.search(criteria=request)
     assert response
@@ -1539,7 +1600,9 @@ def _assert_search_results(results, response_json, sorts, bulk=False):
 
 
 @patch.object(LOGGER, "debug")
-def test_index_search_pagination(mock_logger, mock_api_caller, index_search_paging_json):
+def test_index_search_pagination(
+    mock_logger, mock_api_caller, index_search_paging_json
+):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
 
@@ -1604,7 +1667,10 @@ def test_index_search_pagination(mock_logger, mock_api_caller, index_search_pagi
         _assert_search_results(results, index_search_paging_json, expected_sorts)
         assert mock_api_caller._call_api.call_count == 3
         assert mock_logger.call_count == 1
-        assert "Result size (%s) exceeds threshold (%s)" in mock_logger.call_args_list[0][0][0]
+        assert (
+            "Result size (%s) exceeds threshold (%s)"
+            in mock_logger.call_args_list[0][0][0]
+        )
     mock_logger.reset_mock()
     mock_api_caller.reset_mock()
 
@@ -1663,7 +1729,9 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [get_by_guid_json]
 
-    response = client.get_by_guid(guid="test-table-guid-123", ignore_relationships=False)
+    response = client.get_by_guid(
+        guid="test-table-guid-123", ignore_relationships=False
+    )
 
     assert response
     assert isinstance(response, Table)
@@ -1673,7 +1741,9 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     mock_api_caller.reset_mock()
 
 
-def test_asset_retrieve_minimal_without_asset_type(mock_api_caller, retrieve_minimal_json):
+def test_asset_retrieve_minimal_without_asset_type(
+    mock_api_caller, retrieve_minimal_json
+):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [retrieve_minimal_json]
 
@@ -1764,7 +1834,9 @@ def test_typedef_get_by_name_invalid_response(mock_api_caller):
     mock_api_caller._call_api.side_effect = [{"category": "ENUM", "test": "invalid"}]
     with pytest.raises(ApiError) as err:
         client.get_by_name(name="test-enum")
-    assert "1 validation error for EnumDef\nelementDefs\n  field required" in str(err.value)
+    assert "1 validation error for EnumDef\nelementDefs\n  field required" in str(
+        err.value
+    )
     mock_api_caller.reset_mock()
 
 
@@ -1959,7 +2031,9 @@ def test_atlan_call_api_server_error_messages_with_causes(
     client: AtlanClient,
     test_error_msg,
 ):
-    ERROR_CODE_FOR_HTTP_STATUS.update({ErrorCode.ERROR_PASSTHROUGH.http_error_code: ErrorCode.ERROR_PASSTHROUGH})
+    ERROR_CODE_FOR_HTTP_STATUS.update(
+        {ErrorCode.ERROR_PASSTHROUGH.http_error_code: ErrorCode.ERROR_PASSTHROUGH}
+    )
     STATUS_CODES = set(ERROR_CODE_FOR_HTTP_STATUS.keys())
     # For "NOT_FOUND (404)" errors, no error cause is returned by the backend,
     # so we'll exclude that from the test cases:
@@ -2015,7 +2089,9 @@ class TestBatch:
             (CustomMetadataHandling.MERGE),
         ],
     )
-    def test_add_when_capture_failure_true(self, custom_metadata_handling, mock_atlan_client):
+    def test_add_when_capture_failure_true(
+        self, custom_metadata_handling, mock_atlan_client
+    ):
         table_1 = Mock(Table(guid="t1"))
         table_2 = Mock(Table(guid="t2"))
         table_3 = Mock(Table(guid="t3"))
@@ -2056,7 +2132,9 @@ class TestBatch:
             unsaved.trim_to_required.assert_called_once()
             assert unsaved.name == saved.name
 
-        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters("bad", "stuff", "")
+        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+            "bad", "stuff", ""
+        )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_atlan_client.asset.save.side_effect = exception
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
@@ -2102,8 +2180,12 @@ class TestBatch:
             (CustomMetadataHandling.MERGE),
         ],
     )
-    def test_add_when_capture_failure_false_then_exception_raised(self, custom_metadata_handling, mock_atlan_client):
-        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters("bad", "stuff", "")
+    def test_add_when_capture_failure_false_then_exception_raised(
+        self, custom_metadata_handling, mock_atlan_client
+    ):
+        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+            "bad", "stuff", ""
+        )
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
             mock_atlan_client.asset.save.side_effect = exception
         elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
@@ -2200,7 +2282,9 @@ class TestBulkRequest:
         # Test replace and append (list)
         term1.attributes.see_also = [
             AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
-            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2219,10 +2303,14 @@ class TestBulkRequest:
         # Test replace and append (list) with multiple relationships
         term1.attributes.see_also = [
             AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
-            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
         ]
         term1.attributes.preferred_to_terms = [
-            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2243,7 +2331,9 @@ class TestBulkRequest:
 
         # Test append and replace (list)
         term1.attributes.see_also = [
-            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.APPEND
+            ),
             AtlasGlossaryTerm.ref_by_guid(guid=term3.guid),
         ]
         request = BulkRequest(entities=[term1])
@@ -2262,8 +2352,12 @@ class TestBulkRequest:
 
         # Test remove and append (list)
         term1.attributes.see_also = [
-            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.REMOVE),
-            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.REMOVE
+            ),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2282,8 +2376,12 @@ class TestBulkRequest:
 
         # Test same semantic (list)
         term1.attributes.see_also = [
-            AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.APPEND),
-            AtlasGlossaryTerm.ref_by_guid(guid=term3.guid, semantic=SaveSemantic.APPEND),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term2.guid, semantic=SaveSemantic.APPEND
+            ),
+            AtlasGlossaryTerm.ref_by_guid(
+                guid=term3.guid, semantic=SaveSemantic.APPEND
+            ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2322,7 +2420,9 @@ class TestBulkRequest:
         assert self.REMOVE not in request_json
 
         # Test append
-        term1.attributes.anchor = AtlasGlossary.ref_by_guid(guid=glossary.guid, semantic=SaveSemantic.APPEND)
+        term1.attributes.anchor = AtlasGlossary.ref_by_guid(
+            guid=glossary.guid, semantic=SaveSemantic.APPEND
+        )
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
@@ -2334,7 +2434,9 @@ class TestBulkRequest:
         assert "anchor" not in request_json["attributes"]
 
         # Test remove
-        term1.attributes.anchor = AtlasGlossary.ref_by_guid(guid=glossary.guid, semantic=SaveSemantic.REMOVE)
+        term1.attributes.anchor = AtlasGlossary.ref_by_guid(
+            guid=glossary.guid, semantic=SaveSemantic.REMOVE
+        )
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
@@ -2448,7 +2550,9 @@ def test_get_by_guid_asset_not_found_fluent_search():
         mock_execute.return_value.current_page.return_value = []
 
         client = AssetClient(client=ApiCaller)
-        with pytest.raises(ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid).__class__):
+        with pytest.raises(
+            ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid).__class__
+        ):
             client.get_by_guid(
                 guid=guid,
                 asset_type=asset_type,
@@ -2470,7 +2574,9 @@ def test_get_by_guid_type_mismatch_fluent_search():
         client = AssetClient(client=ApiCaller)
 
         with pytest.raises(
-            ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, expected_asset_type.__name__).__class__
+            ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                guid, expected_asset_type.__name__
+            ).__class__
         ):
             client.get_by_guid(
                 guid=guid,
@@ -2516,7 +2622,9 @@ def test_get_by_qualified_name_asset_not_found():
         client = AssetClient(client=ApiCaller)
 
         with pytest.raises(
-            ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(qualified_name, asset_type.__name__).__class__
+            ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+                qualified_name, asset_type.__name__
+            ).__class__
         ):
             client.get_by_qualified_name(
                 qualified_name=qualified_name,

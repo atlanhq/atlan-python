@@ -31,15 +31,21 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.AIRFLOW)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.AIRFLOW
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def airflow_dag(client: AtlanClient, connection: Connection) -> Generator[AirflowDag, None, None]:
+def airflow_dag(
+    client: AtlanClient, connection: Connection
+) -> Generator[AirflowDag, None, None]:
     assert connection.qualified_name
-    to_create = AirflowDag.creator(name=AIRFLOW_DAG_NAME, connection_qualified_name=connection.qualified_name)
+    to_create = AirflowDag.creator(
+        name=AIRFLOW_DAG_NAME, connection_qualified_name=connection.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AirflowDag)[0]
     yield result
@@ -60,9 +66,13 @@ def test_airflow_dag(
 
 
 @pytest.fixture(scope="module")
-def airflow_task(client: AtlanClient, airflow_dag: AirflowDag) -> Generator[AirflowTask, None, None]:
+def airflow_task(
+    client: AtlanClient, airflow_dag: AirflowDag
+) -> Generator[AirflowTask, None, None]:
     assert airflow_dag.qualified_name
-    to_create = AirflowTask.creator(name=AIRFLOW_TASK_NAME, airflow_dag_qualified_name=airflow_dag.qualified_name)
+    to_create = AirflowTask.creator(
+        name=AIRFLOW_TASK_NAME, airflow_dag_qualified_name=airflow_dag.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AirflowTask)[0]
     yield result
@@ -109,7 +119,9 @@ def test_overload_airflow_task(
     assert airflow_task_overload.qualified_name
     assert airflow_task_overload.name == AIRFLOW_TASK_NAME_OVERLOAD
     assert airflow_task_overload.connector_name == AtlanConnectorType.AIRFLOW
-    assert airflow_task_overload.airflow_dag_qualified_name == airflow_dag.qualified_name
+    assert (
+        airflow_task_overload.airflow_dag_qualified_name == airflow_dag.qualified_name
+    )
 
 
 def _update_cert_and_annoucement(client, asset, asset_type):
@@ -153,7 +165,9 @@ def test_update_airflow_assets(
 
 
 def _retrieve_airflow_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type, ignore_relationships=False)
+    retrieved = client.asset.get_by_guid(
+        asset.guid, asset_type=asset_type, ignore_relationships=False
+    )
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -198,7 +212,9 @@ def test_read_deleted_airflow_task(
     client: AtlanClient,
     airflow_task: AirflowTask,
 ):
-    deleted = client.asset.get_by_guid(airflow_task.guid, asset_type=AirflowTask, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        airflow_task.guid, asset_type=AirflowTask, ignore_relationships=False
+    )
     assert deleted
     assert deleted.status == EntityStatus.DELETED
     assert deleted.guid == airflow_task.guid
@@ -211,7 +227,9 @@ def test_restore_airflow_task(
     airflow_task: AirflowTask,
 ):
     assert airflow_task.qualified_name
-    assert client.asset.restore(asset_type=AirflowTask, qualified_name=airflow_task.qualified_name)
+    assert client.asset.restore(
+        asset_type=AirflowTask, qualified_name=airflow_task.qualified_name
+    )
     assert airflow_task.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=AirflowTask,

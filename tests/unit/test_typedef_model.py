@@ -139,7 +139,9 @@ class TestEnumDef:
             ["my_enum", None, "values is required"],
         ],
     )
-    def test_enum_create_method_required_parameters(self, test_name, test_values, error_msg):
+    def test_enum_create_method_required_parameters(
+        self, test_name, test_values, error_msg
+    ):
         with pytest.raises(ValueError) as err:
             EnumDef.create(name=test_name, values=test_values)
         assert error_msg in str(err.value)
@@ -175,7 +177,9 @@ class TestEnumDef:
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
-        enum = EnumDef.update(name="test-enum", values=["test-val1", "test-val2"], replace_existing=False)
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
         assert enum
         assert enum.name == "test-enum"
         assert enum.category == AtlanTypeCategory.ENUM
@@ -196,7 +200,9 @@ class TestEnumDef:
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
-        enum = EnumDef.update(name="test-enum", values=["test-val1", "test-val2"], replace_existing=False)
+        enum = EnumDef.update(
+            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+        )
         assert enum
         assert enum.name == "test-enum"
         assert enum.category == AtlanTypeCategory.ENUM
@@ -350,7 +356,9 @@ class TestAttributeDef:
             (APPLICABLE_ENTITY_TYPES, {"Asset"}),
         ],
     )
-    def test_applicable_types_with_no_options_raises_invalid_request_error(self, attribute, value, sut: AttributeDef):
+    def test_applicable_types_with_no_options_raises_invalid_request_error(
+        self, attribute, value, sut: AttributeDef
+    ):
         sut = AttributeDef()
         # Explicitly setting "None" since options
         # are now initialized with a default factory
@@ -385,7 +393,9 @@ class TestAttributeDef:
             (APPLICABLE_DOMAINS, {"default/domain/uuBI8WSqeom1PXs7oo20L/super"}),
         ],
     )
-    def test_applicable_types_with_valid_value(self, attribute, value, sut: AttributeDef):
+    def test_applicable_types_with_valid_value(
+        self, attribute, value, sut: AttributeDef
+    ):
         setattr(sut, attribute, value)
         assert getattr(sut, attribute) == value
         options = sut.options
@@ -416,5 +426,9 @@ class TestAttributeDef:
         assert attribute_def_with_limited.options
         options = attribute_def_with_limited.options
         for attribute in applicable_kwargs.keys():
-            assert getattr(attribute_def_with_limited, attribute) == applicable_kwargs.get(attribute)
-            assert getattr(options, attribute) == json.dumps(list(applicable_kwargs.get(attribute)))
+            assert getattr(
+                attribute_def_with_limited, attribute
+            ) == applicable_kwargs.get(attribute)
+            assert getattr(options, attribute) == json.dumps(
+                list(applicable_kwargs.get(attribute))
+            )

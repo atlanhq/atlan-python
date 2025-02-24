@@ -66,7 +66,9 @@ class SourceTagCache(AbstractAssetCache):
         return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
     @classmethod
-    def get_by_qualified_name(cls, qualified_name: str, allow_refresh: bool = True) -> Tag:
+    def get_by_qualified_name(
+        cls, qualified_name: str, allow_refresh: bool = True
+    ) -> Tag:
         """
         Retrieve a source tag from the cache by its unique Atlan-internal name.
 
@@ -79,7 +81,9 @@ class SourceTagCache(AbstractAssetCache):
         :raises NotFoundError: if the source tag cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no qualified_name was provided for the source tag to retrieve
         """
-        return cls.get_cache()._get_by_qualified_name(qualified_name=qualified_name, allow_refresh=allow_refresh)
+        return cls.get_cache()._get_by_qualified_name(
+            qualified_name=qualified_name, allow_refresh=allow_refresh
+        )
 
     @classmethod
     def get_by_name(cls, name: SourceTagName, allow_refresh: bool = True) -> Tag:
@@ -164,7 +168,9 @@ class SourceTagCache(AbstractAssetCache):
         try:
             source_tag_name = str(SourceTagName(asset))
         except AtlanError as e:
-            LOGGER.error("Unable to construct a source tag name for: %s", asset.qualified_name)
+            LOGGER.error(
+                "Unable to construct a source tag name for: %s", asset.qualified_name
+            )
             LOGGER.debug("Details: %s", e)
         return source_tag_name
 

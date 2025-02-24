@@ -30,8 +30,12 @@ class KafkaTopic(Kafka):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> KafkaTopic:
-        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
-        attributes = KafkaTopic.Attributes.creator(name=name, connection_qualified_name=connection_qualified_name)
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = KafkaTopic.Attributes.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
         return cls(attributes=attributes)
 
     type_name: str = Field(default="KafkaTopic", allow_mutation=False)
@@ -47,7 +51,9 @@ class KafkaTopic(Kafka):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    KAFKA_TOPIC_IS_INTERNAL: ClassVar[BooleanField] = BooleanField("kafkaTopicIsInternal", "kafkaTopicIsInternal")
+    KAFKA_TOPIC_IS_INTERNAL: ClassVar[BooleanField] = BooleanField(
+        "kafkaTopicIsInternal", "kafkaTopicIsInternal"
+    )
     """
     Whether this topic is an internal topic (true) or not (false).
     """
@@ -63,7 +69,9 @@ class KafkaTopic(Kafka):
     """
     Replication factor for this topic.
     """
-    KAFKA_TOPIC_SEGMENT_BYTES: ClassVar[NumericField] = NumericField("kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes")
+    KAFKA_TOPIC_SEGMENT_BYTES: ClassVar[NumericField] = NumericField(
+        "kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes"
+    )
     """
     Segment size for this topic.
     """
@@ -79,11 +87,15 @@ class KafkaTopic(Kafka):
     """
     Number of partitions for this topic.
     """
-    KAFKA_TOPIC_SIZE_IN_BYTES: ClassVar[NumericField] = NumericField("kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes")
+    KAFKA_TOPIC_SIZE_IN_BYTES: ClassVar[NumericField] = NumericField(
+        "kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes"
+    )
     """
     Size of this topic, in bytes.
     """
-    KAFKA_TOPIC_RECORD_COUNT: ClassVar[NumericField] = NumericField("kafkaTopicRecordCount", "kafkaTopicRecordCount")
+    KAFKA_TOPIC_RECORD_COUNT: ClassVar[NumericField] = NumericField(
+        "kafkaTopicRecordCount", "kafkaTopicRecordCount"
+    )
     """
     Number of (unexpired) messages in this topic.
     """
@@ -100,7 +112,9 @@ class KafkaTopic(Kafka):
     Comma seperated Cleanup policy for this topic.
     """
 
-    KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField("kafkaConsumerGroups")
+    KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
+        "kafkaConsumerGroups"
+    )
     """
     TBC
     """
@@ -121,7 +135,9 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_is_internal(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.kafka_topic_is_internal
+        return (
+            None if self.attributes is None else self.attributes.kafka_topic_is_internal
+        )
 
     @kafka_topic_is_internal.setter
     def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
@@ -131,27 +147,43 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
-        return None if self.attributes is None else self.attributes.kafka_topic_compression_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_compression_type
+        )
 
     @kafka_topic_compression_type.setter
-    def kafka_topic_compression_type(self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]):
+    def kafka_topic_compression_type(
+        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
 
     @property
     def kafka_topic_replication_factor(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_replication_factor
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_replication_factor
+        )
 
     @kafka_topic_replication_factor.setter
-    def kafka_topic_replication_factor(self, kafka_topic_replication_factor: Optional[int]):
+    def kafka_topic_replication_factor(
+        self, kafka_topic_replication_factor: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
 
     @property
     def kafka_topic_segment_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_segment_bytes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_segment_bytes
+        )
 
     @kafka_topic_segment_bytes.setter
     def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
@@ -161,17 +193,29 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_retention_time_in_ms(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_retention_time_in_ms
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_retention_time_in_ms
+        )
 
     @kafka_topic_retention_time_in_ms.setter
-    def kafka_topic_retention_time_in_ms(self, kafka_topic_retention_time_in_ms: Optional[int]):
+    def kafka_topic_retention_time_in_ms(
+        self, kafka_topic_retention_time_in_ms: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_retention_time_in_ms = kafka_topic_retention_time_in_ms
+        self.attributes.kafka_topic_retention_time_in_ms = (
+            kafka_topic_retention_time_in_ms
+        )
 
     @property
     def kafka_topic_partitions_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_partitions_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_partitions_count
+        )
 
     @kafka_topic_partitions_count.setter
     def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
@@ -181,7 +225,11 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_size_in_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_size_in_bytes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_size_in_bytes
+        )
 
     @kafka_topic_size_in_bytes.setter
     def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
@@ -191,7 +239,11 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_record_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.kafka_topic_record_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_record_count
+        )
 
     @kafka_topic_record_count.setter
     def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
@@ -201,56 +253,92 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_cleanup_policy(self) -> Optional[KafkaTopicCleanupPolicy]:
-        return None if self.attributes is None else self.attributes.kafka_topic_cleanup_policy
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_cleanup_policy
+        )
 
     @kafka_topic_cleanup_policy.setter
-    def kafka_topic_cleanup_policy(self, kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy]):
+    def kafka_topic_cleanup_policy(
+        self, kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
     @property
     def kafka_topic_log_cleanup_policy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.kafka_topic_log_cleanup_policy
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_log_cleanup_policy
+        )
 
     @kafka_topic_log_cleanup_policy.setter
-    def kafka_topic_log_cleanup_policy(self, kafka_topic_log_cleanup_policy: Optional[str]):
+    def kafka_topic_log_cleanup_policy(
+        self, kafka_topic_log_cleanup_policy: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_log_cleanup_policy = kafka_topic_log_cleanup_policy
 
     @property
     def kafka_consumer_groups(self) -> Optional[List[KafkaConsumerGroup]]:
-        return None if self.attributes is None else self.attributes.kafka_consumer_groups
+        return (
+            None if self.attributes is None else self.attributes.kafka_consumer_groups
+        )
 
     @kafka_consumer_groups.setter
-    def kafka_consumer_groups(self, kafka_consumer_groups: Optional[List[KafkaConsumerGroup]]):
+    def kafka_consumer_groups(
+        self, kafka_consumer_groups: Optional[List[KafkaConsumerGroup]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_consumer_groups = kafka_consumer_groups
 
     class Attributes(Kafka.Attributes):
         kafka_topic_is_internal: Optional[bool] = Field(default=None, description="")
-        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(default=None, description="")
-        kafka_topic_replication_factor: Optional[int] = Field(default=None, description="")
+        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
+            default=None, description=""
+        )
+        kafka_topic_replication_factor: Optional[int] = Field(
+            default=None, description=""
+        )
         kafka_topic_segment_bytes: Optional[int] = Field(default=None, description="")
-        kafka_topic_retention_time_in_ms: Optional[int] = Field(default=None, description="")
-        kafka_topic_partitions_count: Optional[int] = Field(default=None, description="")
+        kafka_topic_retention_time_in_ms: Optional[int] = Field(
+            default=None, description=""
+        )
+        kafka_topic_partitions_count: Optional[int] = Field(
+            default=None, description=""
+        )
         kafka_topic_size_in_bytes: Optional[int] = Field(default=None, description="")
         kafka_topic_record_count: Optional[int] = Field(default=None, description="")
-        kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(default=None, description="")
-        kafka_topic_log_cleanup_policy: Optional[str] = Field(default=None, description="")
-        kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(default=None, description="")  # relationship
+        kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
+            default=None, description=""
+        )
+        kafka_topic_log_cleanup_policy: Optional[str] = Field(
+            default=None, description=""
+        )
+        kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def creator(cls, *, name: str, connection_qualified_name: str) -> KafkaTopic.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        def creator(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> KafkaTopic.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return KafkaTopic.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/topic/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: KafkaTopic.Attributes = Field(

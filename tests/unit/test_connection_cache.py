@@ -22,7 +22,9 @@ def test_get_by_guid_with_not_found_error(monkeypatch):
 
 
 @patch.object(ConnectionCache, "lookup_by_guid")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
 def test_get_by_guid_with_no_invalid_request_error(mock_get_cache, mock_lookup_by_guid):
     test_guid = "test-guid-123"
     with pytest.raises(
@@ -39,13 +41,19 @@ def test_get_by_qualified_name_with_not_found_error(monkeypatch):
 
 
 @patch.object(ConnectionCache, "lookup_by_qualified_name")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
-def test_get_by_qualified_name_with_no_invalid_request_error(mock_get_cache, mock_lookup_by_qualified_name):
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
+def test_get_by_qualified_name_with_no_invalid_request_error(
+    mock_get_cache, mock_lookup_by_qualified_name
+):
     test_qn = "default/snowflake/123456789"
     test_connector = "snowflake"
     with pytest.raises(
         NotFoundError,
-        match=ErrorCode.ASSET_NOT_FOUND_BY_QN.error_message.format(test_qn, test_connector),
+        match=ErrorCode.ASSET_NOT_FOUND_BY_QN.error_message.format(
+            test_qn, test_connector
+        ),
     ):
         ConnectionCache.get_by_qualified_name(test_qn)
     mock_get_cache.assert_called_once()
@@ -57,7 +65,9 @@ def test_get_by_name_with_not_found_error(monkeypatch):
 
 
 @patch.object(ConnectionCache, "lookup_by_name")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
 def test_get_by_name_with_no_invalid_request_error(mock_get_cache, mock_lookup_by_name):
     test_name = ConnectionName("snowflake/test")
     with pytest.raises(
@@ -72,7 +82,9 @@ def test_get_by_name_with_no_invalid_request_error(mock_get_cache, mock_lookup_b
 
 
 @patch.object(ConnectionCache, "lookup_by_guid")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
 def test_get_by_guid(mock_get_cache, mock_lookup_by_guid):
     test_guid = "test-guid-123"
     test_qn = "test-qualified-name"
@@ -123,7 +135,9 @@ def test_get_by_guid(mock_get_cache, mock_lookup_by_guid):
 
 @patch.object(ConnectionCache, "lookup_by_guid")
 @patch.object(ConnectionCache, "lookup_by_qualified_name")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
 def test_get_by_qualified_name(mock_get_cache, mock_lookup_by_qn, mock_lookup_by_guid):
     test_guid = "test-guid-123"
     test_qn = "test-qualified-name"
@@ -181,7 +195,9 @@ def test_get_by_qualified_name(mock_get_cache, mock_lookup_by_qn, mock_lookup_by
 
 @patch.object(ConnectionCache, "lookup_by_guid")
 @patch.object(ConnectionCache, "lookup_by_name")
-@patch.object(ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient()))
+@patch.object(
+    ConnectionCache, "get_cache", return_value=ConnectionCache(client=AtlanClient())
+)
 def test_get_by_name(mock_get_cache, mock_lookup_by_name, mock_lookup_by_guid):
     test_name = ConnectionName("snowflake/test")
     test_guid = "test-guid-123"

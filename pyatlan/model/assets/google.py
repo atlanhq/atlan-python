@@ -34,7 +34,9 @@ class Google(Cloud):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField("googleService", "googleService")
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
     """
     Service in Google in which the asset exists.
     """
@@ -50,15 +52,21 @@ class Google(Cloud):
     """
     ID of the project in which the asset exists.
     """
-    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField("googleProjectNumber", "googleProjectNumber")
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
     """
     Number of the project in which the asset exists.
     """
-    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField("googleLocation", "googleLocation")
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
     """
     Location of this asset in Google.
     """
-    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField("googleLocationType", "googleLocationType")
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
     """
     Type of location of this asset in Google.
     """
@@ -114,7 +122,9 @@ class Google(Cloud):
 
     @property
     def google_project_number(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.google_project_number
+        return (
+            None if self.attributes is None else self.attributes.google_project_number
+        )
 
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):

@@ -25,7 +25,9 @@ REQUIRED_ATTRS = [
     "outputFromProcesses",
     "certificateStatus",
 ]
-ENFORCEMENT_MESSAGE = "To be verified, an asset must have a description, at least one owner, and lineage."
+ENFORCEMENT_MESSAGE = (
+    "To be verified, an asset must have a description, at least one owner, and lineage."
+)
 logger = logging.getLogger(__name__)
 
 client = AtlanClient()
@@ -56,7 +58,11 @@ class LambdaEnforcer(AtlanEventHandler):
         """
 
         if asset.certificate_status == CertificateStatus.VERIFIED:
-            if not has_description(asset) or not has_owner(asset) or not has_lineage(asset):
+            if (
+                not has_description(asset)
+                or not has_owner(asset)
+                or not has_lineage(asset)
+            ):
                 trimmed = asset.trim_to_required()
                 trimmed.certificate_status = CertificateStatus.DRAFT
                 trimmed.certificate_status_message = ENFORCEMENT_MESSAGE

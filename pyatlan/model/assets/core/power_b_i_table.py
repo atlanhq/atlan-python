@@ -42,7 +42,9 @@ class PowerBITable(PowerBI):
     """
     Unique name of the workspace in which this table exists.
     """
-    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasetQualifiedName", "datasetQualifiedName")
+    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
     """
     Unique name of the dataset in which this table exists.
     """
@@ -105,7 +107,11 @@ class PowerBITable(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -115,7 +121,9 @@ class PowerBITable(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dataset_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.dataset_qualified_name
+        )
 
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
@@ -125,7 +133,11 @@ class PowerBITable(PowerBI):
 
     @property
     def dataflow_qualified_names(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.dataflow_qualified_names
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dataflow_qualified_names
+        )
 
     @dataflow_qualified_names.setter
     def dataflow_qualified_names(self, dataflow_qualified_names: Optional[Set[str]]):
@@ -135,17 +147,29 @@ class PowerBITable(PowerBI):
 
     @property
     def power_b_i_table_source_expressions(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.power_b_i_table_source_expressions
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_source_expressions
+        )
 
     @power_b_i_table_source_expressions.setter
-    def power_b_i_table_source_expressions(self, power_b_i_table_source_expressions: Optional[Set[str]]):
+    def power_b_i_table_source_expressions(
+        self, power_b_i_table_source_expressions: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_source_expressions = power_b_i_table_source_expressions
+        self.attributes.power_b_i_table_source_expressions = (
+            power_b_i_table_source_expressions
+        )
 
     @property
     def power_b_i_table_column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.power_b_i_table_column_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_column_count
+        )
 
     @power_b_i_table_column_count.setter
     def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
@@ -155,10 +179,16 @@ class PowerBITable(PowerBI):
 
     @property
     def power_b_i_table_measure_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.power_b_i_table_measure_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.power_b_i_table_measure_count
+        )
 
     @power_b_i_table_measure_count.setter
-    def power_b_i_table_measure_count(self, power_b_i_table_measure_count: Optional[int]):
+    def power_b_i_table_measure_count(
+        self, power_b_i_table_measure_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
@@ -206,14 +236,30 @@ class PowerBITable(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        dataflow_qualified_names: Optional[Set[str]] = Field(default=None, description="")
-        power_b_i_table_source_expressions: Optional[Set[str]] = Field(default=None, description="")
-        power_b_i_table_column_count: Optional[int] = Field(default=None, description="")
-        power_b_i_table_measure_count: Optional[int] = Field(default=None, description="")
-        columns: Optional[List[PowerBIColumn]] = Field(default=None, description="")  # relationship
-        measures: Optional[List[PowerBIMeasure]] = Field(default=None, description="")  # relationship
-        dataflows: Optional[List[PowerBIDataflow]] = Field(default=None, description="")  # relationship
-        dataset: Optional[PowerBIDataset] = Field(default=None, description="")  # relationship
+        dataflow_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        power_b_i_table_source_expressions: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        power_b_i_table_column_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        power_b_i_table_measure_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        columns: Optional[List[PowerBIColumn]] = Field(
+            default=None, description=""
+        )  # relationship
+        measures: Optional[List[PowerBIMeasure]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBITable.Attributes = Field(
         default_factory=lambda: PowerBITable.Attributes(),

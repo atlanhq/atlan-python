@@ -70,7 +70,10 @@ class AtlanTagName:
         return self._display_text.__hash__()
 
     def __eq__(self, other):
-        return isinstance(other, AtlanTagName) and self._display_text == other._display_text
+        return (
+            isinstance(other, AtlanTagName)
+            and self._display_text == other._display_text
+        )
 
     @classmethod
     def _convert_to_display_text(cls, data):
@@ -137,7 +140,9 @@ class AtlanYamlModel(BaseModel):
         validate_assignment = True
         allow_population_by_field_name = True
 
-    def to_yaml(self, by_alias: bool = True, exclude_unset: bool = True, sort_keys: bool = False) -> str:
+    def to_yaml(
+        self, by_alias: bool = True, exclude_unset: bool = True, sort_keys: bool = False
+    ) -> str:
         """
         Serialize the Pydantic model instance to a YAML string.
         """
@@ -166,8 +171,12 @@ class SearchRequest(AtlanObject, ABC):
         default_factory=list,
         description="List of attributes to be returned for each result.",
     )
-    offset: Optional[int] = Field(default=None, description="Starting point for pagination.", alias="from")
-    size: Optional[int] = Field(default=None, description="How many results to include in each page of results.")
+    offset: Optional[int] = Field(
+        default=None, description="Starting point for pagination.", alias="from"
+    )
+    size: Optional[int] = Field(
+        default=None, description="How many results to include in each page of results."
+    )
 
 
 @dataclass
@@ -214,7 +223,9 @@ class AtlanTag(AtlanObject):
         alias="restrictPropagationThroughHierarchy",
     )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
-    _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(default_factory=list)
+    _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
+        default_factory=list
+    )
 
     attributes: Optional[Dict[str, Any]] = None
 
@@ -269,14 +280,18 @@ class AtlanTag(AtlanObject):
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
         if source_tag_attachment:
-            source_tag_attr_id = AtlanTagCache.get_source_tags_attr_id(atlan_tag_name.id) or ""
+            source_tag_attr_id = (
+                AtlanTagCache.get_source_tags_attr_id(atlan_tag_name.id) or ""
+            )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
             tag._source_tag_attachements.append(source_tag_attachment)
         return tag
 
 
 class AtlanTags(AtlanObject):
-    __root__: List[AtlanTag] = Field(default_factory=list, description="classifications")
+    __root__: List[AtlanTag] = Field(
+        default_factory=list, description="classifications"
+    )
 
 
 class Meaning(AtlanObject):
@@ -340,7 +355,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         asset.append_relationship_attributes = {}
         # Process relationship attributes set by the user and update exclusion set
         for attribute in asset.attributes.__fields_set__:
-            exclude_attributes.update(cls.process_relationship_attributes(asset, attribute))
+            exclude_attributes.update(
+                cls.process_relationship_attributes(asset, attribute)
+            )
         # Determine relationship attributes to exclude
         # https://docs.pydantic.dev/1.10/usage/exporting_models/#advanced-include-and-exclude
         exclude_relationship_attributes = {
@@ -376,7 +393,10 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
         # Updated to use `asset.attribute` instead of `asset` to align with the API.
         # This change ensures the correct value is retrieved regardless of the naming conventions.
-        attribute_name, attribute_value = attribute, getattr(asset.attributes, attribute, None)
+        attribute_name, attribute_value = (
+            attribute,
+            getattr(asset.attributes, attribute, None),
+        )
 
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
@@ -391,9 +411,13 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
             # Update asset based on processed relationship attributes
             if remove_attributes:
-                asset.remove_relationship_attributes.update({to_camel_case(attribute_name): remove_attributes})
+                asset.remove_relationship_attributes.update(
+                    {to_camel_case(attribute_name): remove_attributes}
+                )
             if append_attributes:
-                asset.append_relationship_attributes.update({to_camel_case(attribute_name): append_attributes})
+                asset.append_relationship_attributes.update(
+                    {to_camel_case(attribute_name): append_attributes}
+                )
             if replace_attributes:
                 # Updated to use `asset.attribute` instead of `asset` to align with the API.
                 # This change ensures the correct value is retrieved regardless of the naming conventions.
@@ -413,12 +437,16 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                 # We only want to include this attribute under
                 # "remove_relationship_attributes", not both.
                 exclude_attributes.add(attribute_name)
-                asset.remove_relationship_attributes = {to_camel_case(attribute_name): attribute_value}
+                asset.remove_relationship_attributes = {
+                    to_camel_case(attribute_name): attribute_value
+                }
             elif attribute_value.semantic == SaveSemantic.APPEND:
                 # Add the replace attribute to the set to exclude it
                 # from the "attributes" property in the request payload.
                 # We only want to include this attribute under
                 # "append_relationship_attributes", not both.
                 exclude_attributes.add(attribute_name)
-                asset.append_relationship_attributes = {to_camel_case(attribute_name): attribute_value}
+                asset.append_relationship_attributes = {
+                    to_camel_case(attribute_name): attribute_value
+                }
         return exclude_attributes

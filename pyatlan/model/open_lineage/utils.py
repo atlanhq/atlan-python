@@ -43,6 +43,8 @@ def generate_new_uuid(instant: datetime | None = None) -> UUID:
     :return: UUID
     """
 
-    timestamp_ms = int(instant.timestamp() * 1000) if instant else time.time_ns() // 10**6
+    timestamp_ms = (
+        int(instant.timestamp() * 1000) if instant else time.time_ns() // 10**6
+    )
     node = secrets.randbits(76)
     return _build_uuidv7(timestamp_ms, node)

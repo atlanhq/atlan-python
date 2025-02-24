@@ -21,14 +21,24 @@ class Readme(Resource):
 
     @classmethod
     @init_guid
-    def creator(cls, *, asset: Asset, content: str, asset_name: Optional[str] = None) -> Readme:
-        return Readme(attributes=Readme.Attributes.create(asset=asset, content=content, asset_name=asset_name))
+    def creator(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
+        return Readme(
+            attributes=Readme.Attributes.create(
+                asset=asset, content=content, asset_name=asset_name
+            )
+        )
 
     @classmethod
     @init_guid
-    def create(cls, *, asset: Asset, content: str, asset_name: Optional[str] = None) -> Readme:
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -43,7 +53,9 @@ class Readme(Resource):
     def description(self, description: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.description = quote(description) if description is not None else description
+        self.attributes.description = (
+            quote(description) if description is not None else description
+        )
 
     type_name: str = Field(default="Readme", allow_mutation=False)
 
@@ -93,18 +105,26 @@ class Readme(Resource):
         self.attributes.asset = asset
 
     class Attributes(Resource.Attributes):
-        see_also: Optional[List[Readme]] = Field(default=None, description="")  # relationship
+        see_also: Optional[List[Readme]] = Field(
+            default=None, description=""
+        )  # relationship
         asset: Optional[Asset] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, asset: Asset, content: str, asset_name: Optional[str] = None) -> Readme.Attributes:
+        def create(
+            cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+        ) -> Readme.Attributes:
             validate_required_fields(["asset", "content"], [asset, content])
             if not asset.name or len(asset.name) < 1:
                 if not asset_name:
-                    raise ValueError("asset_name is required when name is not available from asset")
+                    raise ValueError(
+                        "asset_name is required when name is not available from asset"
+                    )
             elif asset_name:
-                raise ValueError("asset_name can not be given when name is available from asset")
+                raise ValueError(
+                    "asset_name can not be given when name is available from asset"
+                )
             else:
                 asset_name = asset.name
             if not asset.guid:

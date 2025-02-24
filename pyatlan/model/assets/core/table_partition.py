@@ -144,35 +144,51 @@ class TablePartition(SQL):
     """
     Whether this partition is temporary (true) or not (false).
     """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("isQueryPreview", "isQueryPreview")
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "isQueryPreview", "isQueryPreview"
+    )
     """
     Whether preview queries for this partition are allowed (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
     """
     Configuration for the preview queries.
     """
-    EXTERNAL_LOCATION: ClassVar[TextField] = TextField("externalLocation", "externalLocation")
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
+        "externalLocation", "externalLocation"
+    )
     """
     External location of this partition, for example: an S3 object location.
     """
-    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField("externalLocationRegion", "externalLocationRegion")
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
+        "externalLocationRegion", "externalLocationRegion"
+    )
     """
     Region of the external location of this partition, for example: S3 region.
     """
-    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField("externalLocationFormat", "externalLocationFormat")
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
+        "externalLocationFormat", "externalLocationFormat"
+    )
     """
     Format of the external location of this partition, for example: JSON, CSV, PARQUET, etc.
     """
-    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField("isPartitioned", "isPartitioned")
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
+        "isPartitioned", "isPartitioned"
+    )
     """
     Whether this partition is further partitioned (true) or not (false).
     """
-    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField("partitionStrategy", "partitionStrategy")
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "partitionStrategy", "partitionStrategy"
+    )
     """
     Partition strategy of this partition.
     """
-    PARTITION_COUNT: ClassVar[NumericField] = NumericField("partitionCount", "partitionCount")
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
+        "partitionCount", "partitionCount"
+    )
     """
     Number of sub-partitions of this partition.
     """
@@ -189,11 +205,15 @@ class TablePartition(SQL):
     """
     TBC
     """
-    CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField("childTablePartitions")
+    CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField(
+        "childTablePartitions"
+    )
     """
     TBC
     """
-    PARENT_TABLE_PARTITION: ClassVar[RelationField] = RelationField("parentTablePartition")
+    PARENT_TABLE_PARTITION: ClassVar[RelationField] = RelationField(
+        "parentTablePartition"
+    )
     """
     TBC
     """
@@ -312,7 +332,11 @@ class TablePartition(SQL):
 
     @property
     def external_location_region(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location_region
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_region
+        )
 
     @external_location_region.setter
     def external_location_region(self, external_location_region: Optional[str]):
@@ -322,7 +346,11 @@ class TablePartition(SQL):
 
     @property
     def external_location_format(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location_format
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_format
+        )
 
     @external_location_format.setter
     def external_location_format(self, external_location_format: Optional[str]):
@@ -392,17 +420,23 @@ class TablePartition(SQL):
 
     @property
     def child_table_partitions(self) -> Optional[List[TablePartition]]:
-        return None if self.attributes is None else self.attributes.child_table_partitions
+        return (
+            None if self.attributes is None else self.attributes.child_table_partitions
+        )
 
     @child_table_partitions.setter
-    def child_table_partitions(self, child_table_partitions: Optional[List[TablePartition]]):
+    def child_table_partitions(
+        self, child_table_partitions: Optional[List[TablePartition]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.child_table_partitions = child_table_partitions
 
     @property
     def parent_table_partition(self) -> Optional[TablePartition]:
-        return None if self.attributes is None else self.attributes.parent_table_partition
+        return (
+            None if self.attributes is None else self.attributes.parent_table_partition
+        )
 
     @parent_table_partition.setter
     def parent_table_partition(self, parent_table_partition: Optional[TablePartition]):
@@ -418,7 +452,9 @@ class TablePartition(SQL):
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
+        query_preview_config: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         external_location: Optional[str] = Field(default=None, description="")
         external_location_region: Optional[str] = Field(default=None, description="")
         external_location_format: Optional[str] = Field(default=None, description="")
@@ -426,10 +462,18 @@ class TablePartition(SQL):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
-        parent_table: Optional[Table] = Field(default=None, description="")  # relationship
-        child_table_partitions: Optional[List[TablePartition]] = Field(default=None, description="")  # relationship
-        parent_table_partition: Optional[TablePartition] = Field(default=None, description="")  # relationship
+        columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        parent_table: Optional[Table] = Field(
+            default=None, description=""
+        )  # relationship
+        child_table_partitions: Optional[List[TablePartition]] = Field(
+            default=None, description=""
+        )  # relationship
+        parent_table_partition: Optional[TablePartition] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -464,7 +508,9 @@ class TablePartition(SQL):
             )
             assert table_qualified_name  # noqa: S101
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     table_qualified_name, "table_qualified_name", 6
@@ -476,8 +522,13 @@ class TablePartition(SQL):
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
             table_name = table_name or fields[5]
-            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
-            schema_qualified_name = schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            schema_qualified_name = (
+                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            )
 
             qualified_name = f"{schema_qualified_name}/{name}"
 

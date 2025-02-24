@@ -29,7 +29,9 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     # TODO: proper connection delete workflow
     delete_asset(client, guid=result.guid, asset_type=Connection)
@@ -63,7 +65,9 @@ def test_file(
     assert file.file_type == FileType.PDF
     assert file.file_path == "https://www.example.com"
     assert connection.qualified_name
-    assert file.connector_name == AtlanConnectorType.get_connector_name(connection.qualified_name)
+    assert file.connector_name == AtlanConnectorType.get_connector_name(
+        connection.qualified_name
+    )
 
 
 @pytest.mark.order(after="test_file")

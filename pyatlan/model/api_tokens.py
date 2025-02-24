@@ -18,8 +18,12 @@ class ApiTokenPersona(AtlanObject):
         description="Unique identifier (GUID) of the linked persona.",
         alias="id",
     )
-    persona: Optional[str] = Field(default=None, description="Unique name of the linked persona.")
-    persona_qualified_name: Optional[str] = Field(default=None, description="Unique qualified_name of the persona")
+    persona: Optional[str] = Field(
+        default=None, description="Unique name of the linked persona."
+    )
+    persona_qualified_name: Optional[str] = Field(
+        default=None, description="Unique qualified_name of the persona"
+    )
 
 
 class ApiToken(AtlanObject):
@@ -39,8 +43,12 @@ class ApiToken(AtlanObject):
         created_at: Optional[int] = Field(
             description="Epoch time, in milliseconds, at which the API token was created."
         )
-        created_by: Optional[str] = Field(default=None, description="User who created the API token.")
-        description: Optional[str] = Field(default=None, description="Explanation of the API token.")
+        created_by: Optional[str] = Field(
+            default=None, description="User who created the API token."
+        )
+        description: Optional[str] = Field(
+            default=None, description="Explanation of the API token."
+        )
         display_name: Optional[str] = Field(
             default=None,
             description="Human-readable name provided when creating the token.",
@@ -63,15 +71,23 @@ class ApiToken(AtlanObject):
 
         @root_validator(pre=True)
         def check_embedded_objects(cls, values):
-            if "workspacePermissions" in values and isinstance(values["workspacePermissions"], str):
-                values["workspacePermissions"] = json.loads(values["workspacePermissions"])
+            if "workspacePermissions" in values and isinstance(
+                values["workspacePermissions"], str
+            ):
+                values["workspacePermissions"] = json.loads(
+                    values["workspacePermissions"]
+                )
             if "personas" in values and isinstance(values["personas"], str):
                 values["personas"] = json.loads(values["personas"])
-            if "personaQualifiedName" in values and isinstance(values["personaQualifiedName"], str):
+            if "personaQualifiedName" in values and isinstance(
+                values["personaQualifiedName"], str
+            ):
                 persona_qns = json.loads(values["personaQualifiedName"])
                 values["personaQualifiedName"] = set()
                 for persona_qn in persona_qns:
-                    values["personaQualifiedName"].add(ApiTokenPersona(persona_qualified_name=persona_qn))
+                    values["personaQualifiedName"].add(
+                        ApiTokenPersona(persona_qualified_name=persona_qn)
+                    )
             return values
 
     guid: Optional[str] = Field(
@@ -95,12 +111,19 @@ class ApiToken(AtlanObject):
 
     @property
     def username(self):
-        return SERVICE_ACCOUNT_ + self.client_id if self.client_id else self.attributes.client_id
+        return (
+            SERVICE_ACCOUNT_ + self.client_id
+            if self.client_id
+            else self.attributes.client_id
+        )
 
     @root_validator(pre=True)
     def copy_values(cls, values):
         if "attributes" in values:
-            if "displayName" in values["attributes"] and values["attributes"]["displayName"]:
+            if (
+                "displayName" in values["attributes"]
+                and values["attributes"]["displayName"]
+            ):
                 values["displayName"] = values["attributes"]["displayName"]
             if "clientId" in values["attributes"] and values["attributes"]["clientId"]:
                 values["clientId"] = values["attributes"]["clientId"]
@@ -136,14 +159,18 @@ class ApiTokenRequest(AtlanObject):
             if values["validity_seconds"] < 0:
                 values["validity_seconds"] = cls._MAX_VALIDITY
             else:
-                values["validity_seconds"] = min(values["validity_seconds"], cls._MAX_VALIDITY)
+                values["validity_seconds"] = min(
+                    values["validity_seconds"], cls._MAX_VALIDITY
+                )
         if "personas" in values and not values["personas"]:
             values["personas"] = set()
         return values
 
 
 class ApiTokenResponse(AtlanObject):
-    total_record: Optional[int] = Field(default=None, description="Total number of API tokens.")
+    total_record: Optional[int] = Field(
+        default=None, description="Total number of API tokens."
+    )
     filter_record: Optional[int] = Field(
         default=None,
         description="Number of API records that matched the specified filters.",

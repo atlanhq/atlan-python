@@ -35,7 +35,9 @@ class Airflow(Catalog):
     """
     Tags assigned to the asset in Airflow.
     """
-    AIRFLOW_RUN_VERSION: ClassVar[KeywordField] = KeywordField("airflowRunVersion", "airflowRunVersion")
+    AIRFLOW_RUN_VERSION: ClassVar[KeywordField] = KeywordField(
+        "airflowRunVersion", "airflowRunVersion"
+    )
     """
     Version of the run in Airflow.
     """
@@ -45,19 +47,27 @@ class Airflow(Catalog):
     """
     Version of the run in OpenLineage.
     """
-    AIRFLOW_RUN_NAME: ClassVar[KeywordField] = KeywordField("airflowRunName", "airflowRunName")
+    AIRFLOW_RUN_NAME: ClassVar[KeywordField] = KeywordField(
+        "airflowRunName", "airflowRunName"
+    )
     """
     Name of the run.
     """
-    AIRFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField("airflowRunType", "airflowRunType")
+    AIRFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "airflowRunType", "airflowRunType"
+    )
     """
     Type of the run.
     """
-    AIRFLOW_RUN_START_TIME: ClassVar[NumericField] = NumericField("airflowRunStartTime", "airflowRunStartTime")
+    AIRFLOW_RUN_START_TIME: ClassVar[NumericField] = NumericField(
+        "airflowRunStartTime", "airflowRunStartTime"
+    )
     """
     Start time of the run.
     """
-    AIRFLOW_RUN_END_TIME: ClassVar[NumericField] = NumericField("airflowRunEndTime", "airflowRunEndTime")
+    AIRFLOW_RUN_END_TIME: ClassVar[NumericField] = NumericField(
+        "airflowRunEndTime", "airflowRunEndTime"
+    )
     """
     End time of the run.
     """
@@ -101,13 +111,21 @@ class Airflow(Catalog):
 
     @property
     def airflow_run_open_lineage_version(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_run_open_lineage_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_run_open_lineage_version
+        )
 
     @airflow_run_open_lineage_version.setter
-    def airflow_run_open_lineage_version(self, airflow_run_open_lineage_version: Optional[str]):
+    def airflow_run_open_lineage_version(
+        self, airflow_run_open_lineage_version: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.airflow_run_open_lineage_version = airflow_run_open_lineage_version
+        self.attributes.airflow_run_open_lineage_version = (
+            airflow_run_open_lineage_version
+        )
 
     @property
     def airflow_run_name(self) -> Optional[str]:
@@ -131,7 +149,9 @@ class Airflow(Catalog):
 
     @property
     def airflow_run_start_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.airflow_run_start_time
+        return (
+            None if self.attributes is None else self.attributes.airflow_run_start_time
+        )
 
     @airflow_run_start_time.setter
     def airflow_run_start_time(self, airflow_run_start_time: Optional[datetime]):
@@ -151,10 +171,16 @@ class Airflow(Catalog):
 
     @property
     def airflow_run_open_lineage_state(self) -> Optional[OpenLineageRunState]:
-        return None if self.attributes is None else self.attributes.airflow_run_open_lineage_state
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_run_open_lineage_state
+        )
 
     @airflow_run_open_lineage_state.setter
-    def airflow_run_open_lineage_state(self, airflow_run_open_lineage_state: Optional[OpenLineageRunState]):
+    def airflow_run_open_lineage_state(
+        self, airflow_run_open_lineage_state: Optional[OpenLineageRunState]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.airflow_run_open_lineage_state = airflow_run_open_lineage_state
@@ -162,12 +188,16 @@ class Airflow(Catalog):
     class Attributes(Catalog.Attributes):
         airflow_tags: Optional[Set[str]] = Field(default=None, description="")
         airflow_run_version: Optional[str] = Field(default=None, description="")
-        airflow_run_open_lineage_version: Optional[str] = Field(default=None, description="")
+        airflow_run_open_lineage_version: Optional[str] = Field(
+            default=None, description=""
+        )
         airflow_run_name: Optional[str] = Field(default=None, description="")
         airflow_run_type: Optional[str] = Field(default=None, description="")
         airflow_run_start_time: Optional[datetime] = Field(default=None, description="")
         airflow_run_end_time: Optional[datetime] = Field(default=None, description="")
-        airflow_run_open_lineage_state: Optional[OpenLineageRunState] = Field(default=None, description="")
+        airflow_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
+            default=None, description=""
+        )
 
     attributes: Airflow.Attributes = Field(
         default_factory=lambda: Airflow.Attributes(),

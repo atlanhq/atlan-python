@@ -35,7 +35,9 @@ class MatillionJob(Matillion):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_JOB_TYPE: ClassVar[KeywordField] = KeywordField("matillionJobType", "matillionJobType")
+    MATILLION_JOB_TYPE: ClassVar[KeywordField] = KeywordField(
+        "matillionJobType", "matillionJobType"
+    )
     """
     Type of the job, for example: orchestration or transformation.
     """
@@ -51,7 +53,9 @@ class MatillionJob(Matillion):
     """
     Number of components within the job.
     """
-    MATILLION_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField("matillionJobSchedule", "matillionJobSchedule")
+    MATILLION_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "matillionJobSchedule", "matillionJobSchedule"
+    )
     """
     How the job is scheduled, for example: weekly or monthly.
     """
@@ -112,17 +116,25 @@ class MatillionJob(Matillion):
 
     @property
     def matillion_job_component_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.matillion_job_component_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_job_component_count
+        )
 
     @matillion_job_component_count.setter
-    def matillion_job_component_count(self, matillion_job_component_count: Optional[int]):
+    def matillion_job_component_count(
+        self, matillion_job_component_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_job_component_count = matillion_job_component_count
 
     @property
     def matillion_job_schedule(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.matillion_job_schedule
+        return (
+            None if self.attributes is None else self.attributes.matillion_job_schedule
+        )
 
     @matillion_job_schedule.setter
     def matillion_job_schedule(self, matillion_job_schedule: Optional[str]):
@@ -132,7 +144,9 @@ class MatillionJob(Matillion):
 
     @property
     def matillion_project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.matillion_project_name
+        return (
+            None if self.attributes is None else self.attributes.matillion_project_name
+        )
 
     @matillion_project_name.setter
     def matillion_project_name(self, matillion_project_name: Optional[str]):
@@ -142,13 +156,21 @@ class MatillionJob(Matillion):
 
     @property
     def matillion_project_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.matillion_project_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_project_qualified_name
+        )
 
     @matillion_project_qualified_name.setter
-    def matillion_project_qualified_name(self, matillion_project_qualified_name: Optional[str]):
+    def matillion_project_qualified_name(
+        self, matillion_project_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.matillion_project_qualified_name = matillion_project_qualified_name
+        self.attributes.matillion_project_qualified_name = (
+            matillion_project_qualified_name
+        )
 
     @property
     def matillion_project(self) -> Optional[MatillionProject]:
@@ -165,20 +187,32 @@ class MatillionJob(Matillion):
         return None if self.attributes is None else self.attributes.matillion_components
 
     @matillion_components.setter
-    def matillion_components(self, matillion_components: Optional[List[MatillionComponent]]):
+    def matillion_components(
+        self, matillion_components: Optional[List[MatillionComponent]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_components = matillion_components
 
     class Attributes(Matillion.Attributes):
-        matillion_job_type: Optional[MatillionJobType] = Field(default=None, description="")
+        matillion_job_type: Optional[MatillionJobType] = Field(
+            default=None, description=""
+        )
         matillion_job_path: Optional[str] = Field(default=None, description="")
-        matillion_job_component_count: Optional[int] = Field(default=None, description="")
+        matillion_job_component_count: Optional[int] = Field(
+            default=None, description=""
+        )
         matillion_job_schedule: Optional[str] = Field(default=None, description="")
         matillion_project_name: Optional[str] = Field(default=None, description="")
-        matillion_project_qualified_name: Optional[str] = Field(default=None, description="")
-        matillion_project: Optional[MatillionProject] = Field(default=None, description="")  # relationship
-        matillion_components: Optional[List[MatillionComponent]] = Field(default=None, description="")  # relationship
+        matillion_project_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        matillion_project: Optional[MatillionProject] = Field(
+            default=None, description=""
+        )  # relationship
+        matillion_components: Optional[List[MatillionComponent]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MatillionJob.Attributes = Field(
         default_factory=lambda: MatillionJob.Attributes(),

@@ -40,47 +40,69 @@ class SQL(Catalog):
     """
     Number of times this asset has been queried.
     """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField("queryUserCount", "queryUserCount")
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "queryUserCount", "queryUserCount"
+    )
     """
     Number of unique users who have queried this asset.
     """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField("queryUserMap", "queryUserMap")
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
+        "queryUserMap", "queryUserMap"
+    )
     """
     Map of unique users who have queried this asset to the number of times they have queried it.
     """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "queryCountUpdatedAt", "queryCountUpdatedAt"
+    )
     """
     Time (epoch) at which the query count was last updated, in milliseconds.
     """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField("databaseName", "databaseName.keyword", "databaseName")
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "databaseName", "databaseName.keyword", "databaseName"
+    )
     """
     Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "databaseQualifiedName", "databaseQualifiedName"
+    )
     """
     Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField("schemaName", "schemaName.keyword", "schemaName")
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "schemaName", "schemaName.keyword", "schemaName"
+    )
     """
     Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "schemaQualifiedName", "schemaQualifiedName"
+    )
     """
     Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField("tableName", "tableName.keyword", "tableName")
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableName", "tableName.keyword", "tableName"
+    )
     """
     Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("tableQualifiedName", "tableQualifiedName")
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableQualifiedName", "tableQualifiedName"
+    )
     """
     Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField("viewName", "viewName.keyword", "viewName")
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "viewName", "viewName.keyword", "viewName"
+    )
     """
     Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("viewQualifiedName", "viewQualifiedName")
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "viewQualifiedName", "viewQualifiedName"
+    )
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
@@ -100,7 +122,9 @@ class SQL(Catalog):
     """
     Whether this asset has been profiled (true) or not (false).
     """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField("lastProfiledAt", "lastProfiledAt")
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
+        "lastProfiledAt", "lastProfiledAt"
+    )
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
@@ -182,7 +206,9 @@ class SQL(Catalog):
 
     @property
     def query_count_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.query_count_updated_at
+        return (
+            None if self.attributes is None else self.attributes.query_count_updated_at
+        )
 
     @query_count_updated_at.setter
     def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
@@ -202,7 +228,9 @@ class SQL(Catalog):
 
     @property
     def database_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.database_qualified_name
+        )
 
     @database_qualified_name.setter
     def database_qualified_name(self, database_qualified_name: Optional[str]):
@@ -222,7 +250,9 @@ class SQL(Catalog):
 
     @property
     def schema_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.schema_qualified_name
+        )
 
     @schema_qualified_name.setter
     def schema_qualified_name(self, schema_qualified_name: Optional[str]):
@@ -272,7 +302,9 @@ class SQL(Catalog):
 
     @property
     def calculation_view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.calculation_view_name
+        return (
+            None if self.attributes is None else self.attributes.calculation_view_name
+        )
 
     @calculation_view_name.setter
     def calculation_view_name(self, calculation_view_name: Optional[str]):
@@ -282,13 +314,21 @@ class SQL(Catalog):
 
     @property
     def calculation_view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.calculation_view_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.calculation_view_qualified_name
+        )
 
     @calculation_view_qualified_name.setter
-    def calculation_view_qualified_name(self, calculation_view_qualified_name: Optional[str]):
+    def calculation_view_qualified_name(
+        self, calculation_view_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.calculation_view_qualified_name = calculation_view_qualified_name
+        self.attributes.calculation_view_qualified_name = (
+            calculation_view_qualified_name
+        )
 
     @property
     def is_profiled(self) -> Optional[bool]:
@@ -374,14 +414,26 @@ class SQL(Catalog):
         view_name: Optional[str] = Field(default=None, description="")
         view_qualified_name: Optional[str] = Field(default=None, description="")
         calculation_view_name: Optional[str] = Field(default=None, description="")
-        calculation_view_qualified_name: Optional[str] = Field(default=None, description="")
+        calculation_view_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
+        dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SQL.Attributes = Field(
         default_factory=lambda: SQL.Attributes(),

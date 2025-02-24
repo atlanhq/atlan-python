@@ -29,13 +29,17 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def data_studio_asset_report(client: AtlanClient, connection: Connection) -> Generator[DataStudioAsset, None, None]:
+def data_studio_asset_report(
+    client: AtlanClient, connection: Connection
+) -> Generator[DataStudioAsset, None, None]:
     assert connection.qualified_name
     to_create = DataStudioAsset.create(
         name=REPORT_NAME,
@@ -56,10 +60,17 @@ def test_data_studio_asset_report(
     assert data_studio_asset_report
     assert data_studio_asset_report.guid
     assert data_studio_asset_report.qualified_name
-    assert data_studio_asset_report.connection_qualified_name == connection.qualified_name
+    assert (
+        data_studio_asset_report.connection_qualified_name == connection.qualified_name
+    )
     assert data_studio_asset_report.name == REPORT_NAME
-    assert data_studio_asset_report.connector_name == AtlanConnectorType.DATASTUDIO.value
-    assert data_studio_asset_report.data_studio_asset_type == GoogleDatastudioAssetType.REPORT
+    assert (
+        data_studio_asset_report.connector_name == AtlanConnectorType.DATASTUDIO.value
+    )
+    assert (
+        data_studio_asset_report.data_studio_asset_type
+        == GoogleDatastudioAssetType.REPORT
+    )
 
 
 def test_update_data_studio_asset_report(
@@ -120,10 +131,19 @@ def test_data_studio_asset_data_source(
     assert data_studio_asset_data_source
     assert data_studio_asset_data_source.guid
     assert data_studio_asset_data_source.qualified_name
-    assert data_studio_asset_data_source.connection_qualified_name == connection.qualified_name
+    assert (
+        data_studio_asset_data_source.connection_qualified_name
+        == connection.qualified_name
+    )
     assert data_studio_asset_data_source.name == SOURCE_NAME
-    assert data_studio_asset_data_source.connector_name == AtlanConnectorType.DATASTUDIO.value
-    assert data_studio_asset_data_source.data_studio_asset_type == GoogleDatastudioAssetType.DATA_SOURCE
+    assert (
+        data_studio_asset_data_source.connector_name
+        == AtlanConnectorType.DATASTUDIO.value
+    )
+    assert (
+        data_studio_asset_data_source.data_studio_asset_type
+        == GoogleDatastudioAssetType.DATA_SOURCE
+    )
 
 
 def test_update_data_studio_asset_data_source(

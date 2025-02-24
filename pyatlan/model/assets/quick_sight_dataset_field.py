@@ -109,23 +109,37 @@ class QuickSightDatasetField(QuickSight):
 
     @property
     def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
-        return None if self.attributes is None else self.attributes.quick_sight_dataset_field_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_field_type
+        )
 
     @quick_sight_dataset_field_type.setter
-    def quick_sight_dataset_field_type(self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]):
+    def quick_sight_dataset_field_type(
+        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
 
     @property
     def quick_sight_dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.quick_sight_dataset_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_qualified_name
+        )
 
     @quick_sight_dataset_qualified_name.setter
-    def quick_sight_dataset_qualified_name(self, quick_sight_dataset_qualified_name: Optional[str]):
+    def quick_sight_dataset_qualified_name(
+        self, quick_sight_dataset_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_qualified_name = quick_sight_dataset_qualified_name
+        self.attributes.quick_sight_dataset_qualified_name = (
+            quick_sight_dataset_qualified_name
+        )
 
     @property
     def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
@@ -138,9 +152,15 @@ class QuickSightDatasetField(QuickSight):
         self.attributes.quick_sight_dataset = quick_sight_dataset
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(default=None, description="")
-        quick_sight_dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        quick_sight_dataset: Optional[QuickSightDataset] = Field(default=None, description="")  # relationship
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
+            default=None, description=""
+        )
+        quick_sight_dataset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        quick_sight_dataset: Optional[QuickSightDataset] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -159,7 +179,9 @@ class QuickSightDatasetField(QuickSight):
             )
             assert quick_sight_dataset_qualified_name
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     quick_sight_dataset_qualified_name,
@@ -171,7 +193,9 @@ class QuickSightDatasetField(QuickSight):
                 name=name,
                 quick_sight_dataset_qualified_name=quick_sight_dataset_qualified_name,
                 quick_sight_id=quick_sight_id,
-                quick_sight_dataset=QuickSightDataset.ref_by_qualified_name(quick_sight_dataset_qualified_name),
+                quick_sight_dataset=QuickSightDataset.ref_by_qualified_name(
+                    quick_sight_dataset_qualified_name
+                ),
                 qualified_name=f"{quick_sight_dataset_qualified_name}/{quick_sight_id}",
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_name,

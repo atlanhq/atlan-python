@@ -104,23 +104,33 @@ class AirflowTask(Airflow):
     """
     Identifier for the connection this task accesses.
     """
-    AIRFLOW_TASK_SQL: ClassVar[TextField] = TextField("airflowTaskSql", "airflowTaskSql")
+    AIRFLOW_TASK_SQL: ClassVar[TextField] = TextField(
+        "airflowTaskSql", "airflowTaskSql"
+    )
     """
     SQL code that executes through this task.
     """
-    AIRFLOW_TASK_RETRY_NUMBER: ClassVar[NumericField] = NumericField("airflowTaskRetryNumber", "airflowTaskRetryNumber")
+    AIRFLOW_TASK_RETRY_NUMBER: ClassVar[NumericField] = NumericField(
+        "airflowTaskRetryNumber", "airflowTaskRetryNumber"
+    )
     """
     Retry count for this task running.
     """
-    AIRFLOW_TASK_POOL: ClassVar[KeywordField] = KeywordField("airflowTaskPool", "airflowTaskPool")
+    AIRFLOW_TASK_POOL: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskPool", "airflowTaskPool"
+    )
     """
     Pool on which this run happened.
     """
-    AIRFLOW_TASK_POOL_SLOTS: ClassVar[NumericField] = NumericField("airflowTaskPoolSlots", "airflowTaskPoolSlots")
+    AIRFLOW_TASK_POOL_SLOTS: ClassVar[NumericField] = NumericField(
+        "airflowTaskPoolSlots", "airflowTaskPoolSlots"
+    )
     """
     Pool slots used for the run.
     """
-    AIRFLOW_TASK_QUEUE: ClassVar[KeywordField] = KeywordField("airflowTaskQueue", "airflowTaskQueue")
+    AIRFLOW_TASK_QUEUE: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskQueue", "airflowTaskQueue"
+    )
     """
     Queue on which this run happened.
     """
@@ -130,11 +140,15 @@ class AirflowTask(Airflow):
     """
     Priority of the run.
     """
-    AIRFLOW_TASK_TRIGGER_RULE: ClassVar[KeywordField] = KeywordField("airflowTaskTriggerRule", "airflowTaskTriggerRule")
+    AIRFLOW_TASK_TRIGGER_RULE: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskTriggerRule", "airflowTaskTriggerRule"
+    )
     """
     Trigger for the run.
     """
-    AIRFLOW_TASK_GROUP_NAME: ClassVar[KeywordField] = KeywordField("airflowTaskGroupName", "airflowTaskGroupName")
+    AIRFLOW_TASK_GROUP_NAME: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskGroupName", "airflowTaskGroupName"
+    )
     """
     Group name for the task.
     """
@@ -177,7 +191,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_operator_class(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_task_operator_class
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_operator_class
+        )
 
     @airflow_task_operator_class.setter
     def airflow_task_operator_class(self, airflow_task_operator_class: Optional[str]):
@@ -197,7 +215,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_dag_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_dag_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_dag_qualified_name
+        )
 
     @airflow_dag_qualified_name.setter
     def airflow_dag_qualified_name(self, airflow_dag_qualified_name: Optional[str]):
@@ -207,7 +229,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_connection_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_task_connection_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_connection_id
+        )
 
     @airflow_task_connection_id.setter
     def airflow_task_connection_id(self, airflow_task_connection_id: Optional[str]):
@@ -227,7 +253,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_retry_number(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.airflow_task_retry_number
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_retry_number
+        )
 
     @airflow_task_retry_number.setter
     def airflow_task_retry_number(self, airflow_task_retry_number: Optional[int]):
@@ -247,7 +277,9 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_pool_slots(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.airflow_task_pool_slots
+        return (
+            None if self.attributes is None else self.attributes.airflow_task_pool_slots
+        )
 
     @airflow_task_pool_slots.setter
     def airflow_task_pool_slots(self, airflow_task_pool_slots: Optional[int]):
@@ -267,7 +299,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_priority_weight(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.airflow_task_priority_weight
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_priority_weight
+        )
 
     @airflow_task_priority_weight.setter
     def airflow_task_priority_weight(self, airflow_task_priority_weight: Optional[int]):
@@ -277,7 +313,11 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_trigger_rule(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_task_trigger_rule
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_trigger_rule
+        )
 
     @airflow_task_trigger_rule.setter
     def airflow_task_trigger_rule(self, airflow_task_trigger_rule: Optional[str]):
@@ -287,7 +327,9 @@ class AirflowTask(Airflow):
 
     @property
     def airflow_task_group_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.airflow_task_group_name
+        return (
+            None if self.attributes is None else self.attributes.airflow_task_group_name
+        )
 
     @airflow_task_group_name.setter
     def airflow_task_group_name(self, airflow_task_group_name: Optional[str]):
@@ -345,13 +387,21 @@ class AirflowTask(Airflow):
         airflow_task_pool: Optional[str] = Field(default=None, description="")
         airflow_task_pool_slots: Optional[int] = Field(default=None, description="")
         airflow_task_queue: Optional[str] = Field(default=None, description="")
-        airflow_task_priority_weight: Optional[int] = Field(default=None, description="")
+        airflow_task_priority_weight: Optional[int] = Field(
+            default=None, description=""
+        )
         airflow_task_trigger_rule: Optional[str] = Field(default=None, description="")
         airflow_task_group_name: Optional[str] = Field(default=None, description="")
-        outputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
-        inputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
+        outputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
+        inputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
-        airflow_dag: Optional[AirflowDag] = Field(default=None, description="")  # relationship
+        airflow_dag: Optional[AirflowDag] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -367,7 +417,9 @@ class AirflowTask(Airflow):
                 [name, airflow_dag_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     airflow_dag_qualified_name, "airflow_dag_qualified_name", 4
@@ -379,7 +431,9 @@ class AirflowTask(Airflow):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{airflow_dag_qualified_name}/{name}",
                 connector_name=connector_name,
-                airflow_dag=AirflowDag.ref_by_qualified_name(airflow_dag_qualified_name),
+                airflow_dag=AirflowDag.ref_by_qualified_name(
+                    airflow_dag_qualified_name
+                ),
             )
 
     attributes: AirflowTask.Attributes = Field(

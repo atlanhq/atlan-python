@@ -30,8 +30,12 @@ class GlueCrawler(AbstractCrawler):
     _PACKAGE_PREFIX = WorkflowPackage.GLUE.value
     _CONNECTOR_TYPE = AtlanConnectorType.GLUE
     _AWS_DATA_CATALOG = "AwsDataCatalog"
-    _PACKAGE_ICON = "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
-    _PACKAGE_LOGO = "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
+    _PACKAGE_ICON = (
+        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
+    )
+    _PACKAGE_LOGO = (
+        "https://atlan-public.s3.eu-west-1.amazonaws.com/atlan/logos/aws-glue.png"
+    )
 
     def __init__(
         self,
@@ -98,7 +102,9 @@ class GlueCrawler(AbstractCrawler):
             for asset in filter_assets:
                 filter_dict[self._AWS_DATA_CATALOG][asset] = {}
                 filter_values = dumps(filter_dict)
-            self._parameters.append({"name": f"{filter_type}-filter", "value": filter_values})
+            self._parameters.append(
+                {"name": f"{filter_type}-filter", "value": filter_values}
+            )
         except TypeError:
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
@@ -127,12 +133,18 @@ class GlueCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(dict(name="credentials-fetch-strategy", value="credential_guid"))
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            dict(name="credentials-fetch-strategy", value="credential_guid")
+        )
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

@@ -148,7 +148,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Connection.create_for_modification(qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME)
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    )
 
     assert sut.qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.name == CONNECTION_NAME
@@ -232,7 +234,9 @@ def test_admin_roles_when_set_to_good_name(mock_role_cache):
     mock_role_cache.validate_idstrs.assert_called_once
 
 
-def test_validation_of_admin_not_done_when_constructed_from_json(mock_user_cache, mock_group_cache, mock_role_cache):
+def test_validation_of_admin_not_done_when_constructed_from_json(
+    mock_user_cache, mock_group_cache, mock_role_cache
+):
     data = {
         "typeName": "Connection",
         "attributes": {

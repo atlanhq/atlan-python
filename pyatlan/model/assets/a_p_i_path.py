@@ -53,7 +53,9 @@ class APIPath(API):
         spec_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> APIPath:
-        validate_required_fields(["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name])
+        validate_required_fields(
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
+        )
         attributes = APIPath.Attributes.create(
             path_raw_uri=path_raw_uri,
             spec_qualified_name=spec_qualified_name,
@@ -65,11 +67,15 @@ class APIPath(API):
     @init_guid
     def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name)
+        return cls.creator(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+        )
 
     type_name: str = Field(default="APIPath", allow_mutation=False)
 
@@ -84,7 +90,9 @@ class APIPath(API):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    API_PATH_SUMMARY: ClassVar[TextField] = TextField("apiPathSummary", "apiPathSummary")
+    API_PATH_SUMMARY: ClassVar[TextField] = TextField(
+        "apiPathSummary", "apiPathSummary"
+    )
     """
     Descriptive summary intended to apply to all operations in this path.
     """
@@ -94,7 +102,9 @@ class APIPath(API):
     """
     Absolute path to an individual endpoint.
     """
-    API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField("apiPathIsTemplated", "apiPathIsTemplated")
+    API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsTemplated", "apiPathIsTemplated"
+    )
     """
     Whether the endpoint's path contains replaceable parameters (true) or not (false).
     """
@@ -154,7 +164,9 @@ class APIPath(API):
 
     @property
     def api_path_is_templated(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.api_path_is_templated
+        return (
+            None if self.attributes is None else self.attributes.api_path_is_templated
+        )
 
     @api_path_is_templated.setter
     def api_path_is_templated(self, api_path_is_templated: Optional[bool]):
@@ -164,27 +176,45 @@ class APIPath(API):
 
     @property
     def api_path_available_operations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.api_path_available_operations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_available_operations
+        )
 
     @api_path_available_operations.setter
-    def api_path_available_operations(self, api_path_available_operations: Optional[Set[str]]):
+    def api_path_available_operations(
+        self, api_path_available_operations: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_path_available_operations = api_path_available_operations
 
     @property
     def api_path_available_response_codes(self) -> Optional[Dict[str, str]]:
-        return None if self.attributes is None else self.attributes.api_path_available_response_codes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_available_response_codes
+        )
 
     @api_path_available_response_codes.setter
-    def api_path_available_response_codes(self, api_path_available_response_codes: Optional[Dict[str, str]]):
+    def api_path_available_response_codes(
+        self, api_path_available_response_codes: Optional[Dict[str, str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.api_path_available_response_codes = api_path_available_response_codes
+        self.attributes.api_path_available_response_codes = (
+            api_path_available_response_codes
+        )
 
     @property
     def api_path_is_ingress_exposed(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.api_path_is_ingress_exposed
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_path_is_ingress_exposed
+        )
 
     @api_path_is_ingress_exposed.setter
     def api_path_is_ingress_exposed(self, api_path_is_ingress_exposed: Optional[bool]):
@@ -206,10 +236,18 @@ class APIPath(API):
         api_path_summary: Optional[str] = Field(default=None, description="")
         api_path_raw_u_r_i: Optional[str] = Field(default=None, description="")
         api_path_is_templated: Optional[bool] = Field(default=None, description="")
-        api_path_available_operations: Optional[Set[str]] = Field(default=None, description="")
-        api_path_available_response_codes: Optional[Dict[str, str]] = Field(default=None, description="")
-        api_path_is_ingress_exposed: Optional[bool] = Field(default=None, description="")
-        api_spec: Optional[APISpec] = Field(default=None, description="")  # relationship
+        api_path_available_operations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        api_path_available_response_codes: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
+        api_path_is_ingress_exposed: Optional[bool] = Field(
+            default=None, description=""
+        )
+        api_spec: Optional[APISpec] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -225,7 +263,9 @@ class APIPath(API):
                 [path_raw_uri, spec_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     spec_qualified_name, "spec_qualified_name", 4

@@ -17,7 +17,9 @@ from tests.unit.model.constants import (
         (ANAPLAN_VIEW_NAME, None, "module_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, module_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, module_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         AnaplanView.creator(name=name, module_qualified_name=module_qualified_name)
 
@@ -49,7 +51,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = AnaplanView.create_for_modification(qualified_name=ANAPLAN_VIEW_QUALIFIED_NAME, name=ANAPLAN_VIEW_NAME)
+    sut = AnaplanView.create_for_modification(
+        qualified_name=ANAPLAN_VIEW_QUALIFIED_NAME, name=ANAPLAN_VIEW_NAME
+    )
 
     assert sut.qualified_name == ANAPLAN_VIEW_QUALIFIED_NAME
     assert sut.name == ANAPLAN_VIEW_NAME

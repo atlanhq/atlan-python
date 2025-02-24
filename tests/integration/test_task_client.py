@@ -23,7 +23,9 @@ SCHEMA_NAME = "BRONZE_WAREHOUSE"
 
 @pytest.fixture(scope="module")
 def snowflake_conn(client: AtlanClient):
-    return client.asset.find_connections_by_name("production", AtlanConnectorType.SNOWFLAKE)[0]
+    return client.asset.find_connections_by_name(
+        "production", AtlanConnectorType.SNOWFLAKE
+    )[0]
 
 
 @pytest.fixture(scope="module")
@@ -32,7 +34,9 @@ def snowflake_column_qn(snowflake_conn):
 
 
 @pytest.fixture()
-def snowflake_column(client: AtlanClient, snowflake_column_qn) -> Generator[Column, None, None]:
+def snowflake_column(
+    client: AtlanClient, snowflake_column_qn
+) -> Generator[Column, None, None]:
     client.asset.add_atlan_tags(
         asset_type=Column,
         qualified_name=snowflake_column_qn,
@@ -75,7 +79,9 @@ def atlan_tag_def(make_atlan_tag) -> AtlanTagDef:
     return make_atlan_tag(TAG_NAME)
 
 
-def test_task_search(client: AtlanClient, atlan_tag_def, task_search_request, snowflake_column):
+def test_task_search(
+    client: AtlanClient, atlan_tag_def, task_search_request, snowflake_column
+):
     assert snowflake_column
     assert snowflake_column.atlan_tags
 

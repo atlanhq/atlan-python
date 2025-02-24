@@ -57,7 +57,11 @@ class SigmaDatasetColumn(Sigma):
 
     @property
     def sigma_dataset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_dataset_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_dataset_qualified_name
+        )
 
     @sigma_dataset_qualified_name.setter
     def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
@@ -86,9 +90,13 @@ class SigmaDatasetColumn(Sigma):
         self.attributes.sigma_dataset = sigma_dataset
 
     class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(default=None, description="")
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         sigma_dataset_name: Optional[str] = Field(default=None, description="")
-        sigma_dataset: Optional[SigmaDataset] = Field(default=None, description="")  # relationship
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SigmaDatasetColumn.Attributes = Field(
         default_factory=lambda: SigmaDatasetColumn.Attributes(),

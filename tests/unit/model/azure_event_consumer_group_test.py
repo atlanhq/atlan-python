@@ -17,9 +17,13 @@ from tests.unit.model.constants import (
         (EVENT_HUB_QUALIFIED_NAMES, None, "event_hub_qualified_names is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(name: str, event_hub_qualified_names: str, message: str):
+def test_creator_with_missing_parameters_raise_value_error(
+    name: str, event_hub_qualified_names: str, message: str
+):
     with pytest.raises(ValueError, match=message):
-        AzureEventHubConsumerGroup.creator(name=name, event_hub_qualified_names=event_hub_qualified_names)
+        AzureEventHubConsumerGroup.creator(
+            name=name, event_hub_qualified_names=event_hub_qualified_names
+        )
 
 
 def test_creator():
@@ -42,7 +46,9 @@ def test_creator():
         (EVENT_HUB_CONSUMER_GROUP_NAME, None, "name is required"),
     ],
 )
-def test_updater_with_invalid_parameter_raises_value_error(qualified_name: str, name: str, message: str):
+def test_updater_with_invalid_parameter_raises_value_error(
+    qualified_name: str, name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         AzureEventHubConsumerGroup.updater(qualified_name=qualified_name, name=name)
 

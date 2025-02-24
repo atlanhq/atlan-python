@@ -29,20 +29,30 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             # unique attributes (in case of a related entity)
             # Otherwise, set the qualified name to the GUID
             # to avoid collisions when creating glossary object
-            attributes.qualified_name = (unique_attributes and unique_attributes.get("qualifiedName")) or guid
+            attributes.qualified_name = (
+                unique_attributes and unique_attributes.get("qualifiedName")
+            ) or guid
         return values
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None) -> AtlasGlossary:
+    def creator(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name, icon=icon))
+        return AtlasGlossary(
+            attributes=AtlasGlossary.Attributes.create(name=name, icon=icon)
+        )
 
     @classmethod
     @init_guid
-    def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None) -> AtlasGlossary:
+    def create(
+        cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+    ) -> AtlasGlossary:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -61,11 +71,15 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SHORT_DESCRIPTION: ClassVar[TextField] = TextField("shortDescription", "shortDescription")
+    SHORT_DESCRIPTION: ClassVar[TextField] = TextField(
+        "shortDescription", "shortDescription"
+    )
     """
     Unused. A short definition of the glossary. See 'description' and 'userDescription' instead.
     """
-    LONG_DESCRIPTION: ClassVar[TextField] = TextField("longDescription", "longDescription")
+    LONG_DESCRIPTION: ClassVar[TextField] = TextField(
+        "longDescription", "longDescription"
+    )
     """
     Unused. A longer description of the glossary. See 'readme' instead.
     """
@@ -77,7 +91,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """
     Unused. Inteded usage for the glossary.
     """
-    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField("additionalAttributes", "additionalAttributes")
+    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "additionalAttributes", "additionalAttributes"
+    )
     """
     Unused. Arbitrary set of additional attributes associated with this glossary.
     """
@@ -148,7 +164,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def additional_attributes(self) -> Optional[Dict[str, str]]:
-        return None if self.attributes is None else self.attributes.additional_attributes
+        return (
+            None if self.attributes is None else self.attributes.additional_attributes
+        )
 
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[Dict[str, str]]):
@@ -191,17 +209,27 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         long_description: Optional[str] = Field(default=None, description="")
         language: Optional[str] = Field(default=None, description="")
         usage: Optional[str] = Field(default=None, description="")
-        additional_attributes: Optional[Dict[str, str]] = Field(default=None, description="")
+        additional_attributes: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         glossary_type: Optional[AtlasGlossaryType] = Field(default=None, description="")
-        terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
-        categories: Optional[List[AtlasGlossaryCategory]] = Field(default=None, description="")  # relationship
+        terms: Optional[List[AtlasGlossaryTerm]] = Field(
+            default=None, description=""
+        )  # relationship
+        categories: Optional[List[AtlasGlossaryCategory]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None) -> AtlasGlossary.Attributes:
+        def create(
+            cls, *, name: StrictStr, icon: Optional[AtlanIcon] = None
+        ) -> AtlasGlossary.Attributes:
             validate_required_fields(["name"], [name])
             icon_str = icon.value if icon is not None else None
-            return AtlasGlossary.Attributes(name=name, qualified_name=next_id(), asset_icon=icon_str)
+            return AtlasGlossary.Attributes(
+                name=name, qualified_name=next_id(), asset_icon=icon_str
+            )
 
     attributes: AtlasGlossary.Attributes = Field(
         default_factory=lambda: AtlasGlossary.Attributes(),

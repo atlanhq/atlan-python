@@ -86,7 +86,9 @@ def test_generate_config(custom_package: CustomPackage, tmpdir):
     config_name = "owner_propagator_cfg.py"
     assert dir / config_name
 
-    spec = importlib.util.spec_from_file_location("owner_propagator_cfg", dir / config_name)
+    spec = importlib.util.spec_from_file_location(
+        "owner_propagator_cfg", dir / config_name
+    )
     assert spec is not None
     module = importlib.util.module_from_spec(spec)
     assert module is not None

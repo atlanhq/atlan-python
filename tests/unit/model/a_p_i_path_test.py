@@ -74,14 +74,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = APIPath.create_for_modification(qualified_name=API_PATH_QUALIFIED_NAME, name=API_PATH_NAME)
+    sut = APIPath.create_for_modification(
+        qualified_name=API_PATH_QUALIFIED_NAME, name=API_PATH_NAME
+    )
 
     assert sut.qualified_name == API_PATH_QUALIFIED_NAME
     assert sut.name == API_PATH_NAME
 
 
 def test_trim_to_required():
-    sut = APIPath.create_for_modification(name=API_PATH_NAME, qualified_name=API_PATH_QUALIFIED_NAME).trim_to_required()
+    sut = APIPath.create_for_modification(
+        name=API_PATH_NAME, qualified_name=API_PATH_QUALIFIED_NAME
+    ).trim_to_required()
 
     assert sut.name == API_PATH_NAME
     assert sut.qualified_name == API_PATH_QUALIFIED_NAME

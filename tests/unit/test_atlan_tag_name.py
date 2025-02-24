@@ -22,7 +22,9 @@ def test_init_with_bad_atlan_tag_name_raises_value_error(monkeypatch):
         "get_id_for_name",
         get_id_for_name,
     )
-    with pytest.raises(ValueError, match=f"{GOOD_ATLAN_TAG_NAME} is not a valid Classification"):
+    with pytest.raises(
+        ValueError, match=f"{GOOD_ATLAN_TAG_NAME} is not a valid Classification"
+    ):
         AtlanTagName(GOOD_ATLAN_TAG_NAME)
 
 
@@ -57,7 +59,9 @@ def test_init_with_good_name(monkeypatch):
     assert AtlanTagName(GOOD_ATLAN_TAG_NAME) == sut
 
 
-def test_convert_to_display_text_when_atlan_tag_passed_returns_same_atlan_tag(monkeypatch, good_atlan_tag):
+def test_convert_to_display_text_when_atlan_tag_passed_returns_same_atlan_tag(
+    monkeypatch, good_atlan_tag
+):
     assert good_atlan_tag is AtlanTagName._convert_to_display_text(good_atlan_tag)
 
 
@@ -71,7 +75,10 @@ def test_convert_to_display_text_when_bad_string(monkeypatch):
         get_name_for_id,
     )
 
-    assert AtlanTagName._convert_to_display_text("bad").__repr__() == f"AtlanTagName('{DELETED_}')"
+    assert (
+        AtlanTagName._convert_to_display_text("bad").__repr__()
+        == f"AtlanTagName('{DELETED_}')"
+    )
 
 
 def test_convert_to_display_text_when_id(monkeypatch):

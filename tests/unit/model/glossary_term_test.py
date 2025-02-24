@@ -10,7 +10,9 @@ from tests.unit.model.constants import (
     GLOSSARY_TERM_QUALIFIED_NAME,
 )
 
-ANCHOR = AtlasGlossary.create_for_modification(qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME)
+ANCHOR = AtlasGlossary.create_for_modification(
+    qualified_name=GLOSSARY_QUALIFIED_NAME, name=GLOSSARY_NAME
+)
 GLOSSARY_GUID = "123"
 
 
@@ -94,7 +96,11 @@ def test_create_with_missing_parameters_raise_value_error(
             None,
             None,
             GLOSSARY_GUID,
-            [AtlasGlossaryCategory.updater(qualified_name="123", name="Category", glossary_guid=GLOSSARY_GUID)],
+            [
+                AtlasGlossaryCategory.updater(
+                    qualified_name="123", name="Category", glossary_guid=GLOSSARY_GUID
+                )
+            ],
         ),
     ],
 )
@@ -121,7 +127,8 @@ def test_create(
             glossary_qualified_name
             and sut.anchor is not None
             and sut.anchor.unique_attributes is not None
-            and sut.anchor.unique_attributes == {"qualifiedName": glossary_qualified_name}
+            and sut.anchor.unique_attributes
+            == {"qualifiedName": glossary_qualified_name}
         )
         or (glossary_guid and sut and sut.anchor and sut.anchor.guid == glossary_guid)
     )
@@ -144,7 +151,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     name: str, qualified_name: str, glossary_guid: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        AtlasGlossaryTerm.create_for_modification(qualified_name=qualified_name, name=name, glossary_guid=glossary_guid)
+        AtlasGlossaryTerm.create_for_modification(
+            qualified_name=qualified_name, name=name, glossary_guid=glossary_guid
+        )
 
 
 def test_create_for_modification():

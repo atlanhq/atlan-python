@@ -75,9 +75,11 @@ class QuickSightDashboard(QuickSight):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[NumericField] = NumericField(
-        "quickSightDashboardPublishedVersionNumber",
-        "quickSightDashboardPublishedVersionNumber",
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[NumericField] = (
+        NumericField(
+            "quickSightDashboardPublishedVersionNumber",
+            "quickSightDashboardPublishedVersionNumber",
+        )
     )
     """
     Version number of the published dashboard.
@@ -89,11 +91,15 @@ class QuickSightDashboard(QuickSight):
     Time (epoch) at which this dashboard was last published, in milliseconds.
     """
 
-    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField("quickSightDashboardFolders")
+    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardFolders"
+    )
     """
     TBC
     """
-    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField("quickSightDashboardVisuals")
+    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardVisuals"
+    )
     """
     TBC
     """
@@ -107,7 +113,11 @@ class QuickSightDashboard(QuickSight):
 
     @property
     def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.quick_sight_dashboard_published_version_number
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_published_version_number
+        )
 
     @quick_sight_dashboard_published_version_number.setter
     def quick_sight_dashboard_published_version_number(
@@ -115,24 +125,40 @@ class QuickSightDashboard(QuickSight):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_published_version_number = quick_sight_dashboard_published_version_number
+        self.attributes.quick_sight_dashboard_published_version_number = (
+            quick_sight_dashboard_published_version_number
+        )
 
     @property
     def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.quick_sight_dashboard_last_published_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_last_published_time
+        )
 
     @quick_sight_dashboard_last_published_time.setter
-    def quick_sight_dashboard_last_published_time(self, quick_sight_dashboard_last_published_time: Optional[datetime]):
+    def quick_sight_dashboard_last_published_time(
+        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_last_published_time = quick_sight_dashboard_last_published_time
+        self.attributes.quick_sight_dashboard_last_published_time = (
+            quick_sight_dashboard_last_published_time
+        )
 
     @property
     def quick_sight_dashboard_folders(self) -> Optional[List[QuickSightFolder]]:
-        return None if self.attributes is None else self.attributes.quick_sight_dashboard_folders
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_folders
+        )
 
     @quick_sight_dashboard_folders.setter
-    def quick_sight_dashboard_folders(self, quick_sight_dashboard_folders: Optional[List[QuickSightFolder]]):
+    def quick_sight_dashboard_folders(
+        self, quick_sight_dashboard_folders: Optional[List[QuickSightFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
@@ -141,22 +167,32 @@ class QuickSightDashboard(QuickSight):
     def quick_sight_dashboard_visuals(
         self,
     ) -> Optional[List[QuickSightDashboardVisual]]:
-        return None if self.attributes is None else self.attributes.quick_sight_dashboard_visuals
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_visuals
+        )
 
     @quick_sight_dashboard_visuals.setter
-    def quick_sight_dashboard_visuals(self, quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]]):
+    def quick_sight_dashboard_visuals(
+        self, quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_published_version_number: Optional[int] = Field(default=None, description="")
-        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(default=None, description="")
+        quick_sight_dashboard_published_version_number: Optional[int] = Field(
+            default=None, description=""
+        )
+        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
         quick_sight_dashboard_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]] = Field(
-            default=None, description=""
+        quick_sight_dashboard_visuals: Optional[List[QuickSightDashboardVisual]] = (
+            Field(default=None, description="")
         )  # relationship
 
         @classmethod
@@ -185,7 +221,9 @@ class QuickSightDashboard(QuickSight):
                 quick_sight_id=quick_sight_id,
                 qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
                 quick_sight_dashboard_folders=folders,
             )
 
