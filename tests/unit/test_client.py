@@ -341,23 +341,21 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
 
     terms = []
 
-    with (
-        patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute,
-        patch("pyatlan.client.asset.AssetClient.save") as mock_save,
-    ):
-        mock_execute.return_value.current_page = lambda: [table]
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
 
-        mock_save.return_value.assets_updated.return_value = [table]
+            mock_save.return_value.assets_updated.return_value = [table]
 
-        client = AtlanClient()
-        guid = "123"
+            client = AtlanClient()
+            guid = "123"
 
-        asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
 
-        assert asset == table
-        assert asset.assigned_terms is None
-        mock_execute.assert_called_once()
-        mock_save.assert_called_once()
+            assert asset == table
+            assert asset.assigned_terms is None
+            mock_execute.assert_called_once()
+            mock_save.assert_called_once()
 
 
 def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms():
@@ -368,25 +366,23 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
 
     terms = [AtlasGlossaryTerm(qualified_name="term1")]
 
-    with (
-        patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute,
-        patch("pyatlan.client.asset.AssetClient.save") as mock_save,
-    ):
-        mock_execute.return_value.current_page = lambda: [table]
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
 
-        def mock_save_side_effect(entity):
-            entity.assigned_terms = terms
-            return Mock(assets_updated=lambda asset_type: [entity])
+            def mock_save_side_effect(entity):
+                entity.assigned_terms = terms
+                return Mock(assets_updated=lambda asset_type: [entity])
 
-        mock_save.side_effect = mock_save_side_effect
+            mock_save.side_effect = mock_save_side_effect
 
-        client = AtlanClient()
-        guid = "123"
-        asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            client = AtlanClient()
+            guid = "123"
+            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
 
-        assert asset.assigned_terms == terms
-        mock_execute.assert_called_once()
-        mock_save.assert_called_once()
+            assert asset.assigned_terms == terms
+            mock_execute.assert_called_once()
+            mock_save.assert_called_once()
 
 
 def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms():
@@ -401,30 +397,28 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
     new_term = AtlasGlossaryTerm(qualified_name="new_term")
     terms = [new_term]
 
-    with (
-        patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute,
-        patch("pyatlan.client.asset.AssetClient.save") as mock_save,
-    ):
-        mock_execute.return_value.current_page = lambda: [table]
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
 
-        def mock_save_side_effect(entity):
-            entity.assigned_terms = table.attributes.meanings + terms
-            return Mock(assets_updated=lambda asset_type: [entity])
+            def mock_save_side_effect(entity):
+                entity.assigned_terms = table.attributes.meanings + terms
+                return Mock(assets_updated=lambda asset_type: [entity])
 
-        mock_save.side_effect = mock_save_side_effect
+            mock_save.side_effect = mock_save_side_effect
 
-        client = AtlanClient()
-        guid = "123"
+            client = AtlanClient()
+            guid = "123"
 
-        asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
 
-        updated_terms = asset.assigned_terms
-        assert updated_terms is not None
-        assert len(updated_terms) == 2
-        assert exisiting_term in updated_terms
-        assert new_term in updated_terms
-        mock_execute.assert_called_once()
-        mock_save.assert_called_once()
+            updated_terms = asset.assigned_terms
+            assert updated_terms is not None
+            assert len(updated_terms) == 2
+            assert exisiting_term in updated_terms
+            assert new_term in updated_terms
+            mock_execute.assert_called_once()
+            mock_save.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -539,26 +533,24 @@ def test_replace_terms():
 
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
-    with (
-        patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute,
-        patch("pyatlan.client.asset.AssetClient.save") as mock_save,
-    ):
-        mock_execute.return_value.current_page = lambda: [table]
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
 
-        def mock_save_side_effect(entity):
-            entity.assigned_terms = terms
-            return Mock(assets_updated=lambda asset_type: [entity])
+            def mock_save_side_effect(entity):
+                entity.assigned_terms = terms
+                return Mock(assets_updated=lambda asset_type: [entity])
 
-        mock_save.side_effect = mock_save_side_effect
+            mock_save.side_effect = mock_save_side_effect
 
-        client = AtlanClient()
-        guid = "123"
+            client = AtlanClient()
+            guid = "123"
 
-        asset = client.asset.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset = client.asset.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
 
-        assert asset.assigned_terms == terms
-        mock_execute.assert_called_once()
-        mock_save.assert_called_once()
+            assert asset.assigned_terms == terms
+            mock_execute.assert_called_once()
+            mock_save.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -672,29 +664,27 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
     other_term = AtlasGlossaryTerm(qualified_name="other_term", guid="b267858d-8316-4c41-a56a-6e9b840cef4a")
     table.attributes.meanings = [existing_term, other_term]
 
-    with (
-        patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute,
-        patch("pyatlan.client.asset.AssetClient.save") as mock_save,
-    ):
-        mock_execute.return_value.current_page = lambda: [table]
+    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+            mock_execute.return_value.current_page = lambda: [table]
 
-        def mock_save_side_effect(entity):
-            entity.assigned_terms = [t for t in table.attributes.meanings if t != existing_term]
-            return Mock(assets_updated=lambda asset_type: [entity])
+            def mock_save_side_effect(entity):
+                entity.assigned_terms = [t for t in table.attributes.meanings if t != existing_term]
+                return Mock(assets_updated=lambda asset_type: [entity])
 
-        mock_save.side_effect = mock_save_side_effect
+            mock_save.side_effect = mock_save_side_effect
 
-        client = AtlanClient()
-        guid = "123"
+            client = AtlanClient()
+            guid = "123"
 
-        asset = client.asset.remove_terms(guid=guid, asset_type=asset_type, terms=[existing_term])
+            asset = client.asset.remove_terms(guid=guid, asset_type=asset_type, terms=[existing_term])
 
-        updated_terms = asset.assigned_terms
-        assert updated_terms is not None
-        assert len(updated_terms) == 1
-        assert other_term in updated_terms
-        mock_execute.assert_called_once()
-        mock_save.assert_called_once()
+            updated_terms = asset.assigned_terms
+            assert updated_terms is not None
+            assert len(updated_terms) == 1
+            assert other_term in updated_terms
+            mock_execute.assert_called_once()
+            mock_save.assert_called_once()
 
 
 def test_register_client_with_bad_parameter_raises_value_error(client):
