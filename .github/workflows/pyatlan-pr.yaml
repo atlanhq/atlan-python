@@ -60,7 +60,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
 
-      - name: QA checks (black, flake8, mypy)
+      - name: QA checks (ruff-formatter, ruff-linter, mypy)
         run: |
           ./qa-checks
 
