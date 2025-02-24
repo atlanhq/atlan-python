@@ -45,9 +45,7 @@ from tests.integration.requests_test import delete_token
 CLASSIFICATION_NAME = "Issue"
 SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
 SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
-SL_SORT_BY_QUALIFIED_NAME = SortItem(
-    field="entityQFNamesAll", order=SortOrder.ASCENDING
-)
+SL_SORT_BY_QUALIFIED_NAME = SortItem(field="entityQFNamesAll", order=SortOrder.ASCENDING)
 AUDIT_SORT_BY_GUID = SortItem(field="entityId", order=SortOrder.ASCENDING)
 AUDIT_SORT_BY_LATEST = SortItem("created", order=SortOrder.DESCENDING)
 MODULE_NAME = TestId.make_unique("Client")
@@ -80,7 +78,6 @@ def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
 def glossary(
     client: AtlanClient,
 ) -> Generator[AtlasGlossary, None, None]:
-
     g = AtlasGlossary.creator(name=StrictStr(MODULE_NAME))
     g.description = TEST_SYSTEM_DESCRIPTION
     g.user_description = TEST_USER_DESCRIPTION
@@ -92,9 +89,7 @@ def glossary(
 
 
 @pytest.fixture(scope="module")
-def term(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryTerm, None, None]:
+def term(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryTerm, None, None]:
     t = AtlasGlossaryTerm.creator(
         name=StrictStr(MODULE_NAME),
         glossary_guid=StrictStr(glossary.guid),
@@ -130,9 +125,7 @@ def announcement():
 
 
 @pytest.fixture()
-def database(
-    client: AtlanClient, connection: Connection
-) -> Generator[Database, None, None]:
+def database(client: AtlanClient, connection: Connection) -> Generator[Database, None, None]:
     """Get a database with function scope"""
     database_name = TestId.make_unique("my_db")
     db = create_database(client, connection, database_name)
@@ -153,9 +146,7 @@ def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
 
 @pytest.fixture(scope="module")
 def audit_glossary(client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
-    created_glossary = create_glossary(
-        client, TestId.make_unique("test-audit-glossary")
-    )
+    created_glossary = create_glossary(client, TestId.make_unique("test-audit-glossary"))
     yield created_glossary
     delete_asset(client, guid=created_glossary.guid, asset_type=AtlasGlossary)
 
@@ -177,9 +168,7 @@ def _test_update_certificate(
 ):
     assert test_asset.qualified_name
     assert test_asset.name
-    test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
-    )
+    test_asset = client.asset.get_by_guid(guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False)
     assert test_asset.qualified_name
     assert test_asset.name
     assert test_asset.certificate_status is None
@@ -193,9 +182,7 @@ def _test_update_certificate(
         message=message,
         glossary_guid=glossary_guid if glossary_guid else None,
     )
-    test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
-    )
+    test_asset = client.asset.get_by_guid(guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False)
     assert test_asset.certificate_status == CertificateStatus.DRAFT
     assert test_asset.certificate_status_message == message
 
@@ -214,9 +201,7 @@ def _test_remove_certificate(
         name=test_asset.name,
         glossary_guid=glossary_guid if glossary_guid else None,
     )
-    test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
-    )
+    test_asset = client.asset.get_by_guid(guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False)
     assert test_asset.certificate_status is None
     assert test_asset.certificate_status_message is None
 
@@ -237,9 +222,7 @@ def _test_update_announcement(
         announcement=test_announcement,
         glossary_guid=glossary_guid if glossary_guid else None,
     )
-    test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
-    )
+    test_asset = client.asset.get_by_guid(guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False)
     assert test_asset.get_announcment() == test_announcement
 
 
@@ -257,9 +240,7 @@ def _test_remove_announcement(
         name=test_asset.name,
         glossary_guid=glossary_guid if glossary_guid else None,
     )
-    test_asset = client.asset.get_by_guid(
-        guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
-    )
+    test_asset = client.asset.get_by_guid(guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False)
     assert test_asset.get_announcment() is None
 
 
@@ -269,14 +250,8 @@ def test_append_terms_with_guid(
     database: Database,
 ):
     time.sleep(5)
-    assert (
-        database := client.asset.append_terms(
-            guid=database.guid, asset_type=Database, terms=[term1]
-        )
-    )
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    assert (database := client.asset.append_terms(guid=database.guid, asset_type=Database, terms=[term1]))
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -293,9 +268,7 @@ def test_append_terms_with_qualified_name(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
         )
     )
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -314,9 +287,7 @@ def test_append_terms_using_ref_by_guid_for_term(
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
         )
     )
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -337,15 +308,9 @@ def test_replace_a_term(
         )
     )
 
-    assert (
-        database := client.asset.replace_terms(
-            guid=database.guid, asset_type=Database, terms=[term2]
-        )
-    )
+    assert (database := client.asset.replace_terms(guid=database.guid, asset_type=Database, terms=[term2]))
 
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term2.guid
@@ -365,15 +330,9 @@ def test_replace_all_term(
         )
     )
 
-    assert (
-        database := client.asset.replace_terms(
-            guid=database.guid, asset_type=Database, terms=[]
-        )
-    )
+    assert (database := client.asset.replace_terms(guid=database.guid, asset_type=Database, terms=[]))
 
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms == []
     assert len(database.assigned_terms) == 0
 
@@ -404,9 +363,7 @@ def test_remove_term(
         )
     )
 
-    database = client.asset.get_by_guid(
-        guid=database.guid, asset_type=Database, ignore_relationships=False
-    )
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database, ignore_relationships=False)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term2.guid
@@ -423,22 +380,16 @@ def test_find_connections_by_name(client: AtlanClient):
 
 
 def test_get_asset_by_guid_good_guid(client: AtlanClient, glossary: AtlasGlossary):
-    glossary = client.asset.get_by_guid(
-        glossary.guid, AtlasGlossary, ignore_relationships=False
-    )
+    glossary = client.asset.get_by_guid(glossary.guid, AtlasGlossary, ignore_relationships=False)
     assert isinstance(glossary, AtlasGlossary)
 
 
-def test_get_asset_by_guid_without_asset_type(
-    client: AtlanClient, glossary: AtlasGlossary
-):
+def test_get_asset_by_guid_without_asset_type(client: AtlanClient, glossary: AtlasGlossary):
     glossary = client.asset.get_by_guid(glossary.guid, ignore_relationships=False)
     assert isinstance(glossary, AtlasGlossary)
 
 
-def test_get_minimal_asset_without_asset_type(
-    client: AtlanClient, glossary: AtlasGlossary
-):
+def test_get_minimal_asset_without_asset_type(client: AtlanClient, glossary: AtlasGlossary):
     glossary = client.asset.retrieve_minimal(glossary.guid)
     assert isinstance(glossary, AtlasGlossary)
 
@@ -469,9 +420,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert result.anchor is None
 
     # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
-    result = client.asset.get_by_guid(
-        guid=term.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    result = client.asset.get_by_guid(guid=term.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
@@ -528,9 +477,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     time.sleep(5)
     # Default - should call `GET_ENTITY_BY_GUID` API
     assert term and term.qualified_name
-    result = client.asset.get_by_qualified_name(
-        qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
-    )
+    result = client.asset.get_by_qualified_name(qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm)
     assert isinstance(result, AtlasGlossaryTerm)
     assert result.guid == term.guid
     assert hasattr(result, "attributes")
@@ -618,9 +565,7 @@ def test_upsert_when_no_changes(client: AtlanClient, glossary: AtlasGlossary):
 
 def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
     qualified_name = glossary.qualified_name or ""
-    glossary = client.asset.get_by_qualified_name(
-        qualified_name=qualified_name, asset_type=AtlasGlossary
-    )
+    glossary = client.asset.get_by_qualified_name(qualified_name=qualified_name, asset_type=AtlasGlossary)
     assert glossary.attributes.qualified_name == qualified_name
 
 
@@ -632,19 +577,13 @@ def test_get_by_qualified_name_when_superclass_specified_raises_not_found_error(
         NotFoundError,
         match="ATLAN-PYTHON-404-014 The Asset asset could not be found by name: ",
     ):
-        client.asset.get_by_qualified_name(
-            qualified_name=qualified_name, asset_type=Asset
-        )
+        client.asset.get_by_qualified_name(qualified_name=qualified_name, asset_type=Asset)
 
 
 def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
-    client.asset.add_atlan_tags(
-        AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
-    )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    client.asset.add_atlan_tags(AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME])
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
     classification = glossary_term.atlan_tags[0]
@@ -655,9 +594,7 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1 and term1.qualified_name
     query = Term.with_type_name(term1.type_name) + Term.with_name(term1.name)
-    request = IndexSearchRequest(
-        dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=False
-    )
+    request = IndexSearchRequest(dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=False)
     response = client.asset.search(criteria=request)
 
     # Ensure classification names are not present
@@ -666,9 +603,7 @@ def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert response.current_page()[0].guid == term1.guid
     assert response.current_page()[0].classification_names is None
 
-    request = IndexSearchRequest(
-        dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=True
-    )
+    request = IndexSearchRequest(dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=True)
     response = client.asset.search(criteria=request)
 
     # Ensure classification names are present
@@ -682,12 +617,8 @@ def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
 @pytest.mark.order(after="test_add_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
-    client.asset.remove_atlan_tag(
-        AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
-    )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    client.asset.remove_atlan_tag(AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME)
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert not glossary_term.atlan_tags
 
 
@@ -695,9 +626,7 @@ def test_glossary_update_certificate(client: AtlanClient, glossary: AtlasGlossar
     _test_update_certificate(client, glossary, AtlasGlossary)
 
 
-def test_glossary_term_update_certificate(
-    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
-):
+def test_glossary_term_update_certificate(client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary):
     _test_update_certificate(client, term1, AtlasGlossaryTerm, glossary.guid)
 
 
@@ -713,9 +642,7 @@ def test_glossary_remove_certificate(client: AtlanClient, glossary: AtlasGlossar
 
 
 @pytest.mark.order(after="test_glossary_term_update_certificate")
-def test_glossary_term_remove_certificate(
-    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
-):
+def test_glossary_term_remove_certificate(client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary):
     _test_remove_certificate(client, term1, AtlasGlossaryTerm, glossary.guid)
 
 
@@ -726,9 +653,7 @@ def test_glossary_category_remove_certificate(
     _test_remove_certificate(client, category, AtlasGlossaryCategory, glossary.guid)
 
 
-def test_glossary_update_announcement(
-    client: AtlanClient, glossary: AtlasGlossary, announcement: Announcement
-):
+def test_glossary_update_announcement(client: AtlanClient, glossary: AtlasGlossary, announcement: Announcement):
     _test_update_announcement(client, glossary, AtlasGlossary, announcement)
 
 
@@ -759,9 +684,7 @@ def test_glossary_term_update_announcement(
     glossary: AtlasGlossary,
     announcement: Announcement,
 ):
-    _test_update_announcement(
-        client, term1, AtlasGlossaryTerm, announcement, glossary.guid
-    )
+    _test_update_announcement(client, term1, AtlasGlossaryTerm, announcement, glossary.guid)
 
 
 def test_glossary_category_update_announcement(
@@ -770,9 +693,7 @@ def test_glossary_category_update_announcement(
     glossary: AtlasGlossary,
     announcement: Announcement,
 ):
-    _test_update_announcement(
-        client, category, AtlasGlossaryCategory, announcement, glossary.guid
-    )
+    _test_update_announcement(client, category, AtlasGlossaryCategory, announcement, glossary.guid)
 
 
 @pytest.mark.order(after="test_glossary_update_announcement")
@@ -781,9 +702,7 @@ def test_glossary_remove_announcement(client: AtlanClient, glossary: AtlasGlossa
 
 
 @pytest.mark.order(after="test_glossary_term_update_announcement")
-def test_glossary_term_remove_announcement(
-    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
-):
+def test_glossary_term_remove_announcement(client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary):
     _test_remove_announcement(client, term1, AtlasGlossaryTerm, glossary.guid)
 
 
@@ -802,9 +721,7 @@ def test_audit_find_by_user(
     size = 10
     assert current_user.username
 
-    results = client.audit.search(
-        AuditSearchRequest.by_user(current_user.username, size=size, sort=[])
-    )
+    results = client.audit.search(AuditSearchRequest.by_user(current_user.username, size=size, sort=[]))
     assert results.total_count > 0
     assert size == len(results.current_page())
     audit_entity = results.current_page()[0]
@@ -826,20 +743,16 @@ def generate_audit_entries(client: AtlanClient, audit_glossary: AtlasGlossary):
             qualified_name=audit_glossary.qualified_name,
             name=audit_glossary.name,
         )
-        updater.description = f"Updated description {i+1}"
+        updater.description = f"Updated description {i + 1}"
         client.asset.save(updater)
         time.sleep(1)
 
     request = AuditSearchRequest.by_guid(guid=audit_glossary.guid, size=log_count)
     response = client.audit.search(request)
-    assert (
-        response.total_count >= log_count
-    ), f"Expected at least {log_count} logs, but got {response.total_count}."
+    assert response.total_count >= log_count, f"Expected at least {log_count} logs, but got {response.total_count}."
 
 
-def _assert_audit_search_results(
-    results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, bulk=False
-):
+def _assert_audit_search_results(results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, bulk=False):
     assert results.total_count > size
     assert len(results.current_page()) == size
     counter = 0
@@ -872,9 +785,7 @@ def test_audit_search_pagination(
     results = client.audit.search(criteria=request, bulk=False)
     TOTAL_AUDIT_ENTRIES = results.total_count
     expected_sorts = [SortItem(field="entityId", order=SortOrder.ASCENDING)]
-    _assert_audit_search_results(
-        results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False
-    )
+    _assert_audit_search_results(results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False)
 
     # Test audit search by guid with `bulk` option using timestamp-based pagination
     dsl = DSL(
@@ -888,9 +799,7 @@ def test_audit_search_pagination(
         SortItem("created", order=SortOrder.ASCENDING),
         SortItem(field="entityId", order=SortOrder.ASCENDING),
     ]
-    _assert_audit_search_results(
-        results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True
-    )
+    _assert_audit_search_results(results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True)
     assert mock_logger.call_count == 1
     assert "Audit bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
@@ -909,14 +818,9 @@ def test_audit_search_pagination(
             SortItem("created", order=SortOrder.ASCENDING),
             SortItem(field="entityId", order=SortOrder.ASCENDING),
         ]
-        _assert_audit_search_results(
-            results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True
-        )
+        _assert_audit_search_results(results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, True)
         assert mock_logger.call_count < TOTAL_AUDIT_ENTRIES
-        assert (
-            "Audit bulk search option is enabled."
-            in mock_logger.call_args_list[0][0][0]
-        )
+        assert "Audit bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
         mock_logger.reset_mock()
 
     # When the number of results exceeds the predefined threshold and bulk is `False` and no pre-defined sort.
@@ -934,14 +838,9 @@ def test_audit_search_pagination(
             SortItem("created", order=SortOrder.ASCENDING),
             SortItem(field="entityId", order=SortOrder.ASCENDING),
         ]
-        _assert_audit_search_results(
-            results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False
-        )
+        _assert_audit_search_results(results, expected_sorts, size, TOTAL_AUDIT_ENTRIES, False)
         assert mock_logger.call_count < TOTAL_AUDIT_ENTRIES
-        assert (
-            "Result size (%s) exceeds threshold (%s)."
-            in mock_logger.call_args_list[0][0][0]
-        )
+        assert "Result size (%s) exceeds threshold (%s)." in mock_logger.call_args_list[0][0][0]
         mock_logger.reset_mock()
 
 
@@ -1041,13 +940,9 @@ def test_audit_search_default_sorting(client: AtlanClient, audit_info: AuditInfo
     assert sort_options[1].field == AUDIT_SORT_BY_LATEST.field
 
 
-def _view_test_glossary_by_search(
-    client: AtlanClient, sl_glossary: AtlasGlossary
-) -> None:
+def _view_test_glossary_by_search(client: AtlanClient, sl_glossary: AtlasGlossary) -> None:
     time.sleep(2)
-    index = (
-        FluentSearch().where(Asset.GUID.eq(sl_glossary.guid, case_insensitive=True))
-    ).to_request()
+    index = (FluentSearch().where(Asset.GUID.eq(sl_glossary.guid, case_insensitive=True))).to_request()
     index.request_metadata = IndexSearchRequest.Metadata(
         utm_tags=[
             UTMTags.ACTION_ASSET_VIEWED,
@@ -1082,9 +977,7 @@ def test_search_log_most_recent_viewers(
 
     # Test exclude users
     assert current_user.username
-    request = SearchLogRequest.most_recent_viewers(
-        guid=sl_glossary.guid, exclude_users=[current_user.username]
-    )
+    request = SearchLogRequest.most_recent_viewers(guid=sl_glossary.guid, exclude_users=[current_user.username])
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail(f"Failed to retrieve most recent viewers of : {sl_glossary.name}")
@@ -1128,9 +1021,7 @@ def test_search_log_most_viewed_assets(
     prev_count = response.count
     assert prev_count
     assert current_user.username
-    request = SearchLogRequest.most_viewed_assets(
-        max_assets=10, exclude_users=[current_user.username]
-    )
+    request = SearchLogRequest.most_viewed_assets(max_assets=10, exclude_users=[current_user.username])
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets")
@@ -1140,9 +1031,7 @@ def test_search_log_most_viewed_assets(
 
 
 @pytest.mark.order(after="test_search_log_most_viewed_assets")
-def test_search_log_views_by_guid(
-    client: AtlanClient, current_user: UserMinimalResponse, sl_glossary: AtlasGlossary
-):
+def test_search_log_views_by_guid(client: AtlanClient, current_user: UserMinimalResponse, sl_glossary: AtlasGlossary):
     request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10)
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogResults):
@@ -1173,9 +1062,7 @@ def test_search_log_views_by_guid(
 
     # Test exclude users
     assert current_user.username
-    request = SearchLogRequest.views_by_guid(
-        guid=sl_glossary.guid, size=10, exclude_users=[current_user.username]
-    )
+    request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=10, exclude_users=[current_user.username])
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogResults):
         pytest.fail("Failed to retrieve asset detailed log entries")
@@ -1193,14 +1080,10 @@ def generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
 
     request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=20)
     response = client.search_log.search(request)
-    assert (
-        response.count >= log_count
-    ), f"Expected at least {log_count} logs, but got {response.count}."
+    assert response.count >= log_count, f"Expected at least {log_count} logs, but got {response.count}."
 
 
-def _assert_search_log_results(
-    results, expected_sorts, size, TOTAL_LOG_ENTRIES, bulk=False
-):
+def _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES, bulk=False):
     assert results.count > size
     assert len(results.current_page()) == size
     counter = 0
@@ -1214,9 +1097,7 @@ def _assert_search_log_results(
 
 
 @patch.object(SEARCH_LOG_LOGGER, "debug")
-def test_search_log_pagination(
-    mock_logger, generate_search_logs, sl_glossary: AtlasGlossary, client: AtlanClient
-):
+def test_search_log_pagination(mock_logger, generate_search_logs, sl_glossary: AtlasGlossary, client: AtlanClient):
     size = 2
     # Test search logs by GUID with default offset-based pagination
     search_log_request = SearchLogRequest.views_by_guid(
@@ -1247,10 +1128,7 @@ def test_search_log_pagination(
     ]
     _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES, True)
     assert mock_logger.call_count == 1
-    assert (
-        "Search log bulk search option is enabled."
-        in mock_logger.call_args_list[0][0][0]
-    )
+    assert "Search log bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
     mock_logger.reset_mock()
 
     # When the number of results exceeds the predefined threshold and bulk=True
@@ -1265,14 +1143,9 @@ def test_search_log_pagination(
             SortItem(field="createdAt", order=SortOrder.ASCENDING),
             SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
         ]
-        _assert_search_log_results(
-            results, expected_sorts, size, TOTAL_LOG_ENTRIES, True
-        )
+        _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES, True)
         assert mock_logger.call_count < TOTAL_LOG_ENTRIES
-        assert (
-            "Search log bulk search option is enabled."
-            in mock_logger.call_args_list[0][0][0]
-        )
+        assert "Search log bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
         mock_logger.reset_mock()
 
     # When results exceed threshold and bulk=False, SDK auto-switches to bulk search
@@ -1289,10 +1162,7 @@ def test_search_log_pagination(
         ]
         _assert_search_log_results(results, expected_sorts, size, TOTAL_LOG_ENTRIES)
         assert mock_logger.call_count < TOTAL_LOG_ENTRIES
-        assert (
-            "Result size (%s) exceeds threshold (%s)."
-            in mock_logger.call_args_list[0][0][0]
-        )
+        assert "Result size (%s) exceeds threshold (%s)." in mock_logger.call_args_list[0][0][0]
         mock_logger.reset_mock()
 
 
@@ -1356,33 +1226,21 @@ def test_search_log_default_sorting(client: AtlanClient, sl_glossary: AtlasGloss
     assert sort_options[2].field == SL_SORT_BY_TIMESTAMP.field
 
 
-def test_client_401_token_refresh(
-    client: AtlanClient, expired_token: ApiToken, argo_fake_token: ApiToken, monkeypatch
-):
+def test_client_401_token_refresh(client: AtlanClient, expired_token: ApiToken, argo_fake_token: ApiToken, monkeypatch):
     # Use a smaller retry count to speed up test execution
     DEFAULT_RETRY.total = 1
 
     # Retrieve required client information before updating the client with invalid API tokens
     assert argo_fake_token and argo_fake_token.guid
-    argo_client_secret = client.impersonate.get_client_secret(
-        client_guid=argo_fake_token.guid
-    )
+    argo_client_secret = client.impersonate.get_client_secret(client_guid=argo_fake_token.guid)
 
     # Retrieve the user ID associated with the expired token's username
     # Since user credentials for API tokens cannot be retrieved directly, use the existing username
-    expired_token_user_id = client.impersonate.get_user_id(
-        username=expired_token.username
-    )
+    expired_token_user_id = client.impersonate.get_user_id(username=expired_token.username)
 
     # Initialize the client with an expired/invalid token (results in 401 Unauthorized errors)
-    assert (
-        expired_token
-        and expired_token.attributes
-        and expired_token.attributes.access_token
-    )
-    client = AtlanClient(
-        api_key=expired_token.attributes.access_token, retry=DEFAULT_RETRY
-    )
+    assert expired_token and expired_token.attributes and expired_token.attributes.access_token
+    client = AtlanClient(api_key=expired_token.attributes.access_token, retry=DEFAULT_RETRY)
     expired_api_token = expired_token.attributes.access_token
 
     # Case 1: No user_id (default)
@@ -1392,9 +1250,9 @@ def test_client_401_token_refresh(
         AuthenticationError,
         match="Server responded with an authentication error 401",
     ):
-        FluentSearch().where(CompoundQuery.active_assets()).where(
-            CompoundQuery.asset_type(AtlasGlossary)
-        ).page_size(100).execute(client=client)
+        FluentSearch().where(CompoundQuery.active_assets()).where(CompoundQuery.asset_type(AtlasGlossary)).page_size(
+            100
+        ).execute(client=client)
 
     # Case 2: Invalid user_id
     # Test that providing an invalid user ID results in the same authentication error
@@ -1403,9 +1261,9 @@ def test_client_401_token_refresh(
         AuthenticationError,
         match="Server responded with an authentication error 401",
     ):
-        FluentSearch().where(CompoundQuery.active_assets()).where(
-            CompoundQuery.asset_type(AtlasGlossary)
-        ).page_size(100).execute(client=client)
+        FluentSearch().where(CompoundQuery.active_assets()).where(CompoundQuery.asset_type(AtlasGlossary)).page_size(
+            100
+        ).execute(client=client)
 
     # Case 3: Valid user_id associated with the expired token
     # This should trigger a retry, refresh the token

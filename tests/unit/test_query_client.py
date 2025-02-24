@@ -27,9 +27,7 @@ def client():
 
 @pytest.fixture()
 def query_request() -> QueryRequest:
-    return QueryRequest(
-        sql="test-sql", data_source_name="test-ds-name", default_schema="test-schema"
-    )
+    return QueryRequest(sql="test-sql", data_source_name="test-ds-name", default_schema="test-schema")
 
 
 @pytest.fixture()
@@ -64,9 +62,7 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
     "test_request, error_msg",
     [[None, "none is not an allowed value"], ["123", "value is not a valid dict"]],
 )
-def test_query_stream_wrong_params_raises_validation_error(
-    test_request, error_msg, client: AtlanClient
-):
+def test_query_stream_wrong_params_raises_validation_error(test_request, error_msg, client: AtlanClient):
     with pytest.raises(ValidationError) as err:
         client.queries.stream(request=test_request)
     assert error_msg in str(err.value)

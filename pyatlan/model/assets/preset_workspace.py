@@ -28,28 +28,19 @@ class PresetWorkspace(Preset):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
-        attributes = PresetWorkspace.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        attributes = PresetWorkspace.Attributes.create(name=name, connection_qualified_name=connection_qualified_name)
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        return cls.creator(name=name, connection_qualified_name=connection_qualified_name)
 
     type_name: str = Field(default="PresetWorkspace", allow_mutation=False)
 
@@ -97,9 +88,7 @@ class PresetWorkspace(Preset):
     """
 
     """
-    PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "presetWorkspaceStatus", "presetWorkspaceStatus"
-    )
+    PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField("presetWorkspaceStatus", "presetWorkspaceStatus")
     """
 
     """
@@ -142,29 +131,17 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_public_dashboards_allowed
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_public_dashboards_allowed
 
     @preset_workspace_public_dashboards_allowed.setter
-    def preset_workspace_public_dashboards_allowed(
-        self, preset_workspace_public_dashboards_allowed: Optional[bool]
-    ):
+    def preset_workspace_public_dashboards_allowed(self, preset_workspace_public_dashboards_allowed: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_public_dashboards_allowed = (
-            preset_workspace_public_dashboards_allowed
-        )
+        self.attributes.preset_workspace_public_dashboards_allowed = preset_workspace_public_dashboards_allowed
 
     @property
     def preset_workspace_cluster_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_cluster_id
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_cluster_id
 
     @preset_workspace_cluster_id.setter
     def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
@@ -174,11 +151,7 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_hostname(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_hostname
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_hostname
 
     @preset_workspace_hostname.setter
     def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
@@ -188,27 +161,17 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_is_in_maintenance_mode
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_is_in_maintenance_mode
 
     @preset_workspace_is_in_maintenance_mode.setter
-    def preset_workspace_is_in_maintenance_mode(
-        self, preset_workspace_is_in_maintenance_mode: Optional[bool]
-    ):
+    def preset_workspace_is_in_maintenance_mode(self, preset_workspace_is_in_maintenance_mode: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_is_in_maintenance_mode = (
-            preset_workspace_is_in_maintenance_mode
-        )
+        self.attributes.preset_workspace_is_in_maintenance_mode = preset_workspace_is_in_maintenance_mode
 
     @property
     def preset_workspace_region(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_region
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_region
 
     @preset_workspace_region.setter
     def preset_workspace_region(self, preset_workspace_region: Optional[str]):
@@ -218,9 +181,7 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_status(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_status
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_status
 
     @preset_workspace_status.setter
     def preset_workspace_status(self, preset_workspace_status: Optional[str]):
@@ -230,50 +191,30 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_deployment_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_deployment_id
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_deployment_id
 
     @preset_workspace_deployment_id.setter
-    def preset_workspace_deployment_id(
-        self, preset_workspace_deployment_id: Optional[int]
-    ):
+    def preset_workspace_deployment_id(self, preset_workspace_deployment_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
 
     @property
     def preset_workspace_dashboard_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dashboard_count
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_dashboard_count
 
     @preset_workspace_dashboard_count.setter
-    def preset_workspace_dashboard_count(
-        self, preset_workspace_dashboard_count: Optional[int]
-    ):
+    def preset_workspace_dashboard_count(self, preset_workspace_dashboard_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dashboard_count = (
-            preset_workspace_dashboard_count
-        )
+        self.attributes.preset_workspace_dashboard_count = preset_workspace_dashboard_count
 
     @property
     def preset_workspace_dataset_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dataset_count
-        )
+        return None if self.attributes is None else self.attributes.preset_workspace_dataset_count
 
     @preset_workspace_dataset_count.setter
-    def preset_workspace_dataset_count(
-        self, preset_workspace_dataset_count: Optional[int]
-    ):
+    def preset_workspace_dataset_count(self, preset_workspace_dataset_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
@@ -289,44 +230,26 @@ class PresetWorkspace(Preset):
         self.attributes.preset_dashboards = preset_dashboards
 
     class Attributes(Preset.Attributes):
-        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            default=None, description=""
-        )
+        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(default=None, description="")
         preset_workspace_cluster_id: Optional[int] = Field(default=None, description="")
         preset_workspace_hostname: Optional[str] = Field(default=None, description="")
-        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            default=None, description=""
-        )
+        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(default=None, description="")
         preset_workspace_region: Optional[str] = Field(default=None, description="")
         preset_workspace_status: Optional[str] = Field(default=None, description="")
-        preset_workspace_deployment_id: Optional[int] = Field(
-            default=None, description=""
-        )
-        preset_workspace_dashboard_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        preset_workspace_dataset_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        preset_dashboards: Optional[List[PresetDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
+        preset_workspace_deployment_id: Optional[int] = Field(default=None, description="")
+        preset_workspace_dashboard_count: Optional[int] = Field(default=None, description="")
+        preset_workspace_dataset_count: Optional[int] = Field(default=None, description="")
+        preset_dashboards: Optional[List[PresetDashboard]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def create(
-            cls, *, name: str, connection_qualified_name: str
-        ) -> PresetWorkspace.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+        def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace.Attributes:
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             return PresetWorkspace.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
             )
 
     attributes: PresetWorkspace.Attributes = Field(

@@ -33,9 +33,7 @@ class GroupClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
@@ -55,9 +53,7 @@ class GroupClient:
         payload = CreateGroupRequest(group=group)
         if user_ids:
             payload.users = user_ids
-        raw_json = self._client._call_api(
-            CREATE_GROUP, request_obj=payload, exclude_unset=True
-        )
+        raw_json = self._client._call_api(CREATE_GROUP, request_obj=payload, exclude_unset=True)
         return CreateGroupResponse(**raw_json)
 
     @validate_arguments
@@ -121,9 +117,7 @@ class GroupClient:
             columns=columns,
         )
         endpoint = GET_GROUPS.format_path_with_params()
-        raw_json = self._client._call_api(
-            api=endpoint, query_params=request.query_params
-        )
+        raw_json = self._client._call_api(api=endpoint, query_params=request.query_params)
         return GroupResponse(
             client=self._client,
             endpoint=GET_GROUPS,
@@ -183,9 +177,7 @@ class GroupClient:
         return None
 
     @validate_arguments
-    def get_members(
-        self, guid: str, request: Optional[UserRequest] = None
-    ) -> UserResponse:
+    def get_members(self, guid: str, request: Optional[UserRequest] = None) -> UserResponse:
         """
         Retrieves a UserResponse object which contains a list of the members (users) of a group.
 
@@ -196,9 +188,7 @@ class GroupClient:
         """
         if not request:
             request = UserRequest()
-        endpoint = GET_GROUP_MEMBERS.format_path(
-            {"group_guid": guid}
-        ).format_path_with_params()
+        endpoint = GET_GROUP_MEMBERS.format_path({"group_guid": guid}).format_path_with_params()
         raw_json = self._client._call_api(
             api=endpoint,
             query_params=request.query_params,

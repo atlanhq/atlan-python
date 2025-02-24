@@ -29,9 +29,7 @@ class AuthService(Asset, type_name="AuthService"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AUTH_SERVICE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "authServiceType", "authServiceType"
-    )
+    AUTH_SERVICE_TYPE: ClassVar[KeywordField] = KeywordField("authServiceType", "authServiceType")
     """
     TBC
     """
@@ -39,15 +37,11 @@ class AuthService(Asset, type_name="AuthService"):
     """
     TBC
     """
-    AUTH_SERVICE_IS_ENABLED: ClassVar[BooleanField] = BooleanField(
-        "authServiceIsEnabled", "authServiceIsEnabled"
-    )
+    AUTH_SERVICE_IS_ENABLED: ClassVar[BooleanField] = BooleanField("authServiceIsEnabled", "authServiceIsEnabled")
     """
     TBC
     """
-    AUTH_SERVICE_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "authServiceConfig", "authServiceConfig"
-    )
+    AUTH_SERVICE_CONFIG: ClassVar[KeywordField] = KeywordField("authServiceConfig", "authServiceConfig")
     """
     TBC
     """
@@ -88,9 +82,7 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_is_enabled(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.auth_service_is_enabled
-        )
+        return None if self.attributes is None else self.attributes.auth_service_is_enabled
 
     @auth_service_is_enabled.setter
     def auth_service_is_enabled(self, auth_service_is_enabled: Optional[bool]):
@@ -110,16 +102,10 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_policy_last_sync(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.auth_service_policy_last_sync
-        )
+        return None if self.attributes is None else self.attributes.auth_service_policy_last_sync
 
     @auth_service_policy_last_sync.setter
-    def auth_service_policy_last_sync(
-        self, auth_service_policy_last_sync: Optional[int]
-    ):
+    def auth_service_policy_last_sync(self, auth_service_policy_last_sync: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.auth_service_policy_last_sync = auth_service_policy_last_sync
@@ -128,12 +114,8 @@ class AuthService(Asset, type_name="AuthService"):
         auth_service_type: Optional[str] = Field(default=None, description="")
         tag_service: Optional[str] = Field(default=None, description="")
         auth_service_is_enabled: Optional[bool] = Field(default=None, description="")
-        auth_service_config: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
-        auth_service_policy_last_sync: Optional[int] = Field(
-            default=None, description=""
-        )
+        auth_service_config: Optional[Dict[str, str]] = Field(default=None, description="")
+        auth_service_policy_last_sync: Optional[int] = Field(default=None, description="")
 
     attributes: AuthService.Attributes = Field(
         default_factory=lambda: AuthService.Attributes(),

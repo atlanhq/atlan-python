@@ -21,12 +21,8 @@ class AnaplanApp(Anaplan):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> AnaplanApp:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
-        attributes = AnaplanApp.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        attributes = AnaplanApp.Attributes.create(name=name, connection_qualified_name=connection_qualified_name)
         return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanApp", allow_mutation=False)
@@ -62,25 +58,17 @@ class AnaplanApp(Anaplan):
         self.attributes.anaplan_pages = anaplan_pages
 
     class Attributes(Anaplan.Attributes):
-        anaplan_pages: Optional[List[AnaplanPage]] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_pages: Optional[List[AnaplanPage]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def create(
-            cls, *, name: str, connection_qualified_name: str
-        ) -> AnaplanApp.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+        def create(cls, *, name: str, connection_qualified_name: str) -> AnaplanApp.Attributes:
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             return AnaplanApp.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
             )
 
     attributes: AnaplanApp.Attributes = Field(

@@ -144,14 +144,10 @@ class AtlanConnectorType(str, Enum):
     category: AtlanConnectionCategory
 
     @classmethod
-    def _get_connector_type_from_qualified_name(
-        cls, qualified_name: str
-    ) -> "AtlanConnectorType":
+    def _get_connector_type_from_qualified_name(cls, qualified_name: str) -> "AtlanConnectorType":
         tokens = qualified_name.split("/")
         if len(tokens) < 2:
-            raise ValueError(
-                f"Qualified name '{qualified_name}' does not contain enough segments."
-            )
+            raise ValueError(f"Qualified name '{qualified_name}' does not contain enough segments.")
         connector_type_key = tokens[1].upper()
         # Check if the connector_type_key exists in AtlanConnectorType
         if connector_type_key not in AtlanConnectorType.__members__:
@@ -161,9 +157,7 @@ class AtlanConnectorType(str, Enum):
             )
         return AtlanConnectorType[connector_type_key]
 
-    def __new__(
-        cls, value: str, category: AtlanConnectionCategory
-    ) -> "AtlanConnectorType":
+    def __new__(cls, value: str, category: AtlanConnectionCategory) -> "AtlanConnectorType":
         obj = str.__new__(cls, value)
         obj._value_ = value
         obj.category = category
@@ -2024,9 +2018,7 @@ class KeycloakEventType(str, Enum):
     IDENTITY_PROVIDER_RESPONSE = "IDENTITY_PROVIDER_RESPONSE"
     IDENTITY_PROVIDER_RESPONSE_ERROR = "IDENTITY_PROVIDER_RESPONSE_ERROR"
     IDENTITY_PROVIDER_RETRIEVE_TOKEN = "IDENTITY_PROVIDER_RETRIEVE_TOKEN"  # noqa: S105
-    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = (
-        "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
-    )
+    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
     IMPERSONATE = "IMPERSONATE"
     IMPERSONATE_ERROR = "IMPERSONATE_ERROR"
     CUSTOM_REQUIRED_ACTION = "CUSTOM_REQUIRED_ACTION"
@@ -2052,9 +2044,7 @@ class KeycloakEventType(str, Enum):
     OAUTH2_DEVICE_VERIFY_USER_CODE = "OAUTH2_DEVICE_VERIFY_USER_CODE"
     OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR = "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR"
     OAUTH2_DEVICE_CODE_TO_TOKEN = "OAUTH2_DEVICE_CODE_TO_TOKEN"  # noqa: S105
-    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = (
-        "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
-    )
+    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
     AUTHREQID_TO_TOKEN = "AUTHREQID_TO_TOKEN"  # noqa: S105
     AUTHREQID_TO_TOKEN_ERROR = "AUTHREQID_TO_TOKEN_ERROR"  # noqa: S105
     PERMISSION_TOKEN = "PERMISSION_TOKEN"  # noqa: S105
@@ -2109,9 +2099,7 @@ class PersonaDomainAction(str, Enum):
     UPDATE_PRODUCTS = "persona-domain-product-update"
     DELETE_PRODUCTS = "persona-domain-product-delete"
     UPDATE_DOMAIN_CUSTOM_METADATA = "persona-domain-business-update-metadata"
-    UPDATE_SUBDOMAIN_CUSTOM_METADATA = (
-        "persona-domain-sub-domain-business-update-metadata"
-    )
+    UPDATE_SUBDOMAIN_CUSTOM_METADATA = "persona-domain-sub-domain-business-update-metadata"
     UPDATE_PRODUCT_CUSTOM_METADATA = "persona-domain-product-business-update-metadata"
 
 
@@ -2353,20 +2341,12 @@ class AtlanTaskType(str, Enum):
     CLASSIFICATION_PROPAGATION_ADD = "CLASSIFICATION_PROPAGATION_ADD"
     CLASSIFICATION_PROPAGATION_DELETE = "CLASSIFICATION_PROPAGATION_DELETE"
     CLASSIFICATION_ONLY_PROPAGATION_DELETE = "CLASSIFICATION_ONLY_PROPAGATION_DELETE"
-    CLASSIFICATION_ONLY_PROPAGATION_DELETE_ON_HARD_DELETE = (
-        "CLASSIFICATION_ONLY_PROPAGATION_DELETE_ON_HARD_DELETE"
-    )
+    CLASSIFICATION_ONLY_PROPAGATION_DELETE_ON_HARD_DELETE = "CLASSIFICATION_ONLY_PROPAGATION_DELETE_ON_HARD_DELETE"
     CLASSIFICATION_REFRESH_PROPAGATION = "CLASSIFICATION_REFRESH_PROPAGATION"
-    CLASSIFICATION_PROPAGATION_RELATIONSHIP_UPDATE = (
-        "CLASSIFICATION_PROPAGATION_RELATIONSHIP_UPDATE"
-    )
+    CLASSIFICATION_PROPAGATION_RELATIONSHIP_UPDATE = "CLASSIFICATION_PROPAGATION_RELATIONSHIP_UPDATE"
     UPDATE_ENTITY_MEANINGS_ON_TERM_UPDATE = "UPDATE_ENTITY_MEANINGS_ON_TERM_UPDATE"
-    UPDATE_ENTITY_MEANINGS_ON_TERM_SOFT_DELETE = (
-        "UPDATE_ENTITY_MEANINGS_ON_TERM_SOFT_DELETE"
-    )
-    UPDATE_ENTITY_MEANINGS_ON_TERM_HARD_DELETE = (
-        "UPDATE_ENTITY_MEANINGS_ON_TERM_HARD_DELETE"
-    )
+    UPDATE_ENTITY_MEANINGS_ON_TERM_SOFT_DELETE = "UPDATE_ENTITY_MEANINGS_ON_TERM_SOFT_DELETE"
+    UPDATE_ENTITY_MEANINGS_ON_TERM_HARD_DELETE = "UPDATE_ENTITY_MEANINGS_ON_TERM_HARD_DELETE"
 
 
 class AtlanMeshColor(str, Enum):

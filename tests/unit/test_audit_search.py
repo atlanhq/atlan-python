@@ -40,18 +40,13 @@ def audit_search_paging_json():
 def _assert_audit_search_results(results, response_json, sorts, bulk=False):
     for audit in results:
         assert audit.entity_id == response_json["entityAudits"][0]["entity_id"]
-        assert (
-            audit.entity_qualified_name
-            == response_json["entityAudits"][0]["entity_qualified_name"]
-        )
+        assert audit.entity_qualified_name == response_json["entityAudits"][0]["entity_qualified_name"]
         assert audit.type_name == response_json["entityAudits"][0]["type_name"]
         expected_timestamp = datetime.fromtimestamp(
             response_json["entityAudits"][0]["timestamp"] / 1000, tz=timezone.utc
         )
         assert audit.timestamp == expected_timestamp
-        expected_created = datetime.fromtimestamp(
-            response_json["entityAudits"][0]["created"] / 1000, tz=timezone.utc
-        )
+        expected_created = datetime.fromtimestamp(response_json["entityAudits"][0]["created"] / 1000, tz=timezone.utc)
         assert audit.created == expected_created
         assert audit.user == response_json["entityAudits"][0]["user"]
         assert audit.action == response_json["entityAudits"][0]["action"]
@@ -62,9 +57,7 @@ def _assert_audit_search_results(results, response_json, sorts, bulk=False):
 
 
 @patch.object(LOGGER, "debug")
-def test_audit_search_pagination(
-    mock_logger, mock_api_caller, audit_search_paging_json
-):
+def test_audit_search_pagination(mock_logger, mock_api_caller, audit_search_paging_json):
     client = AuditClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [
         audit_search_paging_json,
@@ -101,9 +94,7 @@ def test_audit_search_pagination(
         SortItem(field="entityId", order=SortOrder.ASCENDING),
     ]
 
-    _assert_audit_search_results(
-        response, audit_search_paging_json, expected_sorts, bulk=True
-    )
+    _assert_audit_search_results(response, audit_search_paging_json, expected_sorts, bulk=True)
     # The call count will be 2 because
     # audit search entries are processed in the first API call.
     # In the second API call, self._entity_audits
@@ -129,15 +120,10 @@ def test_audit_search_pagination(
         ]
         audit_search_request = AuditSearchRequest(dsl=dsl)
         response = client.search(criteria=audit_search_request)
-        _assert_audit_search_results(
-            response, audit_search_paging_json, expected_sorts, bulk=False
-        )
+        _assert_audit_search_results(response, audit_search_paging_json, expected_sorts, bulk=False)
         assert mock_logger.call_count == 1
         assert mock_api_caller._call_api.call_count == 3
-        assert (
-            "Result size (%s) exceeds threshold (%s)"
-            in mock_logger.call_args_list[0][0][0]
-        )
+        assert "Result size (%s) exceeds threshold (%s)" in mock_logger.call_args_list[0][0][0]
 
         # Test exception for bulk=False with user-defined sorting and results exceeds the predefined threshold
         dsl.sort = dsl.sort + [SortItem(field="some-sort1", order=SortOrder.ASCENDING)]

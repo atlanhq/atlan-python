@@ -24,9 +24,7 @@ class OpenLineageJob(AtlanObject):
     https://openlineage.io/docs/spec/object-model#job
     """
 
-    name: Optional[str] = Field(
-        default=None, description="Unique name for that job within that namespace."
-    )
+    name: Optional[str] = Field(default=None, description="Unique name for that job within that namespace.")
     namespace: Optional[str] = Field(
         default=None,
         description="Namespace containing that job.",
@@ -44,9 +42,7 @@ class OpenLineageJob(AtlanObject):
         return "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/Job"
 
     @classmethod
-    def creator(
-        cls, connection_name: str, job_name: str, producer: str
-    ) -> OpenLineageJob:
+    def creator(cls, connection_name: str, job_name: str, producer: str) -> OpenLineageJob:
         """
         Builds the minimal object necessary to create an OpenLineage job.
 
@@ -55,9 +51,7 @@ class OpenLineageJob(AtlanObject):
         :param producer: URI indicating the code or software that implements this job
         :returns: the minimal request necessary to create the job
         """
-        return OpenLineageJob(
-            namespace=connection_name, name=job_name, producer=producer, facets={}
-        )
+        return OpenLineageJob(namespace=connection_name, name=job_name, producer=producer, facets={})
 
     # TODO: provide some intuitive way to manage the facets of the job
 

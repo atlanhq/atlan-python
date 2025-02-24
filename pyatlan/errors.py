@@ -7,8 +7,7 @@ from typing import Dict, List, Protocol, Type, TypeVar
 
 E = TypeVar("E", bound="AtlanError")
 RAISE_GITHUB_ISSUE = (
-    "Please raise an issue on the Python SDK GitHub "
-    "repository providing context in which this error occurred."
+    "Please raise an issue on the Python SDK GitHub repository providing context in which this error occurred."
 )
 
 

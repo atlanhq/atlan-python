@@ -70,9 +70,7 @@ class LineageBuilder(AbstractCustomPackage):
         self._credentials_body.update(local_creds)
         return self
 
-    def gcs(
-        self, project_id: str, service_account_json: str, bucket: str
-    ) -> LineageBuilder:
+    def gcs(self, project_id: str, service_account_json: str, bucket: str) -> LineageBuilder:
         """
         Set up package to import lineage details from GCS.
 
@@ -193,7 +191,7 @@ class LineageBuilder(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Build lineage from a CSV file.",
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["kotlin","utility"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

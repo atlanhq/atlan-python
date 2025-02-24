@@ -68,15 +68,7 @@ def get_current_view_of_asset(
         exclude_atlan_tags=not include_atlan_tags,
     )
     response = client.asset.search(criteria=request)
-    return (
-        result
-        if (
-            result := (
-                response.current_page()[0] if len(response.current_page()) > 0 else None
-            )
-        )
-        else None
-    )
+    return result if (result := (response.current_page()[0] if len(response.current_page()) > 0 else None)) else None
 
 
 def has_description(asset: Asset) -> bool:
@@ -109,9 +101,7 @@ def has_lineage(asset: Asset) -> bool:
     """
     # If possible, look directly on inputs and outputs rather than the __hasLineage flag
     if isinstance(asset, Catalog):
-        return (asset.input_to_processes is not None) or (
-            asset.output_from_processes is not None
-        )
+        return (asset.input_to_processes is not None) or (asset.output_from_processes is not None)
     else:
         return bool(asset.has_lineage)
 
@@ -192,8 +182,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         :param changed_assets: the in-memory-modified assets to send to Atlan
         """
         warn(
-            "This method is deprecated, please use 'save_changes' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_changes' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )

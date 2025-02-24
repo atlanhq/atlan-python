@@ -37,15 +37,11 @@ class LookerExplore(Looker):
     """
     Name of the parent model of this Explore.
     """
-    SOURCE_CONNECTION_NAME: ClassVar[TextField] = TextField(
-        "sourceConnectionName", "sourceConnectionName"
-    )
+    SOURCE_CONNECTION_NAME: ClassVar[TextField] = TextField("sourceConnectionName", "sourceConnectionName")
     """
     Connection name for the Explore, from Looker.
     """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField("viewName", "viewName.keyword", "viewName")
     """
     Name of the view for the Explore.
     """
@@ -100,9 +96,7 @@ class LookerExplore(Looker):
 
     @property
     def source_connection_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.source_connection_name
-        )
+        return None if self.attributes is None else self.attributes.source_connection_name
 
     @source_connection_name.setter
     def source_connection_name(self, source_connection_name: Optional[str]):
@@ -166,15 +160,9 @@ class LookerExplore(Looker):
         source_connection_name: Optional[str] = Field(default=None, description="")
         view_name: Optional[str] = Field(default=None, description="")
         sql_table_name: Optional[str] = Field(default=None, description="")
-        project: Optional[LookerProject] = Field(
-            default=None, description=""
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            default=None, description=""
-        )  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
+        project: Optional[LookerProject] = Field(default=None, description="")  # relationship
+        model: Optional[LookerModel] = Field(default=None, description="")  # relationship
+        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
 
     attributes: LookerExplore.Attributes = Field(
         default_factory=lambda: LookerExplore.Attributes(),

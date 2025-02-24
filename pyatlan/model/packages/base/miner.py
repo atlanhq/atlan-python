@@ -18,9 +18,7 @@ class AbstractMiner(AbstractPackage):
     ):
         super().__init__()
         self._epoch = int(utils.get_epoch_timestamp())
-        self._parameters.append(
-            dict(name="connection-qualified-name", value=connection_qualified_name)
-        )
+        self._parameters.append(dict(name="connection-qualified-name", value=connection_qualified_name))
 
     def _add_optional_params(self, params: Dict[str, Optional[Any]]) -> None:
         """

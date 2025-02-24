@@ -30,15 +30,11 @@ class Fivetran(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    FIVETRAN_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField(
-        "fivetranWorkflowName", "fivetranWorkflowName"
-    )
+    FIVETRAN_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField("fivetranWorkflowName", "fivetranWorkflowName")
     """
     Name of the atlan fivetran workflow that updated this asset
     """
-    FIVETRAN_LAST_SYNC_STATUS: ClassVar[KeywordField] = KeywordField(
-        "fivetranLastSyncStatus", "fivetranLastSyncStatus"
-    )
+    FIVETRAN_LAST_SYNC_STATUS: ClassVar[KeywordField] = KeywordField("fivetranLastSyncStatus", "fivetranLastSyncStatus")
     """
     Status of the latest sync on Fivetran.
     """
@@ -57,9 +53,7 @@ class Fivetran(Catalog):
 
     @property
     def fivetran_workflow_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.fivetran_workflow_name
-        )
+        return None if self.attributes is None else self.attributes.fivetran_workflow_name
 
     @fivetran_workflow_name.setter
     def fivetran_workflow_name(self, fivetran_workflow_name: Optional[str]):
@@ -69,46 +63,28 @@ class Fivetran(Catalog):
 
     @property
     def fivetran_last_sync_status(self) -> Optional[FivetranConnectorStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.fivetran_last_sync_status
-        )
+        return None if self.attributes is None else self.attributes.fivetran_last_sync_status
 
     @fivetran_last_sync_status.setter
-    def fivetran_last_sync_status(
-        self, fivetran_last_sync_status: Optional[FivetranConnectorStatus]
-    ):
+    def fivetran_last_sync_status(self, fivetran_last_sync_status: Optional[FivetranConnectorStatus]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fivetran_last_sync_status = fivetran_last_sync_status
 
     @property
     def fivetran_last_sync_records_updated(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.fivetran_last_sync_records_updated
-        )
+        return None if self.attributes is None else self.attributes.fivetran_last_sync_records_updated
 
     @fivetran_last_sync_records_updated.setter
-    def fivetran_last_sync_records_updated(
-        self, fivetran_last_sync_records_updated: Optional[int]
-    ):
+    def fivetran_last_sync_records_updated(self, fivetran_last_sync_records_updated: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_last_sync_records_updated = (
-            fivetran_last_sync_records_updated
-        )
+        self.attributes.fivetran_last_sync_records_updated = fivetran_last_sync_records_updated
 
     class Attributes(Catalog.Attributes):
         fivetran_workflow_name: Optional[str] = Field(default=None, description="")
-        fivetran_last_sync_status: Optional[FivetranConnectorStatus] = Field(
-            default=None, description=""
-        )
-        fivetran_last_sync_records_updated: Optional[int] = Field(
-            default=None, description=""
-        )
+        fivetran_last_sync_status: Optional[FivetranConnectorStatus] = Field(default=None, description="")
+        fivetran_last_sync_records_updated: Optional[int] = Field(default=None, description="")
 
     attributes: Fivetran.Attributes = Field(
         default_factory=lambda: Fivetran.Attributes(),

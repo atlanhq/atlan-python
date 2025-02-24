@@ -46,12 +46,8 @@ class MCRuleSchedule(AtlanObject):
     """Description"""
 
     mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(default=None, description="")
+    mc_rule_schedule_start_time: Optional[datetime] = Field(default=None, description="")
     mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
@@ -124,9 +120,7 @@ class SourceTagAttachment(AtlanObject):
     source_tag_qualified_name: Optional[str] = Field(default=None, description="")
     source_tag_guid: Optional[str] = Field(default=None, description="")
     source_tag_connector_name: Optional[str] = Field(default=None, description="")
-    source_tag_value: Optional[List[SourceTagAttachmentValue]] = Field(
-        default=None, description=""
-    )
+    source_tag_value: Optional[List[SourceTagAttachmentValue]] = Field(default=None, description="")
     is_source_tag_synced: Optional[bool] = Field(default=None, description="")
     source_tag_sync_timestamp: Optional[datetime] = Field(default=None, description="")
     source_tag_sync_error: Optional[str] = Field(default=None, description="")
@@ -158,9 +152,7 @@ class SourceTagAttachment(AtlanObject):
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
         tag = SourceTagCache.get_by_name(name)
-        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
-            tag.qualified_name or ""
-        )
+        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(tag.qualified_name or "")
         return cls.of(
             source_tag_name=tag.name,
             source_tag_qualified_name=tag.qualified_name,
@@ -202,9 +194,7 @@ class SourceTagAttachment(AtlanObject):
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
         tag = SourceTagCache.get_by_qualified_name(source_tag_qualified_name)
-        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
-            source_tag_qualified_name or ""
-        )
+        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(source_tag_qualified_name or "")
         return cls.of(
             source_tag_name=tag.name,
             source_tag_qualified_name=source_tag_qualified_name,
@@ -326,9 +316,7 @@ class AwsTag(AtlanObject):
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
-    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
-        default=None, description=""
-    )
+    dbt_metric_filter_column_qualified_name: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
     dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
@@ -369,9 +357,7 @@ class MCRuleComparison(AtlanObject):
     mc_rule_comparison_metric: Optional[str] = Field(default=None, description="")
     mc_rule_comparison_operator: Optional[str] = Field(default=None, description="")
     mc_rule_comparison_threshold: Optional[float] = Field(default=None, description="")
-    mc_rule_comparison_is_threshold_relative: Optional[bool] = Field(
-        default=None, description=""
-    )
+    mc_rule_comparison_is_threshold_relative: Optional[bool] = Field(default=None, description="")
 
 
 class GoogleLabel(AtlanObject):
@@ -391,9 +377,7 @@ class PopularityInsights(AtlanObject):
     record_total_user_count: Optional[int] = Field(default=None, description="")
     record_compute_cost: Optional[float] = Field(default=None, description="")
     record_max_compute_cost: Optional[float] = Field(default=None, description="")
-    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
-        default=None, description=""
-    )
+    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(default=None, description="")
     record_last_timestamp: Optional[datetime] = Field(default=None, description="")
     record_warehouse: Optional[str] = Field(default=None, description="")
 
@@ -403,9 +387,7 @@ class SourceTagAttribute(AtlanObject):
 
     tag_attribute_key: Optional[str] = Field(default=None, description="")
     tag_attribute_value: Optional[str] = Field(default=None, description="")
-    tag_attribute_properties: Optional[Dict[str, str]] = Field(
-        default=None, description=""
-    )
+    tag_attribute_properties: Optional[Dict[str, str]] = Field(default=None, description="")
 
 
 MCRuleSchedule.update_forward_refs()

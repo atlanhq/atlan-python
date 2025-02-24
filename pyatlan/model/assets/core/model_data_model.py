@@ -29,9 +29,7 @@ class ModelDataModel(Model):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODEL_VERSION_COUNT: ClassVar[NumericField] = NumericField(
-        "modelVersionCount", "modelVersionCount"
-    )
+    MODEL_VERSION_COUNT: ClassVar[NumericField] = NumericField("modelVersionCount", "modelVersionCount")
     """
     Number of versions of the data model.
     """
@@ -84,9 +82,7 @@ class ModelDataModel(Model):
     class Attributes(Model.Attributes):
         model_version_count: Optional[int] = Field(default=None, description="")
         model_tool: Optional[str] = Field(default=None, description="")
-        model_versions: Optional[List[ModelVersion]] = Field(
-            default=None, description=""
-        )  # relationship
+        model_versions: Optional[List[ModelVersion]] = Field(default=None, description="")  # relationship
 
     attributes: ModelDataModel.Attributes = Field(
         default_factory=lambda: ModelDataModel.Attributes(),

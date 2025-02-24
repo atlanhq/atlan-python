@@ -43,9 +43,7 @@ class S3Bucket(S3):
 
     @classmethod
     @init_guid
-    def creator(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
-    ) -> S3Bucket:
+    def creator(cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None) -> S3Bucket:
         validate_required_fields(
             ["name", "connection_qualified_name"],
             [name, connection_qualified_name],
@@ -81,14 +79,9 @@ class S3Bucket(S3):
 
     @classmethod
     @init_guid
-    def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None
-    ) -> S3Bucket:
+    def create(cls, *, name: str, connection_qualified_name: str, aws_arn: Optional[str] = None) -> S3Bucket:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -111,9 +104,7 @@ class S3Bucket(S3):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
-        "s3ObjectCount", "s3ObjectCount"
-    )
+    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField("s3ObjectCount", "s3ObjectCount")
     """
     Number of objects within the bucket.
     """
@@ -147,16 +138,10 @@ class S3Bucket(S3):
 
     @property
     def s3_bucket_versioning_enabled(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_bucket_versioning_enabled
-        )
+        return None if self.attributes is None else self.attributes.s3_bucket_versioning_enabled
 
     @s3_bucket_versioning_enabled.setter
-    def s3_bucket_versioning_enabled(
-        self, s3_bucket_versioning_enabled: Optional[bool]
-    ):
+    def s3_bucket_versioning_enabled(self, s3_bucket_versioning_enabled: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
@@ -173,12 +158,8 @@ class S3Bucket(S3):
 
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(default=None, description="")
-        s3_bucket_versioning_enabled: Optional[bool] = Field(
-            default=None, description=""
-        )
-        objects: Optional[List[S3Object]] = Field(
-            default=None, description=""
-        )  # relationship
+        s3_bucket_versioning_enabled: Optional[bool] = Field(default=None, description="")
+        objects: Optional[List[S3Object]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid

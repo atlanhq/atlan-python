@@ -29,9 +29,7 @@ class ModeWorkspace(Mode):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
-        "modeCollectionCount", "modeCollectionCount"
-    )
+    MODE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField("modeCollectionCount", "modeCollectionCount")
     """
     Number of collections in this workspace.
     """
@@ -48,9 +46,7 @@ class ModeWorkspace(Mode):
 
     @property
     def mode_collection_count(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.mode_collection_count
-        )
+        return None if self.attributes is None else self.attributes.mode_collection_count
 
     @mode_collection_count.setter
     def mode_collection_count(self, mode_collection_count: Optional[int]):
@@ -70,9 +66,7 @@ class ModeWorkspace(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(default=None, description="")
-        mode_collections: Optional[List[ModeCollection]] = Field(
-            default=None, description=""
-        )  # relationship
+        mode_collections: Optional[List[ModeCollection]] = Field(default=None, description="")  # relationship
 
     attributes: ModeWorkspace.Attributes = Field(
         default_factory=lambda: ModeWorkspace.Attributes(),

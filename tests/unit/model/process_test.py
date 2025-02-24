@@ -90,13 +90,9 @@ def test_create_without_required_parameter_raises_value_error(
         ),
     ],
 )
-def test__create(
-    name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
-):
+def test__create(name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value):
     expected_value = (
-        expected_value
-        if process_id
-        else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
+        expected_value if process_id else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
     process = Process.create(
@@ -130,18 +126,14 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Process.create_for_modification(
-        qualified_name=PROCESS_QUALIFIED_NAME, name=PROCESS_NAME
-    )
+    sut = Process.create_for_modification(qualified_name=PROCESS_QUALIFIED_NAME, name=PROCESS_NAME)
 
     assert sut.qualified_name == PROCESS_QUALIFIED_NAME
     assert sut.name == PROCESS_NAME
 
 
 def test_trim_to_required():
-    sut = Process.create_for_modification(
-        qualified_name=PROCESS_QUALIFIED_NAME, name=PROCESS_NAME
-    ).trim_to_required()
+    sut = Process.create_for_modification(qualified_name=PROCESS_QUALIFIED_NAME, name=PROCESS_NAME).trim_to_required()
 
     assert sut.qualified_name == PROCESS_QUALIFIED_NAME
     assert sut.name == PROCESS_NAME
@@ -232,9 +224,7 @@ def test_process_attributes_generate_qualified_name(
     name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
 ):
     expected_value = (
-        expected_value
-        if process_id
-        else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
+        expected_value if process_id else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
     assert (

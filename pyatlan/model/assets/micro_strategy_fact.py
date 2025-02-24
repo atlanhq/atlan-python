@@ -36,15 +36,11 @@ class MicroStrategyFact(MicroStrategy):
     List of expressions for this fact.
     """
 
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetrics"
-    )
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField("microStrategyMetrics")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField("microStrategyProject")
     """
     TBC
     """
@@ -57,60 +53,40 @@ class MicroStrategyFact(MicroStrategy):
 
     @property
     def micro_strategy_fact_expressions(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_fact_expressions
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_fact_expressions
 
     @micro_strategy_fact_expressions.setter
-    def micro_strategy_fact_expressions(
-        self, micro_strategy_fact_expressions: Optional[Set[str]]
-    ):
+    def micro_strategy_fact_expressions(self, micro_strategy_fact_expressions: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_fact_expressions = (
-            micro_strategy_fact_expressions
-        )
+        self.attributes.micro_strategy_fact_expressions = micro_strategy_fact_expressions
 
     @property
     def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_metrics
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
-    def micro_strategy_metrics(
-        self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]
-    ):
+    def micro_strategy_metrics(self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    def micro_strategy_project(self, micro_strategy_project: Optional[MicroStrategyProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_fact_expressions: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
+        micro_strategy_fact_expressions: Optional[Set[str]] = Field(default=None, description="")
         micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            default=None, description=""
-        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(default=None, description="")  # relationship
 
     attributes: MicroStrategyFact.Attributes = Field(
         default_factory=lambda: MicroStrategyFact.Attributes(),

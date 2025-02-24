@@ -53,10 +53,7 @@ try:
             if isinstance(value, Sequence):
                 return all(self._is_valid_type(v) for v in value)
             elif isinstance(value, Mapping):
-                return all(
-                    self._is_valid_type(k) & self._is_valid_type(v)
-                    for k, v in value.items()
-                )
+                return all(self._is_valid_type(k) & self._is_valid_type(v) for k, v in value.items())
             return False
 
     OTEL_IMPORTS_AVAILABLE = True
@@ -85,9 +82,7 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
         client = AtlanClient(base_url=base_url, api_key="")
         api_key = client.impersonate.user(user_id=user_id)
     else:
-        LOGGER.info(
-            "No API token or impersonation user, attempting short-lived escalation."
-        )
+        LOGGER.info("No API token or impersonation user, attempting short-lived escalation.")
         client = AtlanClient(base_url=base_url, api_key="")
         api_key = client.impersonate.escalate()
 
@@ -118,18 +113,12 @@ def set_package_headers(client: AtlanClient) -> AtlanClient:
     :returns: updated AtlanClient instance.
     """
 
-    if (agent := os.environ.get("X_ATLAN_AGENT")) and (
-        agent_id := os.environ.get("X_ATLAN_AGENT_ID")
-    ):
+    if (agent := os.environ.get("X_ATLAN_AGENT")) and (agent_id := os.environ.get("X_ATLAN_AGENT_ID")):
         headers: Dict[str, str] = {
             "x-atlan-agent": agent,
             "x-atlan-agent-id": agent_id,
-            "x-atlan-agent-package-name": os.environ.get(
-                "X_ATLAN_AGENT_PACKAGE_NAME", ""
-            ),
-            "x-atlan-agent-workflow-id": os.environ.get(
-                "X_ATLAN_AGENT_WORKFLOW_ID", ""
-            ),
+            "x-atlan-agent-package-name": os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
+            "x-atlan-agent-workflow-id": os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
         }
         client.update_headers(headers)
     return client
@@ -194,9 +183,7 @@ def has_handler(logger: logging.Logger, handler_class) -> bool:
     return False
 
 
-def add_otel_handler(
-    logger: logging.Logger, level: Union[int, str], resource: dict
-) -> Optional[logging.Handler]:
+def add_otel_handler(logger: logging.Logger, level: Union[int, str], resource: dict) -> Optional[logging.Handler]:
     """
     Adds an OpenTelemetry logging handler to the provided logger if the necessary
     OpenTelemetry imports are available and the handler is not already present.
@@ -223,18 +210,12 @@ def add_otel_handler(
         if workflow_node_name := os.getenv("OTEL_WF_NODE_NAME", ""):
             resource["k8s.workflow.node.name"] = workflow_node_name
         logger_provider = LoggerProvider(Resource.create(resource))
-        otel_log_exporter = OTLPLogExporter(
-            endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"), insecure=True
-        )
-        logger_provider.add_log_record_processor(
-            CustomBatchLogRecordProcessor(otel_log_exporter)
-        )
+        otel_log_exporter = OTLPLogExporter(endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"), insecure=True)
+        logger_provider.add_log_record_processor(CustomBatchLogRecordProcessor(otel_log_exporter))
 
         otel_handler = LoggingHandler(level=level, logger_provider=logger_provider)
         otel_handler.setLevel(level)
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         otel_handler.setFormatter(formatter)
         logger.addHandler(otel_handler)
         logger.info("OpenTelemetry handler with formatter added to the logger.")

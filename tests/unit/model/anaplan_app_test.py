@@ -16,13 +16,9 @@ from tests.unit.model.constants import (
         (ANAPLAN_APP_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
-        AnaplanApp.create(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        AnaplanApp.create(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
@@ -52,9 +48,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = AnaplanApp.create_for_modification(
-        qualified_name=ANAPLAN_APP_QUALIFIED_NAME, name=ANAPLAN_APP_NAME
-    )
+    sut = AnaplanApp.create_for_modification(qualified_name=ANAPLAN_APP_QUALIFIED_NAME, name=ANAPLAN_APP_NAME)
 
     assert sut.qualified_name == ANAPLAN_APP_QUALIFIED_NAME
     assert sut.name == ANAPLAN_APP_NAME

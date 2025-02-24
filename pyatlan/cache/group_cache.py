@@ -131,6 +131,4 @@ class GroupCache:
         """
         for group_alias in aliases:
             if not self.get_id_for_name(group_alias):
-                raise ValueError(
-                    f"Provided group name {group_alias} was not found in Atlan."
-                )
+                raise ValueError(f"Provided group name {group_alias} was not found in Atlan.")

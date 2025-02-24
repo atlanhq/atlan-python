@@ -73,11 +73,7 @@ class DataMesh(Catalog):
 
     @property
     def parent_domain_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.parent_domain_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.parent_domain_qualified_name
 
     @parent_domain_qualified_name.setter
     def parent_domain_qualified_name(self, parent_domain_qualified_name: Optional[str]):
@@ -87,11 +83,7 @@ class DataMesh(Catalog):
 
     @property
     def super_domain_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.super_domain_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.super_domain_qualified_name
 
     @super_domain_qualified_name.setter
     def super_domain_qualified_name(self, super_domain_qualified_name: Optional[str]):
@@ -100,9 +92,7 @@ class DataMesh(Catalog):
         self.attributes.super_domain_qualified_name = super_domain_qualified_name
 
     class Attributes(Catalog.Attributes):
-        parent_domain_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        parent_domain_qualified_name: Optional[str] = Field(default=None, description="")
         super_domain_qualified_name: Optional[str] = Field(default=None, description="")
 
     attributes: DataMesh.Attributes = Field(

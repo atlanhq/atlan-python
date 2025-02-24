@@ -34,9 +34,7 @@ class TableauFlow(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "siteQualifiedName", "siteQualifiedName"
-    )
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
     """
     Unique name of the site in which this flow exists.
     """
@@ -52,9 +50,7 @@ class TableauFlow(Tableau):
     """
     Unique name of the top-level project in which this flow exists.
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "projectHierarchy", "projectHierarchy"
-    )
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
     """
     List of top-level projects with their nested child projects.
     """
@@ -99,9 +95,7 @@ class TableauFlow(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.project_qualified_name
 
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
@@ -111,21 +105,13 @@ class TableauFlow(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.top_level_project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(
-        self, top_level_project_qualified_name: Optional[str]
-    ):
+    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = (
-            top_level_project_qualified_name
-        )
+        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
 
     @property
     def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
@@ -180,24 +166,12 @@ class TableauFlow(Tableau):
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        input_fields: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        output_fields: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        output_steps: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        project: Optional[TableauProject] = Field(
-            default=None, description=""
-        )  # relationship
+        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        input_fields: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        output_fields: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        output_steps: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        project: Optional[TableauProject] = Field(default=None, description="")  # relationship
 
     attributes: TableauFlow.Attributes = Field(
         default_factory=lambda: TableauFlow.Attributes(),

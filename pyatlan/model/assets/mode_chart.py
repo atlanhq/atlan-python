@@ -29,9 +29,7 @@ class ModeChart(Mode):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
-        "modeChartType", "modeChartType"
-    )
+    MODE_CHART_TYPE: ClassVar[KeywordField] = KeywordField("modeChartType", "modeChartType")
     """
     Type of chart.
     """
@@ -68,9 +66,7 @@ class ModeChart(Mode):
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(default=None, description="")
-        mode_query: Optional[ModeQuery] = Field(
-            default=None, description=""
-        )  # relationship
+        mode_query: Optional[ModeQuery] = Field(default=None, description="")  # relationship
 
     attributes: ModeChart.Attributes = Field(
         default_factory=lambda: ModeChart.Attributes(),

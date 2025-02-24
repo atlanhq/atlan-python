@@ -27,10 +27,7 @@ def find_all(asset_type: type) -> IndexSearchResults:
     :returns: results of the search
     """
     search_request = (
-        FluentSearch()
-        .where(FluentSearch.asset_type(asset_type))
-        .where(FluentSearch.active_assets())
-        .page_size(100)
+        FluentSearch().where(FluentSearch.asset_type(asset_type)).where(FluentSearch.active_assets()).page_size(100)
     ).to_request()
     return client.asset.search(search_request)
 
@@ -66,9 +63,7 @@ def upstream_certified_sources(guid: str) -> List[Asset]:
     )  # type: ignore[call-arg]
     response = client.asset.get_lineage_list(request)
     verified_assets: List[Asset] = [
-        asset
-        for asset in response
-        if asset.type_name in {"Table", "View", "MaterialisedView"}
+        asset for asset in response if asset.type_name in {"Table", "View", "MaterialisedView"}
     ]
     return verified_assets
 

@@ -90,11 +90,7 @@ class CalculationView(SQL):
 
     @property
     def calculation_view_version_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_version_id
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_version_id
 
     @calculation_view_version_id.setter
     def calculation_view_version_id(self, calculation_view_version_id: Optional[int]):
@@ -104,43 +100,27 @@ class CalculationView(SQL):
 
     @property
     def calculation_view_activated_by(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_activated_by
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_activated_by
 
     @calculation_view_activated_by.setter
-    def calculation_view_activated_by(
-        self, calculation_view_activated_by: Optional[str]
-    ):
+    def calculation_view_activated_by(self, calculation_view_activated_by: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.calculation_view_activated_by = calculation_view_activated_by
 
     @property
     def calculation_view_activated_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_activated_at
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_activated_at
 
     @calculation_view_activated_at.setter
-    def calculation_view_activated_at(
-        self, calculation_view_activated_at: Optional[datetime]
-    ):
+    def calculation_view_activated_at(self, calculation_view_activated_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.calculation_view_activated_at = calculation_view_activated_at
 
     @property
     def calculation_view_package_id(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_package_id
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_package_id
 
     @calculation_view_package_id.setter
     def calculation_view_package_id(self, calculation_view_package_id: Optional[str]):
@@ -171,19 +151,11 @@ class CalculationView(SQL):
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(default=None, description="")
         calculation_view_version_id: Optional[int] = Field(default=None, description="")
-        calculation_view_activated_by: Optional[str] = Field(
-            default=None, description=""
-        )
-        calculation_view_activated_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        calculation_view_activated_by: Optional[str] = Field(default=None, description="")
+        calculation_view_activated_at: Optional[datetime] = Field(default=None, description="")
         calculation_view_package_id: Optional[str] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
+        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
 
     attributes: CalculationView.Attributes = Field(
         default_factory=lambda: CalculationView.Attributes(),

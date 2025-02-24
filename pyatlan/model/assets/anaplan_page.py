@@ -46,9 +46,7 @@ class AnaplanPage(Anaplan):
         app_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanPage:
-        validate_required_fields(
-            ["name", "app_qualified_name"], [name, app_qualified_name]
-        )
+        validate_required_fields(["name", "app_qualified_name"], [name, app_qualified_name])
         attributes = AnaplanPage.Attributes.create(
             name=name,
             app_qualified_name=app_qualified_name,
@@ -81,9 +79,7 @@ class AnaplanPage(Anaplan):
     """
     Category Name of the AnaplanPage from the source system.
     """
-    ANAPLAN_PAGE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "anaplanPageType", "anaplanPageType"
-    )
+    ANAPLAN_PAGE_TYPE: ClassVar[KeywordField] = KeywordField("anaplanPageType", "anaplanPageType")
     """
     Type of the AnaplanPage from the source system.
     """
@@ -107,11 +103,7 @@ class AnaplanPage(Anaplan):
 
     @property
     def anaplan_app_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.anaplan_app_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_app_qualified_name
 
     @anaplan_app_qualified_name.setter
     def anaplan_app_qualified_name(self, anaplan_app_qualified_name: Optional[str]):
@@ -121,11 +113,7 @@ class AnaplanPage(Anaplan):
 
     @property
     def anaplan_page_category_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.anaplan_page_category_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_page_category_name
 
     @anaplan_page_category_name.setter
     def anaplan_page_category_name(self, anaplan_page_category_name: Optional[str]):
@@ -167,12 +155,8 @@ class AnaplanPage(Anaplan):
         anaplan_app_qualified_name: Optional[str] = Field(default=None, description="")
         anaplan_page_category_name: Optional[str] = Field(default=None, description="")
         anaplan_page_type: Optional[str] = Field(default=None, description="")
-        anaplan_models: Optional[List[AnaplanModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_app: Optional[AnaplanApp] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_models: Optional[List[AnaplanModel]] = Field(default=None, description="")  # relationship
+        anaplan_app: Optional[AnaplanApp] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -188,9 +172,7 @@ class AnaplanPage(Anaplan):
                 [name, app_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     app_qualified_name, "app_qualified_name", 4

@@ -33,9 +33,7 @@ class DbtSource(Dbt):
     """
 
     """
-    DBT_FRESHNESS_CRITERIA: ClassVar[TextField] = TextField(
-        "dbtFreshnessCriteria", "dbtFreshnessCriteria"
-    )
+    DBT_FRESHNESS_CRITERIA: ClassVar[TextField] = TextField("dbtFreshnessCriteria", "dbtFreshnessCriteria")
     """
 
     """
@@ -73,9 +71,7 @@ class DbtSource(Dbt):
 
     @property
     def dbt_freshness_criteria(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_freshness_criteria
-        )
+        return None if self.attributes is None else self.attributes.dbt_freshness_criteria
 
     @dbt_freshness_criteria.setter
     def dbt_freshness_criteria(self, dbt_freshness_criteria: Optional[str]):
@@ -116,12 +112,8 @@ class DbtSource(Dbt):
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(default=None, description="")
         dbt_freshness_criteria: Optional[str] = Field(default=None, description="")
-        sql_assets: Optional[List[SQL]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
+        sql_assets: Optional[List[SQL]] = Field(default=None, description="")  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
         sql_asset: Optional[SQL] = Field(default=None, description="")  # relationship
 
     attributes: DbtSource.Attributes = Field(

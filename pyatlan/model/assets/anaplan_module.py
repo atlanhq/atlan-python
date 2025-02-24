@@ -46,9 +46,7 @@ class AnaplanModule(Anaplan):
         model_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanModule:
-        validate_required_fields(
-            ["name", "model_qualified_name"], [name, model_qualified_name]
-        )
+        validate_required_fields(["name", "model_qualified_name"], [name, model_qualified_name])
         attributes = AnaplanModule.Attributes.create(
             name=name,
             model_qualified_name=model_qualified_name,
@@ -119,15 +117,9 @@ class AnaplanModule(Anaplan):
         self.attributes.anaplan_model = anaplan_model
 
     class Attributes(Anaplan.Attributes):
-        anaplan_views: Optional[List[AnaplanView]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_model: Optional[AnaplanModel] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_views: Optional[List[AnaplanView]] = Field(default=None, description="")  # relationship
+        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(default=None, description="")  # relationship
+        anaplan_model: Optional[AnaplanModel] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -143,9 +135,7 @@ class AnaplanModule(Anaplan):
                 [name, model_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     model_qualified_name, "model_qualified_name", 5

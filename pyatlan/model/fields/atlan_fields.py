@@ -622,20 +622,12 @@ class CustomMetadataField(SearchableField):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
         super().__init__(
-            StrictStr(
-                CustomMetadataCache.get_attribute_for_search_results(
-                    set_name, attribute_name
-                )
-            ),
-            StrictStr(
-                CustomMetadataCache.get_attr_id_for_name(set_name, attribute_name)
-            ),
+            StrictStr(CustomMetadataCache.get_attribute_for_search_results(set_name, attribute_name)),
+            StrictStr(CustomMetadataCache.get_attr_id_for_name(set_name, attribute_name)),
         )
         self.set_name = set_name
         self.attribute_name = attribute_name
-        self.attribute_def = CustomMetadataCache.get_attribute_def(
-            self.elastic_field_name
-        )
+        self.attribute_def = CustomMetadataCache.get_attribute_def(self.elastic_field_name)
 
     def eq(self, value: SearchFieldType, case_insensitive: bool = False) -> Query:
         """
@@ -783,9 +775,7 @@ class LineageFilterField:
 
         :returns:  a filter that will match all assets whose provided field has any value at all (non-null).
         """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.NOT_NULL, value=""
-        )
+        return LineageFilter(field=self._field, operator=AtlanComparisonOperator.NOT_NULL, value="")
 
     def has_no_value(self) -> LineageFilter:
         """
@@ -793,9 +783,7 @@ class LineageFilterField:
 
         :returns:  a filter that will only match assets that have no value at all for the field (null).
         """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.IS_NULL, value=""
-        )
+        return LineageFilter(field=self._field, operator=AtlanComparisonOperator.IS_NULL, value="")
 
 
 class LineageFilterFieldBoolean(LineageFilterField):
@@ -810,9 +798,7 @@ class LineageFilterFieldBoolean(LineageFilterField):
         :param value: the value to check the field's value equals
         :returns:  a filter that will only match assets whose value for the field is exactly the value provided
         """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value)
-        )
+        return LineageFilter(field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value))
 
     def neq(self, value: bool) -> LineageFilter:
         """
@@ -822,9 +808,7 @@ class LineageFilterFieldBoolean(LineageFilterField):
         :param value: the value to check the field's value does not equal
         :returns:  a filter that will only match assets whose value for the field is not exactly the value provided
         """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.NEQ, value=str(value)
-        )
+        return LineageFilter(field=self._field, operator=AtlanComparisonOperator.NEQ, value=str(value))
 
 
 class LineageFilterFieldCM(LineageFilterField):
@@ -895,20 +879,14 @@ class LineageFilterFieldCM(LineageFilterField):
                 value=value.value,
             )
         if isinstance(value, str):
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.EQ, value=value
-            )
+            return LineageFilter(field=self._field, operator=AtlanComparisonOperator.EQ, value=value)
         if isinstance(value, bool):
-            if not is_comparable_type(
-                self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
-            ):
+            if not is_comparable_type(self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN):
                 raise ErrorCode.INVALID_QUERY.exception_with_parameters(
                     AtlanComparisonOperator.EQ.value,
                     f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
                 )
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value)
-            )
+            return LineageFilter(field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value))
         return self._with_numeric_comparison(
             value=value,
             comparison_operator=AtlanComparisonOperator.EQ,
@@ -969,13 +947,9 @@ class LineageFilterFieldCM(LineageFilterField):
                 value=value.value,
             )
         if isinstance(value, str):
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.NEQ, value=value
-            )
+            return LineageFilter(field=self._field, operator=AtlanComparisonOperator.NEQ, value=value)
         if isinstance(value, bool):
-            if not is_comparable_type(
-                self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
-            ):
+            if not is_comparable_type(self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN):
                 raise ErrorCode.INVALID_QUERY.exception_with_parameters(
                     AtlanComparisonOperator.NEQ.value,
                     f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
@@ -999,9 +973,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :param value: the value (prefix) to check the field's value starts with (case-sensitive)
         :return: a filter that will only match assets whose value for the field starts with the value provided
         """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.STARTS_WITH
-        )
+        return self._with_string_comparison(value=value, comparison_operator=AtlanComparisonOperator.STARTS_WITH)
 
     def ends_with(self, value: str) -> LineageFilter:
         """
@@ -1011,9 +983,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :param value: the value (suffix) to check the field's value starts with (case-sensitive)
         :return: a filter that will only match assets whose value for the field ends with the value provided
         """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.ENDS_WITH
-        )
+        return self._with_string_comparison(value=value, comparison_operator=AtlanComparisonOperator.ENDS_WITH)
 
     def contains(self, value: str) -> LineageFilter:
         """
@@ -1023,9 +993,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :param value: the value (suffix) to check the field's value contains (case-sensitive)
         :return: a filter that will only match assets whose value for the field contains the value provided
         """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.CONTAINS
-        )
+        return self._with_string_comparison(value=value, comparison_operator=AtlanComparisonOperator.CONTAINS)
 
     def does_not_contain(self, value: str) -> LineageFilter:
         """
@@ -1035,9 +1003,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :param value: the value (suffix) to check the field's value does not contain (case-sensitive)
         :return: a filter that will only match assets whose value for the field does not contain the value provided
         """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.NOT_CONTAINS
-        )
+        return self._with_string_comparison(value=value, comparison_operator=AtlanComparisonOperator.NOT_CONTAINS)
 
     @overload
     def lt(self, value: int) -> LineageFilter:
@@ -1077,9 +1043,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :return value: a filter that will only match assets whose value for the field is strictly less than the value
         provided
         """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.LT
-        )
+        return self._with_numeric_comparison(value=value, comparison_operator=AtlanComparisonOperator.LT)
 
     @overload
     def gt(self, value: int) -> LineageFilter:
@@ -1119,9 +1083,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :return value: a filter that will only match assets whose value for the field is strictly greater than the
         value provided
         """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.GT
-        )
+        return self._with_numeric_comparison(value=value, comparison_operator=AtlanComparisonOperator.GT)
 
     @overload
     def lte(self, value: int) -> LineageFilter:
@@ -1161,9 +1123,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :return value: a filter that will only match assets whose value for the field is strictly less than or equal
         to the value provided
         """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.LTE
-        )
+        return self._with_numeric_comparison(value=value, comparison_operator=AtlanComparisonOperator.LTE)
 
     @overload
     def gte(self, value: int) -> LineageFilter:
@@ -1203,9 +1163,7 @@ class LineageFilterFieldCM(LineageFilterField):
         :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
         to the value provided
         """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.GTE
-        )
+        return self._with_numeric_comparison(value=value, comparison_operator=AtlanComparisonOperator.GTE)
 
     def _with_numeric_comparison(
         self,
@@ -1216,42 +1174,24 @@ class LineageFilterFieldCM(LineageFilterField):
         if isinstance(
             value,
             bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
-        ):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, expected_types
-            )
-        if not is_comparable_type(
-            self._cm_field.attribute_def.type_name or "", ComparisonCategory.NUMBER
-        ):
+        ) or (not isinstance(value, int) and not isinstance(value, float) and not isinstance(value, date)):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(type(value).__name__, expected_types)
+        if not is_comparable_type(self._cm_field.attribute_def.type_name or "", ComparisonCategory.NUMBER):
             raise ErrorCode.INVALID_QUERY.exception_with_parameters(
                 comparison_operator.value,
                 f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
             )
-        return LineageFilter(
-            field=self._field, operator=comparison_operator, value=str(value)
-        )
+        return LineageFilter(field=self._field, operator=comparison_operator, value=str(value))
 
-    def _with_string_comparison(
-        self, value: str, comparison_operator: AtlanComparisonOperator
-    ):
+    def _with_string_comparison(self, value: str, comparison_operator: AtlanComparisonOperator):
         if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
-        if not is_comparable_type(
-            self._cm_field.attribute_def.type_name or "", ComparisonCategory.STRING
-        ):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(type(value).__name__, "str")
+        if not is_comparable_type(self._cm_field.attribute_def.type_name or "", ComparisonCategory.STRING):
             raise ErrorCode.INVALID_QUERY.exception_with_parameters(
                 comparison_operator.value,
                 f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
             )
-        return LineageFilter(
-            field=self._field, operator=comparison_operator, value=value
-        )
+        return LineageFilter(field=self._field, operator=comparison_operator, value=value)
 
 
 class LineageFilterFieldNumeric(LineageFilterField):
@@ -1478,20 +1418,12 @@ class LineageFilterFieldNumeric(LineageFilterField):
         """
         return self._get_filter(value=value, operator=AtlanComparisonOperator.GTE)
 
-    def _get_filter(
-        self, value: Union[int, float, date], operator: AtlanComparisonOperator
-    ):
+    def _get_filter(self, value: Union[int, float, date], operator: AtlanComparisonOperator):
         if isinstance(
             value,
             bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
-        ):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "int, float or date"
-            )
+        ) or (not isinstance(value, int) and not isinstance(value, float) and not isinstance(value, date)):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(type(value).__name__, "int, float or date")
         return LineageFilter(field=self._field, operator=operator, value=str(value))
 
 
@@ -1560,9 +1492,7 @@ class LineageFilterFieldString(LineageFilterField):
         value. Note that this is a case-sensitive match.
 
         :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(
-            value=value, operator=AtlanComparisonOperator.STARTS_WITH
-        )
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.STARTS_WITH)
 
     @overload
     def ends_with(self, value: str) -> LineageFilter:
@@ -1625,17 +1555,11 @@ class LineageFilterFieldString(LineageFilterField):
         provided value. Note that this is a case-sensitive match.
 
         :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(
-            value=value, operator=AtlanComparisonOperator.NOT_CONTAINS
-        )
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.NOT_CONTAINS)
 
     def _get_filter(self, value: Union[str, Enum], operator: AtlanComparisonOperator):
         if isinstance(value, Enum):
-            return LineageFilter(
-                field=self._field, operator=operator, value=value.value
-            )
+            return LineageFilter(field=self._field, operator=operator, value=value.value)
         if isinstance(value, str):
             return LineageFilter(field=self._field, operator=operator, value=value)
-        raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-            type(value).__name__, "int, float or date"
-        )
+        raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(type(value).__name__, "int, float or date")

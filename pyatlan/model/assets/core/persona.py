@@ -40,10 +40,7 @@ class Persona(AccessControl):
     @init_guid
     def create(cls, *, name: str) -> Persona:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -188,16 +185,11 @@ class Persona(AccessControl):
         is_enabled: bool = True,
     ) -> Persona:
         warn(
-            (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.updater(
-            qualified_name=qualified_name, name=name, is_enabled=is_enabled
-        )
+        return cls.updater(qualified_name=qualified_name, name=name, is_enabled=is_enabled)
 
     type_name: str = Field(default="Persona", allow_mutation=False)
 
@@ -212,9 +204,7 @@ class Persona(AccessControl):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PERSONA_GROUPS: ClassVar[KeywordField] = KeywordField(
-        "personaGroups", "personaGroups"
-    )
+    PERSONA_GROUPS: ClassVar[KeywordField] = KeywordField("personaGroups", "personaGroups")
     """
     TBC
     """

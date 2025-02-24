@@ -36,9 +36,7 @@ class DbtTag(Dbt):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
-    )
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField("dbtAlias", "dbtAlias.keyword", "dbtAlias")
     """
 
     """
@@ -46,9 +44,7 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
-    )
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField("dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId")
     """
 
     """
@@ -70,21 +66,15 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
-    )
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField("dbtJobName", "dbtJobName.keyword", "dbtJobName")
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
-        "dbtJobSchedule", "dbtJobSchedule"
-    )
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField("dbtJobSchedule", "dbtJobSchedule")
     """
 
     """
-    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtJobStatus", "dbtJobStatus"
-    )
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField("dbtJobStatus", "dbtJobStatus")
     """
 
     """
@@ -96,15 +86,11 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobLastRun", "dbtJobLastRun"
-    )
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField("dbtJobLastRun", "dbtJobLastRun")
     """
 
     """
-    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobNextRun", "dbtJobNextRun"
-    )
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField("dbtJobNextRun", "dbtJobNextRun")
     """
 
     """
@@ -134,9 +120,7 @@ class DbtTag(Dbt):
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
-        "dbtConnectionContext", "dbtConnectionContext"
-    )
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField("dbtConnectionContext", "dbtConnectionContext")
     """
 
     """
@@ -154,9 +138,7 @@ class DbtTag(Dbt):
     """
     Unique identifier of the tag in the source system.
     """
-    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
-        "tagAttributes", "tagAttributes"
-    )
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField("tagAttributes", "tagAttributes")
     """
     Attributes associated with the tag in the source system.
     """
@@ -291,21 +273,13 @@ class DbtTag(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_schedule_cron_humanized
-        )
+        return None if self.attributes is None else self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
-    def dbt_job_schedule_cron_humanized(
-        self, dbt_job_schedule_cron_humanized: Optional[str]
-    ):
+    def dbt_job_schedule_cron_humanized(self, dbt_job_schedule_cron_humanized: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_job_schedule_cron_humanized = (
-            dbt_job_schedule_cron_humanized
-        )
+        self.attributes.dbt_job_schedule_cron_humanized = dbt_job_schedule_cron_humanized
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
@@ -329,11 +303,7 @@ class DbtTag(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_next_run_humanized
-        )
+        return None if self.attributes is None else self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
@@ -353,11 +323,7 @@ class DbtTag(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_environment_dbt_version
-        )
+        return None if self.attributes is None else self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
@@ -377,9 +343,7 @@ class DbtTag(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_connection_context
-        )
+        return None if self.attributes is None else self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
@@ -389,11 +353,7 @@ class DbtTag(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_semantic_layer_proxy_url
-        )
+        return None if self.attributes is None else self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
@@ -443,9 +403,7 @@ class DbtTag(Dbt):
 
     @property
     def mapped_atlan_tag_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
-        )
+        return None if self.attributes is None else self.attributes.mapped_atlan_tag_name
 
     @mapped_atlan_tag_name.setter
     def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
@@ -463,9 +421,7 @@ class DbtTag(Dbt):
         dbt_job_name: Optional[str] = Field(default=None, description="")
         dbt_job_schedule: Optional[str] = Field(default=None, description="")
         dbt_job_status: Optional[str] = Field(default=None, description="")
-        dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            default=None, description=""
-        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(default=None, description="")
         dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
@@ -473,14 +429,10 @@ class DbtTag(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
         dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
-        dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            default=None, description=""
-        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(default=None, description="")
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
-            default=None, description=""
-        )
+        tag_attributes: Optional[List[SourceTagAttribute]] = Field(default=None, description="")
         tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
 

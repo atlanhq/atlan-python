@@ -30,21 +30,15 @@ class DomoCard(Domo):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DOMO_CARD_TYPE: ClassVar[KeywordField] = KeywordField(
-        "domoCardType", "domoCardType"
-    )
+    DOMO_CARD_TYPE: ClassVar[KeywordField] = KeywordField("domoCardType", "domoCardType")
     """
     Type of the Domo Card.
     """
-    DOMO_CARD_TYPE_VALUE: ClassVar[KeywordField] = KeywordField(
-        "domoCardTypeValue", "domoCardTypeValue"
-    )
+    DOMO_CARD_TYPE_VALUE: ClassVar[KeywordField] = KeywordField("domoCardTypeValue", "domoCardTypeValue")
     """
     Type of the Domo Card.
     """
-    DOMO_CARD_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "domoCardDashboardCount", "domoCardDashboardCount"
-    )
+    DOMO_CARD_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField("domoCardDashboardCount", "domoCardDashboardCount")
     """
     Number of dashboards linked to this card.
     """
@@ -88,11 +82,7 @@ class DomoCard(Domo):
 
     @property
     def domo_card_dashboard_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.domo_card_dashboard_count
-        )
+        return None if self.attributes is None else self.attributes.domo_card_dashboard_count
 
     @domo_card_dashboard_count.setter
     def domo_card_dashboard_count(self, domo_card_dashboard_count: Optional[int]):
@@ -124,12 +114,8 @@ class DomoCard(Domo):
         domo_card_type: Optional[DomoCardType] = Field(default=None, description="")
         domo_card_type_value: Optional[str] = Field(default=None, description="")
         domo_card_dashboard_count: Optional[int] = Field(default=None, description="")
-        domo_dashboards: Optional[List[DomoDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
-        domo_dataset: Optional[DomoDataset] = Field(
-            default=None, description=""
-        )  # relationship
+        domo_dashboards: Optional[List[DomoDashboard]] = Field(default=None, description="")  # relationship
+        domo_dataset: Optional[DomoDataset] = Field(default=None, description="")  # relationship
 
     attributes: DomoCard.Attributes = Field(
         default_factory=lambda: DomoCard.Attributes(),

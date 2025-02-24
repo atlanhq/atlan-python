@@ -26,9 +26,7 @@ class Application(App):
         name: str,
         connection_qualified_name: str,
     ) -> Application:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
         attributes = Application.Attributes.creator(
             name=name,
             connection_qualified_name=connection_qualified_name,
@@ -48,15 +46,11 @@ class Application(App):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    APPLICATION_OWNED_ASSETS: ClassVar[RelationField] = RelationField(
-        "applicationOwnedAssets"
-    )
+    APPLICATION_OWNED_ASSETS: ClassVar[RelationField] = RelationField("applicationOwnedAssets")
     """
     TBC
     """
-    APPLICATION_CHILD_FIELDS: ClassVar[RelationField] = RelationField(
-        "applicationChildFields"
-    )
+    APPLICATION_CHILD_FIELDS: ClassVar[RelationField] = RelationField("applicationChildFields")
     """
     TBC
     """
@@ -68,11 +62,7 @@ class Application(App):
 
     @property
     def application_owned_assets(self) -> Optional[List[Asset]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.application_owned_assets
-        )
+        return None if self.attributes is None else self.attributes.application_owned_assets
 
     @application_owned_assets.setter
     def application_owned_assets(self, application_owned_assets: Optional[List[Asset]]):
@@ -82,27 +72,17 @@ class Application(App):
 
     @property
     def application_child_fields(self) -> Optional[List[ApplicationField]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.application_child_fields
-        )
+        return None if self.attributes is None else self.attributes.application_child_fields
 
     @application_child_fields.setter
-    def application_child_fields(
-        self, application_child_fields: Optional[List[ApplicationField]]
-    ):
+    def application_child_fields(self, application_child_fields: Optional[List[ApplicationField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.application_child_fields = application_child_fields
 
     class Attributes(App.Attributes):
-        application_owned_assets: Optional[List[Asset]] = Field(
-            default=None, description=""
-        )  # relationship
-        application_child_fields: Optional[List[ApplicationField]] = Field(
-            default=None, description=""
-        )  # relationship
+        application_owned_assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
+        application_child_fields: Optional[List[ApplicationField]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -112,16 +92,12 @@ class Application(App):
             name: str,
             connection_qualified_name: str,
         ) -> Application.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             return Application.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
             )
 
     attributes: Application.Attributes = Field(

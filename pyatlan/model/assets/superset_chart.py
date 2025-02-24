@@ -60,14 +60,9 @@ class SupersetChart(Superset):
 
     @classmethod
     @init_guid
-    def create(
-        cls, *, name: str, superset_dashboard_qualified_name: str
-    ) -> SupersetChart:
+    def create(cls, *, name: str, superset_dashboard_qualified_name: str) -> SupersetChart:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -95,9 +90,7 @@ class SupersetChart(Superset):
     """
     Description markdown of the chart.
     """
-    SUPERSET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
-        "supersetChartFormData", "supersetChartFormData"
-    )
+    SUPERSET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField("supersetChartFormData", "supersetChartFormData")
     """
     Data stored for the chart in key value pairs.
     """
@@ -115,34 +108,20 @@ class SupersetChart(Superset):
 
     @property
     def superset_chart_description_markdown(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.superset_chart_description_markdown
-        )
+        return None if self.attributes is None else self.attributes.superset_chart_description_markdown
 
     @superset_chart_description_markdown.setter
-    def superset_chart_description_markdown(
-        self, superset_chart_description_markdown: Optional[str]
-    ):
+    def superset_chart_description_markdown(self, superset_chart_description_markdown: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_chart_description_markdown = (
-            superset_chart_description_markdown
-        )
+        self.attributes.superset_chart_description_markdown = superset_chart_description_markdown
 
     @property
     def superset_chart_form_data(self) -> Optional[Dict[str, str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.superset_chart_form_data
-        )
+        return None if self.attributes is None else self.attributes.superset_chart_form_data
 
     @superset_chart_form_data.setter
-    def superset_chart_form_data(
-        self, superset_chart_form_data: Optional[Dict[str, str]]
-    ):
+    def superset_chart_form_data(self, superset_chart_form_data: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.superset_chart_form_data = superset_chart_form_data
@@ -158,15 +137,9 @@ class SupersetChart(Superset):
         self.attributes.superset_dashboard = superset_dashboard
 
     class Attributes(Superset.Attributes):
-        superset_chart_description_markdown: Optional[str] = Field(
-            default=None, description=""
-        )
-        superset_chart_form_data: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
-        superset_dashboard: Optional[SupersetDashboard] = Field(
-            default=None, description=""
-        )  # relationship
+        superset_chart_description_markdown: Optional[str] = Field(default=None, description="")
+        superset_chart_form_data: Optional[Dict[str, str]] = Field(default=None, description="")
+        superset_dashboard: Optional[SupersetDashboard] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -182,9 +155,7 @@ class SupersetChart(Superset):
                 [name, superset_dashboard_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     superset_dashboard_qualified_name,
@@ -198,9 +169,7 @@ class SupersetChart(Superset):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{superset_dashboard_qualified_name}/{name}",
                 connector_name=connector_name,
-                superset_dashboard=SupersetDashboard.ref_by_qualified_name(
-                    superset_dashboard_qualified_name
-                ),
+                superset_dashboard=SupersetDashboard.ref_by_qualified_name(superset_dashboard_qualified_name),
             )
 
     attributes: SupersetChart.Attributes = Field(

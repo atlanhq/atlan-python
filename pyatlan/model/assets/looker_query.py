@@ -29,21 +29,15 @@ class LookerQuery(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SOURCE_DEFINITION: ClassVar[TextField] = TextField(
-        "sourceDefinition", "sourceDefinition"
-    )
+    SOURCE_DEFINITION: ClassVar[TextField] = TextField("sourceDefinition", "sourceDefinition")
     """
     Deprecated.
     """
-    SOURCE_DEFINITION_DATABASE: ClassVar[TextField] = TextField(
-        "sourceDefinitionDatabase", "sourceDefinitionDatabase"
-    )
+    SOURCE_DEFINITION_DATABASE: ClassVar[TextField] = TextField("sourceDefinitionDatabase", "sourceDefinitionDatabase")
     """
     Deprecated.
     """
-    SOURCE_DEFINITION_SCHEMA: ClassVar[TextField] = TextField(
-        "sourceDefinitionSchema", "sourceDefinitionSchema"
-    )
+    SOURCE_DEFINITION_SCHEMA: ClassVar[TextField] = TextField("sourceDefinitionSchema", "sourceDefinitionSchema")
     """
     Deprecated.
     """
@@ -87,11 +81,7 @@ class LookerQuery(Looker):
 
     @property
     def source_definition_database(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.source_definition_database
-        )
+        return None if self.attributes is None else self.attributes.source_definition_database
 
     @source_definition_database.setter
     def source_definition_database(self, source_definition_database: Optional[str]):
@@ -101,11 +91,7 @@ class LookerQuery(Looker):
 
     @property
     def source_definition_schema(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.source_definition_schema
-        )
+        return None if self.attributes is None else self.attributes.source_definition_schema
 
     @source_definition_schema.setter
     def source_definition_schema(self, source_definition_schema: Optional[str]):
@@ -158,15 +144,9 @@ class LookerQuery(Looker):
         source_definition_database: Optional[str] = Field(default=None, description="")
         source_definition_schema: Optional[str] = Field(default=None, description="")
         fields: Optional[Set[str]] = Field(default=None, description="")
-        tiles: Optional[List[LookerTile]] = Field(
-            default=None, description=""
-        )  # relationship
-        looks: Optional[List[LookerLook]] = Field(
-            default=None, description=""
-        )  # relationship
-        model: Optional[LookerModel] = Field(
-            default=None, description=""
-        )  # relationship
+        tiles: Optional[List[LookerTile]] = Field(default=None, description="")  # relationship
+        looks: Optional[List[LookerLook]] = Field(default=None, description="")  # relationship
+        model: Optional[LookerModel] = Field(default=None, description="")  # relationship
 
     attributes: LookerQuery.Attributes = Field(
         default_factory=lambda: LookerQuery.Attributes(),

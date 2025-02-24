@@ -38,19 +38,15 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName",
-            "cosmosMongoDBDatabaseQualifiedName.text",
-        )
+    COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "cosmosMongoDBDatabaseQualifiedName",
+        "cosmosMongoDBDatabaseQualifiedName",
+        "cosmosMongoDBDatabaseQualifiedName.text",
     )
     """
     Unique name of the database in which this collection exists.
     """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
+    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
@@ -148,51 +144,35 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Whether this table is temporary (true) or not (false).
     """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("isQueryPreview", "isQueryPreview")
     """
     Whether preview queries are allowed for this table (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
     """
     Configuration for preview queries.
     """
-    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
-        "externalLocation", "externalLocation"
-    )
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField("externalLocation", "externalLocation")
     """
     External location of this table, for example: an S3 object location.
     """
-    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
-        "externalLocationRegion", "externalLocationRegion"
-    )
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField("externalLocationRegion", "externalLocationRegion")
     """
     Region of the external location of this table, for example: S3 region.
     """
-    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
-        "externalLocationFormat", "externalLocationFormat"
-    )
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField("externalLocationFormat", "externalLocationFormat")
     """
     Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
     """
-    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
-        "isPartitioned", "isPartitioned"
-    )
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField("isPartitioned", "isPartitioned")
     """
     Whether this table is partitioned (true) or not (false).
     """
-    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
-        "partitionStrategy", "partitionStrategy"
-    )
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField("partitionStrategy", "partitionStrategy")
     """
     Partition strategy for this table.
     """
-    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
-        "partitionCount", "partitionCount"
-    )
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField("partitionCount", "partitionCount")
     """
     Number of partitions in this table.
     """
@@ -208,21 +188,15 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Type of the table.
     """
-    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField(
-        "icebergCatalogName", "icebergCatalogName"
-    )
+    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField("icebergCatalogName", "icebergCatalogName")
     """
     iceberg table catalog name (can be any user defined name)
     """
-    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "icebergTableType", "icebergTableType"
-    )
+    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField("icebergTableType", "icebergTableType")
     """
     iceberg table type (managed vs unmanaged)
     """
-    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField(
-        "icebergCatalogSource", "icebergCatalogSource"
-    )
+    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField("icebergCatalogSource", "icebergCatalogSource")
     """
     iceberg table catalog type (glue, polaris, snowflake)
     """
@@ -250,9 +224,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     iceberg table base location inside the external volume.
     """
-    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField(
-        "tableRetentionTime", "tableRetentionTime"
-    )
+    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField("tableRetentionTime", "tableRetentionTime")
     """
     Data retention time in days.
     """
@@ -260,69 +232,47 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Number of times this asset has been queried.
     """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
-    )
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField("queryUserCount", "queryUserCount")
     """
     Number of unique users who have queried this asset.
     """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
-    )
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField("queryUserMap", "queryUserMap")
     """
     Map of unique users who have queried this asset to the number of times they have queried it.
     """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
-    )
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
     """
     Time (epoch) at which the query count was last updated, in milliseconds.
     """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
-    )
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField("databaseName", "databaseName.keyword", "databaseName")
     """
     Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
-    )
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("databaseQualifiedName", "databaseQualifiedName")
     """
     Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
-    )
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField("schemaName", "schemaName.keyword", "schemaName")
     """
     Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("schemaQualifiedName", "schemaQualifiedName")
     """
     Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField("tableName", "tableName.keyword", "tableName")
     """
     Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("tableQualifiedName", "tableQualifiedName")
     """
     Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField("viewName", "viewName.keyword", "viewName")
     """
     Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("viewQualifiedName", "viewQualifiedName")
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
@@ -342,9 +292,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Whether this asset has been profiled (true) or not (false).
     """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField("lastProfiledAt", "lastProfiledAt")
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
@@ -377,9 +325,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
-    COSMOS_MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBDatabase"
-    )
+    COSMOS_MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("cosmosMongoDBDatabase")
     """
     TBC
     """
@@ -476,29 +422,17 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_database_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_database_qualified_name
 
     @cosmos_mongo_d_b_database_qualified_name.setter
-    def cosmos_mongo_d_b_database_qualified_name(
-        self, cosmos_mongo_d_b_database_qualified_name: Optional[str]
-    ):
+    def cosmos_mongo_d_b_database_qualified_name(self, cosmos_mongo_d_b_database_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database_qualified_name = (
-            cosmos_mongo_d_b_database_qualified_name
-        )
+        self.attributes.cosmos_mongo_d_b_database_qualified_name = cosmos_mongo_d_b_database_qualified_name
 
     @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
+        return None if self.attributes is None else self.attributes.no_s_q_l_schema_definition
 
     @no_s_q_l_schema_definition.setter
     def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
@@ -508,11 +442,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def mongo_d_b_collection_subtype(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_subtype
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_subtype
 
     @mongo_d_b_collection_subtype.setter
     def mongo_d_b_collection_subtype(self, mongo_d_b_collection_subtype: Optional[str]):
@@ -522,197 +452,113 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def mongo_d_b_collection_is_capped(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_is_capped
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_is_capped
 
     @mongo_d_b_collection_is_capped.setter
-    def mongo_d_b_collection_is_capped(
-        self, mongo_d_b_collection_is_capped: Optional[bool]
-    ):
+    def mongo_d_b_collection_is_capped(self, mongo_d_b_collection_is_capped: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mongo_d_b_collection_is_capped = mongo_d_b_collection_is_capped
 
     @property
     def mongo_d_b_collection_time_field(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_field
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_time_field
 
     @mongo_d_b_collection_time_field.setter
-    def mongo_d_b_collection_time_field(
-        self, mongo_d_b_collection_time_field: Optional[str]
-    ):
+    def mongo_d_b_collection_time_field(self, mongo_d_b_collection_time_field: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_field = (
-            mongo_d_b_collection_time_field
-        )
+        self.attributes.mongo_d_b_collection_time_field = mongo_d_b_collection_time_field
 
     @property
     def mongo_d_b_collection_time_granularity(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_granularity
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_time_granularity
 
     @mongo_d_b_collection_time_granularity.setter
-    def mongo_d_b_collection_time_granularity(
-        self, mongo_d_b_collection_time_granularity: Optional[str]
-    ):
+    def mongo_d_b_collection_time_granularity(self, mongo_d_b_collection_time_granularity: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_granularity = (
-            mongo_d_b_collection_time_granularity
-        )
+        self.attributes.mongo_d_b_collection_time_granularity = mongo_d_b_collection_time_granularity
 
     @property
     def mongo_d_b_collection_expire_after_seconds(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_expire_after_seconds
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_expire_after_seconds
 
     @mongo_d_b_collection_expire_after_seconds.setter
-    def mongo_d_b_collection_expire_after_seconds(
-        self, mongo_d_b_collection_expire_after_seconds: Optional[int]
-    ):
+    def mongo_d_b_collection_expire_after_seconds(self, mongo_d_b_collection_expire_after_seconds: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_expire_after_seconds = (
-            mongo_d_b_collection_expire_after_seconds
-        )
+        self.attributes.mongo_d_b_collection_expire_after_seconds = mongo_d_b_collection_expire_after_seconds
 
     @property
     def mongo_d_b_collection_maximum_document_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_maximum_document_count
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_maximum_document_count
 
     @mongo_d_b_collection_maximum_document_count.setter
-    def mongo_d_b_collection_maximum_document_count(
-        self, mongo_d_b_collection_maximum_document_count: Optional[int]
-    ):
+    def mongo_d_b_collection_maximum_document_count(self, mongo_d_b_collection_maximum_document_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_maximum_document_count = (
-            mongo_d_b_collection_maximum_document_count
-        )
+        self.attributes.mongo_d_b_collection_maximum_document_count = mongo_d_b_collection_maximum_document_count
 
     @property
     def mongo_d_b_collection_max_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_max_size
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_max_size
 
     @mongo_d_b_collection_max_size.setter
-    def mongo_d_b_collection_max_size(
-        self, mongo_d_b_collection_max_size: Optional[int]
-    ):
+    def mongo_d_b_collection_max_size(self, mongo_d_b_collection_max_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mongo_d_b_collection_max_size = mongo_d_b_collection_max_size
 
     @property
     def mongo_d_b_collection_num_orphan_docs(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_orphan_docs
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_num_orphan_docs
 
     @mongo_d_b_collection_num_orphan_docs.setter
-    def mongo_d_b_collection_num_orphan_docs(
-        self, mongo_d_b_collection_num_orphan_docs: Optional[int]
-    ):
+    def mongo_d_b_collection_num_orphan_docs(self, mongo_d_b_collection_num_orphan_docs: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_orphan_docs = (
-            mongo_d_b_collection_num_orphan_docs
-        )
+        self.attributes.mongo_d_b_collection_num_orphan_docs = mongo_d_b_collection_num_orphan_docs
 
     @property
     def mongo_d_b_collection_num_indexes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_indexes
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_num_indexes
 
     @mongo_d_b_collection_num_indexes.setter
-    def mongo_d_b_collection_num_indexes(
-        self, mongo_d_b_collection_num_indexes: Optional[int]
-    ):
+    def mongo_d_b_collection_num_indexes(self, mongo_d_b_collection_num_indexes: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_indexes = (
-            mongo_d_b_collection_num_indexes
-        )
+        self.attributes.mongo_d_b_collection_num_indexes = mongo_d_b_collection_num_indexes
 
     @property
     def mongo_d_b_collection_total_index_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_total_index_size
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_total_index_size
 
     @mongo_d_b_collection_total_index_size.setter
-    def mongo_d_b_collection_total_index_size(
-        self, mongo_d_b_collection_total_index_size: Optional[int]
-    ):
+    def mongo_d_b_collection_total_index_size(self, mongo_d_b_collection_total_index_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_total_index_size = (
-            mongo_d_b_collection_total_index_size
-        )
+        self.attributes.mongo_d_b_collection_total_index_size = mongo_d_b_collection_total_index_size
 
     @property
     def mongo_d_b_collection_average_object_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_average_object_size
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_average_object_size
 
     @mongo_d_b_collection_average_object_size.setter
-    def mongo_d_b_collection_average_object_size(
-        self, mongo_d_b_collection_average_object_size: Optional[int]
-    ):
+    def mongo_d_b_collection_average_object_size(self, mongo_d_b_collection_average_object_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_average_object_size = (
-            mongo_d_b_collection_average_object_size
-        )
+        self.attributes.mongo_d_b_collection_average_object_size = mongo_d_b_collection_average_object_size
 
     @property
     def mongo_d_b_collection_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_schema_definition
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection_schema_definition
 
     @mongo_d_b_collection_schema_definition.setter
-    def mongo_d_b_collection_schema_definition(
-        self, mongo_d_b_collection_schema_definition: Optional[str]
-    ):
+    def mongo_d_b_collection_schema_definition(self, mongo_d_b_collection_schema_definition: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_schema_definition = (
-            mongo_d_b_collection_schema_definition
-        )
+        self.attributes.mongo_d_b_collection_schema_definition = mongo_d_b_collection_schema_definition
 
     @property
     def column_count(self) -> Optional[int]:
@@ -796,11 +642,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
+        return None if self.attributes is None else self.attributes.external_location_region
 
     @external_location_region.setter
     def external_location_region(self, external_location_region: Optional[str]):
@@ -810,11 +652,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
+        return None if self.attributes is None else self.attributes.external_location_format
 
     @external_location_format.setter
     def external_location_format(self, external_location_format: Optional[str]):
@@ -904,9 +742,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def iceberg_catalog_source(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.iceberg_catalog_source
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_source
 
     @iceberg_catalog_source.setter
     def iceberg_catalog_source(self, iceberg_catalog_source: Optional[str]):
@@ -916,11 +752,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def iceberg_catalog_table_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_catalog_table_name
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_table_name
 
     @iceberg_catalog_table_name.setter
     def iceberg_catalog_table_name(self, iceberg_catalog_table_name: Optional[str]):
@@ -930,29 +762,17 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def iceberg_catalog_table_namespace(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_catalog_table_namespace
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_table_namespace
 
     @iceberg_catalog_table_namespace.setter
-    def iceberg_catalog_table_namespace(
-        self, iceberg_catalog_table_namespace: Optional[str]
-    ):
+    def iceberg_catalog_table_namespace(self, iceberg_catalog_table_namespace: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.iceberg_catalog_table_namespace = (
-            iceberg_catalog_table_namespace
-        )
+        self.attributes.iceberg_catalog_table_namespace = iceberg_catalog_table_namespace
 
     @property
     def table_external_volume_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.table_external_volume_name
-        )
+        return None if self.attributes is None else self.attributes.table_external_volume_name
 
     @table_external_volume_name.setter
     def table_external_volume_name(self, table_external_volume_name: Optional[str]):
@@ -962,11 +782,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def iceberg_table_base_location(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_table_base_location
-        )
+        return None if self.attributes is None else self.attributes.iceberg_table_base_location
 
     @iceberg_table_base_location.setter
     def iceberg_table_base_location(self, iceberg_table_base_location: Optional[str]):
@@ -1016,9 +832,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def query_count_updated_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
-        )
+        return None if self.attributes is None else self.attributes.query_count_updated_at
 
     @query_count_updated_at.setter
     def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
@@ -1038,9 +852,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.database_qualified_name
 
     @database_qualified_name.setter
     def database_qualified_name(self, database_qualified_name: Optional[str]):
@@ -1060,9 +872,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.schema_qualified_name
 
     @schema_qualified_name.setter
     def schema_qualified_name(self, schema_qualified_name: Optional[str]):
@@ -1112,9 +922,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def calculation_view_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.calculation_view_name
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_name
 
     @calculation_view_name.setter
     def calculation_view_name(self, calculation_view_name: Optional[str]):
@@ -1124,21 +932,13 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def calculation_view_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_qualified_name
 
     @calculation_view_qualified_name.setter
-    def calculation_view_qualified_name(
-        self, calculation_view_qualified_name: Optional[str]
-    ):
+    def calculation_view_qualified_name(self, calculation_view_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.calculation_view_qualified_name = (
-            calculation_view_qualified_name
-        )
+        self.attributes.calculation_view_qualified_name = calculation_view_qualified_name
 
     @property
     def is_profiled(self) -> Optional[bool]:
@@ -1232,16 +1032,10 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_database(self) -> Optional[CosmosMongoDBDatabase]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_database
-        )
+        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_database
 
     @cosmos_mongo_d_b_database.setter
-    def cosmos_mongo_d_b_database(
-        self, cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase]
-    ):
+    def cosmos_mongo_d_b_database(self, cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_database = cosmos_mongo_d_b_database
@@ -1297,55 +1091,27 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.dimensions = dimensions
 
     class Attributes(CosmosMongoDB.Attributes):
-        cosmos_mongo_d_b_database_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        cosmos_mongo_d_b_database_qualified_name: Optional[str] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        mongo_d_b_collection_subtype: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_is_capped: Optional[bool] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_time_field: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_time_granularity: Optional[str] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_expire_after_seconds: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_maximum_document_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_max_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_num_orphan_docs: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_num_indexes: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_total_index_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_average_object_size: Optional[int] = Field(
-            default=None, description=""
-        )
-        mongo_d_b_collection_schema_definition: Optional[str] = Field(
-            default=None, description=""
-        )
+        mongo_d_b_collection_subtype: Optional[str] = Field(default=None, description="")
+        mongo_d_b_collection_is_capped: Optional[bool] = Field(default=None, description="")
+        mongo_d_b_collection_time_field: Optional[str] = Field(default=None, description="")
+        mongo_d_b_collection_time_granularity: Optional[str] = Field(default=None, description="")
+        mongo_d_b_collection_expire_after_seconds: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_maximum_document_count: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_max_size: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_num_orphan_docs: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_num_indexes: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_total_index_size: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_average_object_size: Optional[int] = Field(default=None, description="")
+        mongo_d_b_collection_schema_definition: Optional[str] = Field(default=None, description="")
         column_count: Optional[int] = Field(default=None, description="")
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
         external_location: Optional[str] = Field(default=None, description="")
         external_location_region: Optional[str] = Field(default=None, description="")
         external_location_format: Optional[str] = Field(default=None, description="")
@@ -1359,9 +1125,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         iceberg_table_type: Optional[str] = Field(default=None, description="")
         iceberg_catalog_source: Optional[str] = Field(default=None, description="")
         iceberg_catalog_table_name: Optional[str] = Field(default=None, description="")
-        iceberg_catalog_table_namespace: Optional[str] = Field(
-            default=None, description=""
-        )
+        iceberg_catalog_table_namespace: Optional[str] = Field(default=None, description="")
         table_external_volume_name: Optional[str] = Field(default=None, description="")
         iceberg_table_base_location: Optional[str] = Field(default=None, description="")
         table_retention_time: Optional[int] = Field(default=None, description="")
@@ -1378,50 +1142,22 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         view_name: Optional[str] = Field(default=None, description="")
         view_qualified_name: Optional[str] = Field(default=None, description="")
         calculation_view_name: Optional[str] = Field(default=None, description="")
-        calculation_view_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        calculation_view_qualified_name: Optional[str] = Field(default=None, description="")
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
-        partitions: Optional[List[TablePartition]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
-            default=None, description=""
-        )  # relationship
-        dimensions: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
+        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        facts: Optional[List[Table]] = Field(default=None, description="")  # relationship
+        sql_dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
+        partitions: Optional[List[TablePartition]] = Field(default=None, description="")  # relationship
+        cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase] = Field(default=None, description="")  # relationship
+        queries: Optional[List[Query]] = Field(default=None, description="")  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
+        mongo_d_b_database: Optional[MongoDBDatabase] = Field(default=None, description="")  # relationship
+        dimensions: Optional[List[Table]] = Field(default=None, description="")  # relationship
 
     attributes: CosmosMongoDBCollection.Attributes = Field(
         default_factory=lambda: CosmosMongoDBCollection.Attributes(),

@@ -16,13 +16,9 @@ from tests.unit.model.constants import (
         (PRESET_WORKSPACE_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
-        PresetWorkspace.create(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        PresetWorkspace.create(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
@@ -48,9 +44,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        PresetWorkspace.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        PresetWorkspace.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():

@@ -115,9 +115,7 @@ def test_overload_creator():
 
 
 def test_updater():
-    sut = QuickSightDashboardVisual.updater(
-        qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME
-    )
+    sut = QuickSightDashboardVisual.updater(qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME)
 
     assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
     assert sut.name == QUICK_SIGHT_NAME

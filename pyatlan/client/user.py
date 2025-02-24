@@ -40,15 +40,11 @@ class UserClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
-    def create(
-        self, users: List[AtlanUser], return_info: bool = False
-    ) -> Optional[List[AtlanUser]]:
+    def create(self, users: List[AtlanUser], return_info: bool = False) -> Optional[List[AtlanUser]]:
         """
         Create one or more new users.
 
@@ -177,9 +173,7 @@ class UserClient:
             ],
         )
         endpoint = GET_USERS.format_path_with_params()
-        raw_json = self._client._call_api(
-            api=endpoint, query_params=request.query_params
-        )
+        raw_json = self._client._call_api(api=endpoint, query_params=request.query_params)
         return UserResponse(
             client=self._client,
             endpoint=endpoint,
@@ -275,9 +269,7 @@ class UserClient:
         return None
 
     @validate_arguments
-    def get_by_usernames(
-        self, usernames: List[str], limit: int = 5, offset: int = 0
-    ) -> Optional[List[AtlanUser]]:
+    def get_by_usernames(self, usernames: List[str], limit: int = 5, offset: int = 0) -> Optional[List[AtlanUser]]:
         """
         Retrieves users based on their usernames.
 
@@ -287,9 +279,7 @@ class UserClient:
         :returns: the users with the specified usernames
         """
         username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
-        if response := self.get(
-            offset=offset, limit=limit, post_filter=username_filter
-        ):
+        if response := self.get(offset=offset, limit=limit, post_filter=username_filter):
             return response.records
         return None
 
@@ -314,9 +304,7 @@ class UserClient:
         )
 
     @validate_arguments
-    def get_groups(
-        self, guid: str, request: Optional[GroupRequest] = None
-    ) -> GroupResponse:
+    def get_groups(self, guid: str, request: Optional[GroupRequest] = None) -> GroupResponse:
         """
         Retrieve the groups this user belongs to.
 
@@ -327,9 +315,7 @@ class UserClient:
         """
         if not request:
             request = GroupRequest()
-        endpoint = GET_USER_GROUPS.format_path(
-            {"user_guid": guid}
-        ).format_path_with_params()
+        endpoint = GET_USER_GROUPS.format_path({"user_guid": guid}).format_path_with_params()
         raw_json = self._client._call_api(
             api=endpoint,
             query_params=request.query_params,
@@ -346,9 +332,7 @@ class UserClient:
         )
 
     @validate_arguments
-    def add_as_admin(
-        self, asset_guid: str, impersonation_token: str
-    ) -> Optional[AssetMutationResponse]:
+    def add_as_admin(self, asset_guid: str, impersonation_token: str) -> Optional[AssetMutationResponse]:
         """
         Add the API token configured for the default client as an admin to the asset with the provided GUID.
         This is primarily useful for connections, to allow the API token to manage policies for the connection, and
@@ -369,9 +353,7 @@ class UserClient:
         )
 
     @validate_arguments
-    def add_as_viewer(
-        self, asset_guid: str, impersonation_token: str
-    ) -> Optional[AssetMutationResponse]:
+    def add_as_viewer(self, asset_guid: str, impersonation_token: str) -> Optional[AssetMutationResponse]:
         """
         Add the API token configured for the default client as a viewer to the asset with the provided GUID.
         This is primarily useful for query collections, to allow the API token to view or run queries within the
@@ -409,23 +391,16 @@ class UserClient:
         from pyatlan.model.fluent_search import FluentSearch
 
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:
-            raise ValueError(
-                f"keyword_field should be {Asset.VIEWER_USERS} or {Asset.ADMIN_USERS}"
-            )
+            raise ValueError(f"keyword_field should be {Asset.VIEWER_USERS} or {Asset.ADMIN_USERS}")
 
         token_user = self.get_current().username or ""
         with client_connection(api_key=impersonation_token) as tmp:
             request = (
-                FluentSearch()
-                .where(Asset.GUID.eq(asset_guid))
-                .include_on_results(keyword_field)
-                .page_size(1)
+                FluentSearch().where(Asset.GUID.eq(asset_guid)).include_on_results(keyword_field).page_size(1)
             ).to_request()
             results = tmp.asset.search(request)
             if not results.current_page():
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
-                    asset_guid
-                )
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(asset_guid)
             asset = results.current_page()[0]
             if keyword_field == Asset.VIEWER_USERS:
                 existing_viewers = asset.viewer_users or set()

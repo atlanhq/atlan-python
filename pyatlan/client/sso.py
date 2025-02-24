@@ -27,9 +27,7 @@ class SSOClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @staticmethod
@@ -43,13 +41,9 @@ class SSOClient:
                 return parse_obj_as(List[SSOMapper], raw_json)
             return parse_obj_as(SSOMapper, raw_json)
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                raw_json, 200, str(err)
-            ) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
 
-    def _check_existing_group_mappings(
-        self, sso_alias: str, atlan_group: AtlanGroup
-    ) -> None:
+    def _check_existing_group_mappings(self, sso_alias: str, atlan_group: AtlanGroup) -> None:
         """
         Check if an SSO group mapping already exists within Atlan.
         This is necessary to avoid duplicate group mappings with
@@ -66,9 +60,7 @@ class SSOClient:
                 )
 
     @validate_arguments
-    def create_group_mapping(
-        self, sso_alias: str, atlan_group: AtlanGroup, sso_group_name: str
-    ) -> SSOMapper:
+    def create_group_mapping(self, sso_alias: str, atlan_group: AtlanGroup, sso_group_name: str) -> SSOMapper:
         """
         Creates a new Atlan SSO group mapping.
 
@@ -133,9 +125,7 @@ class SSOClient:
             identity_provider_mapper=self.IDP_GROUP_MAPPER,
         )  # type: ignore[call-arg]
         raw_json = self._client._call_api(
-            UPDATE_SSO_GROUP_MAPPING.format_path(
-                {"sso_alias": sso_alias, "group_map_id": group_map_id}
-            ),
+            UPDATE_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias, "group_map_id": group_map_id}),
             request_obj=group_mapper,
         )
         return self._parse_sso_mapper(raw_json)
@@ -149,14 +139,10 @@ class SSOClient:
         :raises AtlanError: on any error during API invocation.
         :returns: list of existing SSO group mapping instances.
         """
-        raw_json = self._client._call_api(
-            GET_ALL_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias})
-        )
+        raw_json = self._client._call_api(GET_ALL_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias}))
         # Since `raw_json` includes both user and group mappings
         group_mappings = [
-            mapping
-            for mapping in raw_json
-            if mapping["identityProviderMapper"] == SSOClient.IDP_GROUP_MAPPER
+            mapping for mapping in raw_json if mapping["identityProviderMapper"] == SSOClient.IDP_GROUP_MAPPER
         ]
         return self._parse_sso_mapper(group_mappings)
 
@@ -171,9 +157,7 @@ class SSOClient:
         :returns: existing SSO group mapping instance.
         """
         raw_json = self._client._call_api(
-            GET_SSO_GROUP_MAPPING.format_path(
-                {"sso_alias": sso_alias, "group_map_id": group_map_id}
-            )
+            GET_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias, "group_map_id": group_map_id})
         )
         return self._parse_sso_mapper(raw_json)
 
@@ -188,8 +172,6 @@ class SSOClient:
         :returns: an empty response (`None`).
         """
         raw_json = self._client._call_api(
-            DELETE_SSO_GROUP_MAPPING.format_path(
-                {"sso_alias": sso_alias, "group_map_id": group_map_id}
-            )
+            DELETE_SSO_GROUP_MAPPING.format_path({"sso_alias": sso_alias, "group_map_id": group_map_id})
         )
         return raw_json

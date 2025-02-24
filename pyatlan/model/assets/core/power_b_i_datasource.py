@@ -29,9 +29,7 @@ class PowerBIDatasource(PowerBI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField(
-        "connectionDetails", "connectionDetails"
-    )
+    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField("connectionDetails", "connectionDetails")
     """
     Connection details of the datasource.
     """
@@ -82,15 +80,9 @@ class PowerBIDatasource(PowerBI):
         self.attributes.datasets = datasets
 
     class Attributes(PowerBI.Attributes):
-        connection_details: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflows: Optional[List[PowerBIDataflow]] = Field(
-            default=None, description=""
-        )  # relationship
-        datasets: Optional[List[PowerBIDataset]] = Field(
-            default=None, description=""
-        )  # relationship
+        connection_details: Optional[Dict[str, str]] = Field(default=None, description="")
+        power_b_i_dataflows: Optional[List[PowerBIDataflow]] = Field(default=None, description="")  # relationship
+        datasets: Optional[List[PowerBIDataset]] = Field(default=None, description="")  # relationship
 
     attributes: PowerBIDatasource.Attributes = Field(
         default_factory=lambda: PowerBIDatasource.Attributes(),

@@ -19,9 +19,7 @@ class FileClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
@@ -51,29 +49,21 @@ class FileClient:
         try:
             upload_file = open(file_path, "rb")
         except FileNotFoundError as err:
-            raise ErrorCode.INVALID_UPLOAD_FILE_PATH.exception_with_parameters(
-                str(err.strerror), file_path
-            )
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH.exception_with_parameters(str(err.strerror), file_path)
         if CloudStorageIdentifier.S3 in presigned_url:
             return self._client._s3_presigned_url_file_upload(
                 upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_S3.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                api=PRESIGNED_URL_UPLOAD_S3.format_path({"presigned_url_put": presigned_url}),
             )
         elif CloudStorageIdentifier.AZURE_BLOB in presigned_url:
             return self._client._azure_blob_presigned_url_file_upload(
                 upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_AZURE_BLOB.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                api=PRESIGNED_URL_UPLOAD_AZURE_BLOB.format_path({"presigned_url_put": presigned_url}),
             )
         elif CloudStorageIdentifier.GCS in presigned_url:
             return self._client._gcs_presigned_url_file_upload(
                 upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_GCS.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                api=PRESIGNED_URL_UPLOAD_GCS.format_path({"presigned_url_put": presigned_url}),
             )
         else:
             raise ErrorCode.UNSUPPORTED_PRESIGNED_URL.exception_with_parameters()
@@ -95,7 +85,5 @@ class FileClient:
         """
         return self._client._presigned_url_file_download(
             file_path=file_path,
-            api=PRESIGNED_URL_DOWNLOAD.format_path(
-                {"presigned_url_get": presigned_url}
-            ),
+            api=PRESIGNED_URL_DOWNLOAD.format_path({"presigned_url_get": presigned_url}),
         )

@@ -37,15 +37,11 @@ class DbtMetric(Dbt):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_METRIC_FILTERS: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricFilters", "dbtMetricFilters"
-    )
+    DBT_METRIC_FILTERS: ClassVar[KeywordField] = KeywordField("dbtMetricFilters", "dbtMetricFilters")
     """
 
     """
-    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
-    )
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField("dbtAlias", "dbtAlias.keyword", "dbtAlias")
     """
 
     """
@@ -53,9 +49,7 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
-    )
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField("dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId")
     """
 
     """
@@ -77,21 +71,15 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
-    )
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField("dbtJobName", "dbtJobName.keyword", "dbtJobName")
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
-        "dbtJobSchedule", "dbtJobSchedule"
-    )
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField("dbtJobSchedule", "dbtJobSchedule")
     """
 
     """
-    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtJobStatus", "dbtJobStatus"
-    )
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField("dbtJobStatus", "dbtJobStatus")
     """
 
     """
@@ -103,15 +91,11 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobLastRun", "dbtJobLastRun"
-    )
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField("dbtJobLastRun", "dbtJobLastRun")
     """
 
     """
-    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
-        "dbtJobNextRun", "dbtJobNextRun"
-    )
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField("dbtJobNextRun", "dbtJobNextRun")
     """
 
     """
@@ -141,9 +125,7 @@ class DbtMetric(Dbt):
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
-        "dbtConnectionContext", "dbtConnectionContext"
-    )
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField("dbtConnectionContext", "dbtConnectionContext")
     """
 
     """
@@ -169,16 +151,12 @@ class DbtMetric(Dbt):
     """
     Filters to be applied to the metric query.
     """
-    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
-        "metricTimeGrains", "metricTimeGrains"
-    )
+    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField("metricTimeGrains", "metricTimeGrains")
     """
     List of time grains to be applied to the metric query.
     """
 
-    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
-        "metricTimestampColumn"
-    )
+    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField("metricTimestampColumn")
     """
     TBC
     """
@@ -190,15 +168,11 @@ class DbtMetric(Dbt):
     """
     TBC
     """
-    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField(
-        "metricDimensionColumns"
-    )
+    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField("metricDimensionColumns")
     """
     TBC
     """
-    DBT_METRIC_FILTER_COLUMNS: ClassVar[RelationField] = RelationField(
-        "dbtMetricFilterColumns"
-    )
+    DBT_METRIC_FILTER_COLUMNS: ClassVar[RelationField] = RelationField("dbtMetricFilterColumns")
     """
     TBC
     """
@@ -337,21 +311,13 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_schedule_cron_humanized
-        )
+        return None if self.attributes is None else self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
-    def dbt_job_schedule_cron_humanized(
-        self, dbt_job_schedule_cron_humanized: Optional[str]
-    ):
+    def dbt_job_schedule_cron_humanized(self, dbt_job_schedule_cron_humanized: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_job_schedule_cron_humanized = (
-            dbt_job_schedule_cron_humanized
-        )
+        self.attributes.dbt_job_schedule_cron_humanized = dbt_job_schedule_cron_humanized
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
@@ -375,11 +341,7 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_job_next_run_humanized
-        )
+        return None if self.attributes is None else self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
@@ -399,11 +361,7 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_environment_dbt_version
-        )
+        return None if self.attributes is None else self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
@@ -423,9 +381,7 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_connection_context
-        )
+        return None if self.attributes is None else self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
@@ -435,11 +391,7 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_semantic_layer_proxy_url
-        )
+        return None if self.attributes is None else self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
@@ -499,9 +451,7 @@ class DbtMetric(Dbt):
 
     @property
     def metric_timestamp_column(self) -> Optional[Column]:
-        return (
-            None if self.attributes is None else self.attributes.metric_timestamp_column
-        )
+        return None if self.attributes is None else self.attributes.metric_timestamp_column
 
     @metric_timestamp_column.setter
     def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
@@ -531,40 +481,26 @@ class DbtMetric(Dbt):
 
     @property
     def metric_dimension_columns(self) -> Optional[List[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metric_dimension_columns
-        )
+        return None if self.attributes is None else self.attributes.metric_dimension_columns
 
     @metric_dimension_columns.setter
-    def metric_dimension_columns(
-        self, metric_dimension_columns: Optional[List[Column]]
-    ):
+    def metric_dimension_columns(self, metric_dimension_columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
     @property
     def dbt_metric_filter_columns(self) -> Optional[List[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_metric_filter_columns
-        )
+        return None if self.attributes is None else self.attributes.dbt_metric_filter_columns
 
     @dbt_metric_filter_columns.setter
-    def dbt_metric_filter_columns(
-        self, dbt_metric_filter_columns: Optional[List[Column]]
-    ):
+    def dbt_metric_filter_columns(self, dbt_metric_filter_columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
 
     class Attributes(Dbt.Attributes):
-        dbt_metric_filters: Optional[List[DbtMetricFilter]] = Field(
-            default=None, description=""
-        )
+        dbt_metric_filters: Optional[List[DbtMetricFilter]] = Field(default=None, description="")
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -574,9 +510,7 @@ class DbtMetric(Dbt):
         dbt_job_name: Optional[str] = Field(default=None, description="")
         dbt_job_schedule: Optional[str] = Field(default=None, description="")
         dbt_job_status: Optional[str] = Field(default=None, description="")
-        dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            default=None, description=""
-        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(default=None, description="")
         dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
@@ -584,29 +518,17 @@ class DbtMetric(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
         dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
-        dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            default=None, description=""
-        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(default=None, description="")
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
         metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
-        metric_timestamp_column: Optional[Column] = Field(
-            default=None, description=""
-        )  # relationship
-        assets: Optional[List[Asset]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model: Optional[DbtModel] = Field(
-            default=None, description=""
-        )  # relationship
-        metric_dimension_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_metric_filter_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
+        metric_timestamp_column: Optional[Column] = Field(default=None, description="")  # relationship
+        assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
+        dbt_model: Optional[DbtModel] = Field(default=None, description="")  # relationship
+        metric_dimension_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        dbt_metric_filter_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
 
     attributes: DbtMetric.Attributes = Field(
         default_factory=lambda: DbtMetric.Attributes(),

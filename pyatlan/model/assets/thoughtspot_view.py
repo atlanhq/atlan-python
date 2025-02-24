@@ -43,17 +43,13 @@ class ThoughtspotView(Thoughtspot):
         return None if self.attributes is None else self.attributes.thoughtspot_columns
 
     @thoughtspot_columns.setter
-    def thoughtspot_columns(
-        self, thoughtspot_columns: Optional[List[ThoughtspotColumn]]
-    ):
+    def thoughtspot_columns(self, thoughtspot_columns: Optional[List[ThoughtspotColumn]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_columns = thoughtspot_columns
 
     class Attributes(Thoughtspot.Attributes):
-        thoughtspot_columns: Optional[List[ThoughtspotColumn]] = Field(
-            default=None, description=""
-        )  # relationship
+        thoughtspot_columns: Optional[List[ThoughtspotColumn]] = Field(default=None, description="")  # relationship
 
     attributes: ThoughtspotView.Attributes = Field(
         default_factory=lambda: ThoughtspotView.Attributes(),

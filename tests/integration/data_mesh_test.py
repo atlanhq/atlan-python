@@ -30,9 +30,7 @@ from tests.integration.client import TestId, delete_asset
 from tests.integration.custom_metadata_test import create_custom_metadata
 from tests.integration.utils import wait_for_successful_custometadatadef_purge
 
-DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = (
-    '{"condition":"AND","isGroupLocked":false,"rules":[]}'
-)
+DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = '{"condition":"AND","isGroupLocked":false,"rules":[]}'
 
 MODULE_NAME = TestId.make_unique("DM")
 
@@ -40,14 +38,10 @@ DATA_DOMAIN_NAME = f"{MODULE_NAME}-data-domain"
 DATA_DOMAIN_QUALIFIED_NAME = f"default/domain/{DATA_DOMAIN_NAME}/super"
 DATA_DOMAIN_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super"
 DATA_SUB_DOMAIN_NAME = f"{MODULE_NAME}-data-sub-domain"
-DATA_SUB_DOMAIN_QUALIFIED_NAME = (
-    f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_NAME}"
-)
+DATA_SUB_DOMAIN_QUALIFIED_NAME = f"{DATA_DOMAIN_QUALIFIED_NAME}/domain/{DATA_SUB_DOMAIN_NAME}"
 DATA_SUB_DOMAIN_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/domain/[a-zA-Z0-9-]+"
 DATA_PRODUCT_NAME = f"{MODULE_NAME}-data-product"
-DATA_PRODUCT_QUALIFIED_NAME = (
-    f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
-)
+DATA_PRODUCT_QUALIFIED_NAME = f"{DATA_DOMAIN_QUALIFIED_NAME}/product/{DATA_PRODUCT_NAME}"
 DATA_PRODUCT_QN_REGEX = r"default/domain/[a-zA-Z0-9-]+/super/product/[a-zA-Z0-9-]+"
 DD_CM = f"{MODULE_NAME}_CM"
 DD_ATTR = f"{MODULE_NAME}_ATTRIBUTE"
@@ -138,9 +132,7 @@ def test_update_domain(client: AtlanClient, domain: DataDomain):
 
 @pytest.mark.order(after="test_update_domain")
 def test_retrieve_domain(client: AtlanClient, domain: DataDomain):
-    test_domain = client.asset.get_by_guid(
-        domain.guid, asset_type=DataDomain, ignore_relationships=False
-    )
+    test_domain = client.asset.get_by_guid(domain.guid, asset_type=DataDomain, ignore_relationships=False)
     assert test_domain
     assert test_domain.guid == domain.guid
     assert test_domain.qualified_name == domain.qualified_name
@@ -151,9 +143,7 @@ def test_retrieve_domain(client: AtlanClient, domain: DataDomain):
 
 @pytest.mark.order(after="test_retrieve_domain")
 def test_find_domain_by_name(client: AtlanClient, domain: DataDomain):
-    response = client.asset.find_domain_by_name(
-        name=domain.name, attributes=["certificateStatus"]
-    )
+    response = client.asset.find_domain_by_name(name=domain.name, attributes=["certificateStatus"])
 
     assert response
     assert response.guid == domain.guid
@@ -192,9 +182,7 @@ def test_update_sub_domain(client: AtlanClient, sub_domain: DataDomain):
 
 @pytest.mark.order(after="test_update_sub_domain")
 def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
-    test_sub_domain = client.asset.get_by_guid(
-        sub_domain.guid, asset_type=DataDomain, ignore_relationships=False
-    )
+    test_sub_domain = client.asset.get_by_guid(sub_domain.guid, asset_type=DataDomain, ignore_relationships=False)
     assert test_sub_domain
     assert test_sub_domain.guid == sub_domain.guid
     assert test_sub_domain.qualified_name == sub_domain.qualified_name
@@ -205,9 +193,7 @@ def test_retrieve_sub_domain(client: AtlanClient, sub_domain: DataDomain):
 
 @pytest.mark.order(after="test_retrieve_sub_domain")
 def test_find_sub_domain_by_name(client: AtlanClient, sub_domain: DataDomain):
-    response = client.asset.find_domain_by_name(
-        name=sub_domain.name, attributes=["certificateStatus"]
-    )
+    response = client.asset.find_domain_by_name(name=sub_domain.name, attributes=["certificateStatus"])
 
     assert response
     assert response.guid == sub_domain.guid
@@ -215,9 +201,7 @@ def test_find_sub_domain_by_name(client: AtlanClient, sub_domain: DataDomain):
 
 
 @pytest.fixture(scope="module")
-def data_domain_cm(
-    client: AtlanClient, domain: DataDomain
-) -> Generator[CustomMetadataDef, None, None]:
+def data_domain_cm(client: AtlanClient, domain: DataDomain) -> Generator[CustomMetadataDef, None, None]:
     assert domain.qualified_name
     attribute_defs = [
         AttributeDef.create(
@@ -227,9 +211,7 @@ def data_domain_cm(
             applicable_domains={domain.qualified_name},
         )
     ]
-    dd_cm = create_custom_metadata(
-        client, name=DD_CM, attribute_defs=attribute_defs, logo="📦", locked=True
-    )
+    dd_cm = create_custom_metadata(client, name=DD_CM, attribute_defs=attribute_defs, logo="📦", locked=True)
     yield dd_cm
     wait_for_successful_custometadatadef_purge(DD_CM, client=client)
 
@@ -277,10 +259,7 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert product.parent_domain_qualified_name
     assert product.super_domain_qualified_name
     assert product.name == DATA_PRODUCT_NAME
-    assert (
-        product.data_product_assets_playbook_filter
-        == DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER
-    )
+    assert product.data_product_assets_playbook_filter == DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER
     assert re.search(DATA_PRODUCT_QN_REGEX, product.qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.parent_domain_qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.super_domain_qualified_name)
@@ -336,20 +315,14 @@ def updated_contract(
     delete_asset(client, guid=result.guid, asset_type=DataContract)
 
 
-def test_contract(
-    client: AtlanClient, table: Table, product: DataProduct, contract: DataContract
-):
+def test_contract(client: AtlanClient, table: Table, product: DataProduct, contract: DataContract):
     assert product and product.guid
-    product = client.asset.get_by_guid(
-        guid=product.guid, asset_type=DataProduct, ignore_relationships=False
-    )
+    product = client.asset.get_by_guid(guid=product.guid, asset_type=DataProduct, ignore_relationships=False)
     assert product and product.output_ports and len(product.output_ports)
     table_asset = product.output_ports[0]
     assert table and table.guid
     assert table.guid == table_asset.guid
-    table = client.asset.get_by_guid(
-        guid=table_asset.guid, asset_type=Table, ignore_relationships=False
-    )
+    table = client.asset.get_by_guid(guid=table_asset.guid, asset_type=Table, ignore_relationships=False)
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
@@ -361,13 +334,9 @@ def test_contract(
     assert contract.data_contract_asset_guid == table.guid
 
 
-def test_update_contract(
-    client: AtlanClient, table: Table, updated_contract: DataContract
-):
+def test_update_contract(client: AtlanClient, table: Table, updated_contract: DataContract):
     assert table and table.guid
-    table = client.asset.get_by_guid(
-        guid=table.guid, asset_type=Table, ignore_relationships=False
-    )
+    table = client.asset.get_by_guid(guid=table.guid, asset_type=Table, ignore_relationships=False)
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
@@ -380,9 +349,7 @@ def test_update_contract(
     assert "(UPDATED)" in updated_contract.data_contract_json
 
 
-def test_update_product(
-    client: AtlanClient, product: DataProduct, glossary: AtlasGlossary
-):
+def test_update_product(client: AtlanClient, product: DataProduct, glossary: AtlasGlossary):
     assert product.qualified_name
     assert product.name
     updated = client.asset.update_certificate(
@@ -415,11 +382,7 @@ def test_update_product(
 
     # Test the product.updater() method with assets
     assert glossary.qualified_name
-    assets = (
-        FluentSearch()
-        .where(Asset.QUALIFIED_NAME.eq(glossary.qualified_name))
-        .to_request()
-    )
+    assets = FluentSearch().where(Asset.QUALIFIED_NAME.eq(glossary.qualified_name)).to_request()
     to_update = DataProduct.updater(
         name=DATA_PRODUCT_NAME,
         qualified_name=product.qualified_name,
@@ -428,24 +391,18 @@ def test_update_product(
     response = client.asset.save(to_update)
     assert (products := response.assets_updated(asset_type=DataProduct))
     assert len(products) == 1
-    assert products[
-        0
-    ].data_product_assets_d_s_l == DataProductsAssetsDSL.get_asset_selection(assets)
+    assert products[0].data_product_assets_d_s_l == DataProductsAssetsDSL.get_asset_selection(assets)
 
     # Test the product.updater() method without assets
     # (ensure asset selection remains unchanged)
-    product = DataProduct.updater(
-        name=DATA_PRODUCT_NAME, qualified_name=product.qualified_name
-    )
+    product = DataProduct.updater(name=DATA_PRODUCT_NAME, qualified_name=product.qualified_name)
     response = client.asset.save(product)
     assert response.assets_updated(asset_type=DataProduct) == []
 
 
 @pytest.mark.order(after="test_update_product")
 def test_retrieve_product(client: AtlanClient, product: DataProduct):
-    test_product = client.asset.get_by_guid(
-        product.guid, asset_type=DataProduct, ignore_relationships=False
-    )
+    test_product = client.asset.get_by_guid(product.guid, asset_type=DataProduct, ignore_relationships=False)
     assert test_product
     assert test_product.guid == product.guid
     assert test_product.qualified_name == product.qualified_name
@@ -455,12 +412,8 @@ def test_retrieve_product(client: AtlanClient, product: DataProduct):
 
 
 @pytest.mark.order(after="test_update_contract")
-def test_retrieve_contract(
-    client: AtlanClient, table: Table, updated_contract: DataContract
-):
-    test_contract = client.asset.get_by_guid(
-        updated_contract.guid, asset_type=DataContract, ignore_relationships=False
-    )
+def test_retrieve_contract(client: AtlanClient, table: Table, updated_contract: DataContract):
+    test_contract = client.asset.get_by_guid(updated_contract.guid, asset_type=DataContract, ignore_relationships=False)
     assert test_contract
     assert test_contract.name == updated_contract.name
     assert table.name and updated_contract.name and table.name in updated_contract.name
@@ -474,9 +427,7 @@ def test_retrieve_contract(
 
 @pytest.mark.order(after="test_retrieve_product")
 def test_find_product_by_name(client: AtlanClient, product: DataProduct):
-    response = client.asset.find_product_by_name(
-        name=product.name, attributes=["daapStatus"]
-    )
+    response = client.asset.find_product_by_name(name=product.name, attributes=["daapStatus"])
 
     assert response
     assert response.guid == product.guid

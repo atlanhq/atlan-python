@@ -22,25 +22,14 @@ class Link(Resource):
 
     @classmethod
     @init_guid
-    def creator(
-        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
-    ) -> Link:
-        return Link(
-            attributes=Link.Attributes.create(
-                asset=asset, name=name, link=link, idempotent=idempotent
-            )
-        )
+    def creator(cls, *, asset: Asset, name: str, link: str, idempotent: bool = False) -> Link:
+        return Link(attributes=Link.Attributes.create(asset=asset, name=name, link=link, idempotent=idempotent))
 
     @classmethod
     @init_guid
-    def create(
-        cls, *, asset: Asset, name: str, link: str, idempotent: bool = False
-    ) -> Link:
+    def create(cls, *, asset: Asset, name: str, link: str, idempotent: bool = False) -> Link:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -116,9 +105,7 @@ class Link(Resource):
 
         @classmethod
         @init_guid
-        def create(
-            cls, *, asset: Asset, name: str, link: str, idempotent: bool
-        ) -> Link.Attributes:
+        def create(cls, *, asset: Asset, name: str, link: str, idempotent: bool) -> Link.Attributes:
             validate_required_fields(["asset", "name", "link"], [asset, name, link])
             qn = f"{asset.qualified_name}/{name}" if idempotent else str(uuid.uuid4())
             return Link.Attributes(

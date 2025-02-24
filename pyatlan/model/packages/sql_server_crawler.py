@@ -27,8 +27,12 @@ class SQLServerCrawler(AbstractCrawler):
     _PACKAGE_NAME = "@atlan/mssql"
     _PACKAGE_PREFIX = WorkflowPackage.MSSQL.value
     _CONNECTOR_TYPE = AtlanConnectorType.MSSQL
-    _PACKAGE_ICON = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
-    _PACKAGE_LOGO = "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
+    _PACKAGE_ICON = (
+        "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
+    )
+    _PACKAGE_LOGO = (
+        "https://user-images.githubusercontent.com/4249331/52232852-e2c4f780-28bd-11e9-835d-1e3cf3e43888.png"  # noqa
+    )
 
     def __init__(
         self,
@@ -52,9 +56,7 @@ class SQLServerCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def direct(
-        self, hostname: str, database: str, port: int = 1433
-    ) -> SQLServerCrawler:
+    def direct(self, hostname: str, database: str, port: int = 1433) -> SQLServerCrawler:
         """
         Set up the crawler to extract directly from the database.
 
@@ -101,9 +103,7 @@ class SQLServerCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(
-            dict(dict(name="include-filter", value=to_include or "{}"))
-        )
+        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
         return self
 
     def exclude(self, assets: dict) -> SQLServerCrawler:
@@ -122,23 +122,17 @@ class SQLServerCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
+        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
         self._parameters.append(dict(name="publish-mode", value="production"))
         self._parameters.append(dict(name="extraction-method", value="direct"))
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
         self._parameters.append(dict(name="use-jdbc-internal-methods", value="true"))
         self._parameters.append(dict(name="use-source-schema-filtering", value="false"))
-        self._parameters.append(
-            dict(name="credentials-fetch-strategy", value="credential_guid")
-        )
+        self._parameters.append(dict(name="credentials-fetch-strategy", value="credential_guid"))
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(
-                    by_alias=True, exclude_unset=True, exclude_none=True
-                ),
+                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
             }
         )
 

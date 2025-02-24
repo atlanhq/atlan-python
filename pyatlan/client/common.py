@@ -28,9 +28,7 @@ class ApiCaller(Protocol):
     ):
         pass
 
-    def max_retries(
-        self, max_retries: Retry = CONNECTION_RETRY
-    ) -> Generator[None, None, None]:
+    def max_retries(self, max_retries: Retry = CONNECTION_RETRY) -> Generator[None, None, None]:
         pass
 
     def _s3_presigned_url_file_upload(self, api, upload_file: Any):

@@ -44,12 +44,10 @@ class SnowflakePipe(SQL):
     """
     Whether auto-ingest is enabled for this pipe (true) or not (false).
     """
-    SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "snowflakePipeNotificationChannelName",
-            "snowflakePipeNotificationChannelName",
-            "snowflakePipeNotificationChannelName.text",
-        )
+    SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "snowflakePipeNotificationChannelName",
+        "snowflakePipeNotificationChannelName",
+        "snowflakePipeNotificationChannelName.text",
     )
     """
     Name of the notification channel for this pipe.
@@ -79,39 +77,23 @@ class SnowflakePipe(SQL):
 
     @property
     def snowflake_pipe_is_auto_ingest_enabled(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_pipe_is_auto_ingest_enabled
-        )
+        return None if self.attributes is None else self.attributes.snowflake_pipe_is_auto_ingest_enabled
 
     @snowflake_pipe_is_auto_ingest_enabled.setter
-    def snowflake_pipe_is_auto_ingest_enabled(
-        self, snowflake_pipe_is_auto_ingest_enabled: Optional[bool]
-    ):
+    def snowflake_pipe_is_auto_ingest_enabled(self, snowflake_pipe_is_auto_ingest_enabled: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_pipe_is_auto_ingest_enabled = (
-            snowflake_pipe_is_auto_ingest_enabled
-        )
+        self.attributes.snowflake_pipe_is_auto_ingest_enabled = snowflake_pipe_is_auto_ingest_enabled
 
     @property
     def snowflake_pipe_notification_channel_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_pipe_notification_channel_name
-        )
+        return None if self.attributes is None else self.attributes.snowflake_pipe_notification_channel_name
 
     @snowflake_pipe_notification_channel_name.setter
-    def snowflake_pipe_notification_channel_name(
-        self, snowflake_pipe_notification_channel_name: Optional[str]
-    ):
+    def snowflake_pipe_notification_channel_name(self, snowflake_pipe_notification_channel_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.snowflake_pipe_notification_channel_name = (
-            snowflake_pipe_notification_channel_name
-        )
+        self.attributes.snowflake_pipe_notification_channel_name = snowflake_pipe_notification_channel_name
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
@@ -125,15 +107,9 @@ class SnowflakePipe(SQL):
 
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(default=None, description="")
-        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
-            default=None, description=""
-        )
-        snowflake_pipe_notification_channel_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
+        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(default=None, description="")
+        snowflake_pipe_notification_channel_name: Optional[str] = Field(default=None, description="")
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
 
     attributes: SnowflakePipe.Attributes = Field(
         default_factory=lambda: SnowflakePipe.Attributes(),

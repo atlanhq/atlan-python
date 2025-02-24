@@ -30,9 +30,7 @@ class AWS(Cloud):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
-        "awsArn", "awsArn", "awsArn.text"
-    )
+    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField("awsArn", "awsArn", "awsArn.text")
     """
     Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
     """  # noqa: E501
@@ -48,21 +46,15 @@ class AWS(Cloud):
     """
     Physical region where the data center in which the asset exists is clustered.
     """
-    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
-        "awsAccountId", "awsAccountId"
-    )
+    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField("awsAccountId", "awsAccountId")
     """
     12-digit number that uniquely identifies an AWS account.
     """
-    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
-        "awsResourceId", "awsResourceId"
-    )
+    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField("awsResourceId", "awsResourceId")
     """
     Unique resource ID assigned when a new resource is created.
     """
-    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
-    )
+    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
     """
     Root user's name.
     """

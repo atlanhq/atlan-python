@@ -30,9 +30,7 @@ class Referenceable(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
-        __pydantic_self__._metadata_proxy = CustomMetadataProxy(
-            __pydantic_self__.business_attributes
-        )
+        __pydantic_self__._metadata_proxy = CustomMetadataProxy(__pydantic_self__.business_attributes)
 
     @root_validator(pre=True)
     def parse_custom_attributes(cls, values):
@@ -90,10 +88,7 @@ class Referenceable(AtlanObject):
         from pyatlan.model.constants import DELETED_
 
         if self.classification_names:
-            return [
-                AtlanTagCache.get_name_for_id(tag_id) or DELETED_
-                for tag_id in self.classification_names
-            ]
+            return [AtlanTagCache.get_name_for_id(tag_id) or DELETED_ for tag_id in self.classification_names]
         return []
 
     def __setattr__(self, name, value):
@@ -120,32 +115,20 @@ class Referenceable(AtlanObject):
 
     @property
     def user_def_relationship_to(self) -> Optional[List[Referenceable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.user_def_relationship_to
-        )
+        return None if self.attributes is None else self.attributes.user_def_relationship_to
 
     @user_def_relationship_to.setter
-    def user_def_relationship_to(
-        self, user_def_relationship_to: Optional[List[Referenceable]]
-    ):
+    def user_def_relationship_to(self, user_def_relationship_to: Optional[List[Referenceable]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.user_def_relationship_to = user_def_relationship_to
 
     @property
     def user_def_relationship_from(self) -> Optional[List[Referenceable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.user_def_relationship_from
-        )
+        return None if self.attributes is None else self.attributes.user_def_relationship_from
 
     @user_def_relationship_from.setter
-    def user_def_relationship_from(
-        self, user_def_relationship_from: Optional[List[Referenceable]]
-    ):
+    def user_def_relationship_from(self, user_def_relationship_from: Optional[List[Referenceable]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.user_def_relationship_from = user_def_relationship_from
@@ -162,15 +145,9 @@ class Referenceable(AtlanObject):
 
     class Attributes(AtlanObject):
         qualified_name: Optional[str] = Field(default="", description="")
-        user_def_relationship_to: Optional[List[Referenceable]] = Field(
-            default=None, description=""
-        )  # relationship
-        user_def_relationship_from: Optional[List[Referenceable]] = Field(
-            default=None, description=""
-        )  # relationship
-        meanings: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
+        user_def_relationship_to: Optional[List[Referenceable]] = Field(default=None, description="")  # relationship
+        user_def_relationship_from: Optional[List[Referenceable]] = Field(default=None, description="")  # relationship
+        meanings: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
 
         def validate_required(self):
             pass
@@ -183,19 +160,13 @@ class Referenceable(AtlanObject):
     GUID: ClassVar[KeywordField] = InternalKeywordField("guid", "__guid", "__guid")
     """Globally unique identifier (GUID) of any object in Atlan."""
 
-    CREATED_BY: ClassVar[KeywordField] = InternalKeywordField(
-        "createdBy", "__createdBy", "__createdBy"
-    )
+    CREATED_BY: ClassVar[KeywordField] = InternalKeywordField("createdBy", "__createdBy", "__createdBy")
     """Atlan user who created this asset."""
 
-    UPDATED_BY: ClassVar[KeywordField] = InternalKeywordField(
-        "updatedBy", "__modifiedBy", "__modifiedBy"
-    )
+    UPDATED_BY: ClassVar[KeywordField] = InternalKeywordField("updatedBy", "__modifiedBy", "__modifiedBy")
     """Atlan user who last updated the asset."""
 
-    STATUS: ClassVar[KeywordField] = InternalKeywordField(
-        "status", "__state", "__state"
-    )
+    STATUS: ClassVar[KeywordField] = InternalKeywordField("status", "__state", "__state")
     """Asset status in Atlan (active vs deleted)."""
 
     ATLAN_TAGS: ClassVar[KeywordTextField] = InternalKeywordTextField(
@@ -226,9 +197,7 @@ class Referenceable(AtlanObject):
     )
     """All super types of an asset."""
 
-    CREATE_TIME: ClassVar[NumericField] = InternalNumericField(
-        "createTime", "__timestamp", "__timestamp"
-    )
+    CREATE_TIME: ClassVar[NumericField] = InternalNumericField("createTime", "__timestamp", "__timestamp")
     """Time (in milliseconds) when the asset was created."""
 
     UPDATE_TIME: ClassVar[NumericField] = InternalNumericField(
@@ -241,9 +210,7 @@ class Referenceable(AtlanObject):
     )
 
     """Unique fully-qualified name of the asset in Atlan."""
-    CUSTOM_ATTRIBUTES: ClassVar[TextField] = TextField(
-        "__customAttributes", "__customAttributes"
-    )
+    CUSTOM_ATTRIBUTES: ClassVar[TextField] = TextField("__customAttributes", "__customAttributes")
     """
     Any source-provided custom information.
     NOTE: This is NOT the same as custom metadata (user-managed),
@@ -285,9 +252,7 @@ class Referenceable(AtlanObject):
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
     is_incomplete: Optional[bool] = Field(default=True, description="", example=True)
-    labels: Optional[List[str]] = Field(
-        default=None, description="Arbitrary textual labels for the asset."
-    )
+    labels: Optional[List[str]] = Field(default=None, description="Arbitrary textual labels for the asset.")
     relationship_attributes: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
@@ -306,9 +271,7 @@ class Referenceable(AtlanObject):
         description="Time (epoch) at which this object was last assets_updated, in milliseconds.",
         example=1649172284333,
     )
-    version: Optional[int] = Field(
-        default=None, description="Version of this object.", example=2
-    )
+    version: Optional[int] = Field(default=None, description="Version of this object.", example=2)
     atlan_tags: Optional[List[AtlanTag]] = Field(
         default=None,
         description="Atlan tags",

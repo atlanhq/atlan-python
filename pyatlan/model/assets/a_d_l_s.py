@@ -52,9 +52,7 @@ class ADLS(ObjectStore):
     """
     Resource identifier of this asset in Azure.
     """
-    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "azureLocation", "azureLocation"
-    )
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField("azureLocation", "azureLocation")
     """
     Location of this asset in Azure.
     """
@@ -80,11 +78,7 @@ class ADLS(ObjectStore):
 
     @property
     def adls_account_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.adls_account_qualified_name
 
     @adls_account_qualified_name.setter
     def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
@@ -124,21 +118,13 @@ class ADLS(ObjectStore):
 
     @property
     def adls_account_secondary_location(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_secondary_location
-        )
+        return None if self.attributes is None else self.attributes.adls_account_secondary_location
 
     @adls_account_secondary_location.setter
-    def adls_account_secondary_location(
-        self, adls_account_secondary_location: Optional[str]
-    ):
+    def adls_account_secondary_location(self, adls_account_secondary_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_secondary_location = (
-            adls_account_secondary_location
-        )
+        self.attributes.adls_account_secondary_location = adls_account_secondary_location
 
     @property
     def azure_tags(self) -> Optional[List[AzureTag]]:
@@ -155,9 +141,7 @@ class ADLS(ObjectStore):
         adls_account_name: Optional[str] = Field(default=None, description="")
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
-        adls_account_secondary_location: Optional[str] = Field(
-            default=None, description=""
-        )
+        adls_account_secondary_location: Optional[str] = Field(default=None, description="")
         azure_tags: Optional[List[AzureTag]] = Field(default=None, description="")
 
     attributes: ADLS.Attributes = Field(

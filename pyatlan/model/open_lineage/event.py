@@ -54,9 +54,7 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         return values
 
     @classmethod
-    def creator(
-        self, run: OpenLineageRun, event_type: OpenLineageEventType
-    ) -> OpenLineageEvent:
+    def creator(self, run: OpenLineageRun, event_type: OpenLineageEventType) -> OpenLineageEvent:
         """
         Builds the minimal object necessary to create an OpenLineage event.
 
@@ -80,6 +78,4 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         from pyatlan.client.atlan import AtlanClient
 
         client = client or AtlanClient.get_default_client()
-        return client.open_lineage.send(
-            request=self, connector_type=AtlanConnectorType.SPARK
-        )
+        return client.open_lineage.send(request=self, connector_type=AtlanConnectorType.SPARK)

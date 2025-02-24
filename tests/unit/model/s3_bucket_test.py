@@ -33,9 +33,7 @@ from tests.unit.model.constants import (
         ),
     ],
 )
-def test_create_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, msg
-):
+def test_create_without_required_parameters_raises_validation_error(name, connection_qualified_name, msg):
     with pytest.raises(ValueError, match=msg):
         S3Bucket.create(
             name=name,
@@ -83,18 +81,14 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = S3Bucket.create_for_modification(
-        qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME
-    )
+    sut = S3Bucket.create_for_modification(qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME)
 
     assert sut.qualified_name == S3_OBJECT_QUALIFIED_NAME
     assert sut.name == BUCKET_NAME
 
 
 def test_trim_to_required():
-    sut = S3Bucket.create_for_modification(
-        qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME
-    ).trim_to_required()
+    sut = S3Bucket.create_for_modification(qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME).trim_to_required()
 
     assert sut.qualified_name == S3_OBJECT_QUALIFIED_NAME
     assert sut.name == BUCKET_NAME

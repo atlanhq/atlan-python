@@ -106,10 +106,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
             try:
                 return CustomMetadataCache.get_id_for_name(CM_DAAP)
             except NotFoundError:
-                logger.error(
-                    "Unable to look up DaaP custom metadata, even though it"
-                    "should already exist."
-                )
+                logger.error("Unable to look up DaaP custom metadata, even though itshould already exist.")
         except AtlanError:
             logger.error("Unable to create DaaP custom metadata structure.")
     except AtlanError:
@@ -144,9 +141,7 @@ class LambdaScorer(AtlanEventHandler):
         """
 
         search_attrs = SCORED_ATTRS
-        custom_metadata_attrs = CustomMetadataCache.get_attributes_for_search_results(
-            CM_DAAP
-        )
+        custom_metadata_attrs = CustomMetadataCache.get_attributes_for_search_results(CM_DAAP)
 
         if custom_metadata_attrs is not None:
             search_attrs.extend(custom_metadata_attrs)
@@ -177,9 +172,7 @@ class LambdaScorer(AtlanEventHandler):
             score_original = cm_original.get(CM_ATTR_DAAP_SCORE)
         if cm_modified := modified.get_custom_metadata(CM_DAAP):
             score_modified = cm_modified.get(CM_ATTR_DAAP_SCORE)
-        logger.info(
-            "Existing score = %s, new score = %s", score_original, score_modified
-        )
+        logger.info("Existing score = %s, new score = %s", score_original, score_modified)
         return score_original != score_modified
 
     def calculate_changes(self, asset: Asset) -> List[Asset]:
@@ -209,9 +202,7 @@ class LambdaScorer(AtlanEventHandler):
             s_readme = 0
             readme = asset.readme
             if readme and readme.guid:
-                readme = client.asset.get_by_guid(
-                    readme.guid, asset_type=Readme, ignore_relationships=False
-                )
+                readme = client.asset.get_by_guid(readme.guid, asset_type=Readme, ignore_relationships=False)
                 if description := readme.description:
                     if len(description) > 1000:
                         s_readme = 20
@@ -219,14 +210,7 @@ class LambdaScorer(AtlanEventHandler):
                         s_readme = 10
                     elif len(description) > 100:
                         s_readme = 5
-            score = (
-                s_description
-                + s_related_term
-                + s_links
-                + s_related_asset
-                + s_certificate
-                + s_readme
-            )
+            score = s_description + s_related_term + s_links + s_related_asset + s_certificate + s_readme
         elif not asset.type_name.startswith("AtlasGlossary"):
             # We will not score glossaries or categories
             s_description = 15 if has_description(asset) else 0

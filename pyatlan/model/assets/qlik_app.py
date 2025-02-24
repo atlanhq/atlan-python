@@ -34,33 +34,23 @@ class QlikApp(Qlik):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_HAS_SECTION_ACCESS: ClassVar[BooleanField] = BooleanField(
-        "qlikHasSectionAccess", "qlikHasSectionAccess"
-    )
+    QLIK_HAS_SECTION_ACCESS: ClassVar[BooleanField] = BooleanField("qlikHasSectionAccess", "qlikHasSectionAccess")
     """
     Whether section access or data masking is enabled on the source (true) or not (false).
     """
-    QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField(
-        "qlikOriginAppId", "qlikOriginAppId"
-    )
+    QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField("qlikOriginAppId", "qlikOriginAppId")
     """
     Value of originAppId for this app.
     """
-    QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
-        "qlikIsEncrypted", "qlikIsEncrypted"
-    )
+    QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("qlikIsEncrypted", "qlikIsEncrypted")
     """
     Whether this app is encrypted (true) or not (false).
     """
-    QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField(
-        "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
-    )
+    QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField("qlikIsDirectQueryMode", "qlikIsDirectQueryMode")
     """
     Whether this app is in direct query mode (true) or not (false).
     """
-    QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField(
-        "qlikAppStaticByteSize", "qlikAppStaticByteSize"
-    )
+    QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField("qlikAppStaticByteSize", "qlikAppStaticByteSize")
     """
     Static space used by this app, in bytes.
     """
@@ -86,9 +76,7 @@ class QlikApp(Qlik):
 
     @property
     def qlik_has_section_access(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.qlik_has_section_access
-        )
+        return None if self.attributes is None else self.attributes.qlik_has_section_access
 
     @qlik_has_section_access.setter
     def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
@@ -118,11 +106,7 @@ class QlikApp(Qlik):
 
     @property
     def qlik_is_direct_query_mode(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.qlik_is_direct_query_mode
-        )
+        return None if self.attributes is None else self.attributes.qlik_is_direct_query_mode
 
     @qlik_is_direct_query_mode.setter
     def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
@@ -132,11 +116,7 @@ class QlikApp(Qlik):
 
     @property
     def qlik_app_static_byte_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.qlik_app_static_byte_size
-        )
+        return None if self.attributes is None else self.attributes.qlik_app_static_byte_size
 
     @qlik_app_static_byte_size.setter
     def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
@@ -170,12 +150,8 @@ class QlikApp(Qlik):
         qlik_is_encrypted: Optional[bool] = Field(default=None, description="")
         qlik_is_direct_query_mode: Optional[bool] = Field(default=None, description="")
         qlik_app_static_byte_size: Optional[int] = Field(default=None, description="")
-        qlik_space: Optional[QlikSpace] = Field(
-            default=None, description=""
-        )  # relationship
-        qlik_sheets: Optional[List[QlikSheet]] = Field(
-            default=None, description=""
-        )  # relationship
+        qlik_space: Optional[QlikSpace] = Field(default=None, description="")  # relationship
+        qlik_sheets: Optional[List[QlikSheet]] = Field(default=None, description="")  # relationship
 
     attributes: QlikApp.Attributes = Field(
         default_factory=lambda: QlikApp.Attributes(),

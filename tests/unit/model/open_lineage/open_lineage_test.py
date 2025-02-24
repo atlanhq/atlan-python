@@ -52,9 +52,7 @@ def client():
 def mock_event_time():
     with patch("pyatlan.model.open_lineage.event.datetime") as mock_datetime:
         mock_datetime_instance = Mock()
-        mock_datetime_instance.isoformat.return_value = (
-            "2024-10-07T10:23:52.239783+00:00"
-        )
+        mock_datetime_instance.isoformat.return_value = "2024-10-07T10:23:52.239783+00:00"
         mock_datetime.now.return_value = mock_datetime_instance
         yield mock_datetime
 
@@ -92,9 +90,7 @@ def mock_session():
         [OpenLineageEvent(), None, "none is not an allowed value"],
     ],
 )
-def test_ol_client_send_raises_validation_error(
-    test_request, connector_type, error_msg
-):
+def test_ol_client_send_raises_validation_error(test_request, connector_type, error_msg):
     with pytest.raises(ValidationError) as err:
         OpenLineageClient.send(request=test_request, connector_type=connector_type)
     assert error_msg in str(err.value)
@@ -110,9 +106,7 @@ def test_ol_invalid_client_raises_invalid_request_error(
 ):
     client_method = getattr(FluentTasks(), test_method)
     for invalid_client in test_client:
-        with pytest.raises(
-            InvalidRequestError, match="No Atlan client has been provided."
-        ):
+        with pytest.raises(InvalidRequestError, match="No Atlan client has been provided."):
             client_method(client=invalid_client)
 
 
@@ -122,9 +116,7 @@ def test_ol_client_send(
     mock_api_caller._call_api.side_effect = ["Event recieved"]
     test_event = OpenLineageEvent()
     assert (
-        OpenLineageClient(client=mock_api_caller).send(
-            request=test_event, connector_type=AtlanConnectorType.SPARK
-        )
+        OpenLineageClient(client=mock_api_caller).send(request=test_event, connector_type=AtlanConnectorType.SPARK)
         is None
     )
 
@@ -141,15 +133,11 @@ def test_ol_client_send_when_ol_not_configured(client, mock_session):
         "this connector before you can send events for it."
     )
     with pytest.raises(AtlanError, match=expected_error):
-        client.open_lineage.send(
-            request=OpenLineageEvent(), connector_type=AtlanConnectorType.SNOWFLAKE
-        )
+        client.open_lineage.send(request=OpenLineageEvent(), connector_type=AtlanConnectorType.SNOWFLAKE)
 
 
 def test_ol_models(mock_run_id, mock_event_time):
-    job = OpenLineageJob.creator(
-        connection_name="ol-spark", job_name="dag_123", producer=PRODUCER
-    )
+    job = OpenLineageJob.creator(connection_name="ol-spark", job_name="dag_123", producer=PRODUCER)
     run = OpenLineageRun.creator(job=job)
 
     id = job.create_input(namespace=NAMESPACE, asset_name="OPS.DEFAULT.RUN_STATS")
@@ -181,7 +169,5 @@ def test_ol_models(mock_run_id, mock_event_time):
     ]
     assert to_json(start) == load_json(OL_EVENT_START)
 
-    complete = OpenLineageEvent.creator(
-        run=run, event_type=OpenLineageEventType.COMPLETE
-    )
+    complete = OpenLineageEvent.creator(run=run, event_type=OpenLineageEventType.COMPLETE)
     assert to_json(complete) == load_json(OL_EVENT_COMPLETE)

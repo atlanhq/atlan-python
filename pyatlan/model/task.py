@@ -24,14 +24,10 @@ class AtlanTask(AtlanObject):
     CREATED_BY: ClassVar[KeywordField] = KeywordField("createdBy", "__task_createdBy")
     """User who created the task."""
 
-    CREATED_TIME: ClassVar[NumericField] = NumericField(
-        "createdTime", "__task_timestamp"
-    )
+    CREATED_TIME: ClassVar[NumericField] = NumericField("createdTime", "__task_timestamp")
     """Time (epoch) at which the task was created, in milliseconds."""
 
-    UPDATED_TIME: ClassVar[NumericField] = NumericField(
-        "updatedTime", "__task_modificationTimestamp"
-    )
+    UPDATED_TIME: ClassVar[NumericField] = NumericField("updatedTime", "__task_modificationTimestamp")
     """Time (epoch) at which the task was last updated, in milliseconds."""
 
     START_TIME: ClassVar[NumericField] = NumericField("startTime", "__task_startTime")
@@ -40,27 +36,19 @@ class AtlanTask(AtlanObject):
     END_TIME: ClassVar[NumericField] = NumericField("endTime", "__task_endTime")
     """Time (epoch) at which the task was ended, in milliseconds."""
 
-    TIME_TAKEN_IN_SECONDS: ClassVar[NumericField] = NumericField(
-        "timeTakenInSeconds", "__task_timeTakenInSeconds"
-    )
+    TIME_TAKEN_IN_SECONDS: ClassVar[NumericField] = NumericField("timeTakenInSeconds", "__task_timeTakenInSeconds")
     """Total time taken to complete the task, in seconds."""
 
-    ATTEMPT_COUNT: ClassVar[NumericField] = NumericField(
-        "attemptCount", "__task_attemptCount"
-    )
+    ATTEMPT_COUNT: ClassVar[NumericField] = NumericField("attemptCount", "__task_attemptCount")
     """Number of times the task has been attempted."""
 
     STATUS: ClassVar[TextField] = TextField("status", "__task_status")
     """Status of the task."""
 
-    CLASSIFICATION_ID: ClassVar[KeywordField] = KeywordField(
-        "classificationId", "__task_classificationId"
-    )
+    CLASSIFICATION_ID: ClassVar[KeywordField] = KeywordField("classificationId", "__task_classificationId")
     """TBC"""
 
-    ENTITY_GUID: ClassVar[KeywordField] = KeywordField(
-        "entityGuid", "__task_entityGuid"
-    )
+    ENTITY_GUID: ClassVar[KeywordField] = KeywordField("entityGuid", "__task_entityGuid")
     """Unique identifier of the asset the task originated from."""
 
     type: Optional[AtlanTaskType] = Field(None, description="Type of the task.")
@@ -73,26 +61,14 @@ class AtlanTask(AtlanObject):
         None,
         description="Time (epoch) at which the task was last updated, in milliseconds.",
     )
-    start_time: Optional[int] = Field(
-        None, description="Time (epoch) at which the task was started, in milliseconds."
-    )
-    end_time: Optional[int] = Field(
-        None, description="Time (epoch) at which the task was ended, in milliseconds."
-    )
-    time_taken_in_seconds: Optional[int] = Field(
-        None, description="Total time taken to complete the task, in seconds."
-    )
-    parameters: Optional[Dict[str, Any]] = Field(
-        None, description="Parameters used for running the task."
-    )
-    attempt_count: Optional[int] = Field(
-        None, description="Number of times the task has been attempted."
-    )
+    start_time: Optional[int] = Field(None, description="Time (epoch) at which the task was started, in milliseconds.")
+    end_time: Optional[int] = Field(None, description="Time (epoch) at which the task was ended, in milliseconds.")
+    time_taken_in_seconds: Optional[int] = Field(None, description="Total time taken to complete the task, in seconds.")
+    parameters: Optional[Dict[str, Any]] = Field(None, description="Parameters used for running the task.")
+    attempt_count: Optional[int] = Field(None, description="Number of times the task has been attempted.")
     status: Optional[AtlanTaskStatus] = Field(None, description="Status of the task.")
     classification_id: Optional[str] = Field(None, description="To Be Confirmed (TBC).")
-    entity_guid: Optional[str] = Field(
-        None, description="Unique identifier of the asset the task originated from."
-    )
+    entity_guid: Optional[str] = Field(None, description="Unique identifier of the asset the task originated from.")
 
 
 class TaskSearchRequest(SearchRequest):
@@ -180,9 +156,7 @@ class TaskSearchResponse(Iterable):
             self._tasks = parse_obj_as(List[AtlanTask], raw_json["tasks"])
             return raw_json
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                raw_json, 200, str(err)
-            ) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
 
     def __iter__(self) -> Generator[AtlanTask, None, None]:
         """

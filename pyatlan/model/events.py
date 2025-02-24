@@ -11,18 +11,14 @@ from pyatlan.model.core import AtlanObject, AtlanTag
 class AtlanEventPayload(AtlanObject):
     _subtypes_: Dict[str, type] = dict()
 
-    def __init_subclass__(
-        cls, event_type="ENTITY_NOTIFICATION_V2", operation_type=None
-    ):
+    def __init_subclass__(cls, event_type="ENTITY_NOTIFICATION_V2", operation_type=None):
         cls._subtypes_[operation_type or cls.__name__.lower()] = cls
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["type", "operation_type"])
 
-    event_type: Optional[str] = Field(
-        default=None, description="Type of the event payload.", alias="type"
-    )
+    event_type: Optional[str] = Field(default=None, description="Type of the event payload.", alias="type")
     operation_type: Literal[
         "ENTITY_CREATE",
         "ENTITY_UPDATE",
@@ -52,9 +48,7 @@ class AssetUpdatePayload(AtlanEventPayload):
     operation_type: Literal["ENTITY_UPDATE"] = Field(
         description="Type of the operation the event contains a payload for."
     )
-    mutated_details: Optional[Asset] = Field(
-        description="Details of what was updated on the asset."
-    )
+    mutated_details: Optional[Asset] = Field(description="Details of what was updated on the asset.")
 
 
 class AssetDeletePayload(AtlanEventPayload):
@@ -106,9 +100,7 @@ class AtlanEvent(AtlanObject):
     msg_compression_kind: Optional[str] = Field(default=None, description="TBC")
     msg_split_idx: Optional[int] = Field(description="TBC")
     msg_split_count: Optional[int] = Field(description="TBC")
-    msg_source_ip: Optional[str] = Field(
-        default=None, description="Originating IP address for the event."
-    )
+    msg_source_ip: Optional[str] = Field(default=None, description="Originating IP address for the event.")
     msg_created_by: Optional[str] = Field(default=None, description="TBC")
     msg_creation_time: Optional[int] = Field(
         description="Timestamp (epoch) for when the event was created, in milliseconds."
@@ -131,9 +123,7 @@ class AtlanEvent(AtlanObject):
 
 
 class AwsRequestContext(AtlanObject):
-    account_id: Optional[str] = Field(
-        default=None, description="Account from which the request originated."
-    )
+    account_id: Optional[str] = Field(default=None, description="Account from which the request originated.")
     api_id: Optional[str] = Field(default=None, description="TBC")
     domain_name: Optional[str] = Field(default=None, description="TBC")
     domain_prefix: Optional[str] = Field(default=None, description="TBC")
@@ -145,9 +135,7 @@ class AwsRequestContext(AtlanObject):
         default=None,
         description="Time at which the event was received, as a formatted string.",
     )
-    time_epoch: Optional[int] = Field(
-        description="Time at which the event was received, epoch-based, in milliseconds."
-    )
+    time_epoch: Optional[int] = Field(description="Time at which the event was received, epoch-based, in milliseconds.")
 
 
 class AwsEventWrapper(AtlanObject):
@@ -159,9 +147,7 @@ class AwsEventWrapper(AtlanObject):
         description="Headers that were used when sending the event through to the Lambda URL."
     )
     request_context: Optional[AwsRequestContext] = Field(description="TBC")
-    body: Optional[str] = Field(
-        default=None, description="Actual contents of the event that was sent by Atlan."
-    )
+    body: Optional[str] = Field(default=None, description="Actual contents of the event that was sent by Atlan.")
     is_base_64_encoded: Optional[bool] = Field(
         description="Whether the contents are base64-encoded (True) or plain text (False)."
     )

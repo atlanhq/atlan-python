@@ -56,17 +56,13 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def anaplan_workspace(
-    client: AtlanClient, connection: Connection
-) -> Generator[AnaplanWorkspace, None, None]:
+def anaplan_workspace(client: AtlanClient, connection: Connection) -> Generator[AnaplanWorkspace, None, None]:
     assert connection.qualified_name
     to_create = AnaplanWorkspace.creator(
         name=ANAPLAN_WORKSPACE_NAME, connection_qualified_name=connection.qualified_name
@@ -77,9 +73,7 @@ def anaplan_workspace(
     delete_asset(client, guid=result.guid, asset_type=AnaplanWorkspace)
 
 
-def test_anaplan_workspace(
-    client: AtlanClient, connection: Connection, anaplan_workspace: AnaplanWorkspace
-):
+def test_anaplan_workspace(client: AtlanClient, connection: Connection, anaplan_workspace: AnaplanWorkspace):
     assert anaplan_workspace
     assert anaplan_workspace.guid
     assert anaplan_workspace.qualified_name
@@ -112,29 +106,21 @@ def test_anaplan_system_dimension(
     assert anaplan_system_dimension.guid
     assert anaplan_system_dimension.qualified_name
     assert anaplan_system_dimension.name == ANAPLAN_SYSTEM_DIMENSION_NAME
-    assert (
-        anaplan_system_dimension.connection_qualified_name == connection.qualified_name
-    )
+    assert anaplan_system_dimension.connection_qualified_name == connection.qualified_name
     assert anaplan_system_dimension.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_app(
-    client: AtlanClient, connection: Connection
-) -> Generator[AnaplanApp, None, None]:
+def anaplan_app(client: AtlanClient, connection: Connection) -> Generator[AnaplanApp, None, None]:
     assert connection.qualified_name
-    to_create = AnaplanApp.creator(
-        name=ANAPLAN_APP_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = AnaplanApp.creator(name=ANAPLAN_APP_NAME, connection_qualified_name=connection.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanApp)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=AnaplanApp)
 
 
-def test_anaplan_app(
-    client: AtlanClient, connection: Connection, anaplan_app: AnaplanApp
-):
+def test_anaplan_app(client: AtlanClient, connection: Connection, anaplan_app: AnaplanApp):
     assert anaplan_app
     assert anaplan_app.guid
     assert anaplan_app.qualified_name
@@ -144,29 +130,21 @@ def test_anaplan_app(
 
 
 @pytest.fixture(scope="module")
-def anaplan_page(
-    client: AtlanClient, anaplan_app: AnaplanApp
-) -> Generator[AnaplanPage, None, None]:
+def anaplan_page(client: AtlanClient, anaplan_app: AnaplanApp) -> Generator[AnaplanPage, None, None]:
     assert anaplan_app.qualified_name
-    to_create = AnaplanPage.creator(
-        name=ANAPLAN_PAGE_NAME, app_qualified_name=anaplan_app.qualified_name
-    )
+    to_create = AnaplanPage.creator(name=ANAPLAN_PAGE_NAME, app_qualified_name=anaplan_app.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanPage)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=AnaplanPage)
 
 
-def test_anaplan_page(
-    client: AtlanClient, anaplan_app: AnaplanApp, anaplan_page: AnaplanPage
-):
+def test_anaplan_page(client: AtlanClient, anaplan_app: AnaplanApp, anaplan_page: AnaplanPage):
     assert anaplan_page
     assert anaplan_page.guid
     assert anaplan_page.qualified_name
     assert anaplan_page.name == ANAPLAN_PAGE_NAME
-    assert (
-        anaplan_page.connection_qualified_name == anaplan_app.connection_qualified_name
-    )
+    assert anaplan_page.connection_qualified_name == anaplan_app.connection_qualified_name
     assert anaplan_page.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -187,24 +165,17 @@ def anaplan_page_overload(
     delete_asset(client, guid=result.guid, asset_type=AnaplanPage)
 
 
-def test_overload_anaplan_page(
-    client: AtlanClient, anaplan_app: AnaplanApp, anaplan_page_overload: AnaplanPage
-):
+def test_overload_anaplan_page(client: AtlanClient, anaplan_app: AnaplanApp, anaplan_page_overload: AnaplanPage):
     assert anaplan_page_overload
     assert anaplan_page_overload.guid
     assert anaplan_page_overload.qualified_name
     assert anaplan_page_overload.name == ANAPLAN_PAGE_NAME_OVERLOAD
-    assert (
-        anaplan_page_overload.connection_qualified_name
-        == anaplan_app.connection_qualified_name
-    )
+    assert anaplan_page_overload.connection_qualified_name == anaplan_app.connection_qualified_name
     assert anaplan_page_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_model(
-    client: AtlanClient, anaplan_workspace: AnaplanWorkspace
-) -> Generator[AnaplanModel, None, None]:
+def anaplan_model(client: AtlanClient, anaplan_workspace: AnaplanWorkspace) -> Generator[AnaplanModel, None, None]:
     assert anaplan_workspace.qualified_name
     to_create = AnaplanModel.creator(
         name=ANAPLAN_MODEL_NAME,
@@ -225,10 +196,7 @@ def test_anaplan_model(
     assert anaplan_model.guid
     assert anaplan_model.qualified_name
     assert anaplan_model.name == ANAPLAN_MODEL_NAME
-    assert (
-        anaplan_model.connection_qualified_name
-        == anaplan_workspace.connection_qualified_name
-    )
+    assert anaplan_model.connection_qualified_name == anaplan_workspace.connection_qualified_name
     assert anaplan_model.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -258,38 +226,26 @@ def test_overload_anaplan_model(
     assert anaplan_model_overload.guid
     assert anaplan_model_overload.qualified_name
     assert anaplan_model_overload.name == ANAPLAN_MODEL_NAME_OVERLOAD
-    assert (
-        anaplan_model_overload.connection_qualified_name
-        == anaplan_workspace.connection_qualified_name
-    )
+    assert anaplan_model_overload.connection_qualified_name == anaplan_workspace.connection_qualified_name
     assert anaplan_model_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_module(
-    client: AtlanClient, anaplan_model: AnaplanModel
-) -> Generator[AnaplanModule, None, None]:
+def anaplan_module(client: AtlanClient, anaplan_model: AnaplanModel) -> Generator[AnaplanModule, None, None]:
     assert anaplan_model.qualified_name
-    to_create = AnaplanModule.creator(
-        name=ANAPLAN_MODULE_NAME, model_qualified_name=anaplan_model.qualified_name
-    )
+    to_create = AnaplanModule.creator(name=ANAPLAN_MODULE_NAME, model_qualified_name=anaplan_model.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanModule)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=AnaplanModule)
 
 
-def test_anaplan_module(
-    client: AtlanClient, anaplan_model: AnaplanModel, anaplan_module: AnaplanModule
-):
+def test_anaplan_module(client: AtlanClient, anaplan_model: AnaplanModel, anaplan_module: AnaplanModule):
     assert anaplan_module
     assert anaplan_module.guid
     assert anaplan_module.qualified_name
     assert anaplan_module.name == ANAPLAN_MODULE_NAME
-    assert (
-        anaplan_module.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_module.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_module.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -319,38 +275,26 @@ def test_overload_anaplan_module(
     assert anaplan_module_overload.guid
     assert anaplan_module_overload.qualified_name
     assert anaplan_module_overload.name == ANAPLAN_MODULE_NAME_OVERLOAD
-    assert (
-        anaplan_module_overload.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_module_overload.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_module_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_list(
-    client: AtlanClient, anaplan_model: AnaplanModel
-) -> Generator[AnaplanList, None, None]:
+def anaplan_list(client: AtlanClient, anaplan_model: AnaplanModel) -> Generator[AnaplanList, None, None]:
     assert anaplan_model.qualified_name
-    to_create = AnaplanList.creator(
-        name=ANAPLAN_LIST_NAME, model_qualified_name=anaplan_model.qualified_name
-    )
+    to_create = AnaplanList.creator(name=ANAPLAN_LIST_NAME, model_qualified_name=anaplan_model.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanList)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=AnaplanList)
 
 
-def test_anaplan_list(
-    client: AtlanClient, anaplan_model: AnaplanModel, anaplan_list: AnaplanList
-):
+def test_anaplan_list(client: AtlanClient, anaplan_model: AnaplanModel, anaplan_list: AnaplanList):
     assert anaplan_list
     assert anaplan_list.guid
     assert anaplan_list.qualified_name
     assert anaplan_list.name == ANAPLAN_LIST_NAME
-    assert (
-        anaplan_list.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_list.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_list.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -371,28 +315,19 @@ def anaplan_list_overload(
     delete_asset(client, guid=result.guid, asset_type=AnaplanList)
 
 
-def test_overload_anaplan_list(
-    client: AtlanClient, anaplan_model: AnaplanModel, anaplan_list_overload: AnaplanList
-):
+def test_overload_anaplan_list(client: AtlanClient, anaplan_model: AnaplanModel, anaplan_list_overload: AnaplanList):
     assert anaplan_list_overload
     assert anaplan_list_overload.guid
     assert anaplan_list_overload.qualified_name
     assert anaplan_list_overload.name == ANAPLAN_LIST_NAME_OVERLOAD
-    assert (
-        anaplan_list_overload.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_list_overload.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_list_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_dimension(
-    client: AtlanClient, anaplan_model: AnaplanModel
-) -> Generator[AnaplanDimension, None, None]:
+def anaplan_dimension(client: AtlanClient, anaplan_model: AnaplanModel) -> Generator[AnaplanDimension, None, None]:
     assert anaplan_model.qualified_name
-    to_create = AnaplanDimension.creator(
-        name=ANAPLAN_DIMENSION_NAME, model_qualified_name=anaplan_model.qualified_name
-    )
+    to_create = AnaplanDimension.creator(name=ANAPLAN_DIMENSION_NAME, model_qualified_name=anaplan_model.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanDimension)[0]
     yield result
@@ -408,10 +343,7 @@ def test_anaplan_dimension(
     assert anaplan_dimension.guid
     assert anaplan_dimension.qualified_name
     assert anaplan_dimension.name == ANAPLAN_DIMENSION_NAME
-    assert (
-        anaplan_dimension.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_dimension.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_dimension.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -441,21 +373,14 @@ def test_overload_anaplan_dimension(
     assert anaplan_dimension_overload.guid
     assert anaplan_dimension_overload.qualified_name
     assert anaplan_dimension_overload.name == ANAPLAN_DIMENSION_NAME_OVERLOAD
-    assert (
-        anaplan_dimension_overload.connection_qualified_name
-        == anaplan_model.connection_qualified_name
-    )
+    assert anaplan_dimension_overload.connection_qualified_name == anaplan_model.connection_qualified_name
     assert anaplan_dimension_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_lineitem(
-    client: AtlanClient, anaplan_module: AnaplanModule
-) -> Generator[AnaplanLineItem, None, None]:
+def anaplan_lineitem(client: AtlanClient, anaplan_module: AnaplanModule) -> Generator[AnaplanLineItem, None, None]:
     assert anaplan_module.qualified_name
-    to_create = AnaplanLineItem.creator(
-        name=ANAPLAN_LINEITEM_NAME, module_qualified_name=anaplan_module.qualified_name
-    )
+    to_create = AnaplanLineItem.creator(name=ANAPLAN_LINEITEM_NAME, module_qualified_name=anaplan_module.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanLineItem)[0]
     yield result
@@ -471,10 +396,7 @@ def test_anaplan_lineitem(
     assert anaplan_lineitem.guid
     assert anaplan_lineitem.qualified_name
     assert anaplan_lineitem.name == ANAPLAN_LINEITEM_NAME
-    assert (
-        anaplan_lineitem.connection_qualified_name
-        == anaplan_module.connection_qualified_name
-    )
+    assert anaplan_lineitem.connection_qualified_name == anaplan_module.connection_qualified_name
     assert anaplan_lineitem.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -504,38 +426,26 @@ def test_overload_anaplan_lineitem(
     assert anaplan_lineitem_overload.guid
     assert anaplan_lineitem_overload.qualified_name
     assert anaplan_lineitem_overload.name == ANAPLAN_LINEITEM_NAME_OVERLOAD
-    assert (
-        anaplan_lineitem_overload.connection_qualified_name
-        == anaplan_module.connection_qualified_name
-    )
+    assert anaplan_lineitem_overload.connection_qualified_name == anaplan_module.connection_qualified_name
     assert anaplan_lineitem_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
 @pytest.fixture(scope="module")
-def anaplan_view(
-    client: AtlanClient, anaplan_module: AnaplanModule
-) -> Generator[AnaplanView, None, None]:
+def anaplan_view(client: AtlanClient, anaplan_module: AnaplanModule) -> Generator[AnaplanView, None, None]:
     assert anaplan_module.qualified_name
-    to_create = AnaplanView.creator(
-        name=ANAPLAN_VIEW_NAME, module_qualified_name=anaplan_module.qualified_name
-    )
+    to_create = AnaplanView.creator(name=ANAPLAN_VIEW_NAME, module_qualified_name=anaplan_module.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AnaplanView)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=AnaplanView)
 
 
-def test_anaplan_view(
-    client: AtlanClient, anaplan_module: AnaplanModule, anaplan_view: AnaplanView
-):
+def test_anaplan_view(client: AtlanClient, anaplan_module: AnaplanModule, anaplan_view: AnaplanView):
     assert anaplan_view
     assert anaplan_view.guid
     assert anaplan_view.qualified_name
     assert anaplan_view.name == ANAPLAN_VIEW_NAME
-    assert (
-        anaplan_view.connection_qualified_name
-        == anaplan_module.connection_qualified_name
-    )
+    assert anaplan_view.connection_qualified_name == anaplan_module.connection_qualified_name
     assert anaplan_view.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -565,10 +475,7 @@ def test_overload_anaplan_view(
     assert anaplan_view_overload.guid
     assert anaplan_view_overload.qualified_name
     assert anaplan_view_overload.name == ANAPLAN_VIEW_NAME_OVERLOAD
-    assert (
-        anaplan_view_overload.connection_qualified_name
-        == anaplan_module.connection_qualified_name
-    )
+    assert anaplan_view_overload.connection_qualified_name == anaplan_module.connection_qualified_name
     assert anaplan_view_overload.connector_name == AtlanConnectorType.ANAPLAN.value
 
 
@@ -701,13 +608,9 @@ def test_restore_anaplan_view(
     anaplan_view: AnaplanView,
 ):
     assert anaplan_view.qualified_name
-    assert client.asset.restore(
-        asset_type=AnaplanView, qualified_name=anaplan_view.qualified_name
-    )
+    assert client.asset.restore(asset_type=AnaplanView, qualified_name=anaplan_view.qualified_name)
     assert anaplan_view.qualified_name
-    restored = client.asset.get_by_qualified_name(
-        asset_type=AnaplanView, qualified_name=anaplan_view.qualified_name
-    )
+    restored = client.asset.get_by_qualified_name(asset_type=AnaplanView, qualified_name=anaplan_view.qualified_name)
     assert restored
     assert restored.guid == anaplan_view.guid
     assert restored.qualified_name == anaplan_view.qualified_name

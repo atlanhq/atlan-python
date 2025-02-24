@@ -16,19 +16,13 @@ from tests.unit.model.constants import (
         (API_OBJECT_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
-        APIObject.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        APIObject.creator(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
-    sut = APIObject.creator(
-        name=API_OBJECT_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME
-    )
+    sut = APIObject.creator(name=API_OBJECT_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME)
 
     assert sut.name == API_OBJECT_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
@@ -65,18 +59,14 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = APIObject.updater(
-        qualified_name=API_OBJECT_QUALIFIED_NAME, name=API_OBJECT_NAME
-    )
+    sut = APIObject.updater(qualified_name=API_OBJECT_QUALIFIED_NAME, name=API_OBJECT_NAME)
 
     assert sut.qualified_name == API_OBJECT_QUALIFIED_NAME
     assert sut.name == API_OBJECT_NAME
 
 
 def test_trim_to_required():
-    sut = APIObject.updater(
-        name=API_OBJECT_NAME, qualified_name=API_OBJECT_QUALIFIED_NAME
-    ).trim_to_required()
+    sut = APIObject.updater(name=API_OBJECT_NAME, qualified_name=API_OBJECT_QUALIFIED_NAME).trim_to_required()
 
     assert sut.name == API_OBJECT_NAME
     assert sut.qualified_name == API_OBJECT_QUALIFIED_NAME

@@ -46,9 +46,7 @@ class DbtModelColumn(Dbt):
     """
 
     """
-    DBT_MODEL_COLUMN_ORDER: ClassVar[NumericField] = NumericField(
-        "dbtModelColumnOrder", "dbtModelColumnOrder"
-    )
+    DBT_MODEL_COLUMN_ORDER: ClassVar[NumericField] = NumericField("dbtModelColumnOrder", "dbtModelColumnOrder")
     """
 
     """
@@ -65,9 +63,7 @@ class DbtModelColumn(Dbt):
     """
     TBC
     """
-    DBT_MODEL_COLUMN_SQL_COLUMNS: ClassVar[RelationField] = RelationField(
-        "dbtModelColumnSqlColumns"
-    )
+    DBT_MODEL_COLUMN_SQL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumnSqlColumns")
     """
     TBC
     """
@@ -84,11 +80,7 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_qualified_name
 
     @dbt_model_qualified_name.setter
     def dbt_model_qualified_name(self, dbt_model_qualified_name: Optional[str]):
@@ -98,11 +90,7 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_data_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_column_data_type
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_column_data_type
 
     @dbt_model_column_data_type.setter
     def dbt_model_column_data_type(self, dbt_model_column_data_type: Optional[str]):
@@ -112,9 +100,7 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_order(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_model_column_order
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_column_order
 
     @dbt_model_column_order.setter
     def dbt_model_column_order(self, dbt_model_column_order: Optional[int]):
@@ -154,16 +140,10 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_sql_columns(self) -> Optional[List[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_column_sql_columns
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_column_sql_columns
 
     @dbt_model_column_sql_columns.setter
-    def dbt_model_column_sql_columns(
-        self, dbt_model_column_sql_columns: Optional[List[Column]]
-    ):
+    def dbt_model_column_sql_columns(self, dbt_model_column_sql_columns: Optional[List[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
@@ -172,18 +152,10 @@ class DbtModelColumn(Dbt):
         dbt_model_qualified_name: Optional[str] = Field(default=None, description="")
         dbt_model_column_data_type: Optional[str] = Field(default=None, description="")
         dbt_model_column_order: Optional[int] = Field(default=None, description="")
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_column: Optional[Column] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model: Optional[DbtModel] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model_column_sql_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
+        sql_column: Optional[Column] = Field(default=None, description="")  # relationship
+        dbt_model: Optional[DbtModel] = Field(default=None, description="")  # relationship
+        dbt_model_column_sql_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
 
     attributes: DbtModelColumn.Attributes = Field(
         default_factory=lambda: DbtModelColumn.Attributes(),

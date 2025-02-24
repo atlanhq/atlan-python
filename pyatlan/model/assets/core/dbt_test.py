@@ -29,15 +29,11 @@ class DbtTest(Dbt):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dbtTestStatus", "dbtTestStatus"
-    )
+    DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField("dbtTestStatus", "dbtTestStatus")
     """
     Details of the results of the test. For errors, it reads "ERROR".
     """
-    DBT_TEST_STATE: ClassVar[KeywordField] = KeywordField(
-        "dbtTestState", "dbtTestState"
-    )
+    DBT_TEST_STATE: ClassVar[KeywordField] = KeywordField("dbtTestState", "dbtTestState")
     """
     Test results. Can be one of, in order of severity, "error", "fail", "warn", "pass".
     """
@@ -45,33 +41,23 @@ class DbtTest(Dbt):
     """
     Error message in the case of state being "error".
     """
-    DBT_TEST_RAW_SQL: ClassVar[TextField] = TextField(
-        "dbtTestRawSQL", "dbtTestRawSQL.text"
-    )
+    DBT_TEST_RAW_SQL: ClassVar[TextField] = TextField("dbtTestRawSQL", "dbtTestRawSQL.text")
     """
     Raw SQL of the test.
     """
-    DBT_TEST_COMPILED_SQL: ClassVar[TextField] = TextField(
-        "dbtTestCompiledSQL", "dbtTestCompiledSQL"
-    )
+    DBT_TEST_COMPILED_SQL: ClassVar[TextField] = TextField("dbtTestCompiledSQL", "dbtTestCompiledSQL")
     """
     Compiled SQL of the test.
     """
-    DBT_TEST_RAW_CODE: ClassVar[TextField] = TextField(
-        "dbtTestRawCode", "dbtTestRawCode.text"
-    )
+    DBT_TEST_RAW_CODE: ClassVar[TextField] = TextField("dbtTestRawCode", "dbtTestRawCode.text")
     """
     Raw code of the test (when the test is defined using Python).
     """
-    DBT_TEST_COMPILED_CODE: ClassVar[TextField] = TextField(
-        "dbtTestCompiledCode", "dbtTestCompiledCode"
-    )
+    DBT_TEST_COMPILED_CODE: ClassVar[TextField] = TextField("dbtTestCompiledCode", "dbtTestCompiledCode")
     """
     Compiled code of the test (when the test is defined using Python).
     """
-    DBT_TEST_LANGUAGE: ClassVar[TextField] = TextField(
-        "dbtTestLanguage", "dbtTestLanguage"
-    )
+    DBT_TEST_LANGUAGE: ClassVar[TextField] = TextField("dbtTestLanguage", "dbtTestLanguage")
     """
     Language in which the test is written, for example: SQL or Python.
     """
@@ -150,9 +136,7 @@ class DbtTest(Dbt):
 
     @property
     def dbt_test_compiled_s_q_l(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_test_compiled_s_q_l
-        )
+        return None if self.attributes is None else self.attributes.dbt_test_compiled_s_q_l
 
     @dbt_test_compiled_s_q_l.setter
     def dbt_test_compiled_s_q_l(self, dbt_test_compiled_s_q_l: Optional[str]):
@@ -172,9 +156,7 @@ class DbtTest(Dbt):
 
     @property
     def dbt_test_compiled_code(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dbt_test_compiled_code
-        )
+        return None if self.attributes is None else self.attributes.dbt_test_compiled_code
 
     @dbt_test_compiled_code.setter
     def dbt_test_compiled_code(self, dbt_test_compiled_code: Optional[str]):
@@ -241,18 +223,10 @@ class DbtTest(Dbt):
         dbt_test_raw_code: Optional[str] = Field(default=None, description="")
         dbt_test_compiled_code: Optional[str] = Field(default=None, description="")
         dbt_test_language: Optional[str] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_assets: Optional[List[SQL]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
+        sql_assets: Optional[List[SQL]] = Field(default=None, description="")  # relationship
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(default=None, description="")  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
 
     attributes: DbtTest.Attributes = Field(
         default_factory=lambda: DbtTest.Attributes(),

@@ -31,9 +31,7 @@ class CredentialClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
@@ -70,9 +68,7 @@ class CredentialClient:
         :returns: A CredentialResponse instance.
         :raises: AtlanError on any error during API invocation.
         """
-        raw_json = self._client._call_api(
-            GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid})
-        )
+        raw_json = self._client._call_api(GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid}))
         if not isinstance(raw_json, dict):
             return raw_json
         return CredentialResponse(**raw_json)
@@ -101,9 +97,7 @@ class CredentialClient:
         if offset is not None:
             params["offset"] = offset
 
-        raw_json = self._client._call_api(
-            GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params
-        )
+        raw_json = self._client._call_api(GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params)
 
         if not isinstance(raw_json, dict) or "records" not in raw_json:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -123,9 +117,7 @@ class CredentialClient:
         :returns: details of the hard-deleted asset(s)
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(
-            DELETE_CREDENTIALS_BY_GUID.format_path({"credential_guid": guid})
-        )
+        raw_json = self._client._call_api(DELETE_CREDENTIALS_BY_GUID.format_path({"credential_guid": guid}))
 
         return raw_json
 
@@ -160,9 +152,7 @@ class CredentialClient:
         """
         test_response = self.test(credential=credential)
         if not test_response.is_successful:
-            raise ErrorCode.INVALID_CREDENTIALS.exception_with_parameters(
-                test_response.message
-            )
+            raise ErrorCode.INVALID_CREDENTIALS.exception_with_parameters(test_response.message)
         if not credential.id:
             raise ErrorCode.MISSING_TOKEN_ID.exception_with_parameters()
         raw_json = self._client._call_api(

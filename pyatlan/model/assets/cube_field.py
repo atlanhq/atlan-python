@@ -46,15 +46,11 @@ class CubeField(MultiDimensionalDataset):
     """
     Unique name of the parent field in which this field is nested.
     """
-    CUBE_FIELD_LEVEL: ClassVar[NumericField] = NumericField(
-        "cubeFieldLevel", "cubeFieldLevel"
-    )
+    CUBE_FIELD_LEVEL: ClassVar[NumericField] = NumericField("cubeFieldLevel", "cubeFieldLevel")
     """
     Level of the field in the cube hierarchy.
     """
-    CUBE_FIELD_GENERATION: ClassVar[NumericField] = NumericField(
-        "cubeFieldGeneration", "cubeFieldGeneration"
-    )
+    CUBE_FIELD_GENERATION: ClassVar[NumericField] = NumericField("cubeFieldGeneration", "cubeFieldGeneration")
     """
     Generation of the field in the cube hierarchy.
     """
@@ -66,9 +62,7 @@ class CubeField(MultiDimensionalDataset):
     """
     Expression used to calculate this measure.
     """
-    CUBE_SUB_FIELD_COUNT: ClassVar[NumericField] = NumericField(
-        "cubeSubFieldCount", "cubeSubFieldCount"
-    )
+    CUBE_SUB_FIELD_COUNT: ClassVar[NumericField] = NumericField("cubeSubFieldCount", "cubeSubFieldCount")
     """
     Number of sub-fields that are direct children of this field.
     """
@@ -100,9 +94,7 @@ class CubeField(MultiDimensionalDataset):
 
     @property
     def cube_parent_field_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.cube_parent_field_name
-        )
+        return None if self.attributes is None else self.attributes.cube_parent_field_name
 
     @cube_parent_field_name.setter
     def cube_parent_field_name(self, cube_parent_field_name: Optional[str]):
@@ -112,21 +104,13 @@ class CubeField(MultiDimensionalDataset):
 
     @property
     def cube_parent_field_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cube_parent_field_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.cube_parent_field_qualified_name
 
     @cube_parent_field_qualified_name.setter
-    def cube_parent_field_qualified_name(
-        self, cube_parent_field_qualified_name: Optional[str]
-    ):
+    def cube_parent_field_qualified_name(self, cube_parent_field_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cube_parent_field_qualified_name = (
-            cube_parent_field_qualified_name
-        )
+        self.attributes.cube_parent_field_qualified_name = cube_parent_field_qualified_name
 
     @property
     def cube_field_level(self) -> Optional[int]:
@@ -140,9 +124,7 @@ class CubeField(MultiDimensionalDataset):
 
     @property
     def cube_field_generation(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.cube_field_generation
-        )
+        return None if self.attributes is None else self.attributes.cube_field_generation
 
     @cube_field_generation.setter
     def cube_field_generation(self, cube_field_generation: Optional[int]):
@@ -152,16 +134,10 @@ class CubeField(MultiDimensionalDataset):
 
     @property
     def cube_field_measure_expression(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cube_field_measure_expression
-        )
+        return None if self.attributes is None else self.attributes.cube_field_measure_expression
 
     @cube_field_measure_expression.setter
-    def cube_field_measure_expression(
-        self, cube_field_measure_expression: Optional[str]
-    ):
+    def cube_field_measure_expression(self, cube_field_measure_expression: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cube_field_measure_expression = cube_field_measure_expression
@@ -208,24 +184,14 @@ class CubeField(MultiDimensionalDataset):
 
     class Attributes(MultiDimensionalDataset.Attributes):
         cube_parent_field_name: Optional[str] = Field(default=None, description="")
-        cube_parent_field_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        cube_parent_field_qualified_name: Optional[str] = Field(default=None, description="")
         cube_field_level: Optional[int] = Field(default=None, description="")
         cube_field_generation: Optional[int] = Field(default=None, description="")
-        cube_field_measure_expression: Optional[str] = Field(
-            default=None, description=""
-        )
+        cube_field_measure_expression: Optional[str] = Field(default=None, description="")
         cube_sub_field_count: Optional[int] = Field(default=None, description="")
-        cube_parent_field: Optional[CubeField] = Field(
-            default=None, description=""
-        )  # relationship
-        cube_hierarchy: Optional[CubeHierarchy] = Field(
-            default=None, description=""
-        )  # relationship
-        cube_nested_fields: Optional[List[CubeField]] = Field(
-            default=None, description=""
-        )  # relationship
+        cube_parent_field: Optional[CubeField] = Field(default=None, description="")  # relationship
+        cube_hierarchy: Optional[CubeHierarchy] = Field(default=None, description="")  # relationship
+        cube_nested_fields: Optional[List[CubeField]] = Field(default=None, description="")  # relationship
 
     attributes: CubeField.Attributes = Field(
         default_factory=lambda: CubeField.Attributes(),

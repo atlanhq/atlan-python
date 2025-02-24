@@ -36,15 +36,11 @@ class MicroStrategyDossier(MicroStrategy):
     List of chapter names in this dossier.
     """
 
-    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
-        "microStrategyVisualizations"
-    )
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField("microStrategyVisualizations")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField("microStrategyProject")
     """
     TBC
     """
@@ -57,64 +53,42 @@ class MicroStrategyDossier(MicroStrategy):
 
     @property
     def micro_strategy_dossier_chapter_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_dossier_chapter_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_dossier_chapter_names
 
     @micro_strategy_dossier_chapter_names.setter
-    def micro_strategy_dossier_chapter_names(
-        self, micro_strategy_dossier_chapter_names: Optional[Set[str]]
-    ):
+    def micro_strategy_dossier_chapter_names(self, micro_strategy_dossier_chapter_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_dossier_chapter_names = (
-            micro_strategy_dossier_chapter_names
-        )
+        self.attributes.micro_strategy_dossier_chapter_names = micro_strategy_dossier_chapter_names
 
     @property
     def micro_strategy_visualizations(
         self,
     ) -> Optional[List[MicroStrategyVisualization]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_visualizations
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_visualizations
 
     @micro_strategy_visualizations.setter
-    def micro_strategy_visualizations(
-        self, micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]]
-    ):
+    def micro_strategy_visualizations(self, micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    def micro_strategy_project(self, micro_strategy_project: Optional[MicroStrategyProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_dossier_chapter_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = (
-            Field(default=None, description="")
-        )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+        micro_strategy_dossier_chapter_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = Field(
             default=None, description=""
         )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(default=None, description="")  # relationship
 
     attributes: MicroStrategyDossier.Attributes = Field(
         default_factory=lambda: MicroStrategyDossier.Attributes(),

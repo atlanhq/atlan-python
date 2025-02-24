@@ -18,9 +18,7 @@ class RoleClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
@@ -52,9 +50,7 @@ class RoleClient:
             query_params["filter"] = post_filter
         if sort:
             query_params["sort"] = sort
-        raw_json = self._client._call_api(
-            GET_ROLES.format_path_with_params(), query_params
-        )
+        raw_json = self._client._call_api(GET_ROLES.format_path_with_params(), query_params)
         return RoleResponse(**raw_json)
 
     def get_all(self) -> RoleResponse:

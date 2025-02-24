@@ -35,9 +35,7 @@ class OpenLineageInputDataset(OpenLineageDataset):
         """
         return OpenLineageInputDataset(namespace=namespace, name=asset_name, facets={})
 
-    def from_field(
-        self, field_name: str
-    ) -> OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields:
+    def from_field(self, field_name: str) -> OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields:
         """
         Create a new reference to a field within this input dataset.
 

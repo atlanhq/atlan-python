@@ -31,9 +31,7 @@ class Spark(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SPARK_RUN_VERSION: ClassVar[KeywordField] = KeywordField(
-        "sparkRunVersion", "sparkRunVersion"
-    )
+    SPARK_RUN_VERSION: ClassVar[KeywordField] = KeywordField("sparkRunVersion", "sparkRunVersion")
     """
     Spark Version for the Spark Job run eg. 3.4.1
     """
@@ -43,15 +41,11 @@ class Spark(Catalog):
     """
     OpenLineage Version of the Spark Job run eg. 1.1.0
     """
-    SPARK_RUN_START_TIME: ClassVar[NumericField] = NumericField(
-        "sparkRunStartTime", "sparkRunStartTime"
-    )
+    SPARK_RUN_START_TIME: ClassVar[NumericField] = NumericField("sparkRunStartTime", "sparkRunStartTime")
     """
     Start time of the Spark Job eg. 1695673598218
     """
-    SPARK_RUN_END_TIME: ClassVar[NumericField] = NumericField(
-        "sparkRunEndTime", "sparkRunEndTime"
-    )
+    SPARK_RUN_END_TIME: ClassVar[NumericField] = NumericField("sparkRunEndTime", "sparkRunEndTime")
     """
     End time of the Spark Job eg. 1695673598218
     """
@@ -82,16 +76,10 @@ class Spark(Catalog):
 
     @property
     def spark_run_open_lineage_version(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.spark_run_open_lineage_version
-        )
+        return None if self.attributes is None else self.attributes.spark_run_open_lineage_version
 
     @spark_run_open_lineage_version.setter
-    def spark_run_open_lineage_version(
-        self, spark_run_open_lineage_version: Optional[str]
-    ):
+    def spark_run_open_lineage_version(self, spark_run_open_lineage_version: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.spark_run_open_lineage_version = spark_run_open_lineage_version
@@ -118,30 +106,20 @@ class Spark(Catalog):
 
     @property
     def spark_run_open_lineage_state(self) -> Optional[OpenLineageRunState]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.spark_run_open_lineage_state
-        )
+        return None if self.attributes is None else self.attributes.spark_run_open_lineage_state
 
     @spark_run_open_lineage_state.setter
-    def spark_run_open_lineage_state(
-        self, spark_run_open_lineage_state: Optional[OpenLineageRunState]
-    ):
+    def spark_run_open_lineage_state(self, spark_run_open_lineage_state: Optional[OpenLineageRunState]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.spark_run_open_lineage_state = spark_run_open_lineage_state
 
     class Attributes(Catalog.Attributes):
         spark_run_version: Optional[str] = Field(default=None, description="")
-        spark_run_open_lineage_version: Optional[str] = Field(
-            default=None, description=""
-        )
+        spark_run_open_lineage_version: Optional[str] = Field(default=None, description="")
         spark_run_start_time: Optional[datetime] = Field(default=None, description="")
         spark_run_end_time: Optional[datetime] = Field(default=None, description="")
-        spark_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
-            default=None, description=""
-        )
+        spark_run_open_lineage_state: Optional[OpenLineageRunState] = Field(default=None, description="")
 
     attributes: Spark.Attributes = Field(
         default_factory=lambda: Spark.Attributes(),

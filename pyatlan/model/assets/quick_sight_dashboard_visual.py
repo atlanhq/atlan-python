@@ -103,9 +103,7 @@ class QuickSightDashboardVisual(QuickSight):
     Unique name of the dashboard in which this visual exists.
     """
 
-    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
-        "quickSightDashboard"
-    )
+    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField("quickSightDashboard")
     """
     TBC
     """
@@ -117,43 +115,27 @@ class QuickSightDashboardVisual(QuickSight):
 
     @property
     def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_dashboard_qualified_name
 
     @quick_sight_dashboard_qualified_name.setter
-    def quick_sight_dashboard_qualified_name(
-        self, quick_sight_dashboard_qualified_name: Optional[str]
-    ):
+    def quick_sight_dashboard_qualified_name(self, quick_sight_dashboard_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_qualified_name = (
-            quick_sight_dashboard_qualified_name
-        )
+        self.attributes.quick_sight_dashboard_qualified_name = quick_sight_dashboard_qualified_name
 
     @property
     def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboard
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_dashboard
 
     @quick_sight_dashboard.setter
-    def quick_sight_dashboard(
-        self, quick_sight_dashboard: Optional[QuickSightDashboard]
-    ):
+    def quick_sight_dashboard(self, quick_sight_dashboard: Optional[QuickSightDashboard]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboard = quick_sight_dashboard
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            default=None, description=""
-        )  # relationship
+        quick_sight_dashboard_qualified_name: Optional[str] = Field(default=None, description="")
+        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -185,9 +167,7 @@ class QuickSightDashboardVisual(QuickSight):
             )
             assert quick_sight_dashboard_qualified_name
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     quick_sight_dashboard_qualified_name,
@@ -202,9 +182,7 @@ class QuickSightDashboardVisual(QuickSight):
                 quick_sight_sheet_id=quick_sight_sheet_id,
                 quick_sight_sheet_name=quick_sight_sheet_name,
                 quick_sight_dashboard_qualified_name=quick_sight_dashboard_qualified_name,
-                quick_sight_dashboard=QuickSightDashboard.ref_by_qualified_name(
-                    quick_sight_dashboard_qualified_name
-                ),
+                quick_sight_dashboard=QuickSightDashboard.ref_by_qualified_name(quick_sight_dashboard_qualified_name),
                 connection_qualified_name=connection_qualified_name,
                 connector_name=connector_name,
             )

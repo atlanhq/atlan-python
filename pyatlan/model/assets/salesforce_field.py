@@ -36,15 +36,11 @@ class SalesforceField(Salesforce):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "dataType", "dataType", "dataType.text"
-    )
+    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField("dataType", "dataType", "dataType.text")
     """
     Data type of values in this field.
     """
-    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "objectQualifiedName", "objectQualifiedName"
-    )
+    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("objectQualifiedName", "objectQualifiedName")
     """
     Unique name of the object in which this field exists.
     """
@@ -52,9 +48,7 @@ class SalesforceField(Salesforce):
     """
     Order (position) of this field within the object.
     """
-    INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
-        "inlineHelpText", "inlineHelpText.text"
-    )
+    INLINE_HELP_TEXT: ClassVar[TextField] = TextField("inlineHelpText", "inlineHelpText.text")
     """
     Help text for this field.
     """
@@ -66,9 +60,7 @@ class SalesforceField(Salesforce):
     """
     Formula for this field, if it is a calculated field.
     """
-    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
-        "isCaseSensitive", "isCaseSensitive"
-    )
+    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField("isCaseSensitive", "isCaseSensitive")
     """
     Whether this field is case sensitive (true) or in-sensitive (false).
     """
@@ -106,9 +98,7 @@ class SalesforceField(Salesforce):
     """
     Whether this field references a record of multiple objects (true) or not (false).
     """
-    DEFAULT_VALUE_FORMULA: ClassVar[TextField] = TextField(
-        "defaultValueFormula", "defaultValueFormula"
-    )
+    DEFAULT_VALUE_FORMULA: ClassVar[TextField] = TextField("defaultValueFormula", "defaultValueFormula")
     """
     Formula for the default value for this field.
     """
@@ -155,9 +145,7 @@ class SalesforceField(Salesforce):
 
     @property
     def object_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.object_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.object_qualified_name
 
     @object_qualified_name.setter
     def object_qualified_name(self, object_qualified_name: Optional[str]):
@@ -287,11 +275,7 @@ class SalesforceField(Salesforce):
 
     @property
     def is_polymorphic_foreign_key(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.is_polymorphic_foreign_key
-        )
+        return None if self.attributes is None else self.attributes.is_polymorphic_foreign_key
 
     @is_polymorphic_foreign_key.setter
     def is_polymorphic_foreign_key(self, is_polymorphic_foreign_key: Optional[bool]):
@@ -301,9 +285,7 @@ class SalesforceField(Salesforce):
 
     @property
     def default_value_formula(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.default_value_formula
-        )
+        return None if self.attributes is None else self.attributes.default_value_formula
 
     @default_value_formula.setter
     def default_value_formula(self, default_value_formula: Optional[str]):
@@ -348,12 +330,8 @@ class SalesforceField(Salesforce):
         picklist_values: Optional[Set[str]] = Field(default=None, description="")
         is_polymorphic_foreign_key: Optional[bool] = Field(default=None, description="")
         default_value_formula: Optional[str] = Field(default=None, description="")
-        lookup_objects: Optional[List[SalesforceObject]] = Field(
-            default=None, description=""
-        )  # relationship
-        object: Optional[SalesforceObject] = Field(
-            default=None, description=""
-        )  # relationship
+        lookup_objects: Optional[List[SalesforceObject]] = Field(default=None, description="")  # relationship
+        object: Optional[SalesforceObject] = Field(default=None, description="")  # relationship
 
     attributes: SalesforceField.Attributes = Field(
         default_factory=lambda: SalesforceField.Attributes(),

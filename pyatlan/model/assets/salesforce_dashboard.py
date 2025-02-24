@@ -113,12 +113,8 @@ class SalesforceDashboard(Salesforce):
         source_id: Optional[str] = Field(default=None, description="")
         dashboard_type: Optional[str] = Field(default=None, description="")
         report_count: Optional[int] = Field(default=None, description="")
-        reports: Optional[List[SalesforceReport]] = Field(
-            default=None, description=""
-        )  # relationship
-        organization: Optional[SalesforceOrganization] = Field(
-            default=None, description=""
-        )  # relationship
+        reports: Optional[List[SalesforceReport]] = Field(default=None, description="")  # relationship
+        organization: Optional[SalesforceOrganization] = Field(default=None, description="")  # relationship
 
     attributes: SalesforceDashboard.Attributes = Field(
         default_factory=lambda: SalesforceDashboard.Attributes(),

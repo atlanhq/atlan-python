@@ -41,14 +41,13 @@ class MultipartDataGenerator(object):
         # Write the file part with the correct 'name="file"'
         self._write(self.param_header())
         self._write(self.line_break)
-        self._write(
-            f'Content-Disposition: form-data; name="file"; filename="{filename}"'
-        )
+        self._write(f'Content-Disposition: form-data; name="file"; filename="{filename}"')
         self._write(self.line_break)
 
         # Get content type from dictionary, default to 'application/octet-stream'
         content_type = self._CONTENT_TYPES.get(
-            filename[filename.rfind(".") :], "application/octet-stream"  # noqa: E203
+            filename[filename.rfind(".") :],
+            "application/octet-stream",  # noqa: E203
         )
         self._write(f"Content-Type: {content_type}")
         self._write(self.line_break)
@@ -72,9 +71,7 @@ class MultipartDataGenerator(object):
         elif isinstance(value, str):
             array = bytearray(value, encoding="utf-8")
         else:
-            raise TypeError(
-                "unexpected type: {value_type}".format(value_type=type(value))
-            )
+            raise TypeError("unexpected type: {value_type}".format(value_type=type(value)))
 
         self.data.write(array)
 

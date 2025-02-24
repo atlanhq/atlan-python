@@ -34,9 +34,7 @@ with open("requirements-dev.txt") as f:
 
 def read(file_name):
     """Read a text file and return the content as a string."""
-    with io.open(
-        os.path.join(os.path.dirname(__file__), file_name), encoding="utf-8"
-    ) as f:
+    with io.open(os.path.join(os.path.dirname(__file__), file_name), encoding="utf-8") as f:
         return f.read()
 
 

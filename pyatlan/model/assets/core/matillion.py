@@ -29,9 +29,7 @@ class Matillion(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_VERSION: ClassVar[TextField] = TextField(
-        "matillionVersion", "matillionVersion"
-    )
+    MATILLION_VERSION: ClassVar[TextField] = TextField("matillionVersion", "matillionVersion")
     """
     Current point in time state of a project.
     """

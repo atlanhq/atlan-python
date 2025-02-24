@@ -22,16 +22,12 @@ class Database(SQL):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> Database:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
         attributes = Database.Attributes(
             name=name,
             connection_qualified_name=connection_qualified_name,
             qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=AtlanConnectorType.get_connector_name(
-                connection_qualified_name
-            ),
+            connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
         )
         return cls(attributes=attributes)
 
@@ -39,16 +35,11 @@ class Database(SQL):
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> Database:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        return cls.creator(name=name, connection_qualified_name=connection_qualified_name)
 
     type_name: str = Field(default="Database", allow_mutation=False)
 
@@ -100,25 +91,17 @@ class Database(SQL):
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(default=None, description="")
-        schemas: Optional[List[Schema]] = Field(
-            default=None, description=""
-        )  # relationship
+        schemas: Optional[List[Schema]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def create(
-            cls, name: str, connection_qualified_name: str
-        ) -> Database.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+        def create(cls, name: str, connection_qualified_name: str) -> Database.Attributes:
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             return Database.Attributes(
                 name=name,
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
             )
 
     attributes: Database.Attributes = Field(

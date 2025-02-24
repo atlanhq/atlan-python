@@ -90,37 +90,23 @@ class CognosFolder(Cognos):
 
     @property
     def cognos_folder_sub_folder_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cognos_folder_sub_folder_count
-        )
+        return None if self.attributes is None else self.attributes.cognos_folder_sub_folder_count
 
     @cognos_folder_sub_folder_count.setter
-    def cognos_folder_sub_folder_count(
-        self, cognos_folder_sub_folder_count: Optional[int]
-    ):
+    def cognos_folder_sub_folder_count(self, cognos_folder_sub_folder_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cognos_folder_sub_folder_count = cognos_folder_sub_folder_count
 
     @property
     def cognos_folder_child_objects_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cognos_folder_child_objects_count
-        )
+        return None if self.attributes is None else self.attributes.cognos_folder_child_objects_count
 
     @cognos_folder_child_objects_count.setter
-    def cognos_folder_child_objects_count(
-        self, cognos_folder_child_objects_count: Optional[int]
-    ):
+    def cognos_folder_child_objects_count(self, cognos_folder_child_objects_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cognos_folder_child_objects_count = (
-            cognos_folder_child_objects_count
-        )
+        self.attributes.cognos_folder_child_objects_count = cognos_folder_child_objects_count
 
     @property
     def cognos_packages(self) -> Optional[List[CognosPackage]]:
@@ -197,44 +183,22 @@ class CognosFolder(Cognos):
         return None if self.attributes is None else self.attributes.cognos_explorations
 
     @cognos_explorations.setter
-    def cognos_explorations(
-        self, cognos_explorations: Optional[List[CognosExploration]]
-    ):
+    def cognos_explorations(self, cognos_explorations: Optional[List[CognosExploration]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cognos_explorations = cognos_explorations
 
     class Attributes(Cognos.Attributes):
-        cognos_folder_sub_folder_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        cognos_folder_child_objects_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        cognos_packages: Optional[List[CognosPackage]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_reports: Optional[List[CognosReport]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_dashboards: Optional[List[CognosDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_sub_folders: Optional[List[CognosFolder]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_folder: Optional[CognosFolder] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_modules: Optional[List[CognosModule]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_files: Optional[List[CognosFile]] = Field(
-            default=None, description=""
-        )  # relationship
-        cognos_explorations: Optional[List[CognosExploration]] = Field(
-            default=None, description=""
-        )  # relationship
+        cognos_folder_sub_folder_count: Optional[int] = Field(default=None, description="")
+        cognos_folder_child_objects_count: Optional[int] = Field(default=None, description="")
+        cognos_packages: Optional[List[CognosPackage]] = Field(default=None, description="")  # relationship
+        cognos_reports: Optional[List[CognosReport]] = Field(default=None, description="")  # relationship
+        cognos_dashboards: Optional[List[CognosDashboard]] = Field(default=None, description="")  # relationship
+        cognos_sub_folders: Optional[List[CognosFolder]] = Field(default=None, description="")  # relationship
+        cognos_folder: Optional[CognosFolder] = Field(default=None, description="")  # relationship
+        cognos_modules: Optional[List[CognosModule]] = Field(default=None, description="")  # relationship
+        cognos_files: Optional[List[CognosFile]] = Field(default=None, description="")  # relationship
+        cognos_explorations: Optional[List[CognosExploration]] = Field(default=None, description="")  # relationship
 
     attributes: CognosFolder.Attributes = Field(
         default_factory=lambda: CognosFolder.Attributes(),

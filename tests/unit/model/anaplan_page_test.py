@@ -17,9 +17,7 @@ from tests.unit.model.constants import (
         (ANAPLAN_PAGE_NAME, None, "app_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, app_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, app_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
         AnaplanPage.creator(name=name, app_qualified_name=app_qualified_name)
 
@@ -51,9 +49,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = AnaplanPage.create_for_modification(
-        qualified_name=ANAPLAN_PAGE_QUALIFIED_NAME, name=ANAPLAN_PAGE_NAME
-    )
+    sut = AnaplanPage.create_for_modification(qualified_name=ANAPLAN_PAGE_QUALIFIED_NAME, name=ANAPLAN_PAGE_NAME)
 
     assert sut.qualified_name == ANAPLAN_PAGE_QUALIFIED_NAME
     assert sut.name == ANAPLAN_PAGE_NAME

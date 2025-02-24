@@ -50,11 +50,9 @@ class KafkaConsumerGroup(Kafka):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES: ClassVar[KeywordField] = (
-        KeywordField(
-            "kafkaConsumerGroupTopicConsumptionProperties",
-            "kafkaConsumerGroupTopicConsumptionProperties",
-        )
+    KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES: ClassVar[KeywordField] = KeywordField(
+        "kafkaConsumerGroupTopicConsumptionProperties",
+        "kafkaConsumerGroupTopicConsumptionProperties",
     )
     """
     List of consumption properties for Kafka topics, for this consumer group.
@@ -65,9 +63,7 @@ class KafkaConsumerGroup(Kafka):
     """
     Number of members in this consumer group.
     """
-    KAFKA_TOPIC_NAMES: ClassVar[KeywordField] = KeywordField(
-        "kafkaTopicNames", "kafkaTopicNames"
-    )
+    KAFKA_TOPIC_NAMES: ClassVar[KeywordField] = KeywordField("kafkaTopicNames", "kafkaTopicNames")
     """
     Simple names of the topics consumed by this consumer group.
     """
@@ -95,18 +91,12 @@ class KafkaConsumerGroup(Kafka):
     def kafka_consumer_group_topic_consumption_properties(
         self,
     ) -> Optional[List[KafkaTopicConsumption]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_consumer_group_topic_consumption_properties
-        )
+        return None if self.attributes is None else self.attributes.kafka_consumer_group_topic_consumption_properties
 
     @kafka_consumer_group_topic_consumption_properties.setter
     def kafka_consumer_group_topic_consumption_properties(
         self,
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            List[KafkaTopicConsumption]
-        ],
+        kafka_consumer_group_topic_consumption_properties: Optional[List[KafkaTopicConsumption]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -116,21 +106,13 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_consumer_group_member_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_consumer_group_member_count
-        )
+        return None if self.attributes is None else self.attributes.kafka_consumer_group_member_count
 
     @kafka_consumer_group_member_count.setter
-    def kafka_consumer_group_member_count(
-        self, kafka_consumer_group_member_count: Optional[int]
-    ):
+    def kafka_consumer_group_member_count(self, kafka_consumer_group_member_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_member_count = (
-            kafka_consumer_group_member_count
-        )
+        self.attributes.kafka_consumer_group_member_count = kafka_consumer_group_member_count
 
     @property
     def kafka_topic_names(self) -> Optional[Set[str]]:
@@ -144,16 +126,10 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_topic_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_qualified_names
-        )
+        return None if self.attributes is None else self.attributes.kafka_topic_qualified_names
 
     @kafka_topic_qualified_names.setter
-    def kafka_topic_qualified_names(
-        self, kafka_topic_qualified_names: Optional[Set[str]]
-    ):
+    def kafka_topic_qualified_names(self, kafka_topic_qualified_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
@@ -169,19 +145,13 @@ class KafkaConsumerGroup(Kafka):
         self.attributes.kafka_topics = kafka_topics
 
     class Attributes(Kafka.Attributes):
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            List[KafkaTopicConsumption]
-        ] = Field(default=None, description="")
-        kafka_consumer_group_member_count: Optional[int] = Field(
+        kafka_consumer_group_topic_consumption_properties: Optional[List[KafkaTopicConsumption]] = Field(
             default=None, description=""
         )
+        kafka_consumer_group_member_count: Optional[int] = Field(default=None, description="")
         kafka_topic_names: Optional[Set[str]] = Field(default=None, description="")
-        kafka_topic_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        kafka_topics: Optional[List[KafkaTopic]] = Field(
-            default=None, description=""
-        )  # relationship
+        kafka_topic_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        kafka_topics: Optional[List[KafkaTopic]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid

@@ -34,15 +34,11 @@ class MatillionProject(Matillion):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_VERSIONS: ClassVar[TextField] = TextField(
-        "matillionVersions", "matillionVersions"
-    )
+    MATILLION_VERSIONS: ClassVar[TextField] = TextField("matillionVersions", "matillionVersions")
     """
     List of versions in the project.
     """
-    MATILLION_ENVIRONMENTS: ClassVar[TextField] = TextField(
-        "matillionEnvironments", "matillionEnvironments"
-    )
+    MATILLION_ENVIRONMENTS: ClassVar[TextField] = TextField("matillionEnvironments", "matillionEnvironments")
     """
     List of environments in the project.
     """
@@ -98,9 +94,7 @@ class MatillionProject(Matillion):
 
     @property
     def matillion_environments(self) -> Optional[Set[str]]:
-        return (
-            None if self.attributes is None else self.attributes.matillion_environments
-        )
+        return None if self.attributes is None else self.attributes.matillion_environments
 
     @matillion_environments.setter
     def matillion_environments(self, matillion_environments: Optional[Set[str]]):
@@ -110,11 +104,7 @@ class MatillionProject(Matillion):
 
     @property
     def matillion_project_job_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_project_job_count
-        )
+        return None if self.attributes is None else self.attributes.matillion_project_job_count
 
     @matillion_project_job_count.setter
     def matillion_project_job_count(self, matillion_project_job_count: Optional[int]):
@@ -134,16 +124,10 @@ class MatillionProject(Matillion):
 
     @property
     def matillion_group_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_group_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.matillion_group_qualified_name
 
     @matillion_group_qualified_name.setter
-    def matillion_group_qualified_name(
-        self, matillion_group_qualified_name: Optional[str]
-    ):
+    def matillion_group_qualified_name(self, matillion_group_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_group_qualified_name = matillion_group_qualified_name
@@ -173,15 +157,9 @@ class MatillionProject(Matillion):
         matillion_environments: Optional[Set[str]] = Field(default=None, description="")
         matillion_project_job_count: Optional[int] = Field(default=None, description="")
         matillion_group_name: Optional[str] = Field(default=None, description="")
-        matillion_group_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        matillion_jobs: Optional[List[MatillionJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        matillion_group: Optional[MatillionGroup] = Field(
-            default=None, description=""
-        )  # relationship
+        matillion_group_qualified_name: Optional[str] = Field(default=None, description="")
+        matillion_jobs: Optional[List[MatillionJob]] = Field(default=None, description="")  # relationship
+        matillion_group: Optional[MatillionGroup] = Field(default=None, description="")  # relationship
 
     attributes: MatillionProject.Attributes = Field(
         default_factory=lambda: MatillionProject.Attributes(),

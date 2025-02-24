@@ -267,45 +267,29 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     assert client.find_by_type(prefix=WorkflowPackage.FIVETRAN) == []
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
-    assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
-    )
+    assert isinstance(mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest)
 
 
-def test_find_by_id(
-    client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller
-):
+def test_find_by_id(client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller):
     raw_json = search_response.dict()
     mock_api_caller._call_api.return_value = raw_json
 
     assert search_response.hits and search_response.hits.hits
-    assert (
-        client.find_by_id(id="atlan-snowflake-miner-1714638976")
-        == search_response.hits.hits[0]
-    )
+    assert client.find_by_id(id="atlan-snowflake-miner-1714638976") == search_response.hits.hits[0]
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
-    assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
-    )
+    assert isinstance(mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest)
 
 
-def test_find_run_by_id(
-    client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller
-):
+def test_find_run_by_id(client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller):
     raw_json = search_response.dict()
     mock_api_caller._call_api.return_value = raw_json
 
     assert search_response and search_response.hits and search_response.hits.hits
-    assert (
-        client.find_run_by_id(id="atlan-snowflake-miner-1714638976-mzdza")
-        == search_response.hits.hits[0]
-    )
+    assert client.find_run_by_id(id="atlan-snowflake-miner-1714638976-mzdza") == search_response.hits.hits[0]
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_RUN_SEARCH
-    assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
-    )
+    assert isinstance(mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest)
 
 
 def test_re_run_when_given_workflowpackage_with_no_prior_runs_raises_invalid_request_error(
@@ -375,10 +359,7 @@ def test_re_run_when_given_workflowpackage_with_idempotent(
         search_response.dict(),
     ]
 
-    assert (
-        client.rerun(WorkflowPackage.FIVETRAN, idempotent=True)
-        == rerun_response_with_idempotent
-    )
+    assert client.rerun(WorkflowPackage.FIVETRAN, idempotent=True) == rerun_response_with_idempotent
     assert mock_api_caller._call_api.call_count == 2
     mock_api_caller.reset_mock()
 
@@ -393,10 +374,7 @@ def test_re_run_when_given_workflowsearchresultdetail_with_idempotent(
 ):
     mock_api_caller._call_api.return_value = search_response.dict()
 
-    assert (
-        client.rerun(workflow=search_result_detail, idempotent=True)
-        == rerun_response_with_idempotent
-    )
+    assert client.rerun(workflow=search_result_detail, idempotent=True) == rerun_response_with_idempotent
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
@@ -411,10 +389,7 @@ def test_re_run_when_given_workflowsearchresult_with_idempotent(
 ):
     mock_api_caller._call_api.return_value = search_response.dict()
 
-    assert (
-        client.rerun(workflow=search_result, idempotent=True)
-        == rerun_response_with_idempotent
-    )
+    assert client.rerun(workflow=search_result, idempotent=True) == rerun_response_with_idempotent
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
@@ -429,9 +404,7 @@ def test_run_when_given_workflow(
         Workflow(
             metadata=WorkflowMetadata(name="name", namespace="namespace"),
             spec=WorkflowSpec(),
-            payload=[
-                PackageParameter(parameter="test-param", type="test-type", body={})
-            ],
+            payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
         )  # type: ignore[call-arg]
     )
     assert response == workflow_response
@@ -469,9 +442,7 @@ def test_run_when_given_workflow_with_schedule(
         Workflow(
             metadata=WorkflowMetadata(name="name", namespace="namespace"),
             spec=WorkflowSpec(),
-            payload=[
-                PackageParameter(parameter="test-param", type="test-type", body={})
-            ],
+            payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
         ),  # type: ignore[call-arg]
         workflow_schedule=schedule,
     )
@@ -574,9 +545,7 @@ def test_workflow_add_schedule(
     mock_api_caller._call_api.side_effect = [
         workflow_response.dict(),
     ]
-    response = client.add_schedule(
-        workflow=workflow_response, workflow_schedule=schedule
-    )
+    response = client.add_schedule(workflow=workflow_response, workflow_schedule=schedule)
 
     assert mock_api_caller._call_api.call_count == 1
     assert response == WorkflowResponse(**workflow_response.dict())
@@ -587,9 +556,7 @@ def test_workflow_add_schedule(
         search_response.dict(),
         workflow_response.dict(),
     ]
-    response = client.add_schedule(
-        workflow=WorkflowPackage.FIVETRAN, workflow_schedule=schedule
-    )
+    response = client.add_schedule(workflow=WorkflowPackage.FIVETRAN, workflow_schedule=schedule)
 
     assert mock_api_caller._call_api.call_count == 2
     assert response == WorkflowResponse(**workflow_response.dict())
@@ -616,16 +583,9 @@ def test_workflow_find_schedule_query_between(
     )
 
     assert mock_api_caller._call_api.call_count == 1
-    assert (
-        response
-        and len(response) == 1
-        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
-    )
+    assert response and len(response) == 1 and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
     # Ensure it is called by the correct API endpoint
-    assert (
-        mock_api_caller._call_api.call_args[0][0].path
-        == SCHEDULE_QUERY_WORKFLOWS_SEARCH.path
-    )
+    assert mock_api_caller._call_api.call_args[0][0].path == SCHEDULE_QUERY_WORKFLOWS_SEARCH.path
     mock_api_caller.reset_mock()
 
     # Missed schedule query workflows
@@ -640,15 +600,8 @@ def test_workflow_find_schedule_query_between(
 
     assert mock_api_caller._call_api.call_count == 1
     # Ensure it is called by the correct API endpoint
-    assert (
-        mock_api_caller._call_api.call_args[0][0].path
-        == SCHEDULE_QUERY_WORKFLOWS_MISSED.path
-    )
-    assert (
-        response
-        and len(response) == 1
-        and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
-    )
+    assert mock_api_caller._call_api.call_args[0][0].path == SCHEDULE_QUERY_WORKFLOWS_MISSED.path
+    assert response and len(response) == 1 and response[0] == WorkflowRunResponse(**workflow_run_response.dict())
     mock_api_caller.reset_mock()
 
     # None response
@@ -672,9 +625,7 @@ def test_workflow_find_schedule_query(
     search_result: WorkflowSearchResult,
 ):
     mock_api_caller._call_api.return_value = search_response.dict()
-    response = client.find_schedule_query(
-        saved_query_id="test-query-id", max_results=50
-    )
+    response = client.find_schedule_query(saved_query_id="test-query-id", max_results=50)
 
     assert len(response) == 1
     assert mock_api_caller._call_api.call_count == 1

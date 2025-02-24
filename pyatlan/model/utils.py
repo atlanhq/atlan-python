@@ -46,9 +46,7 @@ def to_snake_case(value):
     elif value == "mappedClassificationName":
         return "mapped_atlan_tag_name"
     res = [value[0].lower()]
-    for c in (
-        value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
-    ):
+    for c in value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]:
         if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
             res.append("_")
             res.append(c.lower())

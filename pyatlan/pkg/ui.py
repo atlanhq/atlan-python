@@ -101,9 +101,7 @@ class UIRule:
     properties: Dict[str, Dict[str, str]] = field(default_factory=dict)
 
     @validate_arguments()
-    def __init__(
-        self, when_inputs: Dict[StrictStr, StrictStr], required: List[StrictStr]
-    ):
+    def __init__(self, when_inputs: Dict[StrictStr, StrictStr], required: List[StrictStr]):
         """
         Configure basic UI rules that when the specified inputs have specified values, certain other fields become
         required.

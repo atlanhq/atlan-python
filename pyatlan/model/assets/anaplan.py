@@ -35,9 +35,7 @@ class Anaplan(BI):
     """
     Unique name of the AnaplanWorkspace asset that contains this asset(AnaplanModel and everthing under it's hierarchy).
     """
-    ANAPLAN_WORKSPACE_NAME: ClassVar[KeywordField] = KeywordField(
-        "anaplanWorkspaceName", "anaplanWorkspaceName"
-    )
+    ANAPLAN_WORKSPACE_NAME: ClassVar[KeywordField] = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
     """
     Simple name of the AnaplanWorkspace asset that contains this asset(AnaplanModel and everthing under it's hierarchy).
     """
@@ -47,9 +45,7 @@ class Anaplan(BI):
     """
     Unique name of the AnaplanModel asset that contains this asset(AnaplanModule and everthing under it's hierarchy).
     """
-    ANAPLAN_MODEL_NAME: ClassVar[KeywordField] = KeywordField(
-        "anaplanModelName", "anaplanModelName"
-    )
+    ANAPLAN_MODEL_NAME: ClassVar[KeywordField] = KeywordField("anaplanModelName", "anaplanModelName")
     """
     Simple name of the AnaplanModel asset that contains this asset(AnaplanModule and everthing under it's hierarchy).
     """
@@ -59,15 +55,11 @@ class Anaplan(BI):
     """
     Unique name of the AnaplanModule asset that contains this asset(AnaplanLineItem, AnaplanList, AnaplanView and everthing under their hierarchy).
     """  # noqa: E501
-    ANAPLAN_MODULE_NAME: ClassVar[KeywordField] = KeywordField(
-        "anaplanModuleName", "anaplanModuleName"
-    )
+    ANAPLAN_MODULE_NAME: ClassVar[KeywordField] = KeywordField("anaplanModuleName", "anaplanModuleName")
     """
     Simple name of the AnaplanModule asset that contains this asset(AnaplanLineItem, AnaplanList, AnaplanView and everthing under their hierarchy).
     """  # noqa: E501
-    ANAPLAN_SOURCE_ID: ClassVar[KeywordField] = KeywordField(
-        "anaplanSourceId", "anaplanSourceId"
-    )
+    ANAPLAN_SOURCE_ID: ClassVar[KeywordField] = KeywordField("anaplanSourceId", "anaplanSourceId")
     """
     Id/Guid of the Anaplan asset in the source system.
     """
@@ -84,27 +76,17 @@ class Anaplan(BI):
 
     @property
     def anaplan_workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.anaplan_workspace_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_workspace_qualified_name
 
     @anaplan_workspace_qualified_name.setter
-    def anaplan_workspace_qualified_name(
-        self, anaplan_workspace_qualified_name: Optional[str]
-    ):
+    def anaplan_workspace_qualified_name(self, anaplan_workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anaplan_workspace_qualified_name = (
-            anaplan_workspace_qualified_name
-        )
+        self.attributes.anaplan_workspace_qualified_name = anaplan_workspace_qualified_name
 
     @property
     def anaplan_workspace_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.anaplan_workspace_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_workspace_name
 
     @anaplan_workspace_name.setter
     def anaplan_workspace_name(self, anaplan_workspace_name: Optional[str]):
@@ -114,11 +96,7 @@ class Anaplan(BI):
 
     @property
     def anaplan_model_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.anaplan_model_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_model_qualified_name
 
     @anaplan_model_qualified_name.setter
     def anaplan_model_qualified_name(self, anaplan_model_qualified_name: Optional[str]):
@@ -138,16 +116,10 @@ class Anaplan(BI):
 
     @property
     def anaplan_module_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.anaplan_module_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.anaplan_module_qualified_name
 
     @anaplan_module_qualified_name.setter
-    def anaplan_module_qualified_name(
-        self, anaplan_module_qualified_name: Optional[str]
-    ):
+    def anaplan_module_qualified_name(self, anaplan_module_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anaplan_module_qualified_name = anaplan_module_qualified_name
@@ -173,17 +145,11 @@ class Anaplan(BI):
         self.attributes.anaplan_source_id = anaplan_source_id
 
     class Attributes(BI.Attributes):
-        anaplan_workspace_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        anaplan_workspace_qualified_name: Optional[str] = Field(default=None, description="")
         anaplan_workspace_name: Optional[str] = Field(default=None, description="")
-        anaplan_model_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        anaplan_model_qualified_name: Optional[str] = Field(default=None, description="")
         anaplan_model_name: Optional[str] = Field(default=None, description="")
-        anaplan_module_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        anaplan_module_qualified_name: Optional[str] = Field(default=None, description="")
         anaplan_module_name: Optional[str] = Field(default=None, description="")
         anaplan_source_id: Optional[str] = Field(default=None, description="")
 

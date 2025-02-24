@@ -29,9 +29,7 @@ class Superset(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SUPERSET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
-        "supersetDashboardId", "supersetDashboardId"
-    )
+    SUPERSET_DASHBOARD_ID: ClassVar[NumericField] = NumericField("supersetDashboardId", "supersetDashboardId")
     """
     Identifier of the dashboard in which this asset exists, in Superset.
     """
@@ -51,9 +49,7 @@ class Superset(BI):
 
     @property
     def superset_dashboard_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.superset_dashboard_id
-        )
+        return None if self.attributes is None else self.attributes.superset_dashboard_id
 
     @superset_dashboard_id.setter
     def superset_dashboard_id(self, superset_dashboard_id: Optional[int]):
@@ -63,27 +59,17 @@ class Superset(BI):
 
     @property
     def superset_dashboard_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.superset_dashboard_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.superset_dashboard_qualified_name
 
     @superset_dashboard_qualified_name.setter
-    def superset_dashboard_qualified_name(
-        self, superset_dashboard_qualified_name: Optional[str]
-    ):
+    def superset_dashboard_qualified_name(self, superset_dashboard_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_qualified_name = (
-            superset_dashboard_qualified_name
-        )
+        self.attributes.superset_dashboard_qualified_name = superset_dashboard_qualified_name
 
     class Attributes(BI.Attributes):
         superset_dashboard_id: Optional[int] = Field(default=None, description="")
-        superset_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        superset_dashboard_qualified_name: Optional[str] = Field(default=None, description="")
 
     attributes: Superset.Attributes = Field(
         default_factory=lambda: Superset.Attributes(),

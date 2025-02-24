@@ -81,9 +81,7 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
         ["azure", [123], "group_map_id\n  str type expected"],
     ],
 )
-def test_sso_get_group_mapping_wrong_params_raises_validation_error(
-    sso_alias, group_map_id, error_msg
-):
+def test_sso_get_group_mapping_wrong_params_raises_validation_error(sso_alias, group_map_id, error_msg):
     with pytest.raises(ValidationError) as err:
         SSOClient.get_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
     assert error_msg in str(err.value)
@@ -96,9 +94,7 @@ def test_sso_get_group_mapping_wrong_params_raises_validation_error(
         [[123], "so_alias\n  str type expected"],
     ],
 )
-def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
-    sso_alias, error_msg
-):
+def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(sso_alias, error_msg):
     with pytest.raises(ValidationError, match=error_msg):
         SSOClient.get_all_group_mappings(sso_alias=sso_alias)
 
@@ -118,9 +114,7 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, sso_group_name, error_msg
 ):
     with pytest.raises(ValidationError, match=error_msg):
-        SSOClient.create_group_mapping(
-            sso_alias=sso_alias, atlan_group=atlan_group, sso_group_name=sso_group_name
-        )
+        SSOClient.create_group_mapping(sso_alias=sso_alias, atlan_group=atlan_group, sso_group_name=sso_group_name)
 
 
 @pytest.mark.parametrize(
@@ -176,9 +170,7 @@ def test_sso_update_group_mapping_wrong_params_raises_validation_error(
         ["azure", [123], "group_map_id\n  str type expected"],
     ],
 )
-def test_sso_delete_group_mapping_wrong_params_raises_validation_error(
-    sso_alias, group_map_id, error_msg
-):
+def test_sso_delete_group_mapping_wrong_params_raises_validation_error(sso_alias, group_map_id, error_msg):
     with pytest.raises(ValidationError, match=error_msg):
         SSOClient.delete_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
 
@@ -235,9 +227,7 @@ def test_sso_create_group_mapping_invalid_request_error(
     mock_api_caller.reset_mock()
 
 
-def test_sso_create_group_mapping(
-    mock_api_caller, get_all_group_mapping_json, create_group_mapping_json
-):
+def test_sso_create_group_mapping(mock_api_caller, get_all_group_mapping_json, create_group_mapping_json):
     mock_api_caller._call_api.side_effect = [
         get_all_group_mapping_json,
         create_group_mapping_json,

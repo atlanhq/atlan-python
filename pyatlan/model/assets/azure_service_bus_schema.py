@@ -29,9 +29,7 @@ class AzureServiceBusSchema(AzureServiceBus):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AZURE_SERVICE_BUS_TOPICS: ClassVar[RelationField] = RelationField(
-        "azureServiceBusTopics"
-    )
+    AZURE_SERVICE_BUS_TOPICS: ClassVar[RelationField] = RelationField("azureServiceBusTopics")
     """
     TBC
     """
@@ -42,16 +40,10 @@ class AzureServiceBusSchema(AzureServiceBus):
 
     @property
     def azure_service_bus_topics(self) -> Optional[List[AzureServiceBusTopic]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.azure_service_bus_topics
-        )
+        return None if self.attributes is None else self.attributes.azure_service_bus_topics
 
     @azure_service_bus_topics.setter
-    def azure_service_bus_topics(
-        self, azure_service_bus_topics: Optional[List[AzureServiceBusTopic]]
-    ):
+    def azure_service_bus_topics(self, azure_service_bus_topics: Optional[List[AzureServiceBusTopic]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_service_bus_topics = azure_service_bus_topics

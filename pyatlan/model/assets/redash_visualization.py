@@ -68,11 +68,7 @@ class RedashVisualization(Redash):
 
     @property
     def redash_visualization_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.redash_visualization_type
-        )
+        return None if self.attributes is None else self.attributes.redash_visualization_type
 
     @redash_visualization_type.setter
     def redash_visualization_type(self, redash_visualization_type: Optional[str]):
@@ -92,11 +88,7 @@ class RedashVisualization(Redash):
 
     @property
     def redash_query_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.redash_query_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.redash_query_qualified_name
 
     @redash_query_qualified_name.setter
     def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
@@ -118,9 +110,7 @@ class RedashVisualization(Redash):
         redash_visualization_type: Optional[str] = Field(default=None, description="")
         redash_query_name: Optional[str] = Field(default=None, description="")
         redash_query_qualified_name: Optional[str] = Field(default=None, description="")
-        redash_query: Optional[RedashQuery] = Field(
-            default=None, description=""
-        )  # relationship
+        redash_query: Optional[RedashQuery] = Field(default=None, description="")  # relationship
 
     attributes: RedashVisualization.Attributes = Field(
         default_factory=lambda: RedashVisualization.Attributes(),

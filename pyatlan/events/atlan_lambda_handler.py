@@ -32,15 +32,11 @@ def process_event(handler: AtlanEventHandler, event, context):
         print("Matches a validation request - doing nothing and succeeding.")
         return {"statusCode": 200}
     if not valid_signature(SIGNING_SECRET, event.get("headers")):
-        raise IOError(
-            "Invalid signing secret received - will not process this request."
-        )
+        raise IOError("Invalid signing secret received - will not process this request.")
     atlan_event = json.loads(body)
     atlan_event = AtlanEvent(**atlan_event)
     if handler.validate_prerequisites(atlan_event):
-        if isinstance(atlan_event.payload, AtlanEventPayload) and isinstance(
-            atlan_event.payload.asset, Asset
-        ):
+        if isinstance(atlan_event.payload, AtlanEventPayload) and isinstance(atlan_event.payload.asset, Asset):
             current = handler.get_current_state(atlan_event.payload.asset)
             if current is not None:
                 updated = handler.calculate_changes(current)
