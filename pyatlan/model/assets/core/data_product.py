@@ -101,13 +101,21 @@ class DataProduct(DataMesh):
             )
         return product
 
-    def get_assets(self):
-        from pyatlan.client.atlan import AtlanClient
+    def get_assets(self, client: Optional['AtlanClient'] = None):
+        """
+        Reterieves list of all assets linked to the provided data product.
 
-        client = AtlanClient().get_default_client()
+        :param client: connectivity to an Atlan tenant
+
+        :raises AtlanError: if there is an issue interacting with the API
+        :returns: Index Search Results with list of all assets linked to the provided data product
+
+        """
+        from pyatlan.client.atlan import AtlanClient
+        client = AtlanClient.get_default_client() if not client else client
         dp_dsl = self.data_product_assets_d_s_l
-        json_object = json.loads(dp_dsl)
-        request = IndexSearchRequest(**json_object["query"])
+        json_object = json.loads(dp_dsl) if dp_dsl else {}
+        request = IndexSearchRequest(**json_object.get("query", {}))
         response = client.asset.search(request)
         return response
 
