@@ -51,10 +51,7 @@ class Badge(Asset, type_name="Badge"):
         badge_conditions: List[BadgeCondition],
     ) -> Badge:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -78,15 +75,11 @@ class Badge(Asset, type_name="Badge"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    BADGE_CONDITIONS: ClassVar[KeywordField] = KeywordField(
-        "badgeConditions", "badgeConditions"
-    )
+    BADGE_CONDITIONS: ClassVar[KeywordField] = KeywordField("badgeConditions", "badgeConditions")
     """
     List of conditions that determine the colors to diplay for various values.
     """
-    BADGE_METADATA_ATTRIBUTE: ClassVar[KeywordField] = KeywordField(
-        "badgeMetadataAttribute", "badgeMetadataAttribute"
-    )
+    BADGE_METADATA_ATTRIBUTE: ClassVar[KeywordField] = KeywordField("badgeMetadataAttribute", "badgeMetadataAttribute")
     """
     Custom metadata attribute for which to show the badge.
     """
@@ -108,11 +101,7 @@ class Badge(Asset, type_name="Badge"):
 
     @property
     def badge_metadata_attribute(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.badge_metadata_attribute
-        )
+        return None if self.attributes is None else self.attributes.badge_metadata_attribute
 
     @badge_metadata_attribute.setter
     def badge_metadata_attribute(self, badge_metadata_attribute: Optional[str]):
@@ -121,9 +110,7 @@ class Badge(Asset, type_name="Badge"):
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
 
     class Attributes(Asset.Attributes):
-        badge_conditions: Optional[List[BadgeCondition]] = Field(
-            default=None, description=""
-        )
+        badge_conditions: Optional[List[BadgeCondition]] = Field(default=None, description="")
         badge_metadata_attribute: Optional[str] = Field(default=None, description="")
 
         @classmethod
@@ -143,9 +130,7 @@ class Badge(Asset, type_name="Badge"):
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
             cm_id = CustomMetadataCache.get_id_for_name(cm_name)
-            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
-                set_name=cm_name, attr_name=cm_attribute
-            )
+            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(set_name=cm_name, attr_name=cm_attribute)
             return Badge.Attributes(
                 name=name,
                 qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",

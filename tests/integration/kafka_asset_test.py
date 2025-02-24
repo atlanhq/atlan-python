@@ -31,21 +31,15 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.KAFKA
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.KAFKA)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def kafka_topic(
-    client: AtlanClient, connection: Connection
-) -> Generator[KafkaTopic, None, None]:
+def kafka_topic(client: AtlanClient, connection: Connection) -> Generator[KafkaTopic, None, None]:
     assert connection.qualified_name
-    to_create = KafkaTopic.creator(
-        name=KAKFA_TOPIC_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = KafkaTopic.creator(name=KAKFA_TOPIC_NAME, connection_qualified_name=connection.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=KafkaTopic)[0]
     yield result
@@ -66,9 +60,7 @@ def test_kafka_topic(
 
 
 @pytest.fixture(scope="module")
-def consumer_group(
-    client: AtlanClient, kafka_topic: KafkaTopic
-) -> Generator[KafkaConsumerGroup, None, None]:
+def consumer_group(client: AtlanClient, kafka_topic: KafkaTopic) -> Generator[KafkaConsumerGroup, None, None]:
     assert kafka_topic.qualified_name
     to_create = KafkaConsumerGroup.creator(
         name=KAKFA_CONSUMER_GROUP_NAME,
@@ -138,9 +130,7 @@ def test_update_kafka_assets(
 
 
 def _retrieve_kafka_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(
-        asset.guid, asset_type=asset_type, ignore_relationships=False
-    )
+    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type, ignore_relationships=False)
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -185,9 +175,7 @@ def test_read_deleted_kafka_consumer_group(
     client: AtlanClient,
     consumer_group: KafkaConsumerGroup,
 ):
-    deleted = client.asset.get_by_guid(
-        consumer_group.guid, asset_type=KafkaConsumerGroup, ignore_relationships=False
-    )
+    deleted = client.asset.get_by_guid(consumer_group.guid, asset_type=KafkaConsumerGroup, ignore_relationships=False)
     assert deleted
     assert deleted.status == EntityStatus.DELETED
     assert deleted.guid == consumer_group.guid
@@ -200,9 +188,7 @@ def test_restore_kafka_consumer_group(
     consumer_group: KafkaConsumerGroup,
 ):
     assert consumer_group.qualified_name
-    assert client.asset.restore(
-        asset_type=KafkaConsumerGroup, qualified_name=consumer_group.qualified_name
-    )
+    assert client.asset.restore(asset_type=KafkaConsumerGroup, qualified_name=consumer_group.qualified_name)
     assert consumer_group.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=KafkaConsumerGroup,

@@ -8,10 +8,6 @@ from pyatlan.model.core import AtlanObject
 
 
 class LineageRef(AtlanObject):
-    qualified_name: str = Field(
-        default=None, description="Unique name of the asset being referenced."
-    )
-    name: str = Field(
-        default=None, description="Simple name of the asset being referenced."
-    )
+    qualified_name: str = Field(default=None, description="Unique name of the asset being referenced.")
+    name: str = Field(default=None, description="Simple name of the asset being referenced.")
     guid: str = Field(default=None, description="UUID of the asset being referenced.")

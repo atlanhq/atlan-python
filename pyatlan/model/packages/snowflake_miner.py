@@ -20,7 +20,9 @@ class SnowflakeMiner(AbstractMiner):
     _PACKAGE_NAME = "@atlan/snowflake-miner"
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE_MINER.value
     _PACKAGE_ICON = "https://docs.snowflake.com/en/_images/logo-snowflake-sans-text.png"
-    _PACKAGE_LOGO = "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg"  # noqa
+    _PACKAGE_LOGO = (
+        "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg"  # noqa
+    )
 
     def __init__(
         self,
@@ -51,9 +53,7 @@ class SnowflakeMiner(AbstractMiner):
             self._parameters.append(dict(name="database-name", value=database))
             self._parameters.append(dict(name="schema-name", value=schema))
         self._parameters.append(dict(name="extraction-method", value="query_history"))
-        self._parameters.append(
-            dict(name="miner-start-time-epoch", value=str(start_epoch))
-        )
+        self._parameters.append(dict(name="miner-start-time-epoch", value=str(start_epoch)))
         return self
 
     def s3(
@@ -85,14 +85,10 @@ class SnowflakeMiner(AbstractMiner):
         self._parameters.append(dict(name="extraction-s3-bucket", value=s3_bucket))
         self._parameters.append(dict(name="extraction-s3-prefix", value=s3_prefix))
         self._parameters.append(dict(name="sql-json-key", value=sql_query_key))
-        self._parameters.append(
-            dict(name="catalog-json-key", value=default_database_key)
-        )
+        self._parameters.append(dict(name="catalog-json-key", value=default_database_key))
         self._parameters.append(dict(name="schema-json-key", value=default_schema_key))
         self._parameters.append(dict(name="session-json-key", value=session_id_key))
-        s3_bucket_region and self._parameters.append(
-            dict(name="extraction-s3-region", value=s3_bucket_region)
-        )
+        s3_bucket_region and self._parameters.append(dict(name="extraction-s3-region", value=s3_bucket_region))
         return self
 
     def exclude_users(self, users: List[str]) -> SnowflakeMiner:
@@ -135,9 +131,7 @@ class SnowflakeMiner(AbstractMiner):
         :returns: miner, set to include / exclude native lineage from Snowflake
         """
         self._advanced_config = True
-        self._parameters.append(
-            dict(name="native-lineage-active", value="true" if enabled else "false")
-        )
+        self._parameters.append(dict(name="native-lineage-active", value="true" if enabled else "false"))
         return self
 
     def custom_config(self, config: Dict) -> SnowflakeMiner:
@@ -148,9 +142,7 @@ class SnowflakeMiner(AbstractMiner):
         :param config: custom configuration dict
         :returns: miner, set to include custom configuration
         """
-        config and self._parameters.append(
-            dict(name="control-config", value=dumps(config))
-        )
+        config and self._parameters.append(dict(name="control-config", value=dumps(config)))
         self._advanced_config = True
         return self
 
@@ -181,7 +173,7 @@ class SnowflakeMiner(AbstractMiner):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "warehouse,miner",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6482067592337",
-                "orchestration.atlan.com/emoji": "\uD83D\uDE80",
+                "orchestration.atlan.com/emoji": "\ud83d\ude80",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
@@ -189,7 +181,7 @@ class SnowflakeMiner(AbstractMiner):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to mine query history data from Snowflake and store it for further processing. The data mined will be used for generating lineage and usage metrics.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"snowflake\",\"warehouse\",\"connector\",\"miner\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["snowflake","warehouse","connector","miner"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

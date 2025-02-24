@@ -96,15 +96,9 @@ class SalesforceOrganization(Salesforce):
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(default=None, description="")
-        reports: Optional[List[SalesforceReport]] = Field(
-            default=None, description=""
-        )  # relationship
-        objects: Optional[List[SalesforceObject]] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboards: Optional[List[SalesforceDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
+        reports: Optional[List[SalesforceReport]] = Field(default=None, description="")  # relationship
+        objects: Optional[List[SalesforceObject]] = Field(default=None, description="")  # relationship
+        dashboards: Optional[List[SalesforceDashboard]] = Field(default=None, description="")  # relationship
 
     attributes: SalesforceOrganization.Attributes = Field(
         default_factory=lambda: SalesforceOrganization.Attributes(),

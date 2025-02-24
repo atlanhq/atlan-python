@@ -45,9 +45,7 @@ class LookerTile(Looker):
     """
     Identifier for the query used to build this tile, from Looker.
     """
-    RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
-        "resultMakerID", "resultMakerID"
-    )
+    RESULT_MAKER_ID: ClassVar[NumericField] = NumericField("resultMakerID", "resultMakerID")
     """
     Identifier of the ResultMarkerLookup entry, from Looker.
     """
@@ -209,16 +207,10 @@ class LookerTile(Looker):
         result_maker_i_d: Optional[int] = Field(default=None, description="")
         subtitle_text: Optional[str] = Field(default=None, description="")
         look_id: Optional[int] = Field(default=None, description="")
-        dashboard: Optional[LookerDashboard] = Field(
-            default=None, description=""
-        )  # relationship
-        query: Optional[LookerQuery] = Field(
-            default=None, description=""
-        )  # relationship
+        dashboard: Optional[LookerDashboard] = Field(default=None, description="")  # relationship
+        query: Optional[LookerQuery] = Field(default=None, description="")  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
+        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
 
     attributes: LookerTile.Attributes = Field(
         default_factory=lambda: LookerTile.Attributes(),

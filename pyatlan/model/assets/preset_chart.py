@@ -62,16 +62,11 @@ class PresetChart(Preset):
     @init_guid
     def create(cls, *, name: str, preset_dashboard_qualified_name: str) -> PresetChart:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(
-            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
-        )
+        return cls.creator(name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name)
 
     type_name: str = Field(default="PresetChart", allow_mutation=False)
 
@@ -92,9 +87,7 @@ class PresetChart(Preset):
     """
 
     """
-    PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
-        "presetChartFormData", "presetChartFormData"
-    )
+    PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField("presetChartFormData", "presetChartFormData")
     """
 
     """
@@ -112,27 +105,17 @@ class PresetChart(Preset):
 
     @property
     def preset_chart_description_markdown(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_chart_description_markdown
-        )
+        return None if self.attributes is None else self.attributes.preset_chart_description_markdown
 
     @preset_chart_description_markdown.setter
-    def preset_chart_description_markdown(
-        self, preset_chart_description_markdown: Optional[str]
-    ):
+    def preset_chart_description_markdown(self, preset_chart_description_markdown: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_chart_description_markdown = (
-            preset_chart_description_markdown
-        )
+        self.attributes.preset_chart_description_markdown = preset_chart_description_markdown
 
     @property
     def preset_chart_form_data(self) -> Optional[Dict[str, str]]:
-        return (
-            None if self.attributes is None else self.attributes.preset_chart_form_data
-        )
+        return None if self.attributes is None else self.attributes.preset_chart_form_data
 
     @preset_chart_form_data.setter
     def preset_chart_form_data(self, preset_chart_form_data: Optional[Dict[str, str]]):
@@ -151,15 +134,9 @@ class PresetChart(Preset):
         self.attributes.preset_dashboard = preset_dashboard
 
     class Attributes(Preset.Attributes):
-        preset_chart_description_markdown: Optional[str] = Field(
-            default=None, description=""
-        )
-        preset_chart_form_data: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            default=None, description=""
-        )  # relationship
+        preset_chart_description_markdown: Optional[str] = Field(default=None, description="")
+        preset_chart_form_data: Optional[Dict[str, str]] = Field(default=None, description="")
+        preset_dashboard: Optional[PresetDashboard] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -175,9 +152,7 @@ class PresetChart(Preset):
                 [name, preset_dashboard_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     preset_dashboard_qualified_name,
@@ -191,9 +166,7 @@ class PresetChart(Preset):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{preset_dashboard_qualified_name}/{name}",
                 connector_name=connector_name,
-                preset_dashboard=PresetDashboard.ref_by_qualified_name(
-                    preset_dashboard_qualified_name
-                ),
+                preset_dashboard=PresetDashboard.ref_by_qualified_name(preset_dashboard_qualified_name),
             )
 
     attributes: PresetChart.Attributes = Field(

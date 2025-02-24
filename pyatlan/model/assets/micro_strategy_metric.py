@@ -35,12 +35,10 @@ class MicroStrategyMetric(MicroStrategy):
     """
     Text specifiying this metric's expression.
     """
-    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "microStrategyAttributeQualifiedNames",
-            "microStrategyAttributeQualifiedNames",
-            "microStrategyAttributeQualifiedNames.text",
-        )
+    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames.text",
     )
     """
     List of unique names of attributes related to this metric.
@@ -69,12 +67,10 @@ class MicroStrategyMetric(MicroStrategy):
     """
     List of simple names of facts related to this metric.
     """
-    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "microStrategyMetricParentQualifiedNames",
-            "microStrategyMetricParentQualifiedNames",
-            "microStrategyMetricParentQualifiedNames.text",
-        )
+    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames.text",
     )
     """
     List of unique names of parent metrics of this metric.
@@ -88,9 +84,7 @@ class MicroStrategyMetric(MicroStrategy):
     List of simple names of parent metrics of this metric.
     """
 
-    MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField(
-        "microStrategyMetricParents"
-    )
+    MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField("microStrategyMetricParents")
     """
     TBC
     """
@@ -98,9 +92,7 @@ class MicroStrategyMetric(MicroStrategy):
     """
     TBC
     """
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
-        "microStrategyReports"
-    )
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField("microStrategyReports")
     """
     TBC
     """
@@ -108,21 +100,15 @@ class MicroStrategyMetric(MicroStrategy):
     """
     TBC
     """
-    MICRO_STRATEGY_METRIC_CHILDREN: ClassVar[RelationField] = RelationField(
-        "microStrategyMetricChildren"
-    )
+    MICRO_STRATEGY_METRIC_CHILDREN: ClassVar[RelationField] = RelationField("microStrategyMetricChildren")
     """
     TBC
     """
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
-        "microStrategyProject"
-    )
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField("microStrategyProject")
     """
     TBC
     """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "microStrategyAttributes"
-    )
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField("microStrategyAttributes")
     """
     TBC
     """
@@ -146,81 +132,47 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_expression(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_expression
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metric_expression
 
     @micro_strategy_metric_expression.setter
-    def micro_strategy_metric_expression(
-        self, micro_strategy_metric_expression: Optional[str]
-    ):
+    def micro_strategy_metric_expression(self, micro_strategy_metric_expression: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_expression = (
-            micro_strategy_metric_expression
-        )
+        self.attributes.micro_strategy_metric_expression = micro_strategy_metric_expression
 
     @property
     def micro_strategy_attribute_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_attribute_qualified_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_attribute_qualified_names
 
     @micro_strategy_attribute_qualified_names.setter
-    def micro_strategy_attribute_qualified_names(
-        self, micro_strategy_attribute_qualified_names: Optional[Set[str]]
-    ):
+    def micro_strategy_attribute_qualified_names(self, micro_strategy_attribute_qualified_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_attribute_qualified_names = (
-            micro_strategy_attribute_qualified_names
-        )
+        self.attributes.micro_strategy_attribute_qualified_names = micro_strategy_attribute_qualified_names
 
     @property
     def micro_strategy_attribute_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_attribute_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_attribute_names
 
     @micro_strategy_attribute_names.setter
-    def micro_strategy_attribute_names(
-        self, micro_strategy_attribute_names: Optional[Set[str]]
-    ):
+    def micro_strategy_attribute_names(self, micro_strategy_attribute_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
 
     @property
     def micro_strategy_fact_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_fact_qualified_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_fact_qualified_names
 
     @micro_strategy_fact_qualified_names.setter
-    def micro_strategy_fact_qualified_names(
-        self, micro_strategy_fact_qualified_names: Optional[Set[str]]
-    ):
+    def micro_strategy_fact_qualified_names(self, micro_strategy_fact_qualified_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_fact_qualified_names = (
-            micro_strategy_fact_qualified_names
-        )
+        self.attributes.micro_strategy_fact_qualified_names = micro_strategy_fact_qualified_names
 
     @property
     def micro_strategy_fact_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_fact_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_fact_names
 
     @micro_strategy_fact_names.setter
     def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[Set[str]]):
@@ -230,11 +182,7 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_parent_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parent_qualified_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metric_parent_qualified_names
 
     @micro_strategy_metric_parent_qualified_names.setter
     def micro_strategy_metric_parent_qualified_names(
@@ -242,40 +190,24 @@ class MicroStrategyMetric(MicroStrategy):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_parent_qualified_names = (
-            micro_strategy_metric_parent_qualified_names
-        )
+        self.attributes.micro_strategy_metric_parent_qualified_names = micro_strategy_metric_parent_qualified_names
 
     @property
     def micro_strategy_metric_parent_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parent_names
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metric_parent_names
 
     @micro_strategy_metric_parent_names.setter
-    def micro_strategy_metric_parent_names(
-        self, micro_strategy_metric_parent_names: Optional[Set[str]]
-    ):
+    def micro_strategy_metric_parent_names(self, micro_strategy_metric_parent_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_metric_parent_names = (
-            micro_strategy_metric_parent_names
-        )
+        self.attributes.micro_strategy_metric_parent_names = micro_strategy_metric_parent_names
 
     @property
     def micro_strategy_metric_parents(self) -> Optional[List[MicroStrategyMetric]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_parents
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metric_parents
 
     @micro_strategy_metric_parents.setter
-    def micro_strategy_metric_parents(
-        self, micro_strategy_metric_parents: Optional[List[MicroStrategyMetric]]
-    ):
+    def micro_strategy_metric_parents(self, micro_strategy_metric_parents: Optional[List[MicroStrategyMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
@@ -285,23 +217,17 @@ class MicroStrategyMetric(MicroStrategy):
         return None if self.attributes is None else self.attributes.micro_strategy_facts
 
     @micro_strategy_facts.setter
-    def micro_strategy_facts(
-        self, micro_strategy_facts: Optional[List[MicroStrategyFact]]
-    ):
+    def micro_strategy_facts(self, micro_strategy_facts: Optional[List[MicroStrategyFact]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
     def micro_strategy_reports(self) -> Optional[List[MicroStrategyReport]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_reports
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_reports
 
     @micro_strategy_reports.setter
-    def micro_strategy_reports(
-        self, micro_strategy_reports: Optional[List[MicroStrategyReport]]
-    ):
+    def micro_strategy_reports(self, micro_strategy_reports: Optional[List[MicroStrategyReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_reports = micro_strategy_reports
@@ -311,99 +237,61 @@ class MicroStrategyMetric(MicroStrategy):
         return None if self.attributes is None else self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
-    def micro_strategy_cubes(
-        self, micro_strategy_cubes: Optional[List[MicroStrategyCube]]
-    ):
+    def micro_strategy_cubes(self, micro_strategy_cubes: Optional[List[MicroStrategyCube]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
     def micro_strategy_metric_children(self) -> Optional[List[MicroStrategyMetric]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_metric_children
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_metric_children
 
     @micro_strategy_metric_children.setter
-    def micro_strategy_metric_children(
-        self, micro_strategy_metric_children: Optional[List[MicroStrategyMetric]]
-    ):
+    def micro_strategy_metric_children(self, micro_strategy_metric_children: Optional[List[MicroStrategyMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
+    def micro_strategy_project(self, micro_strategy_project: Optional[MicroStrategyProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
     def micro_strategy_attributes(self) -> Optional[List[MicroStrategyAttribute]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_attributes
-        )
+        return None if self.attributes is None else self.attributes.micro_strategy_attributes
 
     @micro_strategy_attributes.setter
-    def micro_strategy_attributes(
-        self, micro_strategy_attributes: Optional[List[MicroStrategyAttribute]]
-    ):
+    def micro_strategy_attributes(self, micro_strategy_attributes: Optional[List[MicroStrategyAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_metric_expression: Optional[str] = Field(
-            default=None, description=""
-        )
-        micro_strategy_attribute_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_attribute_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_fact_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_fact_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_metric_parent_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        micro_strategy_metric_parent_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
+        micro_strategy_metric_expression: Optional[str] = Field(default=None, description="")
+        micro_strategy_attribute_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_attribute_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_fact_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_fact_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_metric_parent_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        micro_strategy_metric_parent_names: Optional[Set[str]] = Field(default=None, description="")
         micro_strategy_metric_parents: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(
-            default=None, description=""
-        )  # relationship
+        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(default=None, description="")  # relationship
         micro_strategy_reports: Optional[List[MicroStrategyReport]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_cubes: Optional[List[MicroStrategyCube]] = Field(
-            default=None, description=""
-        )  # relationship
+        micro_strategy_cubes: Optional[List[MicroStrategyCube]] = Field(default=None, description="")  # relationship
         micro_strategy_metric_children: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            default=None, description=""
-        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(default=None, description="")  # relationship
         micro_strategy_attributes: Optional[List[MicroStrategyAttribute]] = Field(
             default=None, description=""
         )  # relationship

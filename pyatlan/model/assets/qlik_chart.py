@@ -29,27 +29,19 @@ class QlikChart(Qlik):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_CHART_SUBTITLE: ClassVar[TextField] = TextField(
-        "qlikChartSubtitle", "qlikChartSubtitle"
-    )
+    QLIK_CHART_SUBTITLE: ClassVar[TextField] = TextField("qlikChartSubtitle", "qlikChartSubtitle")
     """
     Subtitle of this chart.
     """
-    QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField(
-        "qlikChartFootnote", "qlikChartFootnote"
-    )
+    QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField("qlikChartFootnote", "qlikChartFootnote")
     """
     Footnote of this chart.
     """
-    QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField(
-        "qlikChartOrientation", "qlikChartOrientation"
-    )
+    QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField("qlikChartOrientation", "qlikChartOrientation")
     """
     Orientation of this chart.
     """
-    QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
-        "qlikChartType", "qlikChartType"
-    )
+    QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField("qlikChartType", "qlikChartType")
     """
     Subtype of this chart, for example: bar, graph, pie, etc.
     """
@@ -89,9 +81,7 @@ class QlikChart(Qlik):
 
     @property
     def qlik_chart_orientation(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.qlik_chart_orientation
-        )
+        return None if self.attributes is None else self.attributes.qlik_chart_orientation
 
     @qlik_chart_orientation.setter
     def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
@@ -124,9 +114,7 @@ class QlikChart(Qlik):
         qlik_chart_footnote: Optional[str] = Field(default=None, description="")
         qlik_chart_orientation: Optional[str] = Field(default=None, description="")
         qlik_chart_type: Optional[str] = Field(default=None, description="")
-        qlik_sheet: Optional[QlikSheet] = Field(
-            default=None, description=""
-        )  # relationship
+        qlik_sheet: Optional[QlikSheet] = Field(default=None, description="")  # relationship
 
     attributes: QlikChart.Attributes = Field(
         default_factory=lambda: QlikChart.Attributes(),

@@ -59,9 +59,7 @@ class View(SQL):
         database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> View:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
+        validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = View.Attributes.create(
             name=name,
             schema_qualified_name=schema_qualified_name,
@@ -76,10 +74,7 @@ class View(SQL):
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> View:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -111,15 +106,11 @@ class View(SQL):
     """
     Size of this view, in bytes.
     """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("isQueryPreview", "isQueryPreview")
     """
     Whether preview queries are allowed on this view (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
     """
     Configuration for preview queries on this view.
     """
@@ -278,21 +269,13 @@ class View(SQL):
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         definition: Optional[str] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
+        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
+        queries: Optional[List[Query]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -306,13 +289,9 @@ class View(SQL):
             database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> View.Attributes:
-            validate_required_fields(
-                ["name, schema_qualified_name"], [name, schema_qualified_name]
-            )
+            validate_required_fields(["name, schema_qualified_name"], [name, schema_qualified_name])
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     schema_qualified_name, "schema_qualified_name", 5
@@ -323,10 +302,7 @@ class View(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = (
-                database_qualified_name
-                or f"{connection_qualified_name}/{database_name}"
-            )
+            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
             atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
 
             return View.Attributes(

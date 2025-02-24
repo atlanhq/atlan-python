@@ -34,33 +34,23 @@ class LookerLook(Looker):
     """
     Name of the folder in which the Look is organized.
     """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
-    )
+    SOURCE_USER_ID: ClassVar[NumericField] = NumericField("sourceUserId", "sourceUserId")
     """
     Identifier of the user who created the Look, from Looker.
     """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
-    )
+    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField("sourceViewCount", "sourceViewCount")
     """
     Number of times the look has been viewed in the Looker web UI.
     """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
-    )
+    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField("sourcelastUpdaterId", "sourcelastUpdaterId")
     """
     Identifier of the user that last updated the Look, from Looker.
     """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
-    )
+    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField("sourceLastAccessedAt", "sourceLastAccessedAt")
     """
     Time (epoch) when the Look was last accessed by a user, in milliseconds.
     """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
-    )
+    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField("sourceLastViewedAt", "sourceLastViewedAt")
     """
     Time (epoch) when the Look was last viewed by a user, in milliseconds.
     """
@@ -70,9 +60,7 @@ class LookerLook(Looker):
     """
     Identifier of the Look's content metadata, from Looker.
     """
-    SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField(
-        "sourceQueryId", "sourceQueryId"
-    )
+    SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField("sourceQueryId", "sourceQueryId")
     """
     Identifier of the query for the Look, from Looker.
     """
@@ -156,9 +144,7 @@ class LookerLook(Looker):
 
     @property
     def sourcelast_updater_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
-        )
+        return None if self.attributes is None else self.attributes.sourcelast_updater_id
 
     @sourcelast_updater_id.setter
     def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
@@ -168,9 +154,7 @@ class LookerLook(Looker):
 
     @property
     def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
+        return None if self.attributes is None else self.attributes.source_last_accessed_at
 
     @source_last_accessed_at.setter
     def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
@@ -180,9 +164,7 @@ class LookerLook(Looker):
 
     @property
     def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
+        return None if self.attributes is None else self.attributes.source_last_viewed_at
 
     @source_last_viewed_at.setter
     def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
@@ -192,11 +174,7 @@ class LookerLook(Looker):
 
     @property
     def source_content_metadata_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.source_content_metadata_id
-        )
+        return None if self.attributes is None else self.attributes.source_content_metadata_id
 
     @source_content_metadata_id.setter
     def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
@@ -289,29 +267,17 @@ class LookerLook(Looker):
         source_user_id: Optional[int] = Field(default=None, description="")
         source_view_count: Optional[int] = Field(default=None, description="")
         sourcelast_updater_id: Optional[int] = Field(default=None, description="")
-        source_last_accessed_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        source_last_accessed_at: Optional[datetime] = Field(default=None, description="")
         source_last_viewed_at: Optional[datetime] = Field(default=None, description="")
         source_content_metadata_id: Optional[int] = Field(default=None, description="")
         source_query_id: Optional[int] = Field(default=None, description="")
         model_name: Optional[str] = Field(default=None, description="")
         tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
-        model: Optional[LookerModel] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboard: Optional[LookerDashboard] = Field(
-            default=None, description=""
-        )  # relationship
-        query: Optional[LookerQuery] = Field(
-            default=None, description=""
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            default=None, description=""
-        )  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
+        model: Optional[LookerModel] = Field(default=None, description="")  # relationship
+        dashboard: Optional[LookerDashboard] = Field(default=None, description="")  # relationship
+        query: Optional[LookerQuery] = Field(default=None, description="")  # relationship
+        folder: Optional[LookerFolder] = Field(default=None, description="")  # relationship
+        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
 
     attributes: LookerLook.Attributes = Field(
         default_factory=lambda: LookerLook.Attributes(),

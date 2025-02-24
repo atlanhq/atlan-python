@@ -65,9 +65,7 @@ class RoleCache:
 
     def _refresh_cache(self) -> None:
         with self.lock:
-            response = self.role_client.get(
-                limit=100, post_filter='{"name":{"$ilike":"$%"}}'
-            )
+            response = self.role_client.get(limit=100, post_filter='{"name":{"$ilike":"$%"}}')
             if response is not None:
                 self.cache_by_id = {}
                 self.map_id_to_name = {}

@@ -29,9 +29,7 @@ class QlikSheet(Qlik):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QLIK_SHEET_IS_APPROVED: ClassVar[BooleanField] = BooleanField(
-        "qlikSheetIsApproved", "qlikSheetIsApproved"
-    )
+    QLIK_SHEET_IS_APPROVED: ClassVar[BooleanField] = BooleanField("qlikSheetIsApproved", "qlikSheetIsApproved")
     """
     Whether this is approved (true) or not (false).
     """
@@ -53,9 +51,7 @@ class QlikSheet(Qlik):
 
     @property
     def qlik_sheet_is_approved(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.qlik_sheet_is_approved
-        )
+        return None if self.attributes is None else self.attributes.qlik_sheet_is_approved
 
     @qlik_sheet_is_approved.setter
     def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
@@ -85,12 +81,8 @@ class QlikSheet(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_sheet_is_approved: Optional[bool] = Field(default=None, description="")
-        qlik_app: Optional[QlikApp] = Field(
-            default=None, description=""
-        )  # relationship
-        qlik_charts: Optional[List[QlikChart]] = Field(
-            default=None, description=""
-        )  # relationship
+        qlik_app: Optional[QlikApp] = Field(default=None, description="")  # relationship
+        qlik_charts: Optional[List[QlikChart]] = Field(default=None, description="")  # relationship
 
     attributes: QlikSheet.Attributes = Field(
         default_factory=lambda: QlikSheet.Attributes(),

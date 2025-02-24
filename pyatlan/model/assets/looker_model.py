@@ -126,19 +126,11 @@ class LookerModel(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(default=None, description="")
-        explores: Optional[List[LookerExplore]] = Field(
-            default=None, description=""
-        )  # relationship
-        project: Optional[LookerProject] = Field(
-            default=None, description=""
-        )  # relationship
+        explores: Optional[List[LookerExplore]] = Field(default=None, description="")  # relationship
+        project: Optional[LookerProject] = Field(default=None, description="")  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
-        queries: Optional[List[LookerQuery]] = Field(
-            default=None, description=""
-        )  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
+        queries: Optional[List[LookerQuery]] = Field(default=None, description="")  # relationship
+        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
 
     attributes: LookerModel.Attributes = Field(
         default_factory=lambda: LookerModel.Attributes(),

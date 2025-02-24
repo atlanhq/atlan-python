@@ -100,9 +100,7 @@ class TestPackageConfig:
     )
     def test_validation(self, good_or_bad_labels, good_or_bad_annotations, msg):
         with pytest.raises(ValidationError, match=msg):
-            PackageConfig(
-                labels=good_or_bad_labels, annotations=good_or_bad_annotations
-            )
+            PackageConfig(labels=good_or_bad_labels, annotations=good_or_bad_annotations)
 
     def test_constructor(self, labels, annotations):
         sut = PackageConfig(labels=labels, annotations=annotations)
@@ -155,9 +153,7 @@ class TestPackageWriter:
     ],
     indirect=["good_or_bad_custom_package"],
 )
-def test_generate_parameter_validation(
-    good_or_bad_custom_package, path, operation, msg
-):
+def test_generate_parameter_validation(good_or_bad_custom_package, path, operation, msg):
     with pytest.raises(ValidationError, match=msg):
         generate(pkg=good_or_bad_custom_package, path=path, operation=operation)
 

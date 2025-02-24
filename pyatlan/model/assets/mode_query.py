@@ -33,9 +33,7 @@ class ModeQuery(Mode):
     """
 
     """
-    MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
-        "modeReportImportCount", "modeReportImportCount"
-    )
+    MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField("modeReportImportCount", "modeReportImportCount")
     """
 
     """
@@ -68,11 +66,7 @@ class ModeQuery(Mode):
 
     @property
     def mode_report_import_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mode_report_import_count
-        )
+        return None if self.attributes is None else self.attributes.mode_report_import_count
 
     @mode_report_import_count.setter
     def mode_report_import_count(self, mode_report_import_count: Optional[int]):
@@ -103,12 +97,8 @@ class ModeQuery(Mode):
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(default=None, description="")
         mode_report_import_count: Optional[int] = Field(default=None, description="")
-        mode_report: Optional[ModeReport] = Field(
-            default=None, description=""
-        )  # relationship
-        mode_charts: Optional[List[ModeChart]] = Field(
-            default=None, description=""
-        )  # relationship
+        mode_report: Optional[ModeReport] = Field(default=None, description="")  # relationship
+        mode_charts: Optional[List[ModeChart]] = Field(default=None, description="")  # relationship
 
     attributes: ModeQuery.Attributes = Field(
         default_factory=lambda: ModeQuery.Attributes(),

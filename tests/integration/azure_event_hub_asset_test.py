@@ -41,13 +41,9 @@ def connection(client: AtlanClient) -> Generator[Connection, None, None]:
 
 
 @pytest.fixture(scope="module")
-def event_hub(
-    client: AtlanClient, connection: Connection
-) -> Generator[AzureEventHub, None, None]:
+def event_hub(client: AtlanClient, connection: Connection) -> Generator[AzureEventHub, None, None]:
     assert connection.qualified_name
-    to_create = AzureEventHub.creator(
-        name=EVENT_HUB_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = AzureEventHub.creator(name=EVENT_HUB_NAME, connection_qualified_name=connection.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=AzureEventHub)[0]
     yield result
@@ -68,9 +64,7 @@ def test_event_hub(
 
 
 @pytest.fixture(scope="module")
-def consumer_group(
-    client: AtlanClient, event_hub: AzureEventHub
-) -> Generator[AzureEventHubConsumerGroup, None, None]:
+def consumer_group(client: AtlanClient, event_hub: AzureEventHub) -> Generator[AzureEventHubConsumerGroup, None, None]:
     assert event_hub.qualified_name
     to_create = AzureEventHubConsumerGroup.creator(
         name=EVENT_HUB_CONSUMER_GROUP_NAME,
@@ -140,9 +134,7 @@ def test_update_event_hub_assets(
 
 
 def _retrieve_event_hub_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(
-        asset.guid, asset_type=asset_type, ignore_relationships=False
-    )
+    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type, ignore_relationships=False)
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid

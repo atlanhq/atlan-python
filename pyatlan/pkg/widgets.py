@@ -135,9 +135,7 @@ class APITokenSelector(AbstractUIElement):
         :param help: informational text to place in a hover-over to describe the use of the input
         :param grid: sizing of the input on the UI (8 is full-width, 4 is half-width)
         """
-        widget = APITokenSelectorWidget(
-            label=label, hidden=hidden, help=help, grid=grid
-        )
+        widget = APITokenSelectorWidget(label=label, hidden=hidden, help=help, grid=grid)
         super().__init__(type_="string", required=required, ui=widget)
 
 
@@ -197,9 +195,7 @@ class BooleanInput(AbstractUIElement):
 
 @dataclasses.dataclass
 class ConnectionCreatorWidget(AbstractWidget):
-    def __init__(
-        self, label: str, hidden: bool = False, help: str = "", placeholder: str = ""
-    ):
+    def __init__(self, label: str, hidden: bool = False, help: str = "", placeholder: str = ""):
         super().__init__(
             widget="connection",
             label=label,
@@ -236,9 +232,7 @@ class ConnectionCreator(AbstractUIElement):
         :param help: informational text to place in a hover-over to describe the use of the input
         :param placeholder: example text to place within the widget to exemplify its use
         """
-        widget = ConnectionCreatorWidget(
-            label=label, hidden=hidden, help=help, placeholder=placeholder
-        )
+        widget = ConnectionCreatorWidget(label=label, hidden=hidden, help=help, placeholder=placeholder)
         super().__init__(type_="string", required=required, ui=widget)
 
 
@@ -425,9 +419,7 @@ class DateInputWidget(AbstractWidget):
         start: int = 1,
         grid: int = 4,
     ):
-        super().__init__(
-            widget="date", label=label, hidden=hidden, help=help, grid=grid
-        )
+        super().__init__(widget="date", label=label, hidden=hidden, help=help, grid=grid)
         self.start = start
         self.max = max
         self.min = min

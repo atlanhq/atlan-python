@@ -73,9 +73,7 @@ class Procedure(SQL):
             ["name", "qualified_name", "definition"],
             [name, qualified_name, definition],
         )
-        procedure = Procedure(
-            attributes=Procedure.Attributes(qualified_name=qualified_name, name=name)
-        )
+        procedure = Procedure(attributes=Procedure.Attributes(qualified_name=qualified_name, name=name))
         procedure.definition = definition
         return procedure
 
@@ -136,9 +134,7 @@ class Procedure(SQL):
 
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(default=None, description="")
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -159,9 +155,7 @@ class Procedure(SQL):
             )
             assert schema_qualified_name  # noqa: S101
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     schema_qualified_name, "schema_qualified_name", 5
@@ -172,10 +166,7 @@ class Procedure(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = (
-                database_qualified_name
-                or f"{connection_qualified_name}/{database_name}"
-            )
+            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
 
             return Procedure.Attributes(
                 name=name,

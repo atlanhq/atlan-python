@@ -40,9 +40,7 @@ class ModelVersion(Model):
     """
     TBC
     """
-    MODEL_VERSION_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelVersionEntities"
-    )
+    MODEL_VERSION_ENTITIES: ClassVar[RelationField] = RelationField("modelVersionEntities")
     """
     TBC
     """
@@ -55,11 +53,7 @@ class ModelVersion(Model):
 
     @property
     def model_version_entity_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_version_entity_count
-        )
+        return None if self.attributes is None else self.attributes.model_version_entity_count
 
     @model_version_entity_count.setter
     def model_version_entity_count(self, model_version_entity_count: Optional[int]):
@@ -79,26 +73,18 @@ class ModelVersion(Model):
 
     @property
     def model_version_entities(self) -> Optional[List[ModelEntity]]:
-        return (
-            None if self.attributes is None else self.attributes.model_version_entities
-        )
+        return None if self.attributes is None else self.attributes.model_version_entities
 
     @model_version_entities.setter
-    def model_version_entities(
-        self, model_version_entities: Optional[List[ModelEntity]]
-    ):
+    def model_version_entities(self, model_version_entities: Optional[List[ModelEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_version_entities = model_version_entities
 
     class Attributes(Model.Attributes):
         model_version_entity_count: Optional[int] = Field(default=None, description="")
-        model_data_model: Optional[ModelDataModel] = Field(
-            default=None, description=""
-        )  # relationship
-        model_version_entities: Optional[List[ModelEntity]] = Field(
-            default=None, description=""
-        )  # relationship
+        model_data_model: Optional[ModelDataModel] = Field(default=None, description="")  # relationship
+        model_version_entities: Optional[List[ModelEntity]] = Field(default=None, description="")  # relationship
 
     attributes: ModelVersion.Attributes = Field(
         default_factory=lambda: ModelVersion.Attributes(),

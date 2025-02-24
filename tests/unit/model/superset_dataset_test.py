@@ -36,10 +36,7 @@ def test_create():
     assert sut.name == SUPERSET_DATASET_NAME
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
-    assert (
-        sut.qualified_name
-        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_DATASET_NAME}"
-    )
+    assert sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_DATASET_NAME}"
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
 
@@ -53,10 +50,7 @@ def test_creator():
     assert sut.name == SUPERSET_DATASET_NAME
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
-    assert (
-        sut.qualified_name
-        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_DATASET_NAME}"
-    )
+    assert sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_DATASET_NAME}"
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
 
@@ -71,9 +65,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        SupersetDataset.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        SupersetDataset.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():

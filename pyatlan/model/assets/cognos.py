@@ -54,9 +54,7 @@ class Cognos(BI):
     """
     Qualified name of the parent asset in Cognos
     """
-    COGNOS_VERSION: ClassVar[KeywordField] = KeywordField(
-        "cognosVersion", "cognosVersion"
-    )
+    COGNOS_VERSION: ClassVar[KeywordField] = KeywordField("cognosVersion", "cognosVersion")
     """
     Version of the Cognos asset
     """
@@ -64,21 +62,15 @@ class Cognos(BI):
     """
     Cognos type of the Cognos asset. E.g. report, dashboard, package, etc.
     """
-    COGNOS_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
-        "cognosIsHidden", "cognosIsHidden"
-    )
+    COGNOS_IS_HIDDEN: ClassVar[BooleanField] = BooleanField("cognosIsHidden", "cognosIsHidden")
     """
     Whether the Cognos asset is hidden from the ui
     """
-    COGNOS_IS_DISABLED: ClassVar[BooleanField] = BooleanField(
-        "cognosIsDisabled", "cognosIsDisabled"
-    )
+    COGNOS_IS_DISABLED: ClassVar[BooleanField] = BooleanField("cognosIsDisabled", "cognosIsDisabled")
     """
     Whether the Cognos asset is diabled
     """
-    COGNOS_DEFAULT_SCREEN_TIP: ClassVar[TextField] = TextField(
-        "cognosDefaultScreenTip", "cognosDefaultScreenTip"
-    )
+    COGNOS_DEFAULT_SCREEN_TIP: ClassVar[TextField] = TextField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
     """
     Tooltip text present for the Cognos asset
     """
@@ -127,11 +119,7 @@ class Cognos(BI):
 
     @property
     def cognos_parent_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cognos_parent_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.cognos_parent_qualified_name
 
     @cognos_parent_qualified_name.setter
     def cognos_parent_qualified_name(self, cognos_parent_qualified_name: Optional[str]):
@@ -181,11 +169,7 @@ class Cognos(BI):
 
     @property
     def cognos_default_screen_tip(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cognos_default_screen_tip
-        )
+        return None if self.attributes is None else self.attributes.cognos_default_screen_tip
 
     @cognos_default_screen_tip.setter
     def cognos_default_screen_tip(self, cognos_default_screen_tip: Optional[str]):
@@ -197,9 +181,7 @@ class Cognos(BI):
         cognos_id: Optional[str] = Field(default=None, description="")
         cognos_path: Optional[str] = Field(default=None, description="")
         cognos_parent_name: Optional[str] = Field(default=None, description="")
-        cognos_parent_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        cognos_parent_qualified_name: Optional[str] = Field(default=None, description="")
         cognos_version: Optional[str] = Field(default=None, description="")
         cognos_type: Optional[str] = Field(default=None, description="")
         cognos_is_hidden: Optional[bool] = Field(default=None, description="")

@@ -59,9 +59,7 @@ class Table(SQL):
         database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Table:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
+        validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = Table.Attributes.create(
             name=name,
             schema_qualified_name=schema_qualified_name,
@@ -76,10 +74,7 @@ class Table(SQL):
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> Table:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -119,51 +114,35 @@ class Table(SQL):
     """
     Whether this table is temporary (true) or not (false).
     """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("isQueryPreview", "isQueryPreview")
     """
     Whether preview queries are allowed for this table (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
     """
     Configuration for preview queries.
     """
-    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
-        "externalLocation", "externalLocation"
-    )
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField("externalLocation", "externalLocation")
     """
     External location of this table, for example: an S3 object location.
     """
-    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
-        "externalLocationRegion", "externalLocationRegion"
-    )
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField("externalLocationRegion", "externalLocationRegion")
     """
     Region of the external location of this table, for example: S3 region.
     """
-    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
-        "externalLocationFormat", "externalLocationFormat"
-    )
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField("externalLocationFormat", "externalLocationFormat")
     """
     Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
     """
-    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
-        "isPartitioned", "isPartitioned"
-    )
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField("isPartitioned", "isPartitioned")
     """
     Whether this table is partitioned (true) or not (false).
     """
-    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
-        "partitionStrategy", "partitionStrategy"
-    )
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField("partitionStrategy", "partitionStrategy")
     """
     Partition strategy for this table.
     """
-    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
-        "partitionCount", "partitionCount"
-    )
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField("partitionCount", "partitionCount")
     """
     Number of partitions in this table.
     """
@@ -179,21 +158,15 @@ class Table(SQL):
     """
     Type of the table.
     """
-    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField(
-        "icebergCatalogName", "icebergCatalogName"
-    )
+    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField("icebergCatalogName", "icebergCatalogName")
     """
     iceberg table catalog name (can be any user defined name)
     """
-    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "icebergTableType", "icebergTableType"
-    )
+    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField("icebergTableType", "icebergTableType")
     """
     iceberg table type (managed vs unmanaged)
     """
-    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField(
-        "icebergCatalogSource", "icebergCatalogSource"
-    )
+    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField("icebergCatalogSource", "icebergCatalogSource")
     """
     iceberg table catalog type (glue, polaris, snowflake)
     """
@@ -221,9 +194,7 @@ class Table(SQL):
     """
     iceberg table base location inside the external volume.
     """
-    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField(
-        "tableRetentionTime", "tableRetentionTime"
-    )
+    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField("tableRetentionTime", "tableRetentionTime")
     """
     Data retention time in days.
     """
@@ -368,11 +339,7 @@ class Table(SQL):
 
     @property
     def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
+        return None if self.attributes is None else self.attributes.external_location_region
 
     @external_location_region.setter
     def external_location_region(self, external_location_region: Optional[str]):
@@ -382,11 +349,7 @@ class Table(SQL):
 
     @property
     def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
+        return None if self.attributes is None else self.attributes.external_location_format
 
     @external_location_format.setter
     def external_location_format(self, external_location_format: Optional[str]):
@@ -476,9 +439,7 @@ class Table(SQL):
 
     @property
     def iceberg_catalog_source(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.iceberg_catalog_source
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_source
 
     @iceberg_catalog_source.setter
     def iceberg_catalog_source(self, iceberg_catalog_source: Optional[str]):
@@ -488,11 +449,7 @@ class Table(SQL):
 
     @property
     def iceberg_catalog_table_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_catalog_table_name
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_table_name
 
     @iceberg_catalog_table_name.setter
     def iceberg_catalog_table_name(self, iceberg_catalog_table_name: Optional[str]):
@@ -502,29 +459,17 @@ class Table(SQL):
 
     @property
     def iceberg_catalog_table_namespace(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_catalog_table_namespace
-        )
+        return None if self.attributes is None else self.attributes.iceberg_catalog_table_namespace
 
     @iceberg_catalog_table_namespace.setter
-    def iceberg_catalog_table_namespace(
-        self, iceberg_catalog_table_namespace: Optional[str]
-    ):
+    def iceberg_catalog_table_namespace(self, iceberg_catalog_table_namespace: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.iceberg_catalog_table_namespace = (
-            iceberg_catalog_table_namespace
-        )
+        self.attributes.iceberg_catalog_table_namespace = iceberg_catalog_table_namespace
 
     @property
     def table_external_volume_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.table_external_volume_name
-        )
+        return None if self.attributes is None else self.attributes.table_external_volume_name
 
     @table_external_volume_name.setter
     def table_external_volume_name(self, table_external_volume_name: Optional[str]):
@@ -534,11 +479,7 @@ class Table(SQL):
 
     @property
     def iceberg_table_base_location(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.iceberg_table_base_location
-        )
+        return None if self.attributes is None else self.attributes.iceberg_table_base_location
 
     @iceberg_table_base_location.setter
     def iceberg_table_base_location(self, iceberg_table_base_location: Optional[str]):
@@ -623,9 +564,7 @@ class Table(SQL):
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
         external_location: Optional[str] = Field(default=None, description="")
         external_location_region: Optional[str] = Field(default=None, description="")
         external_location_format: Optional[str] = Field(default=None, description="")
@@ -639,30 +578,16 @@ class Table(SQL):
         iceberg_table_type: Optional[str] = Field(default=None, description="")
         iceberg_catalog_source: Optional[str] = Field(default=None, description="")
         iceberg_catalog_table_name: Optional[str] = Field(default=None, description="")
-        iceberg_catalog_table_namespace: Optional[str] = Field(
-            default=None, description=""
-        )
+        iceberg_catalog_table_namespace: Optional[str] = Field(default=None, description="")
         table_external_volume_name: Optional[str] = Field(default=None, description="")
         iceberg_table_base_location: Optional[str] = Field(default=None, description="")
         table_retention_time: Optional[int] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
-        partitions: Optional[List[TablePartition]] = Field(
-            default=None, description=""
-        )  # relationship
-        queries: Optional[List[Query]] = Field(
-            default=None, description=""
-        )  # relationship
-        dimensions: Optional[List[Table]] = Field(
-            default=None, description=""
-        )  # relationship
+        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        facts: Optional[List[Table]] = Field(default=None, description="")  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
+        partitions: Optional[List[TablePartition]] = Field(default=None, description="")  # relationship
+        queries: Optional[List[Query]] = Field(default=None, description="")  # relationship
+        dimensions: Optional[List[Table]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -676,13 +601,9 @@ class Table(SQL):
             database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Table.Attributes:
-            validate_required_fields(
-                ["name, schema_qualified_name"], [name, schema_qualified_name]
-            )
+            validate_required_fields(["name, schema_qualified_name"], [name, schema_qualified_name])
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     schema_qualified_name, "schema_qualified_name", 5
@@ -693,10 +614,7 @@ class Table(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = (
-                database_qualified_name
-                or f"{connection_qualified_name}/{database_name}"
-            )
+            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
 
             return Table.Attributes(
                 name=name,

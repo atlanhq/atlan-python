@@ -40,24 +40,18 @@ class SisenseWidget(Sisense):
     """
     Number of columns used in this widget.
     """
-    SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sisenseWidgetSubType", "sisenseWidgetSubType"
-    )
+    SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField("sisenseWidgetSubType", "sisenseWidgetSubType")
     """
     Subtype of this widget.
     """
-    SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField(
-        "sisenseWidgetSize", "sisenseWidgetSize"
-    )
+    SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField("sisenseWidgetSize", "sisenseWidgetSize")
     """
     Size of this widget.
     """
-    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "sisenseWidgetDashboardQualifiedName",
-            "sisenseWidgetDashboardQualifiedName",
-            "sisenseWidgetDashboardQualifiedName.text",
-        )
+    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName.text",
     )
     """
     Unique name of the dashboard in which this widget exists.
@@ -71,9 +65,7 @@ class SisenseWidget(Sisense):
     Unique name of the folder in which this widget exists.
     """
 
-    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
-        "sisenseDatamodelTables"
-    )
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField("sisenseDatamodelTables")
     """
     TBC
     """
@@ -99,11 +91,7 @@ class SisenseWidget(Sisense):
 
     @property
     def sisense_widget_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_widget_column_count
-        )
+        return None if self.attributes is None else self.attributes.sisense_widget_column_count
 
     @sisense_widget_column_count.setter
     def sisense_widget_column_count(self, sisense_widget_column_count: Optional[int]):
@@ -113,9 +101,7 @@ class SisenseWidget(Sisense):
 
     @property
     def sisense_widget_sub_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sisense_widget_sub_type
-        )
+        return None if self.attributes is None else self.attributes.sisense_widget_sub_type
 
     @sisense_widget_sub_type.setter
     def sisense_widget_sub_type(self, sisense_widget_sub_type: Optional[str]):
@@ -135,52 +121,30 @@ class SisenseWidget(Sisense):
 
     @property
     def sisense_widget_dashboard_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_widget_dashboard_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.sisense_widget_dashboard_qualified_name
 
     @sisense_widget_dashboard_qualified_name.setter
-    def sisense_widget_dashboard_qualified_name(
-        self, sisense_widget_dashboard_qualified_name: Optional[str]
-    ):
+    def sisense_widget_dashboard_qualified_name(self, sisense_widget_dashboard_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_dashboard_qualified_name = (
-            sisense_widget_dashboard_qualified_name
-        )
+        self.attributes.sisense_widget_dashboard_qualified_name = sisense_widget_dashboard_qualified_name
 
     @property
     def sisense_widget_folder_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_widget_folder_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.sisense_widget_folder_qualified_name
 
     @sisense_widget_folder_qualified_name.setter
-    def sisense_widget_folder_qualified_name(
-        self, sisense_widget_folder_qualified_name: Optional[str]
-    ):
+    def sisense_widget_folder_qualified_name(self, sisense_widget_folder_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_widget_folder_qualified_name = (
-            sisense_widget_folder_qualified_name
-        )
+        self.attributes.sisense_widget_folder_qualified_name = sisense_widget_folder_qualified_name
 
     @property
     def sisense_datamodel_tables(self) -> Optional[List[SisenseDatamodelTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sisense_datamodel_tables
-        )
+        return None if self.attributes is None else self.attributes.sisense_datamodel_tables
 
     @sisense_datamodel_tables.setter
-    def sisense_datamodel_tables(
-        self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]
-    ):
+    def sisense_datamodel_tables(self, sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
@@ -209,21 +173,13 @@ class SisenseWidget(Sisense):
         sisense_widget_column_count: Optional[int] = Field(default=None, description="")
         sisense_widget_sub_type: Optional[str] = Field(default=None, description="")
         sisense_widget_size: Optional[str] = Field(default=None, description="")
-        sisense_widget_dashboard_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        sisense_widget_folder_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        sisense_widget_dashboard_qualified_name: Optional[str] = Field(default=None, description="")
+        sisense_widget_folder_qualified_name: Optional[str] = Field(default=None, description="")
         sisense_datamodel_tables: Optional[List[SisenseDatamodelTable]] = Field(
             default=None, description=""
         )  # relationship
-        sisense_folder: Optional[SisenseFolder] = Field(
-            default=None, description=""
-        )  # relationship
-        sisense_dashboard: Optional[SisenseDashboard] = Field(
-            default=None, description=""
-        )  # relationship
+        sisense_folder: Optional[SisenseFolder] = Field(default=None, description="")  # relationship
+        sisense_dashboard: Optional[SisenseDashboard] = Field(default=None, description="")  # relationship
 
     attributes: SisenseWidget.Attributes = Field(
         default_factory=lambda: SisenseWidget.Attributes(),

@@ -76,14 +76,11 @@ class APIQuery(API):
         is_object_reference: Optional[bool] = False,
         reference_api_object_qualified_name: Optional[str] = None,
     ) -> APIQuery:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
         # is api object reference - checker
         if is_object_reference:
             if not reference_api_object_qualified_name or (
-                isinstance(reference_api_object_qualified_name, str)
-                and not reference_api_object_qualified_name.strip()
+                isinstance(reference_api_object_qualified_name, str) and not reference_api_object_qualified_name.strip()
             ):
                 raise ValueError(
                     "Set valid qualified name for reference_api_object_qualified_name when is_object_reference is true"
@@ -94,9 +91,7 @@ class APIQuery(API):
                 and isinstance(reference_api_object_qualified_name, str)
                 and reference_api_object_qualified_name.strip()
             ):
-                raise ValueError(
-                    "Set is_object_reference to true to set reference_api_object_qualified_name"
-                )
+                raise ValueError("Set is_object_reference to true to set reference_api_object_qualified_name")
 
         attributes = APIQuery.Attributes.creator(
             name=name,
@@ -122,15 +117,11 @@ class APIQuery(API):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    API_INPUT_FIELD_COUNT: ClassVar[NumericField] = NumericField(
-        "apiInputFieldCount", "apiInputFieldCount"
-    )
+    API_INPUT_FIELD_COUNT: ClassVar[NumericField] = NumericField("apiInputFieldCount", "apiInputFieldCount")
     """
     Count of the APIField of this query that are input to it.
     """
-    API_QUERY_OUTPUT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "apiQueryOutputType", "apiQueryOutputType"
-    )
+    API_QUERY_OUTPUT_TYPE: ClassVar[KeywordField] = KeywordField("apiQueryOutputType", "apiQueryOutputType")
     """
     Type of APIQueryOutput. E.g. STRING, NUMBER etc. It is free text.
     """
@@ -155,9 +146,7 @@ class APIQuery(API):
 
     @property
     def api_input_field_count(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.api_input_field_count
-        )
+        return None if self.attributes is None else self.attributes.api_input_field_count
 
     @api_input_field_count.setter
     def api_input_field_count(self, api_input_field_count: Optional[int]):
@@ -167,9 +156,7 @@ class APIQuery(API):
 
     @property
     def api_query_output_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.api_query_output_type
-        )
+        return None if self.attributes is None else self.attributes.api_query_output_type
 
     @api_query_output_type.setter
     def api_query_output_type(self, api_query_output_type: Optional[str]):
@@ -179,21 +166,13 @@ class APIQuery(API):
 
     @property
     def api_query_output_type_secondary(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.api_query_output_type_secondary
-        )
+        return None if self.attributes is None else self.attributes.api_query_output_type_secondary
 
     @api_query_output_type_secondary.setter
-    def api_query_output_type_secondary(
-        self, api_query_output_type_secondary: Optional[str]
-    ):
+    def api_query_output_type_secondary(self, api_query_output_type_secondary: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.api_query_output_type_secondary = (
-            api_query_output_type_secondary
-        )
+        self.attributes.api_query_output_type_secondary = api_query_output_type_secondary
 
     @property
     def api_fields(self) -> Optional[List[APIField]]:
@@ -208,12 +187,8 @@ class APIQuery(API):
     class Attributes(API.Attributes):
         api_input_field_count: Optional[int] = Field(default=None, description="")
         api_query_output_type: Optional[str] = Field(default=None, description="")
-        api_query_output_type_secondary: Optional[str] = Field(
-            default=None, description=""
-        )
-        api_fields: Optional[List[APIField]] = Field(
-            default=None, description=""
-        )  # relationship
+        api_query_output_type_secondary: Optional[str] = Field(default=None, description="")
+        api_fields: Optional[List[APIField]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -228,42 +203,32 @@ class APIQuery(API):
             is_object_reference: Optional[bool] = False,
             reference_api_object_qualified_name: Optional[str] = None,
         ) -> APIQuery.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             # is api object reference - checker
             if is_object_reference:
                 if not reference_api_object_qualified_name or (
                     isinstance(reference_api_object_qualified_name, str)
                     and not reference_api_object_qualified_name.strip()
                 ):
-                    raise ValueError(
-                        "Set valid qualified name for reference_api_object_qualified_name"
-                    )
+                    raise ValueError("Set valid qualified name for reference_api_object_qualified_name")
             else:
                 if (
                     reference_api_object_qualified_name
                     and isinstance(reference_api_object_qualified_name, str)
                     and reference_api_object_qualified_name.strip()
                 ):
-                    raise ValueError(
-                        "Set is_object_reference to true to set reference_api_object_qualified_name"
-                    )
+                    raise ValueError("Set is_object_reference to true to set reference_api_object_qualified_name")
 
             return APIQuery.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
                 api_input_field_count=api_input_field_count,
                 api_query_output_type=api_query_output_type,
                 api_query_output_type_secondary=api_query_output_type_secondary,
                 api_is_object_reference=is_object_reference,
-                api_object_qualified_name=(
-                    reference_api_object_qualified_name if is_object_reference else None
-                ),
+                api_object_qualified_name=(reference_api_object_qualified_name if is_object_reference else None),
             )
 
     attributes: APIQuery.Attributes = Field(

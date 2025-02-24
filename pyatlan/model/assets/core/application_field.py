@@ -46,9 +46,7 @@ class ApplicationField(App):
         application_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> ApplicationField:
-        validate_required_fields(
-            ["name", "application_qualified_name"], [name, application_qualified_name]
-        )
+        validate_required_fields(["name", "application_qualified_name"], [name, application_qualified_name])
         attributes = ApplicationField.Attributes.create(
             name=name,
             application_qualified_name=application_qualified_name,
@@ -80,9 +78,7 @@ class ApplicationField(App):
     """
     TBC
     """
-    APPLICATION_FIELD_OWNED_ASSETS: ClassVar[RelationField] = RelationField(
-        "applicationFieldOwnedAssets"
-    )
+    APPLICATION_FIELD_OWNED_ASSETS: ClassVar[RelationField] = RelationField("applicationFieldOwnedAssets")
     """
     TBC
     """
@@ -95,21 +91,13 @@ class ApplicationField(App):
 
     @property
     def application_parent_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.application_parent_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.application_parent_qualified_name
 
     @application_parent_qualified_name.setter
-    def application_parent_qualified_name(
-        self, application_parent_qualified_name: Optional[str]
-    ):
+    def application_parent_qualified_name(self, application_parent_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.application_parent_qualified_name = (
-            application_parent_qualified_name
-        )
+        self.attributes.application_parent_qualified_name = application_parent_qualified_name
 
     @property
     def application_parent(self) -> Optional[Application]:
@@ -123,30 +111,18 @@ class ApplicationField(App):
 
     @property
     def application_field_owned_assets(self) -> Optional[List[Asset]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.application_field_owned_assets
-        )
+        return None if self.attributes is None else self.attributes.application_field_owned_assets
 
     @application_field_owned_assets.setter
-    def application_field_owned_assets(
-        self, application_field_owned_assets: Optional[List[Asset]]
-    ):
+    def application_field_owned_assets(self, application_field_owned_assets: Optional[List[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.application_field_owned_assets = application_field_owned_assets
 
     class Attributes(App.Attributes):
-        application_parent_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        application_parent: Optional[Application] = Field(
-            default=None, description=""
-        )  # relationship
-        application_field_owned_assets: Optional[List[Asset]] = Field(
-            default=None, description=""
-        )  # relationship
+        application_parent_qualified_name: Optional[str] = Field(default=None, description="")
+        application_parent: Optional[Application] = Field(default=None, description="")  # relationship
+        application_field_owned_assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -162,9 +138,7 @@ class ApplicationField(App):
                 [name, application_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     application_qualified_name, "application_qualified_name", 4
@@ -176,9 +150,7 @@ class ApplicationField(App):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 connector_name=connector_name,
                 application_parent_qualified_name=application_qualified_name,
-                application_parent=Application.ref_by_qualified_name(
-                    application_qualified_name
-                ),
+                application_parent=Application.ref_by_qualified_name(application_qualified_name),
             )
 
     attributes: ApplicationField.Attributes = Field(

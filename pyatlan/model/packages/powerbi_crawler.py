@@ -27,12 +27,8 @@ class PowerBICrawler(AbstractCrawler):
     _PACKAGE_NAME = "@atlan/powerbi"
     _PACKAGE_PREFIX = WorkflowPackage.POWERBI.value
     _CONNECTOR_TYPE = AtlanConnectorType.POWERBI
-    _PACKAGE_ICON = (
-        "https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg"
-    )
-    _PACKAGE_LOGO = (
-        "https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg"
-    )
+    _PACKAGE_ICON = "https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg"
+    _PACKAGE_LOGO = "https://powerbi.microsoft.com/pictures/application-logos/svg/powerbi.svg"
 
     def __init__(
         self,
@@ -102,9 +98,7 @@ class PowerBICrawler(AbstractCrawler):
         self._credentials_body.update(local_creds)
         return self
 
-    def service_principal(
-        self, tenant_id: str, client_id: str, client_secret: str
-    ) -> PowerBICrawler:
+    def service_principal(self, tenant_id: str, client_id: str, client_secret: str) -> PowerBICrawler:
         """
         Set up the crawler to use service principal authentication.
 
@@ -136,9 +130,7 @@ class PowerBICrawler(AbstractCrawler):
         """
         include_workspaces = workspaces or []
         to_include = self.build_flat_filter(include_workspaces)
-        self._parameters.append(
-            dict(dict(name="include-filter", value=to_include or "{}"))
-        )
+        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
         return self
 
     def exclude(self, workspaces: List[str]) -> PowerBICrawler:
@@ -173,15 +165,11 @@ class PowerBICrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
+        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(
-                    by_alias=True, exclude_unset=True, exclude_none=True
-                ),
+                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
             }
         )
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
@@ -215,7 +203,7 @@ class PowerBICrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl PowerBI assets and publish to Atlan for discovery.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"powerbi\",\"bi\",\"connector\",\"crawler\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["powerbi","bi","connector","crawler"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

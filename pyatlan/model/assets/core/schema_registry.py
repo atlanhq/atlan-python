@@ -36,9 +36,7 @@ class SchemaRegistry(Catalog):
     """
     Type of language or specification used to define the schema, for example: JSON, Protobuf, etc.
     """
-    SCHEMA_REGISTRY_SCHEMA_ID: ClassVar[KeywordField] = KeywordField(
-        "schemaRegistrySchemaId", "schemaRegistrySchemaId"
-    )
+    SCHEMA_REGISTRY_SCHEMA_ID: ClassVar[KeywordField] = KeywordField("schemaRegistrySchemaId", "schemaRegistrySchemaId")
     """
     Unique identifier for schema definition set by the schema registry.
     """
@@ -50,27 +48,17 @@ class SchemaRegistry(Catalog):
 
     @property
     def schema_registry_schema_type(self) -> Optional[SchemaRegistrySchemaType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_schema_type
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_schema_type
 
     @schema_registry_schema_type.setter
-    def schema_registry_schema_type(
-        self, schema_registry_schema_type: Optional[SchemaRegistrySchemaType]
-    ):
+    def schema_registry_schema_type(self, schema_registry_schema_type: Optional[SchemaRegistrySchemaType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schema_registry_schema_type = schema_registry_schema_type
 
     @property
     def schema_registry_schema_id(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_schema_id
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_schema_id
 
     @schema_registry_schema_id.setter
     def schema_registry_schema_id(self, schema_registry_schema_id: Optional[str]):
@@ -79,9 +67,7 @@ class SchemaRegistry(Catalog):
         self.attributes.schema_registry_schema_id = schema_registry_schema_id
 
     class Attributes(Catalog.Attributes):
-        schema_registry_schema_type: Optional[SchemaRegistrySchemaType] = Field(
-            default=None, description=""
-        )
+        schema_registry_schema_type: Optional[SchemaRegistrySchemaType] = Field(default=None, description="")
         schema_registry_schema_id: Optional[str] = Field(default=None, description="")
 
     attributes: SchemaRegistry.Attributes = Field(

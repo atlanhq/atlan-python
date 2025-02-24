@@ -46,9 +46,7 @@ class AnaplanList(Anaplan):
         model_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanList:
-        validate_required_fields(
-            ["name", "model_qualified_name"], [name, model_qualified_name]
-        )
+        validate_required_fields(["name", "model_qualified_name"], [name, model_qualified_name])
         attributes = AnaplanList.Attributes.create(
             name=name,
             model_qualified_name=model_qualified_name,
@@ -69,9 +67,7 @@ class AnaplanList(Anaplan):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ANAPLAN_LIST_ITEM_COUNT: ClassVar[NumericField] = NumericField(
-        "anaplanListItemCount", "anaplanListItemCount"
-    )
+    ANAPLAN_LIST_ITEM_COUNT: ClassVar[NumericField] = NumericField("anaplanListItemCount", "anaplanListItemCount")
     """
     Item Count of the AnaplanList from the source system.
     """
@@ -93,9 +89,7 @@ class AnaplanList(Anaplan):
 
     @property
     def anaplan_list_item_count(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.anaplan_list_item_count
-        )
+        return None if self.attributes is None else self.attributes.anaplan_list_item_count
 
     @anaplan_list_item_count.setter
     def anaplan_list_item_count(self, anaplan_list_item_count: Optional[int]):
@@ -125,12 +119,8 @@ class AnaplanList(Anaplan):
 
     class Attributes(Anaplan.Attributes):
         anaplan_list_item_count: Optional[int] = Field(default=None, description="")
-        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_model: Optional[AnaplanModel] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(default=None, description="")  # relationship
+        anaplan_model: Optional[AnaplanModel] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -146,9 +136,7 @@ class AnaplanList(Anaplan):
                 [name, model_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     model_qualified_name, "model_qualified_name", 5

@@ -43,17 +43,13 @@ class ThoughtspotLiveboard(Thoughtspot):
         return None if self.attributes is None else self.attributes.thoughtspot_dashlets
 
     @thoughtspot_dashlets.setter
-    def thoughtspot_dashlets(
-        self, thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]]
-    ):
+    def thoughtspot_dashlets(self, thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
 
     class Attributes(Thoughtspot.Attributes):
-        thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]] = Field(
-            default=None, description=""
-        )  # relationship
+        thoughtspot_dashlets: Optional[List[ThoughtspotDashlet]] = Field(default=None, description="")  # relationship
 
     attributes: ThoughtspotLiveboard.Attributes = Field(
         default_factory=lambda: ThoughtspotLiveboard.Attributes(),

@@ -53,9 +53,7 @@ class ADLSContainer(ADLS):
         adls_account_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> ADLSContainer:
-        validate_required_fields(
-            ["name", "adls_account_qualified_name"], [name, adls_account_qualified_name]
-        )
+        validate_required_fields(["name", "adls_account_qualified_name"], [name, adls_account_qualified_name])
         attributes = ADLSContainer.Attributes.create(
             name=name,
             adls_account_qualified_name=adls_account_qualified_name,
@@ -67,16 +65,11 @@ class ADLSContainer(ADLS):
     @init_guid
     def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(
-            name=name, adls_account_qualified_name=adls_account_qualified_name
-        )
+        return cls.creator(name=name, adls_account_qualified_name=adls_account_qualified_name)
 
     type_name: str = Field(default="ADLSContainer", allow_mutation=False)
 
@@ -115,18 +108,14 @@ class ADLSContainer(ADLS):
     """
     Encryption scope of this container.
     """
-    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[BooleanField] = (
-        BooleanField(
-            "adlsContainerVersionLevelImmutabilitySupport",
-            "adlsContainerVersionLevelImmutabilitySupport",
-        )
+    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[BooleanField] = BooleanField(
+        "adlsContainerVersionLevelImmutabilitySupport",
+        "adlsContainerVersionLevelImmutabilitySupport",
     )
     """
     Whether this container supports version-level immutability (true) or not (false).
     """
-    ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
-        "adlsObjectCount", "adlsObjectCount"
-    )
+    ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField("adlsObjectCount", "adlsObjectCount")
     """
     Number of objects that exist within this container.
     """
@@ -163,61 +152,37 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_lease_state(self) -> Optional[ADLSLeaseState]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_lease_state
-        )
+        return None if self.attributes is None else self.attributes.adls_container_lease_state
 
     @adls_container_lease_state.setter
-    def adls_container_lease_state(
-        self, adls_container_lease_state: Optional[ADLSLeaseState]
-    ):
+    def adls_container_lease_state(self, adls_container_lease_state: Optional[ADLSLeaseState]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_container_lease_state = adls_container_lease_state
 
     @property
     def adls_container_lease_status(self) -> Optional[ADLSLeaseStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_lease_status
-        )
+        return None if self.attributes is None else self.attributes.adls_container_lease_status
 
     @adls_container_lease_status.setter
-    def adls_container_lease_status(
-        self, adls_container_lease_status: Optional[ADLSLeaseStatus]
-    ):
+    def adls_container_lease_status(self, adls_container_lease_status: Optional[ADLSLeaseStatus]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_container_lease_status = adls_container_lease_status
 
     @property
     def adls_container_encryption_scope(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_encryption_scope
-        )
+        return None if self.attributes is None else self.attributes.adls_container_encryption_scope
 
     @adls_container_encryption_scope.setter
-    def adls_container_encryption_scope(
-        self, adls_container_encryption_scope: Optional[str]
-    ):
+    def adls_container_encryption_scope(self, adls_container_encryption_scope: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_container_encryption_scope = (
-            adls_container_encryption_scope
-        )
+        self.attributes.adls_container_encryption_scope = adls_container_encryption_scope
 
     @property
     def adls_container_version_level_immutability_support(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_container_version_level_immutability_support
-        )
+        return None if self.attributes is None else self.attributes.adls_container_version_level_immutability_support
 
     @adls_container_version_level_immutability_support.setter
     def adls_container_version_level_immutability_support(
@@ -261,25 +226,13 @@ class ADLSContainer(ADLS):
 
     class Attributes(ADLS.Attributes):
         adls_container_url: Optional[str] = Field(default=None, description="")
-        adls_container_lease_state: Optional[ADLSLeaseState] = Field(
-            default=None, description=""
-        )
-        adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(
-            default=None, description=""
-        )
-        adls_container_encryption_scope: Optional[str] = Field(
-            default=None, description=""
-        )
-        adls_container_version_level_immutability_support: Optional[bool] = Field(
-            default=None, description=""
-        )
+        adls_container_lease_state: Optional[ADLSLeaseState] = Field(default=None, description="")
+        adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(default=None, description="")
+        adls_container_encryption_scope: Optional[str] = Field(default=None, description="")
+        adls_container_version_level_immutability_support: Optional[bool] = Field(default=None, description="")
         adls_object_count: Optional[int] = Field(default=None, description="")
-        adls_account: Optional[ADLSAccount] = Field(
-            default=None, description=""
-        )  # relationship
-        adls_objects: Optional[List[ADLSObject]] = Field(
-            default=None, description=""
-        )  # relationship
+        adls_account: Optional[ADLSAccount] = Field(default=None, description="")  # relationship
+        adls_objects: Optional[List[ADLSObject]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -295,9 +248,7 @@ class ADLSContainer(ADLS):
                 [name, adls_account_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     adls_account_qualified_name, "adls_account_qualified_name", 4
@@ -306,9 +257,7 @@ class ADLSContainer(ADLS):
             return ADLSContainer.Attributes(
                 name=name,
                 qualified_name=f"{adls_account_qualified_name}/{name}",
-                adls_account=ADLSAccount.ref_by_qualified_name(
-                    adls_account_qualified_name
-                ),
+                adls_account=ADLSAccount.ref_by_qualified_name(adls_account_qualified_name),
                 adls_account_qualified_name=adls_account_qualified_name,
                 adls_account_name=adls_account_qualified_name.split("/")[-1],
                 connector_name=connector_name,

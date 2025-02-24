@@ -47,9 +47,7 @@ class DbtModel(Dbt):
     """
 
     """
-    DBT_COMPILED_SQL: ClassVar[TextField] = TextField(
-        "dbtCompiledSQL", "dbtCompiledSQL"
-    )
+    DBT_COMPILED_SQL: ClassVar[TextField] = TextField("dbtCompiledSQL", "dbtCompiledSQL")
     """
 
     """
@@ -57,9 +55,7 @@ class DbtModel(Dbt):
     """
 
     """
-    DBT_MATERIALIZATION_TYPE: ClassVar[TextField] = TextField(
-        "dbtMaterializationType", "dbtMaterializationType"
-    )
+    DBT_MATERIALIZATION_TYPE: ClassVar[TextField] = TextField("dbtMaterializationType", "dbtMaterializationType")
     """
 
     """
@@ -87,9 +83,7 @@ class DbtModel(Dbt):
     """
 
     """
-    DBT_MODEL_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
-        "dbtModelExecutionTime", "dbtModelExecutionTime"
-    )
+    DBT_MODEL_EXECUTION_TIME: ClassVar[NumericField] = NumericField("dbtModelExecutionTime", "dbtModelExecutionTime")
     """
 
     """
@@ -200,11 +194,7 @@ class DbtModel(Dbt):
 
     @property
     def dbt_materialization_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_materialization_type
-        )
+        return None if self.attributes is None else self.attributes.dbt_materialization_type
 
     @dbt_materialization_type.setter
     def dbt_materialization_type(self, dbt_materialization_type: Optional[str]):
@@ -214,75 +204,47 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_compile_started_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_compile_started_at
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_compile_started_at
 
     @dbt_model_compile_started_at.setter
-    def dbt_model_compile_started_at(
-        self, dbt_model_compile_started_at: Optional[datetime]
-    ):
+    def dbt_model_compile_started_at(self, dbt_model_compile_started_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_compile_started_at = dbt_model_compile_started_at
 
     @property
     def dbt_model_compile_completed_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_compile_completed_at
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_compile_completed_at
 
     @dbt_model_compile_completed_at.setter
-    def dbt_model_compile_completed_at(
-        self, dbt_model_compile_completed_at: Optional[datetime]
-    ):
+    def dbt_model_compile_completed_at(self, dbt_model_compile_completed_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_compile_completed_at = dbt_model_compile_completed_at
 
     @property
     def dbt_model_execute_started_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_execute_started_at
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_execute_started_at
 
     @dbt_model_execute_started_at.setter
-    def dbt_model_execute_started_at(
-        self, dbt_model_execute_started_at: Optional[datetime]
-    ):
+    def dbt_model_execute_started_at(self, dbt_model_execute_started_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_execute_started_at = dbt_model_execute_started_at
 
     @property
     def dbt_model_execute_completed_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_execute_completed_at
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_execute_completed_at
 
     @dbt_model_execute_completed_at.setter
-    def dbt_model_execute_completed_at(
-        self, dbt_model_execute_completed_at: Optional[datetime]
-    ):
+    def dbt_model_execute_completed_at(self, dbt_model_execute_completed_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_execute_completed_at = dbt_model_execute_completed_at
 
     @property
     def dbt_model_execution_time(self) -> Optional[float]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_execution_time
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_execution_time
 
     @dbt_model_execution_time.setter
     def dbt_model_execution_time(self, dbt_model_execution_time: Optional[float]):
@@ -292,27 +254,17 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_run_generated_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_run_generated_at
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_run_generated_at
 
     @dbt_model_run_generated_at.setter
-    def dbt_model_run_generated_at(
-        self, dbt_model_run_generated_at: Optional[datetime]
-    ):
+    def dbt_model_run_generated_at(self, dbt_model_run_generated_at: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_run_generated_at = dbt_model_run_generated_at
 
     @property
     def dbt_model_run_elapsed_time(self) -> Optional[float]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_run_elapsed_time
-        )
+        return None if self.attributes is None else self.attributes.dbt_model_run_elapsed_time
 
     @dbt_model_run_elapsed_time.setter
     def dbt_model_run_elapsed_time(self, dbt_model_run_elapsed_time: Optional[float]):
@@ -377,38 +329,18 @@ class DbtModel(Dbt):
         dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
         dbt_stats: Optional[str] = Field(default=None, description="")
         dbt_materialization_type: Optional[str] = Field(default=None, description="")
-        dbt_model_compile_started_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
-        dbt_model_compile_completed_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
-        dbt_model_execute_started_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
-        dbt_model_execute_completed_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        dbt_model_compile_started_at: Optional[datetime] = Field(default=None, description="")
+        dbt_model_compile_completed_at: Optional[datetime] = Field(default=None, description="")
+        dbt_model_execute_started_at: Optional[datetime] = Field(default=None, description="")
+        dbt_model_execute_completed_at: Optional[datetime] = Field(default=None, description="")
         dbt_model_execution_time: Optional[float] = Field(default=None, description="")
-        dbt_model_run_generated_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
-        dbt_model_run_elapsed_time: Optional[float] = Field(
-            default=None, description=""
-        )
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_model_run_generated_at: Optional[datetime] = Field(default=None, description="")
+        dbt_model_run_elapsed_time: Optional[float] = Field(default=None, description="")
+        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(default=None, description="")  # relationship
         sql_asset: Optional[SQL] = Field(default=None, description="")  # relationship
-        dbt_metrics: Optional[List[DbtMetric]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_model_sql_assets: Optional[List[SQL]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_metrics: Optional[List[DbtMetric]] = Field(default=None, description="")  # relationship
+        dbt_model_sql_assets: Optional[List[SQL]] = Field(default=None, description="")  # relationship
 
     attributes: DbtModel.Attributes = Field(
         default_factory=lambda: DbtModel.Attributes(),

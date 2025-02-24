@@ -50,11 +50,7 @@ class LineageGraph:
         upstream_list: Dict[str, Dict[DirectedPair, None]] = {}
 
         def add_relation(_relation: LineageRelation):
-            if (
-                _relation.from_entity_id
-                and _relation.process_id
-                and _relation.to_entity_id
-            ):
+            if _relation.from_entity_id and _relation.process_id and _relation.to_entity_id:
                 add_edges(
                     _relation.from_entity_id,
                     _relation.process_id,
@@ -66,12 +62,8 @@ class LineageGraph:
                 downstream_list[source_guid] = {}
             if target_guid not in upstream_list:
                 upstream_list[target_guid] = {}
-            downstream_list[source_guid][
-                DirectedPair(process_guid=process_guid, target_guid=target_guid)
-            ] = None
-            upstream_list[target_guid][
-                DirectedPair(process_guid=process_guid, target_guid=source_guid)
-            ] = None
+            downstream_list[source_guid][DirectedPair(process_guid=process_guid, target_guid=target_guid)] = None
+            upstream_list[target_guid][DirectedPair(process_guid=process_guid, target_guid=source_guid)] = None
 
         for relation in relations:
             if relation.is_full_link:
@@ -81,17 +73,13 @@ class LineageGraph:
         return cls(downstream_list=downstream_list, upstream_list=upstream_list)
 
     @staticmethod
-    def get_asset_guids(
-        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
-    ) -> List[str]:
+    def get_asset_guids(guid: str, guids: Dict[str, Dict[DirectedPair, None]]) -> List[str]:
         if guid in guids:
             return list({pair.target_guid: None for pair in guids[guid].keys()}.keys())
         return []
 
     @staticmethod
-    def get_process_guids(
-        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
-    ) -> List[str]:
+    def get_process_guids(guid: str, guids: Dict[str, Dict[DirectedPair, None]]) -> List[str]:
         if guid in guids:
             return list({pair.process_guid: None for pair in guids[guid].keys()}.keys())
         return []
@@ -153,51 +141,35 @@ class LineageResponse(AtlanObject):
             self.graph = LineageGraph.create(self.relations)
         return self.graph
 
-    def get_all_downstream_asset_guids_dfs(
-        self, guid: Optional[str] = None
-    ) -> List[str]:
-        return self.get_graph().get_all_downstream_asset_guids_dfs(
-            guid or self.base_entity_guid
-        )
+    def get_all_downstream_asset_guids_dfs(self, guid: Optional[str] = None) -> List[str]:
+        return self.get_graph().get_all_downstream_asset_guids_dfs(guid or self.base_entity_guid)
 
     def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_all_downstream_asset_guids_dfs(
-                guid or self.base_entity_guid
-            )
+            for guid in self.get_graph().get_all_downstream_asset_guids_dfs(guid or self.base_entity_guid)
         ]
 
     def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> List[str]:
-        return self.get_graph().get_all_upstream_asset_guids_dfs(
-            guid or self.base_entity_guid
-        )
+        return self.get_graph().get_all_upstream_asset_guids_dfs(guid or self.base_entity_guid)
 
     def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_all_upstream_asset_guids_dfs(
-                guid or self.base_entity_guid
-            )
+            for guid in self.get_graph().get_all_upstream_asset_guids_dfs(guid or self.base_entity_guid)
         ]
 
     def get_downstream_asset_guids(self, guid: Optional[str] = None) -> List[str]:
-        return self.get_graph().get_downstream_asset_guids(
-            guid or self.base_entity_guid
-        )
+        return self.get_graph().get_downstream_asset_guids(guid or self.base_entity_guid)
 
     def get_downstream_assets(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_downstream_asset_guids(
-                guid or self.base_entity_guid
-            )
+            for guid in self.get_graph().get_downstream_asset_guids(guid or self.base_entity_guid)
         ]
 
     def get_downstream_process_guids(self, guid: Optional[str] = None) -> List[str]:
-        return self.get_graph().get_downstream_process_guids(
-            guid or self.base_entity_guid
-        )
+        return self.get_graph().get_downstream_process_guids(guid or self.base_entity_guid)
 
     def get_upstream_asset_guids(self, guid: Optional[str] = None) -> List[str]:
         return self.get_graph().get_upstream_asset_guids(guid or self.base_entity_guid)
@@ -205,15 +177,11 @@ class LineageResponse(AtlanObject):
     def get_upstream_assets(self, guid: Optional[str] = None) -> List[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_upstream_asset_guids(
-                guid or self.base_entity_guid
-            )
+            for guid in self.get_graph().get_upstream_asset_guids(guid or self.base_entity_guid)
         ]
 
     def get_upstream_process_guids(self, guid: Optional[str] = None) -> List[str]:
-        return self.get_graph().get_upstream_process_guids(
-            guid or self.base_entity_guid
-        )
+        return self.get_graph().get_upstream_process_guids(guid or self.base_entity_guid)
 
 
 class LineageRequest(AtlanObject):
@@ -225,16 +193,11 @@ class LineageRequest(AtlanObject):
 
 
 class EntityFilter(AtlanObject):
-    attribute_name: str = Field(
-        description="Name of the attribute on which filtering should be applied."
-    )
+    attribute_name: str = Field(description="Name of the attribute on which filtering should be applied.")
     operator: AtlanComparisonOperator = Field(
-        description="Comparison that should be used when checking attribute_name"
-        " against the provided attribute_value."
+        description="Comparison that should be used when checking attribute_name against the provided attribute_value."
     )
-    attribute_value: str = Field(
-        description="Value that attribute_name should be compared against."
-    )
+    attribute_value: str = Field(description="Value that attribute_name should be compared against.")
 
 
 class FilterList(AtlanObject):
@@ -253,9 +216,7 @@ class FilterList(AtlanObject):
 
 
 class LineageListRequest(SearchRequest):
-    guid: str = Field(
-        description="Unique identifier of the asset for which to retrieve lineage."
-    )
+    guid: str = Field(description="Unique identifier of the asset for which to retrieve lineage.")
     depth: int = Field(
         description="Number of degrees of separation (hops) across which lineage should be fetched."
         "A depth of 1 will fetch the immediate upstream or downstream assets, while 2"
@@ -268,9 +229,7 @@ class LineageListRequest(SearchRequest):
         description="Indicates whether to fetch upstream lineage only, or downstream lineage only. "
         "Note that you cannot fetch both upstream and downstream at the same time."
     )
-    entity_filters: Optional[FilterList] = Field(
-        default=None, description="Filters to apply on entities."
-    )
+    entity_filters: Optional[FilterList] = Field(default=None, description="Filters to apply on entities.")
     entity_traversal_filters: Optional[FilterList] = Field(
         default=None,
         description="Filters to apply for skipping traversal based on entities."
@@ -287,12 +246,8 @@ class LineageListRequest(SearchRequest):
         "Any sub-graphs beyond the relationships filtered out by these filters will not be included"
         "in the lineage result.",
     )
-    offset: Optional[int] = Field(
-        default=None, description="Starting point for pagination.", alias="from"
-    )
-    size: Optional[int] = Field(
-        default=None, description="How many results to include in each page of results."
-    )
+    offset: Optional[int] = Field(default=None, description="Starting point for pagination.", alias="from")
+    size: Optional[int] = Field(default=None, description="How many results to include in each page of results.")
     exclude_meanings: Optional[bool] = Field(
         default=None,
         description="Whether to include assigned terms for assets (false) or not (true).",
@@ -346,13 +301,9 @@ class FluentLineage:
         exclude_meanings: StrictBool = True,
         exclude_atlan_tags: StrictBool = True,
         immediate_neighbors: StrictBool = False,
-        includes_on_results: Optional[
-            Union[List[str], str, List[AtlanField], AtlanField]
-        ] = None,
+        includes_on_results: Optional[Union[List[str], str, List[AtlanField], AtlanField]] = None,
         includes_in_results: Optional[Union[List[LineageFilter], LineageFilter]] = None,
-        includes_on_relations: Optional[
-            Union[List[str], str, List[AtlanField], AtlanField]
-        ] = None,
+        includes_on_relations: Optional[Union[List[str], str, List[AtlanField], AtlanField]] = None,
         includes_condition: FilterList.Condition = FilterList.Condition.AND,
         where_assets: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         assets_condition: FilterList.Condition = FilterList.Condition.AND,
@@ -394,23 +345,15 @@ class FluentLineage:
         self._exclude_atlan_tags: bool = exclude_atlan_tags
         self._exclude_meanings: bool = exclude_meanings
         self._immediate_neighbors: bool = immediate_neighbors
-        self._includes_on_results: List[Union[str, AtlanField]] = self._to_list(
-            includes_on_results
-        )
-        self._includes_in_results: List[LineageFilter] = self._to_list(
-            includes_in_results
-        )
-        self._includes_on_relations: List[Union[str, AtlanField]] = self._to_list(
-            includes_on_relations
-        )
+        self._includes_on_results: List[Union[str, AtlanField]] = self._to_list(includes_on_results)
+        self._includes_in_results: List[LineageFilter] = self._to_list(includes_in_results)
+        self._includes_on_relations: List[Union[str, AtlanField]] = self._to_list(includes_on_relations)
         self._includes_condition: FilterList.Condition = includes_condition
         self._size: int = size
         self._starting_guid = starting_guid
         self._where_assets: List[LineageFilter] = self._to_list(where_assets)
         self._assets_condition: FilterList.Condition = assets_condition
-        self._where_relationships: List[LineageFilter] = self._to_list(
-            where_relationships
-        )
+        self._where_relationships: List[LineageFilter] = self._to_list(where_relationships)
         self._relationships_condition: FilterList.Condition = relationships_condition
 
     @staticmethod
@@ -539,9 +482,7 @@ class FluentLineage:
         clone._includes_on_relations.append(field)
         return clone
 
-    def includes_condition(
-        self, includes_condition: FilterList.Condition
-    ) -> "FluentLineage":
+    def includes_condition(self, includes_condition: FilterList.Condition) -> "FluentLineage":
         """
         Adds the filter condition to `include_on_results`.
 
@@ -571,9 +512,7 @@ class FluentLineage:
         clone._where_assets.append(lineage_filter)
         return clone
 
-    def assets_condition(
-        self, assets_condition: FilterList.Condition
-    ) -> "FluentLineage":
+    def assets_condition(self, assets_condition: FilterList.Condition) -> "FluentLineage":
         """
         Adds the filter condition to `where_assets`.
 
@@ -603,9 +542,7 @@ class FluentLineage:
         clone._where_relationships.append(lineage_filter)
         return clone
 
-    def relationships_condition(
-        self, relationships_condition: FilterList.Condition
-    ) -> "FluentLineage":
+    def relationships_condition(self, relationships_condition: FilterList.Condition) -> "FluentLineage":
         """
         Adds the filter condition to `where_relationships`.
 
@@ -670,9 +607,7 @@ class FluentLineage:
                 )
                 for _filter in self._where_assets
             ]
-            request.entity_traversal_filters = FilterList(
-                condition=self._assets_condition, criteria=criteria
-            )  # type: ignore[call-arg]
+            request.entity_traversal_filters = FilterList(condition=self._assets_condition, criteria=criteria)  # type: ignore[call-arg]
         if self._where_relationships:
             criteria = [
                 EntityFilter(

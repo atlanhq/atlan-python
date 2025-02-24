@@ -26,15 +26,11 @@ class AdminClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @validate_arguments
-    def get_keycloak_events(
-        self, keycloak_request: KeycloakEventRequest
-    ) -> KeycloakEventResponse:
+    def get_keycloak_events(self, keycloak_request: KeycloakEventRequest) -> KeycloakEventResponse:
         """
         Retrieve all events, based on the supplied filters.
 
@@ -50,9 +46,7 @@ class AdminClient:
             try:
                 events = parse_obj_as(List[KeycloakEvent], raw_json)
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
         else:
             events = []
         return KeycloakEventResponse(
@@ -78,9 +72,7 @@ class AdminClient:
             try:
                 events = parse_obj_as(List[AdminEvent], raw_json)
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
         else:
             events = []
         return AdminEventResponse(

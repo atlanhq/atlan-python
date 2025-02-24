@@ -6,20 +6,14 @@ from pyatlan.model.core import AtlanObject
 
 
 class Credential(AtlanObject):
-    id: Optional[str] = Field(
-        default=None, description="Unique identifier (GUID) of the credential."
-    )
+    id: Optional[str] = Field(default=None, description="Unique identifier (GUID) of the credential.")
     name: Optional[str] = Field(default=None, description="Name of the credential.")
-    description: Optional[str] = Field(
-        default=None, description="Description of the credential."
-    )
+    description: Optional[str] = Field(default=None, description="Description of the credential.")
     host: Optional[str] = Field(
         default=None,
         description="Hostname for which connectivity is defined by the credential.",
     )
-    port: Optional[int] = Field(
-        default=None, description="Port number on which connectivity should be done."
-    )
+    port: Optional[int] = Field(default=None, description="Port number on which connectivity should be done.")
     auth_type: Optional[str] = Field(
         default=None,
         description="Authentication mechanism represented by the credential.",

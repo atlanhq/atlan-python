@@ -28,9 +28,7 @@ def test_create_atttributes_with_required_parameters():
         name=DATA_DOMAIN_NAME,
         parent_domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
     )
-    assert test_domain.parent_domain.unique_attributes == {
-        "qualifiedName": DATA_DOMAIN_QUALIFIED_NAME
-    }
+    assert test_domain.parent_domain.unique_attributes == {"qualifiedName": DATA_DOMAIN_QUALIFIED_NAME}
 
 
 def test_create():
@@ -48,9 +46,7 @@ def test_create():
 
 
 def test_create_for_modification():
-    test_domain = DataDomain.create_for_modification(
-        name=DATA_DOMAIN_NAME, qualified_name=DATA_DOMAIN_QUALIFIED_NAME
-    )
+    test_domain = DataDomain.create_for_modification(name=DATA_DOMAIN_NAME, qualified_name=DATA_DOMAIN_QUALIFIED_NAME)
     _assert_domain(test_domain)
 
 

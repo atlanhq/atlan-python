@@ -34,9 +34,7 @@ class TableauWorksheet(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "siteQualifiedName", "siteQualifiedName"
-    )
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
     """
     Unique name of the site in which this worksheet exists.
     """
@@ -52,15 +50,11 @@ class TableauWorksheet(Tableau):
     """
     Unique name of the top-level project in which this worksheet exists.
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "projectHierarchy", "projectHierarchy"
-    )
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
     """
     List of top-level projects with their nested child projects.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "workbookQualifiedName", "workbookQualifiedName"
-    )
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField("workbookQualifiedName", "workbookQualifiedName")
     """
     Unique name of the workbook in which this worksheet exists.
     """
@@ -106,9 +100,7 @@ class TableauWorksheet(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.project_qualified_name
 
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
@@ -118,21 +110,13 @@ class TableauWorksheet(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.top_level_project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(
-        self, top_level_project_qualified_name: Optional[str]
-    ):
+    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = (
-            top_level_project_qualified_name
-        )
+        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
 
     @property
     def project_hierarchy(self) -> Optional[List[Dict[str, str]]]:
@@ -146,9 +130,7 @@ class TableauWorksheet(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.workbook_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
@@ -161,9 +143,7 @@ class TableauWorksheet(Tableau):
         return None if self.attributes is None else self.attributes.datasource_fields
 
     @datasource_fields.setter
-    def datasource_fields(
-        self, datasource_fields: Optional[List[TableauDatasourceField]]
-    ):
+    def datasource_fields(self, datasource_fields: Optional[List[TableauDatasourceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.datasource_fields = datasource_fields
@@ -193,9 +173,7 @@ class TableauWorksheet(Tableau):
         return None if self.attributes is None else self.attributes.calculated_fields
 
     @calculated_fields.setter
-    def calculated_fields(
-        self, calculated_fields: Optional[List[TableauCalculatedField]]
-    ):
+    def calculated_fields(self, calculated_fields: Optional[List[TableauCalculatedField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.calculated_fields = calculated_fields
@@ -203,25 +181,13 @@ class TableauWorksheet(Tableau):
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
+        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
-        datasource_fields: Optional[List[TableauDatasourceField]] = Field(
-            default=None, description=""
-        )  # relationship
-        dashboards: Optional[List[TableauDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
-        workbook: Optional[TableauWorkbook] = Field(
-            default=None, description=""
-        )  # relationship
-        calculated_fields: Optional[List[TableauCalculatedField]] = Field(
-            default=None, description=""
-        )  # relationship
+        datasource_fields: Optional[List[TableauDatasourceField]] = Field(default=None, description="")  # relationship
+        dashboards: Optional[List[TableauDashboard]] = Field(default=None, description="")  # relationship
+        workbook: Optional[TableauWorkbook] = Field(default=None, description="")  # relationship
+        calculated_fields: Optional[List[TableauCalculatedField]] = Field(default=None, description="")  # relationship
 
     attributes: TableauWorksheet.Attributes = Field(
         default_factory=lambda: TableauWorksheet.Attributes(),

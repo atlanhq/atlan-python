@@ -46,9 +46,7 @@ def wait_for_consistency():
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=CONNECTION_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
@@ -58,9 +56,7 @@ def database(
     connection: Connection,
     upsert: Callable[[Asset], AssetMutationResponse],
 ):
-    to_create = Database.creator(
-        name=DATABASE_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = Database.creator(name=DATABASE_NAME, connection_qualified_name=connection.qualified_name)
     result = upsert(to_create)
     assert result
     database = result.assets_created(asset_type=Database)[0]
@@ -86,9 +82,7 @@ def schema(
 
 
 @pytest.fixture(scope="module")
-def batch_table_create(
-    client: AtlanClient, schema: Schema
-) -> Generator[Batch, None, None]:
+def batch_table_create(client: AtlanClient, schema: Schema) -> Generator[Batch, None, None]:
     assert schema and schema.qualified_name
     batch = Batch(
         client=client,
@@ -132,18 +126,12 @@ def batch_table_create(
         )
         assert created and created.guid
         response = client.asset.purge_by_guid(created.guid)
-        if (
-            not response
-            or not response.mutated_entities
-            or not response.mutated_entities.DELETE
-        ):
+        if not response or not response.mutated_entities or not response.mutated_entities.DELETE:
             LOGGER.error(f"Failed to remove asset with GUID {asset.guid}.")
 
 
 @pytest.fixture(scope="module")
-def batch_table_update(
-    client: AtlanClient, schema: Schema
-) -> Generator[Batch, None, None]:
+def batch_table_update(client: AtlanClient, schema: Schema) -> Generator[Batch, None, None]:
     assert schema and schema.qualified_name
     batch = Batch(
         client=client,
@@ -171,10 +159,7 @@ def test_batch_create(batch_table_create: Batch, schema: Schema):
 
     # Verify that 5 assets (3 tables, 1 view, 1 materialized view) were created
     assert batch.created and len(batch.created) == 5 and batch.num_created == 5
-    assert all(
-        asset.type_name in {Table.__name__, View.__name__, MaterialisedView.__name__}
-        for asset in batch.created
-    )
+    assert all(asset.type_name in {Table.__name__, View.__name__, MaterialisedView.__name__} for asset in batch.created)
 
     # Ensure the schema was updated
     assert batch.updated and len(batch.updated) == 1 and batch.num_updated == 1
@@ -182,9 +167,7 @@ def test_batch_create(batch_table_create: Batch, schema: Schema):
 
 
 @pytest.mark.order(after="test_batch_create")
-def test_batch_update(
-    wait_for_consistency, client: AtlanClient, batch_table_create: Batch
-):
+def test_batch_update(wait_for_consistency, client: AtlanClient, batch_table_create: Batch):
     # Table with view qn / mview qn
     # 1. table_view_agnostic and update only -- update -- table? -> view? -> mview
     # 2. not table_view_agnostic and update only -- skip -- table? -> view? -> mview? - not found
@@ -338,11 +321,7 @@ def test_batch_update(
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
     created_table = results.current_page()[0]
-    assert (
-        created_table
-        and created_table.guid
-        and created_table.qualified_name == view.qualified_name
-    )
+    assert created_table and created_table.guid and created_table.qualified_name == view.qualified_name
     # Verify the new table was created and has the updated user description
     assert created_table.user_description == SUB_TEST3_DESCRIPTION
 
@@ -367,9 +346,7 @@ def test_batch_update(
     )
     SUB_TEST4_DESCRIPTION = f"[sub-test4] {DESCRIPTION}"
 
-    table = Table.updater(
-        qualified_name=table1.qualified_name.lower(), name=table1.name
-    )
+    table = Table.updater(qualified_name=table1.qualified_name.lower(), name=table1.name)
     table.user_description = SUB_TEST4_DESCRIPTION
     batch4.add(table)
     batch4.flush()
@@ -393,11 +370,7 @@ def test_batch_update(
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
     updated_table = results.current_page()[0]
-    assert (
-        updated_table
-        and updated_table.guid
-        and updated_table.qualified_name == table1.qualified_name
-    )
+    assert updated_table and updated_table.guid and updated_table.qualified_name == table1.qualified_name
     assert updated_table.user_description == SUB_TEST4_DESCRIPTION
 
     # [sub-test-5]: Table with table qn (case_insensitive=False, update_only=True)
@@ -435,11 +408,7 @@ def test_batch_update(
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
     updated_table = results.current_page()[0]
-    assert (
-        updated_table
-        and updated_table.guid
-        and updated_table.qualified_name == table1.qualified_name
-    )
+    assert updated_table and updated_table.guid and updated_table.qualified_name == table1.qualified_name
     assert updated_table.user_description == SUB_TEST5_DESCRIPTION
 
     # [sub-test-6]: (same operation as sub-test-5)
@@ -478,9 +447,7 @@ def test_batch_update(
     )
     SUB_TEST7_DESCRIPTION = f"[sub-test7] {DESCRIPTION}"
 
-    table = Table.updater(
-        qualified_name=table1.qualified_name.lower(), name=table1.name
-    )
+    table = Table.updater(qualified_name=table1.qualified_name.lower(), name=table1.name)
     table.user_description = SUB_TEST7_DESCRIPTION
     batch7.add(table)
     batch7.flush()
@@ -506,11 +473,7 @@ def test_batch_update(
     assert results.current_page() and len(results.current_page()) == 1
     created_table = results.current_page()[0]
 
-    assert (
-        created_table
-        and created_table.guid
-        and created_table.qualified_name == table.qualified_name
-    )
+    assert created_table and created_table.guid and created_table.qualified_name == table.qualified_name
     assert created_table.is_partial
     assert created_table.user_description == SUB_TEST7_DESCRIPTION
 

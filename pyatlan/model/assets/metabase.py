@@ -53,11 +53,7 @@ class Metabase(BI):
 
     @property
     def metabase_collection_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metabase_collection_name
-        )
+        return None if self.attributes is None else self.attributes.metabase_collection_name
 
     @metabase_collection_name.setter
     def metabase_collection_name(self, metabase_collection_name: Optional[str]):
@@ -67,27 +63,17 @@ class Metabase(BI):
 
     @property
     def metabase_collection_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metabase_collection_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.metabase_collection_qualified_name
 
     @metabase_collection_qualified_name.setter
-    def metabase_collection_qualified_name(
-        self, metabase_collection_qualified_name: Optional[str]
-    ):
+    def metabase_collection_qualified_name(self, metabase_collection_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_collection_qualified_name = (
-            metabase_collection_qualified_name
-        )
+        self.attributes.metabase_collection_qualified_name = metabase_collection_qualified_name
 
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(default=None, description="")
-        metabase_collection_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        metabase_collection_qualified_name: Optional[str] = Field(default=None, description="")
 
     attributes: Metabase.Attributes = Field(
         default_factory=lambda: Metabase.Attributes(),

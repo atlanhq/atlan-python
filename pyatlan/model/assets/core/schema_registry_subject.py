@@ -54,11 +54,9 @@ class SchemaRegistrySubject(SchemaRegistry):
     """
     Compatibility of the schema across versions.
     """
-    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION: ClassVar[KeywordField] = (
-        KeywordField(
-            "schemaRegistrySubjectLatestSchemaVersion",
-            "schemaRegistrySubjectLatestSchemaVersion",
-        )
+    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySubjectLatestSchemaVersion",
+        "schemaRegistrySubjectLatestSchemaVersion",
     )
     """
     Latest schema version of the subject.
@@ -70,11 +68,9 @@ class SchemaRegistrySubject(SchemaRegistry):
     """
     Definition of the latest schema in the subject.
     """
-    SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = (
-        KeywordField(
-            "schemaRegistrySubjectGoverningAssetQualifiedNames",
-            "schemaRegistrySubjectGoverningAssetQualifiedNames",
-        )
+    SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySubjectGoverningAssetQualifiedNames",
+        "schemaRegistrySubjectGoverningAssetQualifiedNames",
     )
     """
     List of asset qualified names that this subject is governing/validating.
@@ -97,70 +93,42 @@ class SchemaRegistrySubject(SchemaRegistry):
 
     @property
     def schema_registry_subject_base_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_base_name
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_subject_base_name
 
     @schema_registry_subject_base_name.setter
-    def schema_registry_subject_base_name(
-        self, schema_registry_subject_base_name: Optional[str]
-    ):
+    def schema_registry_subject_base_name(self, schema_registry_subject_base_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.schema_registry_subject_base_name = (
-            schema_registry_subject_base_name
-        )
+        self.attributes.schema_registry_subject_base_name = schema_registry_subject_base_name
 
     @property
     def schema_registry_subject_is_key_schema(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_is_key_schema
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_subject_is_key_schema
 
     @schema_registry_subject_is_key_schema.setter
-    def schema_registry_subject_is_key_schema(
-        self, schema_registry_subject_is_key_schema: Optional[bool]
-    ):
+    def schema_registry_subject_is_key_schema(self, schema_registry_subject_is_key_schema: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.schema_registry_subject_is_key_schema = (
-            schema_registry_subject_is_key_schema
-        )
+        self.attributes.schema_registry_subject_is_key_schema = schema_registry_subject_is_key_schema
 
     @property
     def schema_registry_subject_schema_compatibility(
         self,
     ) -> Optional[SchemaRegistrySchemaCompatibility]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_schema_compatibility
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_subject_schema_compatibility
 
     @schema_registry_subject_schema_compatibility.setter
     def schema_registry_subject_schema_compatibility(
         self,
-        schema_registry_subject_schema_compatibility: Optional[
-            SchemaRegistrySchemaCompatibility
-        ],
+        schema_registry_subject_schema_compatibility: Optional[SchemaRegistrySchemaCompatibility],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.schema_registry_subject_schema_compatibility = (
-            schema_registry_subject_schema_compatibility
-        )
+        self.attributes.schema_registry_subject_schema_compatibility = schema_registry_subject_schema_compatibility
 
     @property
     def schema_registry_subject_latest_schema_version(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_latest_schema_version
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_subject_latest_schema_version
 
     @schema_registry_subject_latest_schema_version.setter
     def schema_registry_subject_latest_schema_version(
@@ -168,17 +136,11 @@ class SchemaRegistrySubject(SchemaRegistry):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.schema_registry_subject_latest_schema_version = (
-            schema_registry_subject_latest_schema_version
-        )
+        self.attributes.schema_registry_subject_latest_schema_version = schema_registry_subject_latest_schema_version
 
     @property
     def schema_registry_subject_latest_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_latest_schema_definition
-        )
+        return None if self.attributes is None else self.attributes.schema_registry_subject_latest_schema_definition
 
     @schema_registry_subject_latest_schema_definition.setter
     def schema_registry_subject_latest_schema_definition(
@@ -195,9 +157,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         self,
     ) -> Optional[Set[str]]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.schema_registry_subject_governing_asset_qualified_names
+            None if self.attributes is None else self.attributes.schema_registry_subject_governing_asset_qualified_names
         )
 
     @schema_registry_subject_governing_asset_qualified_names.setter
@@ -222,27 +182,17 @@ class SchemaRegistrySubject(SchemaRegistry):
         self.attributes.assets = assets
 
     class Attributes(SchemaRegistry.Attributes):
-        schema_registry_subject_base_name: Optional[str] = Field(
+        schema_registry_subject_base_name: Optional[str] = Field(default=None, description="")
+        schema_registry_subject_is_key_schema: Optional[bool] = Field(default=None, description="")
+        schema_registry_subject_schema_compatibility: Optional[SchemaRegistrySchemaCompatibility] = Field(
             default=None, description=""
         )
-        schema_registry_subject_is_key_schema: Optional[bool] = Field(
+        schema_registry_subject_latest_schema_version: Optional[str] = Field(default=None, description="")
+        schema_registry_subject_latest_schema_definition: Optional[str] = Field(default=None, description="")
+        schema_registry_subject_governing_asset_qualified_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        schema_registry_subject_schema_compatibility: Optional[
-            SchemaRegistrySchemaCompatibility
-        ] = Field(default=None, description="")
-        schema_registry_subject_latest_schema_version: Optional[str] = Field(
-            default=None, description=""
-        )
-        schema_registry_subject_latest_schema_definition: Optional[str] = Field(
-            default=None, description=""
-        )
-        schema_registry_subject_governing_asset_qualified_names: Optional[Set[str]] = (
-            Field(default=None, description="")
-        )
-        assets: Optional[List[Asset]] = Field(
-            default=None, description=""
-        )  # relationship
+        assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
 
     attributes: SchemaRegistrySubject.Attributes = Field(
         default_factory=lambda: SchemaRegistrySubject.Attributes(),

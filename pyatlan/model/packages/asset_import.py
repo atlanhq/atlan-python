@@ -68,9 +68,7 @@ class AssetImport(AbstractCustomPackage):
         self._credentials_body.update(local_creds)
         return self
 
-    def gcs(
-        self, project_id: str, service_account_json: str, bucket: str
-    ) -> AssetImport:
+    def gcs(self, project_id: str, service_account_json: str, bucket: str) -> AssetImport:
         """
         Set up package to import metadata from GCS.
 
@@ -148,9 +146,7 @@ class AssetImport(AbstractCustomPackage):
         """
         self._parameters.append({"name": "assets_prefix", "value": prefix})
         self._parameters.append({"name": "assets_key", "value": object_key})
-        self._parameters.append(
-            {"name": "assets_upsert_semantic", "value": input_handling}
-        )
+        self._parameters.append({"name": "assets_upsert_semantic", "value": input_handling})
         return self
 
     def assets_advanced(
@@ -184,9 +180,7 @@ class AssetImport(AbstractCustomPackage):
         :returns: package, configured to import
             assets with advanced configuration.
         """
-        if isinstance(remove_attributes, list) and all(
-            isinstance(field, AtlanField) for field in remove_attributes
-        ):
+        if isinstance(remove_attributes, list) and all(isinstance(field, AtlanField) for field in remove_attributes):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
             "assets_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
@@ -221,9 +215,7 @@ class AssetImport(AbstractCustomPackage):
         """
         self._parameters.append({"name": "glossaries_prefix", "value": prefix})
         self._parameters.append({"name": "glossaries_key", "value": object_key})
-        self._parameters.append(
-            {"name": "glossaries_upsert_semantic", "value": input_handling}
-        )
+        self._parameters.append({"name": "glossaries_upsert_semantic", "value": input_handling})
         return self
 
     def glossaries_advanced(
@@ -249,14 +241,10 @@ class AssetImport(AbstractCustomPackage):
         :returns: package, configured to import
             glossaries with advanced configuration.
         """
-        if isinstance(remove_attributes, list) and all(
-            isinstance(field, AtlanField) for field in remove_attributes
-        ):
+        if isinstance(remove_attributes, list) and all(isinstance(field, AtlanField) for field in remove_attributes):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "glossaries_attr_to_overwrite": dumps(
-                remove_attributes, separators=(",", ":")
-            ),
+            "glossaries_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
             "glossaries_fail_on_errors": fail_on_errors,
             "glossaries_field_separator": field_separator,
             "glossaries_batch_size": batch_size,
@@ -285,9 +273,7 @@ class AssetImport(AbstractCustomPackage):
         """
         self._parameters.append({"name": "data_products_prefix", "value": prefix})
         self._parameters.append({"name": "data_products_key", "value": object_key})
-        self._parameters.append(
-            {"name": "data_products_upsert_semantic", "value": input_handling}
-        )
+        self._parameters.append({"name": "data_products_upsert_semantic", "value": input_handling})
         return self
 
     def data_product_advanced(
@@ -314,14 +300,10 @@ class AssetImport(AbstractCustomPackage):
         :returns: package, configured to import
             data domain and data products with advanced configuration.
         """
-        if isinstance(remove_attributes, list) and all(
-            isinstance(field, AtlanField) for field in remove_attributes
-        ):
+        if isinstance(remove_attributes, list) and all(isinstance(field, AtlanField) for field in remove_attributes):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
-            "data_products_attr_to_overwrite": dumps(
-                remove_attributes, separators=(",", ":")
-            ),
+            "data_products_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
             "data_products_fail_on_errors": fail_on_errors,
             "data_products_field_separator": field_separator,
             "data_products_batch_size": batch_size,
@@ -377,7 +359,7 @@ class AssetImport(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Import assets from a CSV file.",
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["kotlin","utility"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

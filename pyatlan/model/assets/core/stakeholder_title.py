@@ -48,21 +48,13 @@ class StakeholderTitle(Asset, type_name="StakeholderTitle"):
 
     @property
     def stakeholder_title_domain_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.stakeholder_title_domain_qualified_names
-        )
+        return None if self.attributes is None else self.attributes.stakeholder_title_domain_qualified_names
 
     @stakeholder_title_domain_qualified_names.setter
-    def stakeholder_title_domain_qualified_names(
-        self, stakeholder_title_domain_qualified_names: Optional[Set[str]]
-    ):
+    def stakeholder_title_domain_qualified_names(self, stakeholder_title_domain_qualified_names: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.stakeholder_title_domain_qualified_names = (
-            stakeholder_title_domain_qualified_names
-        )
+        self.attributes.stakeholder_title_domain_qualified_names = stakeholder_title_domain_qualified_names
 
     @property
     def stakeholders(self) -> Optional[List[Stakeholder]]:
@@ -75,12 +67,8 @@ class StakeholderTitle(Asset, type_name="StakeholderTitle"):
         self.attributes.stakeholders = stakeholders
 
     class Attributes(Asset.Attributes):
-        stakeholder_title_domain_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        stakeholders: Optional[List[Stakeholder]] = Field(
-            default=None, description=""
-        )  # relationship
+        stakeholder_title_domain_qualified_names: Optional[Set[str]] = Field(default=None, description="")
+        stakeholders: Optional[List[Stakeholder]] = Field(default=None, description="")  # relationship
 
     attributes: StakeholderTitle.Attributes = Field(
         default_factory=lambda: StakeholderTitle.Attributes(),

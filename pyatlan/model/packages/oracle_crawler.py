@@ -27,12 +27,8 @@ class OracleCrawler(AbstractCrawler):
     _PACKAGE_NAME = "@atlan/oracle"
     _PACKAGE_PREFIX = WorkflowPackage.ORACLE.value
     _CONNECTOR_TYPE = AtlanConnectorType.ORACLE
-    _PACKAGE_ICON = (
-        "https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico"
-    )
-    _PACKAGE_LOGO = (
-        "https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico"
-    )
+    _PACKAGE_ICON = "https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico"
+    _PACKAGE_LOGO = "https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico"
 
     def __init__(
         self,
@@ -132,9 +128,7 @@ class OracleCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(
-            dict(dict(name="include-filter", value=to_include or "{}"))
-        )
+        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
         return self
 
     def exclude(self, assets: dict) -> OracleCrawler:
@@ -173,9 +167,7 @@ class OracleCrawler(AbstractCrawler):
         :returns: crawler, with jdbc internal methods for data extraction
         """
         self._advanced_config = True
-        self._parameters.append(
-            dict(name="use-jdbc-internal-methods", value="true" if enable else "false")
-        )
+        self._parameters.append(dict(name="use-jdbc-internal-methods", value="true" if enable else "false"))
         return self
 
     def source_level_filtering(self, enable: bool) -> OracleCrawler:
@@ -188,20 +180,12 @@ class OracleCrawler(AbstractCrawler):
         :returns: crawler, with schema level filtering on source
         """
         self._advanced_config = True
-        self._parameters.append(
-            dict(
-                name="use-source-schema-filtering", value="true" if enable else "false"
-            )
-        )
+        self._parameters.append(dict(name="use-source-schema-filtering", value="true" if enable else "false"))
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
-        )
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
+        self._parameters.append({"name": "credentials-fetch-strategy", "value": "credential_guid"})
+        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
         self._parameters.append(dict(name="publish-mode", value="production"))
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
         self._parameters.append(
@@ -213,9 +197,7 @@ class OracleCrawler(AbstractCrawler):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(
-                    by_alias=True, exclude_unset=True, exclude_none=True
-                ),
+                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
             }
         )
 
@@ -247,7 +229,7 @@ class OracleCrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl Oracle assets and publish to Atlan for discovery",
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"oracle\",\"warehouse\",\"connector\",\"crawler\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["oracle","warehouse","connector","crawler"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

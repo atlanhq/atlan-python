@@ -142,9 +142,7 @@ class AssetClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     @staticmethod
@@ -156,13 +154,8 @@ class AssetClient:
 
     def _get_bulk_search_log_message(self, bulk):
         return (
-            (
-                "Bulk search option is enabled. "
-                if bulk
-                else "Result size (%s) exceeds threshold (%s). "
-            )
-            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
-        )
+            "Bulk search option is enabled. " if bulk else "Result size (%s) exceeds threshold (%s). "
+        ) + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
@@ -201,22 +194,17 @@ class AssetClient:
         if "entities" in raw_json:
             try:
                 for entity in raw_json["entities"]:
-                    unflatten_custom_metadata_for_entity(
-                        entity=entity, attributes=criteria.attributes
-                    )
+                    unflatten_custom_metadata_for_entity(entity=entity, attributes=criteria.attributes)
                 assets = parse_obj_as(List[Asset], raw_json["entities"])
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
         else:
             assets = []
         aggregations = self._get_aggregations(raw_json)
         count = raw_json.get("approximateCount", 0)
 
-        if (
-            count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
-            and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
+        if count > IndexSearchResults._MASS_EXTRACT_THRESHOLD and not IndexSearchResults.presorted_by_timestamp(
+            criteria.dsl.sort
         ):
             # If there is any user-specified sorting present in the search request
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
@@ -254,9 +242,7 @@ class AssetClient:
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/pydantic/pydantic/issues/2901
-    def get_lineage_list(
-        self, lineage_request: LineageListRequest
-    ) -> LineageListResults:
+    def get_lineage_list(self, lineage_request: LineageListRequest) -> LineageListResults:
         """
         Retrieve lineage using the higher-performance "list" API.
 
@@ -267,21 +253,15 @@ class AssetClient:
         """
         if lineage_request.direction == LineageDirection.BOTH:
             raise ErrorCode.INVALID_LINEAGE_DIRECTION.exception_with_parameters()
-        raw_json = self._client._call_api(
-            GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True
-        )
+        raw_json = self._client._call_api(GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True)
         if "entities" in raw_json:
             try:
                 for entity in raw_json["entities"]:
-                    unflatten_custom_metadata_for_entity(
-                        entity=entity, attributes=lineage_request.attributes
-                    )
+                    unflatten_custom_metadata_for_entity(entity=entity, attributes=lineage_request.attributes)
                 assets = parse_obj_as(List[Asset], raw_json["entities"])
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
         else:
             assets = []
             has_more = False
@@ -310,11 +290,7 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PERSONA")
-            + Term.with_name(name)
-        )
+        query = Term.with_state("ACTIVE") + Term.with_type_name("PERSONA") + Term.with_name(name)
         return self._search_for_asset_with_name(
             query=query,
             name=name,
@@ -339,11 +315,7 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PURPOSE")
-            + Term.with_name(name)
-        )
+        query = Term.with_state("ACTIVE") + Term.with_type_name("PURPOSE") + Term.with_name(name)
         return self._search_for_asset_with_name(
             query=query,
             name=name,
@@ -386,13 +358,9 @@ class AssetClient:
         attributes = attributes or []
         related_attributes = related_attributes or []
 
-        if (attributes and len(attributes)) or (
-            related_attributes and len(related_attributes)
-        ):
+        if (attributes and len(attributes)) or (related_attributes and len(related_attributes)):
             client = AtlanClient.get_default_client()
-            search = (
-                FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
-            )
+            search = FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
             for attribute in attributes:
                 search = search.include_on_results(attribute)
             for relation_attribute in related_attributes:
@@ -407,23 +375,17 @@ class AssetClient:
                         asset_type.__name__, qualified_name
                     )
             else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(qualified_name, asset_type.__name__)
 
         raw_json = self._client._call_api(
             GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
             query_params,
         )
         if raw_json["entity"]["typeName"] != asset_type.__name__:
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
-            )
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(asset_type.__name__, qualified_name)
         asset = self._handle_relationships(raw_json)
         if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
-            )
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(asset_type.__name__, qualified_name)
         return asset
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
@@ -459,9 +421,7 @@ class AssetClient:
         attributes = attributes or []
         related_attributes = related_attributes or []
 
-        if (attributes and len(attributes)) or (
-            related_attributes and len(related_attributes)
-        ):
+        if (attributes and len(attributes)) or (related_attributes and len(related_attributes)):
             client = AtlanClient.get_default_client()
             search = FluentSearch().select().where(Asset.GUID.eq(guid))
             for attribute in attributes:
@@ -474,9 +434,7 @@ class AssetClient:
                 if isinstance(first_result, asset_type):
                     return first_result
                 else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, asset_type.__name__)
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
 
@@ -486,19 +444,12 @@ class AssetClient:
         )
         asset = self._handle_relationships(raw_json)
         if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                guid, asset_type.__name__
-            )
+            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, asset_type.__name__)
         return asset
 
     def _handle_relationships(self, raw_json):
-        if (
-            "relationshipAttributes" in raw_json["entity"]
-            and raw_json["entity"]["relationshipAttributes"]
-        ):
-            raw_json["entity"]["attributes"].update(
-                raw_json["entity"]["relationshipAttributes"]
-            )
+        if "relationshipAttributes" in raw_json["entity"] and raw_json["entity"]["relationshipAttributes"]:
+            raw_json["entity"]["attributes"].update(raw_json["entity"]["relationshipAttributes"])
         raw_json["entity"]["relationshipAttributes"] = {}
         asset = AssetResponse[A](**raw_json).entity
         asset.is_incomplete = False
@@ -506,7 +457,9 @@ class AssetClient:
 
     @validate_arguments
     def retrieve_minimal(
-        self, guid: str, asset_type: Type[A] = Asset  # type: ignore[assignment]
+        self,
+        guid: str,
+        asset_type: Type[A] = Asset,  # type: ignore[assignment]
     ) -> A:
         """
         Retrieves an asset by its GUID, without any of its relationships.
@@ -599,14 +552,11 @@ class AssetClient:
     ) -> AssetMutationResponse:
         """Deprecated - use save_merging_cm() instead."""
         warn(
-            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.save_merging_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tags
-        )
+        return self.save_merging_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
 
     @validate_arguments
     def save_merging_cm(
@@ -629,9 +579,7 @@ class AssetClient:
         )
 
     @validate_arguments
-    def update_merging_cm(
-        self, entity: Asset, replace_atlan_tags: bool = False
-    ) -> AssetMutationResponse:
+    def update_merging_cm(self, entity: Asset, replace_atlan_tags: bool = False) -> AssetMutationResponse:
         """
         If no asset exists, fails with a NotFoundError. Will merge any provided
         custom metadata with any custom metadata that already exists on the asset.
@@ -648,9 +596,7 @@ class AssetClient:
             min_ext_info=True,
             ignore_relationships=True,
         )  # Allow this to throw the NotFoundError if the entity does not exist
-        return self.save_merging_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tags
-        )
+        return self.save_merging_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
 
     @validate_arguments
     def upsert_replacing_cm(
@@ -658,14 +604,11 @@ class AssetClient:
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
         warn(
-            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.save_replacing_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tagss
-        )
+        return self.save_replacing_cm(entity=entity, replace_atlan_tags=replace_atlan_tagss)
 
     @validate_arguments
     def save_replacing_cm(
@@ -701,9 +644,7 @@ class AssetClient:
         return AssetMutationResponse(**raw_json)
 
     @validate_arguments
-    def update_replacing_cm(
-        self, entity: Asset, replace_atlan_tags: bool = False
-    ) -> AssetMutationResponse:
+    def update_replacing_cm(self, entity: Asset, replace_atlan_tags: bool = False) -> AssetMutationResponse:
         """
         If no asset exists, fails with a NotFoundError.
         Will overwrite all custom metadata on any existing asset with only the custom metadata provided
@@ -722,9 +663,7 @@ class AssetClient:
             min_ext_info=True,
             ignore_relationships=True,
         )  # Allow this to throw the NotFoundError if the entity does not exist
-        return self.save_replacing_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tags
-        )
+        return self.save_replacing_cm(entity=entity, replace_atlan_tags=replace_atlan_tags)
 
     @validate_arguments
     def purge_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
@@ -742,9 +681,7 @@ class AssetClient:
         else:
             guids.append(guid)
         query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": guids}
-        raw_json = self._client._call_api(
-            DELETE_ENTITIES_BY_GUIDS, query_params=query_params
-        )
+        raw_json = self._client._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
         return AssetMutationResponse(**raw_json)
 
     @validate_arguments
@@ -767,13 +704,9 @@ class AssetClient:
         for guid in guids:
             asset = self.retrieve_minimal(guid=guid, asset_type=Asset)
             if not asset.can_be_archived():
-                raise ErrorCode.ASSET_CAN_NOT_BE_ARCHIVED.exception_with_parameters(
-                    guid, asset.type_name
-                )
+                raise ErrorCode.ASSET_CAN_NOT_BE_ARCHIVED.exception_with_parameters(guid, asset.type_name)
         query_params = {"deleteType": AtlanDeleteType.SOFT.value, "guid": guids}
-        raw_json = self._client._call_api(
-            DELETE_ENTITIES_BY_GUIDS, query_params=query_params
-        )
+        raw_json = self._client._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
         response = AssetMutationResponse(**raw_json)
         for asset in response.assets_deleted(asset_type=Asset):
             self._wait_till_deleted(asset)
@@ -949,9 +882,7 @@ class AssetClient:
         )
 
     @validate_arguments
-    def remove_atlan_tag(
-        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
-    ) -> None:
+    def remove_atlan_tag(self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str) -> None:
         """
         Removes a single Atlan tag from the provided asset.
         Note: if the provided Atlan tag does not exist on the asset, an error will be raised.
@@ -966,9 +897,7 @@ class AssetClient:
 
         classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
         if not classification_id:
-            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
-                atlan_tag_name
-            )
+            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(atlan_tag_name)
         query_params = {"attr:qualifiedName": qualified_name}
         self._client._call_api(
             DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
@@ -977,14 +906,10 @@ class AssetClient:
             query_params,
         )
 
-    def _update_asset_by_attribute(
-        self, asset: A, asset_type: Type[A], qualified_name: str
-    ):
+    def _update_asset_by_attribute(self, asset: A, asset_type: Type[A], qualified_name: str):
         query_params = {"attr:qualifiedName": qualified_name}
         raw_json = self._client._call_api(
-            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
-                asset_type.__name__
-            ),
+            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(asset_type.__name__),
             query_params,
             AssetRequest[Asset](entity=asset),
         )
@@ -1234,9 +1159,7 @@ class AssetClient:
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
-    def update_custom_metadata_attributes(
-        self, guid: str, custom_metadata: CustomMetadataDict
-    ):
+    def update_custom_metadata_attributes(self, guid: str, custom_metadata: CustomMetadataDict):
         """
         Update only the provided custom metadata attributes on the asset. This will leave all
         other custom metadata attributes, even within the same named custom metadata, unchanged.
@@ -1245,9 +1168,7 @@ class AssetClient:
         :param custom_metadata: custom metadata to update, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
-        )
+        custom_metadata_request = CustomMetadataRequest.create(custom_metadata_dict=custom_metadata)
         self._client._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
                 {
@@ -1271,9 +1192,7 @@ class AssetClient:
         """
         # clear unset attributes so that they are removed
         custom_metadata.clear_unset()
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
-        )
+        custom_metadata_request = CustomMetadataRequest.create(custom_metadata_dict=custom_metadata)
         self._client._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
                 {
@@ -1297,9 +1216,7 @@ class AssetClient:
         custom_metadata = CustomMetadataDict(name=cm_name)
         # invoke clear_all so all attributes are set to None and consequently removed
         custom_metadata.clear_all()
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
-        )
+        custom_metadata_request = CustomMetadataRequest.create(custom_metadata_dict=custom_metadata)
         self._client._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
                 {
@@ -1338,19 +1255,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.GUID.eq(guid)).execute(client=client)
         elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.QUALIFIED_NAME.eq(qualified_name)).execute(client=client)
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
@@ -1362,14 +1269,10 @@ class AssetClient:
                         asset_type.__name__, qualified_name
                     )
                 else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, asset_type.__name__)
         else:
             if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(qualified_name, asset_type.__name__)
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
         qualified_name = first_result.qualified_name
@@ -1377,9 +1280,7 @@ class AssetClient:
         updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.APPEND
-                )
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(guid=term.guid, semantic=SaveSemantic.APPEND)
             elif hasattr(term, "qualified_name") and term.qualified_name:
                 terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
                     qualified_name=term.qualified_name, semantic=SaveSemantic.APPEND
@@ -1415,19 +1316,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.GUID.eq(guid)).execute(client=client)
         elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.QUALIFIED_NAME.eq(qualified_name)).execute(client=client)
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
@@ -1439,14 +1330,10 @@ class AssetClient:
                         asset_type.__name__, qualified_name
                     )
                 else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, asset_type.__name__)
         else:
             if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(qualified_name, asset_type.__name__)
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
         qualified_name = first_result.qualified_name
@@ -1454,9 +1341,7 @@ class AssetClient:
         updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.REPLACE
-                )
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(guid=term.guid, semantic=SaveSemantic.REPLACE)
             elif hasattr(term, "qualified_name") and term.qualified_name:
                 terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
                     qualified_name=term.qualified_name, semantic=SaveSemantic.REPLACE
@@ -1494,19 +1379,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.GUID.eq(guid)).execute(client=client)
         elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
-            )
+            results = FluentSearch().select().where(asset_type.QUALIFIED_NAME.eq(qualified_name)).execute(client=client)
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
 
@@ -1518,14 +1393,10 @@ class AssetClient:
                         asset_type.__name__, qualified_name
                     )
                 else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(guid, asset_type.__name__)
         else:
             if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
+                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(qualified_name, asset_type.__name__)
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
         qualified_name = first_result.qualified_name
@@ -1533,9 +1404,7 @@ class AssetClient:
         updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
         for i, term in enumerate(terms):
             if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.REMOVE
-                )
+                terms[i] = AtlasGlossaryTerm.ref_by_guid(guid=term.guid, semantic=SaveSemantic.REMOVE)
             elif hasattr(term, "qualified_name") and term.qualified_name:
                 terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
                     qualified_name=term.qualified_name, semantic=SaveSemantic.REMOVE
@@ -1620,9 +1489,7 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = with_active_category(
-            name=name, glossary_qualified_name=glossary_qualified_name
-        )
+        query = with_active_category(name=name, glossary_qualified_name=glossary_qualified_name)
         return self._search_for_asset_with_name(
             query=query,
             name=name,
@@ -1667,9 +1534,7 @@ class AssetClient:
         allow_multiple: bool = False,
     ) -> List[A]:
         dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl, attributes=attributes, relation_attributes=["name"]
-        )
+        search_request = IndexSearchRequest(dsl=dsl, attributes=attributes, relation_attributes=["name"])
         results = self.search(search_request)
         if (
             results
@@ -1677,11 +1542,7 @@ class AssetClient:
             and (
                 # Check for paginated results first;
                 # if not paginated, iterate over the results
-                assets := [
-                    asset
-                    for asset in (results.current_page() or results)
-                    if isinstance(asset, asset_type)
-                ]
+                assets := [asset for asset in (results.current_page() or results) if isinstance(asset, asset_type)]
             )
         ):
             if not allow_multiple and len(assets) > 1:
@@ -1691,9 +1552,7 @@ class AssetClient:
                     name,
                 )
             return assets
-        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-            asset_type.__name__, name
-        )
+        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(asset_type.__name__, name)
 
     @validate_arguments
     def find_term_fast_by_name(
@@ -1715,9 +1574,7 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = with_active_term(
-            name=name, glossary_qualified_name=glossary_qualified_name
-        )
+        query = with_active_term(name=name, glossary_qualified_name=glossary_qualified_name)
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
         )[0]
@@ -1764,9 +1621,7 @@ class AssetClient:
         """
         attributes = attributes or []
         query = Term.with_name(name) + Term.with_type_name("DataDomain")
-        return self._search_for_asset_with_name(
-            query=query, name=name, asset_type=DataDomain, attributes=attributes
-        )[0]
+        return self._search_for_asset_with_name(query=query, name=name, asset_type=DataDomain, attributes=attributes)[0]
 
     @validate_arguments
     def find_product_by_name(
@@ -1784,9 +1639,9 @@ class AssetClient:
         """
         attributes = attributes or []
         query = Term.with_name(name) + Term.with_type_name("DataProduct")
-        return self._search_for_asset_with_name(
-            query=query, name=name, asset_type=DataProduct, attributes=attributes
-        )[0]
+        return self._search_for_asset_with_name(query=query, name=name, asset_type=DataProduct, attributes=attributes)[
+            0
+        ]
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
@@ -1833,18 +1688,14 @@ class AssetClient:
             search = search.include_on_relations(field)
         request = search.to_request()
         response = self.search(request)
-        for category in filter(
-            lambda a: isinstance(a, AtlasGlossaryCategory), response
-        ):
+        for category in filter(lambda a: isinstance(a, AtlasGlossaryCategory), response):
             guid = category.guid
             category_dict[guid] = category
             if category.parent_category is None:
                 top_categories.add(guid)
 
         if not top_categories:
-            raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
-                glossary.guid, glossary.qualified_name
-            )
+            raise ErrorCode.NO_CATEGORIES.exception_with_parameters(glossary.guid, glossary.qualified_name)
         return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
 
 
@@ -1920,15 +1771,11 @@ class SearchResults(ABC, Iterable):
             return raw_json
 
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                raw_json, 200, str(err)
-            ) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
 
     def _process_entities(self, entities):
         for entity in entities:
-            unflatten_custom_metadata_for_entity(
-                entity=entity, attributes=self._criteria.attributes
-            )
+            unflatten_custom_metadata_for_entity(entity=entity, attributes=self._criteria.attributes)
         self._assets = parse_obj_as(List[Asset], entities)
 
     def _update_first_last_record_creation_times(self):
@@ -1947,9 +1794,7 @@ class SearchResults(ABC, Iterable):
 
     def _filter_processed_assets(self):
         self._assets = [
-            asset
-            for asset in self._assets
-            if asset is not None and asset.guid not in self._processed_guids
+            asset for asset in self._assets if asset is not None and asset.guid not in self._processed_guids
         ]
 
     def __iter__(self) -> Generator[Asset, None, None]:
@@ -2012,9 +1857,7 @@ class IndexSearchResults(SearchResults, Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
-            rewritten_filters.append(
-                self.get_paging_timestamp_query(self._last_record_creation_time)
-            )
+            rewritten_filters.append(self.get_paging_timestamp_query(self._last_record_creation_time))
             if isinstance(query, Bool):
                 rewritten_query = Bool(
                     filter=rewritten_filters,
@@ -2054,9 +1897,7 @@ class IndexSearchResults(SearchResults, Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
+        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
         if size:
             self._size = size
         if is_bulk_search:
@@ -2065,9 +1906,7 @@ class IndexSearchResults(SearchResults, Iterable):
             # in a previous page of results.
             # If it has,then exclude it from the current results;
             # otherwise, we may encounter duplicate asset records.
-            self._processed_guids.update(
-                asset.guid for asset in self._assets if asset is not None
-            )
+            self._processed_guids.update(asset.guid for asset in self._assets if asset is not None)
         return self._get_next_page() if self._assets else False
 
     def _get_next_page(self):
@@ -2079,9 +1918,7 @@ class IndexSearchResults(SearchResults, Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.size = self._size
         self._criteria.dsl.from_ = self._start
-        is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
+        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
 
         if is_bulk_search:
             self._prepare_query_for_timestamp_paging(query)
@@ -2132,9 +1969,7 @@ class IndexSearchResults(SearchResults, Iterable):
             return creation_asc_sort
 
         rewritten_sorts = [
-            sort
-            for sort in sorts
-            if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
+            sort for sort in sorts if (not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name)
         ]
         return creation_asc_sort + rewritten_sorts
 
@@ -2268,9 +2103,7 @@ class Batch:
         self._client: AtlanClient = client
         self._max_size: int = max_size
         self._replace_atlan_tags: bool = replace_atlan_tags
-        self._custom_metadata_handling: CustomMetadataHandling = (
-            custom_metadata_handling
-        )
+        self._custom_metadata_handling: CustomMetadataHandling = custom_metadata_handling
         self._capture_failures: bool = capture_failures
         self._update_only: bool = update_only
         self._track: bool = track
@@ -2394,24 +2227,15 @@ class Batch:
             fuzzy_match: bool = False
             if self._table_view_agnostic:
                 types_in_batch = {asset.type_name for asset in self._batch}
-                fuzzy_match = any(
-                    type_name in types_in_batch
-                    for type_name in self._TABLE_LEVEL_ASSETS
-                )
-            if (
-                self._update_only
-                or self._creation_handling != AssetCreationHandling.FULL
-                or fuzzy_match
-            ):
+                fuzzy_match = any(type_name in types_in_batch for type_name in self._TABLE_LEVEL_ASSETS)
+            if self._update_only or self._creation_handling != AssetCreationHandling.FULL or fuzzy_match:
                 found: Dict[str, str] = {}
                 qualified_names = [asset.qualified_name or "" for asset in self._batch]
                 if self._case_insensitive:
                     search = FluentSearch().select(include_archived=True).min_somes(1)
                     for qn in qualified_names:
                         search = search.where_some(
-                            Asset.QUALIFIED_NAME.eq(
-                                value=qn or "", case_insensitive=self._case_insensitive
-                            )
+                            Asset.QUALIFIED_NAME.eq(value=qn or "", case_insensitive=self._case_insensitive)
                         )
                 else:
                     search = (
@@ -2447,10 +2271,7 @@ class Batch:
                             actual_qn=found.get(str(asset_id), ""),
                             revised=revised,
                         )
-                    elif (
-                        self._table_view_agnostic
-                        and asset.type_name in self._TABLE_LEVEL_ASSETS
-                    ):
+                    elif self._table_view_agnostic and asset.type_name in self._TABLE_LEVEL_ASSETS:
                         # If found as a different (but acceptable) type, update that instead
                         as_table = AssetIdentity(
                             type_name=Table.__name__,
@@ -2517,13 +2338,8 @@ class Batch:
             if revised:
                 try:
                     if self._custom_metadata_handling == CustomMetadataHandling.IGNORE:
-                        response = self._client.asset.save(
-                            revised, replace_atlan_tags=self._replace_atlan_tags
-                        )
-                    elif (
-                        self._custom_metadata_handling
-                        == CustomMetadataHandling.OVERWRITE
-                    ):
+                        response = self._client.asset.save(revised, replace_atlan_tags=self._replace_atlan_tags)
+                    elif self._custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
                         response = self._client.asset.save_replacing_cm(
                             revised, replace_atlan_tags=self._replace_atlan_tags
                         )
@@ -2539,9 +2355,7 @@ class Batch:
                         )
                 except AtlanError as er:
                     if self._capture_failures:
-                        self._failures.append(
-                            FailedBatch(failed_assets=self._batch, failure_reason=er)
-                        )
+                        self._failures.append(FailedBatch(failed_assets=self._batch, failure_reason=er))
                     else:
                         raise er
                 self._batch = []
@@ -2570,27 +2384,17 @@ class Batch:
                 created_guids, updated_guids = set(), set()
                 if response.mutated_entities:
                     if response.mutated_entities.CREATE:
-                        created_guids = {
-                            asset.guid for asset in response.mutated_entities.CREATE
-                        }
+                        created_guids = {asset.guid for asset in response.mutated_entities.CREATE}
                     if response.mutated_entities.UPDATE:
-                        updated_guids = {
-                            asset.guid for asset in response.mutated_entities.UPDATE
-                        }
+                        updated_guids = {asset.guid for asset in response.mutated_entities.UPDATE}
                 for one in sent:
                     guid = one.guid
-                    if guid and (
-                        not response.guid_assignments
-                        or guid not in response.guid_assignments
-                    ):
+                    if guid and (not response.guid_assignments or guid not in response.guid_assignments):
                         # Ensure any assets that were sent with GUIDs
                         # that were used as-is are added to the resolved GUIDs map
                         self._resolved_guids[guid] = guid
                     mapped_guid = self._resolved_guids.get(guid, guid)
-                    if (
-                        mapped_guid not in created_guids
-                        and mapped_guid not in updated_guids
-                    ):
+                    if mapped_guid not in created_guids and mapped_guid not in updated_guids:
                         # Ensure any assets that do not show as either created or updated are still tracked
                         # as possibly restored (and inject the mapped GUID in case it had a placeholder)
                         one.guid = mapped_guid
@@ -2644,9 +2448,7 @@ class AssetIdentity(AtlanObject):
     type_name: str
     qualified_name: str
 
-    def __init__(
-        self, type_name: str, qualified_name: str, case_insensitive: bool = False
-    ):
+    def __init__(self, type_name: str, qualified_name: str, case_insensitive: bool = False):
         """
         Initializes an AssetIdentity.
 
@@ -2694,9 +2496,7 @@ def _dfs(dfs_list: List[AtlasGlossaryCategory], to_add: List[AtlasGlossaryCatego
 
 
 class CategoryHierarchy:
-    def __init__(
-        self, top_level: Set[str], stub_dict: Dict[str, AtlasGlossaryCategory]
-    ):
+    def __init__(self, top_level: Set[str], stub_dict: Dict[str, AtlasGlossaryCategory]):
         self._top_level = top_level
         self._root_categories: list = []
         self._categories: Dict[str, AtlasGlossaryCategory] = {}
@@ -2710,9 +2510,7 @@ class CategoryHierarchy:
                 parent_guid = parent.guid
                 full_parent = self._categories.get(parent_guid, stub_dict[parent_guid])
                 children: List[AtlasGlossaryCategory] = (
-                    []
-                    if full_parent.children_categories is None
-                    else full_parent.children_categories.copy()
+                    [] if full_parent.children_categories is None else full_parent.children_categories.copy()
                 )
                 if category not in children:
                     children.append(category)

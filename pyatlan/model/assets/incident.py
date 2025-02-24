@@ -30,9 +30,7 @@ class Incident(Asset, type_name="Incident"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    INCIDENT_SEVERITY: ClassVar[KeywordField] = KeywordField(
-        "incidentSeverity", "incidentSeverity"
-    )
+    INCIDENT_SEVERITY: ClassVar[KeywordField] = KeywordField("incidentSeverity", "incidentSeverity")
     """
     Status of this asset's severity.
     """
@@ -52,9 +50,7 @@ class Incident(Asset, type_name="Incident"):
         self.attributes.incident_severity = incident_severity
 
     class Attributes(Asset.Attributes):
-        incident_severity: Optional[IncidentSeverity] = Field(
-            default=None, description=""
-        )
+        incident_severity: Optional[IncidentSeverity] = Field(default=None, description="")
 
     attributes: Incident.Attributes = Field(
         default_factory=lambda: Incident.Attributes(),

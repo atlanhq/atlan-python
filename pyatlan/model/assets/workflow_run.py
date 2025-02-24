@@ -37,9 +37,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     """
     GUID of the workflow from which this run was created.
     """
-    WORKFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField(
-        "workflowRunType", "workflowRunType"
-    )
+    WORKFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField("workflowRunType", "workflowRunType")
     """
     Type of the workflow from which this run was created.
     """
@@ -55,45 +53,31 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
     """
     The asset for which this run was created.
     """
-    WORKFLOW_RUN_COMMENT: ClassVar[TextField] = TextField(
-        "workflowRunComment", "workflowRunComment"
-    )
+    WORKFLOW_RUN_COMMENT: ClassVar[TextField] = TextField("workflowRunComment", "workflowRunComment")
     """
     The comment added by the requester
     """
-    WORKFLOW_RUN_CONFIG: ClassVar[TextField] = TextField(
-        "workflowRunConfig", "workflowRunConfig"
-    )
+    WORKFLOW_RUN_CONFIG: ClassVar[TextField] = TextField("workflowRunConfig", "workflowRunConfig")
     """
     Details of the approval workflow run.
     """
-    WORKFLOW_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
-        "workflowRunStatus", "workflowRunStatus"
-    )
+    WORKFLOW_RUN_STATUS: ClassVar[KeywordField] = KeywordField("workflowRunStatus", "workflowRunStatus")
     """
     Status of the run.
     """
-    WORKFLOW_RUN_EXPIRES_AT: ClassVar[NumericField] = NumericField(
-        "workflowRunExpiresAt", "workflowRunExpiresAt"
-    )
+    WORKFLOW_RUN_EXPIRES_AT: ClassVar[NumericField] = NumericField("workflowRunExpiresAt", "workflowRunExpiresAt")
     """
     Time at which this run will expire.
     """
-    WORKFLOW_RUN_CREATED_BY: ClassVar[KeywordField] = KeywordField(
-        "workflowRunCreatedBy", "workflowRunCreatedBy"
-    )
+    WORKFLOW_RUN_CREATED_BY: ClassVar[KeywordField] = KeywordField("workflowRunCreatedBy", "workflowRunCreatedBy")
     """
     Username of the user who created this workflow run.
     """
-    WORKFLOW_RUN_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
-        "workflowRunUpdatedBy", "workflowRunUpdatedBy"
-    )
+    WORKFLOW_RUN_UPDATED_BY: ClassVar[KeywordField] = KeywordField("workflowRunUpdatedBy", "workflowRunUpdatedBy")
     """
     Username of the user who updated this workflow run.
     """
-    WORKFLOW_RUN_DELETED_AT: ClassVar[NumericField] = NumericField(
-        "workflowRunDeletedAt", "workflowRunDeletedAt"
-    )
+    WORKFLOW_RUN_DELETED_AT: ClassVar[NumericField] = NumericField("workflowRunDeletedAt", "workflowRunDeletedAt")
     """
     Deletion time of this workflow run.
     """
@@ -114,11 +98,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_workflow_guid(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workflow_run_workflow_guid
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_workflow_guid
 
     @workflow_run_workflow_guid.setter
     def workflow_run_workflow_guid(self, workflow_run_workflow_guid: Optional[str]):
@@ -138,27 +118,17 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_action_choices(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workflow_run_action_choices
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_action_choices
 
     @workflow_run_action_choices.setter
-    def workflow_run_action_choices(
-        self, workflow_run_action_choices: Optional[Set[str]]
-    ):
+    def workflow_run_action_choices(self, workflow_run_action_choices: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.workflow_run_action_choices = workflow_run_action_choices
 
     @property
     def workflow_run_on_asset_guid(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workflow_run_on_asset_guid
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_on_asset_guid
 
     @workflow_run_on_asset_guid.setter
     def workflow_run_on_asset_guid(self, workflow_run_on_asset_guid: Optional[str]):
@@ -198,9 +168,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_expires_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.workflow_run_expires_at
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_expires_at
 
     @workflow_run_expires_at.setter
     def workflow_run_expires_at(self, workflow_run_expires_at: Optional[datetime]):
@@ -210,9 +178,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_created_by(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.workflow_run_created_by
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_created_by
 
     @workflow_run_created_by.setter
     def workflow_run_created_by(self, workflow_run_created_by: Optional[str]):
@@ -222,9 +188,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_updated_by(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.workflow_run_updated_by
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_updated_by
 
     @workflow_run_updated_by.setter
     def workflow_run_updated_by(self, workflow_run_updated_by: Optional[str]):
@@ -234,9 +198,7 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     @property
     def workflow_run_deleted_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.workflow_run_deleted_at
-        )
+        return None if self.attributes is None else self.attributes.workflow_run_deleted_at
 
     @workflow_run_deleted_at.setter
     def workflow_run_deleted_at(self, workflow_run_deleted_at: Optional[datetime]):
@@ -246,26 +208,16 @@ class WorkflowRun(Asset, type_name="WorkflowRun"):
 
     class Attributes(Asset.Attributes):
         workflow_run_workflow_guid: Optional[str] = Field(default=None, description="")
-        workflow_run_type: Optional[WorkflowRunType] = Field(
-            default=None, description=""
-        )
-        workflow_run_action_choices: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
+        workflow_run_type: Optional[WorkflowRunType] = Field(default=None, description="")
+        workflow_run_action_choices: Optional[Set[str]] = Field(default=None, description="")
         workflow_run_on_asset_guid: Optional[str] = Field(default=None, description="")
         workflow_run_comment: Optional[str] = Field(default=None, description="")
         workflow_run_config: Optional[str] = Field(default=None, description="")
-        workflow_run_status: Optional[WorkflowRunStatus] = Field(
-            default=None, description=""
-        )
-        workflow_run_expires_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        workflow_run_status: Optional[WorkflowRunStatus] = Field(default=None, description="")
+        workflow_run_expires_at: Optional[datetime] = Field(default=None, description="")
         workflow_run_created_by: Optional[str] = Field(default=None, description="")
         workflow_run_updated_by: Optional[str] = Field(default=None, description="")
-        workflow_run_deleted_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        workflow_run_deleted_at: Optional[datetime] = Field(default=None, description="")
 
     attributes: WorkflowRun.Attributes = Field(
         default_factory=lambda: WorkflowRun.Attributes(),

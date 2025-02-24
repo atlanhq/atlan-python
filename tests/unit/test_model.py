@@ -273,9 +273,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[SourceCostUnitType]": SourceCostUnitType.CREDITS,
     "Optional[List[PopularityInsights]]": [PopularityInsights()],
     "Optional[QueryUsernameStrategy]": QueryUsernameStrategy.CONNECTION_USERNAME,
-    "Optional[List[GoogleLabel]]": [
-        GoogleLabel(google_label_key="", google_label_value="")
-    ],
+    "Optional[List[GoogleLabel]]": [GoogleLabel(google_label_key="", google_label_value="")],
     "Optional[List[GoogleTag]]": [GoogleTag(google_tag_key="", google_tag_value="")],
     "Optional[GoogleDatastudioAssetType]": GoogleDatastudioAssetType.REPORT,
     "Optional[List[AzureTag]]": [AzureTag(azure_tag_key="", azure_tag_value="")],
@@ -637,9 +635,7 @@ def type_def_response():
                         "displayName": "Table URL",
                         "isDefaultValueNull": False,
                         "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
-                        "indexTypeESFields": {
-                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
-                        },
+                        "indexTypeESFields": {"text": {"analyzer": "atlan_text_analyzer", "type": "text"}},
                     },
                     {
                         "name": "VdRC4dyNdTJHfFjCiNaKt9",
@@ -670,9 +666,7 @@ def type_def_response():
                         "displayName": "Freshness",
                         "isDefaultValueNull": False,
                         "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
-                        "indexTypeESFields": {
-                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
-                        },
+                        "indexTypeESFields": {"text": {"analyzer": "atlan_text_analyzer", "type": "text"}},
                     },
                     {
                         "name": "loYJQi6ycokTirQTGVCHpD",
@@ -703,9 +697,7 @@ def type_def_response():
                         },
                         "displayName": "Freshness Date",
                         "isDefaultValueNull": False,
-                        "indexTypeESFields": {
-                            "date": {"format": "epoch_millis", "type": "date"}
-                        },
+                        "indexTypeESFields": {"date": {"format": "epoch_millis", "type": "date"}},
                     },
                 ],
                 "displayName": "Monte Carlo",
@@ -755,9 +747,7 @@ def type_def_response():
                         "displayName": "Name",
                         "isDefaultValueNull": False,
                         "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
-                        "indexTypeESFields": {
-                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
-                        },
+                        "indexTypeESFields": {"text": {"analyzer": "atlan_text_analyzer", "type": "text"}},
                     }
                 ],
                 "displayName": "Moon",
@@ -855,9 +845,7 @@ def attribute_value(request):
         (asset_type, property_name, (asset_type, property_name))
         for asset_type in get_all_subclasses(Asset)
         for property_name in [
-            p
-            for p in dir(asset_type)
-            if isinstance(getattr(asset_type, p) and p != "atlan_tag_names", property)
+            p for p in dir(asset_type) if isinstance(getattr(asset_type, p) and p != "atlan_tag_names", property)
         ]
     ],
     indirect=["attribute_value"],
@@ -907,9 +895,7 @@ def test_attributes(
         ),
     ],
 )
-def test_validate_single_required_field_with_bad_values_raises_value_error(
-    names, values, message
-):
+def test_validate_single_required_field_with_bad_values_raises_value_error(names, values, message):
     with pytest.raises(ValueError, match=message):
         validate_single_required_field(names, values)
 
@@ -952,8 +938,7 @@ def test_readme_creator_asset_guid_validation():
     with pytest.raises(
         ValueError,
         match=escape(
-            "asset guid must be present, use the client.asset.ref_by_guid() "
-            "method to retrieve an asset by its GUID"
+            "asset guid must be present, use the client.asset.ref_by_guid() method to retrieve an asset by its GUID"
         ),
     ):
         Readme.creator(
@@ -981,12 +966,9 @@ def test_readme_creator_asset_guid_validation():
     ],
 )
 def test_tableau_upstream_fields_deserialization(test_data):
-
     td = TableauDatasource(**{"typeName": "TableauDatasource", "attributes": test_data})
     assert td.upstream_tables == test_data["upstreamTables"]
     assert td.upstream_datasources == test_data["upstreamDatasources"]
 
-    tdf = TableauDatasourceField(
-        **{"typeName": "TableauDatasourceField", "attributes": test_data}
-    )
+    tdf = TableauDatasourceField(**{"typeName": "TableauDatasourceField", "attributes": test_data})
     assert tdf.upstream_tables == test_data["upstreamTables"]

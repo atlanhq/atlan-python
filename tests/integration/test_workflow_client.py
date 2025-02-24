@@ -65,9 +65,7 @@ def delete_credentials(client: AtlanClient, guid: str):
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    connection = create_connection(
-        client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.SNOWFLAKE
-    )
+    connection = create_connection(client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.SNOWFLAKE)
     yield connection
     delete_asset(client, guid=connection.guid, asset_type=Connection)
 
@@ -77,9 +75,7 @@ def delete_workflow(client: AtlanClient, workflow_name: str) -> None:
 
 
 @pytest.fixture(scope="module")
-def workflow(
-    client: AtlanClient, connection: Connection
-) -> Generator[WorkflowResponse, None, None]:
+def workflow(client: AtlanClient, connection: Connection) -> Generator[WorkflowResponse, None, None]:
     assert connection and connection.qualified_name
     miner = (
         SnowflakeMiner(connection_qualified_name=connection.qualified_name)
@@ -97,9 +93,7 @@ def workflow(
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
     )
-    schedule = WorkflowSchedule(
-        cron_schedule=WORKFLOW_SCHEDULE_SCHEDULE, timezone=WORKFLOW_SCHEDULE_TIMEZONE
-    )
+    schedule = WorkflowSchedule(cron_schedule=WORKFLOW_SCHEDULE_SCHEDULE, timezone=WORKFLOW_SCHEDULE_TIMEZONE)
     workflow = client.workflow.run(miner, workflow_schedule=schedule)
     assert workflow
     # Adding some delay to make sure
@@ -111,9 +105,7 @@ def workflow(
 
 
 def test_workflow_find_by_methods(client: AtlanClient):
-    results = client.workflow.find_by_type(
-        prefix=WorkflowPackage.SNOWFLAKE, max_results=10
-    )
+    results = client.workflow.find_by_type(prefix=WorkflowPackage.SNOWFLAKE, max_results=10)
     assert results
     assert len(results) >= 1
 
@@ -130,9 +122,7 @@ def test_workflow_find_by_methods(client: AtlanClient):
 def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowResponse):
     # Retrieve the lastest workflow run
     assert workflow and workflow.metadata and workflow.metadata.name
-    runs = client.workflow.get_runs(
-        workflow_name=workflow.metadata.name, workflow_phase=AtlanWorkflowPhase.RUNNING
-    )
+    runs = client.workflow.get_runs(workflow_name=workflow.metadata.name, workflow_phase=AtlanWorkflowPhase.RUNNING)
     assert runs
     assert len(runs) == 1
     run = runs[0]
@@ -142,14 +132,10 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     # Stop the running workflow
     run_response = client.workflow.stop(workflow_run_id=run.id)
     assert run_response
-    assert (
-        run_response.status and run_response.status.phase == AtlanWorkflowPhase.RUNNING
-    )
+    assert run_response.status and run_response.status.phase == AtlanWorkflowPhase.RUNNING
     assert (
         run_response.status.stored_workflow_template_spec
-        and run_response.status.stored_workflow_template_spec.get(
-            WORKFLOW_TEMPLATE_REF
-        ).get("name")
+        and run_response.status.stored_workflow_template_spec.get(WORKFLOW_TEMPLATE_REF).get("name")
         == workflow.metadata.name
     )
 
@@ -167,30 +153,22 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     )
 
 
-def test_workflow_get_all_scheduled_runs(
-    client: AtlanClient, workflow: WorkflowResponse
-):
+def test_workflow_get_all_scheduled_runs(client: AtlanClient, workflow: WorkflowResponse):
     runs = client.workflow.get_all_scheduled_runs()
 
     assert workflow and workflow.metadata and workflow.metadata.name
     scheduled_workflow_name = f"{workflow.metadata.name}-cron"
     assert runs and len(runs) >= 1
 
-    found = any(
-        run.metadata and run.metadata.name == scheduled_workflow_name for run in runs
-    )
+    found = any(run.metadata and run.metadata.name == scheduled_workflow_name for run in runs)
 
     if not found:
-        pytest.fail(
-            f"Unable to find scheduled run for workflow: {workflow.metadata.name}"
-        )
+        pytest.fail(f"Unable to find scheduled run for workflow: {workflow.metadata.name}")
 
 
 def _assert_scheduled_run(client: AtlanClient, workflow: WorkflowResponse):
     assert workflow and workflow.metadata and workflow.metadata.name
-    scheduled_workflow = client.workflow.get_scheduled_run(
-        workflow_name=workflow.metadata.name
-    )
+    scheduled_workflow = client.workflow.get_scheduled_run(workflow_name=workflow.metadata.name)
     scheduled_workflow_name = f"{workflow.metadata.name}-cron"
     assert (
         scheduled_workflow
@@ -208,18 +186,8 @@ def _assert_add_schedule(workflow, scheduled_workflow, schedule, timezone):
     assert scheduled_workflow.metadata
     assert scheduled_workflow.metadata.name == workflow.metadata.name
     assert scheduled_workflow.metadata.annotations
-    assert (
-        scheduled_workflow.metadata.annotations.get(
-            WorkflowClient._WORKFLOW_RUN_SCHEDULE
-        )
-        == schedule
-    )
-    assert (
-        scheduled_workflow.metadata.annotations.get(
-            WorkflowClient._WORKFLOW_RUN_TIMEZONE
-        )
-        == timezone
-    )
+    assert scheduled_workflow.metadata.annotations.get(WorkflowClient._WORKFLOW_RUN_SCHEDULE) == schedule
+    assert scheduled_workflow.metadata.annotations.get(WorkflowClient._WORKFLOW_RUN_TIMEZONE) == timezone
 
 
 def _assert_remove_schedule(response, workflow):
@@ -238,9 +206,7 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
 
     # NOTE: This method will overwrite existing workflow run schedule
     # Try to update schedule again, with `Workflow` object
-    scheduled_workflow = client.workflow.add_schedule(
-        workflow=workflow, workflow_schedule=schedule
-    )
+    scheduled_workflow = client.workflow.add_schedule(workflow=workflow, workflow_schedule=schedule)
 
     _assert_add_schedule(
         workflow,
@@ -255,14 +221,8 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
     _assert_remove_schedule(response, workflow)
 
     # Try to update schedule again, with `WorkflowSearchResult` object
-    existing_workflow = client.workflow.find_by_type(
-        prefix=WorkflowPackage.SNOWFLAKE_MINER
-    )[0]
-    assert (
-        existing_workflow
-        and existing_workflow.source
-        and existing_workflow.source.metadata
-    )
+    existing_workflow = client.workflow.find_by_type(prefix=WorkflowPackage.SNOWFLAKE_MINER)[0]
+    assert existing_workflow and existing_workflow.source and existing_workflow.source.metadata
     assert workflow and workflow.metadata
     assert existing_workflow.source.metadata.name == workflow.metadata.name
 
@@ -270,9 +230,7 @@ def test_workflow_add_remove_schedule(client: AtlanClient, workflow: WorkflowRes
         cron_schedule=WORKFLOW_SCHEDULE_UPDATED_2,
         timezone=WORKFLOW_SCHEDULE_TIMEZONE_UPDATED_2,
     )
-    scheduled_workflow = client.workflow.add_schedule(
-        workflow=existing_workflow, workflow_schedule=schedule
-    )
+    scheduled_workflow = client.workflow.add_schedule(workflow=existing_workflow, workflow_schedule=schedule)
 
     _assert_add_schedule(
         workflow,
@@ -329,23 +287,17 @@ def test_get_all_credentials(client: AtlanClient):
     credentials = client.credentials.get_all()
     assert credentials, "Expected credentials but found None"
     assert credentials.records is not None, "Expected records but found None"
-    assert (
-        len(credentials.records or []) > 0
-    ), "Expected at least one record but found none"
+    assert len(credentials.records or []) > 0, "Expected at least one record but found none"
 
 
 def test_get_all_credentials_with_filter_limit_offset(client: AtlanClient):
     filter_criteria = {"connectorType": "jdbc"}
     limit = 1
     offset = 1
-    credentials = client.credentials.get_all(
-        filter=filter_criteria, limit=limit, offset=offset
-    )
+    credentials = client.credentials.get_all(filter=filter_criteria, limit=limit, offset=offset)
     assert len(credentials.records or []) <= limit, "Exceeded limit in results"
     for cred in credentials.records or []:
-        assert (
-            cred.connector_type == "jdbc"
-        ), f"Expected 'jdbc', got {cred.connector_type}"
+        assert cred.connector_type == "jdbc", f"Expected 'jdbc', got {cred.connector_type}"
 
 
 def test_get_all_credentials_with_multiple_filters(client: AtlanClient):
@@ -354,14 +306,10 @@ def test_get_all_credentials_with_multiple_filters(client: AtlanClient):
     credentials = client.credentials.get_all(filter=filter_criteria)
     assert credentials, "Expected credentials but found None"
     assert credentials.records is not None, "Expected records but found None"
-    assert (
-        len(credentials.records or []) > 0
-    ), "Expected at least one record but found none"
+    assert len(credentials.records or []) > 0, "Expected at least one record but found none"
 
     for record in credentials.records or []:
-        assert (
-            record.connector_type == "jdbc"
-        ), f"Expected 'jdbc', got {record.connector_type}"
+        assert record.connector_type == "jdbc", f"Expected 'jdbc', got {record.connector_type}"
         assert record.is_active, f"Expected active record, but got inactive: {record}"
 
 

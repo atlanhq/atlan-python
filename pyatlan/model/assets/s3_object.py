@@ -73,10 +73,7 @@ class S3Object(S3):
         s3_bucket_qualified_name: str,
     ) -> S3Object:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -143,15 +140,11 @@ class S3Object(S3):
     """
     Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified.
     """  # noqa: E501
-    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "s3BucketName", "s3BucketName", "s3BucketName.text"
-    )
+    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField("s3BucketName", "s3BucketName", "s3BucketName.text")
     """
     Simple name of the bucket in which this object exists.
     """
-    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "s3BucketQualifiedName", "s3BucketQualifiedName"
-    )
+    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("s3BucketQualifiedName", "s3BucketQualifiedName")
     """
     Unique name of the bucket in which this object exists.
     """
@@ -159,21 +152,15 @@ class S3Object(S3):
     """
     Object size in bytes.
     """
-    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectStorageClass", "s3ObjectStorageClass"
-    )
+    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField("s3ObjectStorageClass", "s3ObjectStorageClass")
     """
     Storage class used for storing this object, for example: standard, intelligent-tiering, glacier, etc.
     """
-    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
-        "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
-    )
+    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField("s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text")
     """
     Unique identity of this object in an S3 bucket. This is usually the concatenation of any prefix (folder) in the S3 bucket with the name of the object (file) itself.
     """  # noqa: E501
-    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectContentType", "s3ObjectContentType"
-    )
+    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField("s3ObjectContentType", "s3ObjectContentType")
     """
     Type of content in this object, for example: text/plain, application/json, etc.
     """
@@ -183,9 +170,7 @@ class S3Object(S3):
     """
     Information about how this object's content should be presented.
     """
-    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
-        "s3ObjectVersionId", "s3ObjectVersionId"
-    )
+    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField("s3ObjectVersionId", "s3ObjectVersionId")
     """
     Version of this object. This is only applicable when versioning is enabled on the bucket in which this object exists.
     """  # noqa: E501
@@ -210,16 +195,10 @@ class S3Object(S3):
 
     @property
     def s3_object_last_modified_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_object_last_modified_time
-        )
+        return None if self.attributes is None else self.attributes.s3_object_last_modified_time
 
     @s3_object_last_modified_time.setter
-    def s3_object_last_modified_time(
-        self, s3_object_last_modified_time: Optional[datetime]
-    ):
+    def s3_object_last_modified_time(self, s3_object_last_modified_time: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
@@ -236,11 +215,7 @@ class S3Object(S3):
 
     @property
     def s3_bucket_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_bucket_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.s3_bucket_qualified_name
 
     @s3_bucket_qualified_name.setter
     def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
@@ -260,9 +235,7 @@ class S3Object(S3):
 
     @property
     def s3_object_storage_class(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_storage_class
-        )
+        return None if self.attributes is None else self.attributes.s3_object_storage_class
 
     @s3_object_storage_class.setter
     def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
@@ -282,9 +255,7 @@ class S3Object(S3):
 
     @property
     def s3_object_content_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_content_type
-        )
+        return None if self.attributes is None else self.attributes.s3_object_content_type
 
     @s3_object_content_type.setter
     def s3_object_content_type(self, s3_object_content_type: Optional[str]):
@@ -294,16 +265,10 @@ class S3Object(S3):
 
     @property
     def s3_object_content_disposition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_object_content_disposition
-        )
+        return None if self.attributes is None else self.attributes.s3_object_content_disposition
 
     @s3_object_content_disposition.setter
-    def s3_object_content_disposition(
-        self, s3_object_content_disposition: Optional[str]
-    ):
+    def s3_object_content_disposition(self, s3_object_content_disposition: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_object_content_disposition = s3_object_content_disposition
@@ -329,18 +294,14 @@ class S3Object(S3):
         self.attributes.bucket = bucket
 
     class Attributes(S3.Attributes):
-        s3_object_last_modified_time: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        s3_object_last_modified_time: Optional[datetime] = Field(default=None, description="")
         s3_bucket_name: Optional[str] = Field(default=None, description="")
         s3_bucket_qualified_name: Optional[str] = Field(default=None, description="")
         s3_object_size: Optional[int] = Field(default=None, description="")
         s3_object_storage_class: Optional[str] = Field(default=None, description="")
         s3_object_key: Optional[str] = Field(default=None, description="")
         s3_object_content_type: Optional[str] = Field(default=None, description="")
-        s3_object_content_disposition: Optional[str] = Field(
-            default=None, description=""
-        )
+        s3_object_content_disposition: Optional[str] = Field(default=None, description="")
         s3_object_version_id: Optional[str] = Field(default=None, description="")
         bucket: Optional[S3Bucket] = Field(default=None, description="")  # relationship
 

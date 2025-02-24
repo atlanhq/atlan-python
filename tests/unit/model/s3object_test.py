@@ -341,9 +341,7 @@ def test_create_with_required_parameters(
         ),
     ],
 )
-def test_create_with_prefix(
-    name, connection_qualified_name, prefix, s3_bucket_name, s3_bucket_qualified_name
-):
+def test_create_with_prefix(name, connection_qualified_name, prefix, s3_bucket_name, s3_bucket_qualified_name):
     attributes = S3Object.create_with_prefix(
         name=name,
         connection_qualified_name=connection_qualified_name,
@@ -376,9 +374,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = S3Object.create_for_modification(
-        qualified_name=S3_OBJECT_QUALIFIED_NAME, name=S3_OBJECT_NAME
-    )
+    sut = S3Object.create_for_modification(qualified_name=S3_OBJECT_QUALIFIED_NAME, name=S3_OBJECT_NAME)
 
     assert sut.qualified_name == S3_OBJECT_QUALIFIED_NAME
     assert sut.name == S3_OBJECT_NAME

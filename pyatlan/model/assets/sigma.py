@@ -83,16 +83,10 @@ class Sigma(BI):
 
     @property
     def sigma_workbook_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_workbook_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.sigma_workbook_qualified_name
 
     @sigma_workbook_qualified_name.setter
-    def sigma_workbook_qualified_name(
-        self, sigma_workbook_qualified_name: Optional[str]
-    ):
+    def sigma_workbook_qualified_name(self, sigma_workbook_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
@@ -109,11 +103,7 @@ class Sigma(BI):
 
     @property
     def sigma_page_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_page_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.sigma_page_qualified_name
 
     @sigma_page_qualified_name.setter
     def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
@@ -133,27 +123,17 @@ class Sigma(BI):
 
     @property
     def sigma_data_element_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_qualified_name
 
     @sigma_data_element_qualified_name.setter
-    def sigma_data_element_qualified_name(
-        self, sigma_data_element_qualified_name: Optional[str]
-    ):
+    def sigma_data_element_qualified_name(self, sigma_data_element_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_qualified_name = (
-            sigma_data_element_qualified_name
-        )
+        self.attributes.sigma_data_element_qualified_name = sigma_data_element_qualified_name
 
     @property
     def sigma_data_element_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_data_element_name
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_name
 
     @sigma_data_element_name.setter
     def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
@@ -162,15 +142,11 @@ class Sigma(BI):
         self.attributes.sigma_data_element_name = sigma_data_element_name
 
     class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        sigma_workbook_qualified_name: Optional[str] = Field(default=None, description="")
         sigma_workbook_name: Optional[str] = Field(default=None, description="")
         sigma_page_qualified_name: Optional[str] = Field(default=None, description="")
         sigma_page_name: Optional[str] = Field(default=None, description="")
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        sigma_data_element_qualified_name: Optional[str] = Field(default=None, description="")
         sigma_data_element_name: Optional[str] = Field(default=None, description="")
 
     attributes: Sigma.Attributes = Field(

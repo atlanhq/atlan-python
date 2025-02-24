@@ -37,9 +37,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
         self._parameters.append({"name": "import_type", "value": "DIRECT"})
         return self
 
-    def object_store(
-        self, prefix: Optional[str] = None, object_key: Optional[str] = None
-    ) -> RelationalAssetsBuilder:
+    def object_store(self, prefix: Optional[str] = None, object_key: Optional[str] = None) -> RelationalAssetsBuilder:
         """
         Set up the package to import
         metadata directly from the object store.
@@ -87,9 +85,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
         self._credentials_body.update(local_creds)
         return self
 
-    def gcs(
-        self, project_id: str, service_account_json: str, bucket: str
-    ) -> RelationalAssetsBuilder:
+    def gcs(self, project_id: str, service_account_json: str, bucket: str) -> RelationalAssetsBuilder:
         """
         Set up package to import metadata from GCS.
 
@@ -165,18 +161,12 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
 
         :returns: package, set up to import metadata with semantics
         """
-        self._parameters.append(
-            {"name": "assets_upsert_semantic", "value": input_handling}
-        )
+        self._parameters.append({"name": "assets_upsert_semantic", "value": input_handling})
         self._parameters.append({"name": "delta_semantic", "value": delta_handling})
         if delta_handling == AssetDeltaHandling.FULL_REPLACEMENT:
-            self._parameters.append(
-                {"name": "delta_removal_type", "value": removal_type}
-            )
+            self._parameters.append({"name": "delta_removal_type", "value": removal_type})
         else:
-            self._parameters.append(
-                {"name": "delta_removal_type", "value": AssetRemovalType.ARCHIVE}
-            )
+            self._parameters.append({"name": "delta_removal_type", "value": AssetRemovalType.ARCHIVE})
         return self
 
     def options(
@@ -202,9 +192,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
         :returns: package, set up to import assets with advanced configuration
         """
 
-        if isinstance(remove_attributes, list) and all(
-            isinstance(field, AtlanField) for field in remove_attributes
-        ):
+        if isinstance(remove_attributes, list) and all(isinstance(field, AtlanField) for field in remove_attributes):
             remove_attributes = [field.atlan_field_name for field in remove_attributes]  # type: ignore
         params = {
             "assets_attr_to_overwrite": dumps(remove_attributes, separators=(",", ":")),
@@ -241,7 +229,7 @@ class RelationalAssetsBuilder(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Build (and update) relational assets managed through a CSV file.",
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["kotlin","utility"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

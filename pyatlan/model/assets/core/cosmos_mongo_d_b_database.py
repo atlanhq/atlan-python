@@ -37,19 +37,15 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "cosmosMongoDBAccountQualifiedName",
-            "cosmosMongoDBAccountQualifiedName",
-            "cosmosMongoDBAccountQualifiedName.text",
-        )
+    COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "cosmosMongoDBAccountQualifiedName",
+        "cosmosMongoDBAccountQualifiedName",
+        "cosmosMongoDBAccountQualifiedName.text",
     )
     """
     Unique name of the account in which this database exists.
     """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
+    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
@@ -67,69 +63,47 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     Number of times this asset has been queried.
     """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
-    )
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField("queryUserCount", "queryUserCount")
     """
     Number of unique users who have queried this asset.
     """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
-    )
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField("queryUserMap", "queryUserMap")
     """
     Map of unique users who have queried this asset to the number of times they have queried it.
     """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
-    )
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
     """
     Time (epoch) at which the query count was last updated, in milliseconds.
     """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
-    )
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField("databaseName", "databaseName.keyword", "databaseName")
     """
     Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
-    )
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("databaseQualifiedName", "databaseQualifiedName")
     """
     Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database.
     """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
-    )
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField("schemaName", "schemaName.keyword", "schemaName")
     """
     Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("schemaQualifiedName", "schemaQualifiedName")
     """
     Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema.
     """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField("tableName", "tableName.keyword", "tableName")
     """
     Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("tableQualifiedName", "tableQualifiedName")
     """
     Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table.
     """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField("viewName", "viewName.keyword", "viewName")
     """
     Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("viewQualifiedName", "viewQualifiedName")
     """
     Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view.
     """
@@ -149,9 +123,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     Whether this asset has been profiled (true) or not (false).
     """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField("lastProfiledAt", "lastProfiledAt")
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
@@ -160,9 +132,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
-    COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBAccount"
-    )
+    COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField("cosmosMongoDBAccount")
     """
     TBC
     """
@@ -190,9 +160,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     TBC
     """
-    COSMOS_MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBCollections"
-    )
+    COSMOS_MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField("cosmosMongoDBCollections")
     """
     TBC
     """
@@ -231,29 +199,17 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_account_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_account_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_qualified_name
 
     @cosmos_mongo_d_b_account_qualified_name.setter
-    def cosmos_mongo_d_b_account_qualified_name(
-        self, cosmos_mongo_d_b_account_qualified_name: Optional[str]
-    ):
+    def cosmos_mongo_d_b_account_qualified_name(self, cosmos_mongo_d_b_account_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_qualified_name = (
-            cosmos_mongo_d_b_account_qualified_name
-        )
+        self.attributes.cosmos_mongo_d_b_account_qualified_name = cosmos_mongo_d_b_account_qualified_name
 
     @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
+        return None if self.attributes is None else self.attributes.no_s_q_l_schema_definition
 
     @no_s_q_l_schema_definition.setter
     def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
@@ -263,21 +219,13 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def mongo_d_b_database_collection_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_database_collection_count
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_database_collection_count
 
     @mongo_d_b_database_collection_count.setter
-    def mongo_d_b_database_collection_count(
-        self, mongo_d_b_database_collection_count: Optional[int]
-    ):
+    def mongo_d_b_database_collection_count(self, mongo_d_b_database_collection_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database_collection_count = (
-            mongo_d_b_database_collection_count
-        )
+        self.attributes.mongo_d_b_database_collection_count = mongo_d_b_database_collection_count
 
     @property
     def schema_count(self) -> Optional[int]:
@@ -321,9 +269,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def query_count_updated_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
-        )
+        return None if self.attributes is None else self.attributes.query_count_updated_at
 
     @query_count_updated_at.setter
     def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
@@ -343,9 +289,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.database_qualified_name
 
     @database_qualified_name.setter
     def database_qualified_name(self, database_qualified_name: Optional[str]):
@@ -365,9 +309,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.schema_qualified_name
 
     @schema_qualified_name.setter
     def schema_qualified_name(self, schema_qualified_name: Optional[str]):
@@ -417,9 +359,7 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def calculation_view_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.calculation_view_name
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_name
 
     @calculation_view_name.setter
     def calculation_view_name(self, calculation_view_name: Optional[str]):
@@ -429,21 +369,13 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def calculation_view_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.calculation_view_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.calculation_view_qualified_name
 
     @calculation_view_qualified_name.setter
-    def calculation_view_qualified_name(
-        self, calculation_view_qualified_name: Optional[str]
-    ):
+    def calculation_view_qualified_name(self, calculation_view_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.calculation_view_qualified_name = (
-            calculation_view_qualified_name
-        )
+        self.attributes.calculation_view_qualified_name = calculation_view_qualified_name
 
     @property
     def is_profiled(self) -> Optional[bool]:
@@ -477,16 +409,10 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_account(self) -> Optional[CosmosMongoDBAccount]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_account
-        )
+        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account
 
     @cosmos_mongo_d_b_account.setter
-    def cosmos_mongo_d_b_account(
-        self, cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount]
-    ):
+    def cosmos_mongo_d_b_account(self, cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_account = cosmos_mongo_d_b_account
@@ -513,14 +439,10 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def mongo_d_b_collections(self) -> Optional[List[MongoDBCollection]]:
-        return (
-            None if self.attributes is None else self.attributes.mongo_d_b_collections
-        )
+        return None if self.attributes is None else self.attributes.mongo_d_b_collections
 
     @mongo_d_b_collections.setter
-    def mongo_d_b_collections(
-        self, mongo_d_b_collections: Optional[List[MongoDBCollection]]
-    ):
+    def mongo_d_b_collections(self, mongo_d_b_collections: Optional[List[MongoDBCollection]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mongo_d_b_collections = mongo_d_b_collections
@@ -557,28 +479,18 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_collections(self) -> Optional[List[CosmosMongoDBCollection]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_collections
-        )
+        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_collections
 
     @cosmos_mongo_d_b_collections.setter
-    def cosmos_mongo_d_b_collections(
-        self, cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]]
-    ):
+    def cosmos_mongo_d_b_collections(self, cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_collections = cosmos_mongo_d_b_collections
 
     class Attributes(CosmosMongoDB.Attributes):
-        cosmos_mongo_d_b_account_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        cosmos_mongo_d_b_account_qualified_name: Optional[str] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        mongo_d_b_database_collection_count: Optional[int] = Field(
-            default=None, description=""
-        )
+        mongo_d_b_database_collection_count: Optional[int] = Field(default=None, description="")
         schema_count: Optional[int] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
@@ -593,35 +505,17 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         view_name: Optional[str] = Field(default=None, description="")
         view_qualified_name: Optional[str] = Field(default=None, description="")
         calculation_view_name: Optional[str] = Field(default=None, description="")
-        calculation_view_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        calculation_view_qualified_name: Optional[str] = Field(default=None, description="")
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        schemas: Optional[List[Schema]] = Field(
-            default=None, description=""
-        )  # relationship
+        dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
+        cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(default=None, description="")  # relationship
+        sql_dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(default=None, description="")  # relationship
+        mongo_d_b_collections: Optional[List[MongoDBCollection]] = Field(default=None, description="")  # relationship
+        sql_dbt_sources: Optional[List[DbtSource]] = Field(default=None, description="")  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(default=None, description="")  # relationship
+        schemas: Optional[List[Schema]] = Field(default=None, description="")  # relationship
         cosmos_mongo_d_b_collections: Optional[List[CosmosMongoDBCollection]] = Field(
             default=None, description=""
         )  # relationship

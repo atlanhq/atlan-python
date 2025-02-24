@@ -33,9 +33,7 @@ def test_list_attributes_to_params_with_query_parms():
         (None, None, None),
         (
             None,
-            {
-                "qualifiedName": "default/glue/1688357913/AwsDataCatalog/development_published_impact/holding_rating"
-            },
+            {"qualifiedName": "default/glue/1688357913/AwsDataCatalog/development_published_impact/holding_rating"},
             None,
         ),
         (["ihnLo19fqaT4x9pU8JKWbQ.Cyw6GbqST9M1dhXIBE1yHp"], None, None),
@@ -77,9 +75,7 @@ def test_list_attributes_to_params_with_query_parms():
     ],
 )
 def test_unflatten_custom_metadata(attributes, flattened_attributes, custom_metadata):
-    assert custom_metadata == unflatten_custom_metadata(
-        attributes=attributes, asset_attributes=flattened_attributes
-    )
+    assert custom_metadata == unflatten_custom_metadata(attributes=attributes, asset_attributes=flattened_attributes)
 
 
 @patch("pyatlan.utils.unflatten_custom_metadata")

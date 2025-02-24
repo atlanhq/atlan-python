@@ -29,9 +29,7 @@ class OpenLineageRun(AtlanObject):
         default=None,
         description="Globally unique ID of the run associated with the job.",
     )
-    facets: Optional[Dict[str, Any]] = Field(
-        default_factory=dict, description="Run facets."
-    )
+    facets: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Run facets.")
 
     @staticmethod
     def _get_schema() -> str:

@@ -42,9 +42,7 @@ class PowerBIColumn(PowerBI):
     """
     Unique name of the workspace in which this column exists.
     """
-    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "datasetQualifiedName", "datasetQualifiedName"
-    )
+    DATASET_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasetQualifiedName", "datasetQualifiedName")
     """
     Unique name of the dataset in which this column exists.
     """
@@ -54,15 +52,11 @@ class PowerBIColumn(PowerBI):
     """
     Data category that describes the data in this column.
     """
-    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
-        "powerBIColumnDataType", "powerBIColumnDataType"
-    )
+    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField("powerBIColumnDataType", "powerBIColumnDataType")
     """
     Data type of this column.
     """
-    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
-        "powerBISortByColumn", "powerBISortByColumn"
-    )
+    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField("powerBISortByColumn", "powerBISortByColumn")
     """
     Name of a column in the same table to use to order this column.
     """
@@ -90,11 +84,7 @@ class PowerBIColumn(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -104,9 +94,7 @@ class PowerBIColumn(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dataset_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.dataset_qualified_name
 
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
@@ -116,27 +104,17 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_column_data_category(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_data_category
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_column_data_category
 
     @power_b_i_column_data_category.setter
-    def power_b_i_column_data_category(
-        self, power_b_i_column_data_category: Optional[str]
-    ):
+    def power_b_i_column_data_category(self, power_b_i_column_data_category: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
 
     @property
     def power_b_i_column_data_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_data_type
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_column_data_type
 
     @power_b_i_column_data_type.setter
     def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
@@ -146,11 +124,7 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_sort_by_column(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_sort_by_column
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_sort_by_column
 
     @power_b_i_sort_by_column.setter
     def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
@@ -160,16 +134,10 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_column_summarize_by(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_summarize_by
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_column_summarize_by
 
     @power_b_i_column_summarize_by.setter
-    def power_b_i_column_summarize_by(
-        self, power_b_i_column_summarize_by: Optional[str]
-    ):
+    def power_b_i_column_summarize_by(self, power_b_i_column_summarize_by: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
@@ -187,17 +155,11 @@ class PowerBIColumn(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
-        power_b_i_column_data_category: Optional[str] = Field(
-            default=None, description=""
-        )
+        power_b_i_column_data_category: Optional[str] = Field(default=None, description="")
         power_b_i_column_data_type: Optional[str] = Field(default=None, description="")
         power_b_i_sort_by_column: Optional[str] = Field(default=None, description="")
-        power_b_i_column_summarize_by: Optional[str] = Field(
-            default=None, description=""
-        )
-        table: Optional[PowerBITable] = Field(
-            default=None, description=""
-        )  # relationship
+        power_b_i_column_summarize_by: Optional[str] = Field(default=None, description="")
+        table: Optional[PowerBITable] = Field(default=None, description="")  # relationship
 
     attributes: PowerBIColumn.Attributes = Field(
         default_factory=lambda: PowerBIColumn.Attributes(),

@@ -129,9 +129,7 @@ class AbstractAssetCache(ABC):
         if not guid:
             raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
                 qualified_name,
-                AtlanConnectorType._get_connector_type_from_qualified_name(
-                    qualified_name
-                ).value,
+                AtlanConnectorType._get_connector_type_from_qualified_name(qualified_name).value,
             )
         return self._get_by_guid(guid=guid, allow_refresh=False)
 
@@ -153,9 +151,7 @@ class AbstractAssetCache(ABC):
             self.lookup_by_name(name)
             guid = self.name_to_guid.get(str(name))
         if not guid:
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                name._TYPE_NAME, name
-            )
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(name._TYPE_NAME, name)
         return self._get_by_guid(guid=guid, allow_refresh=False)
 
 

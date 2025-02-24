@@ -34,18 +34,14 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     # TODO: proper connection delete workflow
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def bucket(
-    client: AtlanClient, connection: Connection
-) -> Generator[S3Bucket, None, None]:
+def bucket(client: AtlanClient, connection: Connection) -> Generator[S3Bucket, None, None]:
     assert connection.qualified_name
     to_create = S3Bucket.create(
         name=BUCKET_NAME,
@@ -59,9 +55,7 @@ def bucket(
 
 
 @pytest.fixture(scope="module")
-def bucket_with_name(
-    client: AtlanClient, connection: Connection
-) -> Generator[S3Bucket, None, None]:
+def bucket_with_name(client: AtlanClient, connection: Connection) -> Generator[S3Bucket, None, None]:
     assert connection.qualified_name
     to_create = S3Bucket.create(
         name=BUCKET_NAME,
@@ -179,9 +173,7 @@ def _assert_update_bucket(client, bucket, with_name=False):
 
 
 def _assert_retrieve_bucket(client, bucket, s3object, with_name=False):
-    b = client.asset.get_by_guid(
-        bucket.guid, asset_type=S3Bucket, ignore_relationships=False
-    )
+    b = client.asset.get_by_guid(bucket.guid, asset_type=S3Bucket, ignore_relationships=False)
     assert b
     assert not b.is_incomplete
     assert b.guid == bucket.guid
@@ -244,9 +236,7 @@ def _assert_delete_object(client, s3object):
 
 
 def _assert_read_delete_object(client, s3object):
-    deleted = client.asset.get_by_guid(
-        s3object.guid, asset_type=S3Object, ignore_relationships=False
-    )
+    deleted = client.asset.get_by_guid(s3object.guid, asset_type=S3Object, ignore_relationships=False)
     assert deleted
     assert deleted.guid == s3object.guid
     assert deleted.qualified_name == s3object.qualified_name
@@ -255,9 +245,7 @@ def _assert_read_delete_object(client, s3object):
 
 def _assert_restore_object(client, s3object):
     assert s3object.qualified_name
-    assert client.asset.restore(
-        asset_type=S3Object, qualified_name=s3object.qualified_name
-    )
+    assert client.asset.restore(asset_type=S3Object, qualified_name=s3object.qualified_name)
     assert s3object.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=S3Object,
@@ -339,9 +327,7 @@ def test_retrieve_bucket_with_name(
     bucket_with_name: S3Bucket,
     s3object_with_name: S3Object,
 ):
-    _assert_retrieve_bucket(
-        client, bucket_with_name, s3object_with_name, with_name=True
-    )
+    _assert_retrieve_bucket(client, bucket_with_name, s3object_with_name, with_name=True)
 
 
 @pytest.mark.order(after="test_retrieve_bucket")

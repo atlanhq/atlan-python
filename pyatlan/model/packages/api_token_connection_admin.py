@@ -16,9 +16,7 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
     _PACKAGE_ICON = "http://assets.atlan.com/assets/ph-key-light.svg"
     _PACKAGE_LOGO = "http://assets.atlan.com/assets/ph-key-light.svg"
 
-    def config(
-        self, connection_qualified_name: str, api_token_guid: str
-    ) -> APITokenConnectionAdmin:
+    def config(self, connection_qualified_name: str, api_token_guid: str) -> APITokenConnectionAdmin:
         """
         Set up the API token connection admin with the specified configuration.
 
@@ -28,9 +26,7 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
 
         :returns: package, with the specified configuration.
         """
-        self._parameters.append(
-            {"name": "connection_qualified_name", "value": connection_qualified_name}
-        )
+        self._parameters.append({"name": "connection_qualified_name", "value": connection_qualified_name})
         self._parameters.append({"name": "api_token_guid", "value": api_token_guid})
         return self
 
@@ -60,7 +56,7 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Assigns an API token as a connection admin for an existing connection.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["kotlin","utility"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

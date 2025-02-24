@@ -38,9 +38,7 @@ class CustomMetadataDict(UserDict):
         _id = CustomMetadataCache.get_id_for_name(name)
         self._names = {
             value
-            for key, value in CustomMetadataCache.get_cache()
-            .map_attr_id_to_name[_id]
-            .items()
+            for key, value in CustomMetadataCache.get_cache().map_attr_id_to_name[_id].items()
             if not CustomMetadataCache.is_attr_archived(attr_id=key)
         }
 
@@ -49,9 +47,7 @@ class CustomMetadataDict(UserDict):
         """Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data."""
         if cls._sentinel is not None:
             return cls._sentinel
-        return cls.__new__(
-            cls, DELETED_SENTINEL
-        )  # Because __new__ is being invoked directly __init__ won't be invoked
+        return cls.__new__(cls, DELETED_SENTINEL)  # Because __new__ is being invoked directly __init__ won't be invoked
 
     @property
     def modified(self):
@@ -99,10 +95,7 @@ class CustomMetadataDict(UserDict):
     def business_attributes(self) -> Dict[str, Any]:
         """Returns a dict containing the metadata set with the human-readable set name and property names resolved
         to their internal values"""
-        return {
-            CustomMetadataCache.get_attr_id_for_name(self._name, key): value
-            for (key, value) in self.data.items()
-        }
+        return {CustomMetadataCache.get_attr_id_for_name(self._name, key): value for (key, value) in self.data.items()}
 
 
 class CustomMetadataProxy:
@@ -167,9 +160,7 @@ class CustomMetadataRequest(AtlanObject):
     @classmethod
     def create(cls, custom_metadata_dict: CustomMetadataDict):
         ret_val = cls(__root__=custom_metadata_dict.business_attributes)
-        ret_val._set_id = CustomMetadataCache.get_id_for_name(
-            custom_metadata_dict._name
-        )
+        ret_val._set_id = CustomMetadataCache.get_id_for_name(custom_metadata_dict._name)
         return ret_val
 
     @property

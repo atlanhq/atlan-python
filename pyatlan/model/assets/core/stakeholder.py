@@ -35,9 +35,7 @@ class Stakeholder(Persona):
     """
     TBC
     """
-    STAKEHOLDER_TITLE_GUID: ClassVar[KeywordField] = KeywordField(
-        "stakeholderTitleGuid", "stakeholderTitleGuid"
-    )
+    STAKEHOLDER_TITLE_GUID: ClassVar[KeywordField] = KeywordField("stakeholderTitleGuid", "stakeholderTitleGuid")
     """
     TBC
     """
@@ -46,9 +44,7 @@ class Stakeholder(Persona):
     """
     TBC
     """
-    STAKEHOLDER_DATA_DOMAIN: ClassVar[RelationField] = RelationField(
-        "stakeholderDataDomain"
-    )
+    STAKEHOLDER_DATA_DOMAIN: ClassVar[RelationField] = RelationField("stakeholderDataDomain")
     """
     TBC
     """
@@ -62,27 +58,17 @@ class Stakeholder(Persona):
 
     @property
     def stakeholder_domain_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.stakeholder_domain_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.stakeholder_domain_qualified_name
 
     @stakeholder_domain_qualified_name.setter
-    def stakeholder_domain_qualified_name(
-        self, stakeholder_domain_qualified_name: Optional[str]
-    ):
+    def stakeholder_domain_qualified_name(self, stakeholder_domain_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.stakeholder_domain_qualified_name = (
-            stakeholder_domain_qualified_name
-        )
+        self.attributes.stakeholder_domain_qualified_name = stakeholder_domain_qualified_name
 
     @property
     def stakeholder_title_guid(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.stakeholder_title_guid
-        )
+        return None if self.attributes is None else self.attributes.stakeholder_title_guid
 
     @stakeholder_title_guid.setter
     def stakeholder_title_guid(self, stakeholder_title_guid: Optional[str]):
@@ -102,9 +88,7 @@ class Stakeholder(Persona):
 
     @property
     def stakeholder_data_domain(self) -> Optional[DataDomain]:
-        return (
-            None if self.attributes is None else self.attributes.stakeholder_data_domain
-        )
+        return None if self.attributes is None else self.attributes.stakeholder_data_domain
 
     @stakeholder_data_domain.setter
     def stakeholder_data_domain(self, stakeholder_data_domain: Optional[DataDomain]):
@@ -113,16 +97,10 @@ class Stakeholder(Persona):
         self.attributes.stakeholder_data_domain = stakeholder_data_domain
 
     class Attributes(Persona.Attributes):
-        stakeholder_domain_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        stakeholder_domain_qualified_name: Optional[str] = Field(default=None, description="")
         stakeholder_title_guid: Optional[str] = Field(default=None, description="")
-        stakeholder_title: Optional[StakeholderTitle] = Field(
-            default=None, description=""
-        )  # relationship
-        stakeholder_data_domain: Optional[DataDomain] = Field(
-            default=None, description=""
-        )  # relationship
+        stakeholder_title: Optional[StakeholderTitle] = Field(default=None, description="")  # relationship
+        stakeholder_data_domain: Optional[DataDomain] = Field(default=None, description="")  # relationship
 
     attributes: Stakeholder.Attributes = Field(
         default_factory=lambda: Stakeholder.Attributes(),

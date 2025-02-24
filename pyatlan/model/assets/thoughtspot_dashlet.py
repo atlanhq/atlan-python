@@ -46,9 +46,7 @@ class ThoughtspotDashlet(Thoughtspot):
     Unique name of the liveboard in which this dashlet exists.
     """
 
-    THOUGHTSPOT_LIVEBOARD: ClassVar[RelationField] = RelationField(
-        "thoughtspotLiveboard"
-    )
+    THOUGHTSPOT_LIVEBOARD: ClassVar[RelationField] = RelationField("thoughtspotLiveboard")
     """
     TBC
     """
@@ -61,11 +59,7 @@ class ThoughtspotDashlet(Thoughtspot):
 
     @property
     def thoughtspot_liveboard_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.thoughtspot_liveboard_name
-        )
+        return None if self.attributes is None else self.attributes.thoughtspot_liveboard_name
 
     @thoughtspot_liveboard_name.setter
     def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
@@ -75,44 +69,28 @@ class ThoughtspotDashlet(Thoughtspot):
 
     @property
     def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.thoughtspot_liveboard_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.thoughtspot_liveboard_qualified_name
 
     @thoughtspot_liveboard_qualified_name.setter
-    def thoughtspot_liveboard_qualified_name(
-        self, thoughtspot_liveboard_qualified_name: Optional[str]
-    ):
+    def thoughtspot_liveboard_qualified_name(self, thoughtspot_liveboard_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard_qualified_name = (
-            thoughtspot_liveboard_qualified_name
-        )
+        self.attributes.thoughtspot_liveboard_qualified_name = thoughtspot_liveboard_qualified_name
 
     @property
     def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
-        return (
-            None if self.attributes is None else self.attributes.thoughtspot_liveboard
-        )
+        return None if self.attributes is None else self.attributes.thoughtspot_liveboard
 
     @thoughtspot_liveboard.setter
-    def thoughtspot_liveboard(
-        self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
-    ):
+    def thoughtspot_liveboard(self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
 
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_liveboard_name: Optional[str] = Field(default=None, description="")
-        thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
-            default=None, description=""
-        )  # relationship
+        thoughtspot_liveboard_qualified_name: Optional[str] = Field(default=None, description="")
+        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(default=None, description="")  # relationship
 
     attributes: ThoughtspotDashlet.Attributes = Field(
         default_factory=lambda: ThoughtspotDashlet.Attributes(),

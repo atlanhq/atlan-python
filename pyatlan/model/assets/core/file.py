@@ -21,9 +21,7 @@ class File(Resource):
 
     @classmethod
     @init_guid
-    def creator(
-        cls, *, name: str, connection_qualified_name: str, file_type: FileType
-    ) -> File:
+    def creator(cls, *, name: str, connection_qualified_name: str, file_type: FileType) -> File:
         return File(
             attributes=File.Attributes.create(
                 name=name,
@@ -34,14 +32,9 @@ class File(Resource):
 
     @classmethod
     @init_guid
-    def create(
-        cls, *, name: str, connection_qualified_name: str, file_type: FileType
-    ) -> File:
+    def create(cls, *, name: str, connection_qualified_name: str, file_type: FileType) -> File:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -117,15 +110,11 @@ class File(Resource):
     class Attributes(Resource.Attributes):
         file_type: Optional[FileType] = Field(default=None, description="")
         file_path: Optional[str] = Field(default=None, description="")
-        file_assets: Optional[Asset] = Field(
-            default=None, description=""
-        )  # relationship
+        file_assets: Optional[Asset] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def create(
-            cls, *, name: str, connection_qualified_name: str, file_type: FileType
-        ) -> File.Attributes:
+        def create(cls, *, name: str, connection_qualified_name: str, file_type: FileType) -> File.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "file_type"],
                 [name, connection_qualified_name, file_type],
@@ -134,9 +123,7 @@ class File(Resource):
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
                 file_type=file_type,
             )
 

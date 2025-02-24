@@ -40,9 +40,7 @@ class Collection(Namespace):
             username = client.user.get_current().username
             return f"default/collection/{username}/{uuid4()}"
         except AtlanError as e:
-            raise ErrorCode.UNABLE_TO_GENERATE_QN.exception_with_parameters(
-                cls.__name__, e
-            ) from e
+            raise ErrorCode.UNABLE_TO_GENERATE_QN.exception_with_parameters(cls.__name__, e) from e
 
     type_name: str = Field(default="Collection", allow_mutation=False)
 

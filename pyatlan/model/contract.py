@@ -25,18 +25,14 @@ class DataContractSpec(AtlanYamlModel):
         description="Controls the specification as one for a data contract.",
     )
     status: Union[DataContractStatus, str] = Field(description="State of the contract.")
-    template_version: str = Field(
-        default="0.0.2", description="Version of the template for the data contract."
-    )
+    template_version: str = Field(default="0.0.2", description="Version of the template for the data contract.")
     type: str = Field(description="Type of the dataset in Atlan.")
     dataset: str = Field(description="Name of the asset as it exists inside Atlan.")
     data_source: Optional[str] = Field(
         default=None,
         description="Name that must match a data source defined in your config file.",
     )
-    description: Optional[str] = Field(
-        default=None, description="Description of this dataset."
-    )
+    description: Optional[str] = Field(default=None, description="Description of this dataset.")
     owners: Optional[DataContractSpec.Owners] = Field(
         default=None,
         description=(
@@ -49,9 +45,7 @@ class DataContractSpec(AtlanYamlModel):
     announcement: Optional[DataContractSpec.Announcement] = Field(
         default=None, description="Announcement to apply to the dataset."
     )
-    terms: Optional[List[str]] = Field(
-        default_factory=list, description="Glossary terms to assign to the dataset."
-    )
+    terms: Optional[List[str]] = Field(default_factory=list, description="Glossary terms to assign to the dataset.")
     tags: Optional[List[DataContractSpec.DCTag]] = Field(
         default_factory=list, description="Atlan tags for the dataset."
     )
@@ -78,51 +72,33 @@ class DataContractSpec(AtlanYamlModel):
         Owners of the dataset.
         """
 
-        users: Optional[List[str]] = Field(
-            default_factory=list, description="Individual users who own the dataset."
-        )
-        groups: Optional[List[str]] = Field(
-            default_factory=list, description="Groups that own the dataset."
-        )
+        users: Optional[List[str]] = Field(default_factory=list, description="Individual users who own the dataset.")
+        groups: Optional[List[str]] = Field(default_factory=list, description="Groups that own the dataset.")
 
     class Certification(AtlanYamlModel):
         """
         Certification information for the dataset.
         """
 
-        status: Optional[Union[CertificateStatus, str]] = Field(
-            default=None, description="State of the certification."
-        )
-        message: Optional[str] = Field(
-            default=None, description="Message to accompany the certification."
-        )
+        status: Optional[Union[CertificateStatus, str]] = Field(default=None, description="State of the certification.")
+        message: Optional[str] = Field(default=None, description="Message to accompany the certification.")
 
     class Announcement(AtlanYamlModel):
         """
         Announcement details for the dataset.
         """
 
-        type: Optional[Union[CertificateStatus, str]] = Field(
-            default=None, description="Type of announcement."
-        )
-        title: Optional[str] = Field(
-            default=None, description="Title to use for the announcement."
-        )
-        description: Optional[str] = Field(
-            default=None, description="Message to accompany the announcement."
-        )
+        type: Optional[Union[CertificateStatus, str]] = Field(default=None, description="Type of announcement.")
+        title: Optional[str] = Field(default=None, description="Title to use for the announcement.")
+        description: Optional[str] = Field(default=None, description="Message to accompany the announcement.")
 
     class DCTag(AtlanYamlModel):
         """
         Tagging details for the dataset.
         """
 
-        name: Optional[str] = Field(
-            default=None, description="Human-readable name of the Atlan tag."
-        )
-        propagate: Optional[str] = Field(
-            default=None, description="Whether to propagate the tag or not."
-        )
+        name: Optional[str] = Field(default=None, description="Human-readable name of the Atlan tag.")
+        propagate: Optional[str] = Field(default=None, description="Whether to propagate the tag or not.")
         propagate_through_lineage: Optional[bool] = Field(
             default=None,
             alias="restrict_propagation_through_lineage",
@@ -164,18 +140,10 @@ class DataContractSpec(AtlanYamlModel):
             default=None,
             description="Logical data type of values in this column (e.g. string).",
         )
-        invalid_type: Optional[str] = Field(
-            default=None, description="Format of data to consider invalid."
-        )
-        invalid_format: Optional[str] = Field(
-            default=None, description="Format of data to consider valid."
-        )
-        valid_regex: Optional[str] = Field(
-            default=None, description="Regular expression to match valid values."
-        )
-        missing_regex: Optional[str] = Field(
-            default=None, description="Regular expression to match missing values."
-        )
+        invalid_type: Optional[str] = Field(default=None, description="Format of data to consider invalid.")
+        invalid_format: Optional[str] = Field(default=None, description="Format of data to consider valid.")
+        valid_regex: Optional[str] = Field(default=None, description="Regular expression to match valid values.")
+        missing_regex: Optional[str] = Field(default=None, description="Regular expression to match missing values.")
         invalid_values: Optional[List[str]] = Field(
             default_factory=list,
             description="Enumeration of values that should be considered invalid.",
@@ -188,23 +156,15 @@ class DataContractSpec(AtlanYamlModel):
             default_factory=list,
             description="Enumeration of values that should be considered missing.",
         )
-        not_null: Optional[bool] = Field(
-            default=None, description="When true, this column cannot be empty."
-        )
+        not_null: Optional[bool] = Field(default=None, description="When true, this column cannot be empty.")
         valid_length: Optional[int] = Field(
             default=None,
             description="Fixed length for a string to be considered valid.",
         )
-        valid_min: Optional[int] = Field(
-            default=None, description="Minimum numeric value considered valid."
-        )
-        valid_max: Optional[int] = Field(
-            default=None, description="Maximum numeric value considered valid."
-        )
+        valid_min: Optional[int] = Field(default=None, description="Minimum numeric value considered valid.")
+        valid_max: Optional[int] = Field(default=None, description="Maximum numeric value considered valid.")
         valid_min_length: Optional[int] = Field(
             default=None,
             description="Minimum length for a string to be considered valid.",
         )
-        unique: Optional[bool] = Field(
-            default=None, description="When true, this column must have unique values."
-        )
+        unique: Optional[bool] = Field(default=None, description="When true, this column must have unique values.")

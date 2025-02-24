@@ -40,9 +40,7 @@ def mc_monitor_response_json():
     return load_json(STRUCT_RESPONSES_DIR, MC_MONITOR_JSON)
 
 
-def test_structs_flatten_attributes(
-    client, mock_custom_metadata_cache, mc_monitor_response_json
-):
+def test_structs_flatten_attributes(client, mock_custom_metadata_cache, mc_monitor_response_json):
     asset_response = {"referredEntities": {}, "entity": mc_monitor_response_json}
     mc_monitor_model = MCMonitor(**mc_monitor_response_json)
     mc_monitor_asset_response = AssetResponse[MCMonitor](**asset_response).entity

@@ -26,9 +26,7 @@ class ImpersonationClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
-            )
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
         self._client = client
 
     def user(self, user_id: str) -> str:
@@ -106,14 +104,10 @@ class ImpersonationClient:
             - InvalidRequestError: If the provided GUID is invalid or retrieval fails.
         """
         try:
-            raw_json = self._client._call_api(
-                GET_CLIENT_SECRET.format_path({"client_guid": client_guid})
-            )
+            raw_json = self._client._call_api(GET_CLIENT_SECRET.format_path({"client_guid": client_guid}))
             return raw_json and raw_json.get("value")
         except AtlanError as e:
-            raise ErrorCode.UNABLE_TO_RETRIEVE_CLIENT_SECRET.exception_with_parameters(
-                client_guid
-            ) from e
+            raise ErrorCode.UNABLE_TO_RETRIEVE_CLIENT_SECRET.exception_with_parameters(client_guid) from e
 
     def get_user_id(self, username: str) -> Optional[str]:
         """
@@ -131,14 +125,6 @@ class ImpersonationClient:
                 GET_KEYCLOAK_USER.format_path_with_params(),
                 query_params={"username": username or " "},
             )
-            return (
-                raw_json
-                and isinstance(raw_json, list)
-                and len(raw_json) >= 1
-                and raw_json[0].get("id")
-                or None
-            )
+            return raw_json and isinstance(raw_json, list) and len(raw_json) >= 1 and raw_json[0].get("id") or None
         except AtlanError as e:
-            raise ErrorCode.UNABLE_TO_RETRIEVE_USER_GUID.exception_with_parameters(
-                username
-            ) from e
+            raise ErrorCode.UNABLE_TO_RETRIEVE_USER_GUID.exception_with_parameters(username) from e

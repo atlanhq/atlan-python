@@ -29,9 +29,7 @@ class Redash(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
-        "redashIsPublished", "redashIsPublished"
-    )
+    REDASH_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("redashIsPublished", "redashIsPublished")
     """
     Whether this asset is published in Redash (true) or not (false).
     """

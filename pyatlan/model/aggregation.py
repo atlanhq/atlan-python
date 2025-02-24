@@ -31,6 +31,7 @@ class AggregationHitsResult(AtlanObject):
 
     class Hits(AtlanObject):
         "Details of the hits requested."
+
         total: Optional[AggregationHitsResult.Stats] = Field(default=None)
         max_score: Optional[float] = Field(default=None)
         hits: List[AggregationHitsResult.Details] = Field(default_factory=list)
@@ -85,16 +86,9 @@ class AggregationBucketDetails(AtlanObject):
 
         validate_type(name="field", _type=AtlanField, value=field)
 
-        if (
-            self.nested_results
-            and SearchableField.EMBEDDED_SOURCE_VALUE in self.nested_results
-        ):
+        if self.nested_results and SearchableField.EMBEDDED_SOURCE_VALUE in self.nested_results:
             result = self.nested_results[SearchableField.EMBEDDED_SOURCE_VALUE]
-            if (
-                isinstance(result, AggregationHitsResult)
-                and result.hits
-                and result.hits.hits
-            ):
+            if isinstance(result, AggregationHitsResult) and result.hits and result.hits.hits:
                 details = result.hits.hits[0]
                 if details and details.source:
                     if isinstance(field, CustomMetadataField):
@@ -134,9 +128,7 @@ class Aggregations(AtlanObject):
 
     def get(
         self, key: str, default=None
-    ) -> Optional[
-        Union[AggregationMetricResult, AggregationBucketResult, AggregationHitsResult]
-    ]:
+    ) -> Optional[Union[AggregationMetricResult, AggregationBucketResult, AggregationHitsResult]]:
         return self.__root__.get(key, default)
 
 

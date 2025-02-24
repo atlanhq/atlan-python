@@ -11,12 +11,8 @@ class SSOMapperConfig(AtlanObject):
     group_name: Optional[str] = Field(default=None, alias="group")
     attribute_name: Optional[str] = Field(default=None, alias="attribute.name")
     attribute_value: Optional[str] = Field(default=None, alias="attribute.value")
-    attribute_friendly_name: Optional[str] = Field(
-        default=None, alias="attribute.friendly.name"
-    )
-    attribute_values_regex: Optional[str] = Field(
-        default=None, alias="are.attribute.values.regex"
-    )
+    attribute_friendly_name: Optional[str] = Field(default=None, alias="attribute.friendly.name")
+    attribute_values_regex: Optional[str] = Field(default=None, alias="are.attribute.values.regex")
 
 
 class SSOMapper(AtlanObject):

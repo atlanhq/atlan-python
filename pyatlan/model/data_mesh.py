@@ -12,9 +12,7 @@ from pyatlan.model.search import DSL, IndexSearchRequest, Query, SortItem
 
 class DataProductsAssetsDSL(AtlanObject):
     query: IndexSearchRequest = Field(description="Parameters for the search itself.")
-    filter_scrubbed: bool = Field(
-        default=True, description="Whether or not to filter scrubbed records."
-    )
+    filter_scrubbed: bool = Field(default=True, description="Whether or not to filter scrubbed records.")
     _ATTR_LIST = [
         "__traitNames",
         "connectorName",
@@ -77,20 +75,14 @@ class DataProductsAssetsDSL(AtlanObject):
     ]
 
     def _exclude_nulls(self, dict_: Dict[str, Any]) -> Dict[str, Any]:
-        return {
-            key: value for key, value in dict_.items() if value not in (None, [], {})
-        }
+        return {key: value for key, value in dict_.items() if value not in (None, [], {})}
 
     def _contruct_dsl_str(self, asset_selection_dsl: Dict[str, Any]) -> str:
         try:
             # For data products -- these require a `filter` as a nested dict construct within
             # an outer bool, not a list (which is all the default Elastic client will serialize)
-            filter_condition = asset_selection_dsl["query"]["dsl"]["query"]["bool"].pop(
-                "filter"
-            )
-            asset_selection_dsl["query"]["dsl"]["query"]["bool"]["filter"] = {
-                "bool": {"filter": filter_condition}
-            }
+            filter_condition = asset_selection_dsl["query"]["dsl"]["query"]["bool"].pop("filter")
+            asset_selection_dsl["query"]["dsl"]["query"]["bool"]["filter"] = {"bool": {"filter": filter_condition}}
         except KeyError:
             raise ErrorCode.UNABLE_TO_TRANSLATE_ASSETS_DSL.exception_with_parameters() from None
         return dumps(asset_selection_dsl)

@@ -49,9 +49,7 @@ class CogniteSequence(Cognite):
         self.attributes.cognite_asset = cognite_asset
 
     class Attributes(Cognite.Attributes):
-        cognite_asset: Optional[CogniteAsset] = Field(
-            default=None, description=""
-        )  # relationship
+        cognite_asset: Optional[CogniteAsset] = Field(default=None, description="")  # relationship
 
     attributes: CogniteSequence.Attributes = Field(
         default_factory=lambda: CogniteSequence.Attributes(),

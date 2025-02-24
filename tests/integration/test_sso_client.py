@@ -26,9 +26,7 @@ def delete_group(client: AtlanClient, guid: str) -> None:
 
 
 def delete_sso_mapping(client: AtlanClient, group_map_id: str) -> None:
-    response = client.sso.delete_group_mapping(
-        sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=group_map_id
-    )
+    response = client.sso.delete_group_mapping(sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=group_map_id)
     assert response is None
 
 
@@ -47,9 +45,7 @@ def group(client: AtlanClient) -> Generator[AtlanGroup, None, None]:
 
 
 @pytest.fixture(scope="module")
-def sso_mapping(
-    client: AtlanClient, group: AtlanGroup
-) -> Generator[SSOMapper, None, None]:
+def sso_mapping(client: AtlanClient, group: AtlanGroup) -> Generator[SSOMapper, None, None]:
     assert group
     assert group.id
     response = client.sso.create_group_mapping(
@@ -72,9 +68,7 @@ def sso_mapping(
     delete_sso_mapping(client, azure_group_mapping.id)
 
 
-def _assert_sso_group_mapping(
-    group: AtlanGroup, sso_mapping: SSOMapper, is_updated: bool = False
-):
+def _assert_sso_group_mapping(group: AtlanGroup, sso_mapping: SSOMapper, is_updated: bool = False):
     assert sso_mapping
     assert sso_mapping.id
     assert sso_mapping.identity_provider_alias == AtlanSSO.JUMPCLOUD
@@ -125,9 +119,7 @@ def test_sso_create_group_mapping_again_raises_invalid_request_error(
     ) in str(err.value)
 
 
-@pytest.mark.order(
-    after="test_sso_create_group_mapping_again_raises_invalid_request_error"
-)
+@pytest.mark.order(after="test_sso_create_group_mapping_again_raises_invalid_request_error")
 def test_sso_retrieve_group_mapping(
     client: AtlanClient,
     group: AtlanGroup,
@@ -138,9 +130,7 @@ def test_sso_retrieve_group_mapping(
     assert sso_mapping.id
     time.sleep(5)
 
-    retrieved_sso_mapping = client.sso.get_group_mapping(
-        sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=sso_mapping.id
-    )
+    retrieved_sso_mapping = client.sso.get_group_mapping(sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=sso_mapping.id)
     _assert_sso_group_mapping(group, retrieved_sso_mapping)
 
 
@@ -159,10 +149,7 @@ def test_sso_retrieve_all_group_mappings(
     assert len(retrieved_mappings) >= 1
     mapping_found = False
     for mapping in retrieved_mappings:
-        if (
-            group.id in str(mapping.name)
-            and mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER
-        ):
+        if group.id in str(mapping.name) and mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER:
             mapping_found = True
             _assert_sso_group_mapping(group, mapping)
             break

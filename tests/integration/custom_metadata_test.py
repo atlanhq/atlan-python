@@ -92,17 +92,13 @@ def create_custom_metadata(
     cm_def = CustomMetadataDef.create(display_name=name)
     cm_def.attribute_defs = attribute_defs
     if icon and color:
-        cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(
-            icon, color, locked
-        )
+        cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(icon, color, locked)
     elif logo and logo.startswith("http"):
         cm_def.options = CustomMetadataDef.Options.with_logo_from_url(logo, locked)
     elif logo:
         cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji(logo, locked)
     else:
-        raise ValueError(
-            "Invalid configuration for the visual to use for the custom metadata."
-        )
+        raise ValueError("Invalid configuration for the visual to use for the custom metadata.")
     r = client.typedef.create(cm_def)
     return r.custom_metadata_defs[0]
 
@@ -113,20 +109,14 @@ def create_enum(client: AtlanClient, name: str, values: List[str]) -> EnumDef:
     return r.enum_defs[0]
 
 
-def update_enum(
-    client: AtlanClient, name: str, values: List[str], replace_existing: bool = False
-) -> EnumDef:
-    enum_def = EnumDef.update(
-        name=name, values=values, replace_existing=replace_existing
-    )
+def update_enum(client: AtlanClient, name: str, values: List[str], replace_existing: bool = False) -> EnumDef:
+    enum_def = EnumDef.update(name=name, values=values, replace_existing=replace_existing)
     r = client.typedef.update(enum_def)
     return r.enum_defs[0]
 
 
 @pytest.fixture(scope="module")
-def limit_attribute_applicability_kwargs(
-    glossary: AtlasGlossary, connection: Connection
-):
+def limit_attribute_applicability_kwargs(glossary: AtlasGlossary, connection: Connection):
     return dict(
         applicable_asset_types={"Link"},
         applicable_other_asset_types={"File"},
@@ -137,9 +127,7 @@ def limit_attribute_applicability_kwargs(
 
 
 @pytest.fixture(scope="module")
-def cm_ipr(
-    client: AtlanClient, limit_attribute_applicability_kwargs
-) -> Generator[CustomMetadataDef, None, None]:
+def cm_ipr(client: AtlanClient, limit_attribute_applicability_kwargs) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_IPR_LICENSE,
@@ -163,9 +151,7 @@ def cm_ipr(
             attribute_type=AtlanCustomAttributePrimitiveType.URL,
         ),
     ]
-    cm = create_custom_metadata(
-        client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
-    )
+    cm = create_custom_metadata(client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True)
     yield cm
     wait_for_successful_custometadatadef_purge(CM_IPR, client=client)
 
@@ -189,12 +175,8 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs)
     assert not one_with_limited.options.multi_value_select
     options = one_with_limited.options
     for attribute in limit_attribute_applicability_kwargs.keys():
-        assert getattr(
-            one_with_limited, attribute
-        ) == limit_attribute_applicability_kwargs.get(attribute)
-        assert getattr(options, attribute) == json.dumps(
-            list(limit_attribute_applicability_kwargs.get(attribute))
-        )
+        assert getattr(one_with_limited, attribute) == limit_attribute_applicability_kwargs.get(attribute)
+        assert getattr(options, attribute) == json.dumps(list(limit_attribute_applicability_kwargs.get(attribute)))
     one = attributes[1]
     assert one.display_name == CM_ATTR_IPR_VERSION
     assert one.name != CM_ATTR_IPR_VERSION
@@ -356,9 +338,7 @@ def cm_enum_update(
 def cm_enum_update_with_replace(
     client: AtlanClient,
 ) -> Generator[EnumDef, None, None]:
-    enum_def = update_enum(
-        client, name=DQ_ENUM, values=DQ_TYPE_LIST, replace_existing=True
-    )
+    enum_def = update_enum(client, name=DQ_ENUM, values=DQ_TYPE_LIST, replace_existing=True)
     yield enum_def
 
 
@@ -623,9 +603,7 @@ def test_search_by_any_accountable(
     term: AtlasGlossaryTerm,
 ):
     attributes = ["name", "anchor"]
-    cm_attributes = CustomMetadataCache.get_attributes_for_search_results(
-        set_name=CM_RACI
-    )
+    cm_attributes = CustomMetadataCache.get_attributes_for_search_results(set_name=CM_RACI)
     assert cm_attributes
     attributes.extend(cm_attributes)
     request = (
@@ -651,9 +629,7 @@ def test_search_by_any_accountable(
         anchor = t.attributes.anchor
         assert anchor
         assert anchor.name == glossary.name
-        _validate_raci_attributes_replacement(
-            client, t.get_custom_metadata(name=CM_RACI)
-        )
+        _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
 
 
 @pytest.mark.order(after="test_replace_term_cm_ipr")
@@ -690,9 +666,7 @@ def test_search_by_specific_accountable(
         assert anchor.name == glossary.name
 
 
-@pytest.mark.order(
-    after=["test_search_by_any_accountable", "test_search_by_specific_accountable"]
-)
+@pytest.mark.order(after=["test_search_by_any_accountable", "test_search_by_specific_accountable"])
 def test_remove_term_cm_raci(
     client: AtlanClient,
     cm_raci: CustomMetadataDef,
@@ -746,9 +720,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     attributes = updated.attribute_defs
     archived = _validate_raci_structure(attributes, 5)
     assert archived
-    assert (
-        archived.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
-    )
+    assert archived.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
     assert archived.name != CM_ATTR_RACI_EXTRA
     assert archived.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert not archived.options.multi_value_select
@@ -766,9 +738,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     assert CM_QUALITY in custom_attributes.keys()
     extra = _validate_raci_structure(custom_attributes.get(CM_RACI), 4)
     assert not extra
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
-        include_deleted=True
-    )
+    custom_attributes = CustomMetadataCache.get_all_custom_attributes(include_deleted=True)
     assert custom_attributes
     assert CM_RACI in custom_attributes.keys()
     assert CM_IPR in custom_attributes.keys()
@@ -816,9 +786,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
 
 
 @pytest.mark.order(after="test_recreate_attribute")
-def test_retrieve_structure_without_archived(
-    client: AtlanClient, cm_raci: CustomMetadataDef
-):
+def test_retrieve_structure_without_archived(client: AtlanClient, cm_raci: CustomMetadataDef):
     custom_attributes = CustomMetadataCache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
@@ -835,12 +803,8 @@ def test_retrieve_structure_without_archived(
 
 
 @pytest.mark.order(after="test_recreate_attribute")
-def test_retrieve_structure_with_archived(
-    client: AtlanClient, cm_raci: CustomMetadataDef
-):
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
-        include_deleted=True
-    )
+def test_retrieve_structure_with_archived(client: AtlanClient, cm_raci: CustomMetadataDef):
+    custom_attributes = CustomMetadataCache.get_all_custom_attributes(include_deleted=True)
     assert custom_attributes
     assert len(custom_attributes) >= 3
     assert CM_RACI in custom_attributes.keys()
@@ -1010,9 +974,7 @@ def _validate_dq_empty(dq_attrs: CustomMetadataDict):
     assert dq_attrs[CM_ATTR_QUALITY_TYPE] is None
 
 
-def _validate_raci_structure(
-    attributes: Optional[List[AttributeDef]], total_expected: int
-):
+def _validate_raci_structure(attributes: Optional[List[AttributeDef]], total_expected: int):
     global _removal_epoch
     assert attributes
     assert len(attributes) == total_expected
@@ -1058,9 +1020,7 @@ def _validate_raci_structure(
     if total_expected > 5:
         # If we're expecting more than 5, then the penultimate must be an archived CM_ATTR_EXTRA
         one = attributes[4]
-        assert (
-            one.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
-        )
+        assert one.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
         assert one.name != CM_ATTR_RACI_EXTRA
         assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
         assert one.options

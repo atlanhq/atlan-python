@@ -17,13 +17,9 @@ from tests.unit.model.constants import (
         (DATAVERSE_ATTRIBUTE_NAME, None, "entity_qualified_name is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(
-    name: str, entity_qualified_name: str, message: str
-):
+def test_creator_with_missing_parameters_raise_value_error(name: str, entity_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
-        DataverseAttribute.creator(
-            name=name, dataverse_entity_qualified_name=entity_qualified_name
-        )
+        DataverseAttribute.creator(name=name, dataverse_entity_qualified_name=entity_qualified_name)
 
 
 def test_creator():
@@ -45,17 +41,13 @@ def test_creator():
         (DATAVERSE_ATTRIBUTE_NAME, None, "name is required"),
     ],
 )
-def test_updater_with_invalid_parameter_raises_value_error(
-    qualified_name: str, name: str, message: str
-):
+def test_updater_with_invalid_parameter_raises_value_error(qualified_name: str, name: str, message: str):
     with pytest.raises(ValueError, match=message):
         DataverseAttribute.updater(qualified_name=qualified_name, name=name)
 
 
 def test_updater():
-    sut = DataverseAttribute.updater(
-        qualified_name=DATAVERSE_ATTRIBUTE_QUALIFIED_NAME, name=DATAVERSE_ATTRIBUTE_NAME
-    )
+    sut = DataverseAttribute.updater(qualified_name=DATAVERSE_ATTRIBUTE_QUALIFIED_NAME, name=DATAVERSE_ATTRIBUTE_NAME)
 
     assert sut.qualified_name == DATAVERSE_ATTRIBUTE_QUALIFIED_NAME
     assert sut.name == DATAVERSE_ATTRIBUTE_NAME

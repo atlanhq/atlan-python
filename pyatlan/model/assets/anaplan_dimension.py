@@ -46,9 +46,7 @@ class AnaplanDimension(Anaplan):
         model_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanDimension:
-        validate_required_fields(
-            ["name", "model_qualified_name"], [name, model_qualified_name]
-        )
+        validate_required_fields(["name", "model_qualified_name"], [name, model_qualified_name])
         attributes = AnaplanDimension.Attributes.create(
             name=name,
             model_qualified_name=model_qualified_name,
@@ -149,21 +147,11 @@ class AnaplanDimension(Anaplan):
         self.attributes.anaplan_row_views = anaplan_row_views
 
     class Attributes(Anaplan.Attributes):
-        anaplan_page_views: Optional[List[AnaplanView]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_column_views: Optional[List[AnaplanView]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_model: Optional[AnaplanModel] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_row_views: Optional[List[AnaplanView]] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_page_views: Optional[List[AnaplanView]] = Field(default=None, description="")  # relationship
+        anaplan_column_views: Optional[List[AnaplanView]] = Field(default=None, description="")  # relationship
+        anaplan_line_items: Optional[List[AnaplanLineItem]] = Field(default=None, description="")  # relationship
+        anaplan_model: Optional[AnaplanModel] = Field(default=None, description="")  # relationship
+        anaplan_row_views: Optional[List[AnaplanView]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -179,9 +167,7 @@ class AnaplanDimension(Anaplan):
                 [name, model_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     model_qualified_name, "model_qualified_name", 5

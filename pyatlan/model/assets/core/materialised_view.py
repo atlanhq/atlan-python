@@ -60,9 +60,7 @@ class MaterialisedView(SQL):
         database_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> MaterialisedView:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
+        validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = MaterialisedView.Attributes.create(
             name=name,
             schema_qualified_name=schema_qualified_name,
@@ -77,10 +75,7 @@ class MaterialisedView(SQL):
     @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -101,9 +96,7 @@ class MaterialisedView(SQL):
     """
     Refresh mode for this materialized view.
     """
-    REFRESH_METHOD: ClassVar[KeywordField] = KeywordField(
-        "refreshMethod", "refreshMethod"
-    )
+    REFRESH_METHOD: ClassVar[KeywordField] = KeywordField("refreshMethod", "refreshMethod")
     """
     Refresh method for this materialized view.
     """
@@ -111,9 +104,7 @@ class MaterialisedView(SQL):
     """
     Staleness of this materialized view.
     """
-    STALE_SINCE_DATE: ClassVar[NumericField] = NumericField(
-        "staleSinceDate", "staleSinceDate"
-    )
+    STALE_SINCE_DATE: ClassVar[NumericField] = NumericField("staleSinceDate", "staleSinceDate")
     """
     Time (epoch) from which this materialized view is stale, in milliseconds.
     """
@@ -129,15 +120,11 @@ class MaterialisedView(SQL):
     """
     Size of this materialized view, in bytes.
     """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("isQueryPreview", "isQueryPreview")
     """
     Whether it's possible to run a preview query on this materialized view (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
     """
     Configuration for the query preview of this materialized view.
     """
@@ -329,18 +316,12 @@ class MaterialisedView(SQL):
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         definition: Optional[str] = Field(default=None, description="")
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description=""
-        )  # relationship
+        columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        atlan_schema: Optional[Schema] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -354,13 +335,9 @@ class MaterialisedView(SQL):
             database_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> MaterialisedView.Attributes:
-            validate_required_fields(
-                ["name, schema_qualified_name"], [name, schema_qualified_name]
-            )
+            validate_required_fields(["name, schema_qualified_name"], [name, schema_qualified_name])
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     schema_qualified_name, "schema_qualified_name", 5
@@ -371,10 +348,7 @@ class MaterialisedView(SQL):
             connection_qualified_name = connection_qualified_name or connection_qn
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
-            database_qualified_name = (
-                database_qualified_name
-                or f"{connection_qualified_name}/{database_name}"
-            )
+            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
             atlan_schema = Schema.ref_by_qualified_name(schema_qualified_name)
 
             return MaterialisedView.Attributes(

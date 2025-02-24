@@ -25,9 +25,7 @@ import sys
 
 def read(file_name):
     """Read a text file and return the content as a string."""
-    with io.open(
-        os.path.join(os.path.dirname(__file__), file_name), encoding="utf-8"
-    ) as f:
+    with io.open(os.path.join(os.path.dirname(__file__), file_name), encoding="utf-8") as f:
         return f.read()
 
 
@@ -38,9 +36,7 @@ def main(env_var="GITHUB_REF") -> int:
     if tag == version:
         return 0
     else:
-        print(
-            f"✖ {env_var} env var {git_ref!r} does not match package version: {tag!r} != {version!r}"
-        )
+        print(f"✖ {env_var} env var {git_ref!r} does not match package version: {tag!r} != {version!r}")
         return 1
 
 

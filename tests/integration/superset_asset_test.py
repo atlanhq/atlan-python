@@ -36,17 +36,13 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def superset_dashboard(
-    client: AtlanClient, connection: Connection
-) -> Generator[SupersetDashboard, None, None]:
+def superset_dashboard(client: AtlanClient, connection: Connection) -> Generator[SupersetDashboard, None, None]:
     assert connection.qualified_name
     to_create = SupersetDashboard.create(
         name=SUPERSET_DASHBOARD_NAME,
@@ -72,9 +68,7 @@ def test_superset_dashboard(
 
 
 @pytest.fixture(scope="module")
-def superset_chart(
-    client: AtlanClient, superset_dashboard: SupersetDashboard
-) -> Generator[SupersetChart, None, None]:
+def superset_chart(client: AtlanClient, superset_dashboard: SupersetDashboard) -> Generator[SupersetChart, None, None]:
     assert superset_dashboard.qualified_name
     to_create = SupersetChart.create(
         name=SUPERSET_CHART_NAME,
@@ -94,10 +88,7 @@ def test_superset_chart(
     assert superset_chart
     assert superset_chart.guid
     assert superset_chart.qualified_name
-    assert (
-        superset_chart.superset_dashboard_qualified_name
-        == superset_dashboard.qualified_name
-    )
+    assert superset_chart.superset_dashboard_qualified_name == superset_dashboard.qualified_name
     assert superset_chart.name == SUPERSET_CHART_NAME
     assert superset_chart.connector_name == AtlanConnectorType.SUPERSET.value
 
@@ -129,10 +120,7 @@ def test_overload_superset_chart(
     assert superset_chart_overload
     assert superset_chart_overload.guid
     assert superset_chart_overload.qualified_name
-    assert (
-        superset_chart_overload.superset_dashboard_qualified_name
-        == superset_dashboard.qualified_name
-    )
+    assert superset_chart_overload.superset_dashboard_qualified_name == superset_dashboard.qualified_name
     assert superset_chart_overload.name == SUPERSET_CHART_NAME_OVERLOAD
     assert superset_chart_overload.connector_name == AtlanConnectorType.SUPERSET.value
 
@@ -192,9 +180,7 @@ def test_overload_superset_dataset(
     assert superset_dataset_overload
     assert superset_dataset_overload.guid
     assert superset_dataset_overload.qualified_name
-    assert (
-        superset_dataset_overload.connection_qualified_name == connection.qualified_name
-    )
+    assert superset_dataset_overload.connection_qualified_name == connection.qualified_name
     assert superset_dataset_overload.name == SUPERSET_DATASET_NAME_OVERLOAD
     assert superset_dataset_overload.connector_name == AtlanConnectorType.SUPERSET.value
 
@@ -316,9 +302,7 @@ def test_update_superset_dashboard_again(
 
 
 @pytest.mark.order(after="test_update_superset_dashboard_again")
-def test_delete_superset_dashboard(
-    client: AtlanClient, superset_dashboard: SupersetDashboard
-):
+def test_delete_superset_dashboard(client: AtlanClient, superset_dashboard: SupersetDashboard):
     response = client.asset.delete_by_guid(superset_dashboard.guid)
     assert response
     assert not response.assets_created(asset_type=SupersetDashboard)
@@ -338,9 +322,7 @@ def test_restore_dashboard(
     superset_dashboard: SupersetDashboard,
 ):
     assert superset_dashboard.qualified_name
-    assert client.asset.restore(
-        asset_type=SupersetDashboard, qualified_name=superset_dashboard.qualified_name
-    )
+    assert client.asset.restore(asset_type=SupersetDashboard, qualified_name=superset_dashboard.qualified_name)
     assert superset_dashboard.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=SupersetDashboard,

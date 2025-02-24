@@ -41,9 +41,7 @@ class Resource(Catalog):
     """
     Reference to the resource.
     """
-    RESOURCE_METADATA: ClassVar[KeywordField] = KeywordField(
-        "resourceMetadata", "resourceMetadata"
-    )
+    RESOURCE_METADATA: ClassVar[KeywordField] = KeywordField("resourceMetadata", "resourceMetadata")
     """
     Metadata of the resource.
     """
@@ -99,9 +97,7 @@ class Resource(Catalog):
         link: Optional[str] = Field(default=None, description="")
         is_global: Optional[bool] = Field(default=None, description="")
         reference: Optional[str] = Field(default=None, description="")
-        resource_metadata: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        resource_metadata: Optional[Dict[str, str]] = Field(default=None, description="")
 
     attributes: Resource.Attributes = Field(
         default_factory=lambda: Resource.Attributes(),

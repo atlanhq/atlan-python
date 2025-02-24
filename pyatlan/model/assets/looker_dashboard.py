@@ -34,39 +34,27 @@ class LookerDashboard(Looker):
     """
     Name of the parent folder in Looker that contains this dashboard.
     """
-    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
-        "sourceUserId", "sourceUserId"
-    )
+    SOURCE_USER_ID: ClassVar[NumericField] = NumericField("sourceUserId", "sourceUserId")
     """
     Identifier of the user who created this dashboard, from Looker.
     """
-    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
-        "sourceViewCount", "sourceViewCount"
-    )
+    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField("sourceViewCount", "sourceViewCount")
     """
     Number of times the dashboard has been viewed through the Looker web UI.
     """
-    SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField(
-        "sourceMetadataId", "sourceMetadataId"
-    )
+    SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField("sourceMetadataId", "sourceMetadataId")
     """
     Identifier of the dashboard's content metadata, from Looker.
     """
-    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
-        "sourcelastUpdaterId", "sourcelastUpdaterId"
-    )
+    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField("sourcelastUpdaterId", "sourcelastUpdaterId")
     """
     Identifier of the user who last updated the dashboard, from Looker.
     """
-    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastAccessedAt", "sourceLastAccessedAt"
-    )
+    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField("sourceLastAccessedAt", "sourceLastAccessedAt")
     """
     Timestamp (epoch) when the dashboard was last accessed by a user, in milliseconds.
     """
-    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
-        "sourceLastViewedAt", "sourceLastViewedAt"
-    )
+    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField("sourceLastViewedAt", "sourceLastViewedAt")
     """
     Timestamp (epoch) when the dashboard was last viewed by a user.
     """
@@ -144,9 +132,7 @@ class LookerDashboard(Looker):
 
     @property
     def sourcelast_updater_id(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.sourcelast_updater_id
-        )
+        return None if self.attributes is None else self.attributes.sourcelast_updater_id
 
     @sourcelast_updater_id.setter
     def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
@@ -156,9 +142,7 @@ class LookerDashboard(Looker):
 
     @property
     def source_last_accessed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_accessed_at
-        )
+        return None if self.attributes is None else self.attributes.source_last_accessed_at
 
     @source_last_accessed_at.setter
     def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
@@ -168,9 +152,7 @@ class LookerDashboard(Looker):
 
     @property
     def source_last_viewed_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.source_last_viewed_at
-        )
+        return None if self.attributes is None else self.attributes.source_last_viewed_at
 
     @source_last_viewed_at.setter
     def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
@@ -224,22 +206,12 @@ class LookerDashboard(Looker):
         source_view_count: Optional[int] = Field(default=None, description="")
         source_metadata_id: Optional[int] = Field(default=None, description="")
         sourcelast_updater_id: Optional[int] = Field(default=None, description="")
-        source_last_accessed_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
+        source_last_accessed_at: Optional[datetime] = Field(default=None, description="")
         source_last_viewed_at: Optional[datetime] = Field(default=None, description="")
-        tiles: Optional[List[LookerTile]] = Field(
-            default=None, description=""
-        )  # relationship
-        looks: Optional[List[LookerLook]] = Field(
-            default=None, description=""
-        )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            default=None, description=""
-        )  # relationship
-        fields: Optional[List[LookerField]] = Field(
-            default=None, description=""
-        )  # relationship
+        tiles: Optional[List[LookerTile]] = Field(default=None, description="")  # relationship
+        looks: Optional[List[LookerLook]] = Field(default=None, description="")  # relationship
+        folder: Optional[LookerFolder] = Field(default=None, description="")  # relationship
+        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
 
     attributes: LookerDashboard.Attributes = Field(
         default_factory=lambda: LookerDashboard.Attributes(),

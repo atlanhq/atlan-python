@@ -34,15 +34,11 @@ class SigmaDataElement(Sigma):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SIGMA_DATA_ELEMENT_QUERY: ClassVar[TextField] = TextField(
-        "sigmaDataElementQuery", "sigmaDataElementQuery"
-    )
+    SIGMA_DATA_ELEMENT_QUERY: ClassVar[TextField] = TextField("sigmaDataElementQuery", "sigmaDataElementQuery")
     """
 
     """
-    SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
-        "sigmaDataElementType", "sigmaDataElementType"
-    )
+    SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField("sigmaDataElementType", "sigmaDataElementType")
     """
 
     """
@@ -57,9 +53,7 @@ class SigmaDataElement(Sigma):
     """
     TBC
     """
-    SIGMA_DATA_ELEMENT_FIELDS: ClassVar[RelationField] = RelationField(
-        "sigmaDataElementFields"
-    )
+    SIGMA_DATA_ELEMENT_FIELDS: ClassVar[RelationField] = RelationField("sigmaDataElementFields")
     """
     TBC
     """
@@ -74,11 +68,7 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_query(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_query
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_query
 
     @sigma_data_element_query.setter
     def sigma_data_element_query(self, sigma_data_element_query: Optional[str]):
@@ -88,9 +78,7 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_data_element_type
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_type
 
     @sigma_data_element_type.setter
     def sigma_data_element_type(self, sigma_data_element_type: Optional[str]):
@@ -100,16 +88,10 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_field_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_field_count
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_field_count
 
     @sigma_data_element_field_count.setter
-    def sigma_data_element_field_count(
-        self, sigma_data_element_field_count: Optional[int]
-    ):
+    def sigma_data_element_field_count(self, sigma_data_element_field_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
@@ -126,16 +108,10 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_fields(self) -> Optional[List[SigmaDataElementField]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_fields
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_fields
 
     @sigma_data_element_fields.setter
-    def sigma_data_element_fields(
-        self, sigma_data_element_fields: Optional[List[SigmaDataElementField]]
-    ):
+    def sigma_data_element_fields(self, sigma_data_element_fields: Optional[List[SigmaDataElementField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_fields = sigma_data_element_fields
@@ -143,12 +119,8 @@ class SigmaDataElement(Sigma):
     class Attributes(Sigma.Attributes):
         sigma_data_element_query: Optional[str] = Field(default=None, description="")
         sigma_data_element_type: Optional[str] = Field(default=None, description="")
-        sigma_data_element_field_count: Optional[int] = Field(
-            default=None, description=""
-        )
-        sigma_page: Optional[SigmaPage] = Field(
-            default=None, description=""
-        )  # relationship
+        sigma_data_element_field_count: Optional[int] = Field(default=None, description="")
+        sigma_page: Optional[SigmaPage] = Field(default=None, description="")  # relationship
         sigma_data_element_fields: Optional[List[SigmaDataElementField]] = Field(
             default=None, description=""
         )  # relationship

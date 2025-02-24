@@ -34,9 +34,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             # unique attributes (in case of a related entity)
             # Otherwise, set the qualified name to the GUID
             # to avoid collisions when creating glossary object
-            attributes.qualified_name = (
-                unique_attributes and unique_attributes.get("qualifiedName")
-            ) or guid
+            attributes.qualified_name = (unique_attributes and unique_attributes.get("qualifiedName")) or guid
         return values
 
     @classmethod
@@ -73,10 +71,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         categories: Optional[List[AtlasGlossaryCategory]] = None,
     ) -> AtlasGlossaryTerm:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -111,11 +106,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )
         glossary = AtlasGlossary()
         glossary.guid = glossary_guid
-        return cls(
-            attributes=cls.Attributes(
-                qualified_name=qualified_name, name=name, anchor=glossary
-            )
-        )
+        return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name, anchor=glossary))
 
     @classmethod
     def create_for_modification(
@@ -125,16 +116,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         glossary_guid: str = "",
     ) -> AtlasGlossaryTerm:
         warn(
-            (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.updater(
-            qualified_name=qualified_name, name=name, glossary_guid=glossary_guid
-        )
+        return cls.updater(qualified_name=qualified_name, name=name, glossary_guid=glossary_guid)
 
     ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")
     """Glossary in which the term is contained, searchable by the qualifiedName of the glossary."""
@@ -155,15 +141,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SHORT_DESCRIPTION: ClassVar[TextField] = TextField(
-        "shortDescription", "shortDescription"
-    )
+    SHORT_DESCRIPTION: ClassVar[TextField] = TextField("shortDescription", "shortDescription")
     """
     Unused. Brief summary of the term. See 'description' and 'userDescription' instead.
     """
-    LONG_DESCRIPTION: ClassVar[TextField] = TextField(
-        "longDescription", "longDescription"
-    )
+    LONG_DESCRIPTION: ClassVar[TextField] = TextField("longDescription", "longDescription")
     """
     Unused. Detailed definition of the term. See 'readme' instead.
     """
@@ -179,9 +161,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """
     Unused. Intended usage for the term.
     """
-    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
-        "additionalAttributes", "additionalAttributes"
-    )
+    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField("additionalAttributes", "additionalAttributes")
     """
     Unused. Arbitrary set of additional attributes for the terrm.
     """
@@ -325,9 +305,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def additional_attributes(self) -> Optional[Dict[str, str]]:
-        return (
-            None if self.attributes is None else self.attributes.additional_attributes
-        )
+        return None if self.attributes is None else self.attributes.additional_attributes
 
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[Dict[str, str]]):
@@ -511,58 +489,24 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         examples: Optional[Set[str]] = Field(default=None, description="")
         abbreviation: Optional[str] = Field(default=None, description="")
         usage: Optional[str] = Field(default=None, description="")
-        additional_attributes: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
+        additional_attributes: Optional[Dict[str, str]] = Field(default=None, description="")
         term_type: Optional[AtlasGlossaryTermType] = Field(default=None, description="")
-        valid_values_for: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        valid_values: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        see_also: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        is_a: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        antonyms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        assigned_entities: Optional[List[Referenceable]] = Field(
-            default=None, description=""
-        )  # relationship
-        classifies: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        categories: Optional[List[AtlasGlossaryCategory]] = Field(
-            default=None, description=""
-        )  # relationship
-        preferred_to_terms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        preferred_terms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        translation_terms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        synonyms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        replaced_by: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        replacement_terms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        translated_terms: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        anchor: Optional[AtlasGlossary] = Field(
-            default=None, description=""
-        )  # relationship
+        valid_values_for: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        valid_values: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        see_also: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        is_a: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        antonyms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        assigned_entities: Optional[List[Referenceable]] = Field(default=None, description="")  # relationship
+        classifies: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        categories: Optional[List[AtlasGlossaryCategory]] = Field(default=None, description="")  # relationship
+        preferred_to_terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        preferred_terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        translation_terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        synonyms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        replaced_by: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        replacement_terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        translated_terms: Optional[List[AtlasGlossaryTerm]] = Field(default=None, description="")  # relationship
+        anchor: Optional[AtlasGlossary] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid

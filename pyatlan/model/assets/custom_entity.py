@@ -21,12 +21,8 @@ class CustomEntity(Custom):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> CustomEntity:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
-        attributes = CustomEntity.Attributes.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        attributes = CustomEntity.Attributes.creator(name=name, connection_qualified_name=connection_qualified_name)
         return cls(attributes=attributes)
 
     type_name: str = Field(default="CustomEntity", allow_mutation=False)
@@ -46,21 +42,15 @@ class CustomEntity(Custom):
     """
     TBC
     """
-    CUSTOM_CHILD_ENTITIES: ClassVar[RelationField] = RelationField(
-        "customChildEntities"
-    )
+    CUSTOM_CHILD_ENTITIES: ClassVar[RelationField] = RelationField("customChildEntities")
     """
     TBC
     """
-    CUSTOM_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
-        "customRelatedToEntities"
-    )
+    CUSTOM_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField("customRelatedToEntities")
     """
     TBC
     """
-    CUSTOM_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
-        "customRelatedFromEntities"
-    )
+    CUSTOM_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField("customRelatedFromEntities")
     """
     TBC
     """
@@ -84,79 +74,49 @@ class CustomEntity(Custom):
 
     @property
     def custom_child_entities(self) -> Optional[List[CustomEntity]]:
-        return (
-            None if self.attributes is None else self.attributes.custom_child_entities
-        )
+        return None if self.attributes is None else self.attributes.custom_child_entities
 
     @custom_child_entities.setter
-    def custom_child_entities(
-        self, custom_child_entities: Optional[List[CustomEntity]]
-    ):
+    def custom_child_entities(self, custom_child_entities: Optional[List[CustomEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.custom_child_entities = custom_child_entities
 
     @property
     def custom_related_to_entities(self) -> Optional[List[CustomEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.custom_related_to_entities
-        )
+        return None if self.attributes is None else self.attributes.custom_related_to_entities
 
     @custom_related_to_entities.setter
-    def custom_related_to_entities(
-        self, custom_related_to_entities: Optional[List[CustomEntity]]
-    ):
+    def custom_related_to_entities(self, custom_related_to_entities: Optional[List[CustomEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.custom_related_to_entities = custom_related_to_entities
 
     @property
     def custom_related_from_entities(self) -> Optional[List[CustomEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.custom_related_from_entities
-        )
+        return None if self.attributes is None else self.attributes.custom_related_from_entities
 
     @custom_related_from_entities.setter
-    def custom_related_from_entities(
-        self, custom_related_from_entities: Optional[List[CustomEntity]]
-    ):
+    def custom_related_from_entities(self, custom_related_from_entities: Optional[List[CustomEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.custom_related_from_entities = custom_related_from_entities
 
     class Attributes(Custom.Attributes):
-        custom_parent_entity: Optional[CustomEntity] = Field(
-            default=None, description=""
-        )  # relationship
-        custom_child_entities: Optional[List[CustomEntity]] = Field(
-            default=None, description=""
-        )  # relationship
-        custom_related_to_entities: Optional[List[CustomEntity]] = Field(
-            default=None, description=""
-        )  # relationship
-        custom_related_from_entities: Optional[List[CustomEntity]] = Field(
-            default=None, description=""
-        )  # relationship
+        custom_parent_entity: Optional[CustomEntity] = Field(default=None, description="")  # relationship
+        custom_child_entities: Optional[List[CustomEntity]] = Field(default=None, description="")  # relationship
+        custom_related_to_entities: Optional[List[CustomEntity]] = Field(default=None, description="")  # relationship
+        custom_related_from_entities: Optional[List[CustomEntity]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
-        def creator(
-            cls, *, name: str, connection_qualified_name: str
-        ) -> CustomEntity.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
+        def creator(cls, *, name: str, connection_qualified_name: str) -> CustomEntity.Attributes:
+            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
             return CustomEntity.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
             )
 
     attributes: CustomEntity.Attributes = Field(

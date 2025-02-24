@@ -36,10 +36,7 @@ def test_create():
     assert sut.name == SUPERSET_CHART_NAME
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
-    assert (
-        sut.qualified_name
-        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
-    )
+    assert sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
 
@@ -53,10 +50,7 @@ def test_overload_creator():
     assert sut.name == SUPERSET_CHART_NAME
     assert sut.superset_dashboard_qualified_name == SUPERSET_DASHBOARD_QUALIFIED_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
-    assert (
-        sut.qualified_name
-        == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
-    )
+    assert sut.qualified_name == f"{SUPERSET_DASHBOARD_QUALIFIED_NAME}/{SUPERSET_CHART_NAME}"
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
 
@@ -75,9 +69,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = SupersetChart.create_for_modification(
-        qualified_name=SUPERSET_CHART_QUALIFIED_NAME, name=SUPERSET_CHART_NAME
-    )
+    sut = SupersetChart.create_for_modification(qualified_name=SUPERSET_CHART_QUALIFIED_NAME, name=SUPERSET_CHART_NAME)
 
     assert sut.qualified_name == SUPERSET_CHART_QUALIFIED_NAME
     assert sut.name == SUPERSET_CHART_NAME

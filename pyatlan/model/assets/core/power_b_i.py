@@ -35,9 +35,7 @@ class PowerBI(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    POWER_BI_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
-        "powerBIIsHidden", "powerBIIsHidden"
-    )
+    POWER_BI_IS_HIDDEN: ClassVar[BooleanField] = BooleanField("powerBIIsHidden", "powerBIIsHidden")
     """
     Whether this asset is hidden in Power BI (true) or not (false).
     """
@@ -49,15 +47,11 @@ class PowerBI(BI):
     """
     Unique name of the Power BI table in which this asset exists.
     """
-    POWER_BI_FORMAT_STRING: ClassVar[TextField] = TextField(
-        "powerBIFormatString", "powerBIFormatString"
-    )
+    POWER_BI_FORMAT_STRING: ClassVar[TextField] = TextField("powerBIFormatString", "powerBIFormatString")
     """
     Format of this asset, as specified in the FORMAT_STRING of the MDX cell property.
     """
-    POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField(
-        "powerBIEndorsement", "powerBIEndorsement"
-    )
+    POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField("powerBIEndorsement", "powerBIEndorsement")
     """
     Endorsement status of this asset, in Power BI.
     """
@@ -81,25 +75,17 @@ class PowerBI(BI):
 
     @property
     def power_b_i_table_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_table_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_table_qualified_name
 
     @power_b_i_table_qualified_name.setter
-    def power_b_i_table_qualified_name(
-        self, power_b_i_table_qualified_name: Optional[str]
-    ):
+    def power_b_i_table_qualified_name(self, power_b_i_table_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_table_qualified_name = power_b_i_table_qualified_name
 
     @property
     def power_b_i_format_string(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_format_string
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_format_string
 
     @power_b_i_format_string.setter
     def power_b_i_format_string(self, power_b_i_format_string: Optional[str]):
@@ -109,27 +95,19 @@ class PowerBI(BI):
 
     @property
     def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_endorsement
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_endorsement
 
     @power_b_i_endorsement.setter
-    def power_b_i_endorsement(
-        self, power_b_i_endorsement: Optional[PowerbiEndorsement]
-    ):
+    def power_b_i_endorsement(self, power_b_i_endorsement: Optional[PowerbiEndorsement]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(default=None, description="")
-        power_b_i_table_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        power_b_i_table_qualified_name: Optional[str] = Field(default=None, description="")
         power_b_i_format_string: Optional[str] = Field(default=None, description="")
-        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
-            default=None, description=""
-        )
+        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(default=None, description="")
 
     attributes: PowerBI.Attributes = Field(
         default_factory=lambda: PowerBI.Attributes(),

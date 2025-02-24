@@ -79,9 +79,7 @@ class PowerBIDataflow(PowerBI):
     """
     TBC
     """
-    POWER_BI_DATAFLOW_ENTITY_COLUMNS: ClassVar[RelationField] = RelationField(
-        "powerBIDataflowEntityColumns"
-    )
+    POWER_BI_DATAFLOW_ENTITY_COLUMNS: ClassVar[RelationField] = RelationField("powerBIDataflowEntityColumns")
     """
     TBC
     """
@@ -93,15 +91,11 @@ class PowerBIDataflow(PowerBI):
     """
     TBC
     """
-    POWER_BI_DATAFLOW_CHILDREN: ClassVar[RelationField] = RelationField(
-        "powerBIDataflowChildren"
-    )
+    POWER_BI_DATAFLOW_CHILDREN: ClassVar[RelationField] = RelationField("powerBIDataflowChildren")
     """
     TBC
     """
-    POWER_BI_DATAFLOW_PARENTS: ClassVar[RelationField] = RelationField(
-        "powerBIDataflowParents"
-    )
+    POWER_BI_DATAFLOW_PARENTS: ClassVar[RelationField] = RelationField("powerBIDataflowParents")
     """
     TBC
     """
@@ -124,11 +118,7 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -148,11 +138,7 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def power_b_i_dataflow_refresh_schedule_frequency(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_refresh_schedule_frequency
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_refresh_schedule_frequency
 
     @power_b_i_dataflow_refresh_schedule_frequency.setter
     def power_b_i_dataflow_refresh_schedule_frequency(
@@ -160,35 +146,21 @@ class PowerBIDataflow(PowerBI):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_refresh_schedule_frequency = (
-            power_b_i_dataflow_refresh_schedule_frequency
-        )
+        self.attributes.power_b_i_dataflow_refresh_schedule_frequency = power_b_i_dataflow_refresh_schedule_frequency
 
     @property
     def power_b_i_dataflow_refresh_schedule_times(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_refresh_schedule_times
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_refresh_schedule_times
 
     @power_b_i_dataflow_refresh_schedule_times.setter
-    def power_b_i_dataflow_refresh_schedule_times(
-        self, power_b_i_dataflow_refresh_schedule_times: Optional[Set[str]]
-    ):
+    def power_b_i_dataflow_refresh_schedule_times(self, power_b_i_dataflow_refresh_schedule_times: Optional[Set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_refresh_schedule_times = (
-            power_b_i_dataflow_refresh_schedule_times
-        )
+        self.attributes.power_b_i_dataflow_refresh_schedule_times = power_b_i_dataflow_refresh_schedule_times
 
     @property
     def power_b_i_dataflow_refresh_schedule_time_zone(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_refresh_schedule_time_zone
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_refresh_schedule_time_zone
 
     @power_b_i_dataflow_refresh_schedule_time_zone.setter
     def power_b_i_dataflow_refresh_schedule_time_zone(
@@ -196,9 +168,7 @@ class PowerBIDataflow(PowerBI):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_refresh_schedule_time_zone = (
-            power_b_i_dataflow_refresh_schedule_time_zone
-        )
+        self.attributes.power_b_i_dataflow_refresh_schedule_time_zone = power_b_i_dataflow_refresh_schedule_time_zone
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
@@ -234,11 +204,7 @@ class PowerBIDataflow(PowerBI):
     def power_b_i_dataflow_entity_columns(
         self,
     ) -> Optional[List[PowerBIDataflowEntityColumn]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_entity_columns
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_entity_columns
 
     @power_b_i_dataflow_entity_columns.setter
     def power_b_i_dataflow_entity_columns(
@@ -247,9 +213,7 @@ class PowerBIDataflow(PowerBI):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_entity_columns = (
-            power_b_i_dataflow_entity_columns
-        )
+        self.attributes.power_b_i_dataflow_entity_columns = power_b_i_dataflow_entity_columns
 
     @property
     def tables(self) -> Optional[List[PowerBITable]]:
@@ -263,46 +227,30 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def power_b_i_datasources(self) -> Optional[List[PowerBIDatasource]]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_datasources
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_datasources
 
     @power_b_i_datasources.setter
-    def power_b_i_datasources(
-        self, power_b_i_datasources: Optional[List[PowerBIDatasource]]
-    ):
+    def power_b_i_datasources(self, power_b_i_datasources: Optional[List[PowerBIDatasource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_datasources = power_b_i_datasources
 
     @property
     def power_b_i_dataflow_children(self) -> Optional[List[PowerBIDataflow]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_children
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_children
 
     @power_b_i_dataflow_children.setter
-    def power_b_i_dataflow_children(
-        self, power_b_i_dataflow_children: Optional[List[PowerBIDataflow]]
-    ):
+    def power_b_i_dataflow_children(self, power_b_i_dataflow_children: Optional[List[PowerBIDataflow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_dataflow_children = power_b_i_dataflow_children
 
     @property
     def power_b_i_dataflow_parents(self) -> Optional[List[PowerBIDataflow]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_parents
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_parents
 
     @power_b_i_dataflow_parents.setter
-    def power_b_i_dataflow_parents(
-        self, power_b_i_dataflow_parents: Optional[List[PowerBIDataflow]]
-    ):
+    def power_b_i_dataflow_parents(self, power_b_i_dataflow_parents: Optional[List[PowerBIDataflow]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_dataflow_parents = power_b_i_dataflow_parents
@@ -310,35 +258,17 @@ class PowerBIDataflow(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
-        power_b_i_dataflow_refresh_schedule_frequency: Optional[str] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflow_refresh_schedule_times: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflow_refresh_schedule_time_zone: Optional[str] = Field(
-            default=None, description=""
-        )
-        workspace: Optional[PowerBIWorkspace] = Field(
+        power_b_i_dataflow_refresh_schedule_frequency: Optional[str] = Field(default=None, description="")
+        power_b_i_dataflow_refresh_schedule_times: Optional[Set[str]] = Field(default=None, description="")
+        power_b_i_dataflow_refresh_schedule_time_zone: Optional[str] = Field(default=None, description="")
+        workspace: Optional[PowerBIWorkspace] = Field(default=None, description="")  # relationship
+        power_b_i_processes: Optional[List[Process]] = Field(default=None, description="")  # relationship
+        datasets: Optional[List[PowerBIDataset]] = Field(default=None, description="")  # relationship
+        power_b_i_dataflow_entity_columns: Optional[List[PowerBIDataflowEntityColumn]] = Field(
             default=None, description=""
         )  # relationship
-        power_b_i_processes: Optional[List[Process]] = Field(
-            default=None, description=""
-        )  # relationship
-        datasets: Optional[List[PowerBIDataset]] = Field(
-            default=None, description=""
-        )  # relationship
-        power_b_i_dataflow_entity_columns: Optional[
-            List[PowerBIDataflowEntityColumn]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
-        tables: Optional[List[PowerBITable]] = Field(
-            default=None, description=""
-        )  # relationship
-        power_b_i_datasources: Optional[List[PowerBIDatasource]] = Field(
-            default=None, description=""
-        )  # relationship
+        tables: Optional[List[PowerBITable]] = Field(default=None, description="")  # relationship
+        power_b_i_datasources: Optional[List[PowerBIDatasource]] = Field(default=None, description="")  # relationship
         power_b_i_dataflow_children: Optional[List[PowerBIDataflow]] = Field(
             default=None, description=""
         )  # relationship

@@ -36,9 +36,7 @@ class Azure(Cloud):
     """
     Resource identifier of this asset in Azure.
     """
-    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "azureLocation", "azureLocation"
-    )
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField("azureLocation", "azureLocation")
     """
     Location of this asset in Azure.
     """
@@ -82,21 +80,13 @@ class Azure(Cloud):
 
     @property
     def adls_account_secondary_location(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.adls_account_secondary_location
-        )
+        return None if self.attributes is None else self.attributes.adls_account_secondary_location
 
     @adls_account_secondary_location.setter
-    def adls_account_secondary_location(
-        self, adls_account_secondary_location: Optional[str]
-    ):
+    def adls_account_secondary_location(self, adls_account_secondary_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_secondary_location = (
-            adls_account_secondary_location
-        )
+        self.attributes.adls_account_secondary_location = adls_account_secondary_location
 
     @property
     def azure_tags(self) -> Optional[List[AzureTag]]:
@@ -111,9 +101,7 @@ class Azure(Cloud):
     class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
-        adls_account_secondary_location: Optional[str] = Field(
-            default=None, description=""
-        )
+        adls_account_secondary_location: Optional[str] = Field(default=None, description="")
         azure_tags: Optional[List[AzureTag]] = Field(default=None, description="")
 
     attributes: Azure.Attributes = Field(

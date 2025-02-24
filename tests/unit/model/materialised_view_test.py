@@ -26,17 +26,13 @@ from tests.unit.model.constants import (
         (VIEW_NAME, VIEW_COLUMN_QUALIFIED_NAME, "Invalid schema_qualified_name"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, schema_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, schema_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
         MaterialisedView.create(name=name, schema_qualified_name=schema_qualified_name)
 
 
 def test_create():
-    sut = MaterialisedView.create(
-        name=VIEW_NAME, schema_qualified_name=SCHEMA_QUALIFIED_NAME
-    )
+    sut = MaterialisedView.create(name=VIEW_NAME, schema_qualified_name=SCHEMA_QUALIFIED_NAME)
 
     assert sut.name == VIEW_NAME
     assert sut.database_name == DATABASE_NAME
@@ -80,15 +76,11 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        MaterialisedView.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        MaterialisedView.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-    sut = MaterialisedView.create_for_modification(
-        qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME
-    )
+    sut = MaterialisedView.create_for_modification(qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME)
 
     assert sut.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.name == VIEW_NAME

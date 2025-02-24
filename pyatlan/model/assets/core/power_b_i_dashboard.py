@@ -70,11 +70,7 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -126,12 +122,8 @@ class PowerBIDashboard(PowerBI):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
         tile_count: Optional[int] = Field(default=None, description="")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            default=None, description=""
-        )  # relationship
-        tiles: Optional[List[PowerBITile]] = Field(
-            default=None, description=""
-        )  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(default=None, description="")  # relationship
+        tiles: Optional[List[PowerBITile]] = Field(default=None, description="")  # relationship
 
     attributes: PowerBIDashboard.Attributes = Field(
         default_factory=lambda: PowerBIDashboard.Attributes(),

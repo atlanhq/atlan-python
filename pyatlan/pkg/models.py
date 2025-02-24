@@ -79,9 +79,7 @@ class PackageDefinition(BaseModel):
     def __init__(self, **data):
         super().__init__(**data)
         source = self.connector_type.value if self.connector_type else "atlan"
-        source_category = (
-            self.connector_type.category.value if self.connector_type else "utility"
-        )
+        source_category = self.connector_type.category.value if self.connector_type else "utility"
         self._package_definition = _PackageDefinition(
             name=self.package_id,
             version=VERSION,
@@ -115,9 +113,7 @@ class PackageDefinition(BaseModel):
                 },
                 annotations={
                     "orchestration.atlan.com/name": self.package_name,
-                    "orchestration.atlan.com/allowSchedule": str(
-                        self.allow_schedule
-                    ).lower(),
+                    "orchestration.atlan.com/allowSchedule": str(self.allow_schedule).lower(),
                     "orchestration.atlan.com/dependentPackage": "",
                     "orchestration.atlan.com/emoji": "🚀",
                     "orchestration.atlan.com/categories": ",".join(self.keywords),
@@ -275,7 +271,7 @@ class PackageWriter(BaseModel):
     def create_config_class(self):
         template = self._env.get_template("package_config.jinja2")
         content = template.render({"pkg": self.pkg})
-        file_name = f'{self.pkg.package_id[5:].replace("-", "_")}_cfg.py'
+        file_name = f"{self.pkg.package_id[5:].replace('-', '_')}_cfg.py"
 
         with (self.path / file_name).open("w") as script:
             script.write(content)

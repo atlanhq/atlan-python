@@ -34,9 +34,7 @@ class MatillionComponent(Matillion):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MATILLION_COMPONENT_ID: ClassVar[KeywordField] = KeywordField(
-        "matillionComponentId", "matillionComponentId"
-    )
+    MATILLION_COMPONENT_ID: ClassVar[KeywordField] = KeywordField("matillionComponentId", "matillionComponentId")
     """
     Unique identifier of the component in Matillion.
     """
@@ -64,9 +62,7 @@ class MatillionComponent(Matillion):
     """
     Last five run statuses of the component within a job.
     """
-    MATILLION_COMPONENT_SQLS: ClassVar[TextField] = TextField(
-        "matillionComponentSqls", "matillionComponentSqls"
-    )
+    MATILLION_COMPONENT_SQLS: ClassVar[TextField] = TextField("matillionComponentSqls", "matillionComponentSqls")
     """
     SQL queries used by the component.
     """
@@ -109,9 +105,7 @@ class MatillionComponent(Matillion):
 
     @property
     def matillion_component_id(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.matillion_component_id
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_id
 
     @matillion_component_id.setter
     def matillion_component_id(self, matillion_component_id: Optional[str]):
@@ -121,81 +115,47 @@ class MatillionComponent(Matillion):
 
     @property
     def matillion_component_implementation_id(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_component_implementation_id
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_implementation_id
 
     @matillion_component_implementation_id.setter
-    def matillion_component_implementation_id(
-        self, matillion_component_implementation_id: Optional[str]
-    ):
+    def matillion_component_implementation_id(self, matillion_component_implementation_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.matillion_component_implementation_id = (
-            matillion_component_implementation_id
-        )
+        self.attributes.matillion_component_implementation_id = matillion_component_implementation_id
 
     @property
     def matillion_component_linked_job(self) -> Optional[Dict[str, str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_component_linked_job
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_linked_job
 
     @matillion_component_linked_job.setter
-    def matillion_component_linked_job(
-        self, matillion_component_linked_job: Optional[Dict[str, str]]
-    ):
+    def matillion_component_linked_job(self, matillion_component_linked_job: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.matillion_component_linked_job = matillion_component_linked_job
 
     @property
     def matillion_component_last_run_status(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_component_last_run_status
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_last_run_status
 
     @matillion_component_last_run_status.setter
-    def matillion_component_last_run_status(
-        self, matillion_component_last_run_status: Optional[str]
-    ):
+    def matillion_component_last_run_status(self, matillion_component_last_run_status: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.matillion_component_last_run_status = (
-            matillion_component_last_run_status
-        )
+        self.attributes.matillion_component_last_run_status = matillion_component_last_run_status
 
     @property
     def matillion_component_last_five_run_status(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_component_last_five_run_status
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_last_five_run_status
 
     @matillion_component_last_five_run_status.setter
-    def matillion_component_last_five_run_status(
-        self, matillion_component_last_five_run_status: Optional[str]
-    ):
+    def matillion_component_last_five_run_status(self, matillion_component_last_five_run_status: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.matillion_component_last_five_run_status = (
-            matillion_component_last_five_run_status
-        )
+        self.attributes.matillion_component_last_five_run_status = matillion_component_last_five_run_status
 
     @property
     def matillion_component_sqls(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_component_sqls
-        )
+        return None if self.attributes is None else self.attributes.matillion_component_sqls
 
     @matillion_component_sqls.setter
     def matillion_component_sqls(self, matillion_component_sqls: Optional[Set[str]]):
@@ -215,11 +175,7 @@ class MatillionComponent(Matillion):
 
     @property
     def matillion_job_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.matillion_job_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.matillion_job_qualified_name
 
     @matillion_job_qualified_name.setter
     def matillion_job_qualified_name(self, matillion_job_qualified_name: Optional[str]):
@@ -249,31 +205,15 @@ class MatillionComponent(Matillion):
 
     class Attributes(Matillion.Attributes):
         matillion_component_id: Optional[str] = Field(default=None, description="")
-        matillion_component_implementation_id: Optional[str] = Field(
-            default=None, description=""
-        )
-        matillion_component_linked_job: Optional[Dict[str, str]] = Field(
-            default=None, description=""
-        )
-        matillion_component_last_run_status: Optional[str] = Field(
-            default=None, description=""
-        )
-        matillion_component_last_five_run_status: Optional[str] = Field(
-            default=None, description=""
-        )
-        matillion_component_sqls: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
+        matillion_component_implementation_id: Optional[str] = Field(default=None, description="")
+        matillion_component_linked_job: Optional[Dict[str, str]] = Field(default=None, description="")
+        matillion_component_last_run_status: Optional[str] = Field(default=None, description="")
+        matillion_component_last_five_run_status: Optional[str] = Field(default=None, description="")
+        matillion_component_sqls: Optional[Set[str]] = Field(default=None, description="")
         matillion_job_name: Optional[str] = Field(default=None, description="")
-        matillion_job_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        matillion_job: Optional[MatillionJob] = Field(
-            default=None, description=""
-        )  # relationship
-        matillion_process: Optional[Process] = Field(
-            default=None, description=""
-        )  # relationship
+        matillion_job_qualified_name: Optional[str] = Field(default=None, description="")
+        matillion_job: Optional[MatillionJob] = Field(default=None, description="")  # relationship
+        matillion_process: Optional[Process] = Field(default=None, description="")  # relationship
 
     attributes: MatillionComponent.Attributes = Field(
         default_factory=lambda: MatillionComponent.Attributes(),

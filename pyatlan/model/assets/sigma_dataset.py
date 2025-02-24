@@ -36,9 +36,7 @@ class SigmaDataset(Sigma):
     Number of columns in this dataset.
     """
 
-    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField(
-        "sigmaDatasetColumns"
-    )
+    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField("sigmaDatasetColumns")
     """
     TBC
     """
@@ -50,11 +48,7 @@ class SigmaDataset(Sigma):
 
     @property
     def sigma_dataset_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_dataset_column_count
-        )
+        return None if self.attributes is None else self.attributes.sigma_dataset_column_count
 
     @sigma_dataset_column_count.setter
     def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
@@ -64,23 +58,17 @@ class SigmaDataset(Sigma):
 
     @property
     def sigma_dataset_columns(self) -> Optional[List[SigmaDatasetColumn]]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_dataset_columns
-        )
+        return None if self.attributes is None else self.attributes.sigma_dataset_columns
 
     @sigma_dataset_columns.setter
-    def sigma_dataset_columns(
-        self, sigma_dataset_columns: Optional[List[SigmaDatasetColumn]]
-    ):
+    def sigma_dataset_columns(self, sigma_dataset_columns: Optional[List[SigmaDatasetColumn]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_column_count: Optional[int] = Field(default=None, description="")
-        sigma_dataset_columns: Optional[List[SigmaDatasetColumn]] = Field(
-            default=None, description=""
-        )  # relationship
+        sigma_dataset_columns: Optional[List[SigmaDatasetColumn]] = Field(default=None, description="")  # relationship
 
     attributes: SigmaDataset.Attributes = Field(
         default_factory=lambda: SigmaDataset.Attributes(),

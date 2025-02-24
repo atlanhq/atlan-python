@@ -46,9 +46,7 @@ class AnaplanModel(Anaplan):
         workspace_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> AnaplanModel:
-        validate_required_fields(
-            ["name", "workspace_qualified_name"], [name, workspace_qualified_name]
-        )
+        validate_required_fields(["name", "workspace_qualified_name"], [name, workspace_qualified_name])
         attributes = AnaplanModel.Attributes.create(
             name=name,
             workspace_qualified_name=workspace_qualified_name,
@@ -149,21 +147,11 @@ class AnaplanModel(Anaplan):
         self.attributes.anaplan_dimensions = anaplan_dimensions
 
     class Attributes(Anaplan.Attributes):
-        anaplan_workspace: Optional[AnaplanWorkspace] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_modules: Optional[List[AnaplanModule]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_pages: Optional[List[AnaplanPage]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_lists: Optional[List[AnaplanList]] = Field(
-            default=None, description=""
-        )  # relationship
-        anaplan_dimensions: Optional[List[AnaplanDimension]] = Field(
-            default=None, description=""
-        )  # relationship
+        anaplan_workspace: Optional[AnaplanWorkspace] = Field(default=None, description="")  # relationship
+        anaplan_modules: Optional[List[AnaplanModule]] = Field(default=None, description="")  # relationship
+        anaplan_pages: Optional[List[AnaplanPage]] = Field(default=None, description="")  # relationship
+        anaplan_lists: Optional[List[AnaplanList]] = Field(default=None, description="")  # relationship
+        anaplan_dimensions: Optional[List[AnaplanDimension]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -179,9 +167,7 @@ class AnaplanModel(Anaplan):
                 [name, workspace_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     workspace_qualified_name, "workspace_qualified_name", 4
@@ -196,9 +182,7 @@ class AnaplanModel(Anaplan):
                 connector_name=connector_name,
                 anaplan_workspace_qualified_name=workspace_qualified_name,
                 anaplan_workspace_name=workspace_name,
-                anaplan_workspace=AnaplanWorkspace.ref_by_qualified_name(
-                    workspace_qualified_name
-                ),
+                anaplan_workspace=AnaplanWorkspace.ref_by_qualified_name(workspace_qualified_name),
             )
 
     attributes: AnaplanModel.Attributes = Field(

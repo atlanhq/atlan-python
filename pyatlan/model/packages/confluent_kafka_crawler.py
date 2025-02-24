@@ -64,9 +64,7 @@ class ConfluentKafkaCrawler(AbstractCrawler):
             "name": f"default-{self._NAME}-{self._epoch}-0",
             "host": bootstrap,
             "port": 9092,
-            "extra": {
-                "security_protocol": "SASL_SSL" if encrypted else "SASL_PLAINTEXT"
-            },
+            "extra": {"security_protocol": "SASL_SSL" if encrypted else "SASL_PLAINTEXT"},
             "connector_config_name": "atlan-connectors-kafka-confluent-cloud",
         }
         self._credentials_body.update(local_creds)
@@ -137,15 +135,11 @@ class ConfluentKafkaCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
+        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(
-                    by_alias=True, exclude_unset=True, exclude_none=True
-                ),
+                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

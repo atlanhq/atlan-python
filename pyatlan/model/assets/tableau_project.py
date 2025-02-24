@@ -34,9 +34,7 @@ class TableauProject(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "siteQualifiedName", "siteQualifiedName"
-    )
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
     """
     Unique name of the site in which this project exists.
     """
@@ -46,15 +44,11 @@ class TableauProject(Tableau):
     """
     Unique name of the top-level project in which this project exists, if this is a nested project.
     """
-    IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField(
-        "isTopLevelProject", "isTopLevelProject"
-    )
+    IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField("isTopLevelProject", "isTopLevelProject")
     """
     Whether this project is a top-level project (true) or not (false).
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "projectHierarchy", "projectHierarchy"
-    )
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
     """
     List of top-level projects with their nested child projects.
     """
@@ -109,21 +103,13 @@ class TableauProject(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.top_level_project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(
-        self, top_level_project_qualified_name: Optional[str]
-    ):
+    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = (
-            top_level_project_qualified_name
-        )
+        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
 
     @property
     def is_top_level_project(self) -> Optional[bool]:
@@ -207,31 +193,15 @@ class TableauProject(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
         is_top_level_project: Optional[bool] = Field(default=None, description="")
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        workbooks: Optional[List[TableauWorkbook]] = Field(
-            default=None, description=""
-        )  # relationship
-        flows: Optional[List[TableauFlow]] = Field(
-            default=None, description=""
-        )  # relationship
-        child_projects: Optional[List[TableauProject]] = Field(
-            default=None, description=""
-        )  # relationship
-        parent_project: Optional[TableauProject] = Field(
-            default=None, description=""
-        )  # relationship
-        site: Optional[TableauSite] = Field(
-            default=None, description=""
-        )  # relationship
-        datasources: Optional[List[TableauDatasource]] = Field(
-            default=None, description=""
-        )  # relationship
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        workbooks: Optional[List[TableauWorkbook]] = Field(default=None, description="")  # relationship
+        flows: Optional[List[TableauFlow]] = Field(default=None, description="")  # relationship
+        child_projects: Optional[List[TableauProject]] = Field(default=None, description="")  # relationship
+        parent_project: Optional[TableauProject] = Field(default=None, description="")  # relationship
+        site: Optional[TableauSite] = Field(default=None, description="")  # relationship
+        datasources: Optional[List[TableauDatasource]] = Field(default=None, description="")  # relationship
 
     attributes: TableauProject.Attributes = Field(
         default_factory=lambda: TableauProject.Attributes(),

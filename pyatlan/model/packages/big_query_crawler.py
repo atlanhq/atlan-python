@@ -132,19 +132,13 @@ class BigQueryCrawler(AbstractCrawler):
         assets with case-sensitive identifiers.
         :returns: miner, set to include custom configuration
         """
-        config and self._parameters.append(
-            dict(name="control-config", value=str(config))
-        )
+        config and self._parameters.append(dict(name="control-config", value=str(config)))
         self._advanced_config = True
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append(
-            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
-        )
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
+        self._parameters.append({"name": "credentials-fetch-strategy", "value": "credential_guid"})
+        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
         self._parameters.append(
             dict(
                 name="control-config-strategy",
@@ -154,9 +148,7 @@ class BigQueryCrawler(AbstractCrawler):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(
-                    by_alias=True, exclude_unset=True, exclude_none=True
-                ),
+                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))
@@ -190,7 +182,7 @@ class BigQueryCrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl BigQuery assets and publish to Atlan for discovery",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"bigquery\",\"connector\",\"crawler\",\"google\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["bigquery","connector","crawler","google"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "https://github.com/atlanhq/marketplace-packages.git",

@@ -69,73 +69,43 @@ class PowerBIDataflowEntityColumn(PowerBI):
 
     @property
     def power_b_i_dataflow_entity_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_entity_name
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_entity_name
 
     @power_b_i_dataflow_entity_name.setter
-    def power_b_i_dataflow_entity_name(
-        self, power_b_i_dataflow_entity_name: Optional[str]
-    ):
+    def power_b_i_dataflow_entity_name(self, power_b_i_dataflow_entity_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_dataflow_entity_name = power_b_i_dataflow_entity_name
 
     @property
     def power_b_i_workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_workspace_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_workspace_qualified_name
 
     @power_b_i_workspace_qualified_name.setter
-    def power_b_i_workspace_qualified_name(
-        self, power_b_i_workspace_qualified_name: Optional[str]
-    ):
+    def power_b_i_workspace_qualified_name(self, power_b_i_workspace_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_workspace_qualified_name = (
-            power_b_i_workspace_qualified_name
-        )
+        self.attributes.power_b_i_workspace_qualified_name = power_b_i_workspace_qualified_name
 
     @property
     def power_b_i_dataflow_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_qualified_name
 
     @power_b_i_dataflow_qualified_name.setter
-    def power_b_i_dataflow_qualified_name(
-        self, power_b_i_dataflow_qualified_name: Optional[str]
-    ):
+    def power_b_i_dataflow_qualified_name(self, power_b_i_dataflow_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_qualified_name = (
-            power_b_i_dataflow_qualified_name
-        )
+        self.attributes.power_b_i_dataflow_qualified_name = power_b_i_dataflow_qualified_name
 
     @property
     def power_b_i_dataflow_entity_column_data_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_dataflow_entity_column_data_type
-        )
+        return None if self.attributes is None else self.attributes.power_b_i_dataflow_entity_column_data_type
 
     @power_b_i_dataflow_entity_column_data_type.setter
-    def power_b_i_dataflow_entity_column_data_type(
-        self, power_b_i_dataflow_entity_column_data_type: Optional[str]
-    ):
+    def power_b_i_dataflow_entity_column_data_type(self, power_b_i_dataflow_entity_column_data_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_dataflow_entity_column_data_type = (
-            power_b_i_dataflow_entity_column_data_type
-        )
+        self.attributes.power_b_i_dataflow_entity_column_data_type = power_b_i_dataflow_entity_column_data_type
 
     @property
     def power_b_i_dataflow(self) -> Optional[PowerBIDataflow]:
@@ -148,21 +118,11 @@ class PowerBIDataflowEntityColumn(PowerBI):
         self.attributes.power_b_i_dataflow = power_b_i_dataflow
 
     class Attributes(PowerBI.Attributes):
-        power_b_i_dataflow_entity_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        power_b_i_workspace_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflow_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflow_entity_column_data_type: Optional[str] = Field(
-            default=None, description=""
-        )
-        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
-            default=None, description=""
-        )  # relationship
+        power_b_i_dataflow_entity_name: Optional[str] = Field(default=None, description="")
+        power_b_i_workspace_qualified_name: Optional[str] = Field(default=None, description="")
+        power_b_i_dataflow_qualified_name: Optional[str] = Field(default=None, description="")
+        power_b_i_dataflow_entity_column_data_type: Optional[str] = Field(default=None, description="")
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(default=None, description="")  # relationship
 
     attributes: PowerBIDataflowEntityColumn.Attributes = Field(
         default_factory=lambda: PowerBIDataflowEntityColumn.Attributes(),

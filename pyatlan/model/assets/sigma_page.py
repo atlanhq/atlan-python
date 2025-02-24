@@ -29,9 +29,7 @@ class SigmaPage(Sigma):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SIGMA_DATA_ELEMENT_COUNT: ClassVar[NumericField] = NumericField(
-        "sigmaDataElementCount", "sigmaDataElementCount"
-    )
+    SIGMA_DATA_ELEMENT_COUNT: ClassVar[NumericField] = NumericField("sigmaDataElementCount", "sigmaDataElementCount")
     """
     Number of data elements on this page.
     """
@@ -53,11 +51,7 @@ class SigmaPage(Sigma):
 
     @property
     def sigma_data_element_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_count
-        )
+        return None if self.attributes is None else self.attributes.sigma_data_element_count
 
     @sigma_data_element_count.setter
     def sigma_data_element_count(self, sigma_data_element_count: Optional[int]):
@@ -80,21 +74,15 @@ class SigmaPage(Sigma):
         return None if self.attributes is None else self.attributes.sigma_data_elements
 
     @sigma_data_elements.setter
-    def sigma_data_elements(
-        self, sigma_data_elements: Optional[List[SigmaDataElement]]
-    ):
+    def sigma_data_elements(self, sigma_data_elements: Optional[List[SigmaDataElement]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_elements = sigma_data_elements
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_count: Optional[int] = Field(default=None, description="")
-        sigma_workbook: Optional[SigmaWorkbook] = Field(
-            default=None, description=""
-        )  # relationship
-        sigma_data_elements: Optional[List[SigmaDataElement]] = Field(
-            default=None, description=""
-        )  # relationship
+        sigma_workbook: Optional[SigmaWorkbook] = Field(default=None, description="")  # relationship
+        sigma_data_elements: Optional[List[SigmaDataElement]] = Field(default=None, description="")  # relationship
 
     attributes: SigmaPage.Attributes = Field(
         default_factory=lambda: SigmaPage.Attributes(),

@@ -20,24 +20,12 @@ from pyatlan.utils import validate_type
 
 
 class SuggestionResponse(AtlanObject):
-    system_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
-        default_factory=list
-    )
-    user_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
-        default_factory=list
-    )
-    owner_users: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
-        default_factory=list
-    )
-    owner_groups: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
-        default_factory=list
-    )
-    atlan_tags: Optional[List[SuggestionResponse.SuggestedItem]] = Field(
-        default_factory=list
-    )
-    assigned_terms: Optional[List[SuggestionResponse.SuggestedTerm]] = Field(
-        default_factory=list
-    )
+    system_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(default_factory=list)
+    user_descriptions: Optional[List[SuggestionResponse.SuggestedItem]] = Field(default_factory=list)
+    owner_users: Optional[List[SuggestionResponse.SuggestedItem]] = Field(default_factory=list)
+    owner_groups: Optional[List[SuggestionResponse.SuggestedItem]] = Field(default_factory=list)
+    atlan_tags: Optional[List[SuggestionResponse.SuggestedItem]] = Field(default_factory=list)
+    assigned_terms: Optional[List[SuggestionResponse.SuggestedTerm]] = Field(default_factory=list)
 
     class SuggestedItem(AtlanObject):
         count: int
@@ -60,9 +48,7 @@ class Suggestions(AtlanObject):
     AGG_ATLAN_TAGS: ClassVar[str] = "group_by_tags"
     AGG_TERMS: ClassVar[str] = "group_by_terms"
 
-    client: AtlanClient = Field(
-        default_factory=lambda: AtlanClient.get_default_client()
-    )
+    client: AtlanClient = Field(default_factory=lambda: AtlanClient.get_default_client())
     """Client through which to find suggestions."""
     asset: Optional[Asset] = Field(default=None)
     """Asset for which to find suggestions."""
@@ -264,18 +250,12 @@ class Suggestions(AtlanObject):
             if include == Suggestions.TYPE.SYSTEM_DESCRIPTION:
                 search = search.where_some(Asset.DESCRIPTION.has_any_value()).aggregate(
                     Suggestions.AGG_DESCRIPTION,
-                    Asset.DESCRIPTION.bucket_by(
-                        size=self.max_suggestions, include_source_value=True
-                    ),
+                    Asset.DESCRIPTION.bucket_by(size=self.max_suggestions, include_source_value=True),
                 )
             elif include == Suggestions.TYPE.USER_DESCRIPTION:
-                search = search.where_some(
-                    Asset.USER_DESCRIPTION.has_any_value()
-                ).aggregate(
+                search = search.where_some(Asset.USER_DESCRIPTION.has_any_value()).aggregate(
                     Suggestions.AGG_USER_DESCRIPTION,
-                    Asset.USER_DESCRIPTION.bucket_by(
-                        size=self.max_suggestions, include_source_value=True
-                    ),
+                    Asset.USER_DESCRIPTION.bucket_by(size=self.max_suggestions, include_source_value=True),
                 )
             elif include == Suggestions.TYPE.INDIVIDUAL_OWNERS:
                 search = search.where_some(Asset.OWNER_USERS.has_any_value()).aggregate(
@@ -283,9 +263,7 @@ class Suggestions(AtlanObject):
                     Asset.OWNER_USERS.bucket_by(self.max_suggestions),
                 )
             elif include == Suggestions.TYPE.GROUP_OWNERS:
-                search = search.where_some(
-                    Asset.OWNER_GROUPS.has_any_value()
-                ).aggregate(
+                search = search.where_some(Asset.OWNER_GROUPS.has_any_value()).aggregate(
                     Suggestions.AGG_OWNER_GROUPS,
                     Asset.OWNER_GROUPS.bucket_by(self.max_suggestions),
                 )
@@ -295,9 +273,7 @@ class Suggestions(AtlanObject):
                     Asset.ATLAN_TAGS.bucket_by(self.max_suggestions),
                 )
             elif include == Suggestions.TYPE.TERMS:
-                search = search.where_some(
-                    Asset.ASSIGNED_TERMS.has_any_value()
-                ).aggregate(
+                search = search.where_some(Asset.ASSIGNED_TERMS.has_any_value()).aggregate(
                     Suggestions.AGG_TERMS,
                     Asset.ASSIGNED_TERMS.bucket_by(self.max_suggestions),
                 )
@@ -318,9 +294,7 @@ class Suggestions(AtlanObject):
                 count = bucket.doc_count
                 value = bucket.get_source_value(field)
                 if count and value:
-                    results.append(
-                        SuggestionResponse.SuggestedItem(count=count, value=value)
-                    )
+                    results.append(SuggestionResponse.SuggestedItem(count=count, value=value))
         return results
 
     def _get_terms(self, result: Aggregations):
@@ -330,11 +304,7 @@ class Suggestions(AtlanObject):
                 count = bucket.doc_count
                 value = bucket.key
                 if count and value:
-                    results.append(
-                        SuggestionResponse.SuggestedTerm(
-                            count=count, qualified_name=value
-                        )
-                    )
+                    results.append(SuggestionResponse.SuggestedTerm(count=count, qualified_name=value))
         return results
 
     def _get_tags(self, result: Aggregations):
@@ -345,9 +315,7 @@ class Suggestions(AtlanObject):
                 value = bucket.key
                 name = AtlanTagCache.get_name_for_id(value)
                 if count and name:
-                    results.append(
-                        SuggestionResponse.SuggestedItem(count=count, value=name)
-                    )
+                    results.append(SuggestionResponse.SuggestedItem(count=count, value=name))
         return results
 
     def _get_others(self, result: Aggregations):
@@ -357,9 +325,7 @@ class Suggestions(AtlanObject):
                 count = bucket.doc_count
                 value = bucket.key
                 if count and value:
-                    results.append(
-                        SuggestionResponse.SuggestedItem(count=count, value=value)
-                    )
+                    results.append(SuggestionResponse.SuggestedItem(count=count, value=value))
         return results
 
     def _build_response(self, include, suggestion_response, aggregations):
@@ -402,9 +368,7 @@ class Suggestions(AtlanObject):
                 )
             )
 
-    def apply(
-        self, allow_multiple: bool = False, batch: Optional[Batch] = None
-    ) -> Optional[AssetMutationResponse]:
+    def apply(self, allow_multiple: bool = False, batch: Optional[Batch] = None) -> Optional[AssetMutationResponse]:
         """
         Find the requested suggestions and apply the top suggestions as changes to the asset.
 
@@ -449,8 +413,7 @@ class Suggestions(AtlanObject):
             includes_tags = True
             if allow_multiple:
                 asset.atlan_tags = [
-                    AtlanTag(type_name=AtlanTagName(tag.value), propagate=False)
-                    for tag in response.atlan_tags
+                    AtlanTag(type_name=AtlanTagName(tag.value), propagate=False) for tag in response.atlan_tags
                 ]
             else:
                 asset.atlan_tags = [

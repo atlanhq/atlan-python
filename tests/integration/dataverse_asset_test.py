@@ -31,30 +31,22 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def dataverse_entity(
-    client: AtlanClient, connection: Connection
-) -> Generator[DataverseEntity, None, None]:
+def dataverse_entity(client: AtlanClient, connection: Connection) -> Generator[DataverseEntity, None, None]:
     assert connection.qualified_name
-    to_create = DataverseEntity.creator(
-        name=DATAVERSE_ENTITY_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = DataverseEntity.creator(name=DATAVERSE_ENTITY_NAME, connection_qualified_name=connection.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=DataverseEntity)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=DataverseEntity)
 
 
-def test_dataverse_entity(
-    client: AtlanClient, connection: Connection, dataverse_entity: DataverseEntity
-):
+def test_dataverse_entity(client: AtlanClient, connection: Connection, dataverse_entity: DataverseEntity):
     assert dataverse_entity
     assert dataverse_entity.guid
     assert dataverse_entity.qualified_name
@@ -87,10 +79,7 @@ def test_dataverse_attribute(
     assert dataverse_attribute.guid
     assert dataverse_attribute.qualified_name
     assert dataverse_attribute.name == DATAVERSE_ATTRIBUTE_NAME
-    assert (
-        dataverse_attribute.connection_qualified_name
-        == dataverse_entity.connection_qualified_name
-    )
+    assert dataverse_attribute.connection_qualified_name == dataverse_entity.connection_qualified_name
     assert dataverse_attribute.connector_name == AtlanConnectorType.DATAVERSE.value
 
 
@@ -120,14 +109,8 @@ def test_overload_dataverse_attribute(
     assert dataverse_attribute_overload.guid
     assert dataverse_attribute_overload.qualified_name
     assert dataverse_attribute_overload.name == DATAVERSE_ATTRIBUTE_NAME_OVERLOAD
-    assert (
-        dataverse_attribute_overload.connection_qualified_name
-        == dataverse_entity.connection_qualified_name
-    )
-    assert (
-        dataverse_attribute_overload.connector_name
-        == AtlanConnectorType.DATAVERSE.value
-    )
+    assert dataverse_attribute_overload.connection_qualified_name == dataverse_entity.connection_qualified_name
+    assert dataverse_attribute_overload.connector_name == AtlanConnectorType.DATAVERSE.value
 
 
 def _update_cert_and_annoucement(client, asset, asset_type):
@@ -171,9 +154,7 @@ def test_update_dataverse_assets(
 
 
 def _retrieve_dataverse_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(
-        asset.guid, asset_type=asset_type, ignore_relationships=False
-    )
+    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type, ignore_relationships=False)
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid
@@ -235,9 +216,7 @@ def test_restore_dataverse_attribute(
     dataverse_attribute: DataverseAttribute,
 ):
     assert dataverse_attribute.qualified_name
-    assert client.asset.restore(
-        asset_type=DataverseAttribute, qualified_name=dataverse_attribute.qualified_name
-    )
+    assert client.asset.restore(asset_type=DataverseAttribute, qualified_name=dataverse_attribute.qualified_name)
     assert dataverse_attribute.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=DataverseAttribute,

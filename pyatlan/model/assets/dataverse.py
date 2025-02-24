@@ -29,9 +29,7 @@ class Dataverse(SaaS):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATAVERSE_IS_CUSTOM: ClassVar[BooleanField] = BooleanField(
-        "dataverseIsCustom", "dataverseIsCustom"
-    )
+    DATAVERSE_IS_CUSTOM: ClassVar[BooleanField] = BooleanField("dataverseIsCustom", "dataverseIsCustom")
     """
     Indicator if DataverseEntity is custom built.
     """
@@ -66,11 +64,7 @@ class Dataverse(SaaS):
 
     @property
     def dataverse_is_customizable(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_is_customizable
-        )
+        return None if self.attributes is None else self.attributes.dataverse_is_customizable
 
     @dataverse_is_customizable.setter
     def dataverse_is_customizable(self, dataverse_is_customizable: Optional[bool]):
@@ -80,11 +74,7 @@ class Dataverse(SaaS):
 
     @property
     def dataverse_is_audit_enabled(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_is_audit_enabled
-        )
+        return None if self.attributes is None else self.attributes.dataverse_is_audit_enabled
 
     @dataverse_is_audit_enabled.setter
     def dataverse_is_audit_enabled(self, dataverse_is_audit_enabled: Optional[bool]):

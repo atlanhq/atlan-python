@@ -74,9 +74,7 @@ class QuickSightFolder(QuickSight):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
-        "quickSightFolderType", "quickSightFolderType"
-    )
+    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField("quickSightFolderType", "quickSightFolderType")
     """
     Type of this folder, for example: SHARED.
     """
@@ -91,9 +89,7 @@ class QuickSightFolder(QuickSight):
     """
     TBC
     """
-    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboards"
-    )
+    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField("quickSightDashboards")
     """
     TBC
     """
@@ -112,30 +108,20 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_folder_type
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_folder_type
 
     @quick_sight_folder_type.setter
-    def quick_sight_folder_type(
-        self, quick_sight_folder_type: Optional[QuickSightFolderType]
-    ):
+    def quick_sight_folder_type(self, quick_sight_folder_type: Optional[QuickSightFolderType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_folder_type = quick_sight_folder_type
 
     @property
     def quick_sight_folder_hierarchy(self) -> Optional[List[Dict[str, str]]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_folder_hierarchy
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_folder_hierarchy
 
     @quick_sight_folder_hierarchy.setter
-    def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]]
-    ):
+    def quick_sight_folder_hierarchy(self, quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
@@ -145,23 +131,17 @@ class QuickSightFolder(QuickSight):
         return None if self.attributes is None else self.attributes.quick_sight_analyses
 
     @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[List[QuickSightAnalysis]]
-    ):
+    def quick_sight_analyses(self, quick_sight_analyses: Optional[List[QuickSightAnalysis]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analyses = quick_sight_analyses
 
     @property
     def quick_sight_dashboards(self) -> Optional[List[QuickSightDashboard]]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboards
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_dashboards
 
     @quick_sight_dashboards.setter
-    def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[List[QuickSightDashboard]]
-    ):
+    def quick_sight_dashboards(self, quick_sight_dashboards: Optional[List[QuickSightDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboards = quick_sight_dashboards
@@ -171,29 +151,19 @@ class QuickSightFolder(QuickSight):
         return None if self.attributes is None else self.attributes.quick_sight_datasets
 
     @quick_sight_datasets.setter
-    def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[List[QuickSightDataset]]
-    ):
+    def quick_sight_datasets(self, quick_sight_datasets: Optional[List[QuickSightDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            default=None, description=""
-        )
-        quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        quick_sight_analyses: Optional[List[QuickSightAnalysis]] = Field(
-            default=None, description=""
-        )  # relationship
+        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(default=None, description="")
+        quick_sight_folder_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        quick_sight_analyses: Optional[List[QuickSightAnalysis]] = Field(default=None, description="")  # relationship
         quick_sight_dashboards: Optional[List[QuickSightDashboard]] = Field(
             default=None, description=""
         )  # relationship
-        quick_sight_datasets: Optional[List[QuickSightDataset]] = Field(
-            default=None, description=""
-        )  # relationship
+        quick_sight_datasets: Optional[List[QuickSightDataset]] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -214,9 +184,7 @@ class QuickSightFolder(QuickSight):
                 quick_sight_id=quick_sight_id,
                 qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
                 quick_sight_folder_type=quick_sight_folder_type,
             )
 

@@ -40,9 +40,7 @@ class ModelEntity(Model):
     """
     Number of attributes in the entity.
     """
-    MODEL_ENTITY_SUBJECT_AREA: ClassVar[KeywordField] = KeywordField(
-        "modelEntitySubjectArea", "modelEntitySubjectArea"
-    )
+    MODEL_ENTITY_SUBJECT_AREA: ClassVar[KeywordField] = KeywordField("modelEntitySubjectArea", "modelEntitySubjectArea")
     """
     Subject area of the entity.
     """
@@ -62,39 +60,27 @@ class ModelEntity(Model):
     Unique identifier for the general entity.
     """
 
-    MODEL_ENTITY_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelEntityRelatedToEntities"
-    )
+    MODEL_ENTITY_RELATED_TO_ENTITIES: ClassVar[RelationField] = RelationField("modelEntityRelatedToEntities")
     """
     TBC
     """
-    MODEL_ENTITY_GENERALIZATION_ENTITY: ClassVar[RelationField] = RelationField(
-        "modelEntityGeneralizationEntity"
-    )
+    MODEL_ENTITY_GENERALIZATION_ENTITY: ClassVar[RelationField] = RelationField("modelEntityGeneralizationEntity")
     """
     TBC
     """
-    MODEL_ENTITY_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField(
-        "modelEntityImplementedByAssets"
-    )
+    MODEL_ENTITY_IMPLEMENTED_BY_ASSETS: ClassVar[RelationField] = RelationField("modelEntityImplementedByAssets")
     """
     TBC
     """
-    MODEL_ENTITY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
-        "modelEntityAttributes"
-    )
+    MODEL_ENTITY_ATTRIBUTES: ClassVar[RelationField] = RelationField("modelEntityAttributes")
     """
     TBC
     """
-    MODEL_ENTITY_MAPPED_TO_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelEntityMappedToEntities"
-    )
+    MODEL_ENTITY_MAPPED_TO_ENTITIES: ClassVar[RelationField] = RelationField("modelEntityMappedToEntities")
     """
     TBC
     """
-    MODEL_ENTITY_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelEntityRelatedFromEntities"
-    )
+    MODEL_ENTITY_RELATED_FROM_ENTITIES: ClassVar[RelationField] = RelationField("modelEntityRelatedFromEntities")
     """
     TBC
     """
@@ -102,15 +88,11 @@ class ModelEntity(Model):
     """
     TBC
     """
-    MODEL_ENTITY_MAPPED_FROM_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelEntityMappedFromEntities"
-    )
+    MODEL_ENTITY_MAPPED_FROM_ENTITIES: ClassVar[RelationField] = RelationField("modelEntityMappedFromEntities")
     """
     TBC
     """
-    MODEL_ENTITY_SPECIALIZATION_ENTITIES: ClassVar[RelationField] = RelationField(
-        "modelEntitySpecializationEntities"
-    )
+    MODEL_ENTITY_SPECIALIZATION_ENTITIES: ClassVar[RelationField] = RelationField("modelEntitySpecializationEntities")
     """
     TBC
     """
@@ -133,11 +115,7 @@ class ModelEntity(Model):
 
     @property
     def model_entity_attribute_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_attribute_count
-        )
+        return None if self.attributes is None else self.attributes.model_entity_attribute_count
 
     @model_entity_attribute_count.setter
     def model_entity_attribute_count(self, model_entity_attribute_count: Optional[int]):
@@ -147,11 +125,7 @@ class ModelEntity(Model):
 
     @property
     def model_entity_subject_area(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_subject_area
-        )
+        return None if self.attributes is None else self.attributes.model_entity_subject_area
 
     @model_entity_subject_area.setter
     def model_entity_subject_area(self, model_entity_subject_area: Optional[str]):
@@ -161,49 +135,29 @@ class ModelEntity(Model):
 
     @property
     def model_entity_generalization_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_generalization_name
-        )
+        return None if self.attributes is None else self.attributes.model_entity_generalization_name
 
     @model_entity_generalization_name.setter
-    def model_entity_generalization_name(
-        self, model_entity_generalization_name: Optional[str]
-    ):
+    def model_entity_generalization_name(self, model_entity_generalization_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_generalization_name = (
-            model_entity_generalization_name
-        )
+        self.attributes.model_entity_generalization_name = model_entity_generalization_name
 
     @property
     def model_entity_generalization_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_generalization_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.model_entity_generalization_qualified_name
 
     @model_entity_generalization_qualified_name.setter
-    def model_entity_generalization_qualified_name(
-        self, model_entity_generalization_qualified_name: Optional[str]
-    ):
+    def model_entity_generalization_qualified_name(self, model_entity_generalization_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_generalization_qualified_name = (
-            model_entity_generalization_qualified_name
-        )
+        self.attributes.model_entity_generalization_qualified_name = model_entity_generalization_qualified_name
 
     @property
     def model_entity_related_to_entities(
         self,
     ) -> Optional[List[ModelEntityAssociation]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_related_to_entities
-        )
+        return None if self.attributes is None else self.attributes.model_entity_related_to_entities
 
     @model_entity_related_to_entities.setter
     def model_entity_related_to_entities(
@@ -211,87 +165,53 @@ class ModelEntity(Model):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_related_to_entities = (
-            model_entity_related_to_entities
-        )
+        self.attributes.model_entity_related_to_entities = model_entity_related_to_entities
 
     @property
     def model_entity_generalization_entity(self) -> Optional[ModelEntity]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_generalization_entity
-        )
+        return None if self.attributes is None else self.attributes.model_entity_generalization_entity
 
     @model_entity_generalization_entity.setter
-    def model_entity_generalization_entity(
-        self, model_entity_generalization_entity: Optional[ModelEntity]
-    ):
+    def model_entity_generalization_entity(self, model_entity_generalization_entity: Optional[ModelEntity]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_generalization_entity = (
-            model_entity_generalization_entity
-        )
+        self.attributes.model_entity_generalization_entity = model_entity_generalization_entity
 
     @property
     def model_entity_implemented_by_assets(self) -> Optional[List[Catalog]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_implemented_by_assets
-        )
+        return None if self.attributes is None else self.attributes.model_entity_implemented_by_assets
 
     @model_entity_implemented_by_assets.setter
-    def model_entity_implemented_by_assets(
-        self, model_entity_implemented_by_assets: Optional[List[Catalog]]
-    ):
+    def model_entity_implemented_by_assets(self, model_entity_implemented_by_assets: Optional[List[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_implemented_by_assets = (
-            model_entity_implemented_by_assets
-        )
+        self.attributes.model_entity_implemented_by_assets = model_entity_implemented_by_assets
 
     @property
     def model_entity_attributes(self) -> Optional[List[ModelAttribute]]:
-        return (
-            None if self.attributes is None else self.attributes.model_entity_attributes
-        )
+        return None if self.attributes is None else self.attributes.model_entity_attributes
 
     @model_entity_attributes.setter
-    def model_entity_attributes(
-        self, model_entity_attributes: Optional[List[ModelAttribute]]
-    ):
+    def model_entity_attributes(self, model_entity_attributes: Optional[List[ModelAttribute]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_entity_attributes = model_entity_attributes
 
     @property
     def model_entity_mapped_to_entities(self) -> Optional[List[ModelEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_mapped_to_entities
-        )
+        return None if self.attributes is None else self.attributes.model_entity_mapped_to_entities
 
     @model_entity_mapped_to_entities.setter
-    def model_entity_mapped_to_entities(
-        self, model_entity_mapped_to_entities: Optional[List[ModelEntity]]
-    ):
+    def model_entity_mapped_to_entities(self, model_entity_mapped_to_entities: Optional[List[ModelEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_mapped_to_entities = (
-            model_entity_mapped_to_entities
-        )
+        self.attributes.model_entity_mapped_to_entities = model_entity_mapped_to_entities
 
     @property
     def model_entity_related_from_entities(
         self,
     ) -> Optional[List[ModelEntityAssociation]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_related_from_entities
-        )
+        return None if self.attributes is None else self.attributes.model_entity_related_from_entities
 
     @model_entity_related_from_entities.setter
     def model_entity_related_from_entities(
@@ -299,9 +219,7 @@ class ModelEntity(Model):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_related_from_entities = (
-            model_entity_related_from_entities
-        )
+        self.attributes.model_entity_related_from_entities = model_entity_related_from_entities
 
     @property
     def model_versions(self) -> Optional[List[ModelVersion]]:
@@ -315,72 +233,44 @@ class ModelEntity(Model):
 
     @property
     def model_entity_mapped_from_entities(self) -> Optional[List[ModelEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_mapped_from_entities
-        )
+        return None if self.attributes is None else self.attributes.model_entity_mapped_from_entities
 
     @model_entity_mapped_from_entities.setter
-    def model_entity_mapped_from_entities(
-        self, model_entity_mapped_from_entities: Optional[List[ModelEntity]]
-    ):
+    def model_entity_mapped_from_entities(self, model_entity_mapped_from_entities: Optional[List[ModelEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_mapped_from_entities = (
-            model_entity_mapped_from_entities
-        )
+        self.attributes.model_entity_mapped_from_entities = model_entity_mapped_from_entities
 
     @property
     def model_entity_specialization_entities(self) -> Optional[List[ModelEntity]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.model_entity_specialization_entities
-        )
+        return None if self.attributes is None else self.attributes.model_entity_specialization_entities
 
     @model_entity_specialization_entities.setter
-    def model_entity_specialization_entities(
-        self, model_entity_specialization_entities: Optional[List[ModelEntity]]
-    ):
+    def model_entity_specialization_entities(self, model_entity_specialization_entities: Optional[List[ModelEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_entity_specialization_entities = (
-            model_entity_specialization_entities
-        )
+        self.attributes.model_entity_specialization_entities = model_entity_specialization_entities
 
     class Attributes(Model.Attributes):
-        model_entity_attribute_count: Optional[int] = Field(
-            default=None, description=""
-        )
+        model_entity_attribute_count: Optional[int] = Field(default=None, description="")
         model_entity_subject_area: Optional[str] = Field(default=None, description="")
-        model_entity_generalization_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        model_entity_generalization_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        model_entity_related_to_entities: Optional[List[ModelEntityAssociation]] = (
-            Field(default=None, description="")
-        )  # relationship
-        model_entity_generalization_entity: Optional[ModelEntity] = Field(
+        model_entity_generalization_name: Optional[str] = Field(default=None, description="")
+        model_entity_generalization_qualified_name: Optional[str] = Field(default=None, description="")
+        model_entity_related_to_entities: Optional[List[ModelEntityAssociation]] = Field(
             default=None, description=""
         )  # relationship
+        model_entity_generalization_entity: Optional[ModelEntity] = Field(default=None, description="")  # relationship
         model_entity_implemented_by_assets: Optional[List[Catalog]] = Field(
             default=None, description=""
         )  # relationship
-        model_entity_attributes: Optional[List[ModelAttribute]] = Field(
-            default=None, description=""
-        )  # relationship
+        model_entity_attributes: Optional[List[ModelAttribute]] = Field(default=None, description="")  # relationship
         model_entity_mapped_to_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship
-        model_entity_related_from_entities: Optional[List[ModelEntityAssociation]] = (
-            Field(default=None, description="")
-        )  # relationship
-        model_versions: Optional[List[ModelVersion]] = Field(
+        model_entity_related_from_entities: Optional[List[ModelEntityAssociation]] = Field(
             default=None, description=""
         )  # relationship
+        model_versions: Optional[List[ModelVersion]] = Field(default=None, description="")  # relationship
         model_entity_mapped_from_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship

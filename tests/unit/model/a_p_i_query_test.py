@@ -17,17 +17,13 @@ from tests.unit.model.constants import (
         (API_QUERY_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
         APIQuery.creator(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
-    sut = APIQuery.creator(
-        name=API_QUERY_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME
-    )
+    sut = APIQuery.creator(name=API_QUERY_NAME, connection_qualified_name=API_CONNECTION_QUALIFIED_NAME)
 
     assert sut.name == API_QUERY_NAME
     assert sut.connection_qualified_name == API_CONNECTION_QUALIFIED_NAME
@@ -79,9 +75,7 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-    sut = APIQuery.updater(
-        name=API_QUERY_NAME, qualified_name=API_QUERY_QUALIFIED_NAME
-    ).trim_to_required()
+    sut = APIQuery.updater(name=API_QUERY_NAME, qualified_name=API_QUERY_QUALIFIED_NAME).trim_to_required()
 
     assert sut.name == API_QUERY_NAME
     assert sut.qualified_name == API_QUERY_QUALIFIED_NAME

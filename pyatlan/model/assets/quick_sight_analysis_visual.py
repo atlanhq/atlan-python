@@ -115,21 +115,13 @@ class QuickSightAnalysisVisual(QuickSight):
 
     @property
     def quick_sight_analysis_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.quick_sight_analysis_qualified_name
 
     @quick_sight_analysis_qualified_name.setter
-    def quick_sight_analysis_qualified_name(
-        self, quick_sight_analysis_qualified_name: Optional[str]
-    ):
+    def quick_sight_analysis_qualified_name(self, quick_sight_analysis_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_qualified_name = (
-            quick_sight_analysis_qualified_name
-        )
+        self.attributes.quick_sight_analysis_qualified_name = quick_sight_analysis_qualified_name
 
     @property
     def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
@@ -142,12 +134,8 @@ class QuickSightAnalysisVisual(QuickSight):
         self.attributes.quick_sight_analysis = quick_sight_analysis
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            default=None, description=""
-        )  # relationship
+        quick_sight_analysis_qualified_name: Optional[str] = Field(default=None, description="")
+        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -179,9 +167,7 @@ class QuickSightAnalysisVisual(QuickSight):
             )
             assert quick_sight_analysis_qualified_name
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     quick_sight_analysis_qualified_name,

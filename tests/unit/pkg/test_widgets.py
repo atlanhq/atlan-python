@@ -138,9 +138,7 @@ class TestAPITokenSelector:
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
         with pytest.raises(ValidationError, match=msg):
-            APITokenSelector(
-                label=label, required=required, hidden=hidden, help=help_, grid=grid
-            )
+            APITokenSelector(label=label, required=required, hidden=hidden, help=help_, grid=grid)
 
 
 class TestBooleanInput:
@@ -233,9 +231,7 @@ class TestBooleanInput:
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
         with pytest.raises(ValidationError, match=msg):
-            BooleanInput(
-                label=label, required=required, hidden=hidden, help=help_, grid=grid
-            )
+            BooleanInput(label=label, required=required, hidden=hidden, help=help_, grid=grid)
 
 
 class TestConnectionCreator:
@@ -463,9 +459,7 @@ class TestConnectionSelector:
             ),
         ],
     )
-    def test_validation(
-        self, label, required, hidden, help_, placeholder, grid, start, msg
-    ):
+    def test_validation(self, label, required, hidden, help_, placeholder, grid, start, msg):
         with pytest.raises(ValidationError, match=msg):
             ConnectionSelector(
                 label=label,
@@ -756,9 +750,7 @@ class TestDateInput:
             ),
         ],
     )
-    def test_validation(
-        self, label, required, hidden, help_, min, max, default, start, grid, msg
-    ):
+    def test_validation(self, label, required, hidden, help_, min, max, default, start, grid, msg):
         with pytest.raises(ValidationError, match=msg):
             DateInput(
                 label=label,
@@ -889,9 +881,7 @@ class TestDropDown:
             ),
         ],
     )
-    def test_validation(
-        self, label, possible_values, required, hidden, help_, multi_select, grid, msg
-    ):
+    def test_validation(self, label, possible_values, required, hidden, help_, multi_select, grid, msg):
         with pytest.raises(ValidationError, match=msg):
             DropDown(
                 label=label,
@@ -1001,9 +991,7 @@ class TestFileUploader:
             ),
         ],
     )
-    def test_validation(
-        self, label, file_types, required, hidden, help_, placeholder, msg
-    ):
+    def test_validation(self, label, file_types, required, hidden, help_, placeholder, msg):
         with pytest.raises(ValidationError, match=msg):
             FileUploader(
                 label=label,
@@ -1500,9 +1488,7 @@ class TestPasswordInput:
 
 class TestRadio:
     def test_constructor_with_defaults(self):
-        sut = Radio(
-            label=LABEL, posssible_values=POSSIBLE_VALUES, default=(default := "a")
-        )
+        sut = Radio(label=LABEL, posssible_values=POSSIBLE_VALUES, default=(default := "a"))
         assert sut.type_ == "string"
         assert sut.required == IS_NOT_REQUIRED
         # assert sut.possible_values == POSSIBLE_VALUES
@@ -1597,9 +1583,7 @@ class TestRadio:
             ),
         ],
     )
-    def test_validation(
-        self, label, possible_values, default, required, hidden, help_, msg
-    ):
+    def test_validation(self, label, possible_values, default, required, hidden, help_, msg):
         with pytest.raises(ValidationError, match=msg):
             Radio(
                 label=label,

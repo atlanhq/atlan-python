@@ -29,21 +29,15 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def gcs_bucket(
-    client: AtlanClient, connection: Connection
-) -> Generator[GCSBucket, None, None]:
+def gcs_bucket(client: AtlanClient, connection: Connection) -> Generator[GCSBucket, None, None]:
     assert connection.qualified_name
-    to_create = GCSBucket.create(
-        name=GCS_BUCKET_NAME, connection_qualified_name=connection.qualified_name
-    )
+    to_create = GCSBucket.create(name=GCS_BUCKET_NAME, connection_qualified_name=connection.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=GCSBucket)[0]
     yield result
@@ -60,13 +54,9 @@ def test_gcs_bucket(client: AtlanClient, connection: Connection, gcs_bucket: GCS
 
 
 @pytest.fixture(scope="module")
-def gcs_object(
-    client: AtlanClient, connection: Connection, gcs_bucket: GCSBucket
-) -> Generator[GCSObject, None, None]:
+def gcs_object(client: AtlanClient, connection: Connection, gcs_bucket: GCSBucket) -> Generator[GCSObject, None, None]:
     assert gcs_bucket.qualified_name
-    to_create = GCSObject.create(
-        name=GCS_OBJECT_NAME, gcs_bucket_qualified_name=gcs_bucket.qualified_name
-    )
+    to_create = GCSObject.create(name=GCS_OBJECT_NAME, gcs_bucket_qualified_name=gcs_bucket.qualified_name)
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=GCSObject)[0]
     yield result
@@ -160,9 +150,7 @@ def test_retrieve_gcs_object(
     gcs_bucket: GCSBucket,
     gcs_object: GCSObject,
 ):
-    b = client.asset.get_by_guid(
-        gcs_object.guid, asset_type=GCSObject, ignore_relationships=False
-    )
+    b = client.asset.get_by_guid(gcs_object.guid, asset_type=GCSObject, ignore_relationships=False)
     assert b
     assert not b.is_incomplete
     assert b.guid == gcs_object.guid
@@ -233,9 +221,7 @@ def test_read_deleted_gcs_object(
     gcs_bucket: GCSBucket,
     gcs_object: GCSObject,
 ):
-    deleted = client.asset.get_by_guid(
-        gcs_object.guid, asset_type=GCSObject, ignore_relationships=False
-    )
+    deleted = client.asset.get_by_guid(gcs_object.guid, asset_type=GCSObject, ignore_relationships=False)
     assert deleted
     assert deleted.guid == gcs_object.guid
     assert deleted.qualified_name == gcs_object.qualified_name
@@ -250,9 +236,7 @@ def test_restore_object(
     gcs_object: GCSObject,
 ):
     assert gcs_object.qualified_name
-    assert client.asset.restore(
-        asset_type=GCSObject, qualified_name=gcs_object.qualified_name
-    )
+    assert client.asset.restore(asset_type=GCSObject, qualified_name=gcs_object.qualified_name)
     assert gcs_object.qualified_name
     restored = client.asset.get_by_qualified_name(
         asset_type=GCSObject,

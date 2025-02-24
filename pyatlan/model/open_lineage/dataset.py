@@ -13,9 +13,7 @@ class OpenLineageDataset(AtlanObject):
     Model for handling OpenLineage datasets.
     """
 
-    name: Optional[str] = Field(
-        default=None, description="Unique name for that dataset within that namespace."
-    )
+    name: Optional[str] = Field(default=None, description="Unique name for that dataset within that namespace.")
     namespace: Optional[str] = Field(
         default=None,
         description="Namespace containing that dataset.",

@@ -62,10 +62,7 @@ class DataStudioAsset(DataStudio):
         gdsid: Optional[str] = None,
     ) -> DataStudioAsset:
         warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
+            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -89,26 +86,20 @@ class DataStudioAsset(DataStudio):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_STUDIO_ASSET_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dataStudioAssetType", "dataStudioAssetType"
-    )
+    DATA_STUDIO_ASSET_TYPE: ClassVar[KeywordField] = KeywordField("dataStudioAssetType", "dataStudioAssetType")
     """
     Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE.
     """
-    DATA_STUDIO_ASSET_TITLE: ClassVar[KeywordTextStemmedField] = (
-        KeywordTextStemmedField(
-            "dataStudioAssetTitle",
-            "dataStudioAssetTitle.keyword",
-            "dataStudioAssetTitle",
-            "dataStudioAssetTitle.stemmed",
-        )
+    DATA_STUDIO_ASSET_TITLE: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.keyword",
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.stemmed",
     )
     """
     Title of the Google Data Studio asset.
     """
-    DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField(
-        "dataStudioAssetOwner", "dataStudioAssetOwner"
-    )
+    DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField("dataStudioAssetOwner", "dataStudioAssetOwner")
     """
     Owner of the asset, from Google Data Studio.
     """
@@ -118,9 +109,7 @@ class DataStudioAsset(DataStudio):
     """
     Whether the Google Data Studio asset has been trashed (true) or not (false).
     """
-    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
-        "googleService", "googleService"
-    )
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField("googleService", "googleService")
     """
     Service in Google in which the asset exists.
     """
@@ -136,21 +125,15 @@ class DataStudioAsset(DataStudio):
     """
     ID of the project in which the asset exists.
     """
-    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
-        "googleProjectNumber", "googleProjectNumber"
-    )
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField("googleProjectNumber", "googleProjectNumber")
     """
     Number of the project in which the asset exists.
     """
-    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "googleLocation", "googleLocation"
-    )
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField("googleLocation", "googleLocation")
     """
     Location of this asset in Google.
     """
-    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "googleLocationType", "googleLocationType"
-    )
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField("googleLocationType", "googleLocationType")
     """
     Type of location of this asset in Google.
     """
@@ -180,23 +163,17 @@ class DataStudioAsset(DataStudio):
 
     @property
     def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_type
-        )
+        return None if self.attributes is None else self.attributes.data_studio_asset_type
 
     @data_studio_asset_type.setter
-    def data_studio_asset_type(
-        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
-    ):
+    def data_studio_asset_type(self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_studio_asset_type = data_studio_asset_type
 
     @property
     def data_studio_asset_title(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_title
-        )
+        return None if self.attributes is None else self.attributes.data_studio_asset_title
 
     @data_studio_asset_title.setter
     def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
@@ -206,9 +183,7 @@ class DataStudioAsset(DataStudio):
 
     @property
     def data_studio_asset_owner(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.data_studio_asset_owner
-        )
+        return None if self.attributes is None else self.attributes.data_studio_asset_owner
 
     @data_studio_asset_owner.setter
     def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
@@ -218,16 +193,10 @@ class DataStudioAsset(DataStudio):
 
     @property
     def is_trashed_data_studio_asset(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.is_trashed_data_studio_asset
-        )
+        return None if self.attributes is None else self.attributes.is_trashed_data_studio_asset
 
     @is_trashed_data_studio_asset.setter
-    def is_trashed_data_studio_asset(
-        self, is_trashed_data_studio_asset: Optional[bool]
-    ):
+    def is_trashed_data_studio_asset(self, is_trashed_data_studio_asset: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
@@ -264,9 +233,7 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_project_number(self) -> Optional[int]:
-        return (
-            None if self.attributes is None else self.attributes.google_project_number
-        )
+        return None if self.attributes is None else self.attributes.google_project_number
 
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):
@@ -315,14 +282,10 @@ class DataStudioAsset(DataStudio):
         self.attributes.google_tags = google_tags
 
     class Attributes(DataStudio.Attributes):
-        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
-            default=None, description=""
-        )
+        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(default=None, description="")
         data_studio_asset_title: Optional[str] = Field(default=None, description="")
         data_studio_asset_owner: Optional[str] = Field(default=None, description="")
-        is_trashed_data_studio_asset: Optional[bool] = Field(
-            default=None, description=""
-        )
+        is_trashed_data_studio_asset: Optional[bool] = Field(default=None, description="")
         google_service: Optional[str] = Field(default=None, description="")
         google_project_name: Optional[str] = Field(default=None, description="")
         google_project_id: Optional[str] = Field(default=None, description="")
@@ -350,9 +313,7 @@ class DataStudioAsset(DataStudio):
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{gdsid}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                ),
+                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
                 data_studio_asset_type=data_studio_asset_type,
             )
 

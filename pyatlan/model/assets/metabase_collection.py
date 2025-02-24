@@ -34,15 +34,11 @@ class MetabaseCollection(Metabase):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_SLUG: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
-    )
+    METABASE_SLUG: ClassVar[KeywordTextField] = KeywordTextField("metabaseSlug", "metabaseSlug", "metabaseSlug.text")
     """
 
     """
-    METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
-        "metabaseColor", "metabaseColor"
-    )
+    METABASE_COLOR: ClassVar[KeywordField] = KeywordField("metabaseColor", "metabaseColor")
     """
 
     """
@@ -109,30 +105,20 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_is_personal_collection(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metabase_is_personal_collection
-        )
+        return None if self.attributes is None else self.attributes.metabase_is_personal_collection
 
     @metabase_is_personal_collection.setter
-    def metabase_is_personal_collection(
-        self, metabase_is_personal_collection: Optional[bool]
-    ):
+    def metabase_is_personal_collection(self, metabase_is_personal_collection: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_is_personal_collection = (
-            metabase_is_personal_collection
-        )
+        self.attributes.metabase_is_personal_collection = metabase_is_personal_collection
 
     @property
     def metabase_dashboards(self) -> Optional[List[MetabaseDashboard]]:
         return None if self.attributes is None else self.attributes.metabase_dashboards
 
     @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[List[MetabaseDashboard]]
-    ):
+    def metabase_dashboards(self, metabase_dashboards: Optional[List[MetabaseDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_dashboards = metabase_dashboards
@@ -151,15 +137,9 @@ class MetabaseCollection(Metabase):
         metabase_slug: Optional[str] = Field(default=None, description="")
         metabase_color: Optional[str] = Field(default=None, description="")
         metabase_namespace: Optional[str] = Field(default=None, description="")
-        metabase_is_personal_collection: Optional[bool] = Field(
-            default=None, description=""
-        )
-        metabase_dashboards: Optional[List[MetabaseDashboard]] = Field(
-            default=None, description=""
-        )  # relationship
-        metabase_questions: Optional[List[MetabaseQuestion]] = Field(
-            default=None, description=""
-        )  # relationship
+        metabase_is_personal_collection: Optional[bool] = Field(default=None, description="")
+        metabase_dashboards: Optional[List[MetabaseDashboard]] = Field(default=None, description="")  # relationship
+        metabase_questions: Optional[List[MetabaseQuestion]] = Field(default=None, description="")  # relationship
 
     attributes: MetabaseCollection.Attributes = Field(
         default_factory=lambda: MetabaseCollection.Attributes(),

@@ -17,9 +17,7 @@ from tests.unit.model.constants import (
         (ANAPLAN_DIMENSION_NAME, None, "model_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, model_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, model_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
         AnaplanDimension.creator(name=name, model_qualified_name=model_qualified_name)
 
@@ -47,9 +45,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        AnaplanDimension.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        AnaplanDimension.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():

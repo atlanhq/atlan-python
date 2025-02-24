@@ -40,9 +40,7 @@ def create_category(
     glossary: AtlasGlossary,
     parent: Optional[AtlasGlossaryCategory] = None,
 ) -> AtlasGlossaryCategory:
-    c = AtlasGlossaryCategory.create(
-        name=name, anchor=glossary, parent_category=parent or None
-    )
+    c = AtlasGlossaryCategory.create(name=name, anchor=glossary, parent_category=parent or None)
     return client.asset.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
@@ -80,9 +78,7 @@ def test_glossary(
 
 
 @pytest.fixture(scope="module")
-def category(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryCategory, None, None]:
+def category(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryCategory, None, None]:
     c = create_category(client, MODULE_NAME, glossary)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
@@ -98,9 +94,7 @@ def hierarchy_glossary(
 
 
 @pytest.fixture(scope="module")
-def top1_category(
-    client: AtlanClient, hierarchy_glossary
-) -> Generator[AtlasGlossaryCategory, None, None]:
+def top1_category(client: AtlanClient, hierarchy_glossary) -> Generator[AtlasGlossaryCategory, None, None]:
     c = create_category(client, TestId.make_unique("top1"), hierarchy_glossary)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
@@ -112,9 +106,7 @@ def mid1a_category(
     hierarchy_glossary: AtlasGlossary,
     top1_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("mid1a"), hierarchy_glossary, parent=top1_category
-    )
+    c = create_category(client, TestId.make_unique("mid1a"), hierarchy_glossary, parent=top1_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -130,9 +122,7 @@ def mid1a_term(
         client,
         name=f"mid1a_{TERM_NAME1}",
         glossary_guid=hierarchy_glossary.guid,
-        categories=[
-            AtlasGlossaryCategory.ref_by_qualified_name(mid1a_category.qualified_name)
-        ],
+        categories=[AtlasGlossaryCategory.ref_by_qualified_name(mid1a_category.qualified_name)],
     )
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
@@ -144,9 +134,7 @@ def leaf1aa_category(
     hierarchy_glossary: AtlasGlossary,
     mid1a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf1aa"), hierarchy_glossary, parent=mid1a_category
-    )
+    c = create_category(client, TestId.make_unique("leaf1aa"), hierarchy_glossary, parent=mid1a_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -157,9 +145,7 @@ def leaf1ab_category(
     hierarchy_glossary: AtlasGlossary,
     mid1a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf1ab"), hierarchy_glossary, parent=mid1a_category
-    )
+    c = create_category(client, TestId.make_unique("leaf1ab"), hierarchy_glossary, parent=mid1a_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -170,9 +156,7 @@ def mid1b_category(
     hierarchy_glossary: AtlasGlossary,
     top1_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("mid1b"), hierarchy_glossary, parent=top1_category
-    )
+    c = create_category(client, TestId.make_unique("mid1b"), hierarchy_glossary, parent=top1_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -183,9 +167,7 @@ def leaf1ba_category(
     hierarchy_glossary: AtlasGlossary,
     mid1b_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf1ba"), hierarchy_glossary, parent=mid1b_category
-    )
+    c = create_category(client, TestId.make_unique("leaf1ba"), hierarchy_glossary, parent=mid1b_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -205,9 +187,7 @@ def mid2a_category(
     hierarchy_glossary: AtlasGlossary,
     top2_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("mid2a"), hierarchy_glossary, parent=top2_category
-    )
+    c = create_category(client, TestId.make_unique("mid2a"), hierarchy_glossary, parent=top2_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -218,9 +198,7 @@ def leaf2aa_category(
     hierarchy_glossary: AtlasGlossary,
     mid2a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf2aa"), hierarchy_glossary, parent=mid2a_category
-    )
+    c = create_category(client, TestId.make_unique("leaf2aa"), hierarchy_glossary, parent=mid2a_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -231,9 +209,7 @@ def leaf2ab_category(
     hierarchy_glossary: AtlasGlossary,
     mid2a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf2ab"), hierarchy_glossary, parent=mid2a_category
-    )
+    c = create_category(client, TestId.make_unique("leaf2ab"), hierarchy_glossary, parent=mid2a_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -244,9 +220,7 @@ def mid2b_category(
     hierarchy_glossary: AtlasGlossary,
     top2_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("mid2b"), hierarchy_glossary, parent=top2_category
-    )
+    c = create_category(client, TestId.make_unique("mid2b"), hierarchy_glossary, parent=top2_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -257,22 +231,16 @@ def leaf2ba_category(
     hierarchy_glossary: AtlasGlossary,
     mid2b_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
-    c = create_category(
-        client, TestId.make_unique("leaf2ba"), hierarchy_glossary, parent=mid2b_category
-    )
+    c = create_category(client, TestId.make_unique("leaf2ba"), hierarchy_glossary, parent=mid2b_category)
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
 
-def test_category(
-    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
-):
+def test_category(client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary):
     assert category.guid
     assert category.name == MODULE_NAME
     assert category.qualified_name
-    c = client.asset.get_by_guid(
-        category.guid, AtlasGlossaryCategory, ignore_relationships=False
-    )
+    c = client.asset.get_by_guid(category.guid, AtlasGlossaryCategory, ignore_relationships=False)
     assert c
     assert c.guid == category.guid
     assert c.anchor
@@ -280,9 +248,7 @@ def test_category(
 
 
 @pytest.fixture(scope="module")
-def term1(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryTerm, None, None]:
+def term1(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryTerm, None, None]:
     t = create_term(client, name=TERM_NAME1, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
@@ -297,11 +263,7 @@ def test_term_failure(
         match="ATLAN-PYTHON-404-000 Server responded with a not found "
         "error ATLAS-404-00-009: Instance AtlasGlossaryTerm with unique attribute *",
     ):
-        client.asset.update_merging_cm(
-            AtlasGlossaryTerm.create(
-                name=f"{TERM_NAME1} X", glossary_guid=glossary.guid
-            )
-        )
+        client.asset.update_merging_cm(AtlasGlossaryTerm.create(name=f"{TERM_NAME1} X", glossary_guid=glossary.guid))
 
 
 def test_term1(
@@ -313,9 +275,7 @@ def test_term1(
     assert term1.name == TERM_NAME1
     assert term1.qualified_name
     assert term1.qualified_name != TERM_NAME1
-    t = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    t = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert t
     assert t.guid == term1.guid
     assert t.attributes.anchor
@@ -323,9 +283,7 @@ def test_term1(
 
 
 @pytest.fixture(scope="module")
-def term2(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryTerm, None, None]:
+def term2(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryTerm, None, None]:
     t = create_term(client, name=TERM_NAME2, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
@@ -340,9 +298,7 @@ def test_term2(
     assert term2.name == TERM_NAME2
     assert term2.qualified_name
     assert term2.qualified_name != TERM_NAME2
-    t = client.asset.get_by_guid(
-        term2.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    t = client.asset.get_by_guid(term2.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert t
     assert t.guid == term2.guid
     assert t.attributes.anchor
@@ -350,9 +306,7 @@ def test_term2(
 
 
 @pytest.fixture(scope="module")
-def term3(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryTerm, None, None]:
+def term3(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryTerm, None, None]:
     t = create_term(client, name=TERM_NAME3, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
@@ -367,9 +321,7 @@ def test_term3(
     assert term3.name == TERM_NAME3
     assert term3.qualified_name
     assert term3.qualified_name != TERM_NAME3
-    t = client.asset.get_by_guid(
-        term3.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    t = client.asset.get_by_guid(term3.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert t
     assert t.guid == term3.guid
     assert t.attributes.anchor
@@ -377,9 +329,7 @@ def test_term3(
 
 
 @pytest.fixture(scope="module")
-def term4(
-    client: AtlanClient, glossary: AtlasGlossary
-) -> Generator[AtlasGlossaryTerm, None, None]:
+def term4(client: AtlanClient, glossary: AtlasGlossary) -> Generator[AtlasGlossaryTerm, None, None]:
     t = create_term(client, name=TERM_NAME4, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
@@ -394,9 +344,7 @@ def test_term4(
     assert term4.name == TERM_NAME4
     assert term4.qualified_name
     assert term4.qualified_name != TERM_NAME4
-    t = client.asset.get_by_guid(
-        term4.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    t = client.asset.get_by_guid(term4.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert t
     assert t.guid == term4.guid
     assert t.attributes.anchor
@@ -411,9 +359,7 @@ def test_read_glossary(
     term3: AtlasGlossaryTerm,
     term4: AtlasGlossaryTerm,
 ):
-    g = client.asset.get_by_guid(
-        glossary.guid, asset_type=AtlasGlossary, ignore_relationships=False
-    )
+    g = client.asset.get_by_guid(glossary.guid, asset_type=AtlasGlossary, ignore_relationships=False)
     assert g
     assert isinstance(g, AtlasGlossary)
     assert g.guid == glossary.guid
@@ -552,9 +498,7 @@ def test_term_trim_to_required(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
 ):
-    term1 = client.asset.get_by_guid(
-        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    term1 = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     term1 = term1.trim_to_required()
     response = client.asset.save(term1)
     assert response.mutated_entities is None
@@ -564,9 +508,7 @@ def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
     assert glossary.guid == client.asset.find_glossary_by_name(name=glossary.name).guid
 
 
-def test_find_category_fast_by_name(
-    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
-):
+def test_find_category_fast_by_name(client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary):
     @retry(
         wait=wait_fixed(2),
         retry=retry_if_exception_type(NotFoundError),
@@ -583,15 +525,8 @@ def test_find_category_fast_by_name(
     check_it()
 
 
-def test_find_category_by_name(
-    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
-):
-    assert (
-        category.guid
-        == client.asset.find_category_by_name(
-            name=category.name, glossary_name=glossary.name
-        )[0].guid
-    )
+def test_find_category_by_name(client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary):
+    assert category.guid == client.asset.find_category_by_name(name=category.name, glossary_name=glossary.name)[0].guid
 
 
 def test_find_category_by_name_qn_guid_correctly_populated(
@@ -640,9 +575,7 @@ def test_category_delete_by_guid_raises_error_invalid_request_error(
         client.asset.delete_by_guid(guid=category.guid)
 
 
-def test_find_term_fast_by_name(
-    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
-):
+def test_find_term_fast_by_name(client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary):
     @retry(
         wait=wait_fixed(2),
         retry=retry_if_exception_type(NotFoundError),
@@ -659,15 +592,8 @@ def test_find_term_fast_by_name(
     check_it()
 
 
-def test_find_term_by_name(
-    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
-):
-    assert (
-        term1.guid
-        == client.asset.find_term_by_name(
-            name=term1.name, glossary_name=glossary.name
-        ).guid
-    )
+def test_find_term_by_name(client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary):
+    assert term1.guid == client.asset.find_term_by_name(name=term1.name, glossary_name=glossary.name).guid
 
 
 @pytest.mark.parametrize(
@@ -815,9 +741,7 @@ def test_create_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(
-        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert result
     assert result.see_also
     assert len(result.see_also) == 2
@@ -852,9 +776,7 @@ def test_remove_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(
-        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert result
     assert result.see_also
     active_relationships = []
@@ -889,9 +811,7 @@ def test_append_relationship(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(
-        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert result
     assert result.see_also
     active_relationships = []
@@ -927,9 +847,7 @@ def test_append_relationship_again(
     response = client.asset.save(term)
 
     assert response
-    result = client.asset.get_by_guid(
-        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
-    )
+    result = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False)
     assert result
     assert result.see_also
     active_relationships = []

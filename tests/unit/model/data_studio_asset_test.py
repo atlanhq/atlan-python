@@ -90,24 +90,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        DataStudioAsset.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        DataStudioAsset.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification_report():
-    sut = DataStudioAsset.create_for_modification(
-        qualified_name=QUALIFIED_NAME_REPORT, name=REPORT_NAME
-    )
+    sut = DataStudioAsset.create_for_modification(qualified_name=QUALIFIED_NAME_REPORT, name=REPORT_NAME)
 
     assert sut.qualified_name == QUALIFIED_NAME_REPORT
     assert sut.name == REPORT_NAME
 
 
 def test_create_for_modification_data_source():
-    sut = DataStudioAsset.create_for_modification(
-        qualified_name=QUALIFIED_NAME_SOURCE, name=SOURCE_NAME
-    )
+    sut = DataStudioAsset.create_for_modification(qualified_name=QUALIFIED_NAME_SOURCE, name=SOURCE_NAME)
 
     assert sut.qualified_name == QUALIFIED_NAME_SOURCE
     assert sut.name == SOURCE_NAME

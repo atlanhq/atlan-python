@@ -26,9 +26,7 @@ CONNECTOR_TYPE = AtlanConnectorType.GCS
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(
-        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
-    )
+    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
     yield result
     # TODO: proper connection delete workflow
     delete_asset(client, guid=result.guid, asset_type=Connection)
@@ -79,9 +77,7 @@ def test_update_persona(
 ):
     assert persona.qualified_name
     assert persona.name
-    to_update = Persona.create_for_modification(
-        persona.qualified_name, persona.name, True
-    )
+    to_update = Persona.create_for_modification(persona.qualified_name, persona.name, True)
     to_update.description = "Now with a description!"
     to_update.deny_asset_tabs = {
         AssetSidebarTab.LINEAGE.value,
@@ -189,9 +185,7 @@ def test_retrieve_persona(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.asset.get_by_guid(
-            guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False
-        )
+        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False)
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat

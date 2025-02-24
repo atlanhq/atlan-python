@@ -16,13 +16,9 @@ from tests.unit.model.constants import (
         (SUPERSET_DASHBOARD_NAME, None, "connection_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(
-    name: str, connection_qualified_name: str, message: str
-):
+def test_create_with_missing_parameters_raise_value_error(name: str, connection_qualified_name: str, message: str):
     with pytest.raises(ValueError, match=message):
-        SupersetDashboard.create(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
+        SupersetDashboard.create(name=name, connection_qualified_name=connection_qualified_name)
 
 
 def test_create():
@@ -33,10 +29,7 @@ def test_create():
 
     assert sut.name == SUPERSET_DASHBOARD_NAME
     assert sut.connection_qualified_name == SUPERSET_CONNECTION_QUALIFIED_NAME
-    assert (
-        sut.qualified_name
-        == f"{SUPERSET_CONNECTION_QUALIFIED_NAME}/{SUPERSET_DASHBOARD_NAME}"
-    )
+    assert sut.qualified_name == f"{SUPERSET_CONNECTION_QUALIFIED_NAME}/{SUPERSET_DASHBOARD_NAME}"
     assert sut.connector_name == SUPERSET_CONNECTOR_TYPE
 
 
@@ -51,9 +44,7 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        SupersetDashboard.create_for_modification(
-            qualified_name=qualified_name, name=name
-        )
+        SupersetDashboard.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():

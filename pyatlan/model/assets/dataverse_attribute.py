@@ -82,9 +82,7 @@ class DataverseAttribute(Dataverse):
     """
     Schema Name of the DataverseAttribute.
     """
-    DATAVERSE_ATTRIBUTE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dataverseAttributeType", "dataverseAttributeType"
-    )
+    DATAVERSE_ATTRIBUTE_TYPE: ClassVar[KeywordField] = KeywordField("dataverseAttributeType", "dataverseAttributeType")
     """
     Type of the DataverseAttribute.
     """
@@ -117,47 +115,27 @@ class DataverseAttribute(Dataverse):
 
     @property
     def dataverse_entity_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_entity_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.dataverse_entity_qualified_name
 
     @dataverse_entity_qualified_name.setter
-    def dataverse_entity_qualified_name(
-        self, dataverse_entity_qualified_name: Optional[str]
-    ):
+    def dataverse_entity_qualified_name(self, dataverse_entity_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dataverse_entity_qualified_name = (
-            dataverse_entity_qualified_name
-        )
+        self.attributes.dataverse_entity_qualified_name = dataverse_entity_qualified_name
 
     @property
     def dataverse_attribute_schema_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_attribute_schema_name
-        )
+        return None if self.attributes is None else self.attributes.dataverse_attribute_schema_name
 
     @dataverse_attribute_schema_name.setter
-    def dataverse_attribute_schema_name(
-        self, dataverse_attribute_schema_name: Optional[str]
-    ):
+    def dataverse_attribute_schema_name(self, dataverse_attribute_schema_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dataverse_attribute_schema_name = (
-            dataverse_attribute_schema_name
-        )
+        self.attributes.dataverse_attribute_schema_name = dataverse_attribute_schema_name
 
     @property
     def dataverse_attribute_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_attribute_type
-        )
+        return None if self.attributes is None else self.attributes.dataverse_attribute_type
 
     @dataverse_attribute_type.setter
     def dataverse_attribute_type(self, dataverse_attribute_type: Optional[str]):
@@ -167,39 +145,23 @@ class DataverseAttribute(Dataverse):
 
     @property
     def dataverse_attribute_is_primary_id(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_attribute_is_primary_id
-        )
+        return None if self.attributes is None else self.attributes.dataverse_attribute_is_primary_id
 
     @dataverse_attribute_is_primary_id.setter
-    def dataverse_attribute_is_primary_id(
-        self, dataverse_attribute_is_primary_id: Optional[bool]
-    ):
+    def dataverse_attribute_is_primary_id(self, dataverse_attribute_is_primary_id: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dataverse_attribute_is_primary_id = (
-            dataverse_attribute_is_primary_id
-        )
+        self.attributes.dataverse_attribute_is_primary_id = dataverse_attribute_is_primary_id
 
     @property
     def dataverse_attribute_is_searchable(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dataverse_attribute_is_searchable
-        )
+        return None if self.attributes is None else self.attributes.dataverse_attribute_is_searchable
 
     @dataverse_attribute_is_searchable.setter
-    def dataverse_attribute_is_searchable(
-        self, dataverse_attribute_is_searchable: Optional[bool]
-    ):
+    def dataverse_attribute_is_searchable(self, dataverse_attribute_is_searchable: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dataverse_attribute_is_searchable = (
-            dataverse_attribute_is_searchable
-        )
+        self.attributes.dataverse_attribute_is_searchable = dataverse_attribute_is_searchable
 
     @property
     def dataverse_entity(self) -> Optional[DataverseEntity]:
@@ -212,22 +174,12 @@ class DataverseAttribute(Dataverse):
         self.attributes.dataverse_entity = dataverse_entity
 
     class Attributes(Dataverse.Attributes):
-        dataverse_entity_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        dataverse_attribute_schema_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        dataverse_entity_qualified_name: Optional[str] = Field(default=None, description="")
+        dataverse_attribute_schema_name: Optional[str] = Field(default=None, description="")
         dataverse_attribute_type: Optional[str] = Field(default=None, description="")
-        dataverse_attribute_is_primary_id: Optional[bool] = Field(
-            default=None, description=""
-        )
-        dataverse_attribute_is_searchable: Optional[bool] = Field(
-            default=None, description=""
-        )
-        dataverse_entity: Optional[DataverseEntity] = Field(
-            default=None, description=""
-        )  # relationship
+        dataverse_attribute_is_primary_id: Optional[bool] = Field(default=None, description="")
+        dataverse_attribute_is_searchable: Optional[bool] = Field(default=None, description="")
+        dataverse_entity: Optional[DataverseEntity] = Field(default=None, description="")  # relationship
 
         @classmethod
         @init_guid
@@ -243,9 +195,7 @@ class DataverseAttribute(Dataverse):
                 [name, dataverse_entity_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
+                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     dataverse_entity_qualified_name,
@@ -259,9 +209,7 @@ class DataverseAttribute(Dataverse):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{dataverse_entity_qualified_name}/{name}",
                 connector_name=connector_name,
-                dataverse_entity=DataverseEntity.ref_by_qualified_name(
-                    dataverse_entity_qualified_name
-                ),
+                dataverse_entity=DataverseEntity.ref_by_qualified_name(dataverse_entity_qualified_name),
             )
 
     attributes: DataverseAttribute.Attributes = Field(

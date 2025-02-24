@@ -34,9 +34,7 @@ class TableauCalculatedField(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "siteQualifiedName", "siteQualifiedName"
-    )
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
     """
     Unique name of the site in which this calculated field exists.
     """
@@ -52,21 +50,15 @@ class TableauCalculatedField(Tableau):
     """
     Unique name of the top-level project in which this calculated field exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "workbookQualifiedName", "workbookQualifiedName"
-    )
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField("workbookQualifiedName", "workbookQualifiedName")
     """
     Unique name of the workbook in which this calculated field exists.
     """
-    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
-        "datasourceQualifiedName", "datasourceQualifiedName"
-    )
+    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasourceQualifiedName", "datasourceQualifiedName")
     """
     Unique name of the datasource in which this calculated field exists.
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "projectHierarchy", "projectHierarchy"
-    )
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
     """
     List of top-level projects and their nested projects.
     """
@@ -88,9 +80,7 @@ class TableauCalculatedField(Tableau):
     """
     Formula for this calculated field.
     """
-    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
-        "upstreamFields", "upstreamFields"
-    )
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField("upstreamFields", "upstreamFields")
     """
     List of fields that are upstream to this calculated field.
     """
@@ -132,9 +122,7 @@ class TableauCalculatedField(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.project_qualified_name
 
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
@@ -144,27 +132,17 @@ class TableauCalculatedField(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.top_level_project_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(
-        self, top_level_project_qualified_name: Optional[str]
-    ):
+    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = (
-            top_level_project_qualified_name
-        )
+        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.workbook_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
@@ -174,11 +152,7 @@ class TableauCalculatedField(Tableau):
 
     @property
     def datasource_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.datasource_qualified_name
-        )
+        return None if self.attributes is None else self.attributes.datasource_qualified_name
 
     @datasource_qualified_name.setter
     def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
@@ -269,27 +243,17 @@ class TableauCalculatedField(Tableau):
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
+        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
         datasource_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
         data_category: Optional[str] = Field(default=None, description="")
         role: Optional[str] = Field(default=None, description="")
         tableau_data_type: Optional[str] = Field(default=None, description="")
         formula: Optional[str] = Field(default=None, description="")
-        upstream_fields: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        worksheets: Optional[List[TableauWorksheet]] = Field(
-            default=None, description=""
-        )  # relationship
-        datasource: Optional[TableauDatasource] = Field(
-            default=None, description=""
-        )  # relationship
+        upstream_fields: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        worksheets: Optional[List[TableauWorksheet]] = Field(default=None, description="")  # relationship
+        datasource: Optional[TableauDatasource] = Field(default=None, description="")  # relationship
 
     attributes: TableauCalculatedField.Attributes = Field(
         default_factory=lambda: TableauCalculatedField.Attributes(),
