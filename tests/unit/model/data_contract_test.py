@@ -62,7 +62,9 @@ def test_creator_with_missing_parameters_raise_value_error(
         ),
     ],
 )
-def test_creator_with_invalid_contract_json_raises_error(asset_qualified_name: str, contract_json: str, error_msg: str):
+def test_creator_with_invalid_contract_json_raises_error(
+    asset_qualified_name: str, contract_json: str, error_msg: str
+):
     with pytest.raises(InvalidRequestError, match=error_msg):
         DataContract.creator(
             asset_qualified_name=asset_qualified_name,

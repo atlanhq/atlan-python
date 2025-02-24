@@ -35,7 +35,9 @@ class Salesforce(SaaS):
     """
     Fully-qualified name of the organization in Salesforce.
     """
-    API_NAME: ClassVar[KeywordTextField] = KeywordTextField("apiName", "apiName.keyword", "apiName")
+    API_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiName", "apiName.keyword", "apiName"
+    )
     """
     Name of this asset in the Salesforce API.
     """
@@ -47,7 +49,11 @@ class Salesforce(SaaS):
 
     @property
     def organization_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.organization_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.organization_qualified_name
+        )
 
     @organization_qualified_name.setter
     def organization_qualified_name(self, organization_qualified_name: Optional[str]):

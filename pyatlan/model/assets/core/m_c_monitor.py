@@ -42,19 +42,27 @@ class MCMonitor(MonteCarlo):
     """
     Unique identifier for this monitor, from Monte Carlo.
     """
-    MC_MONITOR_STATUS: ClassVar[KeywordField] = KeywordField("mcMonitorStatus", "mcMonitorStatus")
+    MC_MONITOR_STATUS: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorStatus", "mcMonitorStatus"
+    )
     """
     Status of this monitor.
     """
-    MC_MONITOR_TYPE: ClassVar[KeywordField] = KeywordField("mcMonitorType", "mcMonitorType")
+    MC_MONITOR_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorType", "mcMonitorType"
+    )
     """
     Type of this monitor, for example: field health (stats) or dimension tracking (categories).
     """
-    MC_MONITOR_WAREHOUSE: ClassVar[KeywordField] = KeywordField("mcMonitorWarehouse", "mcMonitorWarehouse")
+    MC_MONITOR_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorWarehouse", "mcMonitorWarehouse"
+    )
     """
     Name of the warehouse for this monitor.
     """
-    MC_MONITOR_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField("mcMonitorScheduleType", "mcMonitorScheduleType")
+    MC_MONITOR_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorScheduleType", "mcMonitorScheduleType"
+    )
     """
     Type of schedule for this monitor, for example: fixed or dynamic.
     """
@@ -64,11 +72,15 @@ class MCMonitor(MonteCarlo):
     """
     Namespace of this monitor.
     """
-    MC_MONITOR_RULE_TYPE: ClassVar[KeywordField] = KeywordField("mcMonitorRuleType", "mcMonitorRuleType")
+    MC_MONITOR_RULE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorRuleType", "mcMonitorRuleType"
+    )
     """
     Type of rule for this monitor.
     """
-    MC_MONITOR_RULE_CUSTOM_SQL: ClassVar[TextField] = TextField("mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql")
+    MC_MONITOR_RULE_CUSTOM_SQL: ClassVar[TextField] = TextField(
+        "mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql"
+    )
     """
     SQL code for custom SQL rules.
     """
@@ -84,7 +96,9 @@ class MCMonitor(MonteCarlo):
     """
     Readable description of the schedule for the rule.
     """
-    MC_MONITOR_ALERT_CONDITION: ClassVar[TextField] = TextField("mcMonitorAlertCondition", "mcMonitorAlertCondition")
+    MC_MONITOR_ALERT_CONDITION: ClassVar[TextField] = TextField(
+        "mcMonitorAlertCondition", "mcMonitorAlertCondition"
+    )
     """
     Condition on which the monitor produces an alert.
     """
@@ -112,23 +126,33 @@ class MCMonitor(MonteCarlo):
     """
     Whether the rule is currently snoozed (true) or not (false).
     """
-    MC_MONITOR_BREACH_RATE: ClassVar[NumericField] = NumericField("mcMonitorBreachRate", "mcMonitorBreachRate")
+    MC_MONITOR_BREACH_RATE: ClassVar[NumericField] = NumericField(
+        "mcMonitorBreachRate", "mcMonitorBreachRate"
+    )
     """
     Rate at which this monitor is breached.
     """
-    MC_MONITOR_INCIDENT_COUNT: ClassVar[NumericField] = NumericField("mcMonitorIncidentCount", "mcMonitorIncidentCount")
+    MC_MONITOR_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
+        "mcMonitorIncidentCount", "mcMonitorIncidentCount"
+    )
     """
     Number of incidents associated with this monitor.
     """
-    MC_MONITOR_ALERT_COUNT: ClassVar[NumericField] = NumericField("mcMonitorAlertCount", "mcMonitorAlertCount")
+    MC_MONITOR_ALERT_COUNT: ClassVar[NumericField] = NumericField(
+        "mcMonitorAlertCount", "mcMonitorAlertCount"
+    )
     """
     Number of alerts associated with this monitor.
     """
-    MC_MONITOR_PRIORITY: ClassVar[KeywordField] = KeywordField("mcMonitorPriority", "mcMonitorPriority")
+    MC_MONITOR_PRIORITY: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorPriority", "mcMonitorPriority"
+    )
     """
     Priority of this monitor.
     """
-    MC_MONITOR_IS_OOTB: ClassVar[BooleanField] = BooleanField("mcMonitorIsOotb", "mcMonitorIsOotb")
+    MC_MONITOR_IS_OOTB: ClassVar[BooleanField] = BooleanField(
+        "mcMonitorIsOotb", "mcMonitorIsOotb"
+    )
     """
     Whether the monitor is OOTB or not
     """
@@ -204,7 +228,11 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_schedule_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mc_monitor_schedule_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_schedule_type
+        )
 
     @mc_monitor_schedule_type.setter
     def mc_monitor_schedule_type(self, mc_monitor_schedule_type: Optional[str]):
@@ -234,7 +262,11 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_custom_sql(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_custom_sql
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_custom_sql
+        )
 
     @mc_monitor_rule_custom_sql.setter
     def mc_monitor_rule_custom_sql(self, mc_monitor_rule_custom_sql: Optional[str]):
@@ -244,27 +276,47 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_schedule_config(self) -> Optional[MCRuleSchedule]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_schedule_config
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_schedule_config
+        )
 
     @mc_monitor_rule_schedule_config.setter
-    def mc_monitor_rule_schedule_config(self, mc_monitor_rule_schedule_config: Optional[MCRuleSchedule]):
+    def mc_monitor_rule_schedule_config(
+        self, mc_monitor_rule_schedule_config: Optional[MCRuleSchedule]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitor_rule_schedule_config = mc_monitor_rule_schedule_config
+        self.attributes.mc_monitor_rule_schedule_config = (
+            mc_monitor_rule_schedule_config
+        )
 
     @property
     def mc_monitor_rule_schedule_config_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_schedule_config_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_schedule_config_humanized
+        )
 
     @mc_monitor_rule_schedule_config_humanized.setter
-    def mc_monitor_rule_schedule_config_humanized(self, mc_monitor_rule_schedule_config_humanized: Optional[str]):
+    def mc_monitor_rule_schedule_config_humanized(
+        self, mc_monitor_rule_schedule_config_humanized: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitor_rule_schedule_config_humanized = mc_monitor_rule_schedule_config_humanized
+        self.attributes.mc_monitor_rule_schedule_config_humanized = (
+            mc_monitor_rule_schedule_config_humanized
+        )
 
     @property
     def mc_monitor_alert_condition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mc_monitor_alert_condition
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_alert_condition
+        )
 
     @mc_monitor_alert_condition.setter
     def mc_monitor_alert_condition(self, mc_monitor_alert_condition: Optional[str]):
@@ -274,37 +326,63 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_next_execution_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_next_execution_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_next_execution_time
+        )
 
     @mc_monitor_rule_next_execution_time.setter
-    def mc_monitor_rule_next_execution_time(self, mc_monitor_rule_next_execution_time: Optional[datetime]):
+    def mc_monitor_rule_next_execution_time(
+        self, mc_monitor_rule_next_execution_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitor_rule_next_execution_time = mc_monitor_rule_next_execution_time
+        self.attributes.mc_monitor_rule_next_execution_time = (
+            mc_monitor_rule_next_execution_time
+        )
 
     @property
     def mc_monitor_rule_previous_execution_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_previous_execution_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_previous_execution_time
+        )
 
     @mc_monitor_rule_previous_execution_time.setter
-    def mc_monitor_rule_previous_execution_time(self, mc_monitor_rule_previous_execution_time: Optional[datetime]):
+    def mc_monitor_rule_previous_execution_time(
+        self, mc_monitor_rule_previous_execution_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mc_monitor_rule_previous_execution_time = mc_monitor_rule_previous_execution_time
+        self.attributes.mc_monitor_rule_previous_execution_time = (
+            mc_monitor_rule_previous_execution_time
+        )
 
     @property
     def mc_monitor_rule_comparisons(self) -> Optional[List[MCRuleComparison]]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_comparisons
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_comparisons
+        )
 
     @mc_monitor_rule_comparisons.setter
-    def mc_monitor_rule_comparisons(self, mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]]):
+    def mc_monitor_rule_comparisons(
+        self, mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_comparisons = mc_monitor_rule_comparisons
 
     @property
     def mc_monitor_rule_is_snoozed(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.mc_monitor_rule_is_snoozed
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_rule_is_snoozed
+        )
 
     @mc_monitor_rule_is_snoozed.setter
     def mc_monitor_rule_is_snoozed(self, mc_monitor_rule_is_snoozed: Optional[bool]):
@@ -314,7 +392,9 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_breach_rate(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.mc_monitor_breach_rate
+        return (
+            None if self.attributes is None else self.attributes.mc_monitor_breach_rate
+        )
 
     @mc_monitor_breach_rate.setter
     def mc_monitor_breach_rate(self, mc_monitor_breach_rate: Optional[float]):
@@ -324,7 +404,11 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_incident_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mc_monitor_incident_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_incident_count
+        )
 
     @mc_monitor_incident_count.setter
     def mc_monitor_incident_count(self, mc_monitor_incident_count: Optional[int]):
@@ -334,7 +418,9 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_alert_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mc_monitor_alert_count
+        return (
+            None if self.attributes is None else self.attributes.mc_monitor_alert_count
+        )
 
     @mc_monitor_alert_count.setter
     def mc_monitor_alert_count(self, mc_monitor_alert_count: Optional[int]):
@@ -381,19 +467,31 @@ class MCMonitor(MonteCarlo):
         mc_monitor_namespace: Optional[str] = Field(default=None, description="")
         mc_monitor_rule_type: Optional[str] = Field(default=None, description="")
         mc_monitor_rule_custom_sql: Optional[str] = Field(default=None, description="")
-        mc_monitor_rule_schedule_config: Optional[MCRuleSchedule] = Field(default=None, description="")
-        mc_monitor_rule_schedule_config_humanized: Optional[str] = Field(default=None, description="")
+        mc_monitor_rule_schedule_config: Optional[MCRuleSchedule] = Field(
+            default=None, description=""
+        )
+        mc_monitor_rule_schedule_config_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
         mc_monitor_alert_condition: Optional[str] = Field(default=None, description="")
-        mc_monitor_rule_next_execution_time: Optional[datetime] = Field(default=None, description="")
-        mc_monitor_rule_previous_execution_time: Optional[datetime] = Field(default=None, description="")
-        mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]] = Field(default=None, description="")
+        mc_monitor_rule_next_execution_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        mc_monitor_rule_previous_execution_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        mc_monitor_rule_comparisons: Optional[List[MCRuleComparison]] = Field(
+            default=None, description=""
+        )
         mc_monitor_rule_is_snoozed: Optional[bool] = Field(default=None, description="")
         mc_monitor_breach_rate: Optional[float] = Field(default=None, description="")
         mc_monitor_incident_count: Optional[int] = Field(default=None, description="")
         mc_monitor_alert_count: Optional[int] = Field(default=None, description="")
         mc_monitor_priority: Optional[str] = Field(default=None, description="")
         mc_monitor_is_ootb: Optional[bool] = Field(default=None, description="")
-        mc_monitor_assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
+        mc_monitor_assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MCMonitor.Attributes = Field(
         default_factory=lambda: MCMonitor.Attributes(),

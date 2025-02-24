@@ -40,7 +40,9 @@ class Connection(Asset, type_name="Connection"):
     ) -> Connection:
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
-            raise ValueError("One of admin_user, admin_groups or admin_roles is required")
+            raise ValueError(
+                "One of admin_user, admin_groups or admin_roles is required"
+            )
         attr = cls.Attributes(
             name=name,
             qualified_name=connector_type.to_qualified_name(),
@@ -66,7 +68,9 @@ class Connection(Asset, type_name="Connection"):
         admin_roles: Optional[List[str]] = None,
     ) -> Connection:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -111,11 +115,15 @@ class Connection(Asset, type_name="Connection"):
     """
     Whether using this connection to run queries on the source is allowed (true) or not (false).
     """
-    ALLOW_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField("allowQueryPreview", "allowQueryPreview")
+    ALLOW_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "allowQueryPreview", "allowQueryPreview"
+    )
     """
     Whether using this connection to run preview queries on the source is allowed (true) or not (false).
     """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
     """
     Configuration for preview queries.
     """
@@ -123,7 +131,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Query config for this connection.
     """
-    CREDENTIAL_STRATEGY: ClassVar[TextField] = TextField("credentialStrategy", "credentialStrategy")
+    CREDENTIAL_STRATEGY: ClassVar[TextField] = TextField(
+        "credentialStrategy", "credentialStrategy"
+    )
     """
     Credential strategy to use for this connection for queries.
     """
@@ -133,7 +143,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Credential strategy to use for this connection for preview queries.
     """
-    POLICY_STRATEGY: ClassVar[KeywordField] = KeywordField("policyStrategy", "policyStrategy")
+    POLICY_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "policyStrategy", "policyStrategy"
+    )
     """
     Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten, applicable for stream api call made from insight screen
     """  # noqa: E501
@@ -143,7 +155,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten. policyStrategyForSamplePreview config is applicable for sample preview call from assets screen
     """  # noqa: E501
-    QUERY_USERNAME_STRATEGY: ClassVar[KeywordField] = KeywordField("queryUsernameStrategy", "queryUsernameStrategy")
+    QUERY_USERNAME_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "queryUsernameStrategy", "queryUsernameStrategy"
+    )
     """
     Username strategy to use for this connection for queries.
     """
@@ -155,7 +169,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Maximum time a query should be allowed to run before timing out.
     """
-    DEFAULT_CREDENTIAL_GUID: ClassVar[TextField] = TextField("defaultCredentialGuid", "defaultCredentialGuid")
+    DEFAULT_CREDENTIAL_GUID: ClassVar[TextField] = TextField(
+        "defaultCredentialGuid", "defaultCredentialGuid"
+    )
     """
     Unique identifier (GUID) for the default credentials to use for this connection.
     """
@@ -183,7 +199,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Number of days over which popularity is calculated, for example 30 days.
     """
-    HAS_POPULARITY_INSIGHTS: ClassVar[BooleanField] = BooleanField("hasPopularityInsights", "hasPopularityInsights")
+    HAS_POPULARITY_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "hasPopularityInsights", "hasPopularityInsights"
+    )
     """
     Whether this connection has popularity insights (true) or not (false).
     """
@@ -199,7 +217,9 @@ class Connection(Asset, type_name="Connection"):
     """
     Unique identifier (GUID) for the SSO credentials to use for this connection.
     """
-    USE_OBJECT_STORAGE: ClassVar[BooleanField] = BooleanField("useObjectStorage", "useObjectStorage")
+    USE_OBJECT_STORAGE: ClassVar[BooleanField] = BooleanField(
+        "useObjectStorage", "useObjectStorage"
+    )
     """
     Whether to upload to S3, GCP, or another storage location (true) or not (false).
     """
@@ -345,7 +365,11 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def preview_credential_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preview_credential_strategy
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preview_credential_strategy
+        )
 
     @preview_credential_strategy.setter
     def preview_credential_strategy(self, preview_credential_strategy: Optional[str]):
@@ -365,20 +389,32 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def policy_strategy_for_sample_preview(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.policy_strategy_for_sample_preview
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.policy_strategy_for_sample_preview
+        )
 
     @policy_strategy_for_sample_preview.setter
-    def policy_strategy_for_sample_preview(self, policy_strategy_for_sample_preview: Optional[str]):
+    def policy_strategy_for_sample_preview(
+        self, policy_strategy_for_sample_preview: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.policy_strategy_for_sample_preview = policy_strategy_for_sample_preview
+        self.attributes.policy_strategy_for_sample_preview = (
+            policy_strategy_for_sample_preview
+        )
 
     @property
     def query_username_strategy(self) -> Optional[QueryUsernameStrategy]:
-        return None if self.attributes is None else self.attributes.query_username_strategy
+        return (
+            None if self.attributes is None else self.attributes.query_username_strategy
+        )
 
     @query_username_strategy.setter
-    def query_username_strategy(self, query_username_strategy: Optional[QueryUsernameStrategy]):
+    def query_username_strategy(
+        self, query_username_strategy: Optional[QueryUsernameStrategy]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_username_strategy = query_username_strategy
@@ -405,7 +441,9 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def default_credential_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.default_credential_guid
+        return (
+            None if self.attributes is None else self.attributes.default_credential_guid
+        )
 
     @default_credential_guid.setter
     def default_credential_guid(self, default_credential_guid: Optional[str]):
@@ -445,27 +483,41 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def is_sample_data_preview_enabled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_sample_data_preview_enabled
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.is_sample_data_preview_enabled
+        )
 
     @is_sample_data_preview_enabled.setter
-    def is_sample_data_preview_enabled(self, is_sample_data_preview_enabled: Optional[bool]):
+    def is_sample_data_preview_enabled(
+        self, is_sample_data_preview_enabled: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_sample_data_preview_enabled = is_sample_data_preview_enabled
 
     @property
     def popularity_insights_timeframe(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.popularity_insights_timeframe
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.popularity_insights_timeframe
+        )
 
     @popularity_insights_timeframe.setter
-    def popularity_insights_timeframe(self, popularity_insights_timeframe: Optional[int]):
+    def popularity_insights_timeframe(
+        self, popularity_insights_timeframe: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.popularity_insights_timeframe = popularity_insights_timeframe
 
     @property
     def has_popularity_insights(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.has_popularity_insights
+        return (
+            None if self.attributes is None else self.attributes.has_popularity_insights
+        )
 
     @has_popularity_insights.setter
     def has_popularity_insights(self, has_popularity_insights: Optional[bool]):
@@ -475,23 +527,37 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def connection_dbt_environments(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.connection_dbt_environments
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_dbt_environments
+        )
 
     @connection_dbt_environments.setter
-    def connection_dbt_environments(self, connection_dbt_environments: Optional[Set[str]]):
+    def connection_dbt_environments(
+        self, connection_dbt_environments: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.connection_dbt_environments = connection_dbt_environments
 
     @property
     def connection_s_s_o_credential_guid(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.connection_s_s_o_credential_guid
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_s_s_o_credential_guid
+        )
 
     @connection_s_s_o_credential_guid.setter
-    def connection_s_s_o_credential_guid(self, connection_s_s_o_credential_guid: Optional[str]):
+    def connection_s_s_o_credential_guid(
+        self, connection_s_s_o_credential_guid: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.connection_s_s_o_credential_guid = connection_s_s_o_credential_guid
+        self.attributes.connection_s_s_o_credential_guid = (
+            connection_s_s_o_credential_guid
+        )
 
     @property
     def use_object_storage(self) -> Optional[bool]:
@@ -505,17 +571,29 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def object_storage_upload_threshold(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.object_storage_upload_threshold
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.object_storage_upload_threshold
+        )
 
     @object_storage_upload_threshold.setter
-    def object_storage_upload_threshold(self, object_storage_upload_threshold: Optional[int]):
+    def object_storage_upload_threshold(
+        self, object_storage_upload_threshold: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.object_storage_upload_threshold = object_storage_upload_threshold
+        self.attributes.object_storage_upload_threshold = (
+            object_storage_upload_threshold
+        )
 
     @property
     def vector_embeddings_enabled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.vector_embeddings_enabled
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.vector_embeddings_enabled
+        )
 
     @vector_embeddings_enabled.setter
     def vector_embeddings_enabled(self, vector_embeddings_enabled: Optional[bool]):
@@ -525,10 +603,16 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def vector_embeddings_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.vector_embeddings_updated_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.vector_embeddings_updated_at
+        )
 
     @vector_embeddings_updated_at.setter
-    def vector_embeddings_updated_at(self, vector_embeddings_updated_at: Optional[datetime]):
+    def vector_embeddings_updated_at(
+        self, vector_embeddings_updated_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
@@ -540,28 +624,46 @@ class Connection(Asset, type_name="Connection"):
         port: Optional[int] = Field(default=None, description="")
         allow_query: Optional[bool] = Field(default=None, description="")
         allow_query_preview: Optional[bool] = Field(default=None, description="")
-        query_preview_config: Optional[Dict[str, str]] = Field(default=None, description="")
+        query_preview_config: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         query_config: Optional[str] = Field(default=None, description="")
         credential_strategy: Optional[str] = Field(default=None, description="")
         preview_credential_strategy: Optional[str] = Field(default=None, description="")
         policy_strategy: Optional[str] = Field(default=None, description="")
-        policy_strategy_for_sample_preview: Optional[str] = Field(default=None, description="")
-        query_username_strategy: Optional[QueryUsernameStrategy] = Field(default=None, description="")
+        policy_strategy_for_sample_preview: Optional[str] = Field(
+            default=None, description=""
+        )
+        query_username_strategy: Optional[QueryUsernameStrategy] = Field(
+            default=None, description=""
+        )
         row_limit: Optional[int] = Field(default=None, description="")
         query_timeout: Optional[int] = Field(default=None, description="")
         default_credential_guid: Optional[str] = Field(default=None, description="")
         connector_icon: Optional[str] = Field(default=None, description="")
         connector_image: Optional[str] = Field(default=None, description="")
         source_logo: Optional[str] = Field(default=None, description="")
-        is_sample_data_preview_enabled: Optional[bool] = Field(default=None, description="")
-        popularity_insights_timeframe: Optional[int] = Field(default=None, description="")
+        is_sample_data_preview_enabled: Optional[bool] = Field(
+            default=None, description=""
+        )
+        popularity_insights_timeframe: Optional[int] = Field(
+            default=None, description=""
+        )
         has_popularity_insights: Optional[bool] = Field(default=None, description="")
-        connection_dbt_environments: Optional[Set[str]] = Field(default=None, description="")
-        connection_s_s_o_credential_guid: Optional[str] = Field(default=None, description="")
+        connection_dbt_environments: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        connection_s_s_o_credential_guid: Optional[str] = Field(
+            default=None, description=""
+        )
         use_object_storage: Optional[bool] = Field(default=None, description="")
-        object_storage_upload_threshold: Optional[int] = Field(default=None, description="")
+        object_storage_upload_threshold: Optional[int] = Field(
+            default=None, description=""
+        )
         vector_embeddings_enabled: Optional[bool] = Field(default=None, description="")
-        vector_embeddings_updated_at: Optional[datetime] = Field(default=None, description="")
+        vector_embeddings_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
 
         is_loaded: bool = Field(default=True)
 

@@ -49,18 +49,26 @@ def s3_get_presigned_url(client: AtlanClient) -> str:
     )
 
 
-def test_file_client_presigned_url_upload(client: AtlanClient, s3_put_presigned_url: str):
+def test_file_client_presigned_url_upload(
+    client: AtlanClient, s3_put_presigned_url: str
+):
     assert s3_put_presigned_url
     assert os.path.exists(UPLOAD_FILE_PATH)
 
-    client.files.upload_file(presigned_url=s3_put_presigned_url, file_path=UPLOAD_FILE_PATH)
+    client.files.upload_file(
+        presigned_url=s3_put_presigned_url, file_path=UPLOAD_FILE_PATH
+    )
 
 
-def test_file_client_presigned_url_download(client: AtlanClient, s3_get_presigned_url: str):
+def test_file_client_presigned_url_download(
+    client: AtlanClient, s3_get_presigned_url: str
+):
     assert s3_get_presigned_url
     assert not os.path.exists(DOWNLOAD_FILE_PATH)
 
-    client.files.download_file(presigned_url=s3_get_presigned_url, file_path=DOWNLOAD_FILE_PATH)
+    client.files.download_file(
+        presigned_url=s3_get_presigned_url, file_path=DOWNLOAD_FILE_PATH
+    )
     assert os.path.exists(DOWNLOAD_FILE_PATH)
     assert imghdr.what(DOWNLOAD_FILE_PATH) == "png"
     os.remove(DOWNLOAD_FILE_PATH)

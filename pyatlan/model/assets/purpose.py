@@ -39,7 +39,9 @@ class Purpose(AccessControl):
     @init_guid
     def create(cls, *, name: str, atlan_tags: List[AtlanTagName]) -> Purpose:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -81,7 +83,9 @@ class Purpose(AccessControl):
 
                 for group_name in policy_groups:
                     if not GroupCache.get_id_for_name(group_name):
-                        raise ValueError(f"Provided group name {group_name} was not found in Atlan.")
+                        raise ValueError(
+                            f"Provided group name {group_name} was not found in Atlan."
+                        )
                 target_found = True
                 policy.policy_groups = policy_groups
             else:
@@ -91,7 +95,9 @@ class Purpose(AccessControl):
 
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
-                        raise ValueError(f"Provided username {username} was not found in Atlan.")
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
                 target_found = True
                 policy.policy_users = policy_users
             else:
@@ -112,7 +118,9 @@ class Purpose(AccessControl):
         policy_users: Optional[Set[str]] = None,
         all_users: bool = False,
     ) -> AuthPolicy:
-        validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
+        validate_required_fields(
+            ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
+        )
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
@@ -132,7 +140,9 @@ class Purpose(AccessControl):
 
                 for group_name in policy_groups:
                     if not GroupCache.get_id_for_name(group_name):
-                        raise ValueError(f"Provided group name {group_name} was not found in Atlan.")
+                        raise ValueError(
+                            f"Provided group name {group_name} was not found in Atlan."
+                        )
                 target_found = True
                 policy.policy_groups = policy_groups
             else:
@@ -142,7 +152,9 @@ class Purpose(AccessControl):
 
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
-                        raise ValueError(f"Provided username {username} was not found in Atlan.")
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
                 target_found = True
                 policy.policy_users = policy_users
             else:
@@ -180,11 +192,15 @@ class Purpose(AccessControl):
         is_enabled: bool = True,
     ) -> Purpose:
         warn(
-            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.updater(qualified_name=qualified_name, name=name, is_enabled=is_enabled)
+        return cls.updater(
+            qualified_name=qualified_name, name=name, is_enabled=is_enabled
+        )
 
     type_name: str = Field(default="Purpose", allow_mutation=False)
 
@@ -199,7 +215,9 @@ class Purpose(AccessControl):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PURPOSE_CLASSIFICATIONS: ClassVar[KeywordField] = KeywordField("purposeClassifications", "purposeClassifications")
+    PURPOSE_CLASSIFICATIONS: ClassVar[KeywordField] = KeywordField(
+        "purposeClassifications", "purposeClassifications"
+    )
     """
     TBC
     """
@@ -219,11 +237,15 @@ class Purpose(AccessControl):
         self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_atlan_tags: Optional[List[AtlanTagName]] = Field(default=None, description="")
+        purpose_atlan_tags: Optional[List[AtlanTagName]] = Field(
+            default=None, description=""
+        )
 
         @classmethod
         @init_guid
-        def create(cls, name: str, atlan_tags: List[AtlanTagName]) -> Purpose.Attributes:
+        def create(
+            cls, name: str, atlan_tags: List[AtlanTagName]
+        ) -> Purpose.Attributes:
             validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,

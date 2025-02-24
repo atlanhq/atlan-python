@@ -61,7 +61,9 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
     Business Policy Exception Filter ES DSL to denote the associate asset/s involved.
     """
 
-    BUSINESS_POLICY_FOR_EXCEPTION: ClassVar[RelationField] = RelationField("businessPolicyForException")
+    BUSINESS_POLICY_FOR_EXCEPTION: ClassVar[RelationField] = RelationField(
+        "businessPolicyForException"
+    )
     """
     TBC
     """
@@ -76,60 +78,106 @@ class BusinessPolicyException(Asset, type_name="BusinessPolicyException"):
 
     @property
     def business_policy_exception_users(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.business_policy_exception_users
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_exception_users
+        )
 
     @business_policy_exception_users.setter
-    def business_policy_exception_users(self, business_policy_exception_users: Optional[Set[str]]):
+    def business_policy_exception_users(
+        self, business_policy_exception_users: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_exception_users = business_policy_exception_users
+        self.attributes.business_policy_exception_users = (
+            business_policy_exception_users
+        )
 
     @property
     def business_policy_exception_groups(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.business_policy_exception_groups
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_exception_groups
+        )
 
     @business_policy_exception_groups.setter
-    def business_policy_exception_groups(self, business_policy_exception_groups: Optional[Set[str]]):
+    def business_policy_exception_groups(
+        self, business_policy_exception_groups: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_exception_groups = business_policy_exception_groups
+        self.attributes.business_policy_exception_groups = (
+            business_policy_exception_groups
+        )
 
     @property
     def business_policy_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.business_policy_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_qualified_name
+        )
 
     @business_policy_qualified_name.setter
-    def business_policy_qualified_name(self, business_policy_qualified_name: Optional[str]):
+    def business_policy_qualified_name(
+        self, business_policy_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.business_policy_qualified_name = business_policy_qualified_name
 
     @property
     def business_policy_exception_filter_d_s_l(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.business_policy_exception_filter_d_s_l
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_exception_filter_d_s_l
+        )
 
     @business_policy_exception_filter_d_s_l.setter
-    def business_policy_exception_filter_d_s_l(self, business_policy_exception_filter_d_s_l: Optional[str]):
+    def business_policy_exception_filter_d_s_l(
+        self, business_policy_exception_filter_d_s_l: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_exception_filter_d_s_l = business_policy_exception_filter_d_s_l
+        self.attributes.business_policy_exception_filter_d_s_l = (
+            business_policy_exception_filter_d_s_l
+        )
 
     @property
     def business_policy_for_exception(self) -> Optional[BusinessPolicy]:
-        return None if self.attributes is None else self.attributes.business_policy_for_exception
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_for_exception
+        )
 
     @business_policy_for_exception.setter
-    def business_policy_for_exception(self, business_policy_for_exception: Optional[BusinessPolicy]):
+    def business_policy_for_exception(
+        self, business_policy_for_exception: Optional[BusinessPolicy]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.business_policy_for_exception = business_policy_for_exception
 
     class Attributes(Asset.Attributes):
-        business_policy_exception_users: Optional[Set[str]] = Field(default=None, description="")
-        business_policy_exception_groups: Optional[Set[str]] = Field(default=None, description="")
-        business_policy_qualified_name: Optional[str] = Field(default=None, description="")
-        business_policy_exception_filter_d_s_l: Optional[str] = Field(default=None, description="")
-        business_policy_for_exception: Optional[BusinessPolicy] = Field(default=None, description="")  # relationship
+        business_policy_exception_users: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        business_policy_exception_groups: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        business_policy_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        business_policy_exception_filter_d_s_l: Optional[str] = Field(
+            default=None, description=""
+        )
+        business_policy_for_exception: Optional[BusinessPolicy] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: BusinessPolicyException.Attributes = Field(
         default_factory=lambda: BusinessPolicyException.Attributes(),

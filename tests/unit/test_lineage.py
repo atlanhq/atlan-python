@@ -67,7 +67,13 @@ class TestLineageGraph:
             InvalidRequestError,
             match="Lineage was retrieved using hideProces=False. We do not provide a graph view in this case.",
         ):
-            LineageGraph.create([LineageRelation(from_entity_id="123", to_entity_id="456", process_id=None)])
+            LineageGraph.create(
+                [
+                    LineageRelation(
+                        from_entity_id="123", to_entity_id="456", process_id=None
+                    )
+                ]
+            )
 
     def test_get_downstream_asset_guid_with_invalid_guid_returns_empty_set_of_guids(
         self,
@@ -75,7 +81,9 @@ class TestLineageGraph:
     ):
         assert len(lineage_graph.get_downstream_asset_guids("123")) == 0
 
-    def test_get_downstream_asset_guid_with_valid_guid_returns_set_of_guids(self, lineage_graph):
+    def test_get_downstream_asset_guid_with_valid_guid_returns_set_of_guids(
+        self, lineage_graph
+    ):
         assert (guids := lineage_graph.get_downstream_asset_guids(BASE_GUID))
         assert len(guids) == 1
         assert "e44ed3a2-1de5-4f23-b3f1-6e005156fee9" in guids
@@ -92,7 +100,9 @@ class TestLineageGraph:
     ):
         assert len(lineage_graph.get_upstream_asset_guids(BASE_GUID)) == 0
 
-    def test_get_upstream_asset_guid_with_valid_guid_returns_set_of_guids(self, lineage_graph):
+    def test_get_upstream_asset_guid_with_valid_guid_returns_set_of_guids(
+        self, lineage_graph
+    ):
         assert (guids := lineage_graph.get_upstream_asset_guids(BASE_GUID_TARGET))
         assert len(guids) == 1
         assert BASE_GUID in guids
@@ -106,7 +116,9 @@ class TestLineageGraph:
         assert "621d3fa2-54b0-4cc0-a858-5c5ea8c49349" in guids
         assert "d67d4188-010b-4adf-9886-10162f08c77b" in guids
 
-    def test_get_upstream_process_guids_with_valid_guid_returns_set_of_guids(self, lineage_graph):
+    def test_get_upstream_process_guids_with_valid_guid_returns_set_of_guids(
+        self, lineage_graph
+    ):
         assert (guids := lineage_graph.get_upstream_process_guids(BASE_GUID_TARGET))
         assert len(guids) == 2
         assert "621d3fa2-54b0-4cc0-a858-5c5ea8c49349" in guids
@@ -134,7 +146,9 @@ class TestLineageGraph:
             ("80680c12-f625-4b7f-a5fa-d3fd296e2db1", 18),
         ],
     )
-    def test_get_all_downstream_asset_guids_dfs(self, guid, expected_count, lineage_graph):
+    def test_get_all_downstream_asset_guids_dfs(
+        self, guid, expected_count, lineage_graph
+    ):
         assert (guids := lineage_graph.get_all_downstream_asset_guids_dfs(guid))
         assert len(guids) == expected_count
 
@@ -148,7 +162,9 @@ class TestLineageGraph:
             ("80680c12-f625-4b7f-a5fa-d3fd296e2db1", 8),
         ],
     )
-    def test_get_all_upstream_asset_guids_dfs(self, guid, expected_count, lineage_graph):
+    def test_get_all_upstream_asset_guids_dfs(
+        self, guid, expected_count, lineage_graph
+    ):
         assert (guids := lineage_graph.get_all_upstream_asset_guids_dfs(guid))
         assert len(guids) == expected_count
 
@@ -164,7 +180,9 @@ class TestLineageResponse:
             ("80680c12-f625-4b7f-a5fa-d3fd296e2db1", 18),
         ],
     )
-    def test_get_all_downstream_asset_guids_dfs(self, guid, expected_count, lineage_response):
+    def test_get_all_downstream_asset_guids_dfs(
+        self, guid, expected_count, lineage_response
+    ):
         assert (guids := lineage_response.get_all_downstream_asset_guids_dfs(guid))
         assert len(guids) == expected_count
 
@@ -178,7 +196,9 @@ class TestLineageResponse:
             ("80680c12-f625-4b7f-a5fa-d3fd296e2db1", 18),
         ],
     )
-    def test_get_all_downstream_assets_dfs(self, guid, expected_count, lineage_response):
+    def test_get_all_downstream_assets_dfs(
+        self, guid, expected_count, lineage_response
+    ):
         assert (assets := lineage_response.get_all_downstream_assets_dfs(guid))
         assert len(assets) == expected_count
 
@@ -192,7 +212,9 @@ class TestLineageResponse:
             ("80680c12-f625-4b7f-a5fa-d3fd296e2db1", 8),
         ],
     )
-    def test_get_all_upstream_asset_guids_dfs(self, guid, expected_count, lineage_response):
+    def test_get_all_upstream_asset_guids_dfs(
+        self, guid, expected_count, lineage_response
+    ):
         assert (guids := lineage_response.get_all_upstream_asset_guids_dfs(guid))
         assert len(guids) == expected_count
 
@@ -216,12 +238,16 @@ class TestLineageResponse:
     ):
         assert len(lineage_response.get_downstream_asset_guids("123")) == 0
 
-    def test_get_downstream_asset_guid_with_valid_guid_returns_set_of_guids(self, lineage_response):
+    def test_get_downstream_asset_guid_with_valid_guid_returns_set_of_guids(
+        self, lineage_response
+    ):
         assert (guids := lineage_response.get_downstream_asset_guids(BASE_GUID))
         assert len(guids) == 1
         assert "e44ed3a2-1de5-4f23-b3f1-6e005156fee9" in guids
 
-    def test_get_downstream_assets_with_valid_guid_returns_set_of_guids(self, lineage_response):
+    def test_get_downstream_assets_with_valid_guid_returns_set_of_guids(
+        self, lineage_response
+    ):
         assert (assets := lineage_response.get_downstream_assets(BASE_GUID))
         assert len(assets) == 1
 
@@ -237,7 +263,9 @@ class TestLineageResponse:
     ):
         assert len(lineage_response.get_upstream_asset_guids(BASE_GUID)) == 0
 
-    def test_get_upstream_asset_guid_with_valid_guid_returns_set_of_guids(self, lineage_response):
+    def test_get_upstream_asset_guid_with_valid_guid_returns_set_of_guids(
+        self, lineage_response
+    ):
         assert (guids := lineage_response.get_upstream_asset_guids(BASE_GUID_TARGET))
         assert len(guids) == 1
         assert BASE_GUID in guids
@@ -251,13 +279,17 @@ class TestLineageResponse:
         assert "621d3fa2-54b0-4cc0-a858-5c5ea8c49349" in guids
         assert "d67d4188-010b-4adf-9886-10162f08c77b" in guids
 
-    def test_get_upstream_process_guids_with_valid_guid_returns_set_of_guids(self, lineage_response):
+    def test_get_upstream_process_guids_with_valid_guid_returns_set_of_guids(
+        self, lineage_response
+    ):
         assert (guids := lineage_response.get_upstream_process_guids(BASE_GUID_TARGET))
         assert len(guids) == 2
         assert "621d3fa2-54b0-4cc0-a858-5c5ea8c49349" in guids
         assert "d67d4188-010b-4adf-9886-10162f08c77b" in guids
 
-    def test_get_upstream_assets_with_valid_guid_returns_set_of_assets(self, lineage_response):
+    def test_get_upstream_assets_with_valid_guid_returns_set_of_assets(
+        self, lineage_response
+    ):
         assert (assets := lineage_response.get_upstream_process_guids(BASE_GUID_TARGET))
         assert len(assets) == 2
 
@@ -276,7 +308,9 @@ class TestLineageResponse:
 
 @pytest.fixture
 def searchable_field() -> SearchableField:
-    return SearchableField(atlan_field_name="atlan_field", elastic_field_name="elastic_field")
+    return SearchableField(
+        atlan_field_name="atlan_field", elastic_field_name="elastic_field"
+    )
 
 
 class TestLineageFilterField:
@@ -305,17 +339,23 @@ class TestLineageFilterFieldBoolean:
     def sut(self, searchable_field: SearchableField) -> LineageFilterFieldBoolean:
         return LineageFilterFieldBoolean(field=searchable_field)
 
-    def test_init(self, sut: LineageFilterFieldBoolean, searchable_field: SearchableField):
+    def test_init(
+        self, sut: LineageFilterFieldBoolean, searchable_field: SearchableField
+    ):
         assert sut.field == searchable_field
 
-    @pytest.mark.parametrize("value, expected", [(True, str(True)), (False, str(False))])
+    @pytest.mark.parametrize(
+        "value, expected", [(True, str(True)), (False, str(False))]
+    )
     def test_eq(self, value, expected, sut: LineageFilterFieldBoolean):
         _filter = sut.eq(value)
         assert _filter.field == sut.field
         assert _filter.operator == AtlanComparisonOperator.EQ
         assert _filter.value == expected
 
-    @pytest.mark.parametrize("value, expected", [(True, str(True)), (False, str(False))])
+    @pytest.mark.parametrize(
+        "value, expected", [(True, str(True)), (False, str(False))]
+    )
     def test_neq(self, value, expected, sut: LineageFilterFieldBoolean):
         _filter = sut.neq(value)
         assert _filter.field == sut.field
@@ -338,20 +378,28 @@ class TestLineageFilterFieldCM:
         attribute_def.configure_mock(**{"type_name": type_name})
         custom_metadata_field.attach_mock(attribute_def, "attribute_def")
         custom_metadata_field.attach_mock(attribute_def, "attribute_def")
-        custom_metadata_field.configure_mock(**{"set_name": "something", "attribute_name": "an_attribute"})
+        custom_metadata_field.configure_mock(
+            **{"set_name": "something", "attribute_name": "an_attribute"}
+        )
 
-    def test_init(self, sut: LineageFilterFieldCM, custom_metadata_field: CustomMetadataField):
+    def test_init(
+        self, sut: LineageFilterFieldCM, custom_metadata_field: CustomMetadataField
+    ):
         assert sut.field == custom_metadata_field
         assert sut.cm_field == custom_metadata_field
 
-    @pytest.mark.parametrize("value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)])
+    @pytest.mark.parametrize(
+        "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
+    )
     def test_eq(self, value, expected, sut: LineageFilterFieldCM):
         _filter = sut.eq(value)
         assert _filter.field == sut.field
         assert _filter.operator == AtlanComparisonOperator.EQ
         assert _filter.value == expected
 
-    @pytest.mark.parametrize("value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)])
+    @pytest.mark.parametrize(
+        "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
+    )
     def test_neq(self, value, expected, sut: LineageFilterFieldCM):
         _filter = sut.neq(value)
         assert _filter.field == sut.field
@@ -438,10 +486,13 @@ class TestLineageFilterFieldCM:
             ("gte", "int, float or date"),
         ],
     )
-    def test_method_with_wrong_type_raise_atlan_error(self, method, valid_types, sut: LineageFilterFieldCM):
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method, valid_types, sut: LineageFilterFieldCM
+    ):
         with pytest.raises(
             AtlanError,
-            match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be " + valid_types,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be "
+            + valid_types,
         ):
             getattr(sut, method)({})
 
@@ -451,14 +502,18 @@ class TestLineageFilterFieldNumeric:
     def sut(self, searchable_field: SearchableField) -> LineageFilterFieldNumeric:
         return LineageFilterFieldNumeric(field=searchable_field)
 
-    def test_init(self, sut: LineageFilterFieldNumeric, searchable_field: SearchableField):
+    def test_init(
+        self, sut: LineageFilterFieldNumeric, searchable_field: SearchableField
+    ):
         assert sut.field == searchable_field
 
     @pytest.mark.parametrize(
         "method",
         ["eq", "neq", "lt", "lte", "gt", "gte"],
     )
-    def test_method_with_wrong_type_raise_atlan_error(self, method: str, sut: LineageFilterFieldNumeric):
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method: str, sut: LineageFilterFieldNumeric
+    ):
         with pytest.raises(
             AtlanError,
             match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be int, float or date",
@@ -489,7 +544,9 @@ class TestLineageFilterFieldString:
     def sut(self, searchable_field: SearchableField) -> LineageFilterFieldString:
         return LineageFilterFieldString(field=searchable_field)
 
-    def test_init(self, sut: LineageFilterFieldString, searchable_field: SearchableField):
+    def test_init(
+        self, sut: LineageFilterFieldString, searchable_field: SearchableField
+    ):
         assert sut.field == searchable_field
 
     @pytest.mark.parametrize(
@@ -503,7 +560,9 @@ class TestLineageFilterFieldString:
             "does_not_contain",
         ],
     )
-    def test_method_with_wrong_type_raise_atlan_error(self, method: str, sut: LineageFilterFieldNumeric):
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method: str, sut: LineageFilterFieldNumeric
+    ):
         with pytest.raises(
             AtlanError,
             match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be int, float or date",
@@ -521,8 +580,12 @@ class TestLineageFilterFieldString:
             ("does_not_contain", AtlanComparisonOperator.NOT_CONTAINS),
         ],
     )
-    @pytest.mark.parametrize("value, expected", [("abc", "abc"), (FileType.CSV, FileType.CSV.value)])
-    def test_eq(self, method, operator, value, expected, sut: LineageFilterFieldBoolean):
+    @pytest.mark.parametrize(
+        "value, expected", [("abc", "abc"), (FileType.CSV, FileType.CSV.value)]
+    )
+    def test_eq(
+        self, method, operator, value, expected, sut: LineageFilterFieldBoolean
+    ):
         _filter = getattr(sut, method)(value)
         assert _filter.field == sut.field
         assert _filter.operator == operator
@@ -794,7 +857,9 @@ class TestFluentLineage:
         assert request.direction == direction
         assert request.exclude_meanings == exclude_meanings
         assert request.exclude_classifications == exclude_atlan_tags
-        assert request.attributes == [field.atlan_field_name for field in includes_on_results]
+        assert request.attributes == [
+            field.atlan_field_name for field in includes_on_results
+        ]
         self.validate_filter(
             filter_=request.entity_filters,
             filter_condition=FilterList.Condition.AND,
@@ -832,7 +897,9 @@ class TestFluentLineage:
         assert request.direction == direction
         assert request.exclude_meanings == exclude_meanings
         assert request.exclude_classifications == exclude_atlan_tags
-        assert request.attributes == [field.atlan_field_name for field in includes_on_results]
+        assert request.attributes == [
+            field.atlan_field_name for field in includes_on_results
+        ]
         self.validate_filter(
             filter_=request.entity_filters,
             filter_condition=FilterList.Condition.OR,
@@ -954,7 +1021,9 @@ class TestFluentLineage:
             ),
         ],
     )
-    def test_method_adds_to_list_valid_parameter(self, method, value, internal_name, sut: FluentLineage):
+    def test_method_adds_to_list_valid_parameter(
+        self, method, value, internal_name, sut: FluentLineage
+    ):
         lineage = getattr(sut, method)(value)
 
         assert lineage is not sut

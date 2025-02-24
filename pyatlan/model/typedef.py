@@ -204,8 +204,12 @@ class TypeDef(AtlanObject):
         default=None,
         description="Time (epoch) at which this object was created, in milliseconds.",
     )
-    created_by: Optional[str] = Field(default=None, description="Username of the user who created the object.")
-    description: Optional[str] = Field(default=None, description="Description of the type definition.")
+    created_by: Optional[str] = Field(
+        default=None, description="Username of the user who created the object."
+    )
+    description: Optional[str] = Field(
+        default=None, description="Description of the type definition."
+    )
     guid: Optional[str] = Field(
         default=None,
         description="Unique identifier that represents the type definition.",
@@ -220,14 +224,18 @@ class TypeDef(AtlanObject):
         default=None,
         description="Username of the user who last assets_updated the object.",
     )
-    version: Optional[int] = Field(default=None, description="Version of this type definition.")
+    version: Optional[int] = Field(
+        default=None, description="Version of this type definition."
+    )
 
 
 class EnumDef(TypeDef):
     class ElementDef(AtlanObject):
         value: str = Field(description="One unique value within the enumeration.")
         description: Optional[str] = Field(default=None, description="Unused.")
-        ordinal: Optional[int] = Field(default=None, description="Unique numeric identifier for the value.")
+        ordinal: Optional[int] = Field(
+            default=None, description="Unique numeric identifier for the value."
+        )
 
         @staticmethod
         def of(ordinal: int, value: str) -> EnumDef.ElementDef:
@@ -248,7 +256,10 @@ class EnumDef(TypeDef):
                 [values],
             )
             elements: List[EnumDef.ElementDef] = []
-            elements.extend(EnumDef.ElementDef.of(ordinal=i, value=values[i]) for i in range(len(values)))
+            elements.extend(
+                EnumDef.ElementDef.of(ordinal=i, value=values[i])
+                for i in range(len(values))
+            )
             return elements
 
         @staticmethod
@@ -271,8 +282,12 @@ class EnumDef(TypeDef):
             return extended_list
 
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
-    element_defs: List[EnumDef.ElementDef] = Field(description="Valid values for the enumeration.")
-    options: Optional[Dict[str, Any]] = Field(default=None, description="Optional properties of the type definition.")
+    element_defs: List[EnumDef.ElementDef] = Field(
+        description="Valid values for the enumeration."
+    )
+    options: Optional[Dict[str, Any]] = Field(
+        default=None, description="Optional properties of the type definition."
+    )
     service_type: Optional[str] = Field(default=None, description="Internal use only.")
 
     @staticmethod
@@ -347,7 +362,9 @@ class AttributeDef(AtlanObject):
             "are available and used.",
             default="v2",
         )
-        description: Optional[str] = Field(default=None, description="Optional description of the attribute.")
+        description: Optional[str] = Field(
+            default=None, description="Optional description of the attribute."
+        )
         applicable_entity_types: Optional[str] = Field(
             default=None,
             description="Set of entities on which this attribute can be applied. "
@@ -408,11 +425,19 @@ class AttributeDef(AtlanObject):
             default=None,
             description="Whether the attribute has been deleted (true) or is still active (false).",
         )
-        archived_at: Optional[int] = Field(default=None, description="When the attribute was deleted.")
-        archived_by: Optional[str] = Field(default=None, description="User who deleted the attribute.")
+        archived_at: Optional[int] = Field(
+            default=None, description="When the attribute was deleted."
+        )
+        archived_by: Optional[str] = Field(
+            default=None, description="User who deleted the attribute."
+        )
         is_soft_reference: Optional[str] = Field(default=None, description="TBC")
-        is_append_on_partial_update: Optional[str] = Field(default=None, description="TBC")
-        primitive_type: Optional[str] = Field(default=None, description="Type of the attribute.")
+        is_append_on_partial_update: Optional[str] = Field(
+            default=None, description="TBC"
+        )
+        primitive_type: Optional[str] = Field(
+            default=None, description="Type of the attribute."
+        )
         applicable_connections: Optional[str] = Field(
             default=None,
             description="Qualified names of connections to which to restrict the attribute. "
@@ -466,7 +491,9 @@ class AttributeDef(AtlanObject):
             super().__setattr__(name, value)
             if self._attr_def and name == "multi_value_select":
                 self._attr_def.cardinality = Cardinality.SET
-                if self._attr_def.type_name and "array<" not in str(self._attr_def.type_name):
+                if self._attr_def.type_name and "array<" not in str(
+                    self._attr_def.type_name
+                ):
                     self._attr_def.type_name = f"array<{self._attr_def.type_name}>"
 
         @staticmethod
@@ -514,10 +541,18 @@ class AttributeDef(AtlanObject):
         "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
         "they are unique and unordered.",
     )
-    constraints: Optional[List[Dict[str, Any]]] = Field(default=None, description="Internal use only.")
-    enum_values: Optional[List[str]] = Field(default=None, description="list of values for an enumeration.")
-    description: Optional[str] = Field(default=None, description="Description of the attribute definition.")
-    default_value: Optional[str] = Field(default=None, description="Default value for this attribute (if any).")
+    constraints: Optional[List[Dict[str, Any]]] = Field(
+        default=None, description="Internal use only."
+    )
+    enum_values: Optional[List[str]] = Field(
+        default=None, description="list of values for an enumeration."
+    )
+    description: Optional[str] = Field(
+        default=None, description="Description of the attribute definition."
+    )
+    default_value: Optional[str] = Field(
+        default=None, description="Default value for this attribute (if any)."
+    )
     display_name: Optional[str] = Field(
         default=None,
         description="Name to use within all user interactions through the user interface. Note that this may not "
@@ -533,7 +568,9 @@ class AttributeDef(AtlanObject):
         "by the user without impacting existing instances of the attribute.)",
     )
     include_in_notification: Optional[bool] = Field(default=None, description="TBC")
-    index_type: Optional[IndexType] = Field(default=None, description="", example="DEFAULT")
+    index_type: Optional[IndexType] = Field(
+        default=None, description="", example="DEFAULT"
+    )
     is_indexable: Optional[bool] = Field(
         default=None,
         description="When true, values for this attribute will be indexed for searching.",
@@ -550,8 +587,12 @@ class AttributeDef(AtlanObject):
         default_factory=Options, description="Extensible options for the attribute."
     )
     search_weight: Optional[float] = Field(default=None, description="TBC")
-    skip_scrubbing: Optional[bool] = Field(default=None, description="When true, scrubbing of data will be skipped.")
-    type_name: Optional[str] = Field(default=None, description="Type of this attribute.")
+    skip_scrubbing: Optional[bool] = Field(
+        default=None, description="When true, scrubbing of data will be skipped."
+    )
+    type_name: Optional[str] = Field(
+        default=None, description="Type of this attribute."
+    )
     values_min_count: Optional[float] = Field(
         default=None,
         description="Minimum number of values for this attribute. If greater than 0, this attribute becomes required.",
@@ -601,7 +642,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(entity_types, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_entity_types", EntityTypes)
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_entity_types", EntityTypes
+            )
         self.options.applicable_entity_types = json.dumps(list(entity_types))
 
     @property
@@ -620,7 +663,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(asset_types, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_asset_types", AssetTypes)
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_asset_types", AssetTypes
+            )
         if not asset_types.issubset(_complete_type_list):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                 asset_types, "applicable_asset_types", _complete_type_list
@@ -643,7 +688,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(glossary_types, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_glossary_types", GlossaryTypes)
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_glossary_types", GlossaryTypes
+            )
         if not glossary_types.issubset(_all_glossary_types):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                 glossary_types, "applicable_glossary_types", _all_glossary_types
@@ -666,7 +713,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domain_types, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_domain_types", DomainTypes)
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_domain_types", DomainTypes
+            )
         if not domain_types.issubset(_all_domain_types):
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                 domain_types, "applicable_domain_types", _all_domain_types
@@ -716,7 +765,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(connections, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_connections", "Set[str]")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_connections", "Set[str]"
+            )
         self.options.applicable_connections = json.dumps(list(connections))
 
     @property
@@ -735,7 +786,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(glossaries, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_glossaries", "Set[str]")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_glossaries", "Set[str]"
+            )
         self.options.applicable_glossaries = json.dumps(list(glossaries))
 
     @property
@@ -754,7 +807,9 @@ class AttributeDef(AtlanObject):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domains, set):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("applicable_domains", "Set[str]")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_domains", "Set[str]"
+            )
         self.options.applicable_domains = json.dumps(list(domains))
 
     def __init__(self, **data):
@@ -784,7 +839,9 @@ class AttributeDef(AtlanObject):
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
         attr_def = AttributeDef(
             display_name=display_name,
-            options=AttributeDef.Options.create(attribute_type=attribute_type, options_name=options_name),
+            options=AttributeDef.Options.create(
+                attribute_type=attribute_type, options_name=options_name
+            ),
             is_new=True,
             cardinality=Cardinality.SINGLE,
             description="",
@@ -822,11 +879,19 @@ class AttributeDef(AtlanObject):
                 attr_def.enum_values = []
 
         attr_def.applicable_asset_types = applicable_asset_types or _complete_type_list
-        attr_def.applicable_glossary_types = applicable_glossary_types or _all_glossary_types
+        attr_def.applicable_glossary_types = (
+            applicable_glossary_types or _all_glossary_types
+        )
         attr_def.applicable_domain_types = applicable_domain_types or _all_domain_types
-        attr_def.applicable_other_asset_types = applicable_other_asset_types or _all_other_types
-        attr_def.applicable_connections = applicable_connections or _get_all_qualified_names("Connection")
-        attr_def.applicable_glossaries = applicable_glossaries or _get_all_qualified_names("AtlasGlossary")
+        attr_def.applicable_other_asset_types = (
+            applicable_other_asset_types or _all_other_types
+        )
+        attr_def.applicable_connections = (
+            applicable_connections or _get_all_qualified_names("Connection")
+        )
+        attr_def.applicable_glossaries = (
+            applicable_glossaries or _get_all_qualified_names("AtlasGlossary")
+        )
         attr_def.applicable_domains = applicable_domains or _all_domains
         return attr_def
 
@@ -845,7 +910,9 @@ class AttributeDef(AtlanObject):
 
 class RelationshipAttributeDef(AttributeDef):
     is_legacy_attribute: Optional[bool] = Field(default=None, description="Unused.")
-    relationship_type_name: Optional[str] = Field(default=None, description="Name of the relationship type.")
+    relationship_type_name: Optional[str] = Field(
+        default=None, description="Name of the relationship type."
+    )
 
 
 class StructDef(TypeDef):
@@ -854,19 +921,27 @@ class StructDef(TypeDef):
         default=None,
         description="list of attributes that should be available in the type_ definition.",
     )
-    service_type: Optional[str] = Field(default=None, description="Internal use only.", example="atlan")
+    service_type: Optional[str] = Field(
+        default=None, description="Internal use only.", example="atlan"
+    )
 
 
 class AtlanTagDef(TypeDef):
-    attribute_defs: Optional[List[AttributeDef]] = Field(default=None, description="Unused.")
+    attribute_defs: Optional[List[AttributeDef]] = Field(
+        default=None, description="Unused."
+    )
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
-    display_name: str = Field(default=None, description="Name used for display purposes (in user interfaces).")
+    display_name: str = Field(
+        default=None, description="Name used for display purposes (in user interfaces)."
+    )
     entity_types: Optional[List[str]] = Field(
         default=None,
         description="A list of the entity types that this classification can be used against."
         " (This should be `Asset` to allow classification of any asset in Atlan.)",
     )
-    options: Optional[Dict[str, Any]] = Field(default=None, description="Optional properties of the type_ definition.")
+    options: Optional[Dict[str, Any]] = Field(
+        default=None, description="Optional properties of the type_ definition."
+    )
     sub_types: Optional[List[str]] = Field(
         default=None,
         description="list of the sub-types that extend from this type_ definition. Generally this is not specified "
@@ -881,7 +956,9 @@ class AtlanTagDef(TypeDef):
     service_type: Optional[str] = Field(
         default=None, description="Name used for display purposes (in user interfaces)."
     )
-    skip_display_name_uniqueness_check: Optional[bool] = Field(default=None, description="TBC")
+    skip_display_name_uniqueness_check: Optional[bool] = Field(
+        default=None, description="TBC"
+    )
 
     @staticmethod
     def create(
@@ -925,7 +1002,9 @@ RESERVED_SERVICE_TYPES = {"atlas_core", "atlan", "aws", "azure", "gcp", "google"
 
 
 class EntityDef(TypeDef):
-    attribute_defs: Optional[List[Dict[str, Any]]] = Field(default_factory=list, description="Unused.", example=[])
+    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        default_factory=list, description="Unused.", example=[]
+    )
     business_attribute_defs: Optional[Dict[str, List[Dict[str, Any]]]] = Field(
         default_factory=cast(Callable[[], Dict[str, List[Dict[str, Any]]]], dict),
         description="Unused.",
@@ -935,7 +1014,9 @@ class EntityDef(TypeDef):
     relationship_attribute_defs: Optional[List[Dict[str, Any]]] = Field(
         default_factory=list, description="Unused.", example=[]
     )
-    service_type: Optional[str] = Field(default=None, description="Internal use only.", example="atlan")
+    service_type: Optional[str] = Field(
+        default=None, description="Internal use only.", example="atlan"
+    )
     sub_types: Optional[List[str]] = Field(
         default_factory=list,
         description="list of the sub-types that extend from this type_ definition. Generally this is not specified in "
@@ -956,18 +1037,30 @@ class EntityDef(TypeDef):
 
 
 class RelationshipDef(TypeDef):
-    attribute_defs: Optional[List[Dict[str, Any]]] = Field(default_factory=list, description="Unused.", example=[])
+    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        default_factory=list, description="Unused.", example=[]
+    )
     category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
-    end_def1: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Unused.", example={})
-    end_def2: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Unused.", example={})
-    propagate_tags: str = Field(default="ONE_TO_TWO", description="Unused", example="ONE_TO_TWO")
-    relationship_category: str = Field(default="AGGREGATION", description="Unused", example="AGGREGATION")
+    end_def1: Optional[Dict[str, Any]] = Field(
+        default_factory=dict, description="Unused.", example={}
+    )
+    end_def2: Optional[Dict[str, Any]] = Field(
+        default_factory=dict, description="Unused.", example={}
+    )
+    propagate_tags: str = Field(
+        default="ONE_TO_TWO", description="Unused", example="ONE_TO_TWO"
+    )
+    relationship_category: str = Field(
+        default="AGGREGATION", description="Unused", example="AGGREGATION"
+    )
     relationship_label: str = Field(
         default="__SalesforceOrganization.reports",
         description="Unused",
         example="__SalesforceOrganization.reports",
     )
-    service_type: Optional[str] = Field(default=None, description="Internal use only.", example="atlan")
+    service_type: Optional[str] = Field(
+        default=None, description="Internal use only.", example="atlan"
+    )
 
 
 class CustomMetadataDef(TypeDef):
@@ -976,39 +1069,53 @@ class CustomMetadataDef(TypeDef):
             default=None,
             description="If the logoType is emoji, this should hold the emoji character.",
         )
-        image_id: Optional[str] = Field(default=None, description="The id of the image used for the logo.")
+        image_id: Optional[str] = Field(
+            default=None, description="The id of the image used for the logo."
+        )
         is_locked: Optional[bool] = Field(
             description="Indicates whether the custom metadata can be managed in the UI (false) or not (true)."
         )
-        logo_type: Optional[str] = Field(default=None, description="Type of logo used for the custom metadata.")
+        logo_type: Optional[str] = Field(
+            default=None, description="Type of logo used for the custom metadata."
+        )
         logo_url: Optional[str] = Field(
             default=None,
             description="If the logoType is image, this should hold a URL to the image.",
         )
-        icon_color: Optional[AtlanTagColor] = Field(default=None, description="Color to use for the icon.")
+        icon_color: Optional[AtlanTagColor] = Field(
+            default=None, description="Color to use for the icon."
+        )
         icon_name: Optional[AtlanIcon] = Field(
             default=None, description="Icon to use to represent the custom metadata."
         )
 
         @staticmethod
-        def with_logo_as_emoji(emoji: str, locked: bool = False) -> CustomMetadataDef.Options:
+        def with_logo_as_emoji(
+            emoji: str, locked: bool = False
+        ) -> CustomMetadataDef.Options:
             from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["emoji"],
                 [emoji],
             )
-            return CustomMetadataDef.Options(emoji=emoji, logo_type="emoji", is_locked=locked)
+            return CustomMetadataDef.Options(
+                emoji=emoji, logo_type="emoji", is_locked=locked
+            )
 
         @staticmethod
-        def with_logo_from_url(url: str, locked: bool = False) -> CustomMetadataDef.Options:
+        def with_logo_from_url(
+            url: str, locked: bool = False
+        ) -> CustomMetadataDef.Options:
             from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["url"],
                 [url],
             )
-            return CustomMetadataDef.Options(logo_url=url, logo_type="image", is_locked=locked)
+            return CustomMetadataDef.Options(
+                logo_url=url, logo_type="image", is_locked=locked
+            )
 
         @staticmethod
         def with_logo_from_icon(
@@ -1032,7 +1139,9 @@ class CustomMetadataDef(TypeDef):
         description="list of custom attributes defined within the custom metadata.",
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
-    display_name: str = Field(default=None, description="Name used for display purposes (in user interfaces).")
+    display_name: str = Field(
+        default=None, description="Name used for display purposes (in user interfaces)."
+    )
     options: Optional[CustomMetadataDef.Options] = Field(
         default=None, description="Optional properties of the type definition."
     )
@@ -1054,14 +1163,20 @@ class CustomMetadataDef(TypeDef):
 
 
 class TypeDefResponse(AtlanObject):
-    enum_defs: List[EnumDef] = Field(default_factory=list, description="list of enumeration type definitions.")
-    struct_defs: List[StructDef] = Field(default_factory=list, description="list of struct type definitions.")
+    enum_defs: List[EnumDef] = Field(
+        default_factory=list, description="list of enumeration type definitions."
+    )
+    struct_defs: List[StructDef] = Field(
+        default_factory=list, description="list of struct type definitions."
+    )
     atlan_tag_defs: List[AtlanTagDef] = Field(
         default_factory=list,
         description="list of classification type definitions.",
         alias="classificationDefs",
     )
-    entity_defs: List[EntityDef] = Field(default_factory=list, description="list of entity type_ definitions.")
+    entity_defs: List[EntityDef] = Field(
+        default_factory=list, description="list of entity type_ definitions."
+    )
     relationship_defs: List[RelationshipDef] = Field(
         default_factory=list, description="list of relationship type_ definitions."
     )

@@ -21,7 +21,9 @@ class TokenClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @validate_arguments
@@ -54,7 +56,9 @@ class TokenClient:
             query_params["filter"] = post_filter
         if sort is not None:
             query_params["sort"] = sort
-        raw_json = self._client._call_api(GET_API_TOKENS.format_path_with_params(), query_params)
+        raw_json = self._client._call_api(
+            GET_API_TOKENS.format_path_with_params(), query_params
+        )
         return ApiTokenResponse(**raw_json)
 
     @validate_arguments
@@ -101,7 +105,9 @@ class TokenClient:
         :param guid: unique identifier by which to retrieve the API token
         :returns: the API token whose clientId matches the provided string, or None if there is none
         """
-        if response := self.get(offset=0, limit=5, post_filter='{"id":"' + guid + '"}', sort="createdAt"):
+        if response := self.get(
+            offset=0, limit=5, post_filter='{"id":"' + guid + '"}', sort="createdAt"
+        ):
             if response.records and len(response.records) >= 1:
                 return response.records[0]
         return None
@@ -159,7 +165,9 @@ class TokenClient:
             description=description,
             persona_qualified_names=personas or set(),
         )
-        raw_json = self._client._call_api(UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request)
+        raw_json = self._client._call_api(
+            UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
+        )
         return ApiToken(**raw_json)
 
     @validate_arguments

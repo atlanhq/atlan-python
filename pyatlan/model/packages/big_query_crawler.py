@@ -132,13 +132,19 @@ class BigQueryCrawler(AbstractCrawler):
         assets with case-sensitive identifiers.
         :returns: miner, set to include custom configuration
         """
-        config and self._parameters.append(dict(name="control-config", value=str(config)))
+        config and self._parameters.append(
+            dict(name="control-config", value=str(config))
+        )
         self._advanced_config = True
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credentials-fetch-strategy", "value": "credential_guid"})
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
+        )
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             dict(
                 name="control-config-strategy",
@@ -148,7 +154,9 @@ class BigQueryCrawler(AbstractCrawler):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

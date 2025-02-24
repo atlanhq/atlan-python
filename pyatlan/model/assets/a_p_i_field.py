@@ -126,10 +126,12 @@ class APIField(API):
         validate_required_fields(["name"], [name])
         # valid checker - for either to have a value ONLY
         if parent_api_object_qualified_name is None or (
-            isinstance(parent_api_object_qualified_name, str) and not parent_api_object_qualified_name.strip()
+            isinstance(parent_api_object_qualified_name, str)
+            and not parent_api_object_qualified_name.strip()
         ):
             if parent_api_query_qualified_name is None or (
-                isinstance(parent_api_query_qualified_name, str) and not parent_api_query_qualified_name.strip()
+                isinstance(parent_api_query_qualified_name, str)
+                and not parent_api_query_qualified_name.strip()
             ):
                 raise ValueError(
                     (
@@ -137,7 +139,10 @@ class APIField(API):
                         "parent_api_query_qualified_name requires a valid value"
                     )
                 )
-        elif isinstance(parent_api_query_qualified_name, str) and parent_api_query_qualified_name.strip():
+        elif (
+            isinstance(parent_api_query_qualified_name, str)
+            and parent_api_query_qualified_name.strip()
+        ):
             raise ValueError(
                 "Both parent_api_object_qualified_name and parent_api_query_qualified_name cannot be valid"
             )
@@ -145,16 +150,21 @@ class APIField(API):
         # is api object reference - checker
         if is_api_object_reference:
             if not reference_api_object_qualified_name or (
-                isinstance(reference_api_object_qualified_name, str) and not reference_api_object_qualified_name.strip()
+                isinstance(reference_api_object_qualified_name, str)
+                and not reference_api_object_qualified_name.strip()
             ):
-                raise ValueError("Set valid qualified name for reference_api_object_qualified_name")
+                raise ValueError(
+                    "Set valid qualified name for reference_api_object_qualified_name"
+                )
         else:
             if (
                 reference_api_object_qualified_name
                 and isinstance(reference_api_object_qualified_name, str)
                 and reference_api_object_qualified_name.strip()
             ):
-                raise ValueError("Set is_api_object_reference to true to set reference_api_object_qualified_name")
+                raise ValueError(
+                    "Set is_api_object_reference to true to set reference_api_object_qualified_name"
+                )
 
         attributes = APIField.Attributes.creator(
             name=name,
@@ -182,15 +192,21 @@ class APIField(API):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    API_FIELD_TYPE: ClassVar[KeywordField] = KeywordField("apiFieldType", "apiFieldType")
+    API_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "apiFieldType", "apiFieldType"
+    )
     """
     Type of APIField. E.g. STRING, NUMBER etc. It is free text.
     """
-    API_FIELD_TYPE_SECONDARY: ClassVar[KeywordField] = KeywordField("apiFieldTypeSecondary", "apiFieldTypeSecondary")
+    API_FIELD_TYPE_SECONDARY: ClassVar[KeywordField] = KeywordField(
+        "apiFieldTypeSecondary", "apiFieldTypeSecondary"
+    )
     """
     Secondary Type of APIField. E.g. LIST/STRING, then LIST would be the secondary type.
     """
-    API_QUERY_PARAM_TYPE: ClassVar[KeywordField] = KeywordField("apiQueryParamType", "apiQueryParamType")
+    API_QUERY_PARAM_TYPE: ClassVar[KeywordField] = KeywordField(
+        "apiQueryParamType", "apiQueryParamType"
+    )
     """
     If parent relationship type is APIQuery, then this attribute denotes if this is input or output parameter.
     """
@@ -224,7 +240,11 @@ class APIField(API):
 
     @property
     def api_field_type_secondary(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.api_field_type_secondary
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.api_field_type_secondary
+        )
 
     @api_field_type_secondary.setter
     def api_field_type_secondary(self, api_field_type_secondary: Optional[str]):
@@ -237,7 +257,9 @@ class APIField(API):
         return None if self.attributes is None else self.attributes.api_query_param_type
 
     @api_query_param_type.setter
-    def api_query_param_type(self, api_query_param_type: Optional[APIQueryParamTypeEnum]):
+    def api_query_param_type(
+        self, api_query_param_type: Optional[APIQueryParamTypeEnum]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_query_param_type = api_query_param_type
@@ -265,9 +287,15 @@ class APIField(API):
     class Attributes(API.Attributes):
         api_field_type: Optional[str] = Field(default=None, description="")
         api_field_type_secondary: Optional[str] = Field(default=None, description="")
-        api_query_param_type: Optional[APIQueryParamTypeEnum] = Field(default=None, description="")
-        api_query: Optional[APIQuery] = Field(default=None, description="")  # relationship
-        api_object: Optional[APIObject] = Field(default=None, description="")  # relationship
+        api_query_param_type: Optional[APIQueryParamTypeEnum] = Field(
+            default=None, description=""
+        )
+        api_query: Optional[APIQuery] = Field(
+            default=None, description=""
+        )  # relationship
+        api_object: Optional[APIObject] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -286,10 +314,12 @@ class APIField(API):
         ) -> APIField.Attributes:
             validate_required_fields(["name"], [name])
             if parent_api_object_qualified_name is None or (
-                isinstance(parent_api_object_qualified_name, str) and not parent_api_object_qualified_name.strip()
+                isinstance(parent_api_object_qualified_name, str)
+                and not parent_api_object_qualified_name.strip()
             ):
                 if parent_api_query_qualified_name is None or (
-                    isinstance(parent_api_query_qualified_name, str) and not parent_api_query_qualified_name.strip()
+                    isinstance(parent_api_query_qualified_name, str)
+                    and not parent_api_query_qualified_name.strip()
                 ):
                     raise ValueError(
                         (
@@ -297,7 +327,10 @@ class APIField(API):
                             "parent_api_query_qualified_name requires a valid value"
                         )
                     )
-            elif isinstance(parent_api_query_qualified_name, str) and parent_api_query_qualified_name.strip():
+            elif (
+                isinstance(parent_api_query_qualified_name, str)
+                and parent_api_query_qualified_name.strip()
+            ):
                 raise ValueError(
                     "Both parent_api_object_qualified_name and parent_api_query_qualified_name cannot be valid"
                 )
@@ -307,18 +340,24 @@ class APIField(API):
                     isinstance(reference_api_object_qualified_name, str)
                     and not reference_api_object_qualified_name.strip()
                 ):
-                    raise ValueError("Set valid qualified name for reference_api_object_qualified_name")
+                    raise ValueError(
+                        "Set valid qualified name for reference_api_object_qualified_name"
+                    )
             else:
                 if (
                     reference_api_object_qualified_name
                     and isinstance(reference_api_object_qualified_name, str)
                     and reference_api_object_qualified_name.strip()
                 ):
-                    raise ValueError("Set is_api_object_reference to true to set reference_api_object_qualified_name")
+                    raise ValueError(
+                        "Set is_api_object_reference to true to set reference_api_object_qualified_name"
+                    )
 
             # connector-name
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
                 connection_qn = connection_qualified_name
             elif parent_api_object_qualified_name:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
@@ -343,9 +382,13 @@ class APIField(API):
                     api_field_type_secondary=api_field_type_secondary,
                     api_is_object_reference=is_api_object_reference,
                     api_object_qualified_name=(
-                        reference_api_object_qualified_name if is_api_object_reference else None
+                        reference_api_object_qualified_name
+                        if is_api_object_reference
+                        else None
                     ),
-                    api_object=APIObject.ref_by_qualified_name(str(parent_api_object_qualified_name)),
+                    api_object=APIObject.ref_by_qualified_name(
+                        str(parent_api_object_qualified_name)
+                    ),
                     api_query_param_type=api_query_param_type,
                 )
             else:
@@ -358,9 +401,13 @@ class APIField(API):
                     api_field_type_secondary=api_field_type_secondary,
                     api_is_object_reference=is_api_object_reference,
                     api_object_qualified_name=(
-                        reference_api_object_qualified_name if is_api_object_reference else None
+                        reference_api_object_qualified_name
+                        if is_api_object_reference
+                        else None
                     ),
-                    api_query=APIQuery.ref_by_qualified_name(str(parent_api_query_qualified_name)),
+                    api_query=APIQuery.ref_by_qualified_name(
+                        str(parent_api_query_qualified_name)
+                    ),
                     api_query_param_type=api_query_param_type,
                 )
 

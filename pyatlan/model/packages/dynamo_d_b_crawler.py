@@ -99,7 +99,9 @@ class DynamoDBCrawler(AbstractCrawler):
             "auth_type": "role",
             "connector_type": "sdk",
         }
-        self._credentials_body["extra"].update({"aws_role_arn": arn, "aws_external_id": external_id})
+        self._credentials_body["extra"].update(
+            {"aws_role_arn": arn, "aws_external_id": external_id}
+        )
         self._credentials_body.update(local_creds)
         return self
 
@@ -129,12 +131,18 @@ class DynamoDBCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credentials-fetch-strategy", "value": "credential_guid"})
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credentials-fetch-strategy", "value": "credential_guid"}
+        )
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

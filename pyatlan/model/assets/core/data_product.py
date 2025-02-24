@@ -59,7 +59,9 @@ class DataProduct(DataMesh):
         asset_selection: IndexSearchRequest,
     ) -> DataProduct:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -92,7 +94,9 @@ class DataProduct(DataMesh):
             )
         )
         if asset_selection:
-            product.data_product_assets_d_s_l = DataProductsAssetsDSL.get_asset_selection(asset_selection)
+            product.data_product_assets_d_s_l = (
+                DataProductsAssetsDSL.get_asset_selection(asset_selection)
+            )
         return product
 
     @classmethod
@@ -102,7 +106,9 @@ class DataProduct(DataMesh):
         name: str = "",
     ) -> SelfAsset:
         warn(
-            ("This method is deprecated, please use 'updater' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -124,7 +130,9 @@ class DataProduct(DataMesh):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_PRODUCT_STATUS: ClassVar[KeywordField] = KeywordField("dataProductStatus", "dataProductStatus")
+    DATA_PRODUCT_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dataProductStatus", "dataProductStatus"
+    )
     """
     Status of this data product.
     """
@@ -132,31 +140,45 @@ class DataProduct(DataMesh):
     """
     Status of this data product.
     """
-    DATA_PRODUCT_CRITICALITY: ClassVar[KeywordField] = KeywordField("dataProductCriticality", "dataProductCriticality")
+    DATA_PRODUCT_CRITICALITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductCriticality", "dataProductCriticality"
+    )
     """
     Criticality of this data product.
     """
-    DAAP_CRITICALITY: ClassVar[KeywordField] = KeywordField("daapCriticality", "daapCriticality")
+    DAAP_CRITICALITY: ClassVar[KeywordField] = KeywordField(
+        "daapCriticality", "daapCriticality"
+    )
     """
     Criticality of this data product.
     """
-    DATA_PRODUCT_SENSITIVITY: ClassVar[KeywordField] = KeywordField("dataProductSensitivity", "dataProductSensitivity")
+    DATA_PRODUCT_SENSITIVITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductSensitivity", "dataProductSensitivity"
+    )
     """
     Information sensitivity of this data product.
     """
-    DAAP_SENSITIVITY: ClassVar[KeywordField] = KeywordField("daapSensitivity", "daapSensitivity")
+    DAAP_SENSITIVITY: ClassVar[KeywordField] = KeywordField(
+        "daapSensitivity", "daapSensitivity"
+    )
     """
     Information sensitivity of this data product.
     """
-    DATA_PRODUCT_VISIBILITY: ClassVar[KeywordField] = KeywordField("dataProductVisibility", "dataProductVisibility")
+    DATA_PRODUCT_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "dataProductVisibility", "dataProductVisibility"
+    )
     """
     Visibility of a data product.
     """
-    DAAP_VISIBILITY: ClassVar[KeywordField] = KeywordField("daapVisibility", "daapVisibility")
+    DAAP_VISIBILITY: ClassVar[KeywordField] = KeywordField(
+        "daapVisibility", "daapVisibility"
+    )
     """
     Visibility of a data product.
     """
-    DATA_PRODUCT_ASSETS_DSL: ClassVar[TextField] = TextField("dataProductAssetsDSL", "dataProductAssetsDSL")
+    DATA_PRODUCT_ASSETS_DSL: ClassVar[TextField] = TextField(
+        "dataProductAssetsDSL", "dataProductAssetsDSL"
+    )
     """
     Search DSL used to define which assets are part of this data product.
     """
@@ -166,7 +188,9 @@ class DataProduct(DataMesh):
     """
     Playbook filter to define which assets are part of this data product.
     """
-    DATA_PRODUCT_SCORE_VALUE: ClassVar[NumericField] = NumericField("dataProductScoreValue", "dataProductScoreValue")
+    DATA_PRODUCT_SCORE_VALUE: ClassVar[NumericField] = NumericField(
+        "dataProductScoreValue", "dataProductScoreValue"
+    )
     """
     Score of this data product.
     """
@@ -176,19 +200,27 @@ class DataProduct(DataMesh):
     """
     Timestamp when the score of this data product was last updated.
     """
-    DAAP_VISIBILITY_USERS: ClassVar[KeywordField] = KeywordField("daapVisibilityUsers", "daapVisibilityUsers")
+    DAAP_VISIBILITY_USERS: ClassVar[KeywordField] = KeywordField(
+        "daapVisibilityUsers", "daapVisibilityUsers"
+    )
     """
     list of users for product visibility control
     """
-    DAAP_VISIBILITY_GROUPS: ClassVar[KeywordField] = KeywordField("daapVisibilityGroups", "daapVisibilityGroups")
+    DAAP_VISIBILITY_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "daapVisibilityGroups", "daapVisibilityGroups"
+    )
     """
     list of groups for product visibility control
     """
-    DAAP_OUTPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField("daapOutputPortGuids", "daapOutputPortGuids")
+    DAAP_OUTPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "daapOutputPortGuids", "daapOutputPortGuids"
+    )
     """
     Output ports guids for this data product.
     """
-    DAAP_INPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField("daapInputPortGuids", "daapInputPortGuids")
+    DAAP_INPUT_PORT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "daapInputPortGuids", "daapInputPortGuids"
+    )
     """
     Input ports guids for this data product.
     """
@@ -250,10 +282,16 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_criticality(self) -> Optional[DataProductCriticality]:
-        return None if self.attributes is None else self.attributes.data_product_criticality
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_criticality
+        )
 
     @data_product_criticality.setter
-    def data_product_criticality(self, data_product_criticality: Optional[DataProductCriticality]):
+    def data_product_criticality(
+        self, data_product_criticality: Optional[DataProductCriticality]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_criticality = data_product_criticality
@@ -270,10 +308,16 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_sensitivity(self) -> Optional[DataProductSensitivity]:
-        return None if self.attributes is None else self.attributes.data_product_sensitivity
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_sensitivity
+        )
 
     @data_product_sensitivity.setter
-    def data_product_sensitivity(self, data_product_sensitivity: Optional[DataProductSensitivity]):
+    def data_product_sensitivity(
+        self, data_product_sensitivity: Optional[DataProductSensitivity]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_sensitivity = data_product_sensitivity
@@ -290,10 +334,14 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_visibility(self) -> Optional[DataProductVisibility]:
-        return None if self.attributes is None else self.attributes.data_product_visibility
+        return (
+            None if self.attributes is None else self.attributes.data_product_visibility
+        )
 
     @data_product_visibility.setter
-    def data_product_visibility(self, data_product_visibility: Optional[DataProductVisibility]):
+    def data_product_visibility(
+        self, data_product_visibility: Optional[DataProductVisibility]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_visibility = data_product_visibility
@@ -310,7 +358,11 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_assets_d_s_l(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_product_assets_d_s_l
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_assets_d_s_l
+        )
 
     @data_product_assets_d_s_l.setter
     def data_product_assets_d_s_l(self, data_product_assets_d_s_l: Optional[str]):
@@ -320,17 +372,29 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_assets_playbook_filter(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_product_assets_playbook_filter
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_assets_playbook_filter
+        )
 
     @data_product_assets_playbook_filter.setter
-    def data_product_assets_playbook_filter(self, data_product_assets_playbook_filter: Optional[str]):
+    def data_product_assets_playbook_filter(
+        self, data_product_assets_playbook_filter: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.data_product_assets_playbook_filter = data_product_assets_playbook_filter
+        self.attributes.data_product_assets_playbook_filter = (
+            data_product_assets_playbook_filter
+        )
 
     @property
     def data_product_score_value(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.data_product_score_value
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_value
+        )
 
     @data_product_score_value.setter
     def data_product_score_value(self, data_product_score_value: Optional[float]):
@@ -340,17 +404,25 @@ class DataProduct(DataMesh):
 
     @property
     def data_product_score_updated_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.data_product_score_updated_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_product_score_updated_at
+        )
 
     @data_product_score_updated_at.setter
-    def data_product_score_updated_at(self, data_product_score_updated_at: Optional[datetime]):
+    def data_product_score_updated_at(
+        self, data_product_score_updated_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_product_score_updated_at = data_product_score_updated_at
 
     @property
     def daap_visibility_users(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.daap_visibility_users
+        return (
+            None if self.attributes is None else self.attributes.daap_visibility_users
+        )
 
     @daap_visibility_users.setter
     def daap_visibility_users(self, daap_visibility_users: Optional[Set[str]]):
@@ -360,7 +432,9 @@ class DataProduct(DataMesh):
 
     @property
     def daap_visibility_groups(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.daap_visibility_groups
+        return (
+            None if self.attributes is None else self.attributes.daap_visibility_groups
+        )
 
     @daap_visibility_groups.setter
     def daap_visibility_groups(self, daap_visibility_groups: Optional[Set[str]]):
@@ -370,7 +444,9 @@ class DataProduct(DataMesh):
 
     @property
     def daap_output_port_guids(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.daap_output_port_guids
+        return (
+            None if self.attributes is None else self.attributes.daap_output_port_guids
+        )
 
     @daap_output_port_guids.setter
     def daap_output_port_guids(self, daap_output_port_guids: Optional[Set[str]]):
@@ -380,7 +456,9 @@ class DataProduct(DataMesh):
 
     @property
     def daap_input_port_guids(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.daap_input_port_guids
+        return (
+            None if self.attributes is None else self.attributes.daap_input_port_guids
+        )
 
     @daap_input_port_guids.setter
     def daap_input_port_guids(self, daap_input_port_guids: Optional[Set[str]]):
@@ -419,25 +497,49 @@ class DataProduct(DataMesh):
         self.attributes.input_ports = input_ports
 
     class Attributes(DataMesh.Attributes):
-        data_product_status: Optional[DataProductStatus] = Field(default=None, description="")
+        data_product_status: Optional[DataProductStatus] = Field(
+            default=None, description=""
+        )
         daap_status: Optional[DataProductStatus] = Field(default=None, description="")
-        data_product_criticality: Optional[DataProductCriticality] = Field(default=None, description="")
-        daap_criticality: Optional[DataProductCriticality] = Field(default=None, description="")
-        data_product_sensitivity: Optional[DataProductSensitivity] = Field(default=None, description="")
-        daap_sensitivity: Optional[DataProductSensitivity] = Field(default=None, description="")
-        data_product_visibility: Optional[DataProductVisibility] = Field(default=None, description="")
-        daap_visibility: Optional[DataProductVisibility] = Field(default=None, description="")
+        data_product_criticality: Optional[DataProductCriticality] = Field(
+            default=None, description=""
+        )
+        daap_criticality: Optional[DataProductCriticality] = Field(
+            default=None, description=""
+        )
+        data_product_sensitivity: Optional[DataProductSensitivity] = Field(
+            default=None, description=""
+        )
+        daap_sensitivity: Optional[DataProductSensitivity] = Field(
+            default=None, description=""
+        )
+        data_product_visibility: Optional[DataProductVisibility] = Field(
+            default=None, description=""
+        )
+        daap_visibility: Optional[DataProductVisibility] = Field(
+            default=None, description=""
+        )
         data_product_assets_d_s_l: Optional[str] = Field(default=None, description="")
-        data_product_assets_playbook_filter: Optional[str] = Field(default=None, description="")
+        data_product_assets_playbook_filter: Optional[str] = Field(
+            default=None, description=""
+        )
         data_product_score_value: Optional[float] = Field(default=None, description="")
-        data_product_score_updated_at: Optional[datetime] = Field(default=None, description="")
+        data_product_score_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         daap_visibility_users: Optional[Set[str]] = Field(default=None, description="")
         daap_visibility_groups: Optional[Set[str]] = Field(default=None, description="")
         daap_output_port_guids: Optional[Set[str]] = Field(default=None, description="")
         daap_input_port_guids: Optional[Set[str]] = Field(default=None, description="")
-        output_ports: Optional[List[Asset]] = Field(default=None, description="")  # relationship
-        data_domain: Optional[DataDomain] = Field(default=None, description="")  # relationship
-        input_ports: Optional[List[Asset]] = Field(default=None, description="")  # relationship
+        output_ports: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+        data_domain: Optional[DataDomain] = Field(
+            default=None, description=""
+        )  # relationship
+        input_ports: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -452,15 +554,21 @@ class DataProduct(DataMesh):
                 ["name", "domain_qualified_name", "asset_selection"],
                 [name, domain_qualified_name, asset_selection],
             )
-            ASSETS_PLAYBOOK_FILTER = '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+            ASSETS_PLAYBOOK_FILTER = (
+                '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+            )
             return DataProduct.Attributes(
                 name=name,
-                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(asset_selection),
+                data_product_assets_d_s_l=DataProductsAssetsDSL.get_asset_selection(
+                    asset_selection
+                ),
                 data_domain=DataDomain.ref_by_qualified_name(domain_qualified_name),
                 qualified_name=f"{domain_qualified_name}/product/{name}",
                 data_product_assets_playbook_filter=ASSETS_PLAYBOOK_FILTER,
                 parent_domain_qualified_name=domain_qualified_name,
-                super_domain_qualified_name=DataMesh.get_super_domain_qualified_name(domain_qualified_name),
+                super_domain_qualified_name=DataMesh.get_super_domain_qualified_name(
+                    domain_qualified_name
+                ),
                 daap_status=DataProductStatus.ACTIVE,
             )
 

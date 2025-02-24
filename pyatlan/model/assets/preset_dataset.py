@@ -65,13 +65,19 @@ class PresetDataset(Preset):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, preset_dashboard_qualified_name: str) -> PresetDataset:
+    def create(
+        cls, *, name: str, preset_dashboard_qualified_name: str
+    ) -> PresetDataset:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name)
+        return cls.creator(
+            name=name, preset_dashboard_qualified_name=preset_dashboard_qualified_name
+        )
 
     type_name: str = Field(default="PresetDataset", allow_mutation=False)
 
@@ -86,20 +92,26 @@ class PresetDataset(Preset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_DATASET_DATASOURCE_NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.keyword",
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.stemmed",
+    PRESET_DATASET_DATASOURCE_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "presetDatasetDatasourceName",
+            "presetDatasetDatasourceName.keyword",
+            "presetDatasetDatasourceName",
+            "presetDatasetDatasourceName.stemmed",
+        )
     )
     """
 
     """
-    PRESET_DATASET_ID: ClassVar[NumericField] = NumericField("presetDatasetId", "presetDatasetId")
+    PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
+        "presetDatasetId", "presetDatasetId"
+    )
     """
 
     """
-    PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField("presetDatasetType", "presetDatasetType")
+    PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "presetDatasetType", "presetDatasetType"
+    )
     """
 
     """
@@ -118,10 +130,16 @@ class PresetDataset(Preset):
 
     @property
     def preset_dataset_datasource_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dataset_datasource_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dataset_datasource_name
+        )
 
     @preset_dataset_datasource_name.setter
-    def preset_dataset_datasource_name(self, preset_dataset_datasource_name: Optional[str]):
+    def preset_dataset_datasource_name(
+        self, preset_dataset_datasource_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
@@ -157,10 +175,14 @@ class PresetDataset(Preset):
         self.attributes.preset_dashboard = preset_dashboard
 
     class Attributes(Preset.Attributes):
-        preset_dataset_datasource_name: Optional[str] = Field(default=None, description="")
+        preset_dataset_datasource_name: Optional[str] = Field(
+            default=None, description=""
+        )
         preset_dataset_id: Optional[int] = Field(default=None, description="")
         preset_dataset_type: Optional[str] = Field(default=None, description="")
-        preset_dashboard: Optional[PresetDashboard] = Field(default=None, description="")  # relationship
+        preset_dashboard: Optional[PresetDashboard] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -176,7 +198,9 @@ class PresetDataset(Preset):
                 [name, preset_dashboard_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     preset_dashboard_qualified_name,
@@ -190,7 +214,9 @@ class PresetDataset(Preset):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{preset_dashboard_qualified_name}/{name}",
                 connector_name=connector_name,
-                preset_dashboard=PresetDashboard.ref_by_qualified_name(preset_dashboard_qualified_name),
+                preset_dashboard=PresetDashboard.ref_by_qualified_name(
+                    preset_dashboard_qualified_name
+                ),
             )
 
     attributes: PresetDataset.Attributes = Field(

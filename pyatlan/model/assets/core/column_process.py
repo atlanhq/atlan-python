@@ -52,7 +52,9 @@ class ColumnProcess(Process):
         process_id: Optional[str] = None,
     ) -> ColumnProcess:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -128,8 +130,12 @@ class ColumnProcess(Process):
         self.attributes.process = process
 
     class Attributes(Process.Attributes):
-        outputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
-        inputs: Optional[List[Catalog]] = Field(default=None, description="")  # relationship
+        outputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
+        inputs: Optional[List[Catalog]] = Field(
+            default=None, description=""
+        )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
 
         @classmethod

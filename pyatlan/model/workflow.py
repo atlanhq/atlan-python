@@ -76,7 +76,9 @@ class Workflow(AtlanObject):
 
 
 class WorkflowSearchResultStatus(AtlanObject):
-    artifact_gc_Status: Optional[Dict[str, Any]] = Field(default=None, alias="artifactGCStatus")
+    artifact_gc_Status: Optional[Dict[str, Any]] = Field(
+        default=None, alias="artifactGCStatus"
+    )
     artifact_repository_ref: Optional[Any] = Field(default=None)
     compressed_nodes: Optional[str] = Field(default=None)
     estimated_duration: Optional[int] = Field(default=None)
@@ -211,4 +213,6 @@ class WorkflowSearchRequest(AtlanObject):
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
-        __pydantic_self__.__fields_set__.update(["from_", "size", "track_total_hits", "sort"])
+        __pydantic_self__.__fields_set__.update(
+            ["from_", "size", "track_total_hits", "sort"]
+        )

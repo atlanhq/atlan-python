@@ -29,7 +29,9 @@ class MetabaseDashboard(Metabase):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_QUESTION_COUNT: ClassVar[NumericField] = NumericField("metabaseQuestionCount", "metabaseQuestionCount")
+    METABASE_QUESTION_COUNT: ClassVar[NumericField] = NumericField(
+        "metabaseQuestionCount", "metabaseQuestionCount"
+    )
     """
 
     """
@@ -51,7 +53,9 @@ class MetabaseDashboard(Metabase):
 
     @property
     def metabase_question_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.metabase_question_count
+        return (
+            None if self.attributes is None else self.attributes.metabase_question_count
+        )
 
     @metabase_question_count.setter
     def metabase_question_count(self, metabase_question_count: Optional[int]):
@@ -81,8 +85,12 @@ class MetabaseDashboard(Metabase):
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(default=None, description="")
-        metabase_questions: Optional[List[MetabaseQuestion]] = Field(default=None, description="")  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(default=None, description="")  # relationship
+        metabase_questions: Optional[List[MetabaseQuestion]] = Field(
+            default=None, description=""
+        )  # relationship
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MetabaseDashboard.Attributes = Field(
         default_factory=lambda: MetabaseDashboard.Attributes(),

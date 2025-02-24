@@ -29,11 +29,15 @@ class ADF(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADF_FACTORY_NAME: ClassVar[TextField] = TextField("adfFactoryName", "adfFactoryName")
+    ADF_FACTORY_NAME: ClassVar[TextField] = TextField(
+        "adfFactoryName", "adfFactoryName"
+    )
     """
     Defines the name of the factory in which this asset exists.
     """
-    ADF_ASSET_FOLDER_PATH: ClassVar[TextField] = TextField("adfAssetFolderPath", "adfAssetFolderPath")
+    ADF_ASSET_FOLDER_PATH: ClassVar[TextField] = TextField(
+        "adfAssetFolderPath", "adfAssetFolderPath"
+    )
     """
     Defines the folder path in which this ADF asset exists.
     """
@@ -55,7 +59,9 @@ class ADF(Catalog):
 
     @property
     def adf_asset_folder_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adf_asset_folder_path
+        return (
+            None if self.attributes is None else self.attributes.adf_asset_folder_path
+        )
 
     @adf_asset_folder_path.setter
     def adf_asset_folder_path(self, adf_asset_folder_path: Optional[str]):

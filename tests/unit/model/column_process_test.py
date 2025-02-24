@@ -140,6 +140,8 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_trim_to_required():
-    test_cp = ColumnProcess.create_for_modification(qualified_name=CP_QUALIFIED_NAME, name=CP_NAME).trim_to_required()
+    test_cp = ColumnProcess.create_for_modification(
+        qualified_name=CP_QUALIFIED_NAME, name=CP_NAME
+    ).trim_to_required()
     assert test_cp.name == CP_NAME
     assert test_cp.qualified_name == CP_QUALIFIED_NAME

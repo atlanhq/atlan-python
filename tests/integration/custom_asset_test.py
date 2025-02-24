@@ -28,22 +28,30 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def custom_entity(client: AtlanClient, connection: Connection) -> Generator[CustomEntity, None, None]:
+def custom_entity(
+    client: AtlanClient, connection: Connection
+) -> Generator[CustomEntity, None, None]:
     assert connection.qualified_name
-    to_create = CustomEntity.creator(name=CUSTOM_ENTITY_NAME, connection_qualified_name=connection.qualified_name)
+    to_create = CustomEntity.creator(
+        name=CUSTOM_ENTITY_NAME, connection_qualified_name=connection.qualified_name
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=CustomEntity)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=CustomEntity)
 
 
-def test_custom_entity(client: AtlanClient, connection: Connection, custom_entity: CustomEntity):
+def test_custom_entity(
+    client: AtlanClient, connection: Connection, custom_entity: CustomEntity
+):
     assert custom_entity
     assert custom_entity.guid
     assert custom_entity.qualified_name
@@ -78,9 +86,13 @@ def test_restore_custom_entity(
     custom_entity: CustomEntity,
 ):
     assert custom_entity.qualified_name
-    assert client.asset.restore(asset_type=CustomEntity, qualified_name=custom_entity.qualified_name)
+    assert client.asset.restore(
+        asset_type=CustomEntity, qualified_name=custom_entity.qualified_name
+    )
     assert custom_entity.qualified_name
-    restored = client.asset.get_by_qualified_name(asset_type=CustomEntity, qualified_name=custom_entity.qualified_name)
+    restored = client.asset.get_by_qualified_name(
+        asset_type=CustomEntity, qualified_name=custom_entity.qualified_name
+    )
     assert restored
     assert restored.guid == custom_entity.guid
     assert restored.qualified_name == custom_entity.qualified_name
@@ -126,7 +138,9 @@ def test_update_custom_assets(
 
 
 def _retrieve_custom_assets(client, asset, asset_type):
-    retrieved = client.asset.get_by_guid(asset.guid, asset_type=asset_type, ignore_relationships=False)
+    retrieved = client.asset.get_by_guid(
+        asset.guid, asset_type=asset_type, ignore_relationships=False
+    )
     assert retrieved
     assert not retrieved.is_incomplete
     assert retrieved.guid == asset.guid

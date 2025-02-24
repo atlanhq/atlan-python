@@ -84,19 +84,27 @@ class LookerField(Looker):
     """
     Name of the model in which this field exists.
     """
-    SOURCE_DEFINITION: ClassVar[TextField] = TextField("sourceDefinition", "sourceDefinition")
+    SOURCE_DEFINITION: ClassVar[TextField] = TextField(
+        "sourceDefinition", "sourceDefinition"
+    )
     """
     Deprecated.
     """
-    LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField("lookerFieldDataType", "lookerFieldDataType")
+    LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "lookerFieldDataType", "lookerFieldDataType"
+    )
     """
     Deprecated.
     """
-    LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField("lookerTimesUsed", "lookerTimesUsed")
+    LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField(
+        "lookerTimesUsed", "lookerTimesUsed"
+    )
     """
     Deprecated.
     """
-    LOOKER_FIELD_IS_REFINED: ClassVar[BooleanField] = BooleanField("lookerFieldIsRefined", "lookerFieldIsRefined")
+    LOOKER_FIELD_IS_REFINED: ClassVar[BooleanField] = BooleanField(
+        "lookerFieldIsRefined", "lookerFieldIsRefined"
+    )
     """
     Whether the looker field asset is coming from a refinement
     """
@@ -177,17 +185,27 @@ class LookerField(Looker):
 
     @property
     def looker_explore_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_explore_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_explore_qualified_name
+        )
 
     @looker_explore_qualified_name.setter
-    def looker_explore_qualified_name(self, looker_explore_qualified_name: Optional[str]):
+    def looker_explore_qualified_name(
+        self, looker_explore_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looker_explore_qualified_name = looker_explore_qualified_name
 
     @property
     def looker_view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_view_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_view_qualified_name
+        )
 
     @looker_view_qualified_name.setter
     def looker_view_qualified_name(self, looker_view_qualified_name: Optional[str]):
@@ -197,7 +215,11 @@ class LookerField(Looker):
 
     @property
     def looker_tile_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_tile_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_tile_qualified_name
+        )
 
     @looker_tile_qualified_name.setter
     def looker_tile_qualified_name(self, looker_tile_qualified_name: Optional[str]):
@@ -207,7 +229,11 @@ class LookerField(Looker):
 
     @property
     def looker_look_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_look_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_look_qualified_name
+        )
 
     @looker_look_qualified_name.setter
     def looker_look_qualified_name(self, looker_look_qualified_name: Optional[str]):
@@ -217,13 +243,21 @@ class LookerField(Looker):
 
     @property
     def looker_dashboard_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_dashboard_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_dashboard_qualified_name
+        )
 
     @looker_dashboard_qualified_name.setter
-    def looker_dashboard_qualified_name(self, looker_dashboard_qualified_name: Optional[str]):
+    def looker_dashboard_qualified_name(
+        self, looker_dashboard_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_dashboard_qualified_name = looker_dashboard_qualified_name
+        self.attributes.looker_dashboard_qualified_name = (
+            looker_dashboard_qualified_name
+        )
 
     @property
     def model_name(self) -> Optional[str]:
@@ -247,7 +281,9 @@ class LookerField(Looker):
 
     @property
     def looker_field_data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_field_data_type
+        return (
+            None if self.attributes is None else self.attributes.looker_field_data_type
+        )
 
     @looker_field_data_type.setter
     def looker_field_data_type(self, looker_field_data_type: Optional[str]):
@@ -267,7 +303,9 @@ class LookerField(Looker):
 
     @property
     def looker_field_is_refined(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.looker_field_is_refined
+        return (
+            None if self.attributes is None else self.attributes.looker_field_is_refined
+        )
 
     @looker_field_is_refined.setter
     def looker_field_is_refined(self, looker_field_is_refined: Optional[bool]):
@@ -277,23 +315,39 @@ class LookerField(Looker):
 
     @property
     def looker_field_refinement_file_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_field_refinement_file_path
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_field_refinement_file_path
+        )
 
     @looker_field_refinement_file_path.setter
-    def looker_field_refinement_file_path(self, looker_field_refinement_file_path: Optional[str]):
+    def looker_field_refinement_file_path(
+        self, looker_field_refinement_file_path: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_field_refinement_file_path = looker_field_refinement_file_path
+        self.attributes.looker_field_refinement_file_path = (
+            looker_field_refinement_file_path
+        )
 
     @property
     def looker_field_refinement_line_number(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_field_refinement_line_number
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.looker_field_refinement_line_number
+        )
 
     @looker_field_refinement_line_number.setter
-    def looker_field_refinement_line_number(self, looker_field_refinement_line_number: Optional[str]):
+    def looker_field_refinement_line_number(
+        self, looker_field_refinement_line_number: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.looker_field_refinement_line_number = looker_field_refinement_line_number
+        self.attributes.looker_field_refinement_line_number = (
+            looker_field_refinement_line_number
+        )
 
     @property
     def project(self) -> Optional[LookerProject]:
@@ -367,24 +421,40 @@ class LookerField(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(default=None, description="")
-        looker_explore_qualified_name: Optional[str] = Field(default=None, description="")
+        looker_explore_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         looker_view_qualified_name: Optional[str] = Field(default=None, description="")
         looker_tile_qualified_name: Optional[str] = Field(default=None, description="")
         looker_look_qualified_name: Optional[str] = Field(default=None, description="")
-        looker_dashboard_qualified_name: Optional[str] = Field(default=None, description="")
+        looker_dashboard_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         model_name: Optional[str] = Field(default=None, description="")
         source_definition: Optional[str] = Field(default=None, description="")
         looker_field_data_type: Optional[str] = Field(default=None, description="")
         looker_times_used: Optional[int] = Field(default=None, description="")
         looker_field_is_refined: Optional[bool] = Field(default=None, description="")
-        looker_field_refinement_file_path: Optional[str] = Field(default=None, description="")
-        looker_field_refinement_line_number: Optional[str] = Field(default=None, description="")
-        project: Optional[LookerProject] = Field(default=None, description="")  # relationship
+        looker_field_refinement_file_path: Optional[str] = Field(
+            default=None, description=""
+        )
+        looker_field_refinement_line_number: Optional[str] = Field(
+            default=None, description=""
+        )
+        project: Optional[LookerProject] = Field(
+            default=None, description=""
+        )  # relationship
         view: Optional[LookerView] = Field(default=None, description="")  # relationship
         tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
-        model: Optional[LookerModel] = Field(default=None, description="")  # relationship
-        dashboard: Optional[LookerDashboard] = Field(default=None, description="")  # relationship
-        explore: Optional[LookerExplore] = Field(default=None, description="")  # relationship
+        model: Optional[LookerModel] = Field(
+            default=None, description=""
+        )  # relationship
+        dashboard: Optional[LookerDashboard] = Field(
+            default=None, description=""
+        )  # relationship
+        explore: Optional[LookerExplore] = Field(
+            default=None, description=""
+        )  # relationship
         look: Optional[LookerLook] = Field(default=None, description="")  # relationship
 
     attributes: LookerField.Attributes = Field(

@@ -49,7 +49,9 @@ class DatabricksMiner(AbstractMiner):
 
         :returns: miner, configured to use the REST API extraction method from Databricks.
         """
-        self._parameters.append(dict(name="extraction-method", value=self.ExtractionMethod.REST_API.value))
+        self._parameters.append(
+            dict(name="extraction-method", value=self.ExtractionMethod.REST_API.value)
+        )
         return self
 
     def offline(self, bucket_name: str, bucket_prefix: str):
@@ -64,8 +66,12 @@ class DatabricksMiner(AbstractMiner):
         :returns: miner, configured for offline extraction.
         """
         self._parameters.append(dict(name="extraction-method", value="offline"))
-        self._parameters.append(dict(name="offline-extraction-bucket", value=bucket_name))
-        self._parameters.append(dict(name="offline-extraction-prefix", value=bucket_prefix))
+        self._parameters.append(
+            dict(name="offline-extraction-bucket", value=bucket_name)
+        )
+        self._parameters.append(
+            dict(name="offline-extraction-prefix", value=bucket_prefix)
+        )
         return self
 
     def system_table(self, warehouse_id: str):
@@ -79,7 +85,9 @@ class DatabricksMiner(AbstractMiner):
         warehouse to be used for system table extraction.
         :returns: miner, configured for system table extraction.
         """
-        self._parameters.append(dict(name="extraction-method", value=self.ExtractionMethod.SYSTEM_TABLE))
+        self._parameters.append(
+            dict(name="extraction-method", value=self.ExtractionMethod.SYSTEM_TABLE)
+        )
         self._parameters.append(dict(name="sql-warehouse", value=warehouse_id))
         return self
 
@@ -117,9 +125,13 @@ class DatabricksMiner(AbstractMiner):
         for param in self._parameters:
             if param["name"] in config_map:
                 param["value"] = config_map[param["name"]]
-        self._parameters.append(dict(name="popularity-exclude-user-config", value=dumps(excluded_users)))
+        self._parameters.append(
+            dict(name="popularity-exclude-user-config", value=dumps(excluded_users))
+        )
         if extraction_method == self.ExtractionMethod.SYSTEM_TABLE:
-            self._parameters.append(dict(name="sql-warehouse-popularity", value=warehouse_id))
+            self._parameters.append(
+                dict(name="sql-warehouse-popularity", value=warehouse_id)
+            )
         return self
 
     def _get_metadata(self) -> WorkflowMetadata:

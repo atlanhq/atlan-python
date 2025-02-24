@@ -80,7 +80,11 @@ class PowerBIDataset(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -161,12 +165,24 @@ class PowerBIDataset(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         web_url: Optional[str] = Field(default=None, description="")
-        reports: Optional[List[PowerBIReport]] = Field(default=None, description="")  # relationship
-        workspace: Optional[PowerBIWorkspace] = Field(default=None, description="")  # relationship
-        tiles: Optional[List[PowerBITile]] = Field(default=None, description="")  # relationship
-        tables: Optional[List[PowerBITable]] = Field(default=None, description="")  # relationship
-        dataflows: Optional[List[PowerBIDataflow]] = Field(default=None, description="")  # relationship
-        datasources: Optional[List[PowerBIDatasource]] = Field(default=None, description="")  # relationship
+        reports: Optional[List[PowerBIReport]] = Field(
+            default=None, description=""
+        )  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
+        tiles: Optional[List[PowerBITile]] = Field(
+            default=None, description=""
+        )  # relationship
+        tables: Optional[List[PowerBITable]] = Field(
+            default=None, description=""
+        )  # relationship
+        dataflows: Optional[List[PowerBIDataflow]] = Field(
+            default=None, description=""
+        )  # relationship
+        datasources: Optional[List[PowerBIDatasource]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBIDataset.Attributes = Field(
         default_factory=lambda: PowerBIDataset.Attributes(),

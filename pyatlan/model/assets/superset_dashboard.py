@@ -42,11 +42,15 @@ class SupersetDashboard(Superset):
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> SupersetDashboard:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, connection_qualified_name=connection_qualified_name)
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
     type_name: str = Field(default="SupersetDashboard", allow_mutation=False)
 
@@ -61,11 +65,13 @@ class SupersetDashboard(Superset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SUPERSET_DASHBOARD_CHANGED_BY_NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
-        "supersetDashboardChangedByName",
-        "supersetDashboardChangedByName.keyword",
-        "supersetDashboardChangedByName",
-        "supersetDashboardChangedByName.stemmed",
+    SUPERSET_DASHBOARD_CHANGED_BY_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "supersetDashboardChangedByName",
+            "supersetDashboardChangedByName.keyword",
+            "supersetDashboardChangedByName",
+            "supersetDashboardChangedByName.stemmed",
+        )
     )
     """
     Name of the user who changed the dashboard.
@@ -123,60 +129,106 @@ class SupersetDashboard(Superset):
 
     @property
     def superset_dashboard_changed_by_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_changed_by_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_changed_by_name
+        )
 
     @superset_dashboard_changed_by_name.setter
-    def superset_dashboard_changed_by_name(self, superset_dashboard_changed_by_name: Optional[str]):
+    def superset_dashboard_changed_by_name(
+        self, superset_dashboard_changed_by_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_changed_by_name = superset_dashboard_changed_by_name
+        self.attributes.superset_dashboard_changed_by_name = (
+            superset_dashboard_changed_by_name
+        )
 
     @property
     def superset_dashboard_changed_by_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_changed_by_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_changed_by_url
+        )
 
     @superset_dashboard_changed_by_url.setter
-    def superset_dashboard_changed_by_url(self, superset_dashboard_changed_by_url: Optional[str]):
+    def superset_dashboard_changed_by_url(
+        self, superset_dashboard_changed_by_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_changed_by_url = superset_dashboard_changed_by_url
+        self.attributes.superset_dashboard_changed_by_url = (
+            superset_dashboard_changed_by_url
+        )
 
     @property
     def superset_dashboard_is_managed_externally(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_is_managed_externally
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_is_managed_externally
+        )
 
     @superset_dashboard_is_managed_externally.setter
-    def superset_dashboard_is_managed_externally(self, superset_dashboard_is_managed_externally: Optional[bool]):
+    def superset_dashboard_is_managed_externally(
+        self, superset_dashboard_is_managed_externally: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_is_managed_externally = superset_dashboard_is_managed_externally
+        self.attributes.superset_dashboard_is_managed_externally = (
+            superset_dashboard_is_managed_externally
+        )
 
     @property
     def superset_dashboard_is_published(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_is_published
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_is_published
+        )
 
     @superset_dashboard_is_published.setter
-    def superset_dashboard_is_published(self, superset_dashboard_is_published: Optional[bool]):
+    def superset_dashboard_is_published(
+        self, superset_dashboard_is_published: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_is_published = superset_dashboard_is_published
+        self.attributes.superset_dashboard_is_published = (
+            superset_dashboard_is_published
+        )
 
     @property
     def superset_dashboard_thumbnail_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_thumbnail_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_thumbnail_url
+        )
 
     @superset_dashboard_thumbnail_url.setter
-    def superset_dashboard_thumbnail_url(self, superset_dashboard_thumbnail_url: Optional[str]):
+    def superset_dashboard_thumbnail_url(
+        self, superset_dashboard_thumbnail_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dashboard_thumbnail_url = superset_dashboard_thumbnail_url
+        self.attributes.superset_dashboard_thumbnail_url = (
+            superset_dashboard_thumbnail_url
+        )
 
     @property
     def superset_dashboard_chart_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.superset_dashboard_chart_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dashboard_chart_count
+        )
 
     @superset_dashboard_chart_count.setter
-    def superset_dashboard_chart_count(self, superset_dashboard_chart_count: Optional[int]):
+    def superset_dashboard_chart_count(
+        self, superset_dashboard_chart_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.superset_dashboard_chart_count = superset_dashboard_chart_count
@@ -202,18 +254,36 @@ class SupersetDashboard(Superset):
         self.attributes.superset_charts = superset_charts
 
     class Attributes(Superset.Attributes):
-        superset_dashboard_changed_by_name: Optional[str] = Field(default=None, description="")
-        superset_dashboard_changed_by_url: Optional[str] = Field(default=None, description="")
-        superset_dashboard_is_managed_externally: Optional[bool] = Field(default=None, description="")
-        superset_dashboard_is_published: Optional[bool] = Field(default=None, description="")
-        superset_dashboard_thumbnail_url: Optional[str] = Field(default=None, description="")
-        superset_dashboard_chart_count: Optional[int] = Field(default=None, description="")
-        superset_datasets: Optional[List[SupersetDataset]] = Field(default=None, description="")  # relationship
-        superset_charts: Optional[List[SupersetChart]] = Field(default=None, description="")  # relationship
+        superset_dashboard_changed_by_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        superset_dashboard_changed_by_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        superset_dashboard_is_managed_externally: Optional[bool] = Field(
+            default=None, description=""
+        )
+        superset_dashboard_is_published: Optional[bool] = Field(
+            default=None, description=""
+        )
+        superset_dashboard_thumbnail_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        superset_dashboard_chart_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        superset_datasets: Optional[List[SupersetDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        superset_charts: Optional[List[SupersetChart]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, connection_qualified_name: str) -> SupersetDashboard.Attributes:
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> SupersetDashboard.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"],
                 [name, connection_qualified_name],
@@ -222,7 +292,9 @@ class SupersetDashboard(Superset):
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: SupersetDashboard.Attributes = Field(

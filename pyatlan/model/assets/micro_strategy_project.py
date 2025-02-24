@@ -29,7 +29,9 @@ class MicroStrategyProject(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField("microStrategyReports")
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
     """
     TBC
     """
@@ -37,15 +39,21 @@ class MicroStrategyProject(MicroStrategy):
     """
     TBC
     """
-    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField("microStrategyMetrics")
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
     """
     TBC
     """
-    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField("microStrategyVisualizations")
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizations"
+    )
     """
     TBC
     """
-    MICRO_STRATEGY_DOCUMENTS: ClassVar[RelationField] = RelationField("microStrategyDocuments")
+    MICRO_STRATEGY_DOCUMENTS: ClassVar[RelationField] = RelationField(
+        "microStrategyDocuments"
+    )
     """
     TBC
     """
@@ -53,11 +61,15 @@ class MicroStrategyProject(MicroStrategy):
     """
     TBC
     """
-    MICRO_STRATEGY_DOSSIERS: ClassVar[RelationField] = RelationField("microStrategyDossiers")
+    MICRO_STRATEGY_DOSSIERS: ClassVar[RelationField] = RelationField(
+        "microStrategyDossiers"
+    )
     """
     TBC
     """
-    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField("microStrategyAttributes")
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
     """
     TBC
     """
@@ -75,10 +87,14 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_reports(self) -> Optional[List[MicroStrategyReport]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_reports
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
 
     @micro_strategy_reports.setter
-    def micro_strategy_reports(self, micro_strategy_reports: Optional[List[MicroStrategyReport]]):
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[List[MicroStrategyReport]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_reports = micro_strategy_reports
@@ -88,17 +104,23 @@ class MicroStrategyProject(MicroStrategy):
         return None if self.attributes is None else self.attributes.micro_strategy_facts
 
     @micro_strategy_facts.setter
-    def micro_strategy_facts(self, micro_strategy_facts: Optional[List[MicroStrategyFact]]):
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[List[MicroStrategyFact]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
     def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_metrics
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
 
     @micro_strategy_metrics.setter
-    def micro_strategy_metrics(self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]):
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[List[MicroStrategyMetric]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
@@ -107,20 +129,32 @@ class MicroStrategyProject(MicroStrategy):
     def micro_strategy_visualizations(
         self,
     ) -> Optional[List[MicroStrategyVisualization]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_visualizations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualizations
+        )
 
     @micro_strategy_visualizations.setter
-    def micro_strategy_visualizations(self, micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]]):
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
     @property
     def micro_strategy_documents(self) -> Optional[List[MicroStrategyDocument]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_documents
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_documents
+        )
 
     @micro_strategy_documents.setter
-    def micro_strategy_documents(self, micro_strategy_documents: Optional[List[MicroStrategyDocument]]):
+    def micro_strategy_documents(
+        self, micro_strategy_documents: Optional[List[MicroStrategyDocument]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_documents = micro_strategy_documents
@@ -130,27 +164,39 @@ class MicroStrategyProject(MicroStrategy):
         return None if self.attributes is None else self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
-    def micro_strategy_cubes(self, micro_strategy_cubes: Optional[List[MicroStrategyCube]]):
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[List[MicroStrategyCube]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
     def micro_strategy_dossiers(self) -> Optional[List[MicroStrategyDossier]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_dossiers
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossiers
+        )
 
     @micro_strategy_dossiers.setter
-    def micro_strategy_dossiers(self, micro_strategy_dossiers: Optional[List[MicroStrategyDossier]]):
+    def micro_strategy_dossiers(
+        self, micro_strategy_dossiers: Optional[List[MicroStrategyDossier]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
 
     @property
     def micro_strategy_attributes(self) -> Optional[List[MicroStrategyAttribute]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_attributes
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
 
     @micro_strategy_attributes.setter
-    def micro_strategy_attributes(self, micro_strategy_attributes: Optional[List[MicroStrategyAttribute]]):
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[List[MicroStrategyAttribute]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
@@ -159,17 +205,21 @@ class MicroStrategyProject(MicroStrategy):
         micro_strategy_reports: Optional[List[MicroStrategyReport]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(default=None, description="")  # relationship
+        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(
+            default=None, description=""
+        )  # relationship
         micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = Field(
-            default=None, description=""
+        micro_strategy_visualizations: Optional[List[MicroStrategyVisualization]] = (
+            Field(default=None, description="")
         )  # relationship
         micro_strategy_documents: Optional[List[MicroStrategyDocument]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_cubes: Optional[List[MicroStrategyCube]] = Field(default=None, description="")  # relationship
+        micro_strategy_cubes: Optional[List[MicroStrategyCube]] = Field(
+            default=None, description=""
+        )  # relationship
         micro_strategy_dossiers: Optional[List[MicroStrategyDossier]] = Field(
             default=None, description=""
         )  # relationship

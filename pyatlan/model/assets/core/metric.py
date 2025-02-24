@@ -41,12 +41,16 @@ class Metric(DataQuality):
     """
     Filters to be applied to the metric query.
     """
-    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField("metricTimeGrains", "metricTimeGrains")
+    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
+        "metricTimeGrains", "metricTimeGrains"
+    )
     """
     List of time grains to be applied to the metric query.
     """
 
-    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField("metricTimestampColumn")
+    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
+        "metricTimestampColumn"
+    )
     """
     TBC
     """
@@ -54,7 +58,9 @@ class Metric(DataQuality):
     """
     TBC
     """
-    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField("metricDimensionColumns")
+    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField(
+        "metricDimensionColumns"
+    )
     """
     TBC
     """
@@ -111,7 +117,9 @@ class Metric(DataQuality):
 
     @property
     def metric_timestamp_column(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.metric_timestamp_column
+        return (
+            None if self.attributes is None else self.attributes.metric_timestamp_column
+        )
 
     @metric_timestamp_column.setter
     def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
@@ -131,10 +139,16 @@ class Metric(DataQuality):
 
     @property
     def metric_dimension_columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.metric_dimension_columns
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.metric_dimension_columns
+        )
 
     @metric_dimension_columns.setter
-    def metric_dimension_columns(self, metric_dimension_columns: Optional[List[Column]]):
+    def metric_dimension_columns(
+        self, metric_dimension_columns: Optional[List[Column]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
@@ -144,9 +158,15 @@ class Metric(DataQuality):
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
         metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
-        metric_timestamp_column: Optional[Column] = Field(default=None, description="")  # relationship
-        assets: Optional[List[Asset]] = Field(default=None, description="")  # relationship
-        metric_dimension_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        metric_timestamp_column: Optional[Column] = Field(
+            default=None, description=""
+        )  # relationship
+        assets: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+        metric_dimension_columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Metric.Attributes = Field(
         default_factory=lambda: Metric.Attributes(),

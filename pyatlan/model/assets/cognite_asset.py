@@ -109,11 +109,21 @@ class CogniteAsset(Cognite):
         self.attributes.cognite_sequences = cognite_sequences
 
     class Attributes(Cognite.Attributes):
-        cognite_events: Optional[List[CogniteEvent]] = Field(default=None, description="")  # relationship
-        cognite_timeseries: Optional[List[CogniteTimeSeries]] = Field(default=None, description="")  # relationship
-        cognite3dmodels: Optional[List[Cognite3DModel]] = Field(default=None, description="")  # relationship
-        cognite_files: Optional[List[CogniteFile]] = Field(default=None, description="")  # relationship
-        cognite_sequences: Optional[List[CogniteSequence]] = Field(default=None, description="")  # relationship
+        cognite_events: Optional[List[CogniteEvent]] = Field(
+            default=None, description=""
+        )  # relationship
+        cognite_timeseries: Optional[List[CogniteTimeSeries]] = Field(
+            default=None, description=""
+        )  # relationship
+        cognite3dmodels: Optional[List[Cognite3DModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        cognite_files: Optional[List[CogniteFile]] = Field(
+            default=None, description=""
+        )  # relationship
+        cognite_sequences: Optional[List[CogniteSequence]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: CogniteAsset.Attributes = Field(
         default_factory=lambda: CogniteAsset.Attributes(),

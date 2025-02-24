@@ -55,7 +55,11 @@ def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
     if not token:
         tokens = client.token.get().records
         assert tokens  # noqa: S101
-        delete_tokens = [token for token in tokens if token.display_name and "psdk_Requests" in token.display_name]
+        delete_tokens = [
+            token
+            for token in tokens
+            if token.display_name and "psdk_Requests" in token.display_name
+        ]
         for token in delete_tokens:
             assert token and token.guid  # noqa: S101
             client.token.purge(token.guid)
@@ -69,7 +73,11 @@ def save_with_purge(client: AtlanClient):
 
     def _save(asset: Asset) -> AssetMutationResponse:
         _response = client.asset.save(asset)
-        if _response and _response.mutated_entities and _response.mutated_entities.CREATE:
+        if (
+            _response
+            and _response.mutated_entities
+            and _response.mutated_entities.CREATE
+        ):
             guids.append(_response.mutated_entities.CREATE[0].guid)
         return _response
 
@@ -77,7 +85,11 @@ def save_with_purge(client: AtlanClient):
 
     for guid in reversed(guids):
         response = client.asset.purge_by_guid(guid)
-        if not response or not response.mutated_entities or not response.mutated_entities.DELETE:
+        if (
+            not response
+            or not response.mutated_entities
+            or not response.mutated_entities.DELETE
+        ):
             LOGGER.error(f"Failed to remove asset with GUID {guid}.")
 
 
@@ -91,12 +103,18 @@ def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:
         LOGGER.error(f"Failed to remove {asset_type} with GUID {guid}.")
 
 
-def create_connection(client: AtlanClient, name: str, connector_type: AtlanConnectorType) -> Connection:
+def create_connection(
+    client: AtlanClient, name: str, connector_type: AtlanConnectorType
+) -> Connection:
     admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
-    to_create = Connection.create(name=name, connector_type=connector_type, admin_roles=[admin_role_guid])
+    to_create = Connection.create(
+        name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=Connection)[0]
-    return client.asset.get_by_guid(result.guid, asset_type=Connection, ignore_relationships=False)
+    return client.asset.get_by_guid(
+        result.guid, asset_type=Connection, ignore_relationships=False
+    )
 
 
 def create_group(client: AtlanClient, name: str) -> CreateGroupResponse:
@@ -117,7 +135,9 @@ def create_category(
     glossary: AtlasGlossary,
     parent: Optional[AtlasGlossaryCategory] = None,
 ) -> AtlasGlossaryCategory:
-    c = AtlasGlossaryCategory.create(name=name, anchor=glossary, parent_category=parent or None)
+    c = AtlasGlossaryCategory.create(
+        name=name, anchor=glossary, parent_category=parent or None
+    )
     return client.asset.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
@@ -137,19 +157,25 @@ def create_term(
 
 
 def create_database(client: AtlanClient, database_name: str, connection: Connection):
-    to_create = Database.create(name=database_name, connection_qualified_name=connection.qualified_name)
+    to_create = Database.create(
+        name=database_name, connection_qualified_name=connection.qualified_name
+    )
     result = client.asset.save(to_create)
     return result.assets_created(asset_type=Database)[0]
 
 
 def create_schema(client: AtlanClient, schema_name: str, database: Database):
-    to_create = Schema.create(name=schema_name, connection_qualified_name=database.qualified_name)
+    to_create = Schema.create(
+        name=schema_name, connection_qualified_name=database.qualified_name
+    )
     result = client.asset.save(to_create)
     return result.assets_created(asset_type=Schema)[0]
 
 
 def create_table(client: AtlanClient, table_name: str, schema: Schema):
-    to_create = Table.create(name=table_name, schema_qualified_name=schema.qualified_name)
+    to_create = Table.create(
+        name=table_name, schema_qualified_name=schema.qualified_name
+    )
     result = client.asset.save(to_create)
     return result.assets_created(asset_type=Table)[0]
 
@@ -161,12 +187,16 @@ def create_view(client: AtlanClient, view_name: str, schema: Schema):
 
 
 def create_mview(client: AtlanClient, mview_name: str, schema: Schema):
-    to_create = MaterialisedView.create(name=mview_name, schema_qualified_name=schema.qualified_name)
+    to_create = MaterialisedView.create(
+        name=mview_name, schema_qualified_name=schema.qualified_name
+    )
     result = client.asset.save(to_create)
     return result.assets_created(asset_type=MaterialisedView)[0]
 
 
-def create_column(client: AtlanClient, column_name: str, parent_type: type, parent: Asset, order: int):
+def create_column(
+    client: AtlanClient, column_name: str, parent_type: type, parent: Asset, order: int
+):
     to_create = Column.create(
         name=column_name,
         parent_type=parent_type,
@@ -189,13 +219,17 @@ def create_custom_metadata(
     cm_def = CustomMetadataDef.create(display_name=name)
     cm_def.attribute_defs = attribute_defs
     if icon and color:
-        cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(icon, color, locked)
+        cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(
+            icon, color, locked
+        )
     elif logo and logo.startswith("http"):
         cm_def.options = CustomMetadataDef.Options.with_logo_from_url(logo, locked)
     elif logo:
         cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji(logo, locked)
     else:
-        raise ValueError("Invalid configuration for the visual to use for the custom metadata.")
+        raise ValueError(
+            "Invalid configuration for the visual to use for the custom metadata."
+        )
     r = client.typedef.create(cm_def)
     return r.custom_metadata_defs[0]
 

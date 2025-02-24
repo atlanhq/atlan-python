@@ -35,15 +35,21 @@ class LookerFolder(Looker):
     """
     Identifier for the folder's content metadata in Looker.
     """
-    SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField("sourceCreatorId", "sourceCreatorId")
+    SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField(
+        "sourceCreatorId", "sourceCreatorId"
+    )
     """
     Identifier of the user who created the folder, from Looker.
     """
-    SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField("sourceChildCount", "sourceChildCount")
+    SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceChildCount", "sourceChildCount"
+    )
     """
     Number of subfolders in this folder.
     """
-    SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField("sourceParentID", "sourceParentID")
+    SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField(
+        "sourceParentID", "sourceParentID"
+    )
     """
     Identifier of the parent folder of this folder, from Looker.
     """
@@ -78,7 +84,11 @@ class LookerFolder(Looker):
 
     @property
     def source_content_metadata_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.source_content_metadata_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.source_content_metadata_id
+        )
 
     @source_content_metadata_id.setter
     def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
@@ -161,10 +171,18 @@ class LookerFolder(Looker):
         source_creator_id: Optional[int] = Field(default=None, description="")
         source_child_count: Optional[int] = Field(default=None, description="")
         source_parent_i_d: Optional[int] = Field(default=None, description="")
-        looker_sub_folders: Optional[List[LookerFolder]] = Field(default=None, description="")  # relationship
-        dashboards: Optional[List[LookerDashboard]] = Field(default=None, description="")  # relationship
-        looks: Optional[List[LookerLook]] = Field(default=None, description="")  # relationship
-        looker_parent_folder: Optional[LookerFolder] = Field(default=None, description="")  # relationship
+        looker_sub_folders: Optional[List[LookerFolder]] = Field(
+            default=None, description=""
+        )  # relationship
+        dashboards: Optional[List[LookerDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
+        looks: Optional[List[LookerLook]] = Field(
+            default=None, description=""
+        )  # relationship
+        looker_parent_folder: Optional[LookerFolder] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: LookerFolder.Attributes = Field(
         default_factory=lambda: LookerFolder.Attributes(),

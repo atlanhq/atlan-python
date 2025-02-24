@@ -89,7 +89,9 @@ DATABRICKS_MINER_REST = "databricks_miner_rest.json"
 DATABRICKS_MINER_OFFLINE = "databricks_miner_offline.json"
 DATABRICKS_MINER_SYSTEM_TABLE = "databricks_miner_system_table.json"
 DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
-DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = "databricks_miner_popularity_system_table.json"
+DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
+    "databricks_miner_popularity_system_table.json"
+)
 ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
 ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
 LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
@@ -158,7 +160,9 @@ def test_snowflake_package(mock_package_env):
         .tags(True)
         .to_workflow()
     )
-    request_json = loads(snowflake_with_connection_default.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        snowflake_with_connection_default.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(SNOWFLAKE_BASIC)
 
     snowflake_basic_auth = (
@@ -191,7 +195,9 @@ def test_snowflake_package(mock_package_env):
             admin_groups=None,
             admin_users=None,
         )
-        .account_usage(hostname="test-hostname", database_name="test-db", schema_name="test-schema")
+        .account_usage(
+            hostname="test-hostname", database_name="test-db", schema_name="test-schema"
+        )
         .keypair_auth(
             username="test-user",
             private_key="test-key",
@@ -238,7 +244,9 @@ def test_tableau_package(mock_package_env):
             admin_groups=None,
             admin_users=None,
         )
-        .direct(hostname="test.tableau.com", port=444, site="test-site", ssl_enabled=True)
+        .direct(
+            hostname="test.tableau.com", port=444, site="test-site", ssl_enabled=True
+        )
         .basic_auth(
             username="test-username",
             password="test-password",
@@ -270,7 +278,9 @@ def test_tableau_package(mock_package_env):
         .crawl_hidden_fields(False)
         .to_workflow()
     )
-    request_json = loads(tableau_access_token_auth.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        tableau_access_token_auth.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(TABLEAU_ACCESS_TOKEN)
 
     tableau_offline = (
@@ -331,7 +341,9 @@ def test_powerbi_package(mock_package_env):
         .exclude(workspaces=None)
         .to_workflow()
     )
-    request_json = loads(powerbi_service_principal.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        powerbi_service_principal.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(POWEBI_SERVICE_PRINCIPAL)
 
 
@@ -482,13 +494,17 @@ def test_snowflake_miner_package(mock_package_env):
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
     )
-    request_json = loads(snowflake_miner_s3_offline.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        snowflake_miner_s3_offline.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
 
 
 def test_databricks_miner_package(mock_package_env):
     databricks_miner_rest = (
-        DatabricksMiner(connection_qualified_name="default/databricks/1234567890").rest_api().to_workflow()
+        DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
+        .rest_api()
+        .to_workflow()
     )
     request_json = loads(databricks_miner_rest.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(DATABRICKS_MINER_REST)
@@ -498,7 +514,9 @@ def test_databricks_miner_package(mock_package_env):
         .offline(bucket_name="test-bucket", bucket_prefix="test-prefix")
         .to_workflow()
     )
-    request_json = loads(databricks_miner_offline.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        databricks_miner_offline.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(DATABRICKS_MINER_OFFLINE)
 
     databricks_miner_system_table = (
@@ -506,7 +524,9 @@ def test_databricks_miner_package(mock_package_env):
         .system_table(warehouse_id="test-warehouse-id")
         .to_workflow()
     )
-    request_json = loads(databricks_miner_system_table.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        databricks_miner_system_table.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(DATABRICKS_MINER_SYSTEM_TABLE)
 
     databricks_miner_popularity_rest = (
@@ -519,7 +539,9 @@ def test_databricks_miner_package(mock_package_env):
         )
         .to_workflow()
     )
-    request_json = loads(databricks_miner_popularity_rest.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        databricks_miner_popularity_rest.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(DATABRICKS_MINER_POPULARITY_REST)
 
     databricks_miner_popularity_system_table = (
@@ -534,14 +556,18 @@ def test_databricks_miner_package(mock_package_env):
         )
         .to_workflow()
     )
-    request_json = loads(databricks_miner_popularity_system_table.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        databricks_miner_popularity_system_table.json(by_alias=True, exclude_none=True)
+    )
 
     assert request_json == load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
 
 
 def test_big_query_package(mock_package_env):
     big_query_direct = (
-        BigQueryCrawler(connection_name="test-big-query-conn", admin_roles=["admin-guid-1234"])
+        BigQueryCrawler(
+            connection_name="test-big-query-conn", admin_roles=["admin-guid-1234"]
+        )
         .service_account_auth(
             project_id="test-project-id",
             service_account_json="test-account-json",
@@ -559,25 +585,35 @@ def test_big_query_package(mock_package_env):
 
 def test_dynamo_db_package(mock_package_env):
     dynamo_db_direct_iam_user = (
-        DynamoDBCrawler(connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"])
+        DynamoDBCrawler(
+            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+        )
         .direct(region="test-region")
         .iam_user_auth(access_key="test-access-key", secret_key="test-secret-key")
         .include_regex(regex=".*_TEST_INCLUDE")
         .exclude_regex(regex=".*_TEST_EXCLUDE")
         .to_workflow()
     )
-    request_json = loads(dynamo_db_direct_iam_user.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        dynamo_db_direct_iam_user.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(DYNAMO_DB_IAM_USER)
 
     dynamo_db_direct_iam_user_role = (
-        DynamoDBCrawler(connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"])
+        DynamoDBCrawler(
+            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+        )
         .direct(region="test-region")
-        .iam_role_auth(arn="arn:aws:iam::123456789012:user/test", external_id="test-ext-id")
+        .iam_role_auth(
+            arn="arn:aws:iam::123456789012:user/test", external_id="test-ext-id"
+        )
         .include_regex(regex=".*_TEST_INCLUDE")
         .exclude_regex(regex=".*_TEST_EXCLUDE")
         .to_workflow()
     )
-    request_json = loads(dynamo_db_direct_iam_user_role.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        dynamo_db_direct_iam_user_role.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(DYNAMO_DB_IAM_USER_ROLE)
 
 
@@ -622,7 +658,9 @@ def test_postgres_package(mock_package_env):
         .to_workflow()
     )
 
-    request_json = loads(postgres_direct_iam_user.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        postgres_direct_iam_user.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(POSTGRES_DIRECT_IAM_USER)
 
     postgres_direct_iam_role = (
@@ -644,7 +682,9 @@ def test_postgres_package(mock_package_env):
         .to_workflow()
     )
 
-    request_json = loads(postgres_direct_iam_role.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        postgres_direct_iam_role.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(POSTGRES_DIRECT_IAM_ROLE)
 
     postgres_s3_offline = (
@@ -696,12 +736,16 @@ def test_mongodb_package(mock_package_env):
 
 def test_connection_delete_package(mock_package_env):
     # With PURGE (hard delete)
-    connection_delete_hard = ConnectionDelete(qualified_name="default/snowflake/1234567890", purge=True).to_workflow()
+    connection_delete_hard = ConnectionDelete(
+        qualified_name="default/snowflake/1234567890", purge=True
+    ).to_workflow()
     request_json = loads(connection_delete_hard.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_HARD)
 
     # Without PURGE (soft delete)
-    connection_delete_soft = ConnectionDelete(qualified_name="default/snowflake/1234567890", purge=False).to_workflow()
+    connection_delete_soft = ConnectionDelete(
+        qualified_name="default/snowflake/1234567890", purge=False
+    ).to_workflow()
     request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
 
@@ -1008,7 +1052,9 @@ def test_asset_import(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_default = loads(asset_import_default.json(by_alias=True, exclude_none=True))
+    request_json_default = loads(
+        asset_import_default.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_default == load_json(ASSET_IMPORT_DEFAULT)
 
 
@@ -1026,7 +1072,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(asset_export_basic_glossaries_only_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(
+        asset_export_basic_glossaries_only_s3.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3)
 
     # Case 2: Export assets with Products only using s3
@@ -1042,7 +1090,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(asset_export_basic_products_only_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(
+        asset_export_basic_products_only_s3.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3)
 
     # Case 3: Export assets with Enriched only using s3
@@ -1064,7 +1114,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(asset_export_basic_enriched_only_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(
+        asset_export_basic_enriched_only_s3.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3)
 
     # Case 4: Export all assets using s3
@@ -1086,7 +1138,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(asset_export_basic_all_assets_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(
+        asset_export_basic_all_assets_s3.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_S3)
 
     # Case 1: Export assets with glossaries only using adls
@@ -1103,7 +1157,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(asset_export_basic_glossaries_only_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(
+        asset_export_basic_glossaries_only_adls.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS)
 
     # Case 2: Export assets with Products only using adls
@@ -1120,7 +1176,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(asset_export_basic_products_only_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(
+        asset_export_basic_products_only_adls.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS)
 
     # Case 3: Export assets with Enriched only using adls
@@ -1143,7 +1201,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(asset_export_basic_enriched_only_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(
+        asset_export_basic_enriched_only_adls.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS)
 
     # Case 4: Export all assets using adls
@@ -1166,7 +1226,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(asset_export_basic_all_assets_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(
+        asset_export_basic_all_assets_adls.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS)
 
     # Case 1: Export assets with glossaries only using gcs
@@ -1181,7 +1243,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(asset_export_basic_glossaries_only_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(
+        asset_export_basic_glossaries_only_gcs.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS)
 
     # Case 2: Export assets with Products only using gcs
@@ -1196,7 +1260,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(asset_export_basic_products_only_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(
+        asset_export_basic_products_only_gcs.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS)
 
     # Case 3: Export assets with Enriched only using adls
@@ -1217,7 +1283,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(asset_export_basic_enriched_only_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(
+        asset_export_basic_enriched_only_gcs.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS)
 
     # Case 4: Export all assets using adls
@@ -1238,7 +1306,9 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(asset_export_basic_all_assets_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(
+        asset_export_basic_all_assets_gcs.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_GCS)
 
 
@@ -1268,7 +1338,9 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(relational_assets_builder_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(
+        relational_assets_builder_s3.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_s3 == load_json(RELATIONAL_ASSETS_BUILDER_S3)
 
     # Case 2: Build/Update relational assets from adls with advanced configuration
@@ -1298,7 +1370,9 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(relational_assets_builder_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(
+        relational_assets_builder_adls.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_adls == load_json(RELATIONAL_ASSETS_BUILDER_ADLS)
 
     # Case 3: Build/Update relational assets from gcs with advanced configuration
@@ -1326,7 +1400,9 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(relational_assets_builder_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(
+        relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
+    )
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
 
 
@@ -1444,7 +1520,9 @@ def test_lineage_generator_nt(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(lineage_generator_default.json(by_alias=True, exclude_none=True))
+    request_json = loads(
+        lineage_generator_default.json(by_alias=True, exclude_none=True)
+    )
     assert request_json == load_json(LINEAGE_GENERATOR_DEFAULT)
 
     lineage_generator_full = (
@@ -1500,7 +1578,9 @@ def test_api_token_connection_admin(mock_package_env):
         {"abc": NonSerializable()},
     ],
 )
-def test_wrong_hierarchical_filter_raises_invalid_req_err(test_assets, mock_package_env):
+def test_wrong_hierarchical_filter_raises_invalid_req_err(
+    test_assets, mock_package_env
+):
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
@@ -1534,7 +1614,9 @@ def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_en
     "test_assets",
     [NonSerializable(), [NonSerializable()]],
 )
-def test_wrong_glue_package_filter_raises_invalid_req_err(test_assets, mock_package_env):
+def test_wrong_glue_package_filter_raises_invalid_req_err(
+    test_assets, mock_package_env
+):
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,

@@ -29,7 +29,9 @@ class NoSQL(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
+        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+    )
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
@@ -40,7 +42,11 @@ class NoSQL(Catalog):
 
     @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.no_s_q_l_schema_definition
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.no_s_q_l_schema_definition
+        )
 
     @no_s_q_l_schema_definition.setter
     def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):

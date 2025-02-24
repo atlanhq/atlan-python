@@ -43,7 +43,9 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField("dbtAlias", "dbtAlias.keyword", "dbtAlias")
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    )
     """
 
     """
@@ -51,7 +53,9 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField("dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId")
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    )
     """
 
     """
@@ -73,15 +77,21 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField("dbtJobName", "dbtJobName.keyword", "dbtJobName")
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
+    )
     """
 
     """
-    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField("dbtJobSchedule", "dbtJobSchedule")
+    DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
+        "dbtJobSchedule", "dbtJobSchedule"
+    )
     """
 
     """
-    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField("dbtJobStatus", "dbtJobStatus")
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
+    )
     """
 
     """
@@ -93,11 +103,15 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField("dbtJobLastRun", "dbtJobLastRun")
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
+    )
     """
 
     """
-    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField("dbtJobNextRun", "dbtJobNextRun")
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
     """
 
     """
@@ -127,7 +141,9 @@ class DbtColumnProcess(Dbt):
     """
 
     """
-    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField("dbtConnectionContext", "dbtConnectionContext")
+    DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
     """
 
     """
@@ -153,7 +169,9 @@ class DbtColumnProcess(Dbt):
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
-    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField("additionalEtlContext", "additionalEtlContext")
+    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField(
+        "additionalEtlContext", "additionalEtlContext"
+    )
     """
     Additional Context of the ETL pipeline/notebook which creates the process.
     """
@@ -230,10 +248,16 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_column_process_job_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_column_process_job_status
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_column_process_job_status
+        )
 
     @dbt_column_process_job_status.setter
-    def dbt_column_process_job_status(self, dbt_column_process_job_status: Optional[str]):
+    def dbt_column_process_job_status(
+        self, dbt_column_process_job_status: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_column_process_job_status = dbt_column_process_job_status
@@ -330,13 +354,21 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_job_schedule_cron_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_job_schedule_cron_humanized
+        )
 
     @dbt_job_schedule_cron_humanized.setter
-    def dbt_job_schedule_cron_humanized(self, dbt_job_schedule_cron_humanized: Optional[str]):
+    def dbt_job_schedule_cron_humanized(
+        self, dbt_job_schedule_cron_humanized: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_job_schedule_cron_humanized = dbt_job_schedule_cron_humanized
+        self.attributes.dbt_job_schedule_cron_humanized = (
+            dbt_job_schedule_cron_humanized
+        )
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
@@ -360,7 +392,11 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_job_next_run_humanized
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_job_next_run_humanized
+        )
 
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
@@ -380,7 +416,11 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_environment_dbt_version
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_environment_dbt_version
+        )
 
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
@@ -400,7 +440,9 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_connection_context
+        return (
+            None if self.attributes is None else self.attributes.dbt_connection_context
+        )
 
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
@@ -410,7 +452,11 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_semantic_layer_proxy_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_semantic_layer_proxy_url
+        )
 
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
@@ -480,7 +526,9 @@ class DbtColumnProcess(Dbt):
 
     @property
     def additional_etl_context(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.additional_etl_context
+        return (
+            None if self.attributes is None else self.attributes.additional_etl_context
+        )
 
     @additional_etl_context.setter
     def additional_etl_context(self, additional_etl_context: Optional[str]):
@@ -569,7 +617,9 @@ class DbtColumnProcess(Dbt):
         self.attributes.column_processes = column_processes
 
     class Attributes(Dbt.Attributes):
-        dbt_column_process_job_status: Optional[str] = Field(default=None, description="")
+        dbt_column_process_job_status: Optional[str] = Field(
+            default=None, description=""
+        )
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -579,7 +629,9 @@ class DbtColumnProcess(Dbt):
         dbt_job_name: Optional[str] = Field(default=None, description="")
         dbt_job_schedule: Optional[str] = Field(default=None, description="")
         dbt_job_status: Optional[str] = Field(default=None, description="")
-        dbt_job_schedule_cron_humanized: Optional[str] = Field(default=None, description="")
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            default=None, description=""
+        )
         dbt_job_last_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run: Optional[datetime] = Field(default=None, description="")
         dbt_job_next_run_humanized: Optional[str] = Field(default=None, description="")
@@ -587,7 +639,9 @@ class DbtColumnProcess(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(default=None, description="")
         dbt_tags: Optional[Set[str]] = Field(default=None, description="")
         dbt_connection_context: Optional[str] = Field(default=None, description="")
-        dbt_semantic_layer_proxy_url: Optional[str] = Field(default=None, description="")
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            default=None, description=""
+        )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
@@ -595,14 +649,28 @@ class DbtColumnProcess(Dbt):
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
-        adf_activity: Optional[AdfActivity] = Field(default=None, description="")  # relationship
-        spark_jobs: Optional[List[SparkJob]] = Field(default=None, description="")  # relationship
-        matillion_component: Optional[MatillionComponent] = Field(default=None, description="")  # relationship
+        adf_activity: Optional[AdfActivity] = Field(
+            default=None, description=""
+        )  # relationship
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        matillion_component: Optional[MatillionComponent] = Field(
+            default=None, description=""
+        )  # relationship
         process: Optional[Process] = Field(default=None, description="")  # relationship
-        airflow_tasks: Optional[List[AirflowTask]] = Field(default=None, description="")  # relationship
-        fivetran_connector: Optional[FivetranConnector] = Field(default=None, description="")  # relationship
-        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(default=None, description="")  # relationship
-        column_processes: Optional[List[ColumnProcess]] = Field(default=None, description="")  # relationship
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        fivetran_connector: Optional[FivetranConnector] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
+            default=None, description=""
+        )  # relationship
+        column_processes: Optional[List[ColumnProcess]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: DbtColumnProcess.Attributes = Field(
         default_factory=lambda: DbtColumnProcess.Attributes(),

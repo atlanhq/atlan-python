@@ -33,11 +33,15 @@ class LookerView(Looker):
     """
     Name of the project in which this view exists.
     """
-    LOOKER_VIEW_FILE_PATH: ClassVar[TextField] = TextField("lookerViewFilePath", "lookerViewFilePath")
+    LOOKER_VIEW_FILE_PATH: ClassVar[TextField] = TextField(
+        "lookerViewFilePath", "lookerViewFilePath"
+    )
     """
     File path of this view within the project.
     """
-    LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField("lookerViewFileName", "lookerViewFileName")
+    LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField(
+        "lookerViewFileName", "lookerViewFileName"
+    )
     """
     File name of this view.
     """
@@ -71,7 +75,9 @@ class LookerView(Looker):
 
     @property
     def looker_view_file_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_view_file_path
+        return (
+            None if self.attributes is None else self.attributes.looker_view_file_path
+        )
 
     @looker_view_file_path.setter
     def looker_view_file_path(self, looker_view_file_path: Optional[str]):
@@ -81,7 +87,9 @@ class LookerView(Looker):
 
     @property
     def looker_view_file_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.looker_view_file_name
+        return (
+            None if self.attributes is None else self.attributes.looker_view_file_name
+        )
 
     @looker_view_file_name.setter
     def looker_view_file_name(self, looker_view_file_name: Optional[str]):
@@ -113,8 +121,12 @@ class LookerView(Looker):
         project_name: Optional[str] = Field(default=None, description="")
         looker_view_file_path: Optional[str] = Field(default=None, description="")
         looker_view_file_name: Optional[str] = Field(default=None, description="")
-        project: Optional[LookerProject] = Field(default=None, description="")  # relationship
-        fields: Optional[List[LookerField]] = Field(default=None, description="")  # relationship
+        project: Optional[LookerProject] = Field(
+            default=None, description=""
+        )  # relationship
+        fields: Optional[List[LookerField]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: LookerView.Attributes = Field(
         default_factory=lambda: LookerView.Attributes(),

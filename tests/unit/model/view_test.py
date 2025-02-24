@@ -26,7 +26,9 @@ from tests.unit.model.constants import (
         (VIEW_NAME, VIEW_COLUMN_QUALIFIED_NAME, "Invalid schema_qualified_name"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, schema_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, schema_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         View.create(name=name, schema_qualified_name=schema_qualified_name)
 
@@ -80,14 +82,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = View.create_for_modification(qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME)
+    sut = View.create_for_modification(
+        qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME
+    )
 
     assert sut.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.name == VIEW_NAME
 
 
 def test_trim_to_required():
-    sut = View.create_for_modification(qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME).trim_to_required()
+    sut = View.create_for_modification(
+        qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME
+    ).trim_to_required()
 
     assert sut.qualified_name == VIEW_QUALIFIED_NAME
     assert sut.name == VIEW_NAME

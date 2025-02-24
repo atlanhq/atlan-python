@@ -66,13 +66,19 @@ class PresetDashboard(Preset):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, preset_workspace_qualified_name: str) -> PresetDashboard:
+    def create(
+        cls, *, name: str, preset_workspace_qualified_name: str
+    ) -> PresetDashboard:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, preset_workspace_qualified_name=preset_workspace_qualified_name)
+        return cls.creator(
+            name=name, preset_workspace_qualified_name=preset_workspace_qualified_name
+        )
 
     type_name: str = Field(default="PresetDashboard", allow_mutation=False)
 
@@ -87,11 +93,13 @@ class PresetDashboard(Preset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.keyword",
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.stemmed",
+    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "presetDashboardChangedByName",
+            "presetDashboardChangedByName.keyword",
+            "presetDashboardChangedByName",
+            "presetDashboardChangedByName.stemmed",
+        )
     )
     """
 
@@ -154,57 +162,97 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_changed_by_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_changed_by_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_changed_by_name
+        )
 
     @preset_dashboard_changed_by_name.setter
-    def preset_dashboard_changed_by_name(self, preset_dashboard_changed_by_name: Optional[str]):
+    def preset_dashboard_changed_by_name(
+        self, preset_dashboard_changed_by_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_name = preset_dashboard_changed_by_name
+        self.attributes.preset_dashboard_changed_by_name = (
+            preset_dashboard_changed_by_name
+        )
 
     @property
     def preset_dashboard_changed_by_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_changed_by_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_changed_by_url
+        )
 
     @preset_dashboard_changed_by_url.setter
-    def preset_dashboard_changed_by_url(self, preset_dashboard_changed_by_url: Optional[str]):
+    def preset_dashboard_changed_by_url(
+        self, preset_dashboard_changed_by_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_url = preset_dashboard_changed_by_url
+        self.attributes.preset_dashboard_changed_by_url = (
+            preset_dashboard_changed_by_url
+        )
 
     @property
     def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_is_managed_externally
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_is_managed_externally
+        )
 
     @preset_dashboard_is_managed_externally.setter
-    def preset_dashboard_is_managed_externally(self, preset_dashboard_is_managed_externally: Optional[bool]):
+    def preset_dashboard_is_managed_externally(
+        self, preset_dashboard_is_managed_externally: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_managed_externally = preset_dashboard_is_managed_externally
+        self.attributes.preset_dashboard_is_managed_externally = (
+            preset_dashboard_is_managed_externally
+        )
 
     @property
     def preset_dashboard_is_published(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_is_published
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_is_published
+        )
 
     @preset_dashboard_is_published.setter
-    def preset_dashboard_is_published(self, preset_dashboard_is_published: Optional[bool]):
+    def preset_dashboard_is_published(
+        self, preset_dashboard_is_published: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
 
     @property
     def preset_dashboard_thumbnail_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_thumbnail_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_thumbnail_url
+        )
 
     @preset_dashboard_thumbnail_url.setter
-    def preset_dashboard_thumbnail_url(self, preset_dashboard_thumbnail_url: Optional[str]):
+    def preset_dashboard_thumbnail_url(
+        self, preset_dashboard_thumbnail_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
 
     @property
     def preset_dashboard_chart_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.preset_dashboard_chart_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_chart_count
+        )
 
     @preset_dashboard_chart_count.setter
     def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
@@ -243,15 +291,33 @@ class PresetDashboard(Preset):
         self.attributes.preset_workspace = preset_workspace
 
     class Attributes(Preset.Attributes):
-        preset_dashboard_changed_by_name: Optional[str] = Field(default=None, description="")
-        preset_dashboard_changed_by_url: Optional[str] = Field(default=None, description="")
-        preset_dashboard_is_managed_externally: Optional[bool] = Field(default=None, description="")
-        preset_dashboard_is_published: Optional[bool] = Field(default=None, description="")
-        preset_dashboard_thumbnail_url: Optional[str] = Field(default=None, description="")
-        preset_dashboard_chart_count: Optional[int] = Field(default=None, description="")
-        preset_datasets: Optional[List[PresetDataset]] = Field(default=None, description="")  # relationship
-        preset_charts: Optional[List[PresetChart]] = Field(default=None, description="")  # relationship
-        preset_workspace: Optional[PresetWorkspace] = Field(default=None, description="")  # relationship
+        preset_dashboard_changed_by_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        preset_dashboard_changed_by_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        preset_dashboard_is_managed_externally: Optional[bool] = Field(
+            default=None, description=""
+        )
+        preset_dashboard_is_published: Optional[bool] = Field(
+            default=None, description=""
+        )
+        preset_dashboard_thumbnail_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        preset_dashboard_chart_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        preset_datasets: Optional[List[PresetDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        preset_charts: Optional[List[PresetChart]] = Field(
+            default=None, description=""
+        )  # relationship
+        preset_workspace: Optional[PresetWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -267,7 +333,9 @@ class PresetDashboard(Preset):
                 [name, preset_workspace_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     preset_workspace_qualified_name,
@@ -281,7 +349,9 @@ class PresetDashboard(Preset):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{preset_workspace_qualified_name}/{name}",
                 connector_name=connector_name,
-                preset_workspace=PresetWorkspace.ref_by_qualified_name(preset_workspace_qualified_name),
+                preset_workspace=PresetWorkspace.ref_by_qualified_name(
+                    preset_workspace_qualified_name
+                ),
             )
 
     attributes: PresetDashboard.Attributes = Field(

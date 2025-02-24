@@ -69,7 +69,9 @@ class ConnectionCache(AbstractAssetCache):
         return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
     @classmethod
-    def get_by_qualified_name(cls, qualified_name: str, allow_refresh: bool = True) -> Connection:
+    def get_by_qualified_name(
+        cls, qualified_name: str, allow_refresh: bool = True
+    ) -> Connection:
         """
         Retrieve a connection from the cache by its unique Atlan-internal name.
 
@@ -82,10 +84,14 @@ class ConnectionCache(AbstractAssetCache):
         :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no qualified_name was provided for the connection to retrieve
         """
-        return cls.get_cache()._get_by_qualified_name(qualified_name=qualified_name, allow_refresh=allow_refresh)
+        return cls.get_cache()._get_by_qualified_name(
+            qualified_name=qualified_name, allow_refresh=allow_refresh
+        )
 
     @classmethod
-    def get_by_name(cls, name: ConnectionName, allow_refresh: bool = True) -> Connection:
+    def get_by_name(
+        cls, name: ConnectionName, allow_refresh: bool = True
+    ) -> Connection:
         """
         Retrieve an connection from the cache by its uniquely identifiable name.
 
@@ -142,7 +148,9 @@ class ConnectionCache(AbstractAssetCache):
             return
         if len(results) > 1:
             LOGGER.warning(
-                ("Found multiple connections of the same type with the same name, caching only the first: %s"),
+                (
+                    "Found multiple connections of the same type with the same name, caching only the first: %s"
+                ),
                 name,
             )
         self.cache(results[0])

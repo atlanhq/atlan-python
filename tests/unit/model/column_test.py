@@ -211,14 +211,18 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = Column.create_for_modification(qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME)
+    sut = Column.create_for_modification(
+        qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME
+    )
 
     assert sut.qualified_name == TABLE_COLUMN_QUALIFIED_NAME
     assert sut.name == COLUMN_NAME
 
 
 def test_trim_to_required():
-    sut = Table.create_for_modification(qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME).trim_to_required()
+    sut = Table.create_for_modification(
+        qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME
+    ).trim_to_required()
 
     assert sut.qualified_name == TABLE_COLUMN_QUALIFIED_NAME
     assert sut.name == COLUMN_NAME

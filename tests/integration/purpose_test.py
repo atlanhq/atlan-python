@@ -38,7 +38,9 @@ API_TOKEN_NAME = MODULE_NAME
 
 @pytest.fixture(scope="module")
 def snowflake_conn(client: AtlanClient):
-    return client.asset.find_connections_by_name("development", AtlanConnectorType.SNOWFLAKE)[0]
+    return client.asset.find_connections_by_name(
+        "development", AtlanConnectorType.SNOWFLAKE
+    )[0]
 
 
 @pytest.fixture(scope="module")
@@ -131,7 +133,9 @@ def test_purpose(client: AtlanClient, purpose: Purpose, atlan_tag_name: AtlanTag
     assert purpose.name == MODULE_NAME
     assert purpose.display_name == MODULE_NAME
     assert purpose.qualified_name != MODULE_NAME
-    purpose = client.asset.get_by_guid(guid=purpose.guid, asset_type=Purpose, ignore_relationships=False)
+    purpose = client.asset.get_by_guid(
+        guid=purpose.guid, asset_type=Purpose, ignore_relationships=False
+    )
     assert purpose.purpose_atlan_tags
     assert [atlan_tag_name] == purpose.purpose_atlan_tags
 
@@ -143,7 +147,9 @@ def test_update_purpose(
 ):
     assert purpose.qualified_name
     assert purpose.name
-    to_update = Purpose.create_for_modification(purpose.qualified_name, purpose.name, True)
+    to_update = Purpose.create_for_modification(
+        purpose.qualified_name, purpose.name, True
+    )
     to_update.description = "Now with a description!"
     to_update.deny_asset_tabs = {
         AssetSidebarTab.LINEAGE.value,
@@ -169,7 +175,9 @@ def test_find_purpose_by_name(
 ):
     result = None
     with contextlib.suppress(NotFoundError):
-        result = client.asset.find_purposes_by_name(MODULE_NAME, attributes=["purposeClassifications"])
+        result = client.asset.find_purposes_by_name(
+            MODULE_NAME, attributes=["purposeClassifications"]
+        )
         count = 0
         # TODO: replace with exponential back-off and jitter
         while not result and count < 10:
@@ -240,7 +248,9 @@ def test_retrieve_purpose(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False)
+        full = client.asset.get_by_guid(
+            guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False
+        )
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat
@@ -279,7 +289,10 @@ def test_token_permissions(client: AtlanClient, token):
     assert result.attributes
     assert result.attributes.persona_qualified_name
     assert len(result.attributes.persona_qualified_name) == 1
-    assert next(iter(result.attributes.persona_qualified_name)).persona_qualified_name == persona.qualified_name
+    assert (
+        next(iter(result.attributes.persona_qualified_name)).persona_qualified_name
+        == persona.qualified_name
+    )
 
 
 @pytest.mark.skip(reason="Test failing with HekaException")

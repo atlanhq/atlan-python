@@ -64,8 +64,12 @@ class Namespace(Asset, type_name="Namespace"):
         self.attributes.children_queries = children_queries
 
     class Attributes(Asset.Attributes):
-        children_folders: Optional[List[Folder]] = Field(default=None, description="")  # relationship
-        children_queries: Optional[List[Query]] = Field(default=None, description="")  # relationship
+        children_folders: Optional[List[Folder]] = Field(
+            default=None, description=""
+        )  # relationship
+        children_queries: Optional[List[Query]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Namespace.Attributes = Field(
         default_factory=lambda: Namespace.Attributes(),

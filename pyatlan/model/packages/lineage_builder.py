@@ -70,7 +70,9 @@ class LineageBuilder(AbstractCustomPackage):
         self._credentials_body.update(local_creds)
         return self
 
-    def gcs(self, project_id: str, service_account_json: str, bucket: str) -> LineageBuilder:
+    def gcs(
+        self, project_id: str, service_account_json: str, bucket: str
+    ) -> LineageBuilder:
         """
         Set up package to import lineage details from GCS.
 

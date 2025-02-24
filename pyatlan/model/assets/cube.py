@@ -29,7 +29,9 @@ class Cube(MultiDimensionalDataset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CUBE_DIMENSION_COUNT: ClassVar[NumericField] = NumericField("cubeDimensionCount", "cubeDimensionCount")
+    CUBE_DIMENSION_COUNT: ClassVar[NumericField] = NumericField(
+        "cubeDimensionCount", "cubeDimensionCount"
+    )
     """
     Number of dimensions in the cube.
     """
@@ -66,7 +68,9 @@ class Cube(MultiDimensionalDataset):
 
     class Attributes(MultiDimensionalDataset.Attributes):
         cube_dimension_count: Optional[int] = Field(default=None, description="")
-        cube_dimensions: Optional[List[CubeDimension]] = Field(default=None, description="")  # relationship
+        cube_dimensions: Optional[List[CubeDimension]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Cube.Attributes = Field(
         default_factory=lambda: Cube.Attributes(),

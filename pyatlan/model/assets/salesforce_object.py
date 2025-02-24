@@ -144,9 +144,15 @@ class SalesforceObject(Salesforce):
         is_mergable: Optional[bool] = Field(default=None, description="")
         is_queryable: Optional[bool] = Field(default=None, description="")
         field_count: Optional[int] = Field(default=None, description="")
-        lookup_fields: Optional[List[SalesforceField]] = Field(default=None, description="")  # relationship
-        organization: Optional[SalesforceOrganization] = Field(default=None, description="")  # relationship
-        fields: Optional[List[SalesforceField]] = Field(default=None, description="")  # relationship
+        lookup_fields: Optional[List[SalesforceField]] = Field(
+            default=None, description=""
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            default=None, description=""
+        )  # relationship
+        fields: Optional[List[SalesforceField]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SalesforceObject.Attributes = Field(
         default_factory=lambda: SalesforceObject.Attributes(),

@@ -36,31 +36,45 @@ class ModeReport(Mode):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_COLLECTION_TOKEN: ClassVar[KeywordField] = KeywordField("modeCollectionToken", "modeCollectionToken")
+    MODE_COLLECTION_TOKEN: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionToken", "modeCollectionToken"
+    )
     """
 
     """
-    MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField("modeReportPublishedAt", "modeReportPublishedAt")
+    MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
+        "modeReportPublishedAt", "modeReportPublishedAt"
+    )
     """
 
     """
-    MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField("modeQueryCount", "modeQueryCount")
+    MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
+        "modeQueryCount", "modeQueryCount"
+    )
     """
 
     """
-    MODE_CHART_COUNT: ClassVar[NumericField] = NumericField("modeChartCount", "modeChartCount")
+    MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
+        "modeChartCount", "modeChartCount"
+    )
     """
 
     """
-    MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField("modeQueryPreview", "modeQueryPreview")
+    MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
+        "modeQueryPreview", "modeQueryPreview"
+    )
     """
 
     """
-    MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField("modeIsPublic", "modeIsPublic")
+    MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
+        "modeIsPublic", "modeIsPublic"
+    )
     """
 
     """
-    MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField("modeIsShared", "modeIsShared")
+    MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
+        "modeIsShared", "modeIsShared"
+    )
     """
 
     """
@@ -88,7 +102,9 @@ class ModeReport(Mode):
 
     @property
     def mode_collection_token(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_collection_token
+        return (
+            None if self.attributes is None else self.attributes.mode_collection_token
+        )
 
     @mode_collection_token.setter
     def mode_collection_token(self, mode_collection_token: Optional[str]):
@@ -98,7 +114,11 @@ class ModeReport(Mode):
 
     @property
     def mode_report_published_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.mode_report_published_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mode_report_published_at
+        )
 
     @mode_report_published_at.setter
     def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
@@ -178,14 +198,20 @@ class ModeReport(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(default=None, description="")
-        mode_report_published_at: Optional[datetime] = Field(default=None, description="")
+        mode_report_published_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         mode_query_count: Optional[int] = Field(default=None, description="")
         mode_chart_count: Optional[int] = Field(default=None, description="")
         mode_query_preview: Optional[str] = Field(default=None, description="")
         mode_is_public: Optional[bool] = Field(default=None, description="")
         mode_is_shared: Optional[bool] = Field(default=None, description="")
-        mode_queries: Optional[List[ModeQuery]] = Field(default=None, description="")  # relationship
-        mode_collections: Optional[List[ModeCollection]] = Field(default=None, description="")  # relationship
+        mode_queries: Optional[List[ModeQuery]] = Field(
+            default=None, description=""
+        )  # relationship
+        mode_collections: Optional[List[ModeCollection]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: ModeReport.Attributes = Field(
         default_factory=lambda: ModeReport.Attributes(),

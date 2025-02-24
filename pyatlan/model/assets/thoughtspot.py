@@ -29,19 +29,27 @@ class Thoughtspot(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    THOUGHTSPOT_CHART_TYPE: ClassVar[KeywordField] = KeywordField("thoughtspotChartType", "thoughtspotChartType")
+    THOUGHTSPOT_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "thoughtspotChartType", "thoughtspotChartType"
+    )
     """
 
     """
-    THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField("thoughtspotQuestionText", "thoughtspotQuestionText")
+    THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField(
+        "thoughtspotQuestionText", "thoughtspotQuestionText"
+    )
     """
 
     """
-    THOUGHTSPOT_JOIN_COUNT: ClassVar[NumericField] = NumericField("thoughtspotJoinCount", "thoughtspotJoinCount")
+    THOUGHTSPOT_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "thoughtspotJoinCount", "thoughtspotJoinCount"
+    )
     """
     Total number of data table joins executed for analysis.
     """
-    THOUGHTSPOT_COLUMN_COUNT: ClassVar[NumericField] = NumericField("thoughtspotColumnCount", "thoughtspotColumnCount")
+    THOUGHTSPOT_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "thoughtspotColumnCount", "thoughtspotColumnCount"
+    )
     """
     Number of Columns.
     """
@@ -55,7 +63,9 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_chart_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.thoughtspot_chart_type
+        return (
+            None if self.attributes is None else self.attributes.thoughtspot_chart_type
+        )
 
     @thoughtspot_chart_type.setter
     def thoughtspot_chart_type(self, thoughtspot_chart_type: Optional[str]):
@@ -65,7 +75,11 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_question_text(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.thoughtspot_question_text
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.thoughtspot_question_text
+        )
 
     @thoughtspot_question_text.setter
     def thoughtspot_question_text(self, thoughtspot_question_text: Optional[str]):
@@ -75,7 +89,9 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_join_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.thoughtspot_join_count
+        return (
+            None if self.attributes is None else self.attributes.thoughtspot_join_count
+        )
 
     @thoughtspot_join_count.setter
     def thoughtspot_join_count(self, thoughtspot_join_count: Optional[int]):
@@ -85,7 +101,11 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.thoughtspot_column_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.thoughtspot_column_count
+        )
 
     @thoughtspot_column_count.setter
     def thoughtspot_column_count(self, thoughtspot_column_count: Optional[int]):

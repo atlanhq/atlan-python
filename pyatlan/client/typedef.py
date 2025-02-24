@@ -58,7 +58,9 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             custom_metadata_defs=[],
         )  # type: ignore[call-arg]
     else:
-        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(typedef.category.value)
+        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
+            typedef.category.value
+        )
     return payload
 
 
@@ -113,7 +115,9 @@ class TypeDefClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     def get_all(self) -> TypeDefResponse:
@@ -127,7 +131,9 @@ class TypeDefClient:
         return TypeDefResponse(**raw_json)
 
     @validate_arguments
-    def get(self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]) -> TypeDefResponse:
+    def get(
+        self, type_category: Union[AtlanTypeCategory, List[AtlanTypeCategory]]
+    ) -> TypeDefResponse:
         """
         Retrieves a TypeDefResponse object that contain a list of the specified category type definitions in Atlan.
 
@@ -158,11 +164,15 @@ class TypeDefClient:
         category or when unable to produce a valid response
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(GET_TYPE_DEF_BY_NAME.format_path_with_params(name))
+        raw_json = self._client._call_api(
+            GET_TYPE_DEF_BY_NAME.format_path_with_params(name)
+        )
         try:
             return TypeDefFactory.create(raw_json)
         except (ValidationError, AttributeError) as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
 
     @validate_arguments
     def create(self, typedef: TypeDef) -> TypeDefResponse:
@@ -179,7 +189,9 @@ class TypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = self._client._call_api(CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True)
+        raw_json = self._client._call_api(
+            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        )
         _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
@@ -198,7 +210,9 @@ class TypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = self._client._call_api(UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True)
+        raw_json = self._client._call_api(
+            UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        )
         _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
@@ -226,9 +240,13 @@ class TypeDefClient:
 
             internal_name = str(AtlanTagCache.get_id_for_name(name))
         else:
-            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(typedef_type)
+            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
+                typedef_type
+            )
         if internal_name:
-            self._client._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
+            self._client._call_api(
+                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
+            )
         else:
             raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 

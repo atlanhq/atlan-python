@@ -49,7 +49,9 @@ class Schema(SQL):
         database_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> Schema:
-        validate_required_fields(["name", "database_qualified_name"], [name, database_qualified_name])
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
         attributes = Schema.Attributes.create(
             name=name,
             database_qualified_name=database_qualified_name,
@@ -62,7 +64,9 @@ class Schema(SQL):
     @init_guid
     def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -127,7 +131,9 @@ class Schema(SQL):
     """
     TBC
     """
-    SNOWFLAKE_DYNAMIC_TABLES: ClassVar[RelationField] = RelationField("snowflakeDynamicTables")
+    SNOWFLAKE_DYNAMIC_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTables"
+    )
     """
     TBC
     """
@@ -183,7 +189,11 @@ class Schema(SQL):
 
     @property
     def linked_schema_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.linked_schema_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.linked_schema_qualified_name
+        )
 
     @linked_schema_qualified_name.setter
     def linked_schema_qualified_name(self, linked_schema_qualified_name: Optional[str]):
@@ -263,10 +273,16 @@ class Schema(SQL):
 
     @property
     def snowflake_dynamic_tables(self) -> Optional[List[SnowflakeDynamicTable]]:
-        return None if self.attributes is None else self.attributes.snowflake_dynamic_tables
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_dynamic_tables
+        )
 
     @snowflake_dynamic_tables.setter
-    def snowflake_dynamic_tables(self, snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]]):
+    def snowflake_dynamic_tables(
+        self, snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
@@ -304,20 +320,42 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
         views_count: Optional[int] = Field(default=None, description="")
-        linked_schema_qualified_name: Optional[str] = Field(default=None, description="")
-        snowflake_tags: Optional[List[SnowflakeTag]] = Field(default=None, description="")  # relationship
-        functions: Optional[List[Function]] = Field(default=None, description="")  # relationship
-        tables: Optional[List[Table]] = Field(default=None, description="")  # relationship
-        database: Optional[Database] = Field(default=None, description="")  # relationship
-        procedures: Optional[List[Procedure]] = Field(default=None, description="")  # relationship
-        views: Optional[List[View]] = Field(default=None, description="")  # relationship
-        materialised_views: Optional[List[MaterialisedView]] = Field(default=None, description="")  # relationship
+        linked_schema_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        snowflake_tags: Optional[List[SnowflakeTag]] = Field(
+            default=None, description=""
+        )  # relationship
+        functions: Optional[List[Function]] = Field(
+            default=None, description=""
+        )  # relationship
+        tables: Optional[List[Table]] = Field(
+            default=None, description=""
+        )  # relationship
+        database: Optional[Database] = Field(
+            default=None, description=""
+        )  # relationship
+        procedures: Optional[List[Procedure]] = Field(
+            default=None, description=""
+        )  # relationship
+        views: Optional[List[View]] = Field(
+            default=None, description=""
+        )  # relationship
+        materialised_views: Optional[List[MaterialisedView]] = Field(
+            default=None, description=""
+        )  # relationship
         snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_pipes: Optional[List[SnowflakePipe]] = Field(default=None, description="")  # relationship
-        snowflake_streams: Optional[List[SnowflakeStream]] = Field(default=None, description="")  # relationship
-        calculation_views: Optional[List[CalculationView]] = Field(default=None, description="")  # relationship
+        snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_streams: Optional[List[SnowflakeStream]] = Field(
+            default=None, description=""
+        )  # relationship
+        calculation_views: Optional[List[CalculationView]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -329,9 +367,13 @@ class Schema(SQL):
             database_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> Schema.Attributes:
-            validate_required_fields(["name, database_qualified_name"], [name, database_qualified_name])
+            validate_required_fields(
+                ["name, database_qualified_name"], [name, database_qualified_name]
+            )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     database_qualified_name, "database_qualified_name", 4

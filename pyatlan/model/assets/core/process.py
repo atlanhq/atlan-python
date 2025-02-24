@@ -54,7 +54,9 @@ class Process(Asset, type_name="Process"):
         parent: Optional[Process] = None,
     ) -> Process:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -92,7 +94,9 @@ class Process(Asset, type_name="Process"):
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
     """
-    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField("additionalEtlContext", "additionalEtlContext")
+    ADDITIONAL_ETL_CONTEXT: ClassVar[TextField] = TextField(
+        "additionalEtlContext", "additionalEtlContext"
+    )
     """
     Additional Context of the ETL pipeline/notebook which creates the process.
     """
@@ -194,7 +198,9 @@ class Process(Asset, type_name="Process"):
 
     @property
     def additional_etl_context(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.additional_etl_context
+        return (
+            None if self.attributes is None else self.attributes.additional_etl_context
+        )
 
     @additional_etl_context.setter
     def additional_etl_context(self, additional_etl_context: Optional[str]):
@@ -279,13 +285,27 @@ class Process(Asset, type_name="Process"):
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
-        adf_activity: Optional[AdfActivity] = Field(default=None, description="")  # relationship
-        spark_jobs: Optional[List[SparkJob]] = Field(default=None, description="")  # relationship
-        matillion_component: Optional[MatillionComponent] = Field(default=None, description="")  # relationship
-        airflow_tasks: Optional[List[AirflowTask]] = Field(default=None, description="")  # relationship
-        fivetran_connector: Optional[FivetranConnector] = Field(default=None, description="")  # relationship
-        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(default=None, description="")  # relationship
-        column_processes: Optional[List[ColumnProcess]] = Field(default=None, description="")  # relationship
+        adf_activity: Optional[AdfActivity] = Field(
+            default=None, description=""
+        )  # relationship
+        spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        matillion_component: Optional[MatillionComponent] = Field(
+            default=None, description=""
+        )  # relationship
+        airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        fivetran_connector: Optional[FivetranConnector] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_dataflow: Optional[PowerBIDataflow] = Field(
+            default=None, description=""
+        )  # relationship
+        column_processes: Optional[List[ColumnProcess]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @staticmethod
         def generate_qualified_name(

@@ -29,7 +29,9 @@ class MicroStrategyDocument(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField("microStrategyProject")
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
     """
     TBC
     """
@@ -40,16 +42,22 @@ class MicroStrategyDocument(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return None if self.attributes is None else self.attributes.micro_strategy_project
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
 
     @micro_strategy_project.setter
-    def micro_strategy_project(self, micro_strategy_project: Optional[MicroStrategyProject]):
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(default=None, description="")  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MicroStrategyDocument.Attributes = Field(
         default_factory=lambda: MicroStrategyDocument.Attributes(),

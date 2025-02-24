@@ -61,7 +61,11 @@ class TagAttachment(Asset, type_name="TagAttachment"):
 
     @property
     def tag_attachment_string_value(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tag_attachment_string_value
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tag_attachment_string_value
+        )
 
     @tag_attachment_string_value.setter
     def tag_attachment_string_value(self, tag_attachment_string_value: Optional[str]):

@@ -29,7 +29,9 @@ class CubeHierarchy(MultiDimensionalDataset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CUBE_FIELD_COUNT: ClassVar[NumericField] = NumericField("cubeFieldCount", "cubeFieldCount")
+    CUBE_FIELD_COUNT: ClassVar[NumericField] = NumericField(
+        "cubeFieldCount", "cubeFieldCount"
+    )
     """
     Number of total fields in the cube hierarchy.
     """
@@ -81,8 +83,12 @@ class CubeHierarchy(MultiDimensionalDataset):
 
     class Attributes(MultiDimensionalDataset.Attributes):
         cube_field_count: Optional[int] = Field(default=None, description="")
-        cube_fields: Optional[List[CubeField]] = Field(default=None, description="")  # relationship
-        cube_dimension: Optional[CubeDimension] = Field(default=None, description="")  # relationship
+        cube_fields: Optional[List[CubeField]] = Field(
+            default=None, description=""
+        )  # relationship
+        cube_dimension: Optional[CubeDimension] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: CubeHierarchy.Attributes = Field(
         default_factory=lambda: CubeHierarchy.Attributes(),

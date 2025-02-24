@@ -21,7 +21,9 @@ class OpenLineageClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @validate_arguments
@@ -49,9 +51,13 @@ class OpenLineageClient:
 
         create_credential = Credential()
         create_credential.auth_type = "atlan_api_key"
-        create_credential.name = f"default-{connector_type.value}-{int(utils.get_epoch_timestamp())}-0"
+        create_credential.name = (
+            f"default-{connector_type.value}-{int(utils.get_epoch_timestamp())}-0"
+        )
         create_credential.connector = str(connector_type.value)
-        create_credential.connector_config_name = f"atlan-connectors-{connector_type.value}"
+        create_credential.connector_config_name = (
+            f"atlan-connectors-{connector_type.value}"
+        )
         create_credential.connector_type = "event"
         create_credential.extras = {
             "events.enable-partial-assets": True,
@@ -72,7 +78,9 @@ class OpenLineageClient:
         return client.asset.save(connection)
 
     @validate_arguments
-    def send(self, request: OpenLineageEvent, connector_type: AtlanConnectorType) -> None:
+    def send(
+        self, request: OpenLineageEvent, connector_type: AtlanConnectorType
+    ) -> None:
         """
         Sends the OpenLineage event to Atlan to be consumed.
 
@@ -84,12 +92,19 @@ class OpenLineageClient:
         try:
             self._client._call_api(
                 request_obj=request,
-                api=OPEN_LINEAGE_SEND_EVENT_API.format_path({"connector_type": connector_type.value}),
+                api=OPEN_LINEAGE_SEND_EVENT_API.format_path(
+                    {"connector_type": connector_type.value}
+                ),
                 text_response=True,
             )
         except AtlanError as e:
-            if e.error_code.http_error_code == HTTPStatus.UNAUTHORIZED and e.error_code.error_message.startswith(
-                "Unauthorized: url path not configured to receive data, urlPath:"
+            if (
+                e.error_code.http_error_code == HTTPStatus.UNAUTHORIZED
+                and e.error_code.error_message.startswith(
+                    "Unauthorized: url path not configured to receive data, urlPath:"
+                )
             ):
-                raise ErrorCode.OPENLINEAGE_NOT_CONFIGURED.exception_with_parameters(connector_type.value) from e
+                raise ErrorCode.OPENLINEAGE_NOT_CONFIGURED.exception_with_parameters(
+                    connector_type.value
+                ) from e
             raise e

@@ -33,10 +33,12 @@ class SisenseDashboard(Sisense):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName",
-        "sisenseDashboardFolderQualifiedName.text",
+    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "sisenseDashboardFolderQualifiedName",
+            "sisenseDashboardFolderQualifiedName",
+            "sisenseDashboardFolderQualifiedName.text",
+        )
     )
     """
     Unique name of the folder in which this dashboard exists.
@@ -71,20 +73,34 @@ class SisenseDashboard(Sisense):
 
     @property
     def sisense_dashboard_folder_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sisense_dashboard_folder_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_dashboard_folder_qualified_name
+        )
 
     @sisense_dashboard_folder_qualified_name.setter
-    def sisense_dashboard_folder_qualified_name(self, sisense_dashboard_folder_qualified_name: Optional[str]):
+    def sisense_dashboard_folder_qualified_name(
+        self, sisense_dashboard_folder_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sisense_dashboard_folder_qualified_name = sisense_dashboard_folder_qualified_name
+        self.attributes.sisense_dashboard_folder_qualified_name = (
+            sisense_dashboard_folder_qualified_name
+        )
 
     @property
     def sisense_dashboard_widget_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.sisense_dashboard_widget_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_dashboard_widget_count
+        )
 
     @sisense_dashboard_widget_count.setter
-    def sisense_dashboard_widget_count(self, sisense_dashboard_widget_count: Optional[int]):
+    def sisense_dashboard_widget_count(
+        self, sisense_dashboard_widget_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sisense_dashboard_widget_count = sisense_dashboard_widget_count
@@ -120,11 +136,21 @@ class SisenseDashboard(Sisense):
         self.attributes.sisense_folder = sisense_folder
 
     class Attributes(Sisense.Attributes):
-        sisense_dashboard_folder_qualified_name: Optional[str] = Field(default=None, description="")
-        sisense_dashboard_widget_count: Optional[int] = Field(default=None, description="")
-        sisense_datamodels: Optional[List[SisenseDatamodel]] = Field(default=None, description="")  # relationship
-        sisense_widgets: Optional[List[SisenseWidget]] = Field(default=None, description="")  # relationship
-        sisense_folder: Optional[SisenseFolder] = Field(default=None, description="")  # relationship
+        sisense_dashboard_folder_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sisense_dashboard_widget_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sisense_datamodels: Optional[List[SisenseDatamodel]] = Field(
+            default=None, description=""
+        )  # relationship
+        sisense_widgets: Optional[List[SisenseWidget]] = Field(
+            default=None, description=""
+        )  # relationship
+        sisense_folder: Optional[SisenseFolder] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SisenseDashboard.Attributes = Field(
         default_factory=lambda: SisenseDashboard.Attributes(),

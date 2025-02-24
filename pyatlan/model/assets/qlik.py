@@ -37,7 +37,9 @@ class Qlik(BI):
     """
     Identifier of this asset, from Qlik.
     """
-    QLIK_QRI: ClassVar[KeywordTextField] = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
+    QLIK_QRI: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikQRI", "qlikQRI", "qlikQRI.text"
+    )
     """
     Unique QRI of this asset, from Qlik.
     """
@@ -67,7 +69,9 @@ class Qlik(BI):
     """
     Identifier of the owner of this asset, in Qlik.
     """
-    QLIK_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("qlikIsPublished", "qlikIsPublished")
+    QLIK_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
+        "qlikIsPublished", "qlikIsPublished"
+    )
     """
     Whether this asset is published in Qlik (true) or not (false).
     """
@@ -115,7 +119,11 @@ class Qlik(BI):
 
     @property
     def qlik_space_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_space_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.qlik_space_qualified_name
+        )
 
     @qlik_space_qualified_name.setter
     def qlik_space_qualified_name(self, qlik_space_qualified_name: Optional[str]):
@@ -135,7 +143,9 @@ class Qlik(BI):
 
     @property
     def qlik_app_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_app_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.qlik_app_qualified_name
+        )
 
     @qlik_app_qualified_name.setter
     def qlik_app_qualified_name(self, qlik_app_qualified_name: Optional[str]):

@@ -49,7 +49,9 @@ class CognosFile(Cognos):
         self.attributes.cognos_folder = cognos_folder
 
     class Attributes(Cognos.Attributes):
-        cognos_folder: Optional[CognosFolder] = Field(default=None, description="")  # relationship
+        cognos_folder: Optional[CognosFolder] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: CognosFile.Attributes = Field(
         default_factory=lambda: CognosFile.Attributes(),

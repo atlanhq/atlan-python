@@ -135,7 +135,9 @@ class Column(SQL):
             )
         if table_qualified_name:
             warn(
-                ("`table_qualified_name` is deprecated, please use `parent_qualified_name` instead"),
+                (
+                    "`table_qualified_name` is deprecated, please use `parent_qualified_name` instead"
+                ),
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -158,9 +160,13 @@ class Column(SQL):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int) -> Column:
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -184,7 +190,9 @@ class Column(SQL):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField("dataType", "dataType", "dataType.text")
+    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataType", "dataType", "dataType.text"
+    )
     """
     Data type of values in this column.
     """
@@ -192,7 +200,9 @@ class Column(SQL):
     """
     Sub-data type of this column.
     """
-    RAW_DATA_TYPE_DEFINITION: ClassVar[TextField] = TextField("rawDataTypeDefinition", "rawDataTypeDefinition")
+    RAW_DATA_TYPE_DEFINITION: ClassVar[TextField] = TextField(
+        "rawDataTypeDefinition", "rawDataTypeDefinition"
+    )
     """
 
     """
@@ -200,15 +210,21 @@ class Column(SQL):
     """
     Order (position) in which this column appears in the table (starting at 1).
     """
-    NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField("nestedColumnOrder", "nestedColumnOrder")
+    NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField(
+        "nestedColumnOrder", "nestedColumnOrder"
+    )
     """
     Order (position) in which this column appears in the nested Column (nest level starts at 1).
     """
-    NESTED_COLUMN_COUNT: ClassVar[NumericField] = NumericField("nestedColumnCount", "nestedColumnCount")
+    NESTED_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "nestedColumnCount", "nestedColumnCount"
+    )
     """
     Number of columns nested within this (STRUCT or NESTED) column.
     """
-    COLUMN_HIERARCHY: ClassVar[KeywordField] = KeywordField("columnHierarchy", "columnHierarchy")
+    COLUMN_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "columnHierarchy", "columnHierarchy"
+    )
     """
     List of top-level upstream nested columns.
     """
@@ -216,7 +232,9 @@ class Column(SQL):
     """
     Whether this column is a partition column (true) or not (false).
     """
-    PARTITION_ORDER: ClassVar[NumericField] = NumericField("partitionOrder", "partitionOrder")
+    PARTITION_ORDER: ClassVar[NumericField] = NumericField(
+        "partitionOrder", "partitionOrder"
+    )
     """
     Order (position) of this partition column in the table.
     """
@@ -306,7 +324,9 @@ class Column(SQL):
     """
     Number of rows that contain distinct values.
     """
-    COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField("columnHistogram", "columnHistogram")
+    COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
+        "columnHistogram", "columnHistogram"
+    )
     """
     List of values in a histogram that represents the contents of this column.
     """
@@ -348,11 +368,15 @@ class Column(SQL):
     """
     Number of rows in which a value in this column appears only once.
     """
-    COLUMN_AVERAGE: ClassVar[NumericField] = NumericField("columnAverage", "columnAverage")
+    COLUMN_AVERAGE: ClassVar[NumericField] = NumericField(
+        "columnAverage", "columnAverage"
+    )
     """
     Average value in this column.
     """
-    COLUMN_AVERAGE_LENGTH: ClassVar[NumericField] = NumericField("columnAverageLength", "columnAverageLength")
+    COLUMN_AVERAGE_LENGTH: ClassVar[NumericField] = NumericField(
+        "columnAverageLength", "columnAverageLength"
+    )
     """
     Average length of values in a string column.
     """
@@ -412,15 +436,21 @@ class Column(SQL):
     """
     Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique.
     """  # noqa: E501
-    COLUMN_VARIANCE: ClassVar[NumericField] = NumericField("columnVariance", "columnVariance")
+    COLUMN_VARIANCE: ClassVar[NumericField] = NumericField(
+        "columnVariance", "columnVariance"
+    )
     """
     Calculated variance of the values in a numeric column.
     """
-    COLUMN_TOP_VALUES: ClassVar[KeywordField] = KeywordField("columnTopValues", "columnTopValues")
+    COLUMN_TOP_VALUES: ClassVar[KeywordField] = KeywordField(
+        "columnTopValues", "columnTopValues"
+    )
     """
     List of top values in this column.
     """
-    COLUMN_DEPTH_LEVEL: ClassVar[NumericField] = NumericField("columnDepthLevel", "columnDepthLevel")
+    COLUMN_DEPTH_LEVEL: ClassVar[NumericField] = NumericField(
+        "columnDepthLevel", "columnDepthLevel"
+    )
     """
     Level of nesting of this column, used for STRUCT and NESTED columns.
     """
@@ -437,7 +467,9 @@ class Column(SQL):
     Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection.
     """  # noqa: E501
 
-    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField("snowflakeDynamicTable")
+    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTable"
+    )
     """
     TBC
     """
@@ -449,7 +481,9 @@ class Column(SQL):
     """
     TBC
     """
-    DATA_QUALITY_METRIC_DIMENSIONS: ClassVar[RelationField] = RelationField("dataQualityMetricDimensions")
+    DATA_QUALITY_METRIC_DIMENSIONS: ClassVar[RelationField] = RelationField(
+        "dataQualityMetricDimensions"
+    )
     """
     TBC
     """
@@ -461,7 +495,9 @@ class Column(SQL):
     """
     TBC
     """
-    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("columnDbtModelColumns")
+    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
+        "columnDbtModelColumns"
+    )
     """
     TBC
     """
@@ -489,7 +525,9 @@ class Column(SQL):
     """
     TBC
     """
-    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField("cosmosMongoDBCollection")
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBCollection"
+    )
     """
     TBC
     """
@@ -602,7 +640,11 @@ class Column(SQL):
 
     @property
     def raw_data_type_definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.raw_data_type_definition
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.raw_data_type_definition
+        )
 
     @raw_data_type_definition.setter
     def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
@@ -822,7 +864,11 @@ class Column(SQL):
 
     @property
     def parent_column_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.parent_column_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_column_qualified_name
+        )
 
     @parent_column_qualified_name.setter
     def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
@@ -842,7 +888,11 @@ class Column(SQL):
 
     @property
     def column_distinct_values_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_distinct_values_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_count
+        )
 
     @column_distinct_values_count.setter
     def column_distinct_values_count(self, column_distinct_values_count: Optional[int]):
@@ -852,13 +902,21 @@ class Column(SQL):
 
     @property
     def column_distinct_values_count_long(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_distinct_values_count_long
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_count_long
+        )
 
     @column_distinct_values_count_long.setter
-    def column_distinct_values_count_long(self, column_distinct_values_count_long: Optional[int]):
+    def column_distinct_values_count_long(
+        self, column_distinct_values_count_long: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_distinct_values_count_long = column_distinct_values_count_long
+        self.attributes.column_distinct_values_count_long = (
+            column_distinct_values_count_long
+        )
 
     @property
     def column_histogram(self) -> Optional[Histogram]:
@@ -922,7 +980,11 @@ class Column(SQL):
 
     @property
     def column_standard_deviation(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_standard_deviation
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_standard_deviation
+        )
 
     @column_standard_deviation.setter
     def column_standard_deviation(self, column_standard_deviation: Optional[float]):
@@ -932,7 +994,11 @@ class Column(SQL):
 
     @property
     def column_unique_values_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_unique_values_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_unique_values_count
+        )
 
     @column_unique_values_count.setter
     def column_unique_values_count(self, column_unique_values_count: Optional[int]):
@@ -942,13 +1008,21 @@ class Column(SQL):
 
     @property
     def column_unique_values_count_long(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_unique_values_count_long
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_unique_values_count_long
+        )
 
     @column_unique_values_count_long.setter
-    def column_unique_values_count_long(self, column_unique_values_count_long: Optional[int]):
+    def column_unique_values_count_long(
+        self, column_unique_values_count_long: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_unique_values_count_long = column_unique_values_count_long
+        self.attributes.column_unique_values_count_long = (
+            column_unique_values_count_long
+        )
 
     @property
     def column_average(self) -> Optional[float]:
@@ -962,7 +1036,9 @@ class Column(SQL):
 
     @property
     def column_average_length(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_average_length
+        return (
+            None if self.attributes is None else self.attributes.column_average_length
+        )
 
     @column_average_length.setter
     def column_average_length(self, column_average_length: Optional[float]):
@@ -972,27 +1048,45 @@ class Column(SQL):
 
     @property
     def column_duplicate_values_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_duplicate_values_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_duplicate_values_count
+        )
 
     @column_duplicate_values_count.setter
-    def column_duplicate_values_count(self, column_duplicate_values_count: Optional[int]):
+    def column_duplicate_values_count(
+        self, column_duplicate_values_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_duplicate_values_count = column_duplicate_values_count
 
     @property
     def column_duplicate_values_count_long(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_duplicate_values_count_long
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_duplicate_values_count_long
+        )
 
     @column_duplicate_values_count_long.setter
-    def column_duplicate_values_count_long(self, column_duplicate_values_count_long: Optional[int]):
+    def column_duplicate_values_count_long(
+        self, column_duplicate_values_count_long: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_duplicate_values_count_long = column_duplicate_values_count_long
+        self.attributes.column_duplicate_values_count_long = (
+            column_duplicate_values_count_long
+        )
 
     @property
     def column_maximum_string_length(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_maximum_string_length
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_maximum_string_length
+        )
 
     @column_maximum_string_length.setter
     def column_maximum_string_length(self, column_maximum_string_length: Optional[int]):
@@ -1012,7 +1106,11 @@ class Column(SQL):
 
     @property
     def column_minimum_string_length(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_minimum_string_length
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_minimum_string_length
+        )
 
     @column_minimum_string_length.setter
     def column_minimum_string_length(self, column_minimum_string_length: Optional[int]):
@@ -1032,7 +1130,11 @@ class Column(SQL):
 
     @property
     def column_missing_values_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_missing_values_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_count
+        )
 
     @column_missing_values_count.setter
     def column_missing_values_count(self, column_missing_values_count: Optional[int]):
@@ -1042,30 +1144,52 @@ class Column(SQL):
 
     @property
     def column_missing_values_count_long(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_missing_values_count_long
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_count_long
+        )
 
     @column_missing_values_count_long.setter
-    def column_missing_values_count_long(self, column_missing_values_count_long: Optional[int]):
+    def column_missing_values_count_long(
+        self, column_missing_values_count_long: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_missing_values_count_long = column_missing_values_count_long
+        self.attributes.column_missing_values_count_long = (
+            column_missing_values_count_long
+        )
 
     @property
     def column_missing_values_percentage(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_missing_values_percentage
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_percentage
+        )
 
     @column_missing_values_percentage.setter
-    def column_missing_values_percentage(self, column_missing_values_percentage: Optional[float]):
+    def column_missing_values_percentage(
+        self, column_missing_values_percentage: Optional[float]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_missing_values_percentage = column_missing_values_percentage
+        self.attributes.column_missing_values_percentage = (
+            column_missing_values_percentage
+        )
 
     @property
     def column_uniqueness_percentage(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_uniqueness_percentage
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_uniqueness_percentage
+        )
 
     @column_uniqueness_percentage.setter
-    def column_uniqueness_percentage(self, column_uniqueness_percentage: Optional[float]):
+    def column_uniqueness_percentage(
+        self, column_uniqueness_percentage: Optional[float]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_uniqueness_percentage = column_uniqueness_percentage
@@ -1085,7 +1209,9 @@ class Column(SQL):
         return None if self.attributes is None else self.attributes.column_top_values
 
     @column_top_values.setter
-    def column_top_values(self, column_top_values: Optional[List[ColumnValueFrequencyMap]]):
+    def column_top_values(
+        self, column_top_values: Optional[List[ColumnValueFrequencyMap]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_top_values = column_top_values
@@ -1102,7 +1228,9 @@ class Column(SQL):
 
     @property
     def nosql_collection_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.nosql_collection_name
+        return (
+            None if self.attributes is None else self.attributes.nosql_collection_name
+        )
 
     @nosql_collection_name.setter
     def nosql_collection_name(self, nosql_collection_name: Optional[str]):
@@ -1112,20 +1240,32 @@ class Column(SQL):
 
     @property
     def nosql_collection_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.nosql_collection_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.nosql_collection_qualified_name
+        )
 
     @nosql_collection_qualified_name.setter
-    def nosql_collection_qualified_name(self, nosql_collection_qualified_name: Optional[str]):
+    def nosql_collection_qualified_name(
+        self, nosql_collection_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.nosql_collection_qualified_name = nosql_collection_qualified_name
+        self.attributes.nosql_collection_qualified_name = (
+            nosql_collection_qualified_name
+        )
 
     @property
     def snowflake_dynamic_table(self) -> Optional[SnowflakeDynamicTable]:
-        return None if self.attributes is None else self.attributes.snowflake_dynamic_table
+        return (
+            None if self.attributes is None else self.attributes.snowflake_dynamic_table
+        )
 
     @snowflake_dynamic_table.setter
-    def snowflake_dynamic_table(self, snowflake_dynamic_table: Optional[SnowflakeDynamicTable]):
+    def snowflake_dynamic_table(
+        self, snowflake_dynamic_table: Optional[SnowflakeDynamicTable]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_table = snowflake_dynamic_table
@@ -1152,10 +1292,16 @@ class Column(SQL):
 
     @property
     def data_quality_metric_dimensions(self) -> Optional[List[Metric]]:
-        return None if self.attributes is None else self.attributes.data_quality_metric_dimensions
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_quality_metric_dimensions
+        )
 
     @data_quality_metric_dimensions.setter
-    def data_quality_metric_dimensions(self, data_quality_metric_dimensions: Optional[List[Metric]]):
+    def data_quality_metric_dimensions(
+        self, data_quality_metric_dimensions: Optional[List[Metric]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
@@ -1182,10 +1328,16 @@ class Column(SQL):
 
     @property
     def column_dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
-        return None if self.attributes is None else self.attributes.column_dbt_model_columns
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_dbt_model_columns
+        )
 
     @column_dbt_model_columns.setter
-    def column_dbt_model_columns(self, column_dbt_model_columns: Optional[List[DbtModelColumn]]):
+    def column_dbt_model_columns(
+        self, column_dbt_model_columns: Optional[List[DbtModelColumn]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_dbt_model_columns = column_dbt_model_columns
@@ -1252,10 +1404,16 @@ class Column(SQL):
 
     @property
     def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_collection
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_collection
+        )
 
     @cosmos_mongo_d_b_collection.setter
-    def cosmos_mongo_d_b_collection(self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]):
+    def cosmos_mongo_d_b_collection(
+        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
@@ -1297,7 +1455,9 @@ class Column(SQL):
         order: Optional[int] = Field(default=None, description="")
         nested_column_order: Optional[str] = Field(default=None, description="")
         nested_column_count: Optional[int] = Field(default=None, description="")
-        column_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        column_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         is_partition: Optional[bool] = Field(default=None, description="")
         partition_order: Optional[int] = Field(default=None, description="")
         is_clustered: Optional[bool] = Field(default=None, description="")
@@ -1315,10 +1475,16 @@ class Column(SQL):
         numeric_scale: Optional[float] = Field(default=None, description="")
         max_length: Optional[int] = Field(default=None, description="")
         validations: Optional[Dict[str, str]] = Field(default=None, description="")
-        parent_column_qualified_name: Optional[str] = Field(default=None, description="")
+        parent_column_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         parent_column_name: Optional[str] = Field(default=None, description="")
-        column_distinct_values_count: Optional[int] = Field(default=None, description="")
-        column_distinct_values_count_long: Optional[int] = Field(default=None, description="")
+        column_distinct_values_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        column_distinct_values_count_long: Optional[int] = Field(
+            default=None, description=""
+        )
         column_histogram: Optional[Histogram] = Field(default=None, description="")
         column_max: Optional[float] = Field(default=None, description="")
         column_min: Optional[float] = Field(default=None, description="")
@@ -1327,43 +1493,91 @@ class Column(SQL):
         column_median: Optional[float] = Field(default=None, description="")
         column_standard_deviation: Optional[float] = Field(default=None, description="")
         column_unique_values_count: Optional[int] = Field(default=None, description="")
-        column_unique_values_count_long: Optional[int] = Field(default=None, description="")
+        column_unique_values_count_long: Optional[int] = Field(
+            default=None, description=""
+        )
         column_average: Optional[float] = Field(default=None, description="")
         column_average_length: Optional[float] = Field(default=None, description="")
-        column_duplicate_values_count: Optional[int] = Field(default=None, description="")
-        column_duplicate_values_count_long: Optional[int] = Field(default=None, description="")
-        column_maximum_string_length: Optional[int] = Field(default=None, description="")
+        column_duplicate_values_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        column_duplicate_values_count_long: Optional[int] = Field(
+            default=None, description=""
+        )
+        column_maximum_string_length: Optional[int] = Field(
+            default=None, description=""
+        )
         column_maxs: Optional[Set[str]] = Field(default=None, description="")
-        column_minimum_string_length: Optional[int] = Field(default=None, description="")
+        column_minimum_string_length: Optional[int] = Field(
+            default=None, description=""
+        )
         column_mins: Optional[Set[str]] = Field(default=None, description="")
         column_missing_values_count: Optional[int] = Field(default=None, description="")
-        column_missing_values_count_long: Optional[int] = Field(default=None, description="")
-        column_missing_values_percentage: Optional[float] = Field(default=None, description="")
-        column_uniqueness_percentage: Optional[float] = Field(default=None, description="")
+        column_missing_values_count_long: Optional[int] = Field(
+            default=None, description=""
+        )
+        column_missing_values_percentage: Optional[float] = Field(
+            default=None, description=""
+        )
+        column_uniqueness_percentage: Optional[float] = Field(
+            default=None, description=""
+        )
         column_variance: Optional[float] = Field(default=None, description="")
-        column_top_values: Optional[List[ColumnValueFrequencyMap]] = Field(default=None, description="")
+        column_top_values: Optional[List[ColumnValueFrequencyMap]] = Field(
+            default=None, description=""
+        )
         column_depth_level: Optional[int] = Field(default=None, description="")
         nosql_collection_name: Optional[str] = Field(default=None, description="")
-        nosql_collection_qualified_name: Optional[str] = Field(default=None, description="")
-        snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(default=None, description="")  # relationship
+        nosql_collection_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(
+            default=None, description=""
+        )  # relationship
         view: Optional[View] = Field(default=None, description="")  # relationship
-        nested_columns: Optional[List[Column]] = Field(default=None, description="")  # relationship
-        data_quality_metric_dimensions: Optional[List[Metric]] = Field(default=None, description="")  # relationship
-        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(default=None, description="")  # relationship
+        nested_columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        data_quality_metric_dimensions: Optional[List[Metric]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         table: Optional[Table] = Field(default=None, description="")  # relationship
-        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(default=None, description="")  # relationship
-        materialised_view: Optional[MaterialisedView] = Field(default=None, description="")  # relationship
-        calculation_view: Optional[CalculationView] = Field(default=None, description="")  # relationship
-        parent_column: Optional[Column] = Field(default=None, description="")  # relationship
-        queries: Optional[List[Query]] = Field(default=None, description="")  # relationship
-        metric_timestamps: Optional[List[Metric]] = Field(default=None, description="")  # relationship
-        foreign_key_to: Optional[List[Column]] = Field(default=None, description="")  # relationship
+        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
+            default=None, description=""
+        )  # relationship
+        materialised_view: Optional[MaterialisedView] = Field(
+            default=None, description=""
+        )  # relationship
+        calculation_view: Optional[CalculationView] = Field(
+            default=None, description=""
+        )  # relationship
+        parent_column: Optional[Column] = Field(
+            default=None, description=""
+        )  # relationship
+        queries: Optional[List[Query]] = Field(
+            default=None, description=""
+        )  # relationship
+        metric_timestamps: Optional[List[Metric]] = Field(
+            default=None, description=""
+        )  # relationship
+        foreign_key_to: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
         cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
             default=None, description=""
         )  # relationship
-        foreign_key_from: Optional[Column] = Field(default=None, description="")  # relationship
-        dbt_metrics: Optional[List[DbtMetric]] = Field(default=None, description="")  # relationship
-        table_partition: Optional[TablePartition] = Field(default=None, description="")  # relationship
+        foreign_key_from: Optional[Column] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_metrics: Optional[List[DbtMetric]] = Field(
+            default=None, description=""
+        )  # relationship
+        table_partition: Optional[TablePartition] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -1408,7 +1622,9 @@ class Column(SQL):
                 [name, parent_qualified_name, parent_type, order],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     parent_qualified_name, "parent_qualified_name", 6
@@ -1422,8 +1638,13 @@ class Column(SQL):
             database_name = database_name or fields[3]
             schema_name = schema_name or fields[4]
             parent_name = parent_name or fields[5]
-            database_qualified_name = database_qualified_name or f"{connection_qualified_name}/{database_name}"
-            schema_qualified_name = schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            database_qualified_name = (
+                database_qualified_name
+                or f"{connection_qualified_name}/{database_name}"
+            )
+            schema_qualified_name = (
+                schema_qualified_name or f"{database_qualified_name}/{schema_name}"
+            )
 
             column = Column.Attributes(
                 name=name,
@@ -1447,15 +1668,21 @@ class Column(SQL):
                 column.view_name = parent_name
             elif parent_type == MaterialisedView:
                 column.view_qualified_name = parent_qualified_name
-                column.materialised_view = MaterialisedView.ref_by_qualified_name(parent_qualified_name)
+                column.materialised_view = MaterialisedView.ref_by_qualified_name(
+                    parent_qualified_name
+                )
                 column.view_name = parent_name
             elif parent_type == TablePartition:
                 column.table_qualified_name = parent_qualified_name
-                column.table_partition = TablePartition.ref_by_qualified_name(parent_qualified_name)
+                column.table_partition = TablePartition.ref_by_qualified_name(
+                    parent_qualified_name
+                )
                 column.table_name = parent_name
             elif parent_type == SnowflakeDynamicTable:
                 column.table_qualified_name = parent_qualified_name
-                column.snowflake_dynamic_table = SnowflakeDynamicTable.ref_by_qualified_name(parent_qualified_name)
+                column.snowflake_dynamic_table = (
+                    SnowflakeDynamicTable.ref_by_qualified_name(parent_qualified_name)
+                )
                 column.table_name = parent_name
             else:
                 raise ValueError(

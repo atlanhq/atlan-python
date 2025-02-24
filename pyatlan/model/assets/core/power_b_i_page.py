@@ -37,7 +37,9 @@ class PowerBIPage(PowerBI):
     """
     Unique name of the workspace in which this page exists.
     """
-    REPORT_QUALIFIED_NAME: ClassVar[TextField] = TextField("reportQualifiedName", "reportQualifiedName")
+    REPORT_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "reportQualifiedName", "reportQualifiedName"
+    )
     """
     Unique name of the report in which this page exists.
     """
@@ -55,7 +57,11 @@ class PowerBIPage(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workspace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.workspace_qualified_name
+        )
 
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
@@ -65,7 +71,9 @@ class PowerBIPage(PowerBI):
 
     @property
     def report_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.report_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.report_qualified_name
+        )
 
     @report_qualified_name.setter
     def report_qualified_name(self, report_qualified_name: Optional[str]):
@@ -86,7 +94,9 @@ class PowerBIPage(PowerBI):
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         report_qualified_name: Optional[str] = Field(default=None, description="")
-        report: Optional[PowerBIReport] = Field(default=None, description="")  # relationship
+        report: Optional[PowerBIReport] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: PowerBIPage.Attributes = Field(
         default_factory=lambda: PowerBIPage.Attributes(),

@@ -33,7 +33,9 @@ class MetabaseQuestion(Metabase):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField("metabaseDashboardCount", "metabaseDashboardCount")
+    METABASE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "metabaseDashboardCount", "metabaseDashboardCount"
+    )
     """
 
     """
@@ -69,7 +71,11 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_dashboard_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.metabase_dashboard_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.metabase_dashboard_count
+        )
 
     @metabase_dashboard_count.setter
     def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
@@ -102,7 +108,9 @@ class MetabaseQuestion(Metabase):
         return None if self.attributes is None else self.attributes.metabase_dashboards
 
     @metabase_dashboards.setter
-    def metabase_dashboards(self, metabase_dashboards: Optional[List[MetabaseDashboard]]):
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[List[MetabaseDashboard]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_dashboards = metabase_dashboards
@@ -121,8 +129,12 @@ class MetabaseQuestion(Metabase):
         metabase_dashboard_count: Optional[int] = Field(default=None, description="")
         metabase_query_type: Optional[str] = Field(default=None, description="")
         metabase_query: Optional[str] = Field(default=None, description="")
-        metabase_dashboards: Optional[List[MetabaseDashboard]] = Field(default=None, description="")  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(default=None, description="")  # relationship
+        metabase_dashboards: Optional[List[MetabaseDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: MetabaseQuestion.Attributes = Field(
         default_factory=lambda: MetabaseQuestion.Attributes(),

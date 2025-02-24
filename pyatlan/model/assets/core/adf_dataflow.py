@@ -29,15 +29,21 @@ class AdfDataflow(ADF):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    ADF_DATAFLOW_SOURCES: ClassVar[TextField] = TextField("adfDataflowSources", "adfDataflowSources")
+    ADF_DATAFLOW_SOURCES: ClassVar[TextField] = TextField(
+        "adfDataflowSources", "adfDataflowSources"
+    )
     """
     The list of names of sources for this dataflow.
     """
-    ADF_DATAFLOW_SINKS: ClassVar[TextField] = TextField("adfDataflowSinks", "adfDataflowSinks")
+    ADF_DATAFLOW_SINKS: ClassVar[TextField] = TextField(
+        "adfDataflowSinks", "adfDataflowSinks"
+    )
     """
     The list of names of sinks for this dataflow.
     """
-    ADF_DATAFLOW_SCRIPT: ClassVar[TextField] = TextField("adfDataflowScript", "adfDataflowScript")
+    ADF_DATAFLOW_SCRIPT: ClassVar[TextField] = TextField(
+        "adfDataflowScript", "adfDataflowScript"
+    )
     """
     The gererated script for the dataflow.
     """
@@ -143,10 +149,18 @@ class AdfDataflow(ADF):
         adf_dataflow_sources: Optional[Set[str]] = Field(default=None, description="")
         adf_dataflow_sinks: Optional[Set[str]] = Field(default=None, description="")
         adf_dataflow_script: Optional[str] = Field(default=None, description="")
-        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(default=None, description="")  # relationship
-        adf_datasets: Optional[List[AdfDataset]] = Field(default=None, description="")  # relationship
-        adf_activities: Optional[List[AdfActivity]] = Field(default=None, description="")  # relationship
-        adf_pipelines: Optional[List[AdfPipeline]] = Field(default=None, description="")  # relationship
+        adf_linkedservices: Optional[List[AdfLinkedservice]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_datasets: Optional[List[AdfDataset]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_activities: Optional[List[AdfActivity]] = Field(
+            default=None, description=""
+        )  # relationship
+        adf_pipelines: Optional[List[AdfPipeline]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AdfDataflow.Attributes = Field(
         default_factory=lambda: AdfDataflow.Attributes(),

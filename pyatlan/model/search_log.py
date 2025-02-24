@@ -98,11 +98,15 @@ class SearchLogRequest(SearchRequest):
                 },
                 "aggregations": {"latest_timestamp": {"max": {"field": "timestamp"}}},
             },
-            "totalDistinctUsers": {"cardinality": {"field": "userName", "precision_threshold": 1000}},
+            "totalDistinctUsers": {
+                "cardinality": {"field": "userName", "precision_threshold": 1000}
+            },
         }
 
     @staticmethod
-    def _get_most_viewed_assets_aggs(max_assets: int, by_diff_user: bool) -> Dict[str, object]:
+    def _get_most_viewed_assets_aggs(
+        max_assets: int, by_diff_user: bool
+    ) -> Dict[str, object]:
         aggs_terms = {
             "field": "entityGuidsAll",
             "size": max_assets,
@@ -121,7 +125,9 @@ class SearchLogRequest(SearchRequest):
                 },
                 "terms": aggs_terms,
             },
-            "totalDistinctUsers": {"cardinality": {"field": "userName", "precision_threshold": 1000}},
+            "totalDistinctUsers": {
+                "cardinality": {"field": "userName", "precision_threshold": 1000}
+            },
         }
 
     @classmethod
@@ -140,9 +146,13 @@ class SearchLogRequest(SearchRequest):
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
-        query_filter = [Term(field="entityGuidsAll", value=guid, case_insensitive=False)]
+        query_filter = [
+            Term(field="entityGuidsAll", value=guid, case_insensitive=False)
+        ]
         dsl = DSL(
-            **cls._get_view_dsl_kwargs(size=0, from_=0, query_filter=query_filter, exclude_users=exclude_users),
+            **cls._get_view_dsl_kwargs(
+                size=0, from_=0, query_filter=query_filter, exclude_users=exclude_users
+            ),
             aggregations=cls._get_recent_viewers_aggs(max_users),
         )
         return SearchLogRequest(dsl=dsl)
@@ -166,7 +176,9 @@ class SearchLogRequest(SearchRequest):
         """
         dsl = DSL(
             **cls._get_view_dsl_kwargs(size=0, from_=0, exclude_users=exclude_users),
-            aggregations=cls._get_most_viewed_assets_aggs(max_assets, by_different_user),
+            aggregations=cls._get_most_viewed_assets_aggs(
+                max_assets, by_different_user
+            ),
         )
         return SearchLogRequest(dsl=dsl)
 
@@ -190,7 +202,9 @@ class SearchLogRequest(SearchRequest):
 
         :returns: A SearchLogRequest that can be used to perform the search.
         """
-        query_filter = [Term(field="entityGuidsAll", value=guid, case_insensitive=False)]
+        query_filter = [
+            Term(field="entityGuidsAll", value=guid, case_insensitive=False)
+        ]
         dsl = DSL(
             **cls._get_view_dsl_kwargs(
                 size=size,
@@ -210,8 +224,12 @@ class AssetViews(AtlanObject):
     """
 
     guid: str = Field(description="GUID of the asset that was viewed.")
-    total_views: int = Field(description="Number of times the asset has been viewed (in total).")
-    distinct_users: int = Field(description="Number of distinct users that have viewed the asset.")
+    total_views: int = Field(
+        description="Number of times the asset has been viewed (in total)."
+    )
+    distinct_users: int = Field(
+        description="Number of distinct users that have viewed the asset."
+    )
 
 
 class UserViews(AtlanObject):
@@ -233,8 +251,12 @@ class SearchLogEntry(AtlanObject):
     Instances of this class should be treated as immutable.
     """
 
-    user_agent: str = Field(description="Details of the browser or other client used to make the request.")
-    host: str = Field(description="Hostname of the tenant against which the search was run.")
+    user_agent: str = Field(
+        description="Details of the browser or other client used to make the request."
+    )
+    host: str = Field(
+        description="Hostname of the tenant against which the search was run."
+    )
     ip_address: str = Field(description="IP address from which the search was run.")
     user_name: str = Field(description="Username of the user who ran the search.")
     entity_guids_all: List[str] = Field(
@@ -271,12 +293,16 @@ class SearchLogEntry(AtlanObject):
             "Name(s) of the types of assets that were in the results of the search, that the user is permitted to see."
         ),
     )
-    utm_tags: List[str] = Field(default_factory=list, description="Tag(s) that were sent in the search request.")
+    utm_tags: List[str] = Field(
+        default_factory=list, description="Tag(s) that were sent in the search request."
+    )
     has_result: bool = Field(
         alias="hasResult",
         description="Whether the search had any results (true) or not (false).",
     )
-    results_count: int = Field(alias="resultsCount", description="Number of results for the search.")
+    results_count: int = Field(
+        alias="resultsCount", description="Number of results for the search."
+    )
     response_time: int = Field(
         alias="responseTime",
         description="Elapsed time to produce the results for the search, in milliseconds.",
@@ -285,9 +311,15 @@ class SearchLogEntry(AtlanObject):
         alias="createdAt",
         description="Time (epoch-style) at which the search was logged, in milliseconds.",
     )
-    timestamp: datetime = Field(description="Time (epoch-style) at which the search was run, in milliseconds.")
-    failed: bool = Field(description="Whether the search was successful (false) or not (true).")
-    request_dsl: dict = Field(alias="request.dsl", description="DSL of the full search request that was made.")
+    timestamp: datetime = Field(
+        description="Time (epoch-style) at which the search was run, in milliseconds."
+    )
+    failed: bool = Field(
+        description="Whether the search was successful (false) or not (true)."
+    )
+    request_dsl: dict = Field(
+        alias="request.dsl", description="DSL of the full search request that was made."
+    )
     request_dsl_text: str = Field(
         alias="request.dslText",
         description="DSL of the full search request that was made, as a string.",
@@ -388,7 +420,9 @@ class SearchLogResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if size:
             self._size = size
 
@@ -398,7 +432,9 @@ class SearchLogResults(Iterable):
             # has already been processed in a previous page of results.
             # If it has, then exclude it from the current results;
             # otherwise, we may encounter duplicate search log records.
-            self._processed_log_entries.update(self._get_sl_unique_key(entity) for entity in self._log_entries)
+            self._processed_log_entries.update(
+                self._get_sl_unique_key(entity) for entity in self._log_entries
+            )
         return self._get_next_page() if self._log_entries else False
 
     def _get_next_page(self):
@@ -410,7 +446,9 @@ class SearchLogResults(Iterable):
         query = self._criteria.dsl.query
         self._criteria.dsl.from_ = self._start
         self._criteria.dsl.size = self._size
-        is_bulk_search = self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        is_bulk_search = (
+            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
+        )
         if is_bulk_search:
             self._prepare_query_for_timestamp_paging(query)
 
@@ -440,7 +478,9 @@ class SearchLogResults(Iterable):
                 self._filter_processed_entities()
             return raw_json
         except ValidationError as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
 
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
@@ -454,7 +494,9 @@ class SearchLogResults(Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
-            rewritten_filters.append(self._get_paging_timestamp_query(self._last_record_creation_time))
+            rewritten_filters.append(
+                self._get_paging_timestamp_query(self._last_record_creation_time)
+            )
             if isinstance(query, Bool):
                 rewritten_query = Bool(
                     filter=rewritten_filters,
@@ -493,7 +535,11 @@ class SearchLogResults(Iterable):
 
     @staticmethod
     def _is_paging_timestamp_query(filter_: Query) -> bool:
-        return isinstance(filter_, Range) and filter_.field == "createdAt" and filter_.gte is not None
+        return (
+            isinstance(filter_, Range)
+            and filter_.field == "createdAt"
+            and filter_.gte is not None
+        )
 
     def _filter_processed_entities(self):
         """
@@ -502,7 +548,8 @@ class SearchLogResults(Iterable):
         self._log_entries = [
             entity
             for entity in self._log_entries
-            if entity is not None and self._get_sl_unique_key(entity) not in self._processed_log_entries
+            if entity is not None
+            and self._get_sl_unique_key(entity) not in self._processed_log_entries
         ]
 
     def _update_first_last_record_creation_times(self):
@@ -527,7 +574,9 @@ class SearchLogResults(Iterable):
         :returns: True if sorting is already prioritized by creation time, False otherwise.
         """
         if sorts and isinstance(sorts[0], SortItem):
-            return sorts[0].field == "createdAt" and sorts[0].order == SortOrder.ASCENDING
+            return (
+                sorts[0].field == "createdAt" and sorts[0].order == SortOrder.ASCENDING
+            )
         return False
 
     @staticmethod
@@ -552,7 +601,10 @@ class SearchLogResults(Iterable):
             for sort in sorts
             # Added a condition to disable "timestamp" sorting when bulk search for logs is enabled,
             # as sorting is already handled based on "createdAt" in this case.
-            if ((not sort.field) or (sort.field != Asset.CREATE_TIME.internal_field_name))
+            if (
+                (not sort.field)
+                or (sort.field != Asset.CREATE_TIME.internal_field_name)
+            )
             and (sort not in BY_TIMESTAMP)
         ]
         return creation_asc_sort + rewritten_sorts

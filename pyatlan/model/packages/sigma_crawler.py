@@ -110,7 +110,9 @@ class SigmaCrawler(AbstractCrawler):
         """
         include_workbooks = workbooks or []
         to_include = self.build_flat_filter(include_workbooks)
-        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
+        self._parameters.append(
+            dict(dict(name="include-filter", value=to_include or "{}"))
+        )
         return self
 
     def exclude(self, workbooks: List[str]) -> SigmaCrawler:
@@ -129,11 +131,15 @@ class SigmaCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="publish-mode", value="production"))

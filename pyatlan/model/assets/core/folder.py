@@ -94,7 +94,9 @@ class Folder(Namespace):
 
     @property
     def parent_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.parent_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.parent_qualified_name
+        )
 
     @parent_qualified_name.setter
     def parent_qualified_name(self, parent_qualified_name: Optional[str]):
@@ -104,7 +106,11 @@ class Folder(Namespace):
 
     @property
     def collection_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.collection_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.collection_qualified_name
+        )
 
     @collection_qualified_name.setter
     def collection_qualified_name(self, collection_qualified_name: Optional[str]):
@@ -125,7 +131,9 @@ class Folder(Namespace):
     class Attributes(Namespace.Attributes):
         parent_qualified_name: Optional[str] = Field(default=None, description="")
         collection_qualified_name: Optional[str] = Field(default=None, description="")
-        parent: Optional[Namespace] = Field(default=None, description="")  # relationship
+        parent: Optional[Namespace] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -148,13 +156,17 @@ class Folder(Namespace):
             if not parent_folder_qualified_name:
                 qualified_name = f"{collection_qualified_name}/{name}"
                 parent_qn = collection_qualified_name
-                parent = Collection.ref_by_qualified_name(collection_qualified_name or "")
+                parent = Collection.ref_by_qualified_name(
+                    collection_qualified_name or ""
+                )
 
             else:
                 tokens = parent_folder_qualified_name.split("/")
                 if len(tokens) < 4:
                     raise ValueError("Invalid collection_qualified_name")
-                collection_qualified_name = f"{tokens[0]}/{tokens[1]}/{tokens[2]}/{tokens[3]}"
+                collection_qualified_name = (
+                    f"{tokens[0]}/{tokens[1]}/{tokens[2]}/{tokens[3]}"
+                )
                 qualified_name = f"{parent_folder_qualified_name}/{name}"
                 parent_qn = parent_folder_qualified_name
                 parent = Folder.ref_by_qualified_name(parent_folder_qualified_name)  # type: ignore[assignment]

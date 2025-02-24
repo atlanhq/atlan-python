@@ -21,8 +21,12 @@ class AnaplanWorkspace(Anaplan):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> AnaplanWorkspace:
-        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
-        attributes = AnaplanWorkspace.Attributes.create(name=name, connection_qualified_name=connection_qualified_name)
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = AnaplanWorkspace.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
         return cls(attributes=attributes)
 
     type_name: str = Field(default="AnaplanWorkspace", allow_mutation=False)
@@ -64,23 +68,37 @@ class AnaplanWorkspace(Anaplan):
 
     @property
     def anaplan_workspace_current_size(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.anaplan_workspace_current_size
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anaplan_workspace_current_size
+        )
 
     @anaplan_workspace_current_size.setter
-    def anaplan_workspace_current_size(self, anaplan_workspace_current_size: Optional[int]):
+    def anaplan_workspace_current_size(
+        self, anaplan_workspace_current_size: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anaplan_workspace_current_size = anaplan_workspace_current_size
 
     @property
     def anaplan_workspace_allowance_size(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.anaplan_workspace_allowance_size
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anaplan_workspace_allowance_size
+        )
 
     @anaplan_workspace_allowance_size.setter
-    def anaplan_workspace_allowance_size(self, anaplan_workspace_allowance_size: Optional[int]):
+    def anaplan_workspace_allowance_size(
+        self, anaplan_workspace_allowance_size: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anaplan_workspace_allowance_size = anaplan_workspace_allowance_size
+        self.attributes.anaplan_workspace_allowance_size = (
+            anaplan_workspace_allowance_size
+        )
 
     @property
     def anaplan_models(self) -> Optional[List[AnaplanModel]]:
@@ -93,19 +111,31 @@ class AnaplanWorkspace(Anaplan):
         self.attributes.anaplan_models = anaplan_models
 
     class Attributes(Anaplan.Attributes):
-        anaplan_workspace_current_size: Optional[int] = Field(default=None, description="")
-        anaplan_workspace_allowance_size: Optional[int] = Field(default=None, description="")
-        anaplan_models: Optional[List[AnaplanModel]] = Field(default=None, description="")  # relationship
+        anaplan_workspace_current_size: Optional[int] = Field(
+            default=None, description=""
+        )
+        anaplan_workspace_allowance_size: Optional[int] = Field(
+            default=None, description=""
+        )
+        anaplan_models: Optional[List[AnaplanModel]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, connection_qualified_name: str) -> AnaplanWorkspace.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> AnaplanWorkspace.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return AnaplanWorkspace.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: AnaplanWorkspace.Attributes = Field(

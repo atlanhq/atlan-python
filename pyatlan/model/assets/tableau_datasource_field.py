@@ -34,7 +34,9 @@ class TableauDatasourceField(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField("siteQualifiedName", "siteQualifiedName")
+    SITE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
     """
     Unique name of the site in which this datasource field exists.
     """
@@ -50,19 +52,27 @@ class TableauDatasourceField(Tableau):
     """
     Unique name of the top-level project in which this datasource field exists.
     """
-    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField("workbookQualifiedName", "workbookQualifiedName")
+    WORKBOOK_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
     """
     Unique name of the workbook in which this datasource field exists.
     """
-    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField("datasourceQualifiedName", "datasourceQualifiedName")
+    DATASOURCE_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
     """
     Unique name of the datasource in which this datasource field exists.
     """
-    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField("projectHierarchy", "projectHierarchy")
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
     """
     List of top-level projects and their nested child projects.
     """
-    FULLY_QUALIFIED_NAME: ClassVar[TextField] = TextField("fullyQualifiedName", "fullyQualifiedName")
+    FULLY_QUALIFIED_NAME: ClassVar[TextField] = TextField(
+        "fullyQualifiedName", "fullyQualifiedName"
+    )
     """
     Name used internally in Tableau to uniquely identify this field.
     """
@@ -86,7 +96,9 @@ class TableauDatasourceField(Tableau):
     """
     Data type of this field.
     """
-    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField("upstreamTables", "upstreamTables")
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
     """
     Tables upstream to this datasource field.
     """
@@ -102,15 +114,21 @@ class TableauDatasourceField(Tableau):
     """
     Bin size of this field.
     """
-    UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField("upstreamColumns", "upstreamColumns")
+    UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "upstreamColumns", "upstreamColumns"
+    )
     """
     Columns upstream to this field.
     """
-    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField("upstreamFields", "upstreamFields")
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
     """
     Fields upstream to this field.
     """
-    DATASOURCE_FIELD_TYPE: ClassVar[TextField] = TextField("datasourceFieldType", "datasourceFieldType")
+    DATASOURCE_FIELD_TYPE: ClassVar[TextField] = TextField(
+        "datasourceFieldType", "datasourceFieldType"
+    )
     """
     Type of this datasource field.
     """
@@ -157,7 +175,9 @@ class TableauDatasourceField(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.project_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.project_qualified_name
+        )
 
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
@@ -167,17 +187,27 @@ class TableauDatasourceField(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.top_level_project_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.top_level_project_qualified_name
+        )
 
     @top_level_project_qualified_name.setter
-    def top_level_project_qualified_name(self, top_level_project_qualified_name: Optional[str]):
+    def top_level_project_qualified_name(
+        self, top_level_project_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.top_level_project_qualified_name = top_level_project_qualified_name
+        self.attributes.top_level_project_qualified_name = (
+            top_level_project_qualified_name
+        )
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.workbook_qualified_name
+        return (
+            None if self.attributes is None else self.attributes.workbook_qualified_name
+        )
 
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
@@ -187,7 +217,11 @@ class TableauDatasourceField(Tableau):
 
     @property
     def datasource_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.datasource_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.datasource_qualified_name
+        )
 
     @datasource_qualified_name.setter
     def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
@@ -217,63 +251,103 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_data_category(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tableau_datasource_field_data_category
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_category
+        )
 
     @tableau_datasource_field_data_category.setter
-    def tableau_datasource_field_data_category(self, tableau_datasource_field_data_category: Optional[str]):
+    def tableau_datasource_field_data_category(
+        self, tableau_datasource_field_data_category: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tableau_datasource_field_data_category = tableau_datasource_field_data_category
+        self.attributes.tableau_datasource_field_data_category = (
+            tableau_datasource_field_data_category
+        )
 
     @property
     def tableau_datasource_field_role(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tableau_datasource_field_role
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_role
+        )
 
     @tableau_datasource_field_role.setter
-    def tableau_datasource_field_role(self, tableau_datasource_field_role: Optional[str]):
+    def tableau_datasource_field_role(
+        self, tableau_datasource_field_role: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tableau_datasource_field_role = tableau_datasource_field_role
 
     @property
     def tableau_datasource_field_data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tableau_datasource_field_data_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_data_type
+        )
 
     @tableau_datasource_field_data_type.setter
-    def tableau_datasource_field_data_type(self, tableau_datasource_field_data_type: Optional[str]):
+    def tableau_datasource_field_data_type(
+        self, tableau_datasource_field_data_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tableau_datasource_field_data_type = tableau_datasource_field_data_type
+        self.attributes.tableau_datasource_field_data_type = (
+            tableau_datasource_field_data_type
+        )
 
     @property
     def upstream_tables(self) -> Optional[List[Dict[str, Optional[str]]]]:
         return None if self.attributes is None else self.attributes.upstream_tables
 
     @upstream_tables.setter
-    def upstream_tables(self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]):
+    def upstream_tables(
+        self, upstream_tables: Optional[List[Dict[str, Optional[str]]]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.upstream_tables = upstream_tables
 
     @property
     def tableau_datasource_field_formula(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tableau_datasource_field_formula
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_formula
+        )
 
     @tableau_datasource_field_formula.setter
-    def tableau_datasource_field_formula(self, tableau_datasource_field_formula: Optional[str]):
+    def tableau_datasource_field_formula(
+        self, tableau_datasource_field_formula: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tableau_datasource_field_formula = tableau_datasource_field_formula
+        self.attributes.tableau_datasource_field_formula = (
+            tableau_datasource_field_formula
+        )
 
     @property
     def tableau_datasource_field_bin_size(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tableau_datasource_field_bin_size
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_datasource_field_bin_size
+        )
 
     @tableau_datasource_field_bin_size.setter
-    def tableau_datasource_field_bin_size(self, tableau_datasource_field_bin_size: Optional[str]):
+    def tableau_datasource_field_bin_size(
+        self, tableau_datasource_field_bin_size: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.tableau_datasource_field_bin_size = tableau_datasource_field_bin_size
+        self.attributes.tableau_datasource_field_bin_size = (
+            tableau_datasource_field_bin_size
+        )
 
     @property
     def upstream_columns(self) -> Optional[List[Dict[str, str]]]:
@@ -297,7 +371,9 @@ class TableauDatasourceField(Tableau):
 
     @property
     def datasource_field_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.datasource_field_type
+        return (
+            None if self.attributes is None else self.attributes.datasource_field_type
+        )
 
     @datasource_field_type.setter
     def datasource_field_type(self, datasource_field_type: Optional[str]):
@@ -328,22 +404,46 @@ class TableauDatasourceField(Tableau):
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(default=None, description="")
         project_qualified_name: Optional[str] = Field(default=None, description="")
-        top_level_project_qualified_name: Optional[str] = Field(default=None, description="")
+        top_level_project_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         workbook_qualified_name: Optional[str] = Field(default=None, description="")
         datasource_qualified_name: Optional[str] = Field(default=None, description="")
-        project_hierarchy: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        project_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         fully_qualified_name: Optional[str] = Field(default=None, description="")
-        tableau_datasource_field_data_category: Optional[str] = Field(default=None, description="")
-        tableau_datasource_field_role: Optional[str] = Field(default=None, description="")
-        tableau_datasource_field_data_type: Optional[str] = Field(default=None, description="")
-        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(default=None, description="")
-        tableau_datasource_field_formula: Optional[str] = Field(default=None, description="")
-        tableau_datasource_field_bin_size: Optional[str] = Field(default=None, description="")
-        upstream_columns: Optional[List[Dict[str, str]]] = Field(default=None, description="")
-        upstream_fields: Optional[List[Dict[str, str]]] = Field(default=None, description="")
+        tableau_datasource_field_data_category: Optional[str] = Field(
+            default=None, description=""
+        )
+        tableau_datasource_field_role: Optional[str] = Field(
+            default=None, description=""
+        )
+        tableau_datasource_field_data_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        upstream_tables: Optional[List[Dict[str, Optional[str]]]] = Field(
+            default=None, description=""
+        )
+        tableau_datasource_field_formula: Optional[str] = Field(
+            default=None, description=""
+        )
+        tableau_datasource_field_bin_size: Optional[str] = Field(
+            default=None, description=""
+        )
+        upstream_columns: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
+        upstream_fields: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         datasource_field_type: Optional[str] = Field(default=None, description="")
-        worksheets: Optional[List[TableauWorksheet]] = Field(default=None, description="")  # relationship
-        datasource: Optional[TableauDatasource] = Field(default=None, description="")  # relationship
+        worksheets: Optional[List[TableauWorksheet]] = Field(
+            default=None, description=""
+        )  # relationship
+        datasource: Optional[TableauDatasource] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: TableauDatasourceField.Attributes = Field(
         default_factory=lambda: TableauDatasourceField.Attributes(),

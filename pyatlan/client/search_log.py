@@ -30,7 +30,9 @@ class SearchLogClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     def _map_bucket_to_user_view(self, bucket) -> Union[UserViews, None]:
@@ -86,11 +88,18 @@ class SearchLogClient:
 
     def _get_bulk_search_log_message(self, bulk):
         return (
-            "Search log bulk search option is enabled. " if bulk else "Result size (%s) exceeds threshold (%s). "
-        ) + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+            (
+                "Search log bulk search option is enabled. "
+                if bulk
+                else "Result size (%s) exceeds threshold (%s). "
+            )
+            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+        )
 
     @validate_arguments
-    def search(self, criteria: SearchLogRequest, bulk=False) -> Union[SearchLogViewResults, SearchLogResults]:
+    def search(
+        self, criteria: SearchLogRequest, bulk=False
+    ) -> Union[SearchLogViewResults, SearchLogResults]:
         """
         Search for search logs using the provided criteria.
         `Note:` if the number of results exceeds the predefined threshold
@@ -114,7 +123,9 @@ class SearchLogClient:
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(criteria.dsl.sort)
+            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(
+                criteria.dsl.sort
+            )
             LOGGER.debug(self._get_bulk_search_log_message(bulk))
         user_views = []
         asset_views = []
@@ -122,28 +133,46 @@ class SearchLogClient:
         raw_json = self._call_search_api(criteria)
         count = raw_json.get("approximateCount", 0)
 
-        if "aggregations" in raw_json and UNIQUE_USERS in raw_json.get("aggregations", {}):
+        if "aggregations" in raw_json and UNIQUE_USERS in raw_json.get(
+            "aggregations", {}
+        ):
             try:
-                user_views_bucket = raw_json["aggregations"][UNIQUE_USERS].get("buckets", [])
+                user_views_bucket = raw_json["aggregations"][UNIQUE_USERS].get(
+                    "buckets", []
+                )
                 user_views = parse_obj_as(
                     List[UserViews],
-                    [self._map_bucket_to_user_view(user_view) for user_view in user_views_bucket],
+                    [
+                        self._map_bucket_to_user_view(user_view)
+                        for user_view in user_views_bucket
+                    ],
                 )
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
             return SearchLogViewResults(
                 count=count,
                 user_views=user_views,
             )
-        if "aggregations" in raw_json and UNIQUE_ASSETS in raw_json.get("aggregations", {}):
+        if "aggregations" in raw_json and UNIQUE_ASSETS in raw_json.get(
+            "aggregations", {}
+        ):
             try:
-                asset_views_bucket = raw_json["aggregations"][UNIQUE_ASSETS].get("buckets", [])
+                asset_views_bucket = raw_json["aggregations"][UNIQUE_ASSETS].get(
+                    "buckets", []
+                )
                 asset_views = parse_obj_as(
                     List[AssetViews],
-                    [self._map_bucket_to_asset_view(asset_view) for asset_view in asset_views_bucket],
+                    [
+                        self._map_bucket_to_asset_view(asset_view)
+                        for asset_view in asset_views_bucket
+                    ],
                 )
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
             return SearchLogViewResults(
                 count=count,
                 asset_views=asset_views,
@@ -153,13 +182,18 @@ class SearchLogClient:
             try:
                 log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
-        if count > SearchLogResults._MASS_EXTRACT_THRESHOLD and not SearchLogResults.presorted_by_timestamp(
-            criteria.dsl.sort
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
+        if (
+            count > SearchLogResults._MASS_EXTRACT_THRESHOLD
+            and not SearchLogResults.presorted_by_timestamp(criteria.dsl.sort)
         ):
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(criteria.dsl.sort)
+            criteria.dsl.sort = self._prepare_sorts_for_sl_bulk_search(
+                criteria.dsl.sort
+            )
             LOGGER.debug(
                 self._get_bulk_search_log_message(bulk),
                 count,

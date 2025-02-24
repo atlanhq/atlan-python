@@ -65,9 +65,13 @@ class SupersetDataset(Superset):
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, superset_dashboard_qualified_name: str) -> SupersetDataset:
+    def create(
+        cls, *, name: str, superset_dashboard_qualified_name: str
+    ) -> SupersetDataset:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
@@ -89,20 +93,26 @@ class SupersetDataset(Superset):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SUPERSET_DATASET_DATASOURCE_NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
-        "supersetDatasetDatasourceName",
-        "supersetDatasetDatasourceName.keyword",
-        "supersetDatasetDatasourceName",
-        "supersetDatasetDatasourceName.stemmed",
+    SUPERSET_DATASET_DATASOURCE_NAME: ClassVar[KeywordTextStemmedField] = (
+        KeywordTextStemmedField(
+            "supersetDatasetDatasourceName",
+            "supersetDatasetDatasourceName.keyword",
+            "supersetDatasetDatasourceName",
+            "supersetDatasetDatasourceName.stemmed",
+        )
     )
     """
     Name of the datasource for the dataset.
     """
-    SUPERSET_DATASET_ID: ClassVar[NumericField] = NumericField("supersetDatasetId", "supersetDatasetId")
+    SUPERSET_DATASET_ID: ClassVar[NumericField] = NumericField(
+        "supersetDatasetId", "supersetDatasetId"
+    )
     """
     Id of the dataset in superset.
     """
-    SUPERSET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField("supersetDatasetType", "supersetDatasetType")
+    SUPERSET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "supersetDatasetType", "supersetDatasetType"
+    )
     """
     Type of the dataset in superset.
     """
@@ -121,13 +131,21 @@ class SupersetDataset(Superset):
 
     @property
     def superset_dataset_datasource_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.superset_dataset_datasource_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.superset_dataset_datasource_name
+        )
 
     @superset_dataset_datasource_name.setter
-    def superset_dataset_datasource_name(self, superset_dataset_datasource_name: Optional[str]):
+    def superset_dataset_datasource_name(
+        self, superset_dataset_datasource_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.superset_dataset_datasource_name = superset_dataset_datasource_name
+        self.attributes.superset_dataset_datasource_name = (
+            superset_dataset_datasource_name
+        )
 
     @property
     def superset_dataset_id(self) -> Optional[int]:
@@ -141,7 +159,9 @@ class SupersetDataset(Superset):
 
     @property
     def superset_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.superset_dataset_type
+        return (
+            None if self.attributes is None else self.attributes.superset_dataset_type
+        )
 
     @superset_dataset_type.setter
     def superset_dataset_type(self, superset_dataset_type: Optional[str]):
@@ -160,10 +180,14 @@ class SupersetDataset(Superset):
         self.attributes.superset_dashboard = superset_dashboard
 
     class Attributes(Superset.Attributes):
-        superset_dataset_datasource_name: Optional[str] = Field(default=None, description="")
+        superset_dataset_datasource_name: Optional[str] = Field(
+            default=None, description=""
+        )
         superset_dataset_id: Optional[int] = Field(default=None, description="")
         superset_dataset_type: Optional[str] = Field(default=None, description="")
-        superset_dashboard: Optional[SupersetDashboard] = Field(default=None, description="")  # relationship
+        superset_dashboard: Optional[SupersetDashboard] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
@@ -179,7 +203,9 @@ class SupersetDataset(Superset):
                 [name, superset_dashboard_qualified_name],
             )
             if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(connection_qualified_name)
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
             else:
                 connection_qn, connector_name = AtlanConnectorType.get_connector_name(
                     superset_dashboard_qualified_name,
@@ -193,7 +219,9 @@ class SupersetDataset(Superset):
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{superset_dashboard_qualified_name}/{name}",
                 connector_name=connector_name,
-                superset_dashboard=SupersetDashboard.ref_by_qualified_name(superset_dashboard_qualified_name),
+                superset_dashboard=SupersetDashboard.ref_by_qualified_name(
+                    superset_dashboard_qualified_name
+                ),
             )
 
     attributes: SupersetDataset.Attributes = Field(

@@ -84,28 +84,36 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     """
     The status of public network access for the Cosmos MongoDB account.
     """
-    COSMOS_MONGO_DB_ACCOUNT_ENABLE_AUTOMATIC_FAILOVER: ClassVar[BooleanField] = BooleanField(
-        "cosmosMongoDBAccountEnableAutomaticFailover",
-        "cosmosMongoDBAccountEnableAutomaticFailover",
+    COSMOS_MONGO_DB_ACCOUNT_ENABLE_AUTOMATIC_FAILOVER: ClassVar[BooleanField] = (
+        BooleanField(
+            "cosmosMongoDBAccountEnableAutomaticFailover",
+            "cosmosMongoDBAccountEnableAutomaticFailover",
+        )
     )
     """
     Indicates whether automatic failover is enabled for the Cosmos MongoDB account.
     """
-    COSMOS_MONGO_DB_ACCOUNT_ENABLE_MULTIPLE_WRITE_LOCATIONS: ClassVar[BooleanField] = BooleanField(
-        "cosmosMongoDBAccountEnableMultipleWriteLocations",
-        "cosmosMongoDBAccountEnableMultipleWriteLocations",
+    COSMOS_MONGO_DB_ACCOUNT_ENABLE_MULTIPLE_WRITE_LOCATIONS: ClassVar[BooleanField] = (
+        BooleanField(
+            "cosmosMongoDBAccountEnableMultipleWriteLocations",
+            "cosmosMongoDBAccountEnableMultipleWriteLocations",
+        )
     )
     """
     Indicates whether multiple write locations are enabled for the Cosmos MongoDB account.
     """
-    COSMOS_MONGO_DB_ACCOUNT_ENABLE_PARTITION_KEY_MONITOR: ClassVar[BooleanField] = BooleanField(
-        "cosmosMongoDBAccountEnablePartitionKeyMonitor",
-        "cosmosMongoDBAccountEnablePartitionKeyMonitor",
+    COSMOS_MONGO_DB_ACCOUNT_ENABLE_PARTITION_KEY_MONITOR: ClassVar[BooleanField] = (
+        BooleanField(
+            "cosmosMongoDBAccountEnablePartitionKeyMonitor",
+            "cosmosMongoDBAccountEnablePartitionKeyMonitor",
+        )
     )
     """
     Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account.
     """
-    COSMOS_MONGO_DB_ACCOUNT_IS_VIRTUAL_NETWORK_FILTER_ENABLED: ClassVar[BooleanField] = BooleanField(
+    COSMOS_MONGO_DB_ACCOUNT_IS_VIRTUAL_NETWORK_FILTER_ENABLED: ClassVar[
+        BooleanField
+    ] = BooleanField(
         "cosmosMongoDBAccountIsVirtualNetworkFilterEnabled",
         "cosmosMongoDBAccountIsVirtualNetworkFilterEnabled",
     )
@@ -137,7 +145,9 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     The write locations configured for the Cosmos MongoDB account.
     """
 
-    COSMOS_MONGO_DB_DATABASES: ClassVar[RelationField] = RelationField("cosmosMongoDBDatabases")
+    COSMOS_MONGO_DB_DATABASES: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBDatabases"
+    )
     """
     TBC
     """
@@ -164,77 +174,135 @@ class CosmosMongoDBAccount(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_account_instance_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_instance_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_instance_id
+        )
 
     @cosmos_mongo_d_b_account_instance_id.setter
-    def cosmos_mongo_d_b_account_instance_id(self, cosmos_mongo_d_b_account_instance_id: Optional[str]):
+    def cosmos_mongo_d_b_account_instance_id(
+        self, cosmos_mongo_d_b_account_instance_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_instance_id = cosmos_mongo_d_b_account_instance_id
+        self.attributes.cosmos_mongo_d_b_account_instance_id = (
+            cosmos_mongo_d_b_account_instance_id
+        )
 
     @property
     def cosmos_mongo_d_b_database_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_database_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_database_count
+        )
 
     @cosmos_mongo_d_b_database_count.setter
-    def cosmos_mongo_d_b_database_count(self, cosmos_mongo_d_b_database_count: Optional[int]):
+    def cosmos_mongo_d_b_database_count(
+        self, cosmos_mongo_d_b_database_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_database_count = cosmos_mongo_d_b_database_count
+        self.attributes.cosmos_mongo_d_b_database_count = (
+            cosmos_mongo_d_b_database_count
+        )
 
     @property
     def cosmos_mongo_d_b_account_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_type
+        )
 
     @cosmos_mongo_d_b_account_type.setter
-    def cosmos_mongo_d_b_account_type(self, cosmos_mongo_d_b_account_type: Optional[str]):
+    def cosmos_mongo_d_b_account_type(
+        self, cosmos_mongo_d_b_account_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_account_type = cosmos_mongo_d_b_account_type
 
     @property
     def cosmos_mongo_d_b_account_subscription_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_subscription_id
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_subscription_id
+        )
 
     @cosmos_mongo_d_b_account_subscription_id.setter
-    def cosmos_mongo_d_b_account_subscription_id(self, cosmos_mongo_d_b_account_subscription_id: Optional[str]):
+    def cosmos_mongo_d_b_account_subscription_id(
+        self, cosmos_mongo_d_b_account_subscription_id: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_subscription_id = cosmos_mongo_d_b_account_subscription_id
+        self.attributes.cosmos_mongo_d_b_account_subscription_id = (
+            cosmos_mongo_d_b_account_subscription_id
+        )
 
     @property
     def cosmos_mongo_d_b_account_resource_group(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_resource_group
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_resource_group
+        )
 
     @cosmos_mongo_d_b_account_resource_group.setter
-    def cosmos_mongo_d_b_account_resource_group(self, cosmos_mongo_d_b_account_resource_group: Optional[str]):
+    def cosmos_mongo_d_b_account_resource_group(
+        self, cosmos_mongo_d_b_account_resource_group: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_resource_group = cosmos_mongo_d_b_account_resource_group
+        self.attributes.cosmos_mongo_d_b_account_resource_group = (
+            cosmos_mongo_d_b_account_resource_group
+        )
 
     @property
     def cosmos_mongo_d_b_account_document_endpoint(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_document_endpoint
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_document_endpoint
+        )
 
     @cosmos_mongo_d_b_account_document_endpoint.setter
-    def cosmos_mongo_d_b_account_document_endpoint(self, cosmos_mongo_d_b_account_document_endpoint: Optional[str]):
+    def cosmos_mongo_d_b_account_document_endpoint(
+        self, cosmos_mongo_d_b_account_document_endpoint: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_document_endpoint = cosmos_mongo_d_b_account_document_endpoint
+        self.attributes.cosmos_mongo_d_b_account_document_endpoint = (
+            cosmos_mongo_d_b_account_document_endpoint
+        )
 
     @property
     def cosmos_mongo_d_b_account_mongo_endpoint(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_mongo_endpoint
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_mongo_endpoint
+        )
 
     @cosmos_mongo_d_b_account_mongo_endpoint.setter
-    def cosmos_mongo_d_b_account_mongo_endpoint(self, cosmos_mongo_d_b_account_mongo_endpoint: Optional[str]):
+    def cosmos_mongo_d_b_account_mongo_endpoint(
+        self, cosmos_mongo_d_b_account_mongo_endpoint: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_mongo_endpoint = cosmos_mongo_d_b_account_mongo_endpoint
+        self.attributes.cosmos_mongo_d_b_account_mongo_endpoint = (
+            cosmos_mongo_d_b_account_mongo_endpoint
+        )
 
     @property
     def cosmos_mongo_d_b_account_public_network_access(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_public_network_access
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_public_network_access
+        )
 
     @cosmos_mongo_d_b_account_public_network_access.setter
     def cosmos_mongo_d_b_account_public_network_access(
@@ -242,11 +310,17 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_public_network_access = cosmos_mongo_d_b_account_public_network_access
+        self.attributes.cosmos_mongo_d_b_account_public_network_access = (
+            cosmos_mongo_d_b_account_public_network_access
+        )
 
     @property
     def cosmos_mongo_d_b_account_enable_automatic_failover(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_enable_automatic_failover
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_enable_automatic_failover
+        )
 
     @cosmos_mongo_d_b_account_enable_automatic_failover.setter
     def cosmos_mongo_d_b_account_enable_automatic_failover(
@@ -281,7 +355,9 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     @property
     def cosmos_mongo_d_b_account_enable_partition_key_monitor(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_enable_partition_key_monitor
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_enable_partition_key_monitor
         )
 
     @cosmos_mongo_d_b_account_enable_partition_key_monitor.setter
@@ -316,71 +392,141 @@ class CosmosMongoDBAccount(CosmosMongoDB):
 
     @property
     def cosmos_mongo_d_b_account_consistency_policy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_consistency_policy
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_consistency_policy
+        )
 
     @cosmos_mongo_d_b_account_consistency_policy.setter
-    def cosmos_mongo_d_b_account_consistency_policy(self, cosmos_mongo_d_b_account_consistency_policy: Optional[str]):
+    def cosmos_mongo_d_b_account_consistency_policy(
+        self, cosmos_mongo_d_b_account_consistency_policy: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_consistency_policy = cosmos_mongo_d_b_account_consistency_policy
+        self.attributes.cosmos_mongo_d_b_account_consistency_policy = (
+            cosmos_mongo_d_b_account_consistency_policy
+        )
 
     @property
     def cosmos_mongo_d_b_account_locations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_locations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_locations
+        )
 
     @cosmos_mongo_d_b_account_locations.setter
-    def cosmos_mongo_d_b_account_locations(self, cosmos_mongo_d_b_account_locations: Optional[Set[str]]):
+    def cosmos_mongo_d_b_account_locations(
+        self, cosmos_mongo_d_b_account_locations: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_locations = cosmos_mongo_d_b_account_locations
+        self.attributes.cosmos_mongo_d_b_account_locations = (
+            cosmos_mongo_d_b_account_locations
+        )
 
     @property
     def cosmos_mongo_d_b_account_read_locations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_read_locations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_read_locations
+        )
 
     @cosmos_mongo_d_b_account_read_locations.setter
-    def cosmos_mongo_d_b_account_read_locations(self, cosmos_mongo_d_b_account_read_locations: Optional[Set[str]]):
+    def cosmos_mongo_d_b_account_read_locations(
+        self, cosmos_mongo_d_b_account_read_locations: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_read_locations = cosmos_mongo_d_b_account_read_locations
+        self.attributes.cosmos_mongo_d_b_account_read_locations = (
+            cosmos_mongo_d_b_account_read_locations
+        )
 
     @property
     def cosmos_mongo_d_b_account_write_locations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_account_write_locations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_account_write_locations
+        )
 
     @cosmos_mongo_d_b_account_write_locations.setter
-    def cosmos_mongo_d_b_account_write_locations(self, cosmos_mongo_d_b_account_write_locations: Optional[Set[str]]):
+    def cosmos_mongo_d_b_account_write_locations(
+        self, cosmos_mongo_d_b_account_write_locations: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_account_write_locations = cosmos_mongo_d_b_account_write_locations
+        self.attributes.cosmos_mongo_d_b_account_write_locations = (
+            cosmos_mongo_d_b_account_write_locations
+        )
 
     @property
     def cosmos_mongo_d_b_databases(self) -> Optional[List[CosmosMongoDBDatabase]]:
-        return None if self.attributes is None else self.attributes.cosmos_mongo_d_b_databases
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_databases
+        )
 
     @cosmos_mongo_d_b_databases.setter
-    def cosmos_mongo_d_b_databases(self, cosmos_mongo_d_b_databases: Optional[List[CosmosMongoDBDatabase]]):
+    def cosmos_mongo_d_b_databases(
+        self, cosmos_mongo_d_b_databases: Optional[List[CosmosMongoDBDatabase]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_databases = cosmos_mongo_d_b_databases
 
     class Attributes(CosmosMongoDB.Attributes):
-        cosmos_mongo_d_b_account_instance_id: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_database_count: Optional[int] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_type: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_subscription_id: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_resource_group: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_document_endpoint: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_mongo_endpoint: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_public_network_access: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_enable_automatic_failover: Optional[bool] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_enable_multiple_write_locations: Optional[bool] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_enable_partition_key_monitor: Optional[bool] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_is_virtual_network_filter_enabled: Optional[bool] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_consistency_policy: Optional[str] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_locations: Optional[Set[str]] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_read_locations: Optional[Set[str]] = Field(default=None, description="")
-        cosmos_mongo_d_b_account_write_locations: Optional[Set[str]] = Field(default=None, description="")
+        cosmos_mongo_d_b_account_instance_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_database_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_subscription_id: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_resource_group: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_document_endpoint: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_mongo_endpoint: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_public_network_access: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_enable_automatic_failover: Optional[bool] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_enable_multiple_write_locations: Optional[bool] = (
+            Field(default=None, description="")
+        )
+        cosmos_mongo_d_b_account_enable_partition_key_monitor: Optional[bool] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_is_virtual_network_filter_enabled: Optional[bool] = (
+            Field(default=None, description="")
+        )
+        cosmos_mongo_d_b_account_consistency_policy: Optional[str] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_locations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_read_locations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        cosmos_mongo_d_b_account_write_locations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         cosmos_mongo_d_b_databases: Optional[List[CosmosMongoDBDatabase]] = Field(
             default=None, description=""
         )  # relationship

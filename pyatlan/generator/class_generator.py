@@ -97,7 +97,8 @@ def get_type(type_: str):
 def get_type_defs() -> TypeDefResponse:
     if (
         not TYPE_DEF_FILE.exists()
-        or datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE)) < datetime.date.today()
+        or datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE))
+        < datetime.date.today()
     ):
         raise ClassGenerationError(
             "File containing typedefs does not exist or is not current."
@@ -171,7 +172,9 @@ class ModuleInfo:
 
     @property
     def external_module_dependencies(self):
-        return {asset_info.module_info for asset_info in self.external_asset_dependencies}
+        return {
+            asset_info.module_info for asset_info in self.external_asset_dependencies
+        }
 
     @property
     def imports(self):
@@ -260,7 +263,11 @@ class AssetInfo:
         super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
         if self.name not in self._CORE_ASSETS and super_type.name in self._CORE_ASSETS:
             return f"from .core.{super_type.module_name} import {super_type.name}"
-        elif not self.is_core_asset and super_type.is_core_asset and self.name not in self._CORE_ASSETS:
+        elif (
+            not self.is_core_asset
+            and super_type.is_core_asset
+            and self.name not in self._CORE_ASSETS
+        ):
             return f"from .core.{super_type.module_name} import {super_type.name}"
         else:
             return f"from .{super_type.module_name} import {super_type.name}"
@@ -280,14 +287,22 @@ class AssetInfo:
         return imports
 
     def update_attribute_defs(self):
-        def get_ancestor_relationship_defs(ancestor_name: str, ancestor_relationship_defs):
+        def get_ancestor_relationship_defs(
+            ancestor_name: str, ancestor_relationship_defs
+        ):
             ancestor_entity_def = self.entity_defs_by_name[ancestor_name]
             if not ancestor_entity_def.super_types or not ancestor_name:
                 return ancestor_relationship_defs
-            for relationship_def in ancestor_entity_def.relationship_attribute_defs or []:
+            for relationship_def in (
+                ancestor_entity_def.relationship_attribute_defs or []
+            ):
                 ancestor_relationship_defs.add(relationship_def["name"])
             return get_ancestor_relationship_defs(
-                (ancestor_entity_def.super_types[0] if ancestor_entity_def.super_types else ""),
+                (
+                    ancestor_entity_def.super_types[0]
+                    if ancestor_entity_def.super_types
+                    else ""
+                ),
                 ancestor_relationship_defs,
             )
 
@@ -296,7 +311,9 @@ class AssetInfo:
             entity_def.attribute_defs = self.merge_attributes(entity_def)
         names = {attribute_def["name"] for attribute_def in entity_def.attribute_defs}
         super_type_relationship_defs = (
-            get_ancestor_relationship_defs(entity_def.super_types[0], set()) if entity_def.super_types else set()
+            get_ancestor_relationship_defs(entity_def.super_types[0], set())
+            if entity_def.super_types
+            else set()
         )
         entity_def.relationship_attribute_defs = list(
             {
@@ -319,9 +336,13 @@ class AssetInfo:
                 attributes_to_remove.add(attribute["name"])
             elif type_name in AssetInfo.asset_info_by_name:
                 self.required_asset_infos.add(AssetInfo.asset_info_by_name[type_name])
-        self.entity_def.attribute_defs = [a for a in attribute_defs if a["name"] not in attributes_to_remove]
+        self.entity_def.attribute_defs = [
+            a for a in attribute_defs if a["name"] not in attributes_to_remove
+        ]
         self.entity_def.relationship_attribute_defs = [
-            a for a in relationship_attribute_defs if a["name"] not in attributes_to_remove
+            a
+            for a in relationship_attribute_defs
+            if a["name"] not in attributes_to_remove
         ]
 
     def merge_attributes(self, entity_def):
@@ -334,7 +355,9 @@ class AssetInfo:
                 for s_type in entity.super_types:
                     merge_them(s_type, a)
 
-        attributes = {attribute["name"]: attribute for attribute in entity_def.attribute_defs}
+        attributes = {
+            attribute["name"]: attribute for attribute in entity_def.attribute_defs
+        }
 
         for super_type in entity_def.super_types:
             merge_them(super_type, attributes)
@@ -351,7 +374,9 @@ class AssetInfo:
 
     @classmethod
     def set_entity_defs(cls, entity_defs: List[EntityDef]):
-        cls.entity_defs_by_name = {entity_def.name: entity_def for entity_def in entity_defs}
+        cls.entity_defs_by_name = {
+            entity_def.name: entity_def for entity_def in entity_defs
+        }
         entity_defs = sorted(entity_defs, key=lambda e: ",".join(e.super_types or []))
         for entity_def in entity_defs:
             name = entity_def.name
@@ -361,7 +386,8 @@ class AssetInfo:
                         attribute["typeName"] = "array<AtlanTagName>"
 
             if (not entity_def.super_types and name != REFERENCEABLE) or any(
-                super_type in cls.super_type_names_to_ignore for super_type in (entity_def.super_types or [])
+                super_type in cls.super_type_names_to_ignore
+                for super_type in (entity_def.super_types or [])
             ):
                 cls.super_type_names_to_ignore.add(name)
                 continue
@@ -381,7 +407,9 @@ class AssetInfo:
     @classmethod
     def create_modules(cls):
         order = 0
-        for parent_name, successors in nx.bfs_successors(cls.hierarchy_graph, REFERENCEABLE):
+        for parent_name, successors in nx.bfs_successors(
+            cls.hierarchy_graph, REFERENCEABLE
+        ):
             for asset_name in [parent_name] + successors:
                 asset_info = cls.asset_info_by_name[asset_name]
                 asset_info.order = order
@@ -406,7 +434,9 @@ class AssetInfo:
                                 asset_info.is_core_asset = True
                                 cls._CORE_ASSETS.add(asset_info.name)
                                 continue
-                            super_asset = cls.asset_info_by_name[related_asset.super_class]
+                            super_asset = cls.asset_info_by_name[
+                                related_asset.super_class
+                            ]
                             super_asset.is_core_asset = True
                             cls._CORE_ASSETS.add(related_asset.super_class)
 
@@ -585,13 +615,19 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
     search_map = get_indexes_for_attribute()
     indices = search_map.keys()
     if indices == {IndexType.KEYWORD}:
-        return SearchType(name="KeywordField", args=f'"{search_map.get(IndexType.KEYWORD)}"')
+        return SearchType(
+            name="KeywordField", args=f'"{search_map.get(IndexType.KEYWORD)}"'
+        )
     elif indices == {IndexType.TEXT}:
         return SearchType(name="TextField", args=f'"{search_map.get(IndexType.TEXT)}"')
     elif indices == {IndexType.NUMERIC}:
-        return SearchType(name="NumericField", args=f'"{search_map.get(IndexType.NUMERIC)}"')
+        return SearchType(
+            name="NumericField", args=f'"{search_map.get(IndexType.NUMERIC)}"'
+        )
     elif indices == {IndexType.BOOLEAN}:
-        return SearchType(name="BooleanField", args=f'"{search_map.get(IndexType.BOOLEAN)}"')
+        return SearchType(
+            name="BooleanField", args=f'"{search_map.get(IndexType.BOOLEAN)}"'
+        )
     elif indices == {IndexType.NUMERIC, IndexType.RANK_FEATURE}:
         return SearchType(
             name="NumericRankField",
@@ -614,7 +650,9 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
 
 class Generator:
     def __init__(self) -> None:
-        self.environment = Environment(loader=PackageLoader("pyatlan.generator", "templates"))
+        self.environment = Environment(
+            loader=PackageLoader("pyatlan.generator", "templates")
+        )
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
         self.environment.filters["get_search_type"] = get_search_type
@@ -631,20 +669,28 @@ class Generator:
                 for s_type in entity.super_types:
                     merge_them(s_type, a)
 
-        attributes = {attribute["name"]: attribute for attribute in entity_def.attribute_defs}
+        attributes = {
+            attribute["name"]: attribute for attribute in entity_def.attribute_defs
+        }
 
         for super_type in entity_def.super_types:
             merge_them(super_type, attributes)
         return list(attributes.values())
 
-    def get_ancestor_relationship_defs(self, ancestor_name: str, ancestor_relationship_defs):
+    def get_ancestor_relationship_defs(
+        self, ancestor_name: str, ancestor_relationship_defs
+    ):
         ancestor_entity_def = AssetInfo.entity_defs_by_name[ancestor_name]
         if not ancestor_entity_def.super_types or not ancestor_name:
             return ancestor_relationship_defs
         for relationship_def in ancestor_entity_def.relationship_attribute_defs or []:
             ancestor_relationship_defs.add(relationship_def["name"])
         return self.get_ancestor_relationship_defs(
-            (ancestor_entity_def.super_types[0] if ancestor_entity_def.super_types else ""),
+            (
+                ancestor_entity_def.super_types[0]
+                if ancestor_entity_def.super_types
+                else ""
+            ),
             ancestor_relationship_defs,
         )
 
@@ -686,7 +732,11 @@ class Generator:
             script.write(content)
 
     def render_core_init(self, assets: List[AssetInfo]):
-        asset_names = [asset.name for asset in assets if asset.is_core_asset or asset.name in asset._CORE_ASSETS]
+        asset_names = [
+            asset.name
+            for asset in assets
+            if asset.is_core_asset or asset.name in asset._CORE_ASSETS
+        ]
         asset_imports = [
             f"from .{asset.module_name} import {asset.name}"
             for asset in assets
@@ -694,7 +744,9 @@ class Generator:
         ]
 
         template = self.environment.get_template("core/init.jinja2")
-        content = template.render({"asset_imports": asset_imports, "asset_names": asset_names})
+        content = template.render(
+            {"asset_imports": asset_imports, "asset_names": asset_names}
+        )
 
         init_path = CORE_ASSETS_DIR / "__init__.py"
         with init_path.open("w") as script:
@@ -732,14 +784,20 @@ class Generator:
         new_enums.replace(existing_enums)
 
     def render_docs_struct_snippets(self, struct_defs):
-        template = self.environment.get_template("documentation/struct_attributes.jinja2")
+        template = self.environment.get_template(
+            "documentation/struct_attributes.jinja2"
+        )
         for struct_def in struct_defs:
             content = template.render({"struct_def": struct_def})
-            with (DOCS_DIR / f"{struct_def.name.lower()}-properties.md").open("w") as doc:
+            with (DOCS_DIR / f"{struct_def.name.lower()}-properties.md").open(
+                "w"
+            ) as doc:
                 doc.write(content)
 
     def render_docs_entity_properties(self, entity_defs):
-        template = self.environment.get_template("documentation/entity_attributes.jinja2")
+        template = self.environment.get_template(
+            "documentation/entity_attributes.jinja2"
+        )
         for entity_def in entity_defs:
             attr_def_alpha = sorted(entity_def.attribute_defs, key=lambda x: x["name"])
             content = template.render(
@@ -748,27 +806,40 @@ class Generator:
                     "attribute_defs": attr_def_alpha,
                 }
             )
-            with (DOCS_DIR / f"{entity_def.name.lower()}-properties.md").open("w") as doc:
+            with (DOCS_DIR / f"{entity_def.name.lower()}-properties.md").open(
+                "w"
+            ) as doc:
                 doc.write(content)
 
     def render_docs_entity_relationships(self, entity_defs):
-        template = self.environment.get_template("documentation/entity_relationships.jinja2")
+        template = self.environment.get_template(
+            "documentation/entity_relationships.jinja2"
+        )
         for entity_def in entity_defs:
-            attr_def_alpha = sorted(entity_def.relationship_attribute_defs, key=lambda x: x["name"])
+            attr_def_alpha = sorted(
+                entity_def.relationship_attribute_defs, key=lambda x: x["name"]
+            )
             content = template.render(
                 {
                     "entity_def_name": entity_def.name,
                     "attribute_defs": attr_def_alpha,
                 }
             )
-            with (DOCS_DIR / f"{entity_def.name.lower()}-relationships.md").open("w") as doc:
+            with (DOCS_DIR / f"{entity_def.name.lower()}-relationships.md").open(
+                "w"
+            ) as doc:
                 doc.write(content)
 
     def render_sphinx_docs(self, entity_defs):
-        template = self.environment.get_template("documentation/sphinx_asset_index.jinja2")
+        template = self.environment.get_template(
+            "documentation/sphinx_asset_index.jinja2"
+        )
         to_include = []
         for entity_def in entity_defs:
-            if not entity_def.name.startswith("__") and not entity_def.name == "AtlasServer":
+            if (
+                not entity_def.name.startswith("__")
+                and not entity_def.name == "AtlasServer"
+            ):
                 to_include.append(entity_def)
         sorted_defs = sorted(to_include, key=(lambda x: x.name))
         content = template.render(
@@ -787,7 +858,9 @@ class Generator:
                     "title_underline": "=" * len(entity_def.name),
                 }
             )
-            with (SPHINX_DIR / "asset" / f"{entity_def.name.lower()}.rst").open("w") as doc:
+            with (SPHINX_DIR / "asset" / f"{entity_def.name.lower()}.rst").open(
+                "w"
+            ) as doc:
                 doc.write(content)
 
 
@@ -802,7 +875,8 @@ class EnumDefInfo:
     def __init__(self, enum_def: EnumDef):
         self.name = get_type(enum_def.name)
         self.element_defs: List[KeyValue] = [
-            self.get_key_value(e) for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal or 0)
+            self.get_key_value(e)
+            for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal or 0)
         ]
 
     def get_key_value(self, element_def: EnumDef.ElementDef):
@@ -836,9 +910,13 @@ def filter_attributes_of_custom_entity_type():
             filtered_relationship_attribute_defs = [
                 relationship_attribute_def
                 for relationship_attribute_def in entity_def.relationship_attribute_defs
-                if not type_defs.is_custom_entity_def_name(relationship_attribute_def["typeName"])
+                if not type_defs.is_custom_entity_def_name(
+                    relationship_attribute_def["typeName"]
+                )
             ]
-            entity_def.relationship_attribute_defs = filtered_relationship_attribute_defs
+            entity_def.relationship_attribute_defs = (
+                filtered_relationship_attribute_defs
+            )
 
 
 if __name__ == "__main__":

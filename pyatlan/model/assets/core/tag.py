@@ -34,7 +34,9 @@ class Tag(Catalog):
     """
     Unique identifier of the tag in the source system.
     """
-    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField("tagAttributes", "tagAttributes")
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "tagAttributes", "tagAttributes"
+    )
     """
     Attributes associated with the tag in the source system.
     """
@@ -90,7 +92,9 @@ class Tag(Catalog):
 
     @property
     def mapped_atlan_tag_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mapped_atlan_tag_name
+        return (
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
+        )
 
     @mapped_atlan_tag_name.setter
     def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
@@ -100,7 +104,9 @@ class Tag(Catalog):
 
     class Attributes(Catalog.Attributes):
         tag_id: Optional[str] = Field(default=None, description="")
-        tag_attributes: Optional[List[SourceTagAttribute]] = Field(default=None, description="")
+        tag_attributes: Optional[List[SourceTagAttribute]] = Field(
+            default=None, description=""
+        )
         tag_allowed_values: Optional[Set[str]] = Field(default=None, description="")
         mapped_atlan_tag_name: Optional[str] = Field(default=None, description="")
 

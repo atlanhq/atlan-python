@@ -34,15 +34,21 @@ class Model(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField("modelName", "modelName.keyword", "modelName")
+    MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelName", "modelName.keyword", "modelName"
+    )
     """
     Simple name of the model in which this asset exists, or empty if it is itself a data model.
     """
-    MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField("modelQualifiedName", "modelQualifiedName")
+    MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "modelQualifiedName", "modelQualifiedName"
+    )
     """
     Unique name of the model in which this asset exists, or empty if it is itself a data model.
     """
-    MODEL_DOMAIN: ClassVar[KeywordTextField] = KeywordTextField("modelDomain", "modelDomain.keyword", "modelDomain")
+    MODEL_DOMAIN: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelDomain", "modelDomain.keyword", "modelDomain"
+    )
     """
     Model domain in which this asset exists.
     """
@@ -86,11 +92,15 @@ class Model(Catalog):
     """
     Type of the model asset (conceptual, logical, physical).
     """
-    MODEL_SYSTEM_DATE: ClassVar[NumericField] = NumericField("modelSystemDate", "modelSystemDate")
+    MODEL_SYSTEM_DATE: ClassVar[NumericField] = NumericField(
+        "modelSystemDate", "modelSystemDate"
+    )
     """
     System date for the asset.
     """
-    MODEL_BUSINESS_DATE: ClassVar[NumericField] = NumericField("modelBusinessDate", "modelBusinessDate")
+    MODEL_BUSINESS_DATE: ClassVar[NumericField] = NumericField(
+        "modelBusinessDate", "modelBusinessDate"
+    )
     """
     Business date for the asset.
     """
@@ -176,17 +186,29 @@ class Model(Catalog):
 
     @property
     def model_version_agnostic_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_version_agnostic_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_version_agnostic_qualified_name
+        )
 
     @model_version_agnostic_qualified_name.setter
-    def model_version_agnostic_qualified_name(self, model_version_agnostic_qualified_name: Optional[str]):
+    def model_version_agnostic_qualified_name(
+        self, model_version_agnostic_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_version_agnostic_qualified_name = model_version_agnostic_qualified_name
+        self.attributes.model_version_agnostic_qualified_name = (
+            model_version_agnostic_qualified_name
+        )
 
     @property
     def model_version_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_version_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_version_qualified_name
+        )
 
     @model_version_qualified_name.setter
     def model_version_qualified_name(self, model_version_qualified_name: Optional[str]):
@@ -206,7 +228,11 @@ class Model(Catalog):
 
     @property
     def model_entity_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_entity_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_entity_qualified_name
+        )
 
     @model_entity_qualified_name.setter
     def model_entity_qualified_name(self, model_entity_qualified_name: Optional[str]):
@@ -246,20 +272,32 @@ class Model(Catalog):
 
     @property
     def model_expired_at_system_date(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.model_expired_at_system_date
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_expired_at_system_date
+        )
 
     @model_expired_at_system_date.setter
-    def model_expired_at_system_date(self, model_expired_at_system_date: Optional[datetime]):
+    def model_expired_at_system_date(
+        self, model_expired_at_system_date: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_expired_at_system_date = model_expired_at_system_date
 
     @property
     def model_expired_at_business_date(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.model_expired_at_business_date
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_expired_at_business_date
+        )
 
     @model_expired_at_business_date.setter
-    def model_expired_at_business_date(self, model_expired_at_business_date: Optional[datetime]):
+    def model_expired_at_business_date(
+        self, model_expired_at_business_date: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.model_expired_at_business_date = model_expired_at_business_date
@@ -270,15 +308,23 @@ class Model(Catalog):
         model_domain: Optional[str] = Field(default=None, description="")
         model_namespace: Optional[str] = Field(default=None, description="")
         model_version_name: Optional[str] = Field(default=None, description="")
-        model_version_agnostic_qualified_name: Optional[str] = Field(default=None, description="")
-        model_version_qualified_name: Optional[str] = Field(default=None, description="")
+        model_version_agnostic_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        model_version_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         model_entity_name: Optional[str] = Field(default=None, description="")
         model_entity_qualified_name: Optional[str] = Field(default=None, description="")
         model_type: Optional[str] = Field(default=None, description="")
         model_system_date: Optional[datetime] = Field(default=None, description="")
         model_business_date: Optional[datetime] = Field(default=None, description="")
-        model_expired_at_system_date: Optional[datetime] = Field(default=None, description="")
-        model_expired_at_business_date: Optional[datetime] = Field(default=None, description="")
+        model_expired_at_system_date: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        model_expired_at_business_date: Optional[datetime] = Field(
+            default=None, description=""
+        )
 
     attributes: Model.Attributes = Field(
         default_factory=lambda: Model.Attributes(),

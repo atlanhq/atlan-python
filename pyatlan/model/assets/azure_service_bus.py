@@ -58,38 +58,68 @@ class AzureServiceBus(EventStore):
 
     @property
     def azure_service_bus_namespace_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.azure_service_bus_namespace_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_namespace_qualified_name
+        )
 
     @azure_service_bus_namespace_qualified_name.setter
-    def azure_service_bus_namespace_qualified_name(self, azure_service_bus_namespace_qualified_name: Optional[str]):
+    def azure_service_bus_namespace_qualified_name(
+        self, azure_service_bus_namespace_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_service_bus_namespace_qualified_name = azure_service_bus_namespace_qualified_name
+        self.attributes.azure_service_bus_namespace_qualified_name = (
+            azure_service_bus_namespace_qualified_name
+        )
 
     @property
     def azure_service_bus_namespace_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.azure_service_bus_namespace_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_namespace_name
+        )
 
     @azure_service_bus_namespace_name.setter
-    def azure_service_bus_namespace_name(self, azure_service_bus_namespace_name: Optional[str]):
+    def azure_service_bus_namespace_name(
+        self, azure_service_bus_namespace_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_service_bus_namespace_name = azure_service_bus_namespace_name
+        self.attributes.azure_service_bus_namespace_name = (
+            azure_service_bus_namespace_name
+        )
 
     @property
     def azure_service_bus_schema_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.azure_service_bus_schema_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.azure_service_bus_schema_qualified_name
+        )
 
     @azure_service_bus_schema_qualified_name.setter
-    def azure_service_bus_schema_qualified_name(self, azure_service_bus_schema_qualified_name: Optional[str]):
+    def azure_service_bus_schema_qualified_name(
+        self, azure_service_bus_schema_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_service_bus_schema_qualified_name = azure_service_bus_schema_qualified_name
+        self.attributes.azure_service_bus_schema_qualified_name = (
+            azure_service_bus_schema_qualified_name
+        )
 
     class Attributes(EventStore.Attributes):
-        azure_service_bus_namespace_qualified_name: Optional[str] = Field(default=None, description="")
-        azure_service_bus_namespace_name: Optional[str] = Field(default=None, description="")
-        azure_service_bus_schema_qualified_name: Optional[str] = Field(default=None, description="")
+        azure_service_bus_namespace_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        azure_service_bus_namespace_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        azure_service_bus_schema_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
 
     attributes: AzureServiceBus.Attributes = Field(
         default_factory=lambda: AzureServiceBus.Attributes(),

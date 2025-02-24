@@ -48,7 +48,9 @@ class AnomaloCheck(Anomalo):
     """
     Category type of the check in Anomalo
     """
-    ANOMALO_CHECK_TYPE: ClassVar[KeywordField] = KeywordField("anomaloCheckType", "anomaloCheckType")
+    ANOMALO_CHECK_TYPE: ClassVar[KeywordField] = KeywordField(
+        "anomaloCheckType", "anomaloCheckType"
+    )
     """
     Type of check in Anomalo
     """
@@ -64,7 +66,9 @@ class AnomaloCheck(Anomalo):
     """
     Flag to indicate if the check is an out of the box available check
     """
-    ANOMALO_CHECK_STATUS: ClassVar[KeywordField] = KeywordField("anomaloCheckStatus", "anomaloCheckStatus")
+    ANOMALO_CHECK_STATUS: ClassVar[KeywordField] = KeywordField(
+        "anomaloCheckStatus", "anomaloCheckStatus"
+    )
     """
     Status of the check in Anomalo
     """
@@ -86,7 +90,9 @@ class AnomaloCheck(Anomalo):
     """
     Evaluated message of the latest check run.
     """
-    ANOMALO_CHECK_LAST_RUN_URL: ClassVar[TextField] = TextField("anomaloCheckLastRunUrl", "anomaloCheckLastRunUrl")
+    ANOMALO_CHECK_LAST_RUN_URL: ClassVar[TextField] = TextField(
+        "anomaloCheckLastRunUrl", "anomaloCheckLastRunUrl"
+    )
     """
     URL to the latest check run.
     """
@@ -119,17 +125,29 @@ class AnomaloCheck(Anomalo):
 
     @property
     def anomalo_check_linked_asset_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_linked_asset_qualified_name
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_linked_asset_qualified_name
+        )
 
     @anomalo_check_linked_asset_qualified_name.setter
-    def anomalo_check_linked_asset_qualified_name(self, anomalo_check_linked_asset_qualified_name: Optional[str]):
+    def anomalo_check_linked_asset_qualified_name(
+        self, anomalo_check_linked_asset_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anomalo_check_linked_asset_qualified_name = anomalo_check_linked_asset_qualified_name
+        self.attributes.anomalo_check_linked_asset_qualified_name = (
+            anomalo_check_linked_asset_qualified_name
+        )
 
     @property
     def anomalo_check_category_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_category_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_category_type
+        )
 
     @anomalo_check_category_type.setter
     def anomalo_check_category_type(self, anomalo_check_category_type: Optional[str]):
@@ -149,7 +167,11 @@ class AnomaloCheck(Anomalo):
 
     @property
     def anomalo_check_priority_level(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_priority_level
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_priority_level
+        )
 
     @anomalo_check_priority_level.setter
     def anomalo_check_priority_level(self, anomalo_check_priority_level: Optional[str]):
@@ -159,10 +181,16 @@ class AnomaloCheck(Anomalo):
 
     @property
     def anomalo_check_is_system_added(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.anomalo_check_is_system_added
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_is_system_added
+        )
 
     @anomalo_check_is_system_added.setter
-    def anomalo_check_is_system_added(self, anomalo_check_is_system_added: Optional[bool]):
+    def anomalo_check_is_system_added(
+        self, anomalo_check_is_system_added: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anomalo_check_is_system_added = anomalo_check_is_system_added
@@ -179,37 +207,63 @@ class AnomaloCheck(Anomalo):
 
     @property
     def anomalo_check_status_image_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_status_image_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_status_image_url
+        )
 
     @anomalo_check_status_image_url.setter
-    def anomalo_check_status_image_url(self, anomalo_check_status_image_url: Optional[str]):
+    def anomalo_check_status_image_url(
+        self, anomalo_check_status_image_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anomalo_check_status_image_url = anomalo_check_status_image_url
 
     @property
     def anomalo_check_last_run_completed_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.anomalo_check_last_run_completed_at
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_last_run_completed_at
+        )
 
     @anomalo_check_last_run_completed_at.setter
-    def anomalo_check_last_run_completed_at(self, anomalo_check_last_run_completed_at: Optional[datetime]):
+    def anomalo_check_last_run_completed_at(
+        self, anomalo_check_last_run_completed_at: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anomalo_check_last_run_completed_at = anomalo_check_last_run_completed_at
+        self.attributes.anomalo_check_last_run_completed_at = (
+            anomalo_check_last_run_completed_at
+        )
 
     @property
     def anomalo_check_last_run_evaluated_message(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_last_run_evaluated_message
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_last_run_evaluated_message
+        )
 
     @anomalo_check_last_run_evaluated_message.setter
-    def anomalo_check_last_run_evaluated_message(self, anomalo_check_last_run_evaluated_message: Optional[str]):
+    def anomalo_check_last_run_evaluated_message(
+        self, anomalo_check_last_run_evaluated_message: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anomalo_check_last_run_evaluated_message = anomalo_check_last_run_evaluated_message
+        self.attributes.anomalo_check_last_run_evaluated_message = (
+            anomalo_check_last_run_evaluated_message
+        )
 
     @property
     def anomalo_check_last_run_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_last_run_url
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_last_run_url
+        )
 
     @anomalo_check_last_run_url.setter
     def anomalo_check_last_run_url(self, anomalo_check_last_run_url: Optional[str]):
@@ -219,13 +273,21 @@ class AnomaloCheck(Anomalo):
 
     @property
     def anomalo_check_historic_run_status(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.anomalo_check_historic_run_status
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.anomalo_check_historic_run_status
+        )
 
     @anomalo_check_historic_run_status.setter
-    def anomalo_check_historic_run_status(self, anomalo_check_historic_run_status: Optional[str]):
+    def anomalo_check_historic_run_status(
+        self, anomalo_check_historic_run_status: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.anomalo_check_historic_run_status = anomalo_check_historic_run_status
+        self.attributes.anomalo_check_historic_run_status = (
+            anomalo_check_historic_run_status
+        )
 
     @property
     def anomalo_check_asset(self) -> Optional[Asset]:
@@ -238,18 +300,34 @@ class AnomaloCheck(Anomalo):
         self.attributes.anomalo_check_asset = anomalo_check_asset
 
     class Attributes(Anomalo.Attributes):
-        anomalo_check_linked_asset_qualified_name: Optional[str] = Field(default=None, description="")
+        anomalo_check_linked_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         anomalo_check_category_type: Optional[str] = Field(default=None, description="")
         anomalo_check_type: Optional[str] = Field(default=None, description="")
-        anomalo_check_priority_level: Optional[str] = Field(default=None, description="")
-        anomalo_check_is_system_added: Optional[bool] = Field(default=None, description="")
+        anomalo_check_priority_level: Optional[str] = Field(
+            default=None, description=""
+        )
+        anomalo_check_is_system_added: Optional[bool] = Field(
+            default=None, description=""
+        )
         anomalo_check_status: Optional[str] = Field(default=None, description="")
-        anomalo_check_status_image_url: Optional[str] = Field(default=None, description="")
-        anomalo_check_last_run_completed_at: Optional[datetime] = Field(default=None, description="")
-        anomalo_check_last_run_evaluated_message: Optional[str] = Field(default=None, description="")
+        anomalo_check_status_image_url: Optional[str] = Field(
+            default=None, description=""
+        )
+        anomalo_check_last_run_completed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        anomalo_check_last_run_evaluated_message: Optional[str] = Field(
+            default=None, description=""
+        )
         anomalo_check_last_run_url: Optional[str] = Field(default=None, description="")
-        anomalo_check_historic_run_status: Optional[str] = Field(default=None, description="")
-        anomalo_check_asset: Optional[Asset] = Field(default=None, description="")  # relationship
+        anomalo_check_historic_run_status: Optional[str] = Field(
+            default=None, description=""
+        )
+        anomalo_check_asset: Optional[Asset] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: AnomaloCheck.Attributes = Field(
         default_factory=lambda: AnomaloCheck.Attributes(),

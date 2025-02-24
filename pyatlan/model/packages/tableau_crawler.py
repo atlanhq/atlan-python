@@ -52,7 +52,9 @@ class TableauCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def s3(self, bucket_name: str, bucket_prefix: str, bucket_region: Optional[str] = None) -> TableauCrawler:
+    def s3(
+        self, bucket_name: str, bucket_prefix: str, bucket_region: Optional[str] = None
+    ) -> TableauCrawler:
         """
         Set up the crawler to fetch metadata directly from the S3 bucket.
 
@@ -100,7 +102,9 @@ class TableauCrawler(AbstractCrawler):
         }
         self._credentials_body.update(local_creds)
         self._parameters.append({"name": "extraction-method", "value": "direct"})
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         return self
 
     def basic_auth(self, username: str, password: str) -> TableauCrawler:
@@ -146,7 +150,9 @@ class TableauCrawler(AbstractCrawler):
         """
         include_projects = projects or []
         to_include = self.build_flat_filter(include_projects)
-        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
+        self._parameters.append(
+            dict(dict(name="include-filter", value=to_include or "{}"))
+        )
         return self
 
     def exclude(self, projects: List[str]) -> TableauCrawler:
@@ -209,7 +215,9 @@ class TableauCrawler(AbstractCrawler):
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))

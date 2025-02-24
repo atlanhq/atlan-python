@@ -242,7 +242,9 @@ def test_term_to_dict(parameters, expected):
         ),
     ],
 )
-def test_bool_to_dict_without_optional_fields(must, should, must_not, filter, boost, minimum_should_match, expected):
+def test_bool_to_dict_without_optional_fields(
+    must, should, must_not, filter, boost, minimum_should_match, expected
+):
     assert (
         Bool(
             must=must,
@@ -282,7 +284,8 @@ def test_index_search_request():
     )
     request = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
     assert (
-        request.json(by_alias=True, exclude_none=True) == '{"attributes": ["schemaName", "databaseName"],'
+        request.json(by_alias=True, exclude_none=True)
+        == '{"attributes": ["schemaName", "databaseName"],'
         ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
@@ -298,7 +301,8 @@ def test_audit_search_request():
     )
     request = AuditSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
     assert (
-        request.json(by_alias=True, exclude_none=True) == '{"attributes": ["schemaName", "databaseName"],'
+        request.json(by_alias=True, exclude_none=True)
+        == '{"attributes": ["schemaName", "databaseName"],'
         ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
@@ -313,7 +317,8 @@ def test_search_log_request():
     )
     request = SearchLogRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
     assert (
-        request.json(by_alias=True, exclude_none=True) == '{"attributes": ["schemaName", "databaseName"],'
+        request.json(by_alias=True, exclude_none=True)
+        == '{"attributes": ["schemaName", "databaseName"],'
         ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
@@ -411,20 +416,26 @@ def test_match_none_plus_other_is_match_none():
 
 
 def test_match_one_or_other_is_other():
-    assert MatchNone() | Term(field="name", value="bob") == Term(field="name", value="bob")
+    assert MatchNone() | Term(field="name", value="bob") == Term(
+        field="name", value="bob"
+    )
 
 
 def test_nagate_match_one_is_match_all():
     assert ~MatchNone() == MatchAll()
 
 
-@pytest.mark.parametrize("boost, expected", [(None, {"match_all": {}}), (1.2, {"match_all": {"boost": 1.2}})])
+@pytest.mark.parametrize(
+    "boost, expected", [(None, {"match_all": {}}), (1.2, {"match_all": {"boost": 1.2}})]
+)
 def test_match_all_to_dict(boost, expected):
     assert MatchAll(boost=boost).to_dict() == expected
 
 
 def test_match_all_and_other_is_other():
-    assert MatchAll() & Term(field="name", value="bob") == Term(field="name", value="bob")
+    assert MatchAll() & Term(field="name", value="bob") == Term(
+        field="name", value="bob"
+    )
 
 
 def test_match_all_or_other_is_match_all():
@@ -535,7 +546,9 @@ def with_name(request):
 
 
 def test_terms_to_dict():
-    assert Terms(field="name", values=["john", "dave"]).to_dict() == {"terms": {"name": ["john", "dave"]}}
+    assert Terms(field="name", values=["john", "dave"]).to_dict() == {
+        "terms": {"name": ["john", "dave"]}
+    }
 
 
 @pytest.mark.parametrize(
@@ -553,7 +566,9 @@ def test_terms_to_dict():
     ],
     indirect=["with_name"],
 )
-def test_by_methods_on_term_prefix_regexp_wildcard(a_class, with_name, value, field, incompatable):
+def test_by_methods_on_term_prefix_regexp_wildcard(
+    a_class, with_name, value, field, incompatable
+):
     if incompatable:
         assert not hasattr(a_class, with_name)
     else:
@@ -564,7 +579,9 @@ def test_by_methods_on_term_prefix_regexp_wildcard(a_class, with_name, value, fi
         assert t.value == value
 
 
-@pytest.mark.parametrize("with_name,  field", [(a, a.value) for a in TermAttributes], indirect=["with_name"])
+@pytest.mark.parametrize(
+    "with_name,  field", [(a, a.value) for a in TermAttributes], indirect=["with_name"]
+)
 def test_by_methods_on_exists(with_name, field):
     assert hasattr(Exists, with_name)
     t = getattr(Exists, with_name)()
@@ -795,7 +812,11 @@ def test_sort_item_to_dict(field, order, expected):
             None,
             None,
             None,
-            {"fuzzy": {"user": {"value": "ki", "fuzziness": "AUTO", "max_expansions": 3}}},
+            {
+                "fuzzy": {
+                    "user": {"value": "ki", "fuzziness": "AUTO", "max_expansions": 3}
+                }
+            },
         ),
         (
             "user",
@@ -1456,13 +1477,17 @@ def test_with_active_glossary():
         ),
     ],
 )
-def test_with_active_category_when_invalid_parameter_raises_value_error(name, glossary_qualified_name, message):
+def test_with_active_category_when_invalid_parameter_raises_value_error(
+    name, glossary_qualified_name, message
+):
     with pytest.raises(ValueError, match=message):
         with_active_category(name=name, glossary_qualified_name=glossary_qualified_name)
 
 
 def test_with_active_category():
-    sut = with_active_category(name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME)
+    sut = with_active_category(
+        name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+    )
 
     assert sut.filter
     assert 4 == len(sut.filter)
@@ -1506,13 +1531,17 @@ def test_with_active_category():
         ),
     ],
 )
-def test_with_active_term_when_invalid_parameter_raises_value_error(name, glossary_qualified_name, message):
+def test_with_active_term_when_invalid_parameter_raises_value_error(
+    name, glossary_qualified_name, message
+):
     with pytest.raises(ValueError, match=message):
         with_active_term(name=name, glossary_qualified_name=glossary_qualified_name)
 
 
 def test_with_active_term():
-    sut = with_active_term(name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME)
+    sut = with_active_term(
+        name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+    )
 
     assert sut.filter
     assert 4 == len(sut.filter)

@@ -42,16 +42,26 @@ class CognosDatasource(Cognos):
 
     @property
     def cognos_datasource_connection_string(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.cognos_datasource_connection_string
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cognos_datasource_connection_string
+        )
 
     @cognos_datasource_connection_string.setter
-    def cognos_datasource_connection_string(self, cognos_datasource_connection_string: Optional[str]):
+    def cognos_datasource_connection_string(
+        self, cognos_datasource_connection_string: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.cognos_datasource_connection_string = cognos_datasource_connection_string
+        self.attributes.cognos_datasource_connection_string = (
+            cognos_datasource_connection_string
+        )
 
     class Attributes(Cognos.Attributes):
-        cognos_datasource_connection_string: Optional[str] = Field(default=None, description="")
+        cognos_datasource_connection_string: Optional[str] = Field(
+            default=None, description=""
+        )
 
     attributes: CognosDatasource.Attributes = Field(
         default_factory=lambda: CognosDatasource.Attributes(),

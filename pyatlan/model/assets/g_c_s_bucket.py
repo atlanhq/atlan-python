@@ -28,19 +28,27 @@ class GCSBucket(GCS):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
-        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
-        attributes = GCSBucket.Attributes.create(name=name, connection_qualified_name=connection_qualified_name)
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = GCSBucket.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, connection_qualified_name=connection_qualified_name)
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
     type_name: str = Field(default="GCSBucket", allow_mutation=False)
 
@@ -55,7 +63,9 @@ class GCSBucket(GCS):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    GCS_OBJECT_COUNT: ClassVar[NumericField] = NumericField("gcsObjectCount", "gcsObjectCount")
+    GCS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "gcsObjectCount", "gcsObjectCount"
+    )
     """
     Number of objects within the bucket.
     """
@@ -83,11 +93,15 @@ class GCSBucket(GCS):
     """
     Effective time for retention of objects in this bucket.
     """
-    GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField("gcsBucketLifecycleRules", "gcsBucketLifecycleRules")
+    GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField(
+        "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
+    )
     """
     Lifecycle rules for this bucket.
     """
-    GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField("gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy")
+    GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField(
+        "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
+    )
     """
     Retention policy for this bucket.
     """
@@ -120,17 +134,27 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_versioning_enabled
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_versioning_enabled
+        )
 
     @gcs_bucket_versioning_enabled.setter
-    def gcs_bucket_versioning_enabled(self, gcs_bucket_versioning_enabled: Optional[bool]):
+    def gcs_bucket_versioning_enabled(
+        self, gcs_bucket_versioning_enabled: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
 
     @property
     def gcs_bucket_retention_locked(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_retention_locked
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_locked
+        )
 
     @gcs_bucket_retention_locked.setter
     def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
@@ -140,7 +164,11 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_period(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_retention_period
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_period
+        )
 
     @gcs_bucket_retention_period.setter
     def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
@@ -150,17 +178,29 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_retention_effective_time
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_effective_time
+        )
 
     @gcs_bucket_retention_effective_time.setter
-    def gcs_bucket_retention_effective_time(self, gcs_bucket_retention_effective_time: Optional[datetime]):
+    def gcs_bucket_retention_effective_time(
+        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_retention_effective_time = gcs_bucket_retention_effective_time
+        self.attributes.gcs_bucket_retention_effective_time = (
+            gcs_bucket_retention_effective_time
+        )
 
     @property
     def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_lifecycle_rules
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_lifecycle_rules
+        )
 
     @gcs_bucket_lifecycle_rules.setter
     def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
@@ -170,7 +210,11 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_policy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_bucket_retention_policy
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_policy
+        )
 
     @gcs_bucket_retention_policy.setter
     def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
@@ -190,23 +234,37 @@ class GCSBucket(GCS):
 
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(default=None, description="")
-        gcs_bucket_versioning_enabled: Optional[bool] = Field(default=None, description="")
-        gcs_bucket_retention_locked: Optional[bool] = Field(default=None, description="")
+        gcs_bucket_versioning_enabled: Optional[bool] = Field(
+            default=None, description=""
+        )
+        gcs_bucket_retention_locked: Optional[bool] = Field(
+            default=None, description=""
+        )
         gcs_bucket_retention_period: Optional[int] = Field(default=None, description="")
-        gcs_bucket_retention_effective_time: Optional[datetime] = Field(default=None, description="")
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
+            default=None, description=""
+        )
         gcs_bucket_lifecycle_rules: Optional[str] = Field(default=None, description="")
         gcs_bucket_retention_policy: Optional[str] = Field(default=None, description="")
-        gcs_objects: Optional[List[GCSObject]] = Field(default=None, description="")  # relationship
+        gcs_objects: Optional[List[GCSObject]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> GCSBucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return GCSBucket.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: GCSBucket.Attributes = Field(

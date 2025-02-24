@@ -17,9 +17,13 @@ from tests.unit.model.constants import (
         (APPLICATION_FIELD_NAME, None, "application_qualified_name is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(name: str, application_qualified_name: str, message: str):
+def test_creator_with_missing_parameters_raise_value_error(
+    name: str, application_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
-        ApplicationField.creator(name=name, application_qualified_name=application_qualified_name)
+        ApplicationField.creator(
+            name=name, application_qualified_name=application_qualified_name
+        )
 
 
 def test_creator():
@@ -41,7 +45,9 @@ def test_creator():
         (APPLICATION_FIELD_NAME, None, "name is required"),
     ],
 )
-def test_updater_with_invalid_parameter_raises_value_error(qualified_name: str, name: str, message: str):
+def test_updater_with_invalid_parameter_raises_value_error(
+    qualified_name: str, name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
         ApplicationField.updater(qualified_name=qualified_name, name=name)
 

@@ -35,13 +35,21 @@ def collection(client: AtlanClient) -> Generator[Collection, None, None]:
 
 
 @pytest.fixture(scope="module")
-def folder(client: AtlanClient, collection: Collection) -> Generator[Folder, None, None]:
+def folder(
+    client: AtlanClient, collection: Collection
+) -> Generator[Folder, None, None]:
     assert collection and collection.qualified_name
-    folder = Folder.creator(name=FOLDER_NAME, collection_qualified_name=collection.qualified_name)
+    folder = Folder.creator(
+        name=FOLDER_NAME, collection_qualified_name=collection.qualified_name
+    )
     response = client.asset.save(folder)
     result = response.assets_created(asset_type=Folder)[0]
     updated = response.assets_updated(asset_type=Collection)[0]
-    assert updated and updated.guid == collection.guid and updated.qualified_name == collection.qualified_name
+    assert (
+        updated
+        and updated.guid == collection.guid
+        and updated.qualified_name == collection.qualified_name
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Folder)
 
@@ -49,18 +57,26 @@ def folder(client: AtlanClient, collection: Collection) -> Generator[Folder, Non
 @pytest.fixture(scope="module")
 def sub_folder(client: AtlanClient, folder: Folder) -> Generator[Folder, None, None]:
     assert folder and folder.qualified_name
-    sub = Folder.creator(name=SUB_FOLDER_NAME, parent_folder_qualified_name=folder.qualified_name)
+    sub = Folder.creator(
+        name=SUB_FOLDER_NAME, parent_folder_qualified_name=folder.qualified_name
+    )
     response = client.asset.save(sub)
     result = response.assets_created(asset_type=Folder)[0]
     updated = response.assets_updated(asset_type=Folder)[0]
-    assert updated and updated.guid == folder.guid and updated.qualified_name == folder.qualified_name
+    assert (
+        updated
+        and updated.guid == folder.guid
+        and updated.qualified_name == folder.qualified_name
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Folder)
 
 
 @pytest.fixture(scope="module")
 def query(client: AtlanClient, folder: Folder) -> Generator[Query, None, None]:
-    connection = client.find_connections_by_name(name=CONNECTION_NAME, connector_type=AtlanConnectorType.SNOWFLAKE)
+    connection = client.find_connections_by_name(
+        name=CONNECTION_NAME, connector_type=AtlanConnectorType.SNOWFLAKE
+    )
     assert connection and len(connection) == 1 and connection[0].qualified_name
     results = (
         FluentSearch()
@@ -74,12 +90,20 @@ def query(client: AtlanClient, folder: Folder) -> Generator[Query, None, None]:
     schema = results.current_page()[0]
     assert schema and schema.qualified_name
     assert folder and folder.qualified_name
-    to_create = Query.creator(name=QUERY_NAME, parent_folder_qualified_name=folder.qualified_name)
-    to_create.with_raw_query(schema_qualified_name=schema.qualified_name, query=RAW_QUERY)
+    to_create = Query.creator(
+        name=QUERY_NAME, parent_folder_qualified_name=folder.qualified_name
+    )
+    to_create.with_raw_query(
+        schema_qualified_name=schema.qualified_name, query=RAW_QUERY
+    )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=Query)[0]
     updated = response.assets_updated(asset_type=Folder)[0]
-    assert updated and updated.guid == folder.guid and updated.qualified_name == folder.qualified_name
+    assert (
+        updated
+        and updated.guid == folder.guid
+        and updated.qualified_name == folder.qualified_name
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Folder)
 
@@ -106,7 +130,9 @@ def test_create_sub_folder(sub_folder: Folder, folder: Folder, collection: Colle
     assert sub_folder.parent_qualified_name == folder.qualified_name
 
 
-def test_create_query(client: AtlanClient, query: Query, folder: Folder, collection: Collection):
+def test_create_query(
+    client: AtlanClient, query: Query, folder: Folder, collection: Collection
+):
     assert query
     assert query.name == QUERY_NAME
     assert query.guid and query.qualified_name

@@ -100,11 +100,15 @@ class QuickSightAnalysis(QuickSight):
     List of filter groups used for this analysis.
     """
 
-    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField("quickSightAnalysisVisuals")
+    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisVisuals"
+    )
     """
     TBC
     """
-    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField("quickSightAnalysisFolders")
+    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisFolders"
+    )
     """
     TBC
     """
@@ -120,27 +124,45 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_status
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_status
+        )
 
     @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]):
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
 
     @property
     def quick_sight_analysis_calculated_fields(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_calculated_fields
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_calculated_fields
+        )
 
     @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(self, quick_sight_analysis_calculated_fields: Optional[Set[str]]):
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = quick_sight_analysis_calculated_fields
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
 
     @property
     def quick_sight_analysis_parameter_declarations(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_parameter_declarations
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_parameter_declarations
+        )
 
     @quick_sight_analysis_parameter_declarations.setter
     def quick_sight_analysis_parameter_declarations(
@@ -148,43 +170,73 @@ class QuickSightAnalysis(QuickSight):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = quick_sight_analysis_parameter_declarations
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
 
     @property
     def quick_sight_analysis_filter_groups(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_filter_groups
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_filter_groups
+        )
 
     @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(self, quick_sight_analysis_filter_groups: Optional[Set[str]]):
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[Set[str]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = quick_sight_analysis_filter_groups
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
 
     @property
     def quick_sight_analysis_visuals(self) -> Optional[List[QuickSightAnalysisVisual]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_visuals
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_visuals
+        )
 
     @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(self, quick_sight_analysis_visuals: Optional[List[QuickSightAnalysisVisual]]):
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[List[QuickSightAnalysisVisual]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
 
     @property
     def quick_sight_analysis_folders(self) -> Optional[List[QuickSightFolder]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis_folders
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_folders
+        )
 
     @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(self, quick_sight_analysis_folders: Optional[List[QuickSightFolder]]):
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[List[QuickSightFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
 
     class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(default=None, description="")
-        quick_sight_analysis_calculated_fields: Optional[Set[str]] = Field(default=None, description="")
-        quick_sight_analysis_parameter_declarations: Optional[Set[str]] = Field(default=None, description="")
-        quick_sight_analysis_filter_groups: Optional[Set[str]] = Field(default=None, description="")
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            default=None, description=""
+        )
+        quick_sight_analysis_calculated_fields: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        quick_sight_analysis_parameter_declarations: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        quick_sight_analysis_filter_groups: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         quick_sight_analysis_visuals: Optional[List[QuickSightAnalysisVisual]] = Field(
             default=None, description=""
         )  # relationship
@@ -218,7 +270,9 @@ class QuickSightAnalysis(QuickSight):
                 quick_sight_id=quick_sight_id,
                 qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
                 quick_sight_analysis_folders=folders,
             )
 

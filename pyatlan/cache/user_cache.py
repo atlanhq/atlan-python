@@ -26,7 +26,9 @@ class UserCache:
             client = AtlanClient.get_default_client()
             cache_key = client.cache_key
             if cache_key not in cls.caches:
-                cls.caches[cache_key] = UserCache(user_client=client.user, token_client=client.token)
+                cls.caches[cache_key] = UserCache(
+                    user_client=client.user, token_client=client.token
+                )
             return cls.caches[cache_key]
 
     @classmethod
@@ -108,7 +110,9 @@ class UserCache:
                 self.map_name_to_id[name] = token.guid
                 return token.guid
             else:
-                raise ErrorCode.API_TOKEN_NOT_FOUND_BY_NAME.exception_with_parameters(name)
+                raise ErrorCode.API_TOKEN_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    name
+                )
         self._refresh_cache()
         return self.map_name_to_id.get(name)
 
@@ -148,5 +152,9 @@ class UserCache:
         :param names: a collection of usernames to be checked
         """
         for username in names:
-            if not self.get_id_for_name(username) and not self.token_client.get_by_id(username):
-                raise ValueError(f"Provided username {username} was not found in Atlan.")
+            if not self.get_id_for_name(username) and not self.token_client.get_by_id(
+                username
+            ):
+                raise ValueError(
+                    f"Provided username {username} was not found in Atlan."
+                )

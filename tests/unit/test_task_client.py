@@ -43,7 +43,12 @@ def mock_api_caller():
 
 @pytest.fixture()
 def task_search_request() -> TaskSearchRequest:
-    return FluentTasks().page_size(1).where(AtlanTask.STATUS.match(AtlanTaskStatus.COMPLETE.value)).to_request()
+    return (
+        FluentTasks()
+        .page_size(1)
+        .where(AtlanTask.STATUS.match(AtlanTaskStatus.COMPLETE.value))
+        .to_request()
+    )
 
 
 @pytest.fixture()
@@ -85,7 +90,9 @@ def test_fluent_tasks_invalid_client_raises_invalid_request_error(
 ):
     client_method = getattr(FluentTasks(), test_method)
     for invalid_client in test_client:
-        with pytest.raises(InvalidRequestError, match="No Atlan client has been provided."):
+        with pytest.raises(
+            InvalidRequestError, match="No Atlan client has been provided."
+        ):
             client_method(client=invalid_client)
 
 

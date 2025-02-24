@@ -12,7 +12,9 @@ class OpenLineageBaseEvent(AtlanObject):
     Base model for OpenLineage events.
     """
 
-    event_time: Optional[str] = Field(default=None, description="time the event occurred at", alias="eventTime")
+    event_time: Optional[str] = Field(
+        default=None, description="time the event occurred at", alias="eventTime"
+    )
     producer: Optional[str] = Field(default=None, description="producer of the event")
     schema_url: Optional[str] = Field(
         default="https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",

@@ -72,13 +72,17 @@ def test_overload_creator():
     assert sut.name == QUICK_SIGHT_NAME
     assert sut.connection_qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
     assert sut.quick_sight_id == QUICK_SIGHT_ID
-    assert sut.quick_sight_dataset_import_mode == QuickSightDatasetImportMode.DIRECT_QUERY
+    assert (
+        sut.quick_sight_dataset_import_mode == QuickSightDatasetImportMode.DIRECT_QUERY
+    )
     assert sut.qualified_name == QUICK_SIGHT_QUALIFIED_NAME
     assert sut.connector_name == QUICK_SIGHT_CONNECTOR_TYPE
 
 
 def test_updater():
-    sut = QuickSightDataset.updater(qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME)
+    sut = QuickSightDataset.updater(
+        qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME, name=QUICK_SIGHT_NAME
+    )
 
     assert sut.qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
     assert sut.name == QUICK_SIGHT_NAME

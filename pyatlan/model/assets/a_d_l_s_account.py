@@ -35,19 +35,27 @@ class ADLSAccount(ADLS):
     @classmethod
     @init_guid
     def creator(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
-        validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
-        attributes = ADLSAccount.Attributes.create(name=name, connection_qualified_name=connection_qualified_name)
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = ADLSAccount.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         warn(
-            ("This method is deprecated, please use 'creator' instead, which offers identical functionality."),
+            (
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+            ),
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.creator(name=name, connection_qualified_name=connection_qualified_name)
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
     type_name: str = Field(default="ADLSAccount", allow_mutation=False)
 
@@ -66,7 +74,9 @@ class ADLSAccount(ADLS):
     """
     Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata.
     """  # noqa: E501
-    ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField("adlsEncryptionType", "adlsEncryptionType")
+    ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adlsEncryptionType", "adlsEncryptionType"
+    )
     """
     Type of encryption for this account.
     """
@@ -86,19 +96,27 @@ class ADLSAccount(ADLS):
     """
     Subscription for this account.
     """
-    ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField("adlsAccountPerformance", "adlsAccountPerformance")
+    ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountPerformance", "adlsAccountPerformance"
+    )
     """
     Performance of this account.
     """
-    ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField("adlsAccountReplication", "adlsAccountReplication")
+    ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountReplication", "adlsAccountReplication"
+    )
     """
     Replication of this account.
     """
-    ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField("adlsAccountKind", "adlsAccountKind")
+    ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountKind", "adlsAccountKind"
+    )
     """
     Kind of this account.
     """
-    ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField("adlsPrimaryDiskState", "adlsPrimaryDiskState")
+    ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsPrimaryDiskState", "adlsPrimaryDiskState"
+    )
     """
     Primary disk state of this account.
     """
@@ -108,7 +126,9 @@ class ADLSAccount(ADLS):
     """
     Provision state of this account.
     """
-    ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField("adlsAccountAccessTier", "adlsAccountAccessTier")
+    ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountAccessTier", "adlsAccountAccessTier"
+    )
     """
     Access tier of this account.
     """
@@ -154,7 +174,11 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_resource_group(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adls_account_resource_group
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_resource_group
+        )
 
     @adls_account_resource_group.setter
     def adls_account_resource_group(self, adls_account_resource_group: Optional[str]):
@@ -164,7 +188,11 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_subscription(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.adls_account_subscription
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_subscription
+        )
 
     @adls_account_subscription.setter
     def adls_account_subscription(self, adls_account_subscription: Optional[str]):
@@ -174,20 +202,32 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_performance(self) -> Optional[ADLSPerformance]:
-        return None if self.attributes is None else self.attributes.adls_account_performance
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_performance
+        )
 
     @adls_account_performance.setter
-    def adls_account_performance(self, adls_account_performance: Optional[ADLSPerformance]):
+    def adls_account_performance(
+        self, adls_account_performance: Optional[ADLSPerformance]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_performance = adls_account_performance
 
     @property
     def adls_account_replication(self) -> Optional[ADLSReplicationType]:
-        return None if self.attributes is None else self.attributes.adls_account_replication
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_replication
+        )
 
     @adls_account_replication.setter
-    def adls_account_replication(self, adls_account_replication: Optional[ADLSReplicationType]):
+    def adls_account_replication(
+        self, adls_account_replication: Optional[ADLSReplicationType]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_replication = adls_account_replication
@@ -204,30 +244,46 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_primary_disk_state(self) -> Optional[ADLSAccountStatus]:
-        return None if self.attributes is None else self.attributes.adls_primary_disk_state
+        return (
+            None if self.attributes is None else self.attributes.adls_primary_disk_state
+        )
 
     @adls_primary_disk_state.setter
-    def adls_primary_disk_state(self, adls_primary_disk_state: Optional[ADLSAccountStatus]):
+    def adls_primary_disk_state(
+        self, adls_primary_disk_state: Optional[ADLSAccountStatus]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_primary_disk_state = adls_primary_disk_state
 
     @property
     def adls_account_provision_state(self) -> Optional[ADLSProvisionState]:
-        return None if self.attributes is None else self.attributes.adls_account_provision_state
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_provision_state
+        )
 
     @adls_account_provision_state.setter
-    def adls_account_provision_state(self, adls_account_provision_state: Optional[ADLSProvisionState]):
+    def adls_account_provision_state(
+        self, adls_account_provision_state: Optional[ADLSProvisionState]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_provision_state = adls_account_provision_state
 
     @property
     def adls_account_access_tier(self) -> Optional[ADLSAccessTier]:
-        return None if self.attributes is None else self.attributes.adls_account_access_tier
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_access_tier
+        )
 
     @adls_account_access_tier.setter
-    def adls_account_access_tier(self, adls_account_access_tier: Optional[ADLSAccessTier]):
+    def adls_account_access_tier(
+        self, adls_account_access_tier: Optional[ADLSAccessTier]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_access_tier = adls_account_access_tier
@@ -244,26 +300,48 @@ class ADLSAccount(ADLS):
 
     class Attributes(ADLS.Attributes):
         adls_e_tag: Optional[str] = Field(default=None, description="")
-        adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(default=None, description="")
+        adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
+            default=None, description=""
+        )
         adls_account_resource_group: Optional[str] = Field(default=None, description="")
         adls_account_subscription: Optional[str] = Field(default=None, description="")
-        adls_account_performance: Optional[ADLSPerformance] = Field(default=None, description="")
-        adls_account_replication: Optional[ADLSReplicationType] = Field(default=None, description="")
-        adls_account_kind: Optional[ADLSStorageKind] = Field(default=None, description="")
-        adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(default=None, description="")
-        adls_account_provision_state: Optional[ADLSProvisionState] = Field(default=None, description="")
-        adls_account_access_tier: Optional[ADLSAccessTier] = Field(default=None, description="")
-        adls_containers: Optional[List[ADLSContainer]] = Field(default=None, description="")  # relationship
+        adls_account_performance: Optional[ADLSPerformance] = Field(
+            default=None, description=""
+        )
+        adls_account_replication: Optional[ADLSReplicationType] = Field(
+            default=None, description=""
+        )
+        adls_account_kind: Optional[ADLSStorageKind] = Field(
+            default=None, description=""
+        )
+        adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
+            default=None, description=""
+        )
+        adls_account_provision_state: Optional[ADLSProvisionState] = Field(
+            default=None, description=""
+        )
+        adls_account_access_tier: Optional[ADLSAccessTier] = Field(
+            default=None, description=""
+        )
+        adls_containers: Optional[List[ADLSContainer]] = Field(
+            default=None, description=""
+        )  # relationship
 
         @classmethod
         @init_guid
-        def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount.Attributes:
-            validate_required_fields(["name", "connection_qualified_name"], [name, connection_qualified_name])
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> ADLSAccount.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
             return ADLSAccount.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
-                connector_name=AtlanConnectorType.get_connector_name(connection_qualified_name),
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
             )
 
     attributes: ADLSAccount.Attributes = Field(

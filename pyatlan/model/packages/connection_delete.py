@@ -28,7 +28,9 @@ class ConnectionDelete(AbstractMiner):
     ):
         super().__init__(connection_qualified_name=qualified_name)
         self._parameters.append(dict(name="delete-assets", value="true"))
-        self._parameters.append(dict(name="delete-type", value="PURGE" if purge else "SOFT"))
+        self._parameters.append(
+            dict(name="delete-type", value="PURGE" if purge else "SOFT")
+        )
 
     def _get_metadata(self) -> WorkflowMetadata:
         return WorkflowMetadata(

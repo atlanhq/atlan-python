@@ -37,7 +37,9 @@ class SalesforceReport(Salesforce):
     """
     Type of report in Salesforce.
     """
-    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField("detailColumns", "detailColumns")
+    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "detailColumns", "detailColumns"
+    )
     """
     List of column names on the report.
     """
@@ -113,8 +115,12 @@ class SalesforceReport(Salesforce):
         source_id: Optional[str] = Field(default=None, description="")
         report_type: Optional[Dict[str, str]] = Field(default=None, description="")
         detail_columns: Optional[Set[str]] = Field(default=None, description="")
-        dashboards: Optional[List[SalesforceDashboard]] = Field(default=None, description="")  # relationship
-        organization: Optional[SalesforceOrganization] = Field(default=None, description="")  # relationship
+        dashboards: Optional[List[SalesforceDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SalesforceReport.Attributes = Field(
         default_factory=lambda: SalesforceReport.Attributes(),

@@ -18,9 +18,13 @@ from tests.unit.model.constants import (
         (ADLS_CONTAINER_NAME, None, "adls_account_qualified_name is required"),
     ],
 )
-def test_create_with_missing_parameters_raise_value_error(name: str, adls_account_qualified_name: str, message: str):
+def test_create_with_missing_parameters_raise_value_error(
+    name: str, adls_account_qualified_name: str, message: str
+):
     with pytest.raises(ValueError, match=message):
-        ADLSContainer.create(name=name, adls_account_qualified_name=adls_account_qualified_name)
+        ADLSContainer.create(
+            name=name, adls_account_qualified_name=adls_account_qualified_name
+        )
 
 
 # Test case for creating an ADLSContainer
@@ -66,7 +70,9 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    sut = ADLSContainer.create_for_modification(qualified_name=ADLS_CONTAINER_QUALIFIED_NAME, name=ADLS_CONTAINER_NAME)
+    sut = ADLSContainer.create_for_modification(
+        qualified_name=ADLS_CONTAINER_QUALIFIED_NAME, name=ADLS_CONTAINER_NAME
+    )
 
     assert sut.name == ADLS_CONTAINER_NAME
     assert sut.qualified_name == ADLS_CONTAINER_QUALIFIED_NAME

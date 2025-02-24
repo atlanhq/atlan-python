@@ -23,7 +23,9 @@ class AuditClient:
 
     def __init__(self, client: ApiCaller):
         if not isinstance(client, ApiCaller):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters("client", "ApiCaller")
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
         self._client = client
 
     @staticmethod
@@ -39,8 +41,13 @@ class AuditClient:
 
     def _get_audit_bulk_search_log_message(self, bulk):
         return (
-            "Audit bulk search option is enabled. " if bulk else "Result size (%s) exceeds threshold (%s). "
-        ) + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+            (
+                "Audit bulk search option is enabled. "
+                if bulk
+                else "Result size (%s) exceeds threshold (%s). "
+            )
+            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
+        )
 
     @validate_arguments
     def search(self, criteria: AuditSearchRequest, bulk=False) -> AuditSearchResults:
@@ -67,7 +74,9 @@ class AuditClient:
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(criteria.dsl.sort)
+            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
+                criteria.dsl.sort
+            )
             LOGGER.debug(self._get_audit_bulk_search_log_message(bulk))
 
         raw_json = self._client._call_api(
@@ -78,21 +87,26 @@ class AuditClient:
             try:
                 entity_audits = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
             except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(raw_json, 200, str(err)) from err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             entity_audits = []
 
         count = raw_json["totalCount"] if "totalCount" in raw_json else 0
 
-        if count > AuditSearchResults._MASS_EXTRACT_THRESHOLD and not AuditSearchResults.presorted_by_timestamp(
-            criteria.dsl.sort
+        if (
+            count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
+            and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
         ):
             # If there is any user-specified sorting present in the search request
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
             # Re-fetch the first page results with updated timestamp sorting
             # for bulk search if count > _MASS_EXTRACT_THRESHOLD (10,000 assets)
-            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(criteria.dsl.sort)
+            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
+                criteria.dsl.sort
+            )
             LOGGER.debug(
                 self._get_audit_bulk_search_log_message(bulk),
                 count,

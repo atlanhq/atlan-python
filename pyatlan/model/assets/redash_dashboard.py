@@ -42,16 +42,24 @@ class RedashDashboard(Redash):
 
     @property
     def redash_dashboard_widget_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.redash_dashboard_widget_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.redash_dashboard_widget_count
+        )
 
     @redash_dashboard_widget_count.setter
-    def redash_dashboard_widget_count(self, redash_dashboard_widget_count: Optional[int]):
+    def redash_dashboard_widget_count(
+        self, redash_dashboard_widget_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
 
     class Attributes(Redash.Attributes):
-        redash_dashboard_widget_count: Optional[int] = Field(default=None, description="")
+        redash_dashboard_widget_count: Optional[int] = Field(
+            default=None, description=""
+        )
 
     attributes: RedashDashboard.Attributes = Field(
         default_factory=lambda: RedashDashboard.Attributes(),

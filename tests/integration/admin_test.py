@@ -260,7 +260,11 @@ def test_final_user_state(
     assert fixed_user
     assert fixed_user.id
     response = client.user.get_groups(fixed_user.id)
-    assert response.records is None or len(response.records) == 0 or len(response.records) == _default_group_count
+    assert (
+        response.records is None
+        or len(response.records) == 0
+        or len(response.records) == _default_group_count
+    )
 
 
 @pytest.mark.order(after="test_final_user_state")

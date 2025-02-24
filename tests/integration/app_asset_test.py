@@ -29,13 +29,17 @@ ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
-    result = create_connection(client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE)
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
+    )
     yield result
     delete_asset(client, guid=result.guid, asset_type=Connection)
 
 
 @pytest.fixture(scope="module")
-def application(client: AtlanClient, connection: Connection) -> Generator[Application, None, None]:
+def application(
+    client: AtlanClient, connection: Connection
+) -> Generator[Application, None, None]:
     assert connection.qualified_name
     to_create = Application.create(
         name=APPLICATION_NAME,
@@ -101,7 +105,9 @@ def test_retrieve_application(
     connection: Connection,
     application: Application,
 ):
-    b = client.asset.get_by_guid(application.guid, asset_type=Application, ignore_relationships=False)
+    b = client.asset.get_by_guid(
+        application.guid, asset_type=Application, ignore_relationships=False
+    )
     assert b
     assert not b.is_incomplete
     assert b.guid == application.guid
@@ -169,7 +175,9 @@ def test_read_deleted_application(
     connection: Connection,
     application: Application,
 ):
-    deleted = client.asset.get_by_guid(application.guid, asset_type=Application, ignore_relationships=False)
+    deleted = client.asset.get_by_guid(
+        application.guid, asset_type=Application, ignore_relationships=False
+    )
     assert deleted
     assert deleted.guid == application.guid
     assert deleted.qualified_name == application.qualified_name
@@ -200,7 +208,9 @@ def test_restore_application(
 
 
 @pytest.fixture(scope="module")
-def application_field(client: AtlanClient, application: ApplicationField) -> Generator[ApplicationField, None, None]:
+def application_field(
+    client: AtlanClient, application: ApplicationField
+) -> Generator[ApplicationField, None, None]:
     assert application.qualified_name
     to_create = ApplicationField.creator(
         name=APPLICATION_FIELD_NAME,
@@ -212,14 +222,22 @@ def application_field(client: AtlanClient, application: ApplicationField) -> Gen
     delete_asset(client, guid=result.guid, asset_type=ApplicationField)
 
 
-def test_application_field(client: AtlanClient, application: Application, application_field: ApplicationField):
+def test_application_field(
+    client: AtlanClient, application: Application, application_field: ApplicationField
+):
     assert application_field
     assert application_field.guid
     assert application_field.qualified_name
     assert application_field.name == APPLICATION_FIELD_NAME
-    assert application_field.connection_qualified_name == application.connection_qualified_name
+    assert (
+        application_field.connection_qualified_name
+        == application.connection_qualified_name
+    )
     assert application_field.connector_name == AtlanConnectorType.APP.value
-    assert application_field.application_parent_qualified_name == application.qualified_name
+    assert (
+        application_field.application_parent_qualified_name
+        == application.qualified_name
+    )
 
 
 @pytest.fixture(scope="module")
@@ -249,6 +267,12 @@ def test_overload_application_field(
     assert application_field_overload.guid
     assert application_field_overload.qualified_name
     assert application_field_overload.name == APPLICATION_FIELD_OVERLOAD_NAME
-    assert application_field_overload.connection_qualified_name == connection.qualified_name
+    assert (
+        application_field_overload.connection_qualified_name
+        == connection.qualified_name
+    )
     assert application_field_overload.connector_name == AtlanConnectorType.APP.value
-    assert application_field_overload.application_parent_qualified_name == application.qualified_name
+    assert (
+        application_field_overload.application_parent_qualified_name
+        == application.qualified_name
+    )

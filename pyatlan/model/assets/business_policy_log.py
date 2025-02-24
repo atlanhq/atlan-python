@@ -29,7 +29,9 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    BUSINESS_POLICY_ID: ClassVar[KeywordField] = KeywordField("businessPolicyId", "businessPolicyId")
+    BUSINESS_POLICY_ID: ClassVar[KeywordField] = KeywordField(
+        "businessPolicyId", "businessPolicyId"
+    )
     """
     business policy guid for which log are created
     """
@@ -39,15 +41,21 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
     """
     business policy type for which log are created
     """
-    GOVERNED_ASSETS_COUNT: ClassVar[NumericField] = NumericField("governedAssetsCount", "governedAssetsCount")
+    GOVERNED_ASSETS_COUNT: ClassVar[NumericField] = NumericField(
+        "governedAssetsCount", "governedAssetsCount"
+    )
     """
     number of governed assets in the policy
     """
-    NON_GOVERNED_ASSETS_COUNT: ClassVar[NumericField] = NumericField("nonGovernedAssetsCount", "nonGovernedAssetsCount")
+    NON_GOVERNED_ASSETS_COUNT: ClassVar[NumericField] = NumericField(
+        "nonGovernedAssetsCount", "nonGovernedAssetsCount"
+    )
     """
     number of non governed assets in the policy
     """
-    COMPLIANT_ASSETS_COUNT: ClassVar[NumericField] = NumericField("compliantAssetsCount", "compliantAssetsCount")
+    COMPLIANT_ASSETS_COUNT: ClassVar[NumericField] = NumericField(
+        "compliantAssetsCount", "compliantAssetsCount"
+    )
     """
     number of compliant assets in the policy
     """
@@ -79,17 +87,27 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
 
     @property
     def business_policy_log_policy_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.business_policy_log_policy_type
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.business_policy_log_policy_type
+        )
 
     @business_policy_log_policy_type.setter
-    def business_policy_log_policy_type(self, business_policy_log_policy_type: Optional[str]):
+    def business_policy_log_policy_type(
+        self, business_policy_log_policy_type: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.business_policy_log_policy_type = business_policy_log_policy_type
+        self.attributes.business_policy_log_policy_type = (
+            business_policy_log_policy_type
+        )
 
     @property
     def governed_assets_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.governed_assets_count
+        return (
+            None if self.attributes is None else self.attributes.governed_assets_count
+        )
 
     @governed_assets_count.setter
     def governed_assets_count(self, governed_assets_count: Optional[int]):
@@ -99,7 +117,11 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
 
     @property
     def non_governed_assets_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.non_governed_assets_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.non_governed_assets_count
+        )
 
     @non_governed_assets_count.setter
     def non_governed_assets_count(self, non_governed_assets_count: Optional[int]):
@@ -109,7 +131,9 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
 
     @property
     def compliant_assets_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.compliant_assets_count
+        return (
+            None if self.attributes is None else self.attributes.compliant_assets_count
+        )
 
     @compliant_assets_count.setter
     def compliant_assets_count(self, compliant_assets_count: Optional[int]):
@@ -119,7 +143,11 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
 
     @property
     def non_compliant_assets_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.non_compliant_assets_count
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.non_compliant_assets_count
+        )
 
     @non_compliant_assets_count.setter
     def non_compliant_assets_count(self, non_compliant_assets_count: Optional[int]):
@@ -129,7 +157,9 @@ class BusinessPolicyLog(Asset, type_name="BusinessPolicyLog"):
 
     class Attributes(Asset.Attributes):
         business_policy_id: Optional[str] = Field(default=None, description="")
-        business_policy_log_policy_type: Optional[str] = Field(default=None, description="")
+        business_policy_log_policy_type: Optional[str] = Field(
+            default=None, description=""
+        )
         governed_assets_count: Optional[int] = Field(default=None, description="")
         non_governed_assets_count: Optional[int] = Field(default=None, description="")
         compliant_assets_count: Optional[int] = Field(default=None, description="")

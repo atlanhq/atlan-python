@@ -124,7 +124,9 @@ def test_file_client_methods_validation_error(client, method, params):
         ],
     ],
 )
-def test_file_client_upload_file_raises_invalid_request_error(mock_api_caller, file_path, expected_error):
+def test_file_client_upload_file_raises_invalid_request_error(
+    mock_api_caller, file_path, expected_error
+):
     client = FileClient(client=mock_api_caller)
 
     with pytest.raises(InvalidRequestError, match=expected_error):
@@ -146,7 +148,9 @@ def test_file_client_upload_file_raises_invalid_request_error(mock_api_caller, f
         ],
     ],
 )
-def test_file_client_download_file_raises_invalid_request_error(client, file_path, expected_error):
+def test_file_client_download_file_raises_invalid_request_error(
+    client, file_path, expected_error
+):
     with pytest.raises(InvalidRequestError, match=expected_error):
         client.files.download_file(
             presigned_url="test-url",
@@ -162,7 +166,9 @@ def test_file_client_download_file_invalid_format_raises_invalid_request_error(
         f"Error: 'str' object has no attribute 'read', Path: {DOWNLOAD_FILE_PATH}"
     )
     with pytest.raises(InvalidRequestError, match=expected_error):
-        client.files.download_file(presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH)
+        client.files.download_file(
+            presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
+        )
 
 
 def test_file_client_get_presigned_url(mock_api_caller, s3_presigned_url):
@@ -190,7 +196,9 @@ def test_file_client_s3_upload_file(mock_call_api_internal, client, s3_presigned
 
 
 @patch.object(AtlanClient, "_call_api_internal", return_value=None)
-def test_file_client_azure_blob_upload_file(mock_call_api_internal, client, blob_presigned_url):
+def test_file_client_azure_blob_upload_file(
+    mock_call_api_internal, client, blob_presigned_url
+):
     client = FileClient(client=client)
     client.upload_file(presigned_url=blob_presigned_url, file_path=UPLOAD_FILE_PATH)
 
@@ -210,7 +218,9 @@ def test_file_client_gcs_upload_file(mock_call_api_internal, client, gcs_presign
 def test_file_client_download_file(client, s3_presigned_url, mock_session):
     # Make sure the download file doesn't exist before downloading
     assert not os.path.exists(DOWNLOAD_FILE_PATH)
-    response = client.files.download_file(presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH)
+    response = client.files.download_file(
+        presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
+    )
     assert response == DOWNLOAD_FILE_PATH
     assert mock_session.request.call_count == 1
     # The file should exist after calling the method

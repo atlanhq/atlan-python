@@ -168,6 +168,8 @@ if __name__ == "__main__":
         print("Please specify the python package name for the package")
         exit(1)
     if not re.fullmatch(r"\w+", sys.argv[1], re.ASCII):
-        print("The package name can only consist of alphanumeric characters and the underscore")
+        print(
+            "The package name can only consist of alphanumeric characters and the underscore"
+        )
 
     main(sys.argv[1])

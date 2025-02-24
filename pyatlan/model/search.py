@@ -183,10 +183,14 @@ class Exists(Query):
     def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(set_name=set_name, attr_name=attr_name):
+        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
+        ):
             return cls(field=attr_id)
         else:
-            raise ValueError(f"No custom metadata with the name {set_name} or property {attr_name} exists")
+            raise ValueError(
+                f"No custom metadata with the name {set_name} or property {attr_name} exists"
+            )
 
     @classmethod
     @validate_arguments()
@@ -361,13 +365,19 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType):
+    def with_custom_metadata(
+        cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
+    ):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(set_name=set_name, attr_name=attr_name):
+        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
+        ):
             return cls(field=attr_id, value=value)
         else:
-            raise ValueError(f"No custom metadata with the name {set_name} or property {attr_name} exists")
+            raise ValueError(
+                f"No custom metadata with the name {set_name} or property {attr_name} exists"
+            )
 
     @classmethod
     @validate_arguments()
@@ -663,7 +673,9 @@ class Bool(Query):
                     q.should.extend(qx.should)
                 # not all are required, add a should list to the must with proper min_should_match
                 else:
-                    q.must.append(Bool(should=qx.should, minimum_should_match=min_should_match))
+                    q.must.append(
+                        Bool(should=qx.should, minimum_should_match=min_should_match)
+                    )
         else:
             if not q.must and not q.filter and q.should:
                 q.minimum_should_match = 1
@@ -771,7 +783,11 @@ class Prefix(Query):
 
     def to_dict(self) -> Dict[Any, Any]:
         parameters: Dict[str, Any] = {
-            "value": (int(self.value.timestamp() * 1000) if isinstance(self.value, datetime) else self.value)
+            "value": (
+                int(self.value.timestamp() * 1000)
+                if isinstance(self.value, datetime)
+                else self.value
+            )
         }
 
         if self.case_insensitive is not None:
@@ -1803,7 +1819,9 @@ class Match(Query):
         if self.analyzer is not None:
             parameters["analyzer"] = self.analyzer
         if self.auto_generate_synonyms_phrase_query is not None:
-            parameters["auto_generate_synonyms_phrase_query"] = self.auto_generate_synonyms_phrase_query
+            parameters["auto_generate_synonyms_phrase_query"] = (
+                self.auto_generate_synonyms_phrase_query
+            )
         if self.fuzziness is not None:
             parameters["fuzziness"] = self.fuzziness
         if self.fuzzy_transpositions is not None:
@@ -1904,7 +1922,9 @@ class DSL(AtlanObject):
 
 class IndexSearchRequest(SearchRequest):
     dsl: DSL
-    relation_attributes: Optional[List[str]] = Field(default_factory=list, alias="relationAttributes")
+    relation_attributes: Optional[List[str]] = Field(
+        default_factory=list, alias="relationAttributes"
+    )
     suppress_logs: Optional[bool] = Field(default=None, alias="suppressLogs")
     show_search_score: Optional[bool] = Field(
         default=None,
@@ -1939,7 +1959,9 @@ class IndexSearchRequest(SearchRequest):
     )
 
     class Metadata(AtlanObject):
-        save_search_log: bool = Field(default=True, description="Whether to log this search (True) or not (False)")
+        save_search_log: bool = Field(
+            default=True, description="Whether to log this search (True) or not (False)"
+        )
         utm_tags: List[str] = Field(
             default_factory=list,
             description="Tags to associate with the search request",
@@ -1967,7 +1989,11 @@ class IndexSearchRequest(SearchRequest):
 
 
 def with_active_glossary(name: StrictStr) -> "Bool":
-    return Term.with_state("ACTIVE") + Term.with_type_name("AtlasGlossary") + Term.with_name(name)
+    return (
+        Term.with_state("ACTIVE")
+        + Term.with_type_name("AtlasGlossary")
+        + Term.with_name(name)
+    )
 
 
 def with_active_category(

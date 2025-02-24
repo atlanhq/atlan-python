@@ -29,11 +29,15 @@ class ModeCollection(Mode):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MODE_COLLECTION_TYPE: ClassVar[KeywordField] = KeywordField("modeCollectionType", "modeCollectionType")
+    MODE_COLLECTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionType", "modeCollectionType"
+    )
     """
     Type of this collection.
     """
-    MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField("modeCollectionState", "modeCollectionState")
+    MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionState", "modeCollectionState"
+    )
     """
     State of this collection.
     """
@@ -66,7 +70,9 @@ class ModeCollection(Mode):
 
     @property
     def mode_collection_state(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_collection_state
+        return (
+            None if self.attributes is None else self.attributes.mode_collection_state
+        )
 
     @mode_collection_state.setter
     def mode_collection_state(self, mode_collection_state: Optional[str]):
@@ -97,8 +103,12 @@ class ModeCollection(Mode):
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(default=None, description="")
         mode_collection_state: Optional[str] = Field(default=None, description="")
-        mode_workspace: Optional[ModeWorkspace] = Field(default=None, description="")  # relationship
-        mode_reports: Optional[List[ModeReport]] = Field(default=None, description="")  # relationship
+        mode_workspace: Optional[ModeWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
+        mode_reports: Optional[List[ModeReport]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: ModeCollection.Attributes = Field(
         default_factory=lambda: ModeCollection.Attributes(),

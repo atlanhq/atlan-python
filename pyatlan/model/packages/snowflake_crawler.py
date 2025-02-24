@@ -28,9 +28,7 @@ class SnowflakeCrawler(AbstractCrawler):
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE.value
     _CONNECTOR_TYPE = AtlanConnectorType.SNOWFLAKE
     _PACKAGE_ICON = "https://docs.snowflake.com/en/_images/logo-snowflake-sans-text.png"
-    _PACKAGE_LOGO = (
-        "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg"  # noqa
-    )
+    _PACKAGE_LOGO = "https://1amiydhcmj36tz3733v94f15-wpengine.netdna-ssl.com/wp-content/themes/snowflake/assets/img/logo-blue.svg"  # noqa
 
     def __init__(
         self,
@@ -54,7 +52,9 @@ class SnowflakeCrawler(AbstractCrawler):
             source_logo=self._PACKAGE_LOGO,
         )
 
-    def basic_auth(self, username: str, password: str, role: str, warehouse: str) -> SnowflakeCrawler:
+    def basic_auth(
+        self, username: str, password: str, role: str, warehouse: str
+    ) -> SnowflakeCrawler:
         """
         Set up the crawler to use basic authentication.
 
@@ -125,7 +125,9 @@ class SnowflakeCrawler(AbstractCrawler):
         self._parameters.append(parameters)
         return self
 
-    def account_usage(self, hostname: str, database_name: str, schema_name: str) -> SnowflakeCrawler:
+    def account_usage(
+        self, hostname: str, database_name: str, schema_name: str
+    ) -> SnowflakeCrawler:
         """
         Set the crawler to extract using Snowflake's account usage database and schema.
 
@@ -140,8 +142,12 @@ class SnowflakeCrawler(AbstractCrawler):
             "connector_config_name": "atlan-connectors-snowflake",
         }
         self._credentials_body.update(local_creds)
-        self._parameters.append({"name": "account-usage-database-name", "value": database_name})
-        self._parameters.append({"name": "account-usage-schema-name", "value": schema_name})
+        self._parameters.append(
+            {"name": "account-usage-database-name", "value": database_name}
+        )
+        self._parameters.append(
+            {"name": "account-usage-schema-name", "value": schema_name}
+        )
         return self
 
     def lineage(self, include: bool = True) -> SnowflakeCrawler:
@@ -151,7 +157,9 @@ class SnowflakeCrawler(AbstractCrawler):
         :param include: if True, lineage will be included while crawling Snowflake, default: True
         :returns: crawler, set to include or exclude lineage
         """
-        self._parameters.append({"name": "enable-lineage", "value": "true" if include else "false"})
+        self._parameters.append(
+            {"name": "enable-lineage", "value": "true" if include else "false"}
+        )
         return self
 
     def tags(self, include: bool = False) -> SnowflakeCrawler:
@@ -161,7 +169,9 @@ class SnowflakeCrawler(AbstractCrawler):
         :param include: Whether true, tags in Snowflake will be included while crawling Snowflake
         :returns: crawler, set to include or exclude Snowflake tags
         """
-        self._parameters.append({"name": "enable-snowflake-tag", "value": "true" if include else "false"})
+        self._parameters.append(
+            {"name": "enable-snowflake-tag", "value": "true" if include else "false"}
+        )
         return self
 
     def include(self, assets: dict) -> SnowflakeCrawler:
@@ -175,7 +185,9 @@ class SnowflakeCrawler(AbstractCrawler):
         """
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
-        self._parameters.append(dict(dict(name="include-filter", value=to_include or "{}")))
+        self._parameters.append(
+            dict(dict(name="include-filter", value=to_include or "{}"))
+        )
         return self
 
     def exclude(self, assets: dict) -> SnowflakeCrawler:
@@ -193,12 +205,16 @@ class SnowflakeCrawler(AbstractCrawler):
         return self
 
     def _set_required_metadata_params(self):
-        self._parameters.append({"name": "credential-guid", "value": "{{credentialGuid}}"})
+        self._parameters.append(
+            {"name": "credential-guid", "value": "{{credentialGuid}}"}
+        )
         self._parameters.append(dict(name="control-config-strategy", value="default"))
         self._parameters.append(
             {
                 "name": "connection",
-                "value": self._get_connection().json(by_alias=True, exclude_unset=True, exclude_none=True),
+                "value": self._get_connection().json(
+                    by_alias=True, exclude_unset=True, exclude_none=True
+                ),
             }
         )
 
