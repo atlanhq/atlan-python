@@ -68,10 +68,14 @@ jobs:
         env: # Test tenant environment variables
           ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
-          MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
-          MARK_BASE_URL: https://mark.atlan.com
-        # Run with `pytest-sugar` for enhancing the overall test report output
-        run: pytest tests/unit --force-sugar
+        run: pytest tests/unit --cov=atlan --cov-report=xml --cov-report=term --cov-append
+
+      - name: Upload unit test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data
+          path: .coverage
+          retention-days: 7
 
       - name: Prepare integration tests distribution
         id: distribute-integration-test-files
@@ -108,14 +112,64 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
 
-      - name: Run integration tests
-        env: # Test tenant environment variables
+      - name: Download unit test coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: .
+
+      - name: Run integration test with coverage
+        env:
           ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
         uses: nick-fields/retry@v3
         with:
           max_attempts: 3
-          timeout_minutes: 10 # Maximum time per test job; otherwise, the job will fail
-          # Run the integration test file using `pytest-timer` plugin
-          # to display only the durations of the 10 slowest tests with `pytest-sugar`
-          command: pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
+          timeout_minutes: 10
+          command: pytest ${{ matrix.test_file }} --cov=atlan --cov-append --cov-report=xml --cov-report=term
+
+      - name: Upload integration test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data
+          path: .coverage
+          retention-days: 7
+
+  finalize-coverage:
+    needs: [integration-tests]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+
+      - name: Download all coverage data
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: .
+
+      - name: Combine coverage reports
+        run: |
+          pytest --cov=atlan --cov-report=html --cov-report=xml --cov-append
+
+      - name: Upload final coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov
+          retention-days: 7
+
+      - name: Check coverage threshold
+        run: |
+          coverage report --fail-under=80  # Adjust threshold as needed
