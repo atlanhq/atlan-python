@@ -16,13 +16,13 @@ perform_check() {
 }
 
 # Formatter
-black-check() {
-    perform_check "black" "black --check --quiet ." "black ."
+ruff-formatter-check() {
+    perform_check "ruff" "ruff format --check ." "ruff format ."
 }
 
 # Linter
-flake8-check() {
-    perform_check "flake8" "flake8" "flake8 ."
+ruff-linter-check() {
+    perform_check "ruff" " ruff check ." " ruff check ."
 }
 
 # Static type checker
@@ -30,7 +30,7 @@ mypy-check() {
     perform_check "mypy" "mypy pyatlan tests" "mypy pyatlan tests"
 }
 
-black-check
-flake8-check
+ruff-formatter-check
+ruff-linter-check
 mypy-check
 exit $FAILURE

@@ -22,7 +22,6 @@ def mock_pkg_env():
             "X_ATLAN_AGENT_ID": "agent_id_value",
             "X_ATLAN_AGENT_PACKAGE_NAME": "package_name_value",
             "X_ATLAN_AGENT_WORKFLOW_ID": "workflow_id_value",
-            "X_ATLAN_AGENT_WORKFLOW_ID": "workflow_id_value",
             "CLIENT_ID": "client_id_value",
             "CLIENT_SECRET": "client_secret_value",
         },
@@ -87,9 +86,7 @@ def test_generate_config(custom_package: CustomPackage, tmpdir):
     config_name = "owner_propagator_cfg.py"
     assert dir / config_name
 
-    spec = importlib.util.spec_from_file_location(
-        "owner_propagator_cfg", dir / config_name
-    )
+    spec = importlib.util.spec_from_file_location("owner_propagator_cfg", dir / config_name)
     assert spec is not None
     module = importlib.util.module_from_spec(spec)
     assert module is not None
