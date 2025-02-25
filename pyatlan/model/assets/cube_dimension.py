@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -98,7 +98,7 @@ class CubeDimension(MultiDimensionalDataset):
     )
 
 
-from .cube import Cube  # noqa
-from .cube_hierarchy import CubeHierarchy  # noqa
+from .cube import Cube  # noqa: E402, F401
+from .cube_hierarchy import CubeHierarchy  # noqa: E402, F401
 
 CubeDimension.Attributes.update_forward_refs()

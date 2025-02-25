@@ -181,7 +181,7 @@ class SnowflakeMiner(AbstractMiner):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "warehouse,miner",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/6482067592337",
-                "orchestration.atlan.com/emoji": "\uD83D\uDE80",
+                "orchestration.atlan.com/emoji": "\ud83d\ude80",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
@@ -189,7 +189,7 @@ class SnowflakeMiner(AbstractMiner):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to mine query history data from Snowflake and store it for further processing. The data mined will be used for generating lineage and usage metrics.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"snowflake\",\"warehouse\",\"connector\",\"miner\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["snowflake","warehouse","connector","miner"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

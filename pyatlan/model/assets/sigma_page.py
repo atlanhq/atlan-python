@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -106,7 +106,7 @@ class SigmaPage(Sigma):
     )
 
 
-from .sigma_data_element import SigmaDataElement  # noqa
-from .sigma_workbook import SigmaWorkbook  # noqa
+from .sigma_data_element import SigmaDataElement  # noqa: E402, F401
+from .sigma_workbook import SigmaWorkbook  # noqa: E402, F401
 
 SigmaPage.Attributes.update_forward_refs()

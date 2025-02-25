@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -100,7 +100,7 @@ class QlikSpace(Qlik):
     )
 
 
-from .qlik_app import QlikApp  # noqa
-from .qlik_dataset import QlikDataset  # noqa
+from .qlik_app import QlikApp  # noqa: E402, F401
+from .qlik_dataset import QlikDataset  # noqa: E402, F401
 
 QlikSpace.Attributes.update_forward_refs()

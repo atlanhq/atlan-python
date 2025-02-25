@@ -397,7 +397,8 @@ class Term(Query):
     @classmethod
     @validate_arguments()
     def with_glossary(
-        cls, qualified_name: constr(strip_whitespace=True, min_length=1, strict=True)  # type: ignore
+        cls,
+        qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
     ):
         return cls(field=TermAttributes.GLOSSARY.value, value=qualified_name)
 
@@ -1854,6 +1855,15 @@ class SortItem:
             parameters["nested"] = {"path": self.nested_path}
         return {self.field: parameters}
 
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> "SortItem":
+        field, params = list(d.items())[0]
+
+        order = params.get("order", SortOrder.ASCENDING)
+        nested_path = params.get("nested", {}).get("path", None)
+
+        return cls(field=field, order=order, nested_path=nested_path)
+
     @validator("order", always=True)
     def validate_order(cls, v, values):
         if not v and "field" in values:
@@ -1866,8 +1876,10 @@ class DSL(AtlanObject):
     size: int = Field(default=300)
     aggregations: Dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: Optional[bool] = Field(default=True, alias="track_total_hits")
-    post_filter: Optional[Query] = Field(default=None, alias="post_filter")
-    query: Optional[Query]
+    post_filter: Optional[Union[Dict[str, Any], Query]] = Field(
+        default=None, alias="post_filter"
+    )
+    query: Optional[Union[Dict[str, Any], Query]]
     req_class_name: Optional[str] = Field(default=None, exclude=True)
     sort: List[SortItem] = Field(default_factory=list, alias="sort")
 
@@ -1892,6 +1904,16 @@ class DSL(AtlanObject):
             return v
         else:
             raise ValueError("Either query or post_filter is required")
+
+    @validator("sort", pre=True)
+    def sortitem_from_dict(cls, sort):
+        """
+        Convert dictionary entries into SortItem instances before validation
+        to ensure proper deserialization and prevent validation issues.
+        """
+        if all(isinstance(item, dict) for item in sort):
+            sort = [SortItem.from_dict(item) for item in sort]
+        return sort
 
     @validator("sort", always=True)
     def validate_sort(cls, sort, values):

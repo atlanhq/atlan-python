@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -65,6 +65,10 @@ class PowerBIMeasure(PowerBI):
     """
     TBC
     """
+    POWER_BI_COLUMNS: ClassVar[RelationField] = RelationField("powerBIColumns")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "workspace_qualified_name",
@@ -72,6 +76,7 @@ class PowerBIMeasure(PowerBI):
         "power_b_i_measure_expression",
         "power_b_i_is_external_measure",
         "table",
+        "power_b_i_columns",
     ]
 
     @property
@@ -140,6 +145,16 @@ class PowerBIMeasure(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.table = table
 
+    @property
+    def power_b_i_columns(self) -> Optional[List[PowerBIColumn]]:
+        return None if self.attributes is None else self.attributes.power_b_i_columns
+
+    @power_b_i_columns.setter
+    def power_b_i_columns(self, power_b_i_columns: Optional[List[PowerBIColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_columns = power_b_i_columns
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(default=None, description="")
         dataset_qualified_name: Optional[str] = Field(default=None, description="")
@@ -150,6 +165,9 @@ class PowerBIMeasure(PowerBI):
             default=None, description=""
         )
         table: Optional[PowerBITable] = Field(
+            default=None, description=""
+        )  # relationship
+        power_b_i_columns: Optional[List[PowerBIColumn]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -163,4 +181,5 @@ class PowerBIMeasure(PowerBI):
     )
 
 
-from .power_b_i_table import PowerBITable  # noqa
+from .power_b_i_column import PowerBIColumn  # noqa: E402, F401
+from .power_b_i_table import PowerBITable  # noqa: E402, F401

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -65,6 +65,6 @@ class ThoughtspotLiveboard(Thoughtspot):
     )
 
 
-from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa
+from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa: E402, F401
 
 ThoughtspotLiveboard.Attributes.update_forward_refs()

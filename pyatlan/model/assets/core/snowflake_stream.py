@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -182,4 +182,4 @@ class SnowflakeStream(SQL):
     )
 
 
-from .schema import Schema  # noqa
+from .schema import Schema  # noqa: E402, F401

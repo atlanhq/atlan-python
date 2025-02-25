@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -292,6 +292,6 @@ class APIPath(API):
     )
 
 
-from .a_p_i_spec import APISpec  # noqa
+from .a_p_i_spec import APISpec  # noqa: E402, F401
 
 APIPath.Attributes.update_forward_refs()

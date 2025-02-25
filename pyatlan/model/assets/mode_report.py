@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -78,6 +78,12 @@ class ModeReport(Mode):
     """
 
     """
+    MODE_IS_ARCHIVED: ClassVar[BooleanField] = BooleanField(
+        "modeIsArchived", "modeIsArchived"
+    )
+    """
+    Whether the report is archived (true) or unarchived (false)
+    """
 
     MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")
     """
@@ -96,6 +102,7 @@ class ModeReport(Mode):
         "mode_query_preview",
         "mode_is_public",
         "mode_is_shared",
+        "mode_is_archived",
         "mode_queries",
         "mode_collections",
     ]
@@ -177,6 +184,16 @@ class ModeReport(Mode):
         self.attributes.mode_is_shared = mode_is_shared
 
     @property
+    def mode_is_archived(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.mode_is_archived
+
+    @mode_is_archived.setter
+    def mode_is_archived(self, mode_is_archived: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_is_archived = mode_is_archived
+
+    @property
     def mode_queries(self) -> Optional[List[ModeQuery]]:
         return None if self.attributes is None else self.attributes.mode_queries
 
@@ -206,6 +223,7 @@ class ModeReport(Mode):
         mode_query_preview: Optional[str] = Field(default=None, description="")
         mode_is_public: Optional[bool] = Field(default=None, description="")
         mode_is_shared: Optional[bool] = Field(default=None, description="")
+        mode_is_archived: Optional[bool] = Field(default=None, description="")
         mode_queries: Optional[List[ModeQuery]] = Field(
             default=None, description=""
         )  # relationship
@@ -223,7 +241,7 @@ class ModeReport(Mode):
     )
 
 
-from .mode_collection import ModeCollection  # noqa
-from .mode_query import ModeQuery  # noqa
+from .mode_collection import ModeCollection  # noqa: E402, F401
+from .mode_query import ModeQuery  # noqa: E402, F401
 
 ModeReport.Attributes.update_forward_refs()

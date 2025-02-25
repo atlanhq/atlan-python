@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -590,8 +590,8 @@ class BigqueryTag(Tag):
     )
 
 
-from .core.dbt_model import DbtModel  # noqa
-from .core.dbt_source import DbtSource  # noqa
-from .core.dbt_test import DbtTest  # noqa
+from .core.dbt_model import DbtModel  # noqa: E402, F401
+from .core.dbt_source import DbtSource  # noqa: E402, F401
+from .core.dbt_test import DbtTest  # noqa: E402, F401
 
 BigqueryTag.Attributes.update_forward_refs()

@@ -1,5 +1,5 @@
 ##########################################################################
-# Copyright 2022 Atlan Pte, Ltd
+# Copyright 2024 Atlan Pte, Ltd
 # Copyright [2015-2021] The Apache Software Foundation
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -18,23 +18,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+fix = true
+line-length = 88
+exclude = ["env", "venv", "__pycache__"]
 
-[flake8]
-max-line-length = 120
-per-file-ignores =
-    tests/*:S101
-    pyatlan/model/assets.py:S307
-exclude =
-    env
-    venv
-    __pycache__
-    pyatlan/model/assets/__init__.py
-    pyatlan/model/structs/__init__.py
+[lint.isort]
+split-on-trailing-comma = false
 
-[pytest]
-; Here `name_of_plugin` is refers to the pytest-timer
-; https://github.com/skudriashev/pytest-timer/blob/a1995d6bb7a6d3f02edbec90622d928a50db95e1/setup.py#L26C50-L26C62
-addopts=-p no:name_of_plugin
-filterwarnings =
-    ignore::DeprecationWarning
-    ignore:urllib3 v2 only supports OpenSSL 1.1.1+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
+[lint.per-file-ignores]
+"tests/*" = ["S101"]
+"pyatlan/model/assets.py" = ["S307"]
+"pyatlan/model/assets/**.py" = ["E402", "F811"]
+"pyatlan/model/assets/core/**.py" = ["E402", "F811"]

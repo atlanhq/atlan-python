@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -453,6 +453,6 @@ class S3Object(S3):
     )
 
 
-from .s3_bucket import S3Bucket  # noqa
+from .s3_bucket import S3Bucket  # noqa: E402, F401
 
 S3Object.Attributes.update_forward_refs()

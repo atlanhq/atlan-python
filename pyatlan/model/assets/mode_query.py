@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -120,7 +120,7 @@ class ModeQuery(Mode):
     )
 
 
-from .mode_chart import ModeChart  # noqa
-from .mode_report import ModeReport  # noqa
+from .mode_chart import ModeChart  # noqa: E402, F401
+from .mode_report import ModeReport  # noqa: E402, F401
 
 ModeQuery.Attributes.update_forward_refs()

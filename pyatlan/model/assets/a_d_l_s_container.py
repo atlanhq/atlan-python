@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -310,7 +310,6 @@ class ADLSContainer(ADLS):
                     adls_account_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
-                adls_account_name=adls_account_qualified_name.split("/")[-1],
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
             )
@@ -325,7 +324,7 @@ class ADLSContainer(ADLS):
     )
 
 
-from .a_d_l_s_account import ADLSAccount  # noqa
-from .a_d_l_s_object import ADLSObject  # noqa
+from .a_d_l_s_account import ADLSAccount  # noqa: E402, F401
+from .a_d_l_s_object import ADLSObject  # noqa: E402, F401
 
 ADLSContainer.Attributes.update_forward_refs()

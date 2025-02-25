@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -308,7 +308,7 @@ class SupersetDashboard(Superset):
     )
 
 
-from .superset_chart import SupersetChart  # noqa
-from .superset_dataset import SupersetDataset  # noqa
+from .superset_chart import SupersetChart  # noqa: E402, F401
+from .superset_dataset import SupersetDataset  # noqa: E402, F401
 
 SupersetDashboard.Attributes.update_forward_refs()

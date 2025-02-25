@@ -2024,9 +2024,7 @@ class KeycloakEventType(str, Enum):
     IDENTITY_PROVIDER_RESPONSE = "IDENTITY_PROVIDER_RESPONSE"
     IDENTITY_PROVIDER_RESPONSE_ERROR = "IDENTITY_PROVIDER_RESPONSE_ERROR"
     IDENTITY_PROVIDER_RETRIEVE_TOKEN = "IDENTITY_PROVIDER_RETRIEVE_TOKEN"  # noqa: S105
-    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = (
-        "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
-    )
+    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
     IMPERSONATE = "IMPERSONATE"
     IMPERSONATE_ERROR = "IMPERSONATE_ERROR"
     CUSTOM_REQUIRED_ACTION = "CUSTOM_REQUIRED_ACTION"
@@ -2052,9 +2050,7 @@ class KeycloakEventType(str, Enum):
     OAUTH2_DEVICE_VERIFY_USER_CODE = "OAUTH2_DEVICE_VERIFY_USER_CODE"
     OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR = "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR"
     OAUTH2_DEVICE_CODE_TO_TOKEN = "OAUTH2_DEVICE_CODE_TO_TOKEN"  # noqa: S105
-    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = (
-        "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
-    )
+    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
     AUTHREQID_TO_TOKEN = "AUTHREQID_TO_TOKEN"  # noqa: S105
     AUTHREQID_TO_TOKEN_ERROR = "AUTHREQID_TO_TOKEN_ERROR"  # noqa: S105
     PERMISSION_TOKEN = "PERMISSION_TOKEN"  # noqa: S105
@@ -2472,6 +2468,18 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
+class AIApplicationDevelopmentStage(str, Enum):
+    PROPOSAL = "PROPOSAL"
+    DEVELOPMENT = "DEVELOPMENT"
+    PRODUCTION = "PRODUCTION"
+    ARCHIVED = "ARCHIVED"
+
+
+class AIModelStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
 class APIQueryParamTypeEnum(str, Enum):
     INPUT = "Input"
     OUTPUT = "Output"
@@ -2580,6 +2588,17 @@ class DataProductVisibility(str, Enum):
     PUBLIC = "Public"
 
 
+class DocumentDBCollectionValidationAction(str, Enum):
+    ERROR = "ERROR"
+    WARN = "WARN"
+
+
+class DocumentDBCollectionValidationLevel(str, Enum):
+    OFF = "OFF"
+    STRICT = "STRICT"
+    MODERATE = "MODERATE"
+
+
 class DomoCardType(str, Enum):
     DOC = "DOC"
     DOC_CARD = "DOC CARD"
@@ -2602,6 +2621,46 @@ class DynamoDBStatus(str, Enum):
     INACCESSIBLE_ENCRYPTION_CREDENTIALS = "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
     ARCHIVING = "ARCHIVING"
     ARCHIVED = "ARCHIVED"
+
+
+class EthicalAIAccountabilityConfig(str, Enum):
+    HAS_OWNER = "HAS_OWNER"
+    SUBJECT_TO_HUMAN_OVERSIGHT = "SUBJECT_TO_HUMAN_OVERSIGHT"
+
+
+class EthicalAIBiasMitigationConfig(str, Enum):
+    INEFFECTIVE = "INEFFECTIVE"
+    PARTIAL = "PARTIAL"
+    EFFECTIVE = "EFFECTIVE"
+
+
+class EthicalAIEnvironmentalConsciousnessConfig(str, Enum):
+    LOW_RISK = "LOW_RISK"
+    MEDIUM_RISK = "MEDIUM_RISK"
+    HIGH_RISK = "HIGH_RISK"
+
+
+class EthicalAIFairnessConfig(str, Enum):
+    LOW_RISK = "LOW_RISK"
+    MODERATE_RISK = "MODERATE_RISK"
+    HIGH_RISK = "HIGH_RISK"
+
+
+class EthicalAIPrivacyConfig(str, Enum):
+    PERSONAL_DATA = "PERSONAL_DATA"
+    NO_PERSONAL_DATA = "NO_PERSONAL_DATA"
+
+
+class EthicalAIReliabilityAndSafetyConfig(str, Enum):
+    LOW = "LOW"
+    MODERATE = "MODERATE"
+    HIGH = "HIGH"
+
+
+class EthicalAITransparencyConfig(str, Enum):
+    LIMITED_DISCLOSURE = "LIMITED_DISCLOSURE"
+    PARTIAL_DISCLOSURE = "PARTIAL_DISCLOSURE"
+    FULL_DISCLOSURE = "FULL_DISCLOSURE"
 
 
 class FileType(str, Enum):

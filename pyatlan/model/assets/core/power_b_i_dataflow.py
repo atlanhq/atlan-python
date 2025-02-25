@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -330,9 +330,7 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
         power_b_i_dataflow_entity_columns: Optional[
             List[PowerBIDataflowEntityColumn]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
         tables: Optional[List[PowerBITable]] = Field(
             default=None, description=""
         )  # relationship
@@ -356,9 +354,11 @@ class PowerBIDataflow(PowerBI):
     )
 
 
-from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn  # noqa
-from .power_b_i_dataset import PowerBIDataset  # noqa
-from .power_b_i_datasource import PowerBIDatasource  # noqa
-from .power_b_i_table import PowerBITable  # noqa
-from .power_b_i_workspace import PowerBIWorkspace  # noqa
-from .process import Process  # noqa
+from .power_b_i_dataflow_entity_column import (
+    PowerBIDataflowEntityColumn,  # noqa: E402, F401
+)
+from .power_b_i_dataset import PowerBIDataset  # noqa: E402, F401
+from .power_b_i_datasource import PowerBIDatasource  # noqa: E402, F401
+from .power_b_i_table import PowerBITable  # noqa: E402, F401
+from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401

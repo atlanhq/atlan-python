@@ -23,6 +23,7 @@ from pyatlan.model.search import (
     Term,
     Terms,
 )
+from pyatlan.utils import deep_get
 
 BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
 
@@ -278,8 +279,7 @@ class SearchLogEntry(AtlanObject):
         default_factory=list,
         alias="entityQFNamesAllowed",
         description=(
-            "Unique name(s) of asset(s) that were in the "
-            "results of the search, that the user is permitted to see."
+            "Unique name(s) of asset(s) that were in the results of the search, that the user is permitted to see."
         ),
     )
     entity_type_names_all: List[str] = Field(
@@ -291,8 +291,7 @@ class SearchLogEntry(AtlanObject):
         default_factory=list,
         alias="entityTypeNamesAllowed",
         description=(
-            "Name(s) of the types of assets that were in "
-            "the results of the search, that the user is permitted to see."
+            "Name(s) of the types of assets that were in the results of the search, that the user is permitted to see."
         ),
     )
     utm_tags: List[str] = Field(
@@ -405,15 +404,40 @@ class SearchLogResults(Iterable):
         """
         return self._log_entries
 
-    def _get_sl_unique_key(self, entity: SearchLogEntry) -> str:
+    def _get_sl_unique_key(self, entity: SearchLogEntry) -> Optional[str]:
         """
-        Returns a unique key for a `SearchLogEntry`
-        by combining the `entity_guids_all[0]` with the timestamp.
+        Returns a unique key for a `SearchLogEntry` by
+        combining `entity_guid` with the timestamp.
 
         NOTE: This is necessary because the search log API
-        does not provide a unique identifier for logs
+        does not provide a unique identifier for logs.
+
+        :param: search log entry
+        :returns: unique key or None if no valid key is found
         """
-        return f"{entity.entity_guids_all[0]}:{entity.timestamp}"
+        entity_guid = entity.entity_guids_all[0] if entity.entity_guids_all else None
+
+        # If entity_guid is not present, try to extract it from request_dsl; otherwise, return None
+        if not entity_guid:
+            terms = deep_get(
+                entity.request_dsl, "query.function_score.query.bool.filter.bool.must"
+            )
+            if not terms:
+                return None
+
+            if isinstance(terms, list):
+                for term in terms:
+                    if isinstance(term, dict) and term.get("term", {}).get("__guid"):
+                        entity_guid = term["term"]["__guid"]
+                        break
+            elif isinstance(terms, dict):
+                entity_guid = terms.get("term", {}).get("__guid")
+
+        return (
+            f"{entity_guid}:{entity.timestamp}"
+            if entity_guid and entity_guid != "undefined"
+            else None
+        )
 
     def next_page(self, start=None, size=None) -> bool:
         """
@@ -435,7 +459,9 @@ class SearchLogResults(Iterable):
             # If it has, then exclude it from the current results;
             # otherwise, we may encounter duplicate search log records.
             self._processed_log_entries.update(
-                self._get_sl_unique_key(entity) for entity in self._log_entries
+                key
+                for entity in self._log_entries
+                if (key := self._get_sl_unique_key(entity))
             )
         return self._get_next_page() if self._log_entries else False
 

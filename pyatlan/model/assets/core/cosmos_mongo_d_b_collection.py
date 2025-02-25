@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -140,7 +140,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Size of this table, in bytes.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this table.
     """
@@ -1433,13 +1433,13 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     )
 
 
-from .column import Column  # noqa
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
-from .mongo_d_b_database import MongoDBDatabase  # noqa
-from .query import Query  # noqa
-from .schema import Schema  # noqa
-from .table import Table  # noqa
-from .table_partition import TablePartition  # noqa
+from .column import Column  # noqa: E402, F401
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: E402, F401
+from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_source import DbtSource  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401
+from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .table_partition import TablePartition  # noqa: E402, F401

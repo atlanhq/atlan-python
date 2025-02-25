@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -1058,6 +1058,12 @@ class Asset(Referenceable):
     """
     Whether this asset has contract (true) or not (false).
     """
+    ASSET_REDIRECT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "assetRedirectGUIDs", "assetRedirectGUIDs"
+    )
+    """
+    Array of asset ids that equivalent to this asset.
+    """
     ASSET_POLICY_GUIDS: ClassVar[KeywordField] = KeywordField(
         "assetPolicyGUIDs", "assetPolicyGUIDs"
     )
@@ -1314,6 +1320,7 @@ class Asset(Referenceable):
         "asset_theme_hex",
         "lexicographical_sort_order",
         "has_contract",
+        "asset_redirect_g_u_i_ds",
         "asset_policy_g_u_i_ds",
         "asset_policies_count",
         "domain_g_u_i_ds",
@@ -3194,6 +3201,18 @@ class Asset(Referenceable):
         self.attributes.has_contract = has_contract
 
     @property
+    def asset_redirect_g_u_i_ds(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.asset_redirect_g_u_i_ds
+        )
+
+    @asset_redirect_g_u_i_ds.setter
+    def asset_redirect_g_u_i_ds(self, asset_redirect_g_u_i_ds: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_redirect_g_u_i_ds = asset_redirect_g_u_i_ds
+
+    @property
     def asset_policy_g_u_i_ds(self) -> Optional[Set[str]]:
         return (
             None if self.attributes is None else self.attributes.asset_policy_g_u_i_ds
@@ -3747,6 +3766,9 @@ class Asset(Referenceable):
         asset_theme_hex: Optional[str] = Field(default=None, description="")
         lexicographical_sort_order: Optional[str] = Field(default=None, description="")
         has_contract: Optional[bool] = Field(default=None, description="")
+        asset_redirect_g_u_i_ds: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         asset_policy_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         asset_policies_count: Optional[int] = Field(default=None, description="")
         domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
@@ -3839,18 +3861,18 @@ class Asset(Referenceable):
     )
 
 
-from .anomalo_check import AnomaloCheck  # noqa
-from .application import Application  # noqa
-from .application_field import ApplicationField  # noqa
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa
-from .data_contract import DataContract  # noqa
-from .data_product import DataProduct  # noqa
-from .file import File  # noqa
-from .link import Link  # noqa
-from .m_c_incident import MCIncident  # noqa
-from .m_c_monitor import MCMonitor  # noqa
-from .metric import Metric  # noqa
-from .readme import Readme  # noqa
-from .referenceable import Referenceable  # noqa
-from .schema_registry_subject import SchemaRegistrySubject  # noqa
-from .soda_check import SodaCheck  # noqa
+from .anomalo_check import AnomaloCheck  # noqa: E402, F401
+from .application import Application  # noqa: E402, F401
+from .application_field import ApplicationField  # noqa: E402, F401
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402, F401
+from .data_contract import DataContract  # noqa: E402, F401
+from .data_product import DataProduct  # noqa: E402, F401
+from .file import File  # noqa: E402, F401
+from .link import Link  # noqa: E402, F401
+from .m_c_incident import MCIncident  # noqa: E402, F401
+from .m_c_monitor import MCMonitor  # noqa: E402, F401
+from .metric import Metric  # noqa: E402, F401
+from .readme import Readme  # noqa: E402, F401
+from .referenceable import Referenceable  # noqa: E402, F401
+from .schema_registry_subject import SchemaRegistrySubject  # noqa: E402, F401
+from .soda_check import SodaCheck  # noqa: E402, F401

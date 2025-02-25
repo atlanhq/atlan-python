@@ -177,8 +177,7 @@ class CompoundQuery:
             synced_tag_qn = synced_tags[0].qualified_name or ""
             LOGGER.warning(
                 (
-                    "Multiple mapped source-synced tags "
-                    "found for tag %s -- using only the first: %s",
+                    "Multiple mapped source-synced tags found for tag %s -- using only the first: %s",
                 ),
                 atlan_tag_name,
                 synced_tag_qn,

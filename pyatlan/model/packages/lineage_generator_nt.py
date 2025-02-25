@@ -184,7 +184,7 @@ class LineageGenerator(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Package to generate lineage between two systems - no transformations involved.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"python\",\"utility\", \"custom-package\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["python","utility", "custom-package"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

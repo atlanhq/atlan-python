@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -420,7 +420,7 @@ class DbtModel(Dbt):
     )
 
 
-from .dbt_metric import DbtMetric  # noqa
-from .dbt_model_column import DbtModelColumn  # noqa
-from .dbt_test import DbtTest  # noqa
-from .s_q_l import SQL  # noqa
+from .dbt_metric import DbtMetric  # noqa: E402, F401
+from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401
+from .s_q_l import SQL  # noqa: E402, F401

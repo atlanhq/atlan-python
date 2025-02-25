@@ -229,8 +229,7 @@ class EntityFilter(AtlanObject):
         description="Name of the attribute on which filtering should be applied."
     )
     operator: AtlanComparisonOperator = Field(
-        description="Comparison that should be used when checking attribute_name"
-        " against the provided attribute_value."
+        description="Comparison that should be used when checking attribute_name against the provided attribute_value."
     )
     attribute_value: str = Field(
         description="Value that attribute_name should be compared against."
@@ -648,7 +647,9 @@ class FluentLineage:
                 )
                 for _filter in self._includes_in_results
             ]
-            request.entity_filters = FilterList(condition=self._includes_condition, criteria=criteria)  # type: ignore
+            request.entity_filters = FilterList(
+                condition=self._includes_condition, criteria=criteria
+            )  # type: ignore
         if self._includes_on_results:
             request.attributes = [
                 field.atlan_field_name if isinstance(field, AtlanField) else field

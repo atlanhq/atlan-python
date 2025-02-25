@@ -80,7 +80,6 @@ def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
 def glossary(
     client: AtlanClient,
 ) -> Generator[AtlasGlossary, None, None]:
-
     g = AtlasGlossary.creator(name=StrictStr(MODULE_NAME))
     g.description = TEST_SYSTEM_DESCRIPTION
     g.user_description = TEST_USER_DESCRIPTION
@@ -826,15 +825,15 @@ def generate_audit_entries(client: AtlanClient, audit_glossary: AtlasGlossary):
             qualified_name=audit_glossary.qualified_name,
             name=audit_glossary.name,
         )
-        updater.description = f"Updated description {i+1}"
+        updater.description = f"Updated description {i + 1}"
         client.asset.save(updater)
         time.sleep(1)
 
     request = AuditSearchRequest.by_guid(guid=audit_glossary.guid, size=log_count)
     response = client.audit.search(request)
-    assert (
-        response.total_count >= log_count
-    ), f"Expected at least {log_count} logs, but got {response.total_count}."
+    assert response.total_count >= log_count, (
+        f"Expected at least {log_count} logs, but got {response.total_count}."
+    )
 
 
 def _assert_audit_search_results(
@@ -1193,9 +1192,9 @@ def generate_search_logs(client: AtlanClient, sl_glossary: AtlasGlossary):
 
     request = SearchLogRequest.views_by_guid(guid=sl_glossary.guid, size=20)
     response = client.search_log.search(request)
-    assert (
-        response.count >= log_count
-    ), f"Expected at least {log_count} logs, but got {response.count}."
+    assert response.count >= log_count, (
+        f"Expected at least {log_count} logs, but got {response.count}."
+    )
 
 
 def _assert_search_log_results(

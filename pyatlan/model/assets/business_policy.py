@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -353,6 +353,6 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
     )
 
 
-from .business_policy_exception import BusinessPolicyException  # noqa
+from .business_policy_exception import BusinessPolicyException  # noqa: E402, F401
 
 BusinessPolicy.Attributes.update_forward_refs()

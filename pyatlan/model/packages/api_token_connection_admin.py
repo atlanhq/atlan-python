@@ -60,7 +60,7 @@ class APITokenConnectionAdmin(AbstractCustomPackage):
                 "package.argoproj.io/author": "Atlan CSA",
                 "package.argoproj.io/description": "Assigns an API token as a connection admin for an existing connection.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"kotlin\",\"utility\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["kotlin","utility"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

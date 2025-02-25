@@ -647,8 +647,7 @@ class AtlanClient(BaseSettings):
     def get_all_roles(self) -> RoleResponse:
         """Deprecated - use self.role.get_all() instead."""
         warn(
-            "This method is deprecated, please use 'self.role.get_all' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'self.role.get_all' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -783,8 +782,7 @@ class AtlanClient(BaseSettings):
     ) -> GroupResponse:
         """Deprecated - use user.get_groups() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_groups' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'user.get_groups' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -797,8 +795,7 @@ class AtlanClient(BaseSettings):
     ) -> None:
         """Deprecated - use user.add_to_groups() instead."""
         warn(
-            "This method is deprecated, please use 'user.add_to_groups' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'user.add_to_groups' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -811,8 +808,7 @@ class AtlanClient(BaseSettings):
     ) -> None:
         """Deprecated - use user.change_role() instead."""
         warn(
-            "This method is deprecated, please use 'user.change_role' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'user.change_role' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -823,8 +819,7 @@ class AtlanClient(BaseSettings):
     ) -> UserMinimalResponse:
         """Deprecated - use user.get_current() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_current' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'user.get_current' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -867,8 +862,7 @@ class AtlanClient(BaseSettings):
     ) -> Optional[List[AtlanUser]]:
         """Deprecated - use user.get_by_email() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_by_email' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'user.get_by_email' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -932,8 +926,7 @@ class AtlanClient(BaseSettings):
     ) -> A:
         """Deprecated - use asset.get_by_guid() instead."""
         warn(
-            "This method is deprecated, please use 'asset.get_by_guid' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'asset.get_by_guid' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1106,8 +1099,7 @@ class AtlanClient(BaseSettings):
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """Deprecated - use asset.restore() instead."""
         warn(
-            "This method is deprecated, please use 'asset.restore' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'asset.restore' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1590,7 +1582,9 @@ class AtlanClient(BaseSettings):
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> List[AtlasGlossaryCategory]:
         """Deprecated - use asset.find_category_fast_by_name() instead."""
@@ -1628,7 +1622,9 @@ class AtlanClient(BaseSettings):
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """Deprecated - use asset.find_category_by_name() instead."""
@@ -1672,8 +1668,8 @@ class AtlanClient(BaseSettings):
             adapter = self._session.adapters[HTTP_PREFIX]
         else:
             adapter = self._session.adapters[HTTPS_PREFIX]
-        current_max = adapter.max_retries
-        adapter.max_retries = max_retries
+        current_max = adapter.max_retries  # type: ignore[attr-defined]
+        adapter.max_retries = max_retries  # type: ignore[attr-defined]
         LOGGER.debug(
             "max_retries set to total: %s force_list: %s",
             max_retries.total,
@@ -1687,11 +1683,11 @@ class AtlanClient(BaseSettings):
             LOGGER.exception("Exception in max retries")
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
-            adapter.max_retries = current_max
+            adapter.max_retries = current_max  # type: ignore[attr-defined]
             LOGGER.debug(
                 "max_retries restored to total: %s force_list: %s",
-                adapter.max_retries.total,
-                adapter.max_retries.status_forcelist,
+                adapter.max_retries.total,  # type: ignore[attr-defined]
+                adapter.max_retries.status_forcelist,  # type: ignore[attr-defined]
             )
 
 
