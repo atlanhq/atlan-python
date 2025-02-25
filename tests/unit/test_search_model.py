@@ -1558,3 +1558,104 @@ def test_with_active_term():
     assert isinstance(term4, Term) is True
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
+
+
+def test_dsl_serialization_and_deserialization():
+    dsl_through_model = DSL(
+        from_=0,
+        aggregations={
+            "main_agg": {
+                "terms": {"field": "main_field"},
+                "aggregations": {
+                    "sub_agg_1": {"avg": {"field": "sub_field_1"}},
+                    "sub_agg_2": {
+                        "date_histogram": {"field": "timestamp", "interval": "month"}
+                    },
+                },
+            }
+        },
+        size=500,
+        sort=[
+            SortItem(field="created", order=SortOrder.ASCENDING),
+            SortItem(field="updated", order=SortOrder.DESCENDING),
+            SortItem(
+                field="entityId", order=SortOrder.ASCENDING, nested_path="nested_test"
+            ),
+        ],
+        query=Bool(
+            must=[
+                Term(field="type.keyword", value="Schema"),
+                Range(field="created", gte="2025-01-01"),
+                Term(field="status", value="active"),
+            ],
+            should=[Term(field="category.keyword", value="Tech")],
+            must_not=[Term(field="archived", value="true")],
+            filter=[
+                Bool(
+                    must=[
+                        Term(field="region.keyword", value="EMEA"),
+                        Range(field="created", lte="2025-12-31"),
+                    ],
+                    should=[Term(field="sub_category.keyword", value="Hardware")],
+                )
+            ],
+        ),
+        track_total_hits=False,
+    )
+
+    raw_dsl_data = {
+        "from": 0,
+        "aggregations": {
+            "main_agg": {
+                "terms": {"field": "main_field"},
+                "aggregations": {
+                    "sub_agg_1": {"avg": {"field": "sub_field_1"}},
+                    "sub_agg_2": {
+                        "date_histogram": {"field": "timestamp", "interval": "month"}
+                    },
+                },
+            }
+        },
+        "size": 500,
+        "sort": [
+            {"created": {"order": "asc"}},
+            {"updated": {"order": "desc"}},
+            {"entityId": {"order": "asc", "nested": {"path": "nested_test"}}},
+        ],
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"type.keyword": {"value": "Schema"}}},
+                    {"range": {"created": {"gte": "2025-01-01"}}},
+                    {"term": {"status": {"value": "active"}}},
+                ],
+                "should": [{"term": {"category.keyword": {"value": "Tech"}}}],
+                "must_not": [{"term": {"archived": {"value": "true"}}}],
+                "filter": [
+                    {
+                        "bool": {
+                            "must": [
+                                {"term": {"region.keyword": {"value": "EMEA"}}},
+                                {"range": {"created": {"lte": "2025-12-31"}}},
+                            ],
+                            "should": [
+                                {
+                                    "term": {
+                                        "sub_category.keyword": {"value": "Hardware"}
+                                    }
+                                }
+                            ],
+                        }
+                    }
+                ],
+            }
+        },
+        "track_total_hits": False,
+    }
+    dsl_through_raw = DSL(**raw_dsl_data)
+
+    assert dsl_through_raw.json(
+        exclude_unset=True, by_alias=True
+    ) == dsl_through_model.json(exclude_unset=True, by_alias=True)
+
+    assert dsl_through_raw.json() == dsl_through_model.json()
