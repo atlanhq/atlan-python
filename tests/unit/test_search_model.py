@@ -1633,7 +1633,7 @@ def test_dsl_serialization_and_deserialization():
                 "must_not": [{"term": {"archived": {"value": "true"}}}],
                 "filter": [
                     {
-                        "bool": {  # Nested Bool query inside the main Bool query
+                        "bool": {
                             "must": [
                                 {"term": {"region.keyword": {"value": "EMEA"}}},
                                 {"range": {"created": {"lte": "2025-12-31"}}},
@@ -1659,12 +1659,3 @@ def test_dsl_serialization_and_deserialization():
     ) == dsl_through_model.json(exclude_unset=True, by_alias=True)
 
     assert dsl_through_raw.json() == dsl_through_model.json()
-
-    print("Json 1 ")
-    print(dsl_through_raw.json())
-    print("JSON 2")
-    print(dsl_through_model.json())
-    print("Dict 1")
-    print(dsl_through_raw.dict())
-    print("Dict 2")
-    print(dsl_through_model.dict())
