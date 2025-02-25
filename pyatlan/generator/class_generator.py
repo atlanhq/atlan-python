@@ -279,9 +279,9 @@ class AssetInfo:
 
         for required_asset in self.required_asset_infos:
             if not self.is_core_asset and required_asset.is_core_asset:
-                import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: I001, E402, F401 # isort:skip"
+                import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
             else:
-                import_statement = f"from .{required_asset.module_name} import {required_asset.name} # noqa: I001, E402, F401 # isort:skip"
+                import_statement = f"from .{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
 
             imports.append(import_statement)
 

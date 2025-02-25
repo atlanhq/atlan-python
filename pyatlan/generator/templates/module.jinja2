@@ -92,14 +92,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
 {%  if asset_info.module_name == 'referenceable' %}
 # Imports required for fixing circular dependencies:
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: I001, E402, F401
 {% endif %}
 
 {%  if asset_info.module_name == 'metric' %}
 # Imports required for fixing circular dependencies:
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
-from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
-from .s_q_l import SQL  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: I001, E402, F401
+from .catalog import Catalog  # noqa: I001, E402, F401
+from .s_q_l import SQL  # noqa: I001, E402, F401
 {% endif %}
 
 {% for import in asset_info.imports_for_referenced_assets %}
