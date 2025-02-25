@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -233,9 +233,9 @@ class TableauWorksheet(Tableau):
     )
 
 
-from .tableau_calculated_field import TableauCalculatedField  # noqa
-from .tableau_dashboard import TableauDashboard  # noqa
-from .tableau_datasource_field import TableauDatasourceField  # noqa
-from .tableau_workbook import TableauWorkbook  # noqa
+from .tableau_calculated_field import TableauCalculatedField  # noqa: E402, F401
+from .tableau_dashboard import TableauDashboard  # noqa: E402, F401
+from .tableau_datasource_field import TableauDatasourceField  # noqa: E402, F401
+from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
 
 TableauWorksheet.Attributes.update_forward_refs()

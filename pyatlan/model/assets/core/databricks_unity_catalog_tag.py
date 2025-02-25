@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -520,6 +520,6 @@ class DatabricksUnityCatalogTag(Tag):
     )
 
 
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
+from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_source import DbtSource  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401

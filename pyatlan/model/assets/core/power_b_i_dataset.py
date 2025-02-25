@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -194,9 +194,9 @@ class PowerBIDataset(PowerBI):
     )
 
 
-from .power_b_i_dataflow import PowerBIDataflow  # noqa
-from .power_b_i_datasource import PowerBIDatasource  # noqa
-from .power_b_i_report import PowerBIReport  # noqa
-from .power_b_i_table import PowerBITable  # noqa
-from .power_b_i_tile import PowerBITile  # noqa
-from .power_b_i_workspace import PowerBIWorkspace  # noqa
+from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
+from .power_b_i_datasource import PowerBIDatasource  # noqa: E402, F401
+from .power_b_i_report import PowerBIReport  # noqa: E402, F401
+from .power_b_i_table import PowerBITable  # noqa: E402, F401
+from .power_b_i_tile import PowerBITile  # noqa: E402, F401
+from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402, F401

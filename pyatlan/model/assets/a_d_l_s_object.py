@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -133,6 +133,12 @@ class ADLSObject(ADLS):
     """
     Size of this object.
     """
+    ADLS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsObjectKey", "adlsObjectKey", "adlsObjectKey.text"
+    )
+    """
+    Key of this object, in ADLS.
+    """
     ADLS_OBJECT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
         "adlsObjectAccessTier", "adlsObjectAccessTier"
     )
@@ -219,9 +225,7 @@ class ADLSObject(ADLS):
     Unique name of the container this object exists within.
     """
     ADLS_CONTAINER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsContainerName",
-        "adlsContainerName",
-        "adlsContainerName.text",
+        "adlsContainerName", "adlsContainerName.keyword", "adlsContainerName"
     )
     """
     Name of the container this object exists within.
@@ -237,6 +241,7 @@ class ADLSObject(ADLS):
         "adls_object_version_id",
         "adls_object_type",
         "adls_object_size",
+        "adls_object_key",
         "adls_object_access_tier",
         "adls_object_access_tier_last_modified_time",
         "adls_object_archive_status",
@@ -295,6 +300,16 @@ class ADLSObject(ADLS):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_object_size = adls_object_size
+
+    @property
+    def adls_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.adls_object_key
+
+    @adls_object_key.setter
+    def adls_object_key(self, adls_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_object_key = adls_object_key
 
     @property
     def adls_object_access_tier(self) -> Optional[ADLSAccessTier]:
@@ -517,6 +532,7 @@ class ADLSObject(ADLS):
         adls_object_version_id: Optional[str] = Field(default=None, description="")
         adls_object_type: Optional[ADLSObjectType] = Field(default=None, description="")
         adls_object_size: Optional[int] = Field(default=None, description="")
+        adls_object_key: Optional[str] = Field(default=None, description="")
         adls_object_access_tier: Optional[ADLSAccessTier] = Field(
             default=None, description=""
         )
@@ -586,7 +602,6 @@ class ADLSObject(ADLS):
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
-                adls_container_name=adls_container_qualified_name.split("/")[-1],
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
@@ -594,7 +609,6 @@ class ADLSObject(ADLS):
                     adls_container_qualified_name
                 ),
                 adls_account_qualified_name=adls_account_qualified_name,
-                adls_account_name=adls_account_qualified_name.split("/")[-1],
             )
 
     attributes: ADLSObject.Attributes = Field(
@@ -607,6 +621,6 @@ class ADLSObject(ADLS):
     )
 
 
-from .a_d_l_s_container import ADLSContainer  # noqa
+from .a_d_l_s_container import ADLSContainer  # noqa: E402, F401
 
 ADLSObject.Attributes.update_forward_refs()

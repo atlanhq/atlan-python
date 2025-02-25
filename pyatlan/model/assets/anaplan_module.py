@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -177,8 +177,8 @@ class AnaplanModule(Anaplan):
     )
 
 
-from .anaplan_line_item import AnaplanLineItem  # noqa
-from .anaplan_model import AnaplanModel  # noqa
-from .anaplan_view import AnaplanView  # noqa
+from .anaplan_line_item import AnaplanLineItem  # noqa: E402, F401
+from .anaplan_model import AnaplanModel  # noqa: E402, F401
+from .anaplan_view import AnaplanView  # noqa: E402, F401
 
 AnaplanModule.Attributes.update_forward_refs()

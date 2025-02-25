@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -383,11 +383,11 @@ class Process(Asset, type_name="Process"):
     )
 
 
-from .adf_activity import AdfActivity  # noqa
-from .airflow_task import AirflowTask  # noqa
-from .catalog import Catalog  # noqa
-from .column_process import ColumnProcess  # noqa
-from .fivetran_connector import FivetranConnector  # noqa
-from .matillion_component import MatillionComponent  # noqa
-from .power_b_i_dataflow import PowerBIDataflow  # noqa
-from .spark_job import SparkJob  # noqa
+from .adf_activity import AdfActivity  # noqa: E402, F401
+from .airflow_task import AirflowTask  # noqa: E402, F401
+from .catalog import Catalog  # noqa: E402, F401
+from .column_process import ColumnProcess  # noqa: E402, F401
+from .fivetran_connector import FivetranConnector  # noqa: E402, F401
+from .matillion_component import MatillionComponent  # noqa: E402, F401
+from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
+from .spark_job import SparkJob  # noqa: E402, F401

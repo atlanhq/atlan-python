@@ -889,7 +889,6 @@ class TestReadme:
         client: AtlanClient,
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-
         assert TestColumn.column and TestColumn.column.guid
         readme = Readme.create(asset=TestColumn.column, content=self.CONTENT)
         response = upsert(readme)

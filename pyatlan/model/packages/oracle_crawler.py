@@ -247,7 +247,7 @@ class OracleCrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl Oracle assets and publish to Atlan for discovery",
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"oracle\",\"warehouse\",\"connector\",\"crawler\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["oracle","warehouse","connector","crawler"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

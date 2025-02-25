@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -195,5 +195,5 @@ class CalculationView(SQL):
     )
 
 
-from .column import Column  # noqa
-from .schema import Schema  # noqa
+from .column import Column  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401

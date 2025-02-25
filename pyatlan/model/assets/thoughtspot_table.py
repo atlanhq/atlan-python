@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -65,6 +65,6 @@ class ThoughtspotTable(Thoughtspot):
     )
 
 
-from .thoughtspot_column import ThoughtspotColumn  # noqa
+from .thoughtspot_column import ThoughtspotColumn  # noqa: E402, F401
 
 ThoughtspotTable.Attributes.update_forward_refs()

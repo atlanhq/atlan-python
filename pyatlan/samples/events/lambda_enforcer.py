@@ -26,8 +26,7 @@ REQUIRED_ATTRS = [
     "certificateStatus",
 ]
 ENFORCEMENT_MESSAGE = (
-    "To be verified, an asset must have a description, at least one owner, "
-    "and lineage."
+    "To be verified, an asset must have a description, at least one owner, and lineage."
 )
 logger = logging.getLogger(__name__)
 
@@ -70,13 +69,12 @@ class LambdaEnforcer(AtlanEventHandler):
                 return [trimmed]
             else:
                 logger.info(
-                    "Asset has all required information present to be "
-                    "verified, no enforcement required: %s",
+                    "Asset has all required information present to be verified, no enforcement required: %s",
                     asset.qualified_name,
                 )
         else:
             logger.info(
-                "Asset is no longer verified, no enforcement action to " "consider: %s",
+                "Asset is no longer verified, no enforcement action to consider: %s",
                 asset.qualified_name,
             )
         return []

@@ -107,8 +107,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
                 return CustomMetadataCache.get_id_for_name(CM_DAAP)
             except NotFoundError:
                 logger.error(
-                    "Unable to look up DaaP custom metadata, even though it"
-                    "should already exist."
+                    "Unable to look up DaaP custom metadata, even though itshould already exist."
                 )
         except AtlanError:
             logger.error("Unable to create DaaP custom metadata structure.")

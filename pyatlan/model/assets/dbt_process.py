@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -660,13 +660,13 @@ class DbtProcess(Dbt):
     )
 
 
-from .core.adf_activity import AdfActivity  # noqa
-from .core.airflow_task import AirflowTask  # noqa
-from .core.catalog import Catalog  # noqa
-from .core.column_process import ColumnProcess  # noqa
-from .core.fivetran_connector import FivetranConnector  # noqa
-from .core.matillion_component import MatillionComponent  # noqa
-from .core.power_b_i_dataflow import PowerBIDataflow  # noqa
-from .core.spark_job import SparkJob  # noqa
+from .core.adf_activity import AdfActivity  # noqa: E402, F401
+from .core.airflow_task import AirflowTask  # noqa: E402, F401
+from .core.catalog import Catalog  # noqa: E402, F401
+from .core.column_process import ColumnProcess  # noqa: E402, F401
+from .core.fivetran_connector import FivetranConnector  # noqa: E402, F401
+from .core.matillion_component import MatillionComponent  # noqa: E402, F401
+from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
+from .core.spark_job import SparkJob  # noqa: E402, F401
 
 DbtProcess.Attributes.update_forward_refs()

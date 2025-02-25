@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -80,7 +80,9 @@ class LookerField(Looker):
     """
     Unique name of the dashboard in which this field is used.
     """
-    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
+    MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelName", "modelName.keyword", "modelName"
+    )
     """
     Name of the model in which this field exists.
     """
@@ -467,12 +469,12 @@ class LookerField(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa
-from .looker_explore import LookerExplore  # noqa
-from .looker_look import LookerLook  # noqa
-from .looker_model import LookerModel  # noqa
-from .looker_project import LookerProject  # noqa
-from .looker_tile import LookerTile  # noqa
-from .looker_view import LookerView  # noqa
+from .looker_dashboard import LookerDashboard  # noqa: E402, F401
+from .looker_explore import LookerExplore  # noqa: E402, F401
+from .looker_look import LookerLook  # noqa: E402, F401
+from .looker_model import LookerModel  # noqa: E402, F401
+from .looker_project import LookerProject  # noqa: E402, F401
+from .looker_tile import LookerTile  # noqa: E402, F401
+from .looker_view import LookerView  # noqa: E402, F401
 
 LookerField.Attributes.update_forward_refs()

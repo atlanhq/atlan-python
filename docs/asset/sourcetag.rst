@@ -1,10 +1,10 @@
 .. _sourcetag:
 
-sourceTag
+SourceTag
 =========
 
 .. module:: pyatlan.model.assets
     :no-index:
 
-.. autoclass:: sourceTag
+.. autoclass:: SourceTag
     :members:

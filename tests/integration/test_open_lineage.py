@@ -30,7 +30,6 @@ def connection(client: AtlanClient):
 
 
 def test_open_lineage_integration(connection: Connection, client: AtlanClient):
-
     assert connection is not None
     assert connection.name == MODULE_NAME
 

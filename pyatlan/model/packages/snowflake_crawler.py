@@ -246,7 +246,7 @@ class SnowflakeCrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": f"Package to crawl {self._NAME.capitalize()} assets and publish to Atlan for discovery",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"snowflake\",\"warehouse\",\"connector\",\"crawler\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["snowflake","warehouse","connector","crawler"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

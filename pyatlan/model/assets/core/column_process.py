@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -180,5 +180,5 @@ class ColumnProcess(Process):
     )
 
 
-from .catalog import Catalog  # noqa
-from .process import Process  # noqa
+from .catalog import Catalog  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401

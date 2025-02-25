@@ -290,7 +290,9 @@ class ComparisonCategory(str, Enum):
 
 def _get_embedded_type(attribute_type: str):
     return attribute_type[
-        attribute_type.index("<") + 1 : attribute_type.index(">")  # noqa: E203
+        attribute_type.index("<") + 1 : attribute_type.index(
+            ">"
+        )  # noqa: E203
     ]
 
 
