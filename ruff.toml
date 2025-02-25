@@ -22,6 +22,9 @@ fix = true
 line-length = 88
 exclude = ["env", "venv", "__pycache__"]
 
+[lint.isort]
+split-on-trailing-comma = false
+
 # Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
 [lint.per-file-ignores]
 "tests/*" = ["S101"]
