@@ -1,4 +1,4 @@
-mypy~=1.9.0
+mypy~=1.15.0
 ruff~=0.9.7
 types-requests~=2.32.0.20241016
 pytest~=8.3.4
