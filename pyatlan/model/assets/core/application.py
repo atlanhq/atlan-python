@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -134,5 +134,5 @@ class Application(App):
     )
 
 
-from .application_field import ApplicationField  # noqa
-from .asset import Asset  # noqa
+from .application_field import ApplicationField  # noqa: E402, F401
+from .asset import Asset  # noqa: E402, F401

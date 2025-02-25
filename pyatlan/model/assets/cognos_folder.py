@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -246,11 +246,11 @@ class CognosFolder(Cognos):
     )
 
 
-from .cognos_dashboard import CognosDashboard  # noqa
-from .cognos_exploration import CognosExploration  # noqa
-from .cognos_file import CognosFile  # noqa
-from .cognos_module import CognosModule  # noqa
-from .cognos_package import CognosPackage  # noqa
-from .cognos_report import CognosReport  # noqa
+from .cognos_dashboard import CognosDashboard  # noqa: E402, F401
+from .cognos_exploration import CognosExploration  # noqa: E402, F401
+from .cognos_file import CognosFile  # noqa: E402, F401
+from .cognos_module import CognosModule  # noqa: E402, F401
+from .cognos_package import CognosPackage  # noqa: E402, F401
+from .cognos_report import CognosReport  # noqa: E402, F401
 
 CognosFolder.Attributes.update_forward_refs()

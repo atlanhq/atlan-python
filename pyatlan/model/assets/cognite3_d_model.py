@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -63,6 +63,6 @@ class Cognite3DModel(Cognite):
     )
 
 
-from .cognite_asset import CogniteAsset  # noqa
+from .cognite_asset import CogniteAsset  # noqa: E402, F401
 
 Cognite3DModel.Attributes.update_forward_refs()

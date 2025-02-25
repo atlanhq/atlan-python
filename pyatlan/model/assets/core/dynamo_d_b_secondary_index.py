@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ class DynamoDBSecondaryIndex(Table):
     """
     Size of this table, in bytes.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this table.
     """

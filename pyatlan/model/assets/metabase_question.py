@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -146,7 +146,7 @@ class MetabaseQuestion(Metabase):
     )
 
 
-from .metabase_collection import MetabaseCollection  # noqa
-from .metabase_dashboard import MetabaseDashboard  # noqa
+from .metabase_collection import MetabaseCollection  # noqa: E402, F401
+from .metabase_dashboard import MetabaseDashboard  # noqa: E402, F401
 
 MetabaseQuestion.Attributes.update_forward_refs()

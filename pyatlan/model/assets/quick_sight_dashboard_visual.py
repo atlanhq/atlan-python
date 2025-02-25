@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -219,6 +219,6 @@ class QuickSightDashboardVisual(QuickSight):
     )
 
 
-from .quick_sight_dashboard import QuickSightDashboard  # noqa
+from .quick_sight_dashboard import QuickSightDashboard  # noqa: E402, F401
 
 QuickSightDashboardVisual.Attributes.update_forward_refs()

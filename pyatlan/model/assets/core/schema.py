@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -65,7 +65,8 @@ class Schema(SQL):
     def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -405,14 +406,14 @@ class Schema(SQL):
     )
 
 
-from .calculation_view import CalculationView  # noqa
-from .database import Database  # noqa
-from .function import Function  # noqa
-from .materialised_view import MaterialisedView  # noqa
-from .procedure import Procedure  # noqa
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
-from .snowflake_pipe import SnowflakePipe  # noqa
-from .snowflake_stream import SnowflakeStream  # noqa
-from .snowflake_tag import SnowflakeTag  # noqa
-from .table import Table  # noqa
-from .view import View  # noqa
+from .calculation_view import CalculationView  # noqa: E402, F401
+from .database import Database  # noqa: E402, F401
+from .function import Function  # noqa: E402, F401
+from .materialised_view import MaterialisedView  # noqa: E402, F401
+from .procedure import Procedure  # noqa: E402, F401
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
+from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
+from .snowflake_stream import SnowflakeStream  # noqa: E402, F401
+from .snowflake_tag import SnowflakeTag  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .view import View  # noqa: E402, F401

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -59,7 +59,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     ) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -439,4 +440,4 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     )
 
 
-from .access_control import AccessControl  # noqa
+from .access_control import AccessControl  # noqa: E402, F401

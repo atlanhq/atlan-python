@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -41,7 +41,8 @@ class PresetWorkspace(Preset):
     def create(cls, *, name: str, connection_qualified_name: str) -> PresetWorkspace:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -338,6 +339,6 @@ class PresetWorkspace(Preset):
     )
 
 
-from .preset_dashboard import PresetDashboard  # noqa
+from .preset_dashboard import PresetDashboard  # noqa: E402, F401
 
 PresetWorkspace.Attributes.update_forward_refs()

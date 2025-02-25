@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -48,7 +48,8 @@ class ADLSAccount(ADLS):
     def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -354,6 +355,6 @@ class ADLSAccount(ADLS):
     )
 
 
-from .a_d_l_s_container import ADLSContainer  # noqa
+from .a_d_l_s_container import ADLSContainer  # noqa: E402, F401
 
 ADLSAccount.Attributes.update_forward_refs()

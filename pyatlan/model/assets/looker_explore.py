@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -33,7 +33,9 @@ class LookerExplore(Looker):
     """
     Name of the parent project of this Explore.
     """
-    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
+    MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelName", "modelName.keyword", "modelName"
+    )
     """
     Name of the parent model of this Explore.
     """
@@ -186,8 +188,8 @@ class LookerExplore(Looker):
     )
 
 
-from .looker_field import LookerField  # noqa
-from .looker_model import LookerModel  # noqa
-from .looker_project import LookerProject  # noqa
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_model import LookerModel  # noqa: E402, F401
+from .looker_project import LookerProject  # noqa: E402, F401
 
 LookerExplore.Attributes.update_forward_refs()

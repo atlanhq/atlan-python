@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -9,7 +9,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .looker import Looker
 
@@ -76,7 +81,9 @@ class LookerLook(Looker):
     """
     Identifier of the query for the Look, from Looker.
     """
-    MODEL_NAME: ClassVar[TextField] = TextField("modelName", "modelName")
+    MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "modelName", "modelName.keyword", "modelName"
+    )
     """
     Name of the model in which this Look exists.
     """
@@ -323,11 +330,11 @@ class LookerLook(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa
-from .looker_field import LookerField  # noqa
-from .looker_folder import LookerFolder  # noqa
-from .looker_model import LookerModel  # noqa
-from .looker_query import LookerQuery  # noqa
-from .looker_tile import LookerTile  # noqa
+from .looker_dashboard import LookerDashboard  # noqa: E402, F401
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_folder import LookerFolder  # noqa: E402, F401
+from .looker_model import LookerModel  # noqa: E402, F401
+from .looker_query import LookerQuery  # noqa: E402, F401
+from .looker_tile import LookerTile  # noqa: E402, F401
 
 LookerLook.Attributes.update_forward_refs()

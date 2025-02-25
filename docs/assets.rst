@@ -13,6 +13,9 @@ You can interact with all of the following different kinds of assets:
     asset/adlsaccount
     asset/adlscontainer
     asset/adlsobject
+    asset/ai
+    asset/aiapplication
+    asset/aimodel
     asset/api
     asset/apifield
     asset/apiobject
@@ -121,6 +124,9 @@ You can interact with all of the following different kinds of assets:
     asset/dbtsource
     asset/dbttag
     asset/dbttest
+    asset/documentdb
+    asset/documentdbcollection
+    asset/documentdbdatabase
     asset/domo
     asset/domocard
     asset/domodashboard
@@ -283,6 +289,7 @@ You can interact with all of the following different kinds of assets:
     asset/snowflaketag
     asset/soda
     asset/sodacheck
+    asset/sourcetag
     asset/spark
     asset/sparkjob
     asset/stakeholder
@@ -318,4 +325,3 @@ You can interact with all of the following different kinds of assets:
     asset/view
     asset/workflow
     asset/workflowrun
-    asset/sourcetag

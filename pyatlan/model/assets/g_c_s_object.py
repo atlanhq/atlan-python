@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -68,7 +68,8 @@ class GCSObject(GCS):
     def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -479,6 +480,6 @@ class GCSObject(GCS):
     )
 
 
-from .g_c_s_bucket import GCSBucket  # noqa
+from .g_c_s_bucket import GCSBucket  # noqa: E402, F401
 
 GCSObject.Attributes.update_forward_refs()

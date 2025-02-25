@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -39,7 +39,8 @@ class APISpec(API):
     def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -279,6 +280,6 @@ class APISpec(API):
     )
 
 
-from .a_p_i_path import APIPath  # noqa
+from .a_p_i_path import APIPath  # noqa: E402, F401
 
 APISpec.Attributes.update_forward_refs()

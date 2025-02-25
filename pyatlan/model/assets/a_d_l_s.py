@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -39,9 +39,7 @@ class ADLS(ObjectStore):
     Unique name of the account for this ADLS asset.
     """
     ADLS_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "adlsAccountName",
-        "adlsAccountName",
-        "adlsAccountName.text",
+        "adlsAccountName", "adlsAccountName.keyword", "adlsAccountName"
     )
     """
     Name of the account for this ADLS asset.

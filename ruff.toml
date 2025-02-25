@@ -18,10 +18,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
+fix = true
 line-length = 88
-exclude = ["env", "venv", "__pycache__", "pyatlan/model/assets/__init__.py", "pyatlan/model/structs/__init__.py"]
+exclude = ["env", "venv", "__pycache__"]
+
+[lint.isort]
+split-on-trailing-comma = false
 
 # Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
 [lint.per-file-ignores]
 "tests/*" = ["S101"]
 "pyatlan/model/assets.py" = ["S307"]
+"pyatlan/model/assets/**.py" = ["E402", "F811"]
+"pyatlan/model/assets/core/**.py" = ["E402", "F811"]

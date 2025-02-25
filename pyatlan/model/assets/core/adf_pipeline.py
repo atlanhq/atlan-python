@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -189,7 +189,7 @@ class AdfPipeline(ADF):
     )
 
 
-from .adf_activity import AdfActivity  # noqa
-from .adf_dataflow import AdfDataflow  # noqa
-from .adf_dataset import AdfDataset  # noqa
-from .adf_linkedservice import AdfLinkedservice  # noqa
+from .adf_activity import AdfActivity  # noqa: E402, F401
+from .adf_dataflow import AdfDataflow  # noqa: E402, F401
+from .adf_dataset import AdfDataset  # noqa: E402, F401
+from .adf_linkedservice import AdfLinkedservice  # noqa: E402, F401

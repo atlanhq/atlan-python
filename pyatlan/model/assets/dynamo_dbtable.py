@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ class DynamoDBTable(Table):
     """
     Size of this table, in bytes.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this table.
     """
@@ -1051,7 +1051,11 @@ class DynamoDBTable(Table):
     )
 
 
-from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex  # noqa
-from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex  # noqa
+from .dynamo_d_b_global_secondary_index import (
+    DynamoDBGlobalSecondaryIndex,  # noqa: E402, F401
+)
+from .dynamo_d_b_local_secondary_index import (
+    DynamoDBLocalSecondaryIndex,  # noqa: E402, F401
+)
 
 DynamoDBTable.Attributes.update_forward_refs()

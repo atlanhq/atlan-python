@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -209,6 +209,6 @@ class TableauFlow(Tableau):
     )
 
 
-from .tableau_project import TableauProject  # noqa
+from .tableau_project import TableauProject  # noqa: E402, F401
 
 TableauFlow.Attributes.update_forward_refs()

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -272,11 +272,13 @@ class DataContract(Catalog):
             )
             if not (contract_json or contract_spec):
                 raise ValueError(
-                    "At least one of `contract_json` or `contract_spec` must be provided to create a contract."
+                    "At least one of `contract_json` or `contract_spec` "
+                    "must be provided to create a contract."
                 )
             if contract_json and contract_spec:
                 raise ValueError(
-                    "Both `contract_json` and `contract_spec` cannot be provided simultaneously to create a contract."
+                    "Both `contract_json` and `contract_spec` cannot be "
+                    "provided simultaneously to create a contract."
                 )
             last_slash_index = asset_qualified_name.rfind("/")
             default_dataset = asset_qualified_name[last_slash_index + 1 :]  # noqa
@@ -319,4 +321,4 @@ class DataContract(Catalog):
     )
 
 
-from .asset import Asset  # noqa
+from .asset import Asset  # noqa: E402, F401

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -141,7 +141,7 @@ class DomoCard(Domo):
     )
 
 
-from .domo_dashboard import DomoDashboard  # noqa
-from .domo_dataset import DomoDataset  # noqa
+from .domo_dashboard import DomoDashboard  # noqa: E402, F401
+from .domo_dataset import DomoDataset  # noqa: E402, F401
 
 DomoCard.Attributes.update_forward_refs()

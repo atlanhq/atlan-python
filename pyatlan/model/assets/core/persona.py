@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -41,7 +41,8 @@ class Persona(AccessControl):
     def create(cls, *, name: str) -> Persona:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -188,7 +189,8 @@ class Persona(AccessControl):
     ) -> Persona:
         warn(
             (
-                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -421,7 +421,7 @@ class APIField(API):
     )
 
 
-from .a_p_i_object import APIObject  # noqa
-from .a_p_i_query import APIQuery  # noqa
+from .a_p_i_object import APIObject  # noqa: E402, F401
+from .a_p_i_query import APIQuery  # noqa: E402, F401
 
 APIField.Attributes.update_forward_refs()
