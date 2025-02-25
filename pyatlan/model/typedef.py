@@ -595,8 +595,7 @@ class AttributeDef(AtlanObject):
     )
     values_min_count: Optional[float] = Field(
         default=None,
-        description="Minimum number of values for this attribute. If greater than 0, this attribute "
-        "becomes required.",
+        description="Minimum number of values for this attribute. If greater than 0, this attribute becomes required.",
     )
     values_max_count: Optional[float] = Field(
         default=None,

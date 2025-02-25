@@ -49,10 +49,7 @@ class OpenLineageColumnLineageDatasetFacet(OpenLineageBaseFacet):
 
     @staticmethod
     def _get_schema() -> str:
-        return (
-            "https://openlineage.io/spec/facets/1-1-0/"
-            "ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet"
-        )
+        return "https://openlineage.io/spec/facets/1-1-0/ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet"
 
 
 class OpenLineageDatasetFacets(AtlanObject):

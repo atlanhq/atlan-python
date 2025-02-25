@@ -329,9 +329,9 @@ def test_get_all_credentials(client: AtlanClient):
     credentials = client.credentials.get_all()
     assert credentials, "Expected credentials but found None"
     assert credentials.records is not None, "Expected records but found None"
-    assert (
-        len(credentials.records or []) > 0
-    ), "Expected at least one record but found none"
+    assert len(credentials.records or []) > 0, (
+        "Expected at least one record but found none"
+    )
 
 
 def test_get_all_credentials_with_filter_limit_offset(client: AtlanClient):
@@ -343,9 +343,9 @@ def test_get_all_credentials_with_filter_limit_offset(client: AtlanClient):
     )
     assert len(credentials.records or []) <= limit, "Exceeded limit in results"
     for cred in credentials.records or []:
-        assert (
-            cred.connector_type == "jdbc"
-        ), f"Expected 'jdbc', got {cred.connector_type}"
+        assert cred.connector_type == "jdbc", (
+            f"Expected 'jdbc', got {cred.connector_type}"
+        )
 
 
 def test_get_all_credentials_with_multiple_filters(client: AtlanClient):
@@ -354,14 +354,14 @@ def test_get_all_credentials_with_multiple_filters(client: AtlanClient):
     credentials = client.credentials.get_all(filter=filter_criteria)
     assert credentials, "Expected credentials but found None"
     assert credentials.records is not None, "Expected records but found None"
-    assert (
-        len(credentials.records or []) > 0
-    ), "Expected at least one record but found none"
+    assert len(credentials.records or []) > 0, (
+        "Expected at least one record but found none"
+    )
 
     for record in credentials.records or []:
-        assert (
-            record.connector_type == "jdbc"
-        ), f"Expected 'jdbc', got {record.connector_type}"
+        assert record.connector_type == "jdbc", (
+            f"Expected 'jdbc', got {record.connector_type}"
+        )
         assert record.is_active, f"Expected active record, but got inactive: {record}"
 
 

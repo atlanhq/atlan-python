@@ -68,8 +68,7 @@ class GCSObject(GCS):
     def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

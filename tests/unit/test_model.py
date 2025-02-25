@@ -952,8 +952,7 @@ def test_readme_creator_asset_guid_validation():
     with pytest.raises(
         ValueError,
         match=escape(
-            "asset guid must be present, use the client.asset.ref_by_guid() "
-            "method to retrieve an asset by its GUID"
+            "asset guid must be present, use the client.asset.ref_by_guid() method to retrieve an asset by its GUID"
         ),
     ):
         Readme.creator(
@@ -981,7 +980,6 @@ def test_readme_creator_asset_guid_validation():
     ],
 )
 def test_tableau_upstream_fields_deserialization(test_data):
-
     td = TableauDatasource(**{"typeName": "TableauDatasource", "attributes": test_data})
     assert td.upstream_tables == test_data["upstreamTables"]
     assert td.upstream_datasources == test_data["upstreamDatasources"]

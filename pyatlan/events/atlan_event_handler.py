@@ -192,8 +192,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         :param changed_assets: the in-memory-modified assets to send to Atlan
         """
         warn(
-            "This method is deprecated, please use 'save_changes' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_changes' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )

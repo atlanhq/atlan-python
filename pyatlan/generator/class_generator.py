@@ -5,6 +5,7 @@ This script can be used to generate the source code for pyatlan.model.assets, py
 pyatlan.model.enums. This script depends upon the presence of a JSON file containing typedefs downloaded from
 an Atlan instance. The script create_typedefs_file.py can be used to produce this file.
 """
+
 import datetime
 import enum
 import json
@@ -630,14 +631,12 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
     elif indices == {IndexType.NUMERIC, IndexType.RANK_FEATURE}:
         return SearchType(
             name="NumericRankField",
-            args=f'"{search_map.get(IndexType.NUMERIC)}", '
-            f'"{search_map.get(IndexType.RANK_FEATURE)}"',
+            args=f'"{search_map.get(IndexType.NUMERIC)}", "{search_map.get(IndexType.RANK_FEATURE)}"',
         )
     elif indices == {IndexType.KEYWORD, IndexType.TEXT}:
         return SearchType(
             name="KeywordTextField",
-            args=f'"{search_map.get(IndexType.KEYWORD)}", '
-            f'"{search_map.get(IndexType.TEXT)}"',
+            args=f'"{search_map.get(IndexType.KEYWORD)}", "{search_map.get(IndexType.TEXT)}"',
         )
     elif indices == {IndexType.KEYWORD, IndexType.TEXT, IndexType.STEMMED}:
         return SearchType(

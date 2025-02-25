@@ -52,8 +52,7 @@ class Badge(Asset, type_name="Badge"):
     ) -> Badge:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

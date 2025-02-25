@@ -69,8 +69,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     ) -> AtlasGlossaryCategory:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -116,8 +115,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     ) -> AtlasGlossaryCategory:
         warn(
             (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

@@ -149,8 +149,7 @@ class ConnectionCache(AbstractAssetCache):
         if len(results) > 1:
             LOGGER.warning(
                 (
-                    "Found multiple connections of the same type "
-                    "with the same name, caching only the first: %s"
+                    "Found multiple connections of the same type with the same name, caching only the first: %s"
                 ),
                 name,
             )
