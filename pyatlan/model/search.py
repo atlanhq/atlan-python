@@ -1857,7 +1857,6 @@ class SortItem:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "SortItem":
-
         field, params = list(d.items())[0]
 
         order = params.get("order", SortOrder.ASCENDING)
@@ -1906,21 +1905,18 @@ class DSL(AtlanObject):
         else:
             raise ValueError("Either query or post_filter is required")
 
-    # Transforming dictionaries into SortItem instances to facilitate deserialization.
-    # This conversion occurs prior to invoking the initializer and validator_sort(),
-    # preventing potential validation-related issues from arising.
     @validator("sort", pre=True)
-    def dict_to_SortItem(cls, sort):
+    def sortitem_from_dict(cls, sort):
+        """
+        Convert dictionary entries into SortItem instances before validation
+        to ensure proper deserialization and prevent validation issues.
+        """
         if all(isinstance(item, dict) for item in sort):
             sort = [SortItem.from_dict(item) for item in sort]
         return sort
 
     @validator("sort", always=True)
     def validate_sort(cls, sort, values):
-
-        if all(isinstance(item, dict) for item in sort):
-            sort = [SortItem.from_dict(item) for item in sort]
-
         missing_guid_sort = True
         sort_by_guid = "__guid"
         auditsearch_sort_by_guid = "entityId"
