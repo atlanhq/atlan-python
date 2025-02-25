@@ -1,5 +1,5 @@
 sphinx~=7.2.6
-furo~=2024.1.29
+furo~=2024.8.6
 requests>=2.24
 pydantic~=2.6.1
 jinja2==3.1.5
