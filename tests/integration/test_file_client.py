@@ -5,6 +5,7 @@ import imghdr  # type: ignore[import-not-found]
 import os
 from pathlib import Path
 
+from pyatlan.errors import InvalidRequestError
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
@@ -24,6 +25,26 @@ TEST_DATA_DIR = Path(__file__).parent / "data"
 UPLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests" / FILE_NAME)
 DOWNLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests" / DOWNLOAD_FILE_NAME)
 
+@pytest.mark.parametrize(
+    "file_path, expected_error",
+    [
+        [
+            "some/invalid/file_path.png",
+            (
+                "ATLAN-PYTHON-400-060 Unable to download file, "
+                "Error: No such file or directory, Path: some/invalid/file_path.png"
+            ),
+        ],
+    ],
+)
+def test_file_client_download_file_raises_invalid_request_error(
+    client, file_path, expected_error
+):
+    with pytest.raises(InvalidRequestError, match=expected_error):
+        client.files.download_file(
+            presigned_url="test-url",
+            file_path=file_path,
+        )
 
 @pytest.fixture(scope="module")
 def s3_put_presigned_url(client: AtlanClient) -> str:

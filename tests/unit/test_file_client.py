@@ -136,26 +136,6 @@ def test_file_client_upload_file_raises_invalid_request_error(
         )
 
 
-@pytest.mark.parametrize(
-    "file_path, expected_error",
-    [
-        [
-            "some/invalid/file_path.png",
-            (
-                "ATLAN-PYTHON-400-060 Unable to download file, "
-                "Error: No such file or directory, Path: some/invalid/file_path.png"
-            ),
-        ],
-    ],
-)
-def test_file_client_download_file_raises_invalid_request_error(
-    client, file_path, expected_error
-):
-    with pytest.raises(InvalidRequestError, match=expected_error):
-        client.files.download_file(
-            presigned_url="test-url",
-            file_path=file_path,
-        )
 
 
 def test_file_client_download_file_invalid_format_raises_invalid_request_error(
