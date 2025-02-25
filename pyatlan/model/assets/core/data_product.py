@@ -104,23 +104,6 @@ class DataProduct(DataMesh):
             )
         return product
 
-    def get_assets(self, client: Optional[AtlanClient] = None):
-        """
-        Reterieves list of all assets linked to the provided data product.
-
-        :param client: connectivity to an Atlan tenant (optional). If not provided, the default client will be used.
-
-        :raises AtlanError: if there is an issue interacting with the API
-        :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product
-
-        """
-        client = AtlanClient.get_default_client() if not client else client
-        dp_dsl = self.data_product_assets_d_s_l
-        json_object = json.loads(dp_dsl) if dp_dsl else {}
-        request = IndexSearchRequest(**json_object.get("query", {}))
-        response = client.asset.search(request)
-        return response
-
     @classmethod
     def create_for_modification(
         cls: type[SelfAsset],
@@ -139,6 +122,25 @@ class DataProduct(DataMesh):
             qualified_name=qualified_name,
             name=name,
         )
+
+    def get_assets(self, client: Optional[AtlanClient] = None):
+        """
+        Reterieves list of all assets linked to the provided data product.
+
+        :param client: connectivity to an Atlan tenant (optional). If not provided, the default client will be used.
+
+        :raises AtlanError: if there is an issue interacting with the API
+        :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product
+
+        """
+        from pyatlan.client.atlan import AtlanClient
+
+        client = AtlanClient.get_default_client() if not client else client
+        dp_dsl = self.data_product_assets_d_s_l
+        json_object = json.loads(dp_dsl) if dp_dsl else {}
+        request = IndexSearchRequest(**json_object.get("query", {}))
+        response = client.asset.search(request)
+        return response
 
     type_name: str = Field(default="DataProduct", allow_mutation=False)
 

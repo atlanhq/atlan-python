@@ -6,6 +6,10 @@
 
 {% include 'imports.jinja2' %}
 
+{% if asset_info.name != 'DataProduct' %}
+from pyatlan.client.atlan import AtlanClient
+{% endif %}
+
 from pyatlan.model.enums import (
 {% for enum in enum_defs %}
 {{ enum.name }},
@@ -27,6 +31,11 @@ from .asset import SelfAsset
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types %}
 
 {{ asset_info.import_super_class }}
+
+{% if asset_info.name == 'DataProduct' %}
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+{% endif %}
 
 {% if asset_info.name == 'Asset' %}
 SelfAsset = TypeVar("SelfAsset", bound="Asset")
