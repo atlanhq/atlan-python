@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from typing import ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
@@ -29,6 +29,9 @@ from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import SelfAsset
 from .data_mesh import DataMesh
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 
 class DataProduct(DataMesh):
@@ -100,17 +103,16 @@ class DataProduct(DataMesh):
             )
         return product
 
-    def get_assets(self, client: Optional['AtlanClient'] = None):
+    def get_assets(self, client: Optional[AtlanClient] = None):
         """
         Reterieves list of all assets linked to the provided data product.
 
-        :param client: connectivity to an Atlan tenant
+        :param client: connectivity to an Atlan tenant (optional). If not provided, the default client will be used.
 
         :raises AtlanError: if there is an issue interacting with the API
-        :returns: Index Search Results with list of all assets linked to the provided data product
+        :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product
 
         """
-        from pyatlan.client.atlan import AtlanClient
         client = AtlanClient.get_default_client() if not client else client
         dp_dsl = self.data_product_assets_d_s_l
         json_object = json.loads(dp_dsl) if dp_dsl else {}

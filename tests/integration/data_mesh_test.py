@@ -492,6 +492,7 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
     assert test_product
     assert test_product.data_product_assets_d_s_l
     asset_list = test_product.get_assets()
+    assert asset_list.count and asset_list.count > 0
     TOTAL_ASSETS = asset_list.count
     counter = 0
     for assets in asset_list:
