@@ -106,10 +106,7 @@ class NonSerializable:
     pass
 
 
-INVALID_REQ_ERROR = (
-    "ATLAN-PYTHON-400-014 Unable to translate "
-    "the provided include/exclude asset filters into JSON"
-)
+INVALID_REQ_ERROR = "ATLAN-PYTHON-400-014 Unable to translate the provided include/exclude asset filters into JSON"
 
 
 def load_json(filename):

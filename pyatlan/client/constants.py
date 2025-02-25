@@ -299,8 +299,8 @@ DELETE_CLASSIFICATION = API(
     endpoint=EndPoint.ATLAS,
 )
 DELETE_CLASSIFICATION_BY_TYPE_AND_ATTRIBUTE = API(
-    ENTITY_API + "uniqueAttribute/type/{type_name}/classification/{"
-    "classification_name}",
+    ENTITY_API
+    + "uniqueAttribute/type/{type_name}/classification/{classification_name}",
     HTTPMethod.DELETE,
     HTTPStatus.NO_CONTENT,
     endpoint=EndPoint.ATLAS,

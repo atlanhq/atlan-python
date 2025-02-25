@@ -151,7 +151,7 @@ class DatabricksMiner(AbstractMiner):
                 "orchestration.atlan.com/allowSchedule": "true",
                 "orchestration.atlan.com/categories": "lake,miner",
                 "orchestration.atlan.com/docsUrl": "https://ask.atlan.com/hc/en-us/articles/7034583224081",
-                "orchestration.atlan.com/emoji": "\uD83D\uDE80",
+                "orchestration.atlan.com/emoji": "\ud83d\ude80",
                 "orchestration.atlan.com/icon": self._PACKAGE_ICON,
                 "orchestration.atlan.com/logo": self._PACKAGE_LOGO,
                 "orchestration.atlan.com/marketplaceLink": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",  # noqa
@@ -159,7 +159,7 @@ class DatabricksMiner(AbstractMiner):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to extract lineage information and usage metrics from Databricks.",  # noqa
                 "package.argoproj.io/homepage": f"https://packages.atlan.com/-/web/detail/{self._PACKAGE_NAME}",
-                "package.argoproj.io/keywords": "[\"databricks\",\"lake\",\"connector\",\"miner\"]",  # fmt: skip
+                "package.argoproj.io/keywords": '["databricks","lake","connector","miner"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/registry": "https://packages.atlan.com",
                 "package.argoproj.io/repository": "git+https://github.com/atlanhq/marketplace-packages.git",

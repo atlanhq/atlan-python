@@ -506,7 +506,9 @@ class AssetClient:
 
     @validate_arguments
     def retrieve_minimal(
-        self, guid: str, asset_type: Type[A] = Asset  # type: ignore[assignment]
+        self,
+        guid: str,
+        asset_type: Type[A] = Asset,  # type: ignore[assignment]
     ) -> A:
         """
         Retrieves an asset by its GUID, without any of its relationships.
@@ -599,8 +601,7 @@ class AssetClient:
     ) -> AssetMutationResponse:
         """Deprecated - use save_merging_cm() instead."""
         warn(
-            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -658,8 +659,7 @@ class AssetClient:
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
         warn(
-            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical "
-            "functionality.",
+            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1603,7 +1603,9 @@ class AssetClient:
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> List[AtlasGlossaryCategory]:
         """
@@ -1699,7 +1701,9 @@ class AssetClient:
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(  # type: ignore
+            strip_whitespace=True, min_length=1, strict=True
+        ),
         attributes: Optional[List[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """

@@ -385,17 +385,13 @@ class ModelAttribute(Model):
         )  # relationship
         model_attribute_related_to_attributes: Optional[
             List[ModelAttributeAssociation]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
         model_attribute_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship
         model_attribute_related_from_attributes: Optional[
             List[ModelAttributeAssociation]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
         model_attribute_mapped_to_attributes: Optional[List[ModelAttribute]] = Field(
             default=None, description=""
         )  # relationship

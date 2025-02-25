@@ -24,22 +24,10 @@ TEST_INVALID_CREDENTIALS = (
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
-TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
-    "1 validation error for PurgeByGuid\n"
-    "guid\n  str type expected (type=type_error.str)"
-)
-TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
-    "1 validation error for Test\ncredential\n  "
-    "value is not a valid dict (type=type_error.dict)"
-)
-TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
-    "1 validation error for TestAndUpdate\ncredential\n  "
-    "value is not a valid dict (type=type_error.dict)"
-)
-TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
-    "1 validation error for Creator\ncredential\n  "
-    "value is not a valid dict (type=type_error.dict)"
-)
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = "1 validation error for PurgeByGuid\nguid\n  str type expected (type=type_error.str)"
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = "1 validation error for Test\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = "1 validation error for Creator\ncredential\n  value is not a valid dict (type=type_error.dict)"
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 )
@@ -338,7 +326,6 @@ def test_creator_success(
     mock_api_caller,
     client: CredentialClient,
 ):
-
     mock_api_caller._call_api.return_value = credential_response.dict()
     client = CredentialClient(mock_api_caller)
 

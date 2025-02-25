@@ -4,18 +4,62 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, Set
+from typing import ClassVar, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import QuickSightAnalysisStatus
+from pyatlan.model.enums import AtlanConnectorType, QuickSightAnalysisStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .quick_sight import QuickSight
 
 
 class QuickSightAnalysis(QuickSight):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+    ) -> QuickSightAnalysis: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_analysis_folders: List[str],
+    ) -> QuickSightAnalysis: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_analysis_folders: Optional[List[str]] = None,
+    ) -> QuickSightAnalysis:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "quick_sight_id"],
+            [name, connection_qualified_name, quick_sight_id],
+        )
+        attributes = QuickSightAnalysis.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            quick_sight_id=quick_sight_id,
+            quick_sight_analysis_folders=quick_sight_analysis_folders,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="QuickSightAnalysis", allow_mutation=False)
 
@@ -199,6 +243,38 @@ class QuickSightAnalysis(QuickSight):
         quick_sight_analysis_folders: Optional[List[QuickSightFolder]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            quick_sight_id: str,
+            quick_sight_analysis_folders: Optional[List[str]] = None,
+        ) -> QuickSightAnalysis.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "quick_sight_id"],
+                [name, connection_qualified_name, quick_sight_id],
+            )
+            folders = None
+            if quick_sight_analysis_folders:
+                folders = [
+                    QuickSightFolder.ref_by_qualified_name(quick_sight_folder_qn)
+                    for quick_sight_folder_qn in quick_sight_analysis_folders
+                ]
+
+            return QuickSightAnalysis.Attributes(
+                name=name,
+                quick_sight_id=quick_sight_id,
+                qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+                quick_sight_analysis_folders=folders,
+            )
 
     attributes: QuickSightAnalysis.Attributes = Field(
         default_factory=lambda: QuickSightAnalysis.Attributes(),

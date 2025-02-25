@@ -31,6 +31,7 @@ class AggregationHitsResult(AtlanObject):
 
     class Hits(AtlanObject):
         "Details of the hits requested."
+
         total: Optional[AggregationHitsResult.Stats] = Field(default=None)
         max_score: Optional[float] = Field(default=None)
         hits: List[AggregationHitsResult.Details] = Field(default_factory=list)

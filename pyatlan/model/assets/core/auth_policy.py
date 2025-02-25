@@ -59,8 +59,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     ) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

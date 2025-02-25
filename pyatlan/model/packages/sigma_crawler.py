@@ -173,7 +173,7 @@ class SigmaCrawler(AbstractCrawler):
                 "package.argoproj.io/author": "Atlan",
                 "package.argoproj.io/description": "Package to crawl Sigma assets and publish to Atlan for discovery",
                 "package.argoproj.io/homepage": "",
-                "package.argoproj.io/keywords": '[\"sigma\",\"bi\",\"connector\",\"crawler\"]',  # fmt: skip
+                "package.argoproj.io/keywords": '["sigma","bi","connector","crawler"]',  # fmt: skip
                 "package.argoproj.io/name": self._PACKAGE_NAME,
                 "package.argoproj.io/parent": ".",
                 "package.argoproj.io/registry": "https://packages.atlan.com",

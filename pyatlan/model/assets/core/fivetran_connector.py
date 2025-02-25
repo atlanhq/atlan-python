@@ -860,9 +860,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_free = (
-            fivetran_connector_monthly_active_rows_change_percentage_free
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_free = fivetran_connector_monthly_active_rows_change_percentage_free
 
     @property
     def fivetran_connector_monthly_active_rows_change_percentage_paid(
@@ -881,9 +879,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_paid = (
-            fivetran_connector_monthly_active_rows_change_percentage_paid
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_paid = fivetran_connector_monthly_active_rows_change_percentage_paid
 
     @property
     def fivetran_connector_monthly_active_rows_change_percentage_total(
@@ -902,9 +898,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_total = (
-            fivetran_connector_monthly_active_rows_change_percentage_total
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_change_percentage_total = fivetran_connector_monthly_active_rows_change_percentage_total
 
     @property
     def fivetran_connector_monthly_active_rows_free_percentage_of_account(
@@ -925,9 +919,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_free_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_free_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_free_percentage_of_account = fivetran_connector_monthly_active_rows_free_percentage_of_account
 
     @property
     def fivetran_connector_monthly_active_rows_paid_percentage_of_account(
@@ -948,9 +940,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_paid_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_paid_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_paid_percentage_of_account = fivetran_connector_monthly_active_rows_paid_percentage_of_account
 
     @property
     def fivetran_connector_monthly_active_rows_total_percentage_of_account(
@@ -971,9 +961,7 @@ class FivetranConnector(Fivetran):
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.fivetran_connector_monthly_active_rows_total_percentage_of_account = (
-            fivetran_connector_monthly_active_rows_total_percentage_of_account
-        )
+        self.attributes.fivetran_connector_monthly_active_rows_total_percentage_of_account = fivetran_connector_monthly_active_rows_total_percentage_of_account
 
     @property
     def fivetran_connector_total_tables_synced(self) -> Optional[int]:

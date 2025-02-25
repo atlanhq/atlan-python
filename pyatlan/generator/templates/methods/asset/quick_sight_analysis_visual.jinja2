@@ -1,0 +1,63 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
+        quick_sight_analysis_qualified_name: str,
+    ) -> QuickSightAnalysisVisual: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
+        quick_sight_analysis_qualified_name: str,
+        connection_qualified_name: str,
+    ) -> QuickSightAnalysisVisual: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        quick_sight_id: str,
+        quick_sight_sheet_id: str,
+        quick_sight_sheet_name: str,
+        quick_sight_analysis_qualified_name: str,
+        connection_qualified_name: Optional[str] = None,
+    ) -> QuickSightAnalysisVisual:
+        validate_required_fields(
+            [
+                "name",
+                "quick_sight_id",
+                "quick_sight_sheet_name",
+                "quick_sight_sheet_id",
+                "quick_sight_analysis_qualified_name",
+            ],
+            [
+                name,
+                quick_sight_id,
+                quick_sight_sheet_name,
+                quick_sight_sheet_id,
+                quick_sight_analysis_qualified_name,
+            ],
+        )
+        attributes = QuickSightAnalysisVisual.Attributes.creator(
+            name=name,
+            quick_sight_id=quick_sight_id,
+            quick_sight_sheet_id=quick_sight_sheet_id,
+            quick_sight_sheet_name=quick_sight_sheet_name,
+            quick_sight_analysis_qualified_name=quick_sight_analysis_qualified_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)

@@ -77,8 +77,7 @@ class Table(SQL):
     def create(cls, *, name: str, schema_qualified_name: str) -> Table:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
