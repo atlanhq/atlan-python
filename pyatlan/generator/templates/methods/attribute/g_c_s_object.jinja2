@@ -5,11 +5,13 @@
             cls,
             *,
             name: str,
+            gcs_bucket_name: str,
             gcs_bucket_qualified_name: str,
             connection_qualified_name: Optional[str] = None,
         ) -> GCSObject.Attributes:
             validate_required_fields(
-                ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+                ["name", "gcs_bucket_name", "gcs_bucket_qualified_name"],
+                [name, gcs_bucket_name, gcs_bucket_qualified_name],
             )
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
@@ -22,9 +24,61 @@
 
             return GCSObject.Attributes(
                 name=name,
-                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
                 qualified_name=f"{gcs_bucket_qualified_name}/{name}",
                 connector_name=connector_name,
+                gcs_bucket_name=gcs_bucket_name,
+                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+                gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
+            )
+
+        @classmethod
+        @init_guid
+        def creator_with_prefix(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            gcs_bucket_name: str,
+            gcs_bucket_qualified_name: str,
+            prefix: str = "",
+        ) -> GCSObject.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "gcs_bucket_name",
+                    "gcs_bucket_qualified_name",
+                ],
+                [
+                    name,
+                    connection_qualified_name,
+                    gcs_bucket_name,
+                    gcs_bucket_qualified_name,
+                ],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.GCS:
+                    raise ValueError("Connector type must be GCS")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            object_key = construct_object_key(prefix, name)
+            return GCSObject.Attributes(
+                name=name,
+                gcs_object_key=object_key,
+                connection_qualified_name=connection_qualified_name,
+                # We should include `gcs_bucket_name` to make it unique
+                # and avoid duplicate `path/name` (object keys) in two different buckets
+                # within the same connection.
+                qualified_name=f"{gcs_bucket_qualified_name}/{object_key}",
+                connector_name=connector_type.value,
+                gcs_bucket_name=gcs_bucket_name,
+                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
                 gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
             )

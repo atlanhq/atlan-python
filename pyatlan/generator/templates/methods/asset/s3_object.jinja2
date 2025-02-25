@@ -64,27 +64,25 @@
 
     @classmethod
     @init_guid
-    def create_with_prefix(
+    def creator_with_prefix(
         cls,
         *,
         name: str,
         connection_qualified_name: str,
-        prefix: str,
         s3_bucket_name: str,
         s3_bucket_qualified_name: str,
+        prefix: str = "",
     ) -> S3Object:
         validate_required_fields(
             [
                 "name",
                 "connection_qualified_name",
-                "prefix",
                 "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
             [
                 name,
                 connection_qualified_name,
-                prefix,
                 s3_bucket_name,
                 s3_bucket_qualified_name,
             ],
@@ -97,3 +95,30 @@
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        s3_bucket_name: str,
+        s3_bucket_qualified_name: str,
+        prefix: str = "",
+    ) -> S3Object:
+        warn(
+            (
+                "This method is deprecated, please use 'creator_with_prefix' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            s3_bucket_name=s3_bucket_name,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+            prefix=prefix,
+        )

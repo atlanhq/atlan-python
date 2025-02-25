@@ -34,7 +34,7 @@
                     raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
                 if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
+                    raise ValueError("Connector type must be S3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
             return S3Object.Attributes(
@@ -55,22 +55,20 @@
             *,
             name: str,
             connection_qualified_name: str,
-            prefix: str,
             s3_bucket_name: str,
             s3_bucket_qualified_name: str,
+            prefix: str = "",
         ) -> S3Object.Attributes:
             validate_required_fields(
                 [
                     "name",
                     "connection_qualified_name",
-                    "prefix",
                     "s3_bucket_name",
                     "s3_bucket_qualified_name",
                 ],
                 [
                     name,
                     connection_qualified_name,
-                    prefix,
                     s3_bucket_name,
                     s3_bucket_qualified_name,
                 ],
@@ -83,15 +81,18 @@
                     raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
                 if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
+                    raise ValueError("Connector type must be S3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-            object_key = f"{prefix}/{name}"
+            object_key = construct_object_key(prefix, name)
             return S3Object.Attributes(
                 name=name,
                 s3_object_key=object_key,
                 connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{object_key}",
+                # We should include `s3_bucket_name` to make it unique
+                # and avoid duplicate `path/name` (object keys) in two different buckets
+                # within the same connection.
+                qualified_name=f"{connection_qualified_name}/{s3_bucket_name}/{object_key}",
                 connector_name=connector_type.value,
                 s3_bucket_name=s3_bucket_name,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,

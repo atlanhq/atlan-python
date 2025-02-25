@@ -5,6 +5,7 @@
         cls,
         *,
         name: str,
+        gcs_bucket_name: str,
         gcs_bucket_qualified_name: str,
     ) -> GCSObject: ...
 
@@ -14,6 +15,7 @@
         cls,
         *,
         name: str,
+        gcs_bucket_name: str,
         gcs_bucket_qualified_name: str,
         connection_qualified_name: str,
     ) -> GCSObject: ...
@@ -24,22 +26,61 @@
         cls,
         *,
         name: str,
+        gcs_bucket_name: str,
         gcs_bucket_qualified_name: str,
         connection_qualified_name: Optional[str] = None,
     ) -> GCSObject:
         validate_required_fields(
-            ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+            ["name", "gcs_bucket_name", "gcs_bucket_qualified_name"],
+            [name, gcs_bucket_name, gcs_bucket_qualified_name],
         )
         attributes = GCSObject.Attributes.create(
             name=name,
             gcs_bucket_qualified_name=gcs_bucket_qualified_name,
             connection_qualified_name=connection_qualified_name,
+            gcs_bucket_name=gcs_bucket_name,
         )
         return cls(attributes=attributes)
 
     @classmethod
     @init_guid
-    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+    def creator_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        gcs_bucket_name: str,
+        gcs_bucket_qualified_name: str,
+        prefix: str = "",
+    ) -> GCSObject:
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "gcs_bucket_name",
+                "gcs_bucket_qualified_name",
+            ],
+            [
+                name,
+                connection_qualified_name,
+                gcs_bucket_name,
+                gcs_bucket_qualified_name,
+            ],
+        )
+        attributes = GCSObject.Attributes.creator_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            gcs_bucket_name=gcs_bucket_name,
+            gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+            prefix=prefix,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, gcs_bucket_name: str, gcs_bucket_qualified_name: str
+    ) -> GCSObject:
         warn(
             (
                 "This method is deprecated, please use 'creator' "
@@ -49,5 +90,7 @@
             stacklevel=2,
         )
         return cls.creator(
-            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+            name=name,
+            gcs_bucket_name=gcs_bucket_name,
+            gcs_bucket_qualified_name=gcs_bucket_qualified_name,
         )

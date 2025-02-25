@@ -5,6 +5,7 @@
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
     ) -> ADLSObject: ...
 
@@ -14,6 +15,7 @@
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
         adls_account_qualified_name: str,
         connection_qualified_name: str,
@@ -25,19 +27,57 @@
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
         adls_account_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> ADLSObject:
         validate_required_fields(
-            ["name", "adls_container_qualified_name"],
-            [name, adls_container_qualified_name],
+            ["name", "adls_container_name", "adls_container_qualified_name"],
+            [name, adls_container_name, adls_container_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
             name=name,
+            adls_container_name=adls_container_name,
             adls_container_qualified_name=adls_container_qualified_name,
             adls_account_qualified_name=adls_account_qualified_name,
             connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def creator_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        adls_container_name: str,
+        adls_container_qualified_name: str,
+        adls_account_qualified_name: Optional[str] = None,
+        prefix: str = "",
+    ) -> ADLSObject:
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "adls_container_name",
+                "adls_container_qualified_name",
+            ],
+            [
+                name,
+                connection_qualified_name,
+                adls_container_name,
+                adls_container_qualified_name,
+            ],
+        )
+        attributes = ADLSObject.Attributes.creator_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            adls_container_name=adls_container_name,
+            adls_container_qualified_name=adls_container_qualified_name,
+            adls_account_qualified_name=adls_account_qualified_name,
+            prefix=prefix,
         )
         return cls(attributes=attributes)
 
@@ -47,6 +87,7 @@
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
     ) -> ADLSObject:
         warn(
@@ -58,5 +99,7 @@
             stacklevel=2,
         )
         return cls.creator(
-            name=name, adls_container_qualified_name=adls_container_qualified_name
+            name=name,
+            adls_container_name=adls_container_name,
+            adls_container_qualified_name=adls_container_qualified_name,
         )
