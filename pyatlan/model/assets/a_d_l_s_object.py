@@ -694,8 +694,7 @@ class ADLSObject(ADLS):
             object_key = construct_object_key(prefix, name)
             return ADLSObject.Attributes(
                 name=name,
-                # TODO: need to add this in typedefs
-                # adls_object_key=object_key,
+                adls_object_key=object_key,
                 adls_container_qualified_name=adls_container_qualified_name,
                 adls_container_name=adls_container_name,
                 qualified_name=f"{adls_container_qualified_name}/{object_key}",

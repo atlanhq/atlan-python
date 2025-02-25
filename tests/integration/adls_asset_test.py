@@ -11,6 +11,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
+from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import get_parent_qualified_name
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
@@ -182,9 +183,9 @@ def test_adls_object_with_prefix(
         adls_object_prefix.adls_container_qualified_name
         == adls_container.qualified_name
     )
-    # TODO: assert adls_object_prefix.adls_object_key == construct_object_key(
-    #     OBJECT_PREFIX, adls_object_prefix.name
-    # )
+    assert adls_object_prefix.adls_object_key == construct_object_key(
+        OBJECT_PREFIX, adls_object_prefix.name
+    )
 
 
 @pytest.fixture(scope="module")

@@ -221,7 +221,7 @@ def test_creator_with_prefix(
     assert attributes.name == name
     assert attributes.connection_qualified_name == connection_qualified_name
     object_key = construct_object_key(prefix, name)
-    # TODO: assert attributes.adls_object_key == object_key
+    assert attributes.adls_object_key == object_key
     assert (
         attributes.qualified_name
         == f"{attributes.adls_container_qualified_name}/{object_key}"
