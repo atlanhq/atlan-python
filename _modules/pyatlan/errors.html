@@ -549,10 +549,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;AtlanError&quot;</span><span class="p">)</span>
-<span class="n">RAISE_GITHUB_ISSUE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;Please raise an issue on the Python SDK GitHub &quot;</span>
-    <span class="s2">&quot;repository providing context in which this error occurred.&quot;</span>
-<span class="p">)</span>
+<span class="n">RAISE_GITHUB_ISSUE</span> <span class="o">=</span> <span class="s2">&quot;Please raise an issue on the Python SDK GitHub repository providing context in which this error occurred.&quot;</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ErrorInfo</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
