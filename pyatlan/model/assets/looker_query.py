@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -178,8 +178,11 @@ class LookerQuery(Looker):
     )
 
 
-from .looker_look import LookerLook  # noqa
-from .looker_model import LookerModel  # noqa
-from .looker_tile import LookerTile  # noqa
+from .looker_model import LookerModel  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_tile import LookerTile  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
+
 
 LookerQuery.Attributes.update_forward_refs()

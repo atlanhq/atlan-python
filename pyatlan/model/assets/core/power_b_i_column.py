@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -73,6 +73,10 @@ class PowerBIColumn(PowerBI):
     Aggregate function to use for summarizing this column.
     """
 
+    POWER_BI_MEASURES: ClassVar[RelationField] = RelationField("powerBIMeasures")
+    """
+    TBC
+    """
     TABLE: ClassVar[RelationField] = RelationField("table")
     """
     TBC
@@ -85,6 +89,7 @@ class PowerBIColumn(PowerBI):
         "power_b_i_column_data_type",
         "power_b_i_sort_by_column",
         "power_b_i_column_summarize_by",
+        "power_b_i_measures",
         "table",
     ]
 
@@ -175,6 +180,16 @@ class PowerBIColumn(PowerBI):
         self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
 
     @property
+    def power_b_i_measures(self) -> Optional[List[PowerBIMeasure]]:
+        return None if self.attributes is None else self.attributes.power_b_i_measures
+
+    @power_b_i_measures.setter
+    def power_b_i_measures(self, power_b_i_measures: Optional[List[PowerBIMeasure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_measures = power_b_i_measures
+
+    @property
     def table(self) -> Optional[PowerBITable]:
         return None if self.attributes is None else self.attributes.table
 
@@ -195,6 +210,9 @@ class PowerBIColumn(PowerBI):
         power_b_i_column_summarize_by: Optional[str] = Field(
             default=None, description=""
         )
+        power_b_i_measures: Optional[List[PowerBIMeasure]] = Field(
+            default=None, description=""
+        )  # relationship
         table: Optional[PowerBITable] = Field(
             default=None, description=""
         )  # relationship
@@ -209,4 +227,6 @@ class PowerBIColumn(PowerBI):
     )
 
 
-from .power_b_i_table import PowerBITable  # noqa
+from .power_b_i_table import PowerBITable  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_measure import PowerBIMeasure  # noqa: I001, E402, F401 # isort:skip

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -132,7 +132,9 @@ class SalesforceReport(Salesforce):
     )
 
 
-from .salesforce_dashboard import SalesforceDashboard  # noqa
-from .salesforce_organization import SalesforceOrganization  # noqa
+from .salesforce_organization import SalesforceOrganization  # noqa: I001, E402, F401 # isort:skip
+
+from .salesforce_dashboard import SalesforceDashboard  # noqa: I001, E402, F401 # isort:skip
+
 
 SalesforceReport.Attributes.update_forward_refs()

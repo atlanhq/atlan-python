@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -358,8 +358,11 @@ class TableauDatasource(Tableau):
     )
 
 
-from .tableau_datasource_field import TableauDatasourceField  # noqa
-from .tableau_project import TableauProject  # noqa
-from .tableau_workbook import TableauWorkbook  # noqa
+from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_datasource_field import TableauDatasourceField  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_project import TableauProject  # noqa: I001, E402, F401 # isort:skip
+
 
 TableauDatasource.Attributes.update_forward_refs()

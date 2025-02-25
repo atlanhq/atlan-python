@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -243,9 +243,13 @@ class TableauProject(Tableau):
     )
 
 
-from .tableau_datasource import TableauDatasource  # noqa
-from .tableau_flow import TableauFlow  # noqa
-from .tableau_site import TableauSite  # noqa
-from .tableau_workbook import TableauWorkbook  # noqa
+from .tableau_datasource import TableauDatasource  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_site import TableauSite  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_flow import TableauFlow  # noqa: I001, E402, F401 # isort:skip
+
 
 TableauProject.Attributes.update_forward_refs()

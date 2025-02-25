@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -29,13 +29,13 @@ class MicroStrategyProject(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
-        "microStrategyReports"
-    )
+    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
     """
     TBC
     """
-    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
     """
     TBC
     """
@@ -75,8 +75,8 @@ class MicroStrategyProject(MicroStrategy):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "micro_strategy_reports",
         "micro_strategy_facts",
+        "micro_strategy_reports",
         "micro_strategy_metrics",
         "micro_strategy_visualizations",
         "micro_strategy_documents",
@@ -84,6 +84,18 @@ class MicroStrategyProject(MicroStrategy):
         "micro_strategy_dossiers",
         "micro_strategy_attributes",
     ]
+
+    @property
+    def micro_strategy_facts(self) -> Optional[List[MicroStrategyFact]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_facts
+
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[List[MicroStrategyFact]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
     def micro_strategy_reports(self) -> Optional[List[MicroStrategyReport]]:
@@ -98,18 +110,6 @@ class MicroStrategyProject(MicroStrategy):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_reports = micro_strategy_reports
-
-    @property
-    def micro_strategy_facts(self) -> Optional[List[MicroStrategyFact]]:
-        return None if self.attributes is None else self.attributes.micro_strategy_facts
-
-    @micro_strategy_facts.setter
-    def micro_strategy_facts(
-        self, micro_strategy_facts: Optional[List[MicroStrategyFact]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
     def micro_strategy_metrics(self) -> Optional[List[MicroStrategyMetric]]:
@@ -202,10 +202,10 @@ class MicroStrategyProject(MicroStrategy):
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
-        micro_strategy_reports: Optional[List[MicroStrategyReport]] = Field(
+        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(
             default=None, description=""
         )  # relationship
-        micro_strategy_facts: Optional[List[MicroStrategyFact]] = Field(
+        micro_strategy_reports: Optional[List[MicroStrategyReport]] = Field(
             default=None, description=""
         )  # relationship
         micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
@@ -237,13 +237,21 @@ class MicroStrategyProject(MicroStrategy):
     )
 
 
-from .micro_strategy_attribute import MicroStrategyAttribute  # noqa
-from .micro_strategy_cube import MicroStrategyCube  # noqa
-from .micro_strategy_document import MicroStrategyDocument  # noqa
-from .micro_strategy_dossier import MicroStrategyDossier  # noqa
-from .micro_strategy_fact import MicroStrategyFact  # noqa
-from .micro_strategy_metric import MicroStrategyMetric  # noqa
-from .micro_strategy_report import MicroStrategyReport  # noqa
-from .micro_strategy_visualization import MicroStrategyVisualization  # noqa
+from .micro_strategy_document import MicroStrategyDocument  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_fact import MicroStrategyFact  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_report import MicroStrategyReport  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_visualization import MicroStrategyVisualization  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_metric import MicroStrategyMetric  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_cube import MicroStrategyCube  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_dossier import MicroStrategyDossier  # noqa: I001, E402, F401 # isort:skip
+
 
 MicroStrategyProject.Attributes.update_forward_refs()

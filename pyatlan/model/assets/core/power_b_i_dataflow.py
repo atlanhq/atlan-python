@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -354,9 +354,14 @@ class PowerBIDataflow(PowerBI):
     )
 
 
-from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn  # noqa
-from .power_b_i_dataset import PowerBIDataset  # noqa
-from .power_b_i_datasource import PowerBIDatasource  # noqa
-from .power_b_i_table import PowerBITable  # noqa
-from .power_b_i_workspace import PowerBIWorkspace  # noqa
-from .process import Process  # noqa
+from .power_b_i_table import PowerBITable  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_workspace import PowerBIWorkspace  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_dataset import PowerBIDataset  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_datasource import PowerBIDatasource  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_dataflow_entity_column import PowerBIDataflowEntityColumn  # noqa: I001, E402, F401 # isort:skip
+
+from .process import Process  # noqa: I001, E402, F401 # isort:skip

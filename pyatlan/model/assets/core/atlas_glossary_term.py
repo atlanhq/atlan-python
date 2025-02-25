@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -74,7 +74,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     ) -> AtlasGlossaryTerm:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -125,7 +126,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     ) -> AtlasGlossaryTerm:
         warn(
             (
-                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -601,6 +603,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     )
 
 
-from .atlas_glossary import AtlasGlossary  # noqa
-from .atlas_glossary_category import AtlasGlossaryCategory  # noqa
-from .referenceable import Referenceable  # noqa
+from .atlas_glossary import AtlasGlossary  # noqa: I001, E402, F401 # isort:skip
+
+from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: I001, E402, F401 # isort:skip
+
+from .referenceable import Referenceable  # noqa: I001, E402, F401 # isort:skip

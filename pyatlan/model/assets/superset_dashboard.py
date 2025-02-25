@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -43,7 +43,8 @@ class SupersetDashboard(Superset):
     def create(cls, *, name: str, connection_qualified_name: str) -> SupersetDashboard:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -307,7 +308,9 @@ class SupersetDashboard(Superset):
     )
 
 
-from .superset_chart import SupersetChart  # noqa
-from .superset_dataset import SupersetDataset  # noqa
+from .superset_chart import SupersetChart  # noqa: I001, E402, F401 # isort:skip
+
+from .superset_dataset import SupersetDataset  # noqa: I001, E402, F401 # isort:skip
+
 
 SupersetDashboard.Attributes.update_forward_refs()

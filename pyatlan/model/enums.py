@@ -2468,6 +2468,18 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
+class AIApplicationDevelopmentStage(str, Enum):
+    PROPOSAL = "PROPOSAL"
+    DEVELOPMENT = "DEVELOPMENT"
+    PRODUCTION = "PRODUCTION"
+    ARCHIVED = "ARCHIVED"
+
+
+class AIModelStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
 class APIQueryParamTypeEnum(str, Enum):
     INPUT = "Input"
     OUTPUT = "Output"
@@ -2576,6 +2588,17 @@ class DataProductVisibility(str, Enum):
     PUBLIC = "Public"
 
 
+class DocumentDBCollectionValidationAction(str, Enum):
+    ERROR = "ERROR"
+    WARN = "WARN"
+
+
+class DocumentDBCollectionValidationLevel(str, Enum):
+    OFF = "OFF"
+    STRICT = "STRICT"
+    MODERATE = "MODERATE"
+
+
 class DomoCardType(str, Enum):
     DOC = "DOC"
     DOC_CARD = "DOC CARD"
@@ -2598,6 +2621,46 @@ class DynamoDBStatus(str, Enum):
     INACCESSIBLE_ENCRYPTION_CREDENTIALS = "INACCESSIBLE_ENCRYPTION_CREDENTIALS"
     ARCHIVING = "ARCHIVING"
     ARCHIVED = "ARCHIVED"
+
+
+class EthicalAIAccountabilityConfig(str, Enum):
+    HAS_OWNER = "HAS_OWNER"
+    SUBJECT_TO_HUMAN_OVERSIGHT = "SUBJECT_TO_HUMAN_OVERSIGHT"
+
+
+class EthicalAIBiasMitigationConfig(str, Enum):
+    INEFFECTIVE = "INEFFECTIVE"
+    PARTIAL = "PARTIAL"
+    EFFECTIVE = "EFFECTIVE"
+
+
+class EthicalAIEnvironmentalConsciousnessConfig(str, Enum):
+    LOW_RISK = "LOW_RISK"
+    MEDIUM_RISK = "MEDIUM_RISK"
+    HIGH_RISK = "HIGH_RISK"
+
+
+class EthicalAIFairnessConfig(str, Enum):
+    LOW_RISK = "LOW_RISK"
+    MODERATE_RISK = "MODERATE_RISK"
+    HIGH_RISK = "HIGH_RISK"
+
+
+class EthicalAIPrivacyConfig(str, Enum):
+    PERSONAL_DATA = "PERSONAL_DATA"
+    NO_PERSONAL_DATA = "NO_PERSONAL_DATA"
+
+
+class EthicalAIReliabilityAndSafetyConfig(str, Enum):
+    LOW = "LOW"
+    MODERATE = "MODERATE"
+    HIGH = "HIGH"
+
+
+class EthicalAITransparencyConfig(str, Enum):
+    LIMITED_DISCLOSURE = "LIMITED_DISCLOSURE"
+    PARTIAL_DISCLOSURE = "PARTIAL_DISCLOSURE"
+    FULL_DISCLOSURE = "FULL_DISCLOSURE"
 
 
 class FileType(str, Enum):

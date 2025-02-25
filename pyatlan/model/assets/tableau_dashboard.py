@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -193,7 +193,9 @@ class TableauDashboard(Tableau):
     )
 
 
-from .tableau_workbook import TableauWorkbook  # noqa
-from .tableau_worksheet import TableauWorksheet  # noqa
+from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
+
+from .tableau_worksheet import TableauWorksheet  # noqa: I001, E402, F401 # isort:skip
+
 
 TableauDashboard.Attributes.update_forward_refs()

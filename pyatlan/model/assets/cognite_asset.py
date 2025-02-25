@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -135,10 +135,15 @@ class CogniteAsset(Cognite):
     )
 
 
-from .cognite3_d_model import Cognite3DModel  # noqa
-from .cognite_event import CogniteEvent  # noqa
-from .cognite_file import CogniteFile  # noqa
-from .cognite_sequence import CogniteSequence  # noqa
-from .cognite_time_series import CogniteTimeSeries  # noqa
+from .cognite_sequence import CogniteSequence  # noqa: I001, E402, F401 # isort:skip
+
+from .cognite3_d_model import Cognite3DModel  # noqa: I001, E402, F401 # isort:skip
+
+from .cognite_time_series import CogniteTimeSeries  # noqa: I001, E402, F401 # isort:skip
+
+from .cognite_file import CogniteFile  # noqa: I001, E402, F401 # isort:skip
+
+from .cognite_event import CogniteEvent  # noqa: I001, E402, F401 # isort:skip
+
 
 CogniteAsset.Attributes.update_forward_refs()

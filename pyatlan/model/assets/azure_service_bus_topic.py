@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -97,7 +97,9 @@ class AzureServiceBusTopic(AzureServiceBus):
     )
 
 
-from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa
-from .azure_service_bus_schema import AzureServiceBusSchema  # noqa
+from .azure_service_bus_schema import AzureServiceBusSchema  # noqa: I001, E402, F401 # isort:skip
+
+from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa: I001, E402, F401 # isort:skip
+
 
 AzureServiceBusTopic.Attributes.update_forward_refs()

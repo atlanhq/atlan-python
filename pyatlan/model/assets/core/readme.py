@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -37,7 +37,8 @@ class Readme(Resource):
     ) -> Readme:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -149,4 +150,4 @@ class Readme(Resource):
     )
 
 
-from .asset import Asset  # noqa
+from .asset import Asset  # noqa: I001, E402, F401 # isort:skip

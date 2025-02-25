@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -541,4 +541,4 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     )
 
 
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: I001, E402, F401 # isort:skip

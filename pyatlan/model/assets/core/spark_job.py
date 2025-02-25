@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -136,5 +136,6 @@ class SparkJob(Spark):
     )
 
 
-from .catalog import Catalog  # noqa
-from .process import Process  # noqa
+from .process import Process  # noqa: I001, E402, F401 # isort:skip
+
+from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -102,7 +102,9 @@ class QlikSheet(Qlik):
     )
 
 
-from .qlik_app import QlikApp  # noqa
-from .qlik_chart import QlikChart  # noqa
+from .qlik_app import QlikApp  # noqa: I001, E402, F401 # isort:skip
+
+from .qlik_chart import QlikChart  # noqa: I001, E402, F401 # isort:skip
+
 
 QlikSheet.Attributes.update_forward_refs()

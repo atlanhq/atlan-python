@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -92,4 +92,4 @@ class StakeholderTitle(Asset, type_name="StakeholderTitle"):
     )
 
 
-from .stakeholder import Stakeholder  # noqa
+from .stakeholder import Stakeholder  # noqa: I001, E402, F401 # isort:skip

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -238,7 +238,9 @@ class QuickSightDataset(QuickSight):
     )
 
 
-from .quick_sight_dataset_field import QuickSightDatasetField  # noqa
-from .quick_sight_folder import QuickSightFolder  # noqa
+from .quick_sight_folder import QuickSightFolder  # noqa: I001, E402, F401 # isort:skip
+
+from .quick_sight_dataset_field import QuickSightDatasetField  # noqa: I001, E402, F401 # isort:skip
+
 
 QuickSightDataset.Attributes.update_forward_refs()

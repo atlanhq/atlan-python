@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -286,7 +286,9 @@ class QuickSightAnalysis(QuickSight):
     )
 
 
-from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa
-from .quick_sight_folder import QuickSightFolder  # noqa
+from .quick_sight_folder import QuickSightFolder  # noqa: I001, E402, F401 # isort:skip
+
+from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa: I001, E402, F401 # isort:skip
+
 
 QuickSightAnalysis.Attributes.update_forward_refs()

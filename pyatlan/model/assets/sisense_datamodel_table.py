@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -312,7 +312,9 @@ class SisenseDatamodelTable(Sisense):
     )
 
 
-from .sisense_datamodel import SisenseDatamodel  # noqa
-from .sisense_widget import SisenseWidget  # noqa
+from .sisense_datamodel import SisenseDatamodel  # noqa: I001, E402, F401 # isort:skip
+
+from .sisense_widget import SisenseWidget  # noqa: I001, E402, F401 # isort:skip
+
 
 SisenseDatamodelTable.Attributes.update_forward_refs()

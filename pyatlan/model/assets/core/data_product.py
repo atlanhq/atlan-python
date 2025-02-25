@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -60,7 +60,8 @@ class DataProduct(DataMesh):
     ) -> DataProduct:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -107,7 +108,8 @@ class DataProduct(DataMesh):
     ) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -582,5 +584,6 @@ class DataProduct(DataMesh):
     )
 
 
-from .asset import Asset  # noqa
-from .data_domain import DataDomain  # noqa
+from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
+
+from .data_domain import DataDomain  # noqa: I001, E402, F401 # isort:skip

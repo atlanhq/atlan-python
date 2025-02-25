@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -182,7 +182,9 @@ class MicroStrategyVisualization(MicroStrategy):
     )
 
 
-from .micro_strategy_dossier import MicroStrategyDossier  # noqa
-from .micro_strategy_project import MicroStrategyProject  # noqa
+from .micro_strategy_project import MicroStrategyProject  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_dossier import MicroStrategyDossier  # noqa: I001, E402, F401 # isort:skip
+
 
 MicroStrategyVisualization.Attributes.update_forward_refs()

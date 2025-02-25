@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -145,6 +145,7 @@ class DataverseEntity(Dataverse):
     )
 
 
-from .dataverse_attribute import DataverseAttribute  # noqa
+from .dataverse_attribute import DataverseAttribute  # noqa: I001, E402, F401 # isort:skip
+
 
 DataverseEntity.Attributes.update_forward_refs()

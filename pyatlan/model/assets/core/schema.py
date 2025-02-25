@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -65,7 +65,8 @@ class Schema(SQL):
     def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -405,14 +406,24 @@ class Schema(SQL):
     )
 
 
-from .calculation_view import CalculationView  # noqa
-from .database import Database  # noqa
-from .function import Function  # noqa
-from .materialised_view import MaterialisedView  # noqa
-from .procedure import Procedure  # noqa
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa
-from .snowflake_pipe import SnowflakePipe  # noqa
-from .snowflake_stream import SnowflakeStream  # noqa
-from .snowflake_tag import SnowflakeTag  # noqa
-from .table import Table  # noqa
-from .view import View  # noqa
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: I001, E402, F401 # isort:skip
+
+from .table import Table  # noqa: I001, E402, F401 # isort:skip
+
+from .view import View  # noqa: I001, E402, F401 # isort:skip
+
+from .calculation_view import CalculationView  # noqa: I001, E402, F401 # isort:skip
+
+from .procedure import Procedure  # noqa: I001, E402, F401 # isort:skip
+
+from .snowflake_stream import SnowflakeStream  # noqa: I001, E402, F401 # isort:skip
+
+from .function import Function  # noqa: I001, E402, F401 # isort:skip
+
+from .snowflake_tag import SnowflakeTag  # noqa: I001, E402, F401 # isort:skip
+
+from .materialised_view import MaterialisedView  # noqa: I001, E402, F401 # isort:skip
+
+from .snowflake_pipe import SnowflakePipe  # noqa: I001, E402, F401 # isort:skip
+
+from .database import Database  # noqa: I001, E402, F401 # isort:skip

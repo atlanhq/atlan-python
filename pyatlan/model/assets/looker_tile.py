@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -230,9 +230,13 @@ class LookerTile(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa
-from .looker_field import LookerField  # noqa
-from .looker_look import LookerLook  # noqa
-from .looker_query import LookerQuery  # noqa
+from .looker_query import LookerQuery  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_field import LookerField  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_dashboard import LookerDashboard  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
+
 
 LookerTile.Attributes.update_forward_refs()

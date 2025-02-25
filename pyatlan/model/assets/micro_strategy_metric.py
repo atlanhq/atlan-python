@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -418,10 +418,15 @@ class MicroStrategyMetric(MicroStrategy):
     )
 
 
-from .micro_strategy_attribute import MicroStrategyAttribute  # noqa
-from .micro_strategy_cube import MicroStrategyCube  # noqa
-from .micro_strategy_fact import MicroStrategyFact  # noqa
-from .micro_strategy_project import MicroStrategyProject  # noqa
-from .micro_strategy_report import MicroStrategyReport  # noqa
+from .micro_strategy_project import MicroStrategyProject  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_fact import MicroStrategyFact  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_report import MicroStrategyReport  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_cube import MicroStrategyCube  # noqa: I001, E402, F401 # isort:skip
+
+from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: I001, E402, F401 # isort:skip
+
 
 MicroStrategyMetric.Attributes.update_forward_refs()

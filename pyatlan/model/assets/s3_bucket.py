@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -86,7 +86,8 @@ class S3Bucket(S3):
     ) -> S3Bucket:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -221,6 +222,7 @@ class S3Bucket(S3):
     )
 
 
-from .s3_object import S3Object  # noqa
+from .s3_object import S3Object  # noqa: I001, E402, F401 # isort:skip
+
 
 S3Bucket.Attributes.update_forward_refs()

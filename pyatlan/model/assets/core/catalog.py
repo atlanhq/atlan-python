@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -227,8 +227,12 @@ class Catalog(Asset, type_name="Catalog"):
     )
 
 
-from .airflow_task import AirflowTask  # noqa
-from .model_attribute import ModelAttribute  # noqa
-from .model_entity import ModelEntity  # noqa
-from .process import Process  # noqa
-from .spark_job import SparkJob  # noqa
+from .spark_job import SparkJob  # noqa: I001, E402, F401 # isort:skip
+
+from .model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
+
+from .model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
+
+from .airflow_task import AirflowTask  # noqa: I001, E402, F401 # isort:skip
+
+from .process import Process  # noqa: I001, E402, F401 # isort:skip

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -485,10 +485,15 @@ class GCS(Google):
     )
 
 
-from .core.airflow_task import AirflowTask  # noqa
-from .core.model_attribute import ModelAttribute  # noqa
-from .core.model_entity import ModelEntity  # noqa
-from .core.process import Process  # noqa
-from .core.spark_job import SparkJob  # noqa
+from .core.spark_job import SparkJob  # noqa: I001, E402, F401 # isort:skip
+
+from .core.model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
+
+from .core.model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
+
+from .core.airflow_task import AirflowTask  # noqa: I001, E402, F401 # isort:skip
+
+from .core.process import Process  # noqa: I001, E402, F401 # isort:skip
+
 
 GCS.Attributes.update_forward_refs()

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -160,7 +160,9 @@ class SisenseFolder(Sisense):
     )
 
 
-from .sisense_dashboard import SisenseDashboard  # noqa
-from .sisense_widget import SisenseWidget  # noqa
+from .sisense_dashboard import SisenseDashboard  # noqa: I001, E402, F401 # isort:skip
+
+from .sisense_widget import SisenseWidget  # noqa: I001, E402, F401 # isort:skip
+
 
 SisenseFolder.Attributes.update_forward_refs()

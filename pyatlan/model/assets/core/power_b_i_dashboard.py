@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -143,5 +143,6 @@ class PowerBIDashboard(PowerBI):
     )
 
 
-from .power_b_i_tile import PowerBITile  # noqa
-from .power_b_i_workspace import PowerBIWorkspace  # noqa
+from .power_b_i_workspace import PowerBIWorkspace  # noqa: I001, E402, F401 # isort:skip
+
+from .power_b_i_tile import PowerBITile  # noqa: I001, E402, F401 # isort:skip

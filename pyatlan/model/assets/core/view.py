@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -77,7 +77,8 @@ class View(SQL):
     def create(cls, *, name: str, schema_qualified_name: str) -> View:
         warn(
             (
-                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -350,6 +351,8 @@ class View(SQL):
     )
 
 
-from .column import Column  # noqa
-from .query import Query  # noqa
-from .schema import Schema  # noqa
+from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
+
+from .column import Column  # noqa: I001, E402, F401 # isort:skip
+
+from .query import Query  # noqa: I001, E402, F401 # isort:skip

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -507,7 +507,10 @@ class Query(SQL):
     )
 
 
-from .column import Column  # noqa
-from .namespace import Namespace  # noqa
-from .table import Table  # noqa
-from .view import View  # noqa
+from .table import Table  # noqa: I001, E402, F401 # isort:skip
+
+from .view import View  # noqa: I001, E402, F401 # isort:skip
+
+from .namespace import Namespace  # noqa: I001, E402, F401 # isort:skip
+
+from .column import Column  # noqa: I001, E402, F401 # isort:skip

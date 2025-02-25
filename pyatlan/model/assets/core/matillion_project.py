@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -193,5 +193,6 @@ class MatillionProject(Matillion):
     )
 
 
-from .matillion_group import MatillionGroup  # noqa
-from .matillion_job import MatillionJob  # noqa
+from .matillion_group import MatillionGroup  # noqa: I001, E402, F401 # isort:skip
+
+from .matillion_job import MatillionJob  # noqa: I001, E402, F401 # isort:skip

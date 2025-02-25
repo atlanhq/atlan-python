@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -194,7 +194,9 @@ class LookerFolder(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa
-from .looker_look import LookerLook  # noqa
+from .looker_dashboard import LookerDashboard  # noqa: I001, E402, F401 # isort:skip
+
+from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
+
 
 LookerFolder.Attributes.update_forward_refs()

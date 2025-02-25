@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -243,4 +243,4 @@ class AccessControl(Asset, type_name="AccessControl"):
     )
 
 
-from .auth_policy import AuthPolicy  # noqa
+from .auth_policy import AuthPolicy  # noqa: I001, E402, F401 # isort:skip

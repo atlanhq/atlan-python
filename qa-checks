@@ -22,7 +22,7 @@ ruff-formatter-check() {
 
 # Linter
 ruff-linter-check() {
-    perform_check "ruff check 🕵️ " "ruff check ." " ruff check ."
+    perform_check "ruff check 🕵️ " "ruff check --no-fix ." " ruff check  ."
 }
 
 # Static type checker

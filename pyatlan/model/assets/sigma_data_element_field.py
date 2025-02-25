@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -120,6 +120,7 @@ class SigmaDataElementField(Sigma):
     )
 
 
-from .sigma_data_element import SigmaDataElement  # noqa
+from .sigma_data_element import SigmaDataElement  # noqa: I001, E402, F401 # isort:skip
+
 
 SigmaDataElementField.Attributes.update_forward_refs()

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -179,10 +179,9 @@ class Metric(DataQuality):
 
 
 # Imports required for fixing circular dependencies:
-from .asset import Asset  # noqa # isort:skip
-from .catalog import Catalog  # noqa # isort:skip
-from .s_q_l import SQL  # noqa # isort:skip
+from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
+from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
+from .s_q_l import SQL  # noqa: I001, E402, F401 # isort:skip
 
 
-from .asset import Asset  # noqa
-from .column import Column  # noqa
+from .column import Column  # noqa: I001, E402, F401 # isort:skip

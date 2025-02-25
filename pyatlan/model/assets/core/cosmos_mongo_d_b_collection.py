@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -140,7 +140,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Size of this table, in bytes.
     """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this table.
     """
@@ -1433,13 +1433,22 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     )
 
 
-from .column import Column  # noqa
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
-from .mongo_d_b_database import MongoDBDatabase  # noqa
-from .query import Query  # noqa
-from .schema import Schema  # noqa
-from .table import Table  # noqa
-from .table_partition import TablePartition  # noqa
+from .dbt_test import DbtTest  # noqa: I001, E402, F401 # isort:skip
+
+from .table import Table  # noqa: I001, E402, F401 # isort:skip
+
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: I001, E402, F401 # isort:skip
+
+from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
+
+from .dbt_source import DbtSource  # noqa: I001, E402, F401 # isort:skip
+
+from .query import Query  # noqa: I001, E402, F401 # isort:skip
+
+from .dbt_model import DbtModel  # noqa: I001, E402, F401 # isort:skip
+
+from .mongo_d_b_database import MongoDBDatabase  # noqa: I001, E402, F401 # isort:skip
+
+from .table_partition import TablePartition  # noqa: I001, E402, F401 # isort:skip
+
+from .column import Column  # noqa: I001, E402, F401 # isort:skip

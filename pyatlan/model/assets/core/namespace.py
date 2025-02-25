@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -81,5 +81,6 @@ class Namespace(Asset, type_name="Namespace"):
     )
 
 
-from .folder import Folder  # noqa
-from .query import Query  # noqa
+from .folder import Folder  # noqa: I001, E402, F401 # isort:skip
+
+from .query import Query  # noqa: I001, E402, F401 # isort:skip

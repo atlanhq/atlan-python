@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -164,7 +164,9 @@ class SalesforceObject(Salesforce):
     )
 
 
-from .salesforce_field import SalesforceField  # noqa
-from .salesforce_organization import SalesforceOrganization  # noqa
+from .salesforce_organization import SalesforceOrganization  # noqa: I001, E402, F401 # isort:skip
+
+from .salesforce_field import SalesforceField  # noqa: I001, E402, F401 # isort:skip
+
 
 SalesforceObject.Attributes.update_forward_refs()

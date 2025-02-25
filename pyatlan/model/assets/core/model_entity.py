@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -398,7 +398,10 @@ class ModelEntity(Model):
     )
 
 
-from .catalog import Catalog  # noqa
-from .model_attribute import ModelAttribute  # noqa
-from .model_entity_association import ModelEntityAssociation  # noqa
-from .model_version import ModelVersion  # noqa
+from .model_entity_association import ModelEntityAssociation  # noqa: I001, E402, F401 # isort:skip
+
+from .model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
+
+from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
+
+from .model_version import ModelVersion  # noqa: I001, E402, F401 # isort:skip

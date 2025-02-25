@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -211,10 +211,15 @@ class AnaplanModel(Anaplan):
     )
 
 
-from .anaplan_dimension import AnaplanDimension  # noqa
-from .anaplan_list import AnaplanList  # noqa
-from .anaplan_module import AnaplanModule  # noqa
-from .anaplan_page import AnaplanPage  # noqa
-from .anaplan_workspace import AnaplanWorkspace  # noqa
+from .anaplan_module import AnaplanModule  # noqa: I001, E402, F401 # isort:skip
+
+from .anaplan_dimension import AnaplanDimension  # noqa: I001, E402, F401 # isort:skip
+
+from .anaplan_list import AnaplanList  # noqa: I001, E402, F401 # isort:skip
+
+from .anaplan_page import AnaplanPage  # noqa: I001, E402, F401 # isort:skip
+
+from .anaplan_workspace import AnaplanWorkspace  # noqa: I001, E402, F401 # isort:skip
+
 
 AnaplanModel.Attributes.update_forward_refs()

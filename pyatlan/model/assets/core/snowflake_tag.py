@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -538,7 +538,10 @@ class SnowflakeTag(Tag):
     )
 
 
-from .dbt_model import DbtModel  # noqa
-from .dbt_source import DbtSource  # noqa
-from .dbt_test import DbtTest  # noqa
-from .schema import Schema  # noqa
+from .dbt_test import DbtTest  # noqa: I001, E402, F401 # isort:skip
+
+from .dbt_model import DbtModel  # noqa: I001, E402, F401 # isort:skip
+
+from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
+
+from .dbt_source import DbtSource  # noqa: I001, E402, F401 # isort:skip

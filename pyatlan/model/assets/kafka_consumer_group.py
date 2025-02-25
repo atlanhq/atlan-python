@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 
 from __future__ import annotations
@@ -221,6 +221,7 @@ class KafkaConsumerGroup(Kafka):
     )
 
 
-from .kafka_topic import KafkaTopic  # noqa
+from .kafka_topic import KafkaTopic  # noqa: I001, E402, F401 # isort:skip
+
 
 KafkaConsumerGroup.Attributes.update_forward_refs()
