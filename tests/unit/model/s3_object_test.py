@@ -1,6 +1,7 @@
 import pytest
 
 from pyatlan.model.assets import S3Object
+from pyatlan.model.utils import construct_object_key
 from tests.unit.model.constants import (
     AWS_ARN,
     BUCKET_NAME,
@@ -232,22 +233,6 @@ def test_create_without_required_parameters_raises_validation_error(
         ),
         (
             S3_OBJECT_NAME,
-            "default/s3",
-            None,
-            BUCKET_NAME,
-            BUCKET_QUALIFIED_NAME,
-            "prefix is required",
-        ),
-        (
-            S3_OBJECT_NAME,
-            "default/s3",
-            "",
-            BUCKET_NAME,
-            BUCKET_QUALIFIED_NAME,
-            "prefix cannot be blank",
-        ),
-        (
-            S3_OBJECT_NAME,
             S3_CONNECTION_QUALIFIED_NAME,
             "abc",
             None,
@@ -355,8 +340,11 @@ def test_create_with_prefix(
     assert attributes.name == name
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.aws_arn is None
-    assert attributes.s3_object_key == object_key
-    assert attributes.qualified_name == f"{connection_qualified_name}/{object_key}"
+    assert attributes.s3_object_key == construct_object_key(prefix, name)
+    assert (
+        attributes.qualified_name
+        == f"{connection_qualified_name}/{attributes.s3_bucket_name}/{object_key}"
+    )
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
     assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
 

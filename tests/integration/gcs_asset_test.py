@@ -11,6 +11,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
+from pyatlan.model.utils import construct_object_key
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 
@@ -19,7 +20,9 @@ MODULE_NAME = TestId.make_unique("GCS")
 CONNECTOR_TYPE = AtlanConnectorType.GCS
 GCS_BUCKET_NAME = MODULE_NAME
 GCS_OBJECT_NAME = f"{MODULE_NAME}.csv"
+GCS_OBJECT_NAME_PREFIX = f"{MODULE_NAME}Prefix.csv"
 GCS_OBJECT_NAME_OVERLOAD = f"{MODULE_NAME}_overload.csv"
+GCS_OBJECT_PREFIX = "/some/folder/structure"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 ANNOUNCEMENT_TYPE = AnnouncementType.INFORMATION
@@ -65,7 +68,9 @@ def gcs_object(
 ) -> Generator[GCSObject, None, None]:
     assert gcs_bucket.qualified_name
     to_create = GCSObject.create(
-        name=GCS_OBJECT_NAME, gcs_bucket_qualified_name=gcs_bucket.qualified_name
+        name=GCS_OBJECT_NAME,
+        gcs_bucket_name=gcs_bucket.name,
+        gcs_bucket_qualified_name=gcs_bucket.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=GCSObject)[0]
@@ -88,13 +93,52 @@ def test_gcs_object(
 
 
 @pytest.fixture(scope="module")
+def gcs_object_prefix(
+    client: AtlanClient, connection: Connection, gcs_bucket: GCSBucket
+) -> Generator[GCSObject, None, None]:
+    assert gcs_bucket.qualified_name
+    to_create = GCSObject.creator_with_prefix(
+        name=GCS_OBJECT_NAME_PREFIX,
+        connection_qualified_name=connection.qualified_name,
+        gcs_bucket_name=gcs_bucket.name,
+        gcs_bucket_qualified_name=gcs_bucket.qualified_name,
+        prefix=GCS_OBJECT_PREFIX,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=GCSObject)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=GCSObject)
+
+
+def test_gcs_object_with_prefix(
+    client: AtlanClient,
+    connection: Connection,
+    gcs_bucket: GCSBucket,
+    gcs_object_prefix: GCSObject,
+):
+    assert gcs_object_prefix
+    assert gcs_object_prefix.guid
+    assert gcs_object_prefix.qualified_name
+    assert gcs_bucket.name
+    assert gcs_object_prefix.name == GCS_OBJECT_NAME_PREFIX
+    assert gcs_object_prefix.connector_name == AtlanConnectorType.GCS.value
+    assert gcs_object_prefix.gcs_bucket_name == gcs_bucket.name
+    assert gcs_object_prefix.gcs_bucket_qualified_name == gcs_bucket.qualified_name
+    assert gcs_object_prefix.gcs_object_key == construct_object_key(
+        GCS_OBJECT_PREFIX, gcs_object_prefix.name
+    )
+
+
+@pytest.fixture(scope="module")
 def gcs_object_overload(
     client: AtlanClient, connection: Connection, gcs_bucket: GCSBucket
 ) -> Generator[GCSObject, None, None]:
     assert gcs_bucket.qualified_name
     assert connection.qualified_name
+    assert gcs_bucket.name
     to_create = GCSObject.creator(
         name=GCS_OBJECT_NAME_OVERLOAD,
+        gcs_bucket_name=gcs_bucket.name,
         gcs_bucket_qualified_name=gcs_bucket.qualified_name,
         connection_qualified_name=connection.qualified_name,
     )

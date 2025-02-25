@@ -26,6 +26,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import get_parent_qualified_name, init_guid, validate_required_fields
 
 from .a_d_l_s import ADLS
@@ -40,6 +41,7 @@ class ADLSObject(ADLS):
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
     ) -> ADLSObject: ...
 
@@ -49,6 +51,7 @@ class ADLSObject(ADLS):
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
         adls_account_qualified_name: str,
         connection_qualified_name: str,
@@ -60,19 +63,57 @@ class ADLSObject(ADLS):
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
         adls_account_qualified_name: Optional[str] = None,
         connection_qualified_name: Optional[str] = None,
     ) -> ADLSObject:
         validate_required_fields(
-            ["name", "adls_container_qualified_name"],
-            [name, adls_container_qualified_name],
+            ["name", "adls_container_name", "adls_container_qualified_name"],
+            [name, adls_container_name, adls_container_qualified_name],
         )
         attributes = ADLSObject.Attributes.create(
             name=name,
+            adls_container_name=adls_container_name,
             adls_container_qualified_name=adls_container_qualified_name,
             adls_account_qualified_name=adls_account_qualified_name,
             connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def creator_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        adls_container_name: str,
+        adls_container_qualified_name: str,
+        adls_account_qualified_name: Optional[str] = None,
+        prefix: str = "",
+    ) -> ADLSObject:
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "adls_container_name",
+                "adls_container_qualified_name",
+            ],
+            [
+                name,
+                connection_qualified_name,
+                adls_container_name,
+                adls_container_qualified_name,
+            ],
+        )
+        attributes = ADLSObject.Attributes.creator_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            adls_container_name=adls_container_name,
+            adls_container_qualified_name=adls_container_qualified_name,
+            adls_account_qualified_name=adls_account_qualified_name,
+            prefix=prefix,
         )
         return cls(attributes=attributes)
 
@@ -82,6 +123,7 @@ class ADLSObject(ADLS):
         cls,
         *,
         name: str,
+        adls_container_name: str,
         adls_container_qualified_name: str,
     ) -> ADLSObject:
         warn(
@@ -93,7 +135,9 @@ class ADLSObject(ADLS):
             stacklevel=2,
         )
         return cls.creator(
-            name=name, adls_container_qualified_name=adls_container_qualified_name
+            name=name,
+            adls_container_name=adls_container_name,
+            adls_container_qualified_name=adls_container_qualified_name,
         )
 
     type_name: str = Field(default="ADLSObject", allow_mutation=False)
@@ -579,13 +623,14 @@ class ADLSObject(ADLS):
             cls,
             *,
             name: str,
+            adls_container_name: str,
             adls_container_qualified_name: str,
             adls_account_qualified_name: Optional[str] = None,
             connection_qualified_name: Optional[str] = None,
         ) -> ADLSObject.Attributes:
             validate_required_fields(
-                ["name", "adls_container_qualified_name"],
-                [name, adls_container_qualified_name],
+                ["name", "adls_container_name", "adls_container_qualified_name"],
+                [name, adls_container_name, adls_container_qualified_name],
             )
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
@@ -602,10 +647,59 @@ class ADLSObject(ADLS):
             return ADLSObject.Attributes(
                 name=name,
                 adls_container_qualified_name=adls_container_qualified_name,
-                adls_container_name=adls_container_qualified_name.split("/")[-1],
+                adls_container_name=adls_container_name,
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connector_name=connector_name,
                 connection_qualified_name=connection_qualified_name or connection_qn,
+                adls_container=ADLSContainer.ref_by_qualified_name(
+                    adls_container_qualified_name
+                ),
+                adls_account_qualified_name=adls_account_qualified_name,
+                adls_account_name=adls_account_qualified_name.split("/")[-1],
+            )
+
+        @classmethod
+        @init_guid
+        def creator_with_prefix(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            adls_container_name: str,
+            adls_container_qualified_name: str,
+            adls_account_qualified_name: Optional[str] = None,
+            prefix: str = "",
+        ) -> ADLSObject.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "adls_container_name",
+                    "adls_container_qualified_name",
+                ],
+                [
+                    name,
+                    connection_qualified_name,
+                    adls_container_name,
+                    adls_container_qualified_name,
+                ],
+            )
+            connector_name = AtlanConnectorType.get_connector_name(
+                connection_qualified_name
+            )
+            adls_account_qualified_name = (
+                adls_account_qualified_name
+                or get_parent_qualified_name(adls_container_qualified_name)
+            )
+            object_key = construct_object_key(prefix, name)
+            return ADLSObject.Attributes(
+                name=name,
+                adls_object_key=object_key,
+                adls_container_qualified_name=adls_container_qualified_name,
+                adls_container_name=adls_container_name,
+                qualified_name=f"{adls_container_qualified_name}/{object_key}",
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
                 adls_container=ADLSContainer.ref_by_qualified_name(
                     adls_container_qualified_name
                 ),

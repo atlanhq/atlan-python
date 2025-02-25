@@ -17,6 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
     RelationField,
 )
+from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .s3 import S3
@@ -90,27 +91,25 @@ class S3Object(S3):
 
     @classmethod
     @init_guid
-    def create_with_prefix(
+    def creator_with_prefix(
         cls,
         *,
         name: str,
         connection_qualified_name: str,
-        prefix: str,
         s3_bucket_name: str,
         s3_bucket_qualified_name: str,
+        prefix: str = "",
     ) -> S3Object:
         validate_required_fields(
             [
                 "name",
                 "connection_qualified_name",
-                "prefix",
                 "s3_bucket_name",
                 "s3_bucket_qualified_name",
             ],
             [
                 name,
                 connection_qualified_name,
-                prefix,
                 s3_bucket_name,
                 s3_bucket_qualified_name,
             ],
@@ -123,6 +122,33 @@ class S3Object(S3):
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create_with_prefix(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        s3_bucket_name: str,
+        s3_bucket_qualified_name: str,
+        prefix: str = "",
+    ) -> S3Object:
+        warn(
+            (
+                "This method is deprecated, please use 'creator_with_prefix' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator_with_prefix(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            s3_bucket_name=s3_bucket_name,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+            prefix=prefix,
+        )
 
     type_name: str = Field(default="S3Object", allow_mutation=False)
 
@@ -379,7 +405,7 @@ class S3Object(S3):
                     raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
                 if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
+                    raise ValueError("Connector type must be S3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
             return S3Object.Attributes(
@@ -400,22 +426,20 @@ class S3Object(S3):
             *,
             name: str,
             connection_qualified_name: str,
-            prefix: str,
             s3_bucket_name: str,
             s3_bucket_qualified_name: str,
+            prefix: str = "",
         ) -> S3Object.Attributes:
             validate_required_fields(
                 [
                     "name",
                     "connection_qualified_name",
-                    "prefix",
                     "s3_bucket_name",
                     "s3_bucket_qualified_name",
                 ],
                 [
                     name,
                     connection_qualified_name,
-                    prefix,
                     s3_bucket_name,
                     s3_bucket_qualified_name,
                 ],
@@ -428,15 +452,18 @@ class S3Object(S3):
                     raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
                 if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
+                    raise ValueError("Connector type must be S3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-            object_key = f"{prefix}/{name}"
+            object_key = construct_object_key(prefix, name)
             return S3Object.Attributes(
                 name=name,
                 s3_object_key=object_key,
                 connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{object_key}",
+                # We should include `s3_bucket_name` to make it unique
+                # and avoid duplicate `path/name` (object keys) in two different buckets
+                # within the same connection.
+                qualified_name=f"{connection_qualified_name}/{s3_bucket_name}/{object_key}",
                 connector_name=connector_type.value,
                 s3_bucket_name=s3_bucket_name,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,

@@ -11,6 +11,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
+from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import get_parent_qualified_name
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
@@ -23,6 +24,8 @@ ADLS_CONNECTION_QUALIFIED_NAME = f"{MODULE_NAME}"
 CONTAINER_NAME = f"mycontainer_{MODULE_NAME}"
 CONTAINER_NAME_OVERLOAD = f"mycontainer_overload_{MODULE_NAME}"
 OBJECT_NAME = f"myobject_{MODULE_NAME}.csv"
+OBJECT_NAME_PREFIX = f"myobject_{MODULE_NAME}Prefix.csv"
+OBJECT_PREFIX = "/some/folder/structure"
 OBJECT_NAME_OVERLOAD = f"myobject_overload_{MODULE_NAME}.csv"
 CERTIFICATE_STATUS = CertificateStatus.VERIFIED
 CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
@@ -136,12 +139,53 @@ def adls_object(
     assert adls_container.qualified_name
     to_create = ADLSObject.create(
         name=OBJECT_NAME,
+        adls_container_name=adls_container.name,
         adls_container_qualified_name=adls_container.qualified_name,
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSObject)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=ADLSObject)
+
+
+@pytest.fixture(scope="module")
+def adls_object_prefix(
+    client: AtlanClient, connection: Connection, adls_container: ADLSContainer
+) -> Generator[ADLSObject, None, None]:
+    assert adls_container.qualified_name
+    to_create = ADLSObject.creator_with_prefix(
+        name=OBJECT_NAME_PREFIX,
+        connection_qualified_name=connection.qualified_name,
+        adls_container_name=adls_container.name,
+        adls_container_qualified_name=adls_container.qualified_name,
+        prefix=OBJECT_PREFIX,
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=ADLSObject)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=ADLSObject)
+
+
+def test_adls_object_with_prefix(
+    client: AtlanClient,
+    connection: Connection,
+    adls_container: ADLSContainer,
+    adls_object_prefix: ADLSObject,
+):
+    assert adls_object_prefix
+    assert adls_object_prefix.guid
+    assert adls_object_prefix.qualified_name
+    assert adls_container.name
+    assert adls_object_prefix.name == OBJECT_NAME_PREFIX
+    assert adls_object_prefix.connector_name == AtlanConnectorType.ADLS.value
+    assert adls_object_prefix.adls_container_name == adls_container.name
+    assert (
+        adls_object_prefix.adls_container_qualified_name
+        == adls_container.qualified_name
+    )
+    assert adls_object_prefix.adls_object_key == construct_object_key(
+        OBJECT_PREFIX, adls_object_prefix.name
+    )
 
 
 @pytest.fixture(scope="module")
@@ -158,6 +202,7 @@ def adls_object_overload(
     assert connection.qualified_name
     to_create = ADLSObject.creator(
         name=OBJECT_NAME_OVERLOAD,
+        adls_container_name=adls_container_overload.name,
         adls_container_qualified_name=adls_container_overload.qualified_name,
         adls_account_qualified_name=adls_account.qualified_name,
         connection_qualified_name=connection.qualified_name,
