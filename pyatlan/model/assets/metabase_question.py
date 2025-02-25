@@ -146,9 +146,7 @@ class MetabaseQuestion(Metabase):
     )
 
 
-from .metabase_collection import MetabaseCollection  # noqa: I001, E402, F401 # isort:skip
-
-from .metabase_dashboard import MetabaseDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .metabase_collection import MetabaseCollection  # noqa: E402, F401
+from .metabase_dashboard import MetabaseDashboard  # noqa: E402, F401
 
 MetabaseQuestion.Attributes.update_forward_refs()

@@ -222,6 +222,5 @@ class DataDomain(DataMesh):
     )
 
 
-from .stakeholder import Stakeholder  # noqa: I001, E402, F401 # isort:skip
-
-from .data_product import DataProduct  # noqa: I001, E402, F401 # isort:skip
+from .data_product import DataProduct  # noqa: E402, F401
+from .stakeholder import Stakeholder  # noqa: E402, F401

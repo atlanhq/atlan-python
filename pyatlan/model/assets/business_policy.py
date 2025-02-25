@@ -353,7 +353,6 @@ class BusinessPolicy(Asset, type_name="BusinessPolicy"):
     )
 
 
-from .business_policy_exception import BusinessPolicyException  # noqa: I001, E402, F401 # isort:skip
-
+from .business_policy_exception import BusinessPolicyException  # noqa: E402, F401
 
 BusinessPolicy.Attributes.update_forward_refs()

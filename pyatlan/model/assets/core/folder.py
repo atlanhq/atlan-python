@@ -189,4 +189,4 @@ class Folder(Namespace):
     )
 
 
-from .namespace import Namespace  # noqa: I001, E402, F401 # isort:skip
+from .namespace import Namespace  # noqa: E402, F401

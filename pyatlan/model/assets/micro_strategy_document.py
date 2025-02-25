@@ -69,7 +69,6 @@ class MicroStrategyDocument(MicroStrategy):
     )
 
 
-from .micro_strategy_project import MicroStrategyProject  # noqa: I001, E402, F401 # isort:skip
-
+from .micro_strategy_project import MicroStrategyProject  # noqa: E402, F401
 
 MicroStrategyDocument.Attributes.update_forward_refs()

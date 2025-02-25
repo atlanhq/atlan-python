@@ -135,15 +135,10 @@ class CogniteAsset(Cognite):
     )
 
 
-from .cognite_sequence import CogniteSequence  # noqa: I001, E402, F401 # isort:skip
-
-from .cognite3_d_model import Cognite3DModel  # noqa: I001, E402, F401 # isort:skip
-
-from .cognite_time_series import CogniteTimeSeries  # noqa: I001, E402, F401 # isort:skip
-
-from .cognite_file import CogniteFile  # noqa: I001, E402, F401 # isort:skip
-
-from .cognite_event import CogniteEvent  # noqa: I001, E402, F401 # isort:skip
-
+from .cognite3_d_model import Cognite3DModel  # noqa: E402, F401
+from .cognite_event import CogniteEvent  # noqa: E402, F401
+from .cognite_file import CogniteFile  # noqa: E402, F401
+from .cognite_sequence import CogniteSequence  # noqa: E402, F401
+from .cognite_time_series import CogniteTimeSeries  # noqa: E402, F401
 
 CogniteAsset.Attributes.update_forward_refs()

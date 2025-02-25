@@ -71,7 +71,6 @@ class AzureServiceBusNamespace(AzureServiceBus):
     )
 
 
-from .azure_service_bus_topic import AzureServiceBusTopic  # noqa: I001, E402, F401 # isort:skip
-
+from .azure_service_bus_topic import AzureServiceBusTopic  # noqa: E402, F401
 
 AzureServiceBusNamespace.Attributes.update_forward_refs()

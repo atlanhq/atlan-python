@@ -65,7 +65,6 @@ class ThoughtspotTable(Thoughtspot):
     )
 
 
-from .thoughtspot_column import ThoughtspotColumn  # noqa: I001, E402, F401 # isort:skip
-
+from .thoughtspot_column import ThoughtspotColumn  # noqa: E402, F401
 
 ThoughtspotTable.Attributes.update_forward_refs()

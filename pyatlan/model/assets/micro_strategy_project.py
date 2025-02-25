@@ -237,21 +237,13 @@ class MicroStrategyProject(MicroStrategy):
     )
 
 
-from .micro_strategy_document import MicroStrategyDocument  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_fact import MicroStrategyFact  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_report import MicroStrategyReport  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_visualization import MicroStrategyVisualization  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_metric import MicroStrategyMetric  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_cube import MicroStrategyCube  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_dossier import MicroStrategyDossier  # noqa: I001, E402, F401 # isort:skip
-
+from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: E402, F401
+from .micro_strategy_cube import MicroStrategyCube  # noqa: E402, F401
+from .micro_strategy_document import MicroStrategyDocument  # noqa: E402, F401
+from .micro_strategy_dossier import MicroStrategyDossier  # noqa: E402, F401
+from .micro_strategy_fact import MicroStrategyFact  # noqa: E402, F401
+from .micro_strategy_metric import MicroStrategyMetric  # noqa: E402, F401
+from .micro_strategy_report import MicroStrategyReport  # noqa: E402, F401
+from .micro_strategy_visualization import MicroStrategyVisualization  # noqa: E402, F401
 
 MicroStrategyProject.Attributes.update_forward_refs()

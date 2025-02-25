@@ -365,11 +365,8 @@ class PresetDashboard(Preset):
     )
 
 
-from .preset_chart import PresetChart  # noqa: I001, E402, F401 # isort:skip
-
-from .preset_workspace import PresetWorkspace  # noqa: I001, E402, F401 # isort:skip
-
-from .preset_dataset import PresetDataset  # noqa: I001, E402, F401 # isort:skip
-
+from .preset_chart import PresetChart  # noqa: E402, F401
+from .preset_dataset import PresetDataset  # noqa: E402, F401
+from .preset_workspace import PresetWorkspace  # noqa: E402, F401
 
 PresetDashboard.Attributes.update_forward_refs()

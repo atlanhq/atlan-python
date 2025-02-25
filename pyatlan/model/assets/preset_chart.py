@@ -206,7 +206,6 @@ class PresetChart(Preset):
     )
 
 
-from .preset_dashboard import PresetDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .preset_dashboard import PresetDashboard  # noqa: E402, F401
 
 PresetChart.Attributes.update_forward_refs()

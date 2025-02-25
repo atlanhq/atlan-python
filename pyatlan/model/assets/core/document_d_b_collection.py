@@ -1191,4 +1191,4 @@ class DocumentDBCollection(Table):
     )
 
 
-from .document_d_b_database import DocumentDBDatabase  # noqa: I001, E402, F401 # isort:skip
+from .document_d_b_database import DocumentDBDatabase  # noqa: E402, F401

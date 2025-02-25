@@ -224,6 +224,5 @@ class MatillionJob(Matillion):
     )
 
 
-from .matillion_component import MatillionComponent  # noqa: I001, E402, F401 # isort:skip
-
-from .matillion_project import MatillionProject  # noqa: I001, E402, F401 # isort:skip
+from .matillion_component import MatillionComponent  # noqa: E402, F401
+from .matillion_project import MatillionProject  # noqa: E402, F401

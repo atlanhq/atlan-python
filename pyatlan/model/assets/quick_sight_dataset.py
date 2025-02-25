@@ -238,9 +238,7 @@ class QuickSightDataset(QuickSight):
     )
 
 
-from .quick_sight_folder import QuickSightFolder  # noqa: I001, E402, F401 # isort:skip
-
-from .quick_sight_dataset_field import QuickSightDatasetField  # noqa: I001, E402, F401 # isort:skip
-
+from .quick_sight_dataset_field import QuickSightDatasetField  # noqa: E402, F401
+from .quick_sight_folder import QuickSightFolder  # noqa: E402, F401
 
 QuickSightDataset.Attributes.update_forward_refs()

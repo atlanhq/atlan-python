@@ -98,4 +98,4 @@ class ModelDataModel(Model):
     )
 
 
-from .model_version import ModelVersion  # noqa: I001, E402, F401 # isort:skip
+from .model_version import ModelVersion  # noqa: E402, F401

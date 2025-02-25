@@ -406,24 +406,14 @@ class Schema(SQL):
     )
 
 
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: I001, E402, F401 # isort:skip
-
-from .table import Table  # noqa: I001, E402, F401 # isort:skip
-
-from .view import View  # noqa: I001, E402, F401 # isort:skip
-
-from .calculation_view import CalculationView  # noqa: I001, E402, F401 # isort:skip
-
-from .procedure import Procedure  # noqa: I001, E402, F401 # isort:skip
-
-from .snowflake_stream import SnowflakeStream  # noqa: I001, E402, F401 # isort:skip
-
-from .function import Function  # noqa: I001, E402, F401 # isort:skip
-
-from .snowflake_tag import SnowflakeTag  # noqa: I001, E402, F401 # isort:skip
-
-from .materialised_view import MaterialisedView  # noqa: I001, E402, F401 # isort:skip
-
-from .snowflake_pipe import SnowflakePipe  # noqa: I001, E402, F401 # isort:skip
-
-from .database import Database  # noqa: I001, E402, F401 # isort:skip
+from .calculation_view import CalculationView  # noqa: E402, F401
+from .database import Database  # noqa: E402, F401
+from .function import Function  # noqa: E402, F401
+from .materialised_view import MaterialisedView  # noqa: E402, F401
+from .procedure import Procedure  # noqa: E402, F401
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
+from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
+from .snowflake_stream import SnowflakeStream  # noqa: E402, F401
+from .snowflake_tag import SnowflakeTag  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .view import View  # noqa: E402, F401

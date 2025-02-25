@@ -12,5 +12,6 @@ repos:
     hooks:
       - id: ruff
       - id: ruff
+        name: ruff-check-autofix
         args: ["check", "--select", "I", "--fix", "--silent"]
       - id: ruff-format

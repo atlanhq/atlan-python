@@ -193,6 +193,5 @@ class MatillionProject(Matillion):
     )
 
 
-from .matillion_group import MatillionGroup  # noqa: I001, E402, F401 # isort:skip
-
-from .matillion_job import MatillionJob  # noqa: I001, E402, F401 # isort:skip
+from .matillion_group import MatillionGroup  # noqa: E402, F401
+from .matillion_job import MatillionJob  # noqa: E402, F401

@@ -230,13 +230,9 @@ class LookerTile(Looker):
     )
 
 
-from .looker_query import LookerQuery  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_field import LookerField  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_dashboard import LookerDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_dashboard import LookerDashboard  # noqa: E402, F401
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_look import LookerLook  # noqa: E402, F401
+from .looker_query import LookerQuery  # noqa: E402, F401
 
 LookerTile.Attributes.update_forward_refs()

@@ -231,4 +231,4 @@ class Function(SQL):
     )
 
 
-from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
+from .schema import Schema  # noqa: E402, F401

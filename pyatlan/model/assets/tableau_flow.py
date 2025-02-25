@@ -209,7 +209,6 @@ class TableauFlow(Tableau):
     )
 
 
-from .tableau_project import TableauProject  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_project import TableauProject  # noqa: E402, F401
 
 TableauFlow.Attributes.update_forward_refs()

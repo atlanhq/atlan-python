@@ -63,7 +63,6 @@ class TableauSite(Tableau):
     )
 
 
-from .tableau_project import TableauProject  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_project import TableauProject  # noqa: E402, F401
 
 TableauSite.Attributes.update_forward_refs()

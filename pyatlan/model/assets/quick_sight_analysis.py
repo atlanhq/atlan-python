@@ -286,9 +286,7 @@ class QuickSightAnalysis(QuickSight):
     )
 
 
-from .quick_sight_folder import QuickSightFolder  # noqa: I001, E402, F401 # isort:skip
-
-from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa: I001, E402, F401 # isort:skip
-
+from .quick_sight_analysis_visual import QuickSightAnalysisVisual  # noqa: E402, F401
+from .quick_sight_folder import QuickSightFolder  # noqa: E402, F401
 
 QuickSightAnalysis.Attributes.update_forward_refs()

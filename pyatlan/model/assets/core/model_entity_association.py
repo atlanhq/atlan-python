@@ -386,4 +386,4 @@ class ModelEntityAssociation(Model):
     )
 
 
-from .model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
+from .model_entity import ModelEntity  # noqa: E402, F401

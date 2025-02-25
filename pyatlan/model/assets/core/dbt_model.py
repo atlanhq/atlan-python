@@ -420,10 +420,7 @@ class DbtModel(Dbt):
     )
 
 
-from .dbt_test import DbtTest  # noqa: I001, E402, F401 # isort:skip
-
-from .s_q_l import SQL  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_metric import DbtMetric  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_model_column import DbtModelColumn  # noqa: I001, E402, F401 # isort:skip
+from .dbt_metric import DbtMetric  # noqa: E402, F401
+from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401
+from .s_q_l import SQL  # noqa: E402, F401

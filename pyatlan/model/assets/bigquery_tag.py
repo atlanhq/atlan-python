@@ -590,11 +590,8 @@ class BigqueryTag(Tag):
     )
 
 
-from .core.dbt_test import DbtTest  # noqa: I001, E402, F401 # isort:skip
-
-from .core.dbt_model import DbtModel  # noqa: I001, E402, F401 # isort:skip
-
-from .core.dbt_source import DbtSource  # noqa: I001, E402, F401 # isort:skip
-
+from .core.dbt_model import DbtModel  # noqa: E402, F401
+from .core.dbt_source import DbtSource  # noqa: E402, F401
+from .core.dbt_test import DbtTest  # noqa: E402, F401
 
 BigqueryTag.Attributes.update_forward_refs()

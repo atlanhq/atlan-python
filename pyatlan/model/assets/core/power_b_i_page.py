@@ -108,4 +108,4 @@ class PowerBIPage(PowerBI):
     )
 
 
-from .power_b_i_report import PowerBIReport  # noqa: I001, E402, F401 # isort:skip
+from .power_b_i_report import PowerBIReport  # noqa: E402, F401

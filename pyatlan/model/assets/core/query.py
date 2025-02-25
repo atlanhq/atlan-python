@@ -507,10 +507,7 @@ class Query(SQL):
     )
 
 
-from .table import Table  # noqa: I001, E402, F401 # isort:skip
-
-from .view import View  # noqa: I001, E402, F401 # isort:skip
-
-from .namespace import Namespace  # noqa: I001, E402, F401 # isort:skip
-
-from .column import Column  # noqa: I001, E402, F401 # isort:skip
+from .column import Column  # noqa: E402, F401
+from .namespace import Namespace  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .view import View  # noqa: E402, F401

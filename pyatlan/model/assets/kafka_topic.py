@@ -351,7 +351,6 @@ class KafkaTopic(Kafka):
     )
 
 
-from .kafka_consumer_group import KafkaConsumerGroup  # noqa: I001, E402, F401 # isort:skip
-
+from .kafka_consumer_group import KafkaConsumerGroup  # noqa: E402, F401
 
 KafkaTopic.Attributes.update_forward_refs()

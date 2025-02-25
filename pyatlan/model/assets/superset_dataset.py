@@ -235,7 +235,6 @@ class SupersetDataset(Superset):
     )
 
 
-from .superset_dashboard import SupersetDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .superset_dashboard import SupersetDashboard  # noqa: E402, F401
 
 SupersetDataset.Attributes.update_forward_refs()

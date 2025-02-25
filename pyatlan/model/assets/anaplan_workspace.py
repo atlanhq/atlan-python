@@ -148,7 +148,6 @@ class AnaplanWorkspace(Anaplan):
     )
 
 
-from .anaplan_model import AnaplanModel  # noqa: I001, E402, F401 # isort:skip
-
+from .anaplan_model import AnaplanModel  # noqa: E402, F401
 
 AnaplanWorkspace.Attributes.update_forward_refs()

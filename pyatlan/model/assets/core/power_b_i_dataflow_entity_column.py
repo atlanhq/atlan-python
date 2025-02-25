@@ -174,4 +174,4 @@ class PowerBIDataflowEntityColumn(PowerBI):
     )
 
 
-from .power_b_i_dataflow import PowerBIDataflow  # noqa: I001, E402, F401 # isort:skip
+from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401

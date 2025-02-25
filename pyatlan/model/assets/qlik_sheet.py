@@ -102,9 +102,7 @@ class QlikSheet(Qlik):
     )
 
 
-from .qlik_app import QlikApp  # noqa: I001, E402, F401 # isort:skip
-
-from .qlik_chart import QlikChart  # noqa: I001, E402, F401 # isort:skip
-
+from .qlik_app import QlikApp  # noqa: E402, F401
+from .qlik_chart import QlikChart  # noqa: E402, F401
 
 QlikSheet.Attributes.update_forward_refs()

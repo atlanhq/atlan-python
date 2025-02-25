@@ -160,9 +160,7 @@ class SisenseFolder(Sisense):
     )
 
 
-from .sisense_dashboard import SisenseDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .sisense_widget import SisenseWidget  # noqa: I001, E402, F401 # isort:skip
-
+from .sisense_dashboard import SisenseDashboard  # noqa: E402, F401
+from .sisense_widget import SisenseWidget  # noqa: E402, F401
 
 SisenseFolder.Attributes.update_forward_refs()

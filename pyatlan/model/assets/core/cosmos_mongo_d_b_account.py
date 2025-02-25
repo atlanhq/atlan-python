@@ -541,4 +541,4 @@ class CosmosMongoDBAccount(CosmosMongoDB):
     )
 
 
-from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: I001, E402, F401 # isort:skip
+from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: E402, F401

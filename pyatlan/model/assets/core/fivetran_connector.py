@@ -1166,4 +1166,4 @@ class FivetranConnector(Fivetran):
     )
 
 
-from .process import Process  # noqa: I001, E402, F401 # isort:skip
+from .process import Process  # noqa: E402, F401

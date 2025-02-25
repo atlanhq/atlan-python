@@ -321,4 +321,4 @@ class DataContract(Catalog):
     )
 
 
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: E402, F401

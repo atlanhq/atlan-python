@@ -126,9 +126,7 @@ class MicroStrategyDossier(MicroStrategy):
     )
 
 
-from .micro_strategy_project import MicroStrategyProject  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_visualization import MicroStrategyVisualization  # noqa: I001, E402, F401 # isort:skip
-
+from .micro_strategy_project import MicroStrategyProject  # noqa: E402, F401
+from .micro_strategy_visualization import MicroStrategyVisualization  # noqa: E402, F401
 
 MicroStrategyDossier.Attributes.update_forward_refs()

@@ -84,7 +84,6 @@ class ModeWorkspace(Mode):
     )
 
 
-from .mode_collection import ModeCollection  # noqa: I001, E402, F401 # isort:skip
-
+from .mode_collection import ModeCollection  # noqa: E402, F401
 
 ModeWorkspace.Attributes.update_forward_refs()

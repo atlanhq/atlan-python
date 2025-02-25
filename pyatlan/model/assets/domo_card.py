@@ -141,9 +141,7 @@ class DomoCard(Domo):
     )
 
 
-from .domo_dashboard import DomoDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .domo_dataset import DomoDataset  # noqa: I001, E402, F401 # isort:skip
-
+from .domo_dashboard import DomoDashboard  # noqa: E402, F401
+from .domo_dataset import DomoDataset  # noqa: E402, F401
 
 DomoCard.Attributes.update_forward_refs()

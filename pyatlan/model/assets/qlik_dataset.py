@@ -146,7 +146,6 @@ class QlikDataset(Qlik):
     )
 
 
-from .qlik_space import QlikSpace  # noqa: I001, E402, F401 # isort:skip
-
+from .qlik_space import QlikSpace  # noqa: E402, F401
 
 QlikDataset.Attributes.update_forward_refs()

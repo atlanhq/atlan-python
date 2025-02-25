@@ -339,7 +339,6 @@ class PresetWorkspace(Preset):
     )
 
 
-from .preset_dashboard import PresetDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .preset_dashboard import PresetDashboard  # noqa: E402, F401
 
 PresetWorkspace.Attributes.update_forward_refs()

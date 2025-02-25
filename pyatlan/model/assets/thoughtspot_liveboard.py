@@ -65,7 +65,6 @@ class ThoughtspotLiveboard(Thoughtspot):
     )
 
 
-from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa: I001, E402, F401 # isort:skip
-
+from .thoughtspot_dashlet import ThoughtspotDashlet  # noqa: E402, F401
 
 ThoughtspotLiveboard.Attributes.update_forward_refs()

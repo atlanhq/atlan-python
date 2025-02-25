@@ -365,7 +365,6 @@ class SalesforceField(Salesforce):
     )
 
 
-from .salesforce_object import SalesforceObject  # noqa: I001, E402, F401 # isort:skip
-
+from .salesforce_object import SalesforceObject  # noqa: E402, F401
 
 SalesforceField.Attributes.update_forward_refs()

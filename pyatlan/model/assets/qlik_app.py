@@ -187,9 +187,7 @@ class QlikApp(Qlik):
     )
 
 
-from .qlik_sheet import QlikSheet  # noqa: I001, E402, F401 # isort:skip
-
-from .qlik_space import QlikSpace  # noqa: I001, E402, F401 # isort:skip
-
+from .qlik_sheet import QlikSheet  # noqa: E402, F401
+from .qlik_space import QlikSpace  # noqa: E402, F401
 
 QlikApp.Attributes.update_forward_refs()

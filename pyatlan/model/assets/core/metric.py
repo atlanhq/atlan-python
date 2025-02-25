@@ -179,9 +179,10 @@ class Metric(DataQuality):
 
 
 # Imports required for fixing circular dependencies:
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
-from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
-from .s_q_l import SQL  # noqa: I001, E402, F401 # isort:skip
+from .catalog import Catalog  # noqa: I001, E402, F401
+from .s_q_l import SQL  # noqa: I001, E402, F401
 
 
-from .column import Column  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: E402, F401
+
+from .column import Column  # noqa: E402, F401

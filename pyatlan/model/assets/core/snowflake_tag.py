@@ -538,10 +538,7 @@ class SnowflakeTag(Tag):
     )
 
 
-from .dbt_test import DbtTest  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_model import DbtModel  # noqa: I001, E402, F401 # isort:skip
-
-from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_source import DbtSource  # noqa: I001, E402, F401 # isort:skip
+from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_source import DbtSource  # noqa: E402, F401
+from .dbt_test import DbtTest  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401

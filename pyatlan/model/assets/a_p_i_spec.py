@@ -280,7 +280,6 @@ class APISpec(API):
     )
 
 
-from .a_p_i_path import APIPath  # noqa: I001, E402, F401 # isort:skip
-
+from .a_p_i_path import APIPath  # noqa: E402, F401
 
 APISpec.Attributes.update_forward_refs()

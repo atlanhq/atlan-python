@@ -164,9 +164,7 @@ class SalesforceObject(Salesforce):
     )
 
 
-from .salesforce_organization import SalesforceOrganization  # noqa: I001, E402, F401 # isort:skip
-
-from .salesforce_field import SalesforceField  # noqa: I001, E402, F401 # isort:skip
-
+from .salesforce_field import SalesforceField  # noqa: E402, F401
+from .salesforce_organization import SalesforceOrganization  # noqa: E402, F401
 
 SalesforceObject.Attributes.update_forward_refs()

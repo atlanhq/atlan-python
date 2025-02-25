@@ -132,9 +132,7 @@ class SalesforceReport(Salesforce):
     )
 
 
-from .salesforce_organization import SalesforceOrganization  # noqa: I001, E402, F401 # isort:skip
-
-from .salesforce_dashboard import SalesforceDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .salesforce_dashboard import SalesforceDashboard  # noqa: E402, F401
+from .salesforce_organization import SalesforceOrganization  # noqa: E402, F401
 
 SalesforceReport.Attributes.update_forward_refs()

@@ -63,7 +63,6 @@ class CognosPackage(Cognos):
     )
 
 
-from .cognos_folder import CognosFolder  # noqa: I001, E402, F401 # isort:skip
-
+from .cognos_folder import CognosFolder  # noqa: E402, F401
 
 CognosPackage.Attributes.update_forward_refs()

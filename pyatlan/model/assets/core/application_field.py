@@ -191,6 +191,5 @@ class ApplicationField(App):
     )
 
 
-from .application import Application  # noqa: I001, E402, F401 # isort:skip
-
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
+from .application import Application  # noqa: E402, F401
+from .asset import Asset  # noqa: E402, F401

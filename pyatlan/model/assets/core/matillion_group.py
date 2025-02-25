@@ -84,4 +84,4 @@ class MatillionGroup(Matillion):
     )
 
 
-from .matillion_project import MatillionProject  # noqa: I001, E402, F401 # isort:skip
+from .matillion_project import MatillionProject  # noqa: E402, F401

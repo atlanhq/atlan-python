@@ -188,11 +188,8 @@ class LookerExplore(Looker):
     )
 
 
-from .looker_project import LookerProject  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_field import LookerField  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_model import LookerModel  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_model import LookerModel  # noqa: E402, F401
+from .looker_project import LookerProject  # noqa: E402, F401
 
 LookerExplore.Attributes.update_forward_refs()

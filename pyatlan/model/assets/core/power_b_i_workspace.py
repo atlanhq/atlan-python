@@ -202,10 +202,7 @@ class PowerBIWorkspace(PowerBI):
     )
 
 
-from .power_b_i_dataflow import PowerBIDataflow  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_dashboard import PowerBIDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_dataset import PowerBIDataset  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_report import PowerBIReport  # noqa: I001, E402, F401 # isort:skip
+from .power_b_i_dashboard import PowerBIDashboard  # noqa: E402, F401
+from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
+from .power_b_i_dataset import PowerBIDataset  # noqa: E402, F401
+from .power_b_i_report import PowerBIReport  # noqa: E402, F401

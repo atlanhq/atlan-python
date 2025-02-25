@@ -251,13 +251,9 @@ class LookerDashboard(Looker):
     )
 
 
-from .looker_field import LookerField  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_folder import LookerFolder  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_tile import LookerTile  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_folder import LookerFolder  # noqa: E402, F401
+from .looker_look import LookerLook  # noqa: E402, F401
+from .looker_tile import LookerTile  # noqa: E402, F401
 
 LookerDashboard.Attributes.update_forward_refs()

@@ -63,7 +63,6 @@ class CogniteEvent(Cognite):
     )
 
 
-from .cognite_asset import CogniteAsset  # noqa: I001, E402, F401 # isort:skip
-
+from .cognite_asset import CogniteAsset  # noqa: E402, F401
 
 CogniteEvent.Attributes.update_forward_refs()

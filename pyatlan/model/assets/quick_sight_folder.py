@@ -230,11 +230,8 @@ class QuickSightFolder(QuickSight):
     )
 
 
-from .quick_sight_analysis import QuickSightAnalysis  # noqa: I001, E402, F401 # isort:skip
-
-from .quick_sight_dataset import QuickSightDataset  # noqa: I001, E402, F401 # isort:skip
-
-from .quick_sight_dashboard import QuickSightDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .quick_sight_analysis import QuickSightAnalysis  # noqa: E402, F401
+from .quick_sight_dashboard import QuickSightDashboard  # noqa: E402, F401
+from .quick_sight_dataset import QuickSightDataset  # noqa: E402, F401
 
 QuickSightFolder.Attributes.update_forward_refs()

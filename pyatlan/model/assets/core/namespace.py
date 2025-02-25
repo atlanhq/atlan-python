@@ -81,6 +81,5 @@ class Namespace(Asset, type_name="Namespace"):
     )
 
 
-from .folder import Folder  # noqa: I001, E402, F401 # isort:skip
-
-from .query import Query  # noqa: I001, E402, F401 # isort:skip
+from .folder import Folder  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401

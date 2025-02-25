@@ -192,6 +192,5 @@ class SodaCheck(Soda):
     )
 
 
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
-
-from .column import Column  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: E402, F401
+from .column import Column  # noqa: E402, F401

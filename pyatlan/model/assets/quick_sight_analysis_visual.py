@@ -210,7 +210,6 @@ class QuickSightAnalysisVisual(QuickSight):
     )
 
 
-from .quick_sight_analysis import QuickSightAnalysis  # noqa: I001, E402, F401 # isort:skip
-
+from .quick_sight_analysis import QuickSightAnalysis  # noqa: E402, F401
 
 QuickSightAnalysisVisual.Attributes.update_forward_refs()

@@ -584,6 +584,5 @@ class DataProduct(DataMesh):
     )
 
 
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
-
-from .data_domain import DataDomain  # noqa: I001, E402, F401 # isort:skip
+from .asset import Asset  # noqa: E402, F401
+from .data_domain import DataDomain  # noqa: E402, F401

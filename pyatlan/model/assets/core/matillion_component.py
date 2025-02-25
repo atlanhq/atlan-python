@@ -285,6 +285,5 @@ class MatillionComponent(Matillion):
     )
 
 
-from .process import Process  # noqa: I001, E402, F401 # isort:skip
-
-from .matillion_job import MatillionJob  # noqa: I001, E402, F401 # isort:skip
+from .matillion_job import MatillionJob  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401

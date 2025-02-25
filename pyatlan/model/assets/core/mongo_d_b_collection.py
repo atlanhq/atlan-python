@@ -1177,4 +1177,4 @@ class MongoDBCollection(Table):
     )
 
 
-from .mongo_d_b_database import MongoDBDatabase  # noqa: I001, E402, F401 # isort:skip
+from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401

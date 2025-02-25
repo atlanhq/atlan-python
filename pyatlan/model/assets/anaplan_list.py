@@ -180,9 +180,7 @@ class AnaplanList(Anaplan):
     )
 
 
-from .anaplan_line_item import AnaplanLineItem  # noqa: I001, E402, F401 # isort:skip
-
-from .anaplan_model import AnaplanModel  # noqa: I001, E402, F401 # isort:skip
-
+from .anaplan_line_item import AnaplanLineItem  # noqa: E402, F401
+from .anaplan_model import AnaplanModel  # noqa: E402, F401
 
 AnaplanList.Attributes.update_forward_refs()

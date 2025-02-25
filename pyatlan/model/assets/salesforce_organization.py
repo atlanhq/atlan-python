@@ -116,11 +116,8 @@ class SalesforceOrganization(Salesforce):
     )
 
 
-from .salesforce_object import SalesforceObject  # noqa: I001, E402, F401 # isort:skip
-
-from .salesforce_dashboard import SalesforceDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .salesforce_report import SalesforceReport  # noqa: I001, E402, F401 # isort:skip
-
+from .salesforce_dashboard import SalesforceDashboard  # noqa: E402, F401
+from .salesforce_object import SalesforceObject  # noqa: E402, F401
+from .salesforce_report import SalesforceReport  # noqa: E402, F401
 
 SalesforceOrganization.Attributes.update_forward_refs()

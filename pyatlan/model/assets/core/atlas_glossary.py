@@ -242,6 +242,5 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     )
 
 
-from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: I001, E402, F401 # isort:skip
-
-from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: I001, E402, F401 # isort:skip
+from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: E402, F401
+from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402, F401

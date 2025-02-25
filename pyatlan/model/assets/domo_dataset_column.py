@@ -108,7 +108,6 @@ class DomoDatasetColumn(Domo):
     )
 
 
-from .domo_dataset import DomoDataset  # noqa: I001, E402, F401 # isort:skip
-
+from .domo_dataset import DomoDataset  # noqa: E402, F401
 
 DomoDatasetColumn.Attributes.update_forward_refs()

@@ -106,9 +106,7 @@ class SigmaPage(Sigma):
     )
 
 
-from .sigma_workbook import SigmaWorkbook  # noqa: I001, E402, F401 # isort:skip
-
-from .sigma_data_element import SigmaDataElement  # noqa: I001, E402, F401 # isort:skip
-
+from .sigma_data_element import SigmaDataElement  # noqa: E402, F401
+from .sigma_workbook import SigmaWorkbook  # noqa: E402, F401
 
 SigmaPage.Attributes.update_forward_refs()

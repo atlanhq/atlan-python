@@ -222,7 +222,6 @@ class S3Bucket(S3):
     )
 
 
-from .s3_object import S3Object  # noqa: I001, E402, F401 # isort:skip
-
+from .s3_object import S3Object  # noqa: E402, F401
 
 S3Bucket.Attributes.update_forward_refs()

@@ -163,9 +163,7 @@ class SigmaDataElement(Sigma):
     )
 
 
-from .sigma_page import SigmaPage  # noqa: I001, E402, F401 # isort:skip
-
-from .sigma_data_element_field import SigmaDataElementField  # noqa: I001, E402, F401 # isort:skip
-
+from .sigma_data_element_field import SigmaDataElementField  # noqa: E402, F401
+from .sigma_page import SigmaPage  # noqa: E402, F401
 
 SigmaDataElement.Attributes.update_forward_refs()

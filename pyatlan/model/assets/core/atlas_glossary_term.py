@@ -603,8 +603,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     )
 
 
-from .atlas_glossary import AtlasGlossary  # noqa: I001, E402, F401 # isort:skip
-
-from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: I001, E402, F401 # isort:skip
-
-from .referenceable import Referenceable  # noqa: I001, E402, F401 # isort:skip
+from .atlas_glossary import AtlasGlossary  # noqa: E402, F401
+from .atlas_glossary_category import AtlasGlossaryCategory  # noqa: E402, F401
+from .referenceable import Referenceable  # noqa: E402, F401

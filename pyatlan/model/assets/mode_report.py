@@ -241,9 +241,7 @@ class ModeReport(Mode):
     )
 
 
-from .mode_query import ModeQuery  # noqa: I001, E402, F401 # isort:skip
-
-from .mode_collection import ModeCollection  # noqa: I001, E402, F401 # isort:skip
-
+from .mode_collection import ModeCollection  # noqa: E402, F401
+from .mode_query import ModeQuery  # noqa: E402, F401
 
 ModeReport.Attributes.update_forward_refs()

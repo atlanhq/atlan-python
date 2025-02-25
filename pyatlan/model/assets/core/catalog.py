@@ -227,12 +227,8 @@ class Catalog(Asset, type_name="Catalog"):
     )
 
 
-from .spark_job import SparkJob  # noqa: I001, E402, F401 # isort:skip
-
-from .model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
-
-from .model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
-
-from .airflow_task import AirflowTask  # noqa: I001, E402, F401 # isort:skip
-
-from .process import Process  # noqa: I001, E402, F401 # isort:skip
+from .airflow_task import AirflowTask  # noqa: E402, F401
+from .model_attribute import ModelAttribute  # noqa: E402, F401
+from .model_entity import ModelEntity  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401
+from .spark_job import SparkJob  # noqa: E402, F401

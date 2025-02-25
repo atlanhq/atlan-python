@@ -178,11 +178,8 @@ class LookerQuery(Looker):
     )
 
 
-from .looker_model import LookerModel  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_tile import LookerTile  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_look import LookerLook  # noqa: E402, F401
+from .looker_model import LookerModel  # noqa: E402, F401
+from .looker_tile import LookerTile  # noqa: E402, F401
 
 LookerQuery.Attributes.update_forward_refs()

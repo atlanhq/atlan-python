@@ -199,10 +199,7 @@ class PowerBIReport(PowerBI):
     )
 
 
-from .power_b_i_workspace import PowerBIWorkspace  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_tile import PowerBITile  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_dataset import PowerBIDataset  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_page import PowerBIPage  # noqa: I001, E402, F401 # isort:skip
+from .power_b_i_dataset import PowerBIDataset  # noqa: E402, F401
+from .power_b_i_page import PowerBIPage  # noqa: E402, F401
+from .power_b_i_tile import PowerBITile  # noqa: E402, F401
+from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402, F401

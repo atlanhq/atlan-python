@@ -398,10 +398,7 @@ class ModelEntity(Model):
     )
 
 
-from .model_entity_association import ModelEntityAssociation  # noqa: I001, E402, F401 # isort:skip
-
-from .model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
-
-from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
-
-from .model_version import ModelVersion  # noqa: I001, E402, F401 # isort:skip
+from .catalog import Catalog  # noqa: E402, F401
+from .model_attribute import ModelAttribute  # noqa: E402, F401
+from .model_entity_association import ModelEntityAssociation  # noqa: E402, F401
+from .model_version import ModelVersion  # noqa: E402, F401

@@ -233,13 +233,9 @@ class TableauWorksheet(Tableau):
     )
 
 
-from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_calculated_field import TableauCalculatedField  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_dashboard import TableauDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_datasource_field import TableauDatasourceField  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_calculated_field import TableauCalculatedField  # noqa: E402, F401
+from .tableau_dashboard import TableauDashboard  # noqa: E402, F401
+from .tableau_datasource_field import TableauDatasourceField  # noqa: E402, F401
+from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
 
 TableauWorksheet.Attributes.update_forward_refs()

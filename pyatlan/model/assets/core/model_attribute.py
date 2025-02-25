@@ -409,8 +409,6 @@ class ModelAttribute(Model):
     )
 
 
-from .model_attribute_association import ModelAttributeAssociation  # noqa: I001, E402, F401 # isort:skip
-
-from .model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
-
-from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
+from .catalog import Catalog  # noqa: E402, F401
+from .model_attribute_association import ModelAttributeAssociation  # noqa: E402, F401
+from .model_entity import ModelEntity  # noqa: E402, F401

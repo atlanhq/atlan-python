@@ -134,6 +134,5 @@ class Stakeholder(Persona):
     )
 
 
-from .stakeholder_title import StakeholderTitle  # noqa: I001, E402, F401 # isort:skip
-
-from .data_domain import DataDomain  # noqa: I001, E402, F401 # isort:skip
+from .data_domain import DataDomain  # noqa: E402, F401
+from .stakeholder_title import StakeholderTitle  # noqa: E402, F401

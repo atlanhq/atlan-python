@@ -308,9 +308,7 @@ class SupersetDashboard(Superset):
     )
 
 
-from .superset_chart import SupersetChart  # noqa: I001, E402, F401 # isort:skip
-
-from .superset_dataset import SupersetDataset  # noqa: I001, E402, F401 # isort:skip
-
+from .superset_chart import SupersetChart  # noqa: E402, F401
+from .superset_dataset import SupersetDataset  # noqa: E402, F401
 
 SupersetDashboard.Attributes.update_forward_refs()

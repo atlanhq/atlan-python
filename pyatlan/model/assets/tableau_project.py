@@ -243,13 +243,9 @@ class TableauProject(Tableau):
     )
 
 
-from .tableau_datasource import TableauDatasource  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_site import TableauSite  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_flow import TableauFlow  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_datasource import TableauDatasource  # noqa: E402, F401
+from .tableau_flow import TableauFlow  # noqa: E402, F401
+from .tableau_site import TableauSite  # noqa: E402, F401
+from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
 
 TableauProject.Attributes.update_forward_refs()

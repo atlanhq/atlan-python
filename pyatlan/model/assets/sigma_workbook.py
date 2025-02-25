@@ -82,7 +82,6 @@ class SigmaWorkbook(Sigma):
     )
 
 
-from .sigma_page import SigmaPage  # noqa: I001, E402, F401 # isort:skip
-
+from .sigma_page import SigmaPage  # noqa: E402, F401
 
 SigmaWorkbook.Attributes.update_forward_refs()

@@ -93,7 +93,6 @@ class AnaplanApp(Anaplan):
     )
 
 
-from .anaplan_page import AnaplanPage  # noqa: I001, E402, F401 # isort:skip
-
+from .anaplan_page import AnaplanPage  # noqa: E402, F401
 
 AnaplanApp.Attributes.update_forward_refs()

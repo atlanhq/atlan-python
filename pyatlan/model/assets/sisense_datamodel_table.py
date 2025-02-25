@@ -312,9 +312,7 @@ class SisenseDatamodelTable(Sisense):
     )
 
 
-from .sisense_datamodel import SisenseDatamodel  # noqa: I001, E402, F401 # isort:skip
-
-from .sisense_widget import SisenseWidget  # noqa: I001, E402, F401 # isort:skip
-
+from .sisense_datamodel import SisenseDatamodel  # noqa: E402, F401
+from .sisense_widget import SisenseWidget  # noqa: E402, F401
 
 SisenseDatamodelTable.Attributes.update_forward_refs()

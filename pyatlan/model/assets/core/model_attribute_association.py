@@ -190,4 +190,4 @@ class ModelAttributeAssociation(Model):
     )
 
 
-from .model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
+from .model_attribute import ModelAttribute  # noqa: E402, F401

@@ -150,15 +150,10 @@ class LookerModel(Looker):
     )
 
 
-from .looker_project import LookerProject  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_field import LookerField  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_query import LookerQuery  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_explore import LookerExplore  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_explore import LookerExplore  # noqa: E402, F401
+from .looker_field import LookerField  # noqa: E402, F401
+from .looker_look import LookerLook  # noqa: E402, F401
+from .looker_project import LookerProject  # noqa: E402, F401
+from .looker_query import LookerQuery  # noqa: E402, F401
 
 LookerModel.Attributes.update_forward_refs()

@@ -164,11 +164,8 @@ class MicroStrategyCube(MicroStrategy):
     )
 
 
-from .micro_strategy_metric import MicroStrategyMetric  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_project import MicroStrategyProject  # noqa: I001, E402, F401 # isort:skip
-
-from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: I001, E402, F401 # isort:skip
-
+from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: E402, F401
+from .micro_strategy_metric import MicroStrategyMetric  # noqa: E402, F401
+from .micro_strategy_project import MicroStrategyProject  # noqa: E402, F401
 
 MicroStrategyCube.Attributes.update_forward_refs()

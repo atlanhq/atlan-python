@@ -29,5 +29,5 @@ split-on-trailing-comma = false
 [lint.per-file-ignores]
 "tests/*" = ["S101"]
 "pyatlan/model/assets.py" = ["S307"]
-"!pyatlan.model.assets/**.py" = ["E402", "F811"]
-"!pyatlan.model.assets/core/**.py" = ["E402", "F811"]
+"pyatlan/model/assets/**.py" = ["E402", "F811"]
+"pyatlan/model/assets/core/**.py" = ["E402", "F811"]

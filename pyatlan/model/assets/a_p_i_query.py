@@ -276,7 +276,6 @@ class APIQuery(API):
     )
 
 
-from .a_p_i_field import APIField  # noqa: I001, E402, F401 # isort:skip
-
+from .a_p_i_field import APIField  # noqa: E402, F401
 
 APIQuery.Attributes.update_forward_refs()

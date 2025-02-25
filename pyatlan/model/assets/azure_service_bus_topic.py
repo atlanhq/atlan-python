@@ -97,9 +97,7 @@ class AzureServiceBusTopic(AzureServiceBus):
     )
 
 
-from .azure_service_bus_schema import AzureServiceBusSchema  # noqa: I001, E402, F401 # isort:skip
-
-from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa: I001, E402, F401 # isort:skip
-
+from .azure_service_bus_namespace import AzureServiceBusNamespace  # noqa: E402, F401
+from .azure_service_bus_schema import AzureServiceBusSchema  # noqa: E402, F401
 
 AzureServiceBusTopic.Attributes.update_forward_refs()

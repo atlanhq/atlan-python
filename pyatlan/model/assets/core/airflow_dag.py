@@ -144,4 +144,4 @@ class AirflowDag(Airflow):
     )
 
 
-from .airflow_task import AirflowTask  # noqa: I001, E402, F401 # isort:skip
+from .airflow_task import AirflowTask  # noqa: E402, F401

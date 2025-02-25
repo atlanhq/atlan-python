@@ -351,8 +351,6 @@ class View(SQL):
     )
 
 
-from .schema import Schema  # noqa: I001, E402, F401 # isort:skip
-
-from .column import Column  # noqa: I001, E402, F401 # isort:skip
-
-from .query import Query  # noqa: I001, E402, F401 # isort:skip
+from .column import Column  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401

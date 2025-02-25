@@ -92,4 +92,4 @@ class StakeholderTitle(Asset, type_name="StakeholderTitle"):
     )
 
 
-from .stakeholder import Stakeholder  # noqa: I001, E402, F401 # isort:skip
+from .stakeholder import Stakeholder  # noqa: E402, F401

@@ -194,9 +194,7 @@ class LookerFolder(Looker):
     )
 
 
-from .looker_dashboard import LookerDashboard  # noqa: I001, E402, F401 # isort:skip
-
-from .looker_look import LookerLook  # noqa: I001, E402, F401 # isort:skip
-
+from .looker_dashboard import LookerDashboard  # noqa: E402, F401
+from .looker_look import LookerLook  # noqa: E402, F401
 
 LookerFolder.Attributes.update_forward_refs()

@@ -120,9 +120,7 @@ class ModeQuery(Mode):
     )
 
 
-from .mode_chart import ModeChart  # noqa: I001, E402, F401 # isort:skip
-
-from .mode_report import ModeReport  # noqa: I001, E402, F401 # isort:skip
-
+from .mode_chart import ModeChart  # noqa: E402, F401
+from .mode_report import ModeReport  # noqa: E402, F401
 
 ModeQuery.Attributes.update_forward_refs()

@@ -102,9 +102,7 @@ class MetabaseDashboard(Metabase):
     )
 
 
-from .metabase_question import MetabaseQuestion  # noqa: I001, E402, F401 # isort:skip
-
-from .metabase_collection import MetabaseCollection  # noqa: I001, E402, F401 # isort:skip
-
+from .metabase_collection import MetabaseCollection  # noqa: E402, F401
+from .metabase_question import MetabaseQuestion  # noqa: E402, F401
 
 MetabaseDashboard.Attributes.update_forward_refs()

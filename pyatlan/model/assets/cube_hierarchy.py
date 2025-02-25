@@ -100,9 +100,7 @@ class CubeHierarchy(MultiDimensionalDataset):
     )
 
 
-from .cube_dimension import CubeDimension  # noqa: I001, E402, F401 # isort:skip
-
-from .cube_field import CubeField  # noqa: I001, E402, F401 # isort:skip
-
+from .cube_dimension import CubeDimension  # noqa: E402, F401
+from .cube_field import CubeField  # noqa: E402, F401
 
 CubeHierarchy.Attributes.update_forward_refs()

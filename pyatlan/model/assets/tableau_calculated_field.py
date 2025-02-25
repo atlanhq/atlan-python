@@ -301,9 +301,7 @@ class TableauCalculatedField(Tableau):
     )
 
 
-from .tableau_datasource import TableauDatasource  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_worksheet import TableauWorksheet  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_datasource import TableauDatasource  # noqa: E402, F401
+from .tableau_worksheet import TableauWorksheet  # noqa: E402, F401
 
 TableauCalculatedField.Attributes.update_forward_refs()

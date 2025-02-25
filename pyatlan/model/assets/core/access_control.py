@@ -243,4 +243,4 @@ class AccessControl(Asset, type_name="AccessControl"):
     )
 
 
-from .auth_policy import AuthPolicy  # noqa: I001, E402, F401 # isort:skip
+from .auth_policy import AuthPolicy  # noqa: E402, F401

@@ -193,9 +193,7 @@ class TableauDashboard(Tableau):
     )
 
 
-from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_worksheet import TableauWorksheet  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
+from .tableau_worksheet import TableauWorksheet  # noqa: E402, F401
 
 TableauDashboard.Attributes.update_forward_refs()

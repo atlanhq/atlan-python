@@ -121,7 +121,6 @@ class AIModel(AI):
     )
 
 
-from .a_i_application import AIApplication  # noqa: I001, E402, F401 # isort:skip
-
+from .a_i_application import AIApplication  # noqa: E402, F401
 
 AIModel.Attributes.update_forward_refs()

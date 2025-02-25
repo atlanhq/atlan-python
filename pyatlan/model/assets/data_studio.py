@@ -376,15 +376,10 @@ class DataStudio(Google):
     )
 
 
-from .core.spark_job import SparkJob  # noqa: I001, E402, F401 # isort:skip
-
-from .core.model_attribute import ModelAttribute  # noqa: I001, E402, F401 # isort:skip
-
-from .core.model_entity import ModelEntity  # noqa: I001, E402, F401 # isort:skip
-
-from .core.airflow_task import AirflowTask  # noqa: I001, E402, F401 # isort:skip
-
-from .core.process import Process  # noqa: I001, E402, F401 # isort:skip
-
+from .core.airflow_task import AirflowTask  # noqa: E402, F401
+from .core.model_attribute import ModelAttribute  # noqa: E402, F401
+from .core.model_entity import ModelEntity  # noqa: E402, F401
+from .core.process import Process  # noqa: E402, F401
+from .core.spark_job import SparkJob  # noqa: E402, F401
 
 DataStudio.Attributes.update_forward_refs()

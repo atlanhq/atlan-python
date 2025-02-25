@@ -446,8 +446,6 @@ class AirflowTask(Airflow):
     )
 
 
-from .airflow_dag import AirflowDag  # noqa: I001, E402, F401 # isort:skip
-
-from .process import Process  # noqa: I001, E402, F401 # isort:skip
-
-from .catalog import Catalog  # noqa: I001, E402, F401 # isort:skip
+from .airflow_dag import AirflowDag  # noqa: E402, F401
+from .catalog import Catalog  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401

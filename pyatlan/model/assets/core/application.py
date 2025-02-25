@@ -134,6 +134,5 @@ class Application(App):
     )
 
 
-from .asset import Asset  # noqa: I001, E402, F401 # isort:skip
-
-from .application_field import ApplicationField  # noqa: I001, E402, F401 # isort:skip
+from .application_field import ApplicationField  # noqa: E402, F401
+from .asset import Asset  # noqa: E402, F401

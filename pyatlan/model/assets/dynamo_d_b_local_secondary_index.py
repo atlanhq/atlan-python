@@ -63,7 +63,6 @@ class DynamoDBLocalSecondaryIndex(DynamoDBSecondaryIndex):
     )
 
 
-from .dynamo_dbtable import DynamoDBTable  # noqa: I001, E402, F401 # isort:skip
-
+from .dynamo_dbtable import DynamoDBTable  # noqa: E402, F401
 
 DynamoDBLocalSecondaryIndex.Attributes.update_forward_refs()

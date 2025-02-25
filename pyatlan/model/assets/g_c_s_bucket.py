@@ -278,7 +278,6 @@ class GCSBucket(GCS):
     )
 
 
-from .g_c_s_object import GCSObject  # noqa: I001, E402, F401 # isort:skip
-
+from .g_c_s_object import GCSObject  # noqa: E402, F401
 
 GCSBucket.Attributes.update_forward_refs()

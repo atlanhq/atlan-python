@@ -274,7 +274,6 @@ class DataverseAttribute(Dataverse):
     )
 
 
-from .dataverse_entity import DataverseEntity  # noqa: I001, E402, F401 # isort:skip
-
+from .dataverse_entity import DataverseEntity  # noqa: E402, F401
 
 DataverseAttribute.Attributes.update_forward_refs()

@@ -97,7 +97,6 @@ from .asset import Asset  # noqa: I001, E402, F401
 
 {%  if asset_info.module_name == 'metric' %}
 # Imports required for fixing circular dependencies:
-from .asset import Asset  # noqa: I001, E402, F401
 from .catalog import Catalog  # noqa: I001, E402, F401
 from .s_q_l import SQL  # noqa: I001, E402, F401
 {% endif %}

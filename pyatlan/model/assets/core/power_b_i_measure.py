@@ -181,6 +181,5 @@ class PowerBIMeasure(PowerBI):
     )
 
 
-from .power_b_i_table import PowerBITable  # noqa: I001, E402, F401 # isort:skip
-
-from .power_b_i_column import PowerBIColumn  # noqa: I001, E402, F401 # isort:skip
+from .power_b_i_column import PowerBIColumn  # noqa: E402, F401
+from .power_b_i_table import PowerBITable  # noqa: E402, F401

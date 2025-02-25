@@ -92,7 +92,6 @@ class SigmaDataset(Sigma):
     )
 
 
-from .sigma_dataset_column import SigmaDatasetColumn  # noqa: I001, E402, F401 # isort:skip
-
+from .sigma_dataset_column import SigmaDatasetColumn  # noqa: E402, F401
 
 SigmaDataset.Attributes.update_forward_refs()

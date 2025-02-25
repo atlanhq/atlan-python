@@ -421,9 +421,7 @@ class APIField(API):
     )
 
 
-from .a_p_i_query import APIQuery  # noqa: I001, E402, F401 # isort:skip
-
-from .a_p_i_object import APIObject  # noqa: I001, E402, F401 # isort:skip
-
+from .a_p_i_object import APIObject  # noqa: E402, F401
+from .a_p_i_query import APIQuery  # noqa: E402, F401
 
 APIField.Attributes.update_forward_refs()

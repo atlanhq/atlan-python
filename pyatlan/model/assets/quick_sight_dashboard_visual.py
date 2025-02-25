@@ -219,7 +219,6 @@ class QuickSightDashboardVisual(QuickSight):
     )
 
 
-from .quick_sight_dashboard import QuickSightDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .quick_sight_dashboard import QuickSightDashboard  # noqa: E402, F401
 
 QuickSightDashboardVisual.Attributes.update_forward_refs()

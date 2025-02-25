@@ -358,11 +358,8 @@ class TableauDatasource(Tableau):
     )
 
 
-from .tableau_workbook import TableauWorkbook  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_datasource_field import TableauDatasourceField  # noqa: I001, E402, F401 # isort:skip
-
-from .tableau_project import TableauProject  # noqa: I001, E402, F401 # isort:skip
-
+from .tableau_datasource_field import TableauDatasourceField  # noqa: E402, F401
+from .tableau_project import TableauProject  # noqa: E402, F401
+from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
 
 TableauDatasource.Attributes.update_forward_refs()

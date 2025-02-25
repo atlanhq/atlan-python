@@ -63,7 +63,6 @@ class CogniteSequence(Cognite):
     )
 
 
-from .cognite_asset import CogniteAsset  # noqa: I001, E402, F401 # isort:skip
-
+from .cognite_asset import CogniteAsset  # noqa: E402, F401
 
 CogniteSequence.Attributes.update_forward_refs()

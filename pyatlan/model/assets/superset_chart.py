@@ -213,7 +213,6 @@ class SupersetChart(Superset):
     )
 
 
-from .superset_dashboard import SupersetDashboard  # noqa: I001, E402, F401 # isort:skip
-
+from .superset_dashboard import SupersetDashboard  # noqa: E402, F401
 
 SupersetChart.Attributes.update_forward_refs()

@@ -264,10 +264,7 @@ class DbtTest(Dbt):
     )
 
 
-from .s_q_l import SQL  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_model_column import DbtModelColumn  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_model import DbtModel  # noqa: I001, E402, F401 # isort:skip
-
-from .dbt_source import DbtSource  # noqa: I001, E402, F401 # isort:skip
+from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
+from .dbt_source import DbtSource  # noqa: E402, F401
+from .s_q_l import SQL  # noqa: E402, F401

@@ -221,7 +221,6 @@ class RedashQuery(Redash):
     )
 
 
-from .redash_visualization import RedashVisualization  # noqa: I001, E402, F401 # isort:skip
-
+from .redash_visualization import RedashVisualization  # noqa: E402, F401
 
 RedashQuery.Attributes.update_forward_refs()
