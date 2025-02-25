@@ -330,9 +330,7 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
         power_b_i_dataflow_entity_columns: Optional[
             List[PowerBIDataflowEntityColumn]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
         tables: Optional[List[PowerBITable]] = Field(
             default=None, description=""
         )  # relationship

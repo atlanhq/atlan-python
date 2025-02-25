@@ -393,8 +393,9 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
 
         # Updated to use `asset.attribute` instead of `asset` to align with the API.
         # This change ensures the correct value is retrieved regardless of the naming conventions.
-        attribute_name, attribute_value = attribute, getattr(
-            asset.attributes, attribute, None
+        attribute_name, attribute_value = (
+            attribute,
+            getattr(asset.attributes, attribute, None),
         )
 
         # Process list of relationship attributes

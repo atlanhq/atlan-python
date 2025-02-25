@@ -60,8 +60,7 @@ class DataProduct(DataMesh):
     ) -> DataProduct:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -108,8 +107,7 @@ class DataProduct(DataMesh):
     ) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

@@ -78,8 +78,7 @@ class Asset(Referenceable):
     def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
@@ -105,8 +104,7 @@ class Asset(Referenceable):
     ) -> SelfAsset:
         warn(
             (
-                "This method is deprecated, please use 'updater' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'updater' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

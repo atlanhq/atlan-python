@@ -1,0 +1,43 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+    ) -> QuickSightAnalysis: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_analysis_folders: List[str],
+    ) -> QuickSightAnalysis: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        quick_sight_id: str,
+        quick_sight_analysis_folders: Optional[List[str]] = None,
+    ) -> QuickSightAnalysis:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "quick_sight_id"],
+            [name, connection_qualified_name, quick_sight_id],
+        )
+        attributes = QuickSightAnalysis.Attributes.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            quick_sight_id=quick_sight_id,
+            quick_sight_analysis_folders=quick_sight_analysis_folders,
+        )
+        return cls(attributes=attributes)

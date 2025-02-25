@@ -1036,14 +1036,10 @@ class DynamoDBTable(Table):
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         dynamo_d_b_local_secondary_indexes: Optional[
             List[DynamoDBLocalSecondaryIndex]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
         dynamo_d_b_global_secondary_indexes: Optional[
             List[DynamoDBGlobalSecondaryIndex]
-        ] = Field(
-            default=None, description=""
-        )  # relationship
+        ] = Field(default=None, description="")  # relationship
 
     attributes: DynamoDBTable.Attributes = Field(
         default_factory=lambda: DynamoDBTable.Attributes(),

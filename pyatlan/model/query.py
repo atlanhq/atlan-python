@@ -170,8 +170,7 @@ class QueryRequest(AtlanObject):
         description="Unique name of the connection to use for the query."
     )
     default_schema: str = Field(
-        description="Default schema name to use for unqualified objects "
-        "in the SQL, in the form `DB.SCHEMA`."
+        description="Default schema name to use for unqualified objects in the SQL, in the form `DB.SCHEMA`."
     )
 
 

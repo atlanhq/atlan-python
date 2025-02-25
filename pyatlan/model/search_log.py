@@ -278,8 +278,7 @@ class SearchLogEntry(AtlanObject):
         default_factory=list,
         alias="entityQFNamesAllowed",
         description=(
-            "Unique name(s) of asset(s) that were in the "
-            "results of the search, that the user is permitted to see."
+            "Unique name(s) of asset(s) that were in the results of the search, that the user is permitted to see."
         ),
     )
     entity_type_names_all: List[str] = Field(
@@ -291,8 +290,7 @@ class SearchLogEntry(AtlanObject):
         default_factory=list,
         alias="entityTypeNamesAllowed",
         description=(
-            "Name(s) of the types of assets that were in "
-            "the results of the search, that the user is permitted to see."
+            "Name(s) of the types of assets that were in the results of the search, that the user is permitted to see."
         ),
     )
     utm_tags: List[str] = Field(

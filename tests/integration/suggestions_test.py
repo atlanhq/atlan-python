@@ -541,7 +541,6 @@ def test_column1(
     schema2: Schema,
     database: Database,
 ):
-
     # Table column 1
     assert t1c1.connector_name == CONNECTOR_TYPE
     assert t1c1.table_name == TABLE_NAME

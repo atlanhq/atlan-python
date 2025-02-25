@@ -1213,13 +1213,16 @@ class LineageFilterFieldCM(LineageFilterField):
         comparison_operator: AtlanComparisonOperator,
         expected_types: str = "int, float or date",
     ):
-        if isinstance(
-            value,
-            bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
+        if (
+            isinstance(
+                value,
+                bool,  # needed because isinstance(value, int) evaluates to true when value is bool
+            )
+            or (
+                not isinstance(value, int)
+                and not isinstance(value, float)
+                and not isinstance(value, date)
+            )
         ):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 type(value).__name__, expected_types
@@ -1481,13 +1484,16 @@ class LineageFilterFieldNumeric(LineageFilterField):
     def _get_filter(
         self, value: Union[int, float, date], operator: AtlanComparisonOperator
     ):
-        if isinstance(
-            value,
-            bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
+        if (
+            isinstance(
+                value,
+                bool,  # needed because isinstance(value, int) evaluates to true when value is bool
+            )
+            or (
+                not isinstance(value, int)
+                and not isinstance(value, float)
+                and not isinstance(value, date)
+            )
         ):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 type(value).__name__, "int, float or date"

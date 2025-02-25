@@ -68,8 +68,7 @@ class ADLSContainer(ADLS):
     def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,

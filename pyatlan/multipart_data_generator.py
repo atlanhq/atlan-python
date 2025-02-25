@@ -48,7 +48,8 @@ class MultipartDataGenerator(object):
 
         # Get content type from dictionary, default to 'application/octet-stream'
         content_type = self._CONTENT_TYPES.get(
-            filename[filename.rfind(".") :], "application/octet-stream"  # noqa: E203
+            filename[filename.rfind(".") :],
+            "application/octet-stream",  # noqa: E203
         )
         self._write(f"Content-Type: {content_type}")
         self._write(self.line_break)

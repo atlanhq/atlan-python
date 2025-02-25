@@ -1,0 +1,32 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            quick_sight_id: str,
+            quick_sight_analysis_folders: Optional[List[str]] = None,
+        ) -> QuickSightAnalysis.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "quick_sight_id"],
+                [name, connection_qualified_name, quick_sight_id],
+            )
+            folders = None
+            if quick_sight_analysis_folders:
+                folders = [
+                    QuickSightFolder.ref_by_qualified_name(quick_sight_folder_qn)
+                    for quick_sight_folder_qn in quick_sight_analysis_folders
+                ]
+
+            return QuickSightAnalysis.Attributes(
+                name=name,
+                quick_sight_id=quick_sight_id,
+                qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+                quick_sight_analysis_folders=folders,
+            )

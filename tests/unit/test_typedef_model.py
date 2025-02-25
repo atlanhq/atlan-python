@@ -419,7 +419,7 @@ class TestAttributeDef:
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
             # Optional kwargs that allow limiting
             # the applicability of an attribute within Atlan
-            **applicable_kwargs
+            **applicable_kwargs,
         )
 
         assert attribute_def_with_limited

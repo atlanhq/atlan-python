@@ -68,8 +68,7 @@ class APIPath(API):
     def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         warn(
             (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
+                "This method is deprecated, please use 'creator' instead, which offers identical functionality."
             ),
             DeprecationWarning,
             stacklevel=2,
