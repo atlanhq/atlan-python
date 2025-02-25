@@ -136,8 +136,6 @@ def test_file_client_upload_file_raises_invalid_request_error(
         )
 
 
-
-
 def test_file_client_download_file_invalid_format_raises_invalid_request_error(
     client, s3_presigned_url, mock_session_invalid
 ):
