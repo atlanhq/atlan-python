@@ -145,6 +145,19 @@ def validate_required_fields(field_names: List[str], values: List[Any]):
             raise ValueError(f"{field_name} cannot be an empty list")
 
 
+def deep_get(dictionary, keys, default=None):
+    """
+    Returns dict key value using dict and it's dot_key string,
+
+    ie: key1.key2_nested.key3_nested, if found, otherwise returns default (`None`).
+    """
+    return reduce(
+        lambda d, key: d.get(key, default) if isinstance(d, dict) else default,
+        keys.split("."),
+        dictionary,
+    )
+
+
 @dataclass
 class EndpointMixin:
     prefix: str
