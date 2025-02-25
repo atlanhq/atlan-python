@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 """
 This script will retrieve the typedefs from an Atlan instance and write them to a json file. This class_generator will
 use this file to produce code for assets, structs and enums for atlan. The ATLAN_BASE_URL and ATLAN_API_KEY

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 """
 This script can be used to generate the source code for pyatlan.model.assets, pyatlan.model.structs.py and part of
 pyatlan.model.enums. This script depends upon the presence of a JSON file containing typedefs downloaded from
@@ -226,6 +226,7 @@ class AssetInfo:
         "Stakeholder",
         "StakeholderTitle",
         "NoSQL",
+        "DocumentDBCollection",
     }
 
     def __init__(self, name: str, entity_def: EntityDef):
