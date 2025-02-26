@@ -19,9 +19,19 @@
             self.attributes = self.Attributes()
         self.attributes.{{ attribute_name }} = {{ property_name }}
     {% else %}
+    {% if property_name == "qualified_name" %}
+    @property
+    def qualified_name(self) -> Optional[str]:
+        return (
+            self.unique_attributes.get("qualifiedName")
+            if self.unique_attributes
+            else (self.attributes.qualified_name if self.attributes else None)
+        )
+    {% else %}
     @property
     def {{ property_name }}(self)->{{ property_type }}:
         return None if self.attributes is None else self.attributes.{{ attribute_name }}
+    {% endif %}
     @{{ property_name }}.setter
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
         if self.attributes is None:
