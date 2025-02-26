@@ -1,3 +1,30 @@
+## 5.0.0 (February 26, 2024)
+
+### New Features
+
+- Added a new method `DataProduct.get_assets()` that retrieves a list of all assets linked to the provided data product.
+- Made `DSL.query` and `DSL.post_filter` more flexible to accept both raw dictionaries and Python objects, i.e: `Optional[Union[Dict[str, Any], Query]]`. This change allows users to construct `DSL` objects directly with raw DSL dictionaries, e.g: `DSL(**raw_dsl)`.
+- Added `creator_with_prefix()` methods to `GCSObject` and `ADLSObject`.
+- Added a model utility method (`construct_object_key()`) to construct a consistent `objectKey` for object store assets, which is currently used by `creator_with_prefix()`.
+
+### Bug Fixes
+
+- Fixed the `creator_with_prefix()` method to use an empty prefix `""` (representing the root path) for object store assets.
+- Fixed `SearchLogResults` edge cases — when `entityGuidsAll` is empty `[]` or `"undefined"` in the request `DSL`.
+
+### Breaking Changes
+
+- `bucket_name` and `adls_container_name` are now mandatory for `GCSObject.creator()` and `ADLSObject.creator()`, respectively.
+- Changed the default behavior for tag propagation to `False` by default. This means:
+  - `remove_propagations_on_entity_delete` is now `True` by default.
+  - `propagate`, `restrict_propagation_through_lineage`, and `restrict_propagation_through_hierarchy` are now `False` by default.
+
+### QOL Improvements
+
+- Generated the latest typedef models.
+- Upgraded SDK dependencies (main, dev, and tooling) to the latest versions.
+- Replaced the existing linter and formatter stack (`black`, `flake8`, `isort`, `autoflake8`) with `ruff`, significantly reducing development and QA check times while consolidating all configurations into a single file.
+
 ## 4.2.5 (February 19, 2024)
 
 ### New Features
