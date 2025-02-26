@@ -117,7 +117,7 @@ class Asset(Referenceable):
     def ref_by_guid(
         cls: type[SelfAsset], guid: str, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> SelfAsset:
-        retval: SelfAsset = cls(attributes=cls.Attributes())
+        retval: SelfAsset = cls()
         retval.guid = guid
         retval.semantic = semantic
         return retval
@@ -128,9 +128,7 @@ class Asset(Referenceable):
         qualified_name: str,
         semantic: SaveSemantic = SaveSemantic.REPLACE,
     ) -> SelfAsset:
-        ret_value: SelfAsset = cls(
-            attributes=cls.Attributes(name="", qualified_name=qualified_name)
-        )
+        ret_value: SelfAsset = cls()
         ret_value.unique_attributes = {"qualifiedName": qualified_name}
         ret_value.semantic = semantic
         return ret_value
