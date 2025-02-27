@@ -52,7 +52,8 @@ class Referenceable(AtlanObject):
         return values
 
     def json(self, *args, **kwargs) -> str:
-        self.business_attributes = self._metadata_proxy.business_attributes
+        if self._metadata_proxy and self._metadata_proxy.business_attributes:
+            self.business_attributes = self._metadata_proxy.business_attributes
         return super().json(**kwargs)
 
     def validate_required(self):
