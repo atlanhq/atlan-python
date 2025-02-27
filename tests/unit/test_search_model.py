@@ -18,6 +18,7 @@ from pyatlan.model.search import (
     Match,
     MatchAll,
     MatchNone,
+    MatchPhrase,
     Prefix,
     Range,
     Regexp,
@@ -1659,3 +1660,120 @@ def test_dsl_serialization_and_deserialization():
     ) == dsl_through_model.json(exclude_unset=True, by_alias=True)
 
     assert dsl_through_raw.json() == dsl_through_model.json()
+
+
+@pytest.mark.parametrize(
+    "field, query, analyzer, slop, zero_terms_query, boost, expected",
+    [
+        (
+            "name",
+            "test",
+            None,
+            None,
+            None,
+            None,
+            {"match_phrase": {"name": {"query": "test"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            None,
+            None,
+            None,
+            {"match_phrase": {"name": {"query": "test", "analyzer": "an analyzer"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            2,
+            None,
+            None,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "slop": 2,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            2,
+            "none",
+            1.0,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "slop": 2,
+                        "zero_terms_query": "none",
+                        "boost": 1.0,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            None,
+            0,
+            "all",
+            2.0,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "slop": 0,
+                        "zero_terms_query": "all",
+                        "boost": 2.0,
+                    }
+                }
+            },
+        ),
+        (
+            "description",
+            "another test",
+            "standard",
+            1,
+            "none",
+            None,
+            {
+                "match_phrase": {
+                    "description": {
+                        "query": "another test",
+                        "analyzer": "standard",
+                        "slop": 1,
+                        "zero_terms_query": "none",
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_match_phrase_to_dict(
+    field,
+    query,
+    analyzer,
+    slop,
+    zero_terms_query,
+    boost,
+    expected,
+):
+    assert (
+        MatchPhrase(
+            field=field,
+            query=query,
+            analyzer=analyzer,
+            slop=slop,
+            zero_terms_query=zero_terms_query,
+            boost=boost,
+        ).to_dict()
+        == expected
+    )
