@@ -7,8 +7,10 @@ from typing import Dict, Literal, Set, Union
 import pytest
 from pydantic.v1 import StrictBool, StrictStr, ValidationError
 
+from pyatlan.model.assets import Asset
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -1776,4 +1778,11 @@ def test_match_phrase_to_dict(
             boost=boost,
         ).to_dict()
         == expected
+    )
+
+
+def test_match_phrase_textfield():
+    search_request = FluentSearch().where(Asset.NAME.match_phrase("tmp")).to_request()
+    assert search_request.dsl.query == Bool(
+        filter=[MatchPhrase(field="name", query="tmp")]
     )
