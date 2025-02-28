@@ -114,13 +114,23 @@ class Asset(Referenceable):
         return cls.updater(qualified_name=qualified_name, name=name)
 
     @classmethod
+    def _prune_unused_attributes(cls, asset):
+        if "attributes" in asset.__fields_set__ and not asset.attributes.dict(
+            exclude_unset=True
+        ):
+            asset.__fields_set__.remove("attributes")
+
+    @classmethod
+    def _create_ref(cls: type[SelfAsset], **kwargs) -> SelfAsset:
+        asset: SelfAsset = cls(**kwargs)
+        cls._prune_unused_attributes(asset)
+        return asset
+
+    @classmethod
     def ref_by_guid(
         cls: type[SelfAsset], guid: str, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> SelfAsset:
-        retval: SelfAsset = cls(attributes=cls.Attributes())
-        retval.guid = guid
-        retval.semantic = semantic
-        return retval
+        return cls._create_ref(guid=guid, semantic=semantic)
 
     @classmethod
     def ref_by_qualified_name(
@@ -128,12 +138,9 @@ class Asset(Referenceable):
         qualified_name: str,
         semantic: SaveSemantic = SaveSemantic.REPLACE,
     ) -> SelfAsset:
-        ret_value: SelfAsset = cls(
-            attributes=cls.Attributes(name="", qualified_name=qualified_name)
+        return cls._create_ref(
+            unique_attributes={"qualifiedName": qualified_name}, semantic=semantic
         )
-        ret_value.unique_attributes = {"qualifiedName": qualified_name}
-        ret_value.semantic = semantic
-        return ret_value
 
     @classmethod
     def __get_validators__(cls):
