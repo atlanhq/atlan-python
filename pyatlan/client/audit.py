@@ -113,7 +113,6 @@ class AuditClient:
                 AuditSearchResults._MASS_EXTRACT_THRESHOLD,
             )
             return self.search(criteria)
-
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,
@@ -122,4 +121,5 @@ class AuditClient:
             count=count,
             entity_audits=entity_audits,
             bulk=bulk,
+            aggregations=raw_json.get("aggregations"),
         )
