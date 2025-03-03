@@ -7,8 +7,10 @@ from typing import Dict, Literal, Set, Union
 import pytest
 from pydantic.v1 import StrictBool, StrictStr, ValidationError
 
+from pyatlan.model.assets import Asset
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -18,6 +20,7 @@ from pyatlan.model.search import (
     Match,
     MatchAll,
     MatchNone,
+    MatchPhrase,
     Prefix,
     Range,
     Regexp,
@@ -1659,3 +1662,127 @@ def test_dsl_serialization_and_deserialization():
     ) == dsl_through_model.json(exclude_unset=True, by_alias=True)
 
     assert dsl_through_raw.json() == dsl_through_model.json()
+
+
+@pytest.mark.parametrize(
+    "field, query, analyzer, slop, zero_terms_query, boost, expected",
+    [
+        (
+            "name",
+            "test",
+            None,
+            None,
+            None,
+            None,
+            {"match_phrase": {"name": {"query": "test"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            None,
+            None,
+            None,
+            {"match_phrase": {"name": {"query": "test", "analyzer": "an analyzer"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            2,
+            None,
+            None,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "slop": 2,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            2,
+            "none",
+            1.0,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "slop": 2,
+                        "zero_terms_query": "none",
+                        "boost": 1.0,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            None,
+            0,
+            "all",
+            2.0,
+            {
+                "match_phrase": {
+                    "name": {
+                        "query": "test",
+                        "slop": 0,
+                        "zero_terms_query": "all",
+                        "boost": 2.0,
+                    }
+                }
+            },
+        ),
+        (
+            "description",
+            "another test",
+            "standard",
+            1,
+            "none",
+            None,
+            {
+                "match_phrase": {
+                    "description": {
+                        "query": "another test",
+                        "analyzer": "standard",
+                        "slop": 1,
+                        "zero_terms_query": "none",
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_match_phrase_to_dict(
+    field,
+    query,
+    analyzer,
+    slop,
+    zero_terms_query,
+    boost,
+    expected,
+):
+    assert (
+        MatchPhrase(
+            field=field,
+            query=query,
+            analyzer=analyzer,
+            slop=slop,
+            zero_terms_query=zero_terms_query,
+            boost=boost,
+        ).to_dict()
+        == expected
+    )
+
+
+def test_match_phrase_textfield():
+    search_request = FluentSearch().where(Asset.NAME.match_phrase("tmp")).to_request()
+    assert search_request.dsl.query == Bool(
+        filter=[MatchPhrase(field="name", query="tmp")]
+    )

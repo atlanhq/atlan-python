@@ -1844,6 +1844,29 @@ class Match(Query):
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class MatchPhrase(Query):
+    field: str
+    query: StrictStr
+    analyzer: Optional[str] = None
+    slop: Optional[int] = None
+    zero_terms_query: Optional[Literal["none", "all"]] = None
+    boost: Optional[float] = None
+    type_name: Literal["match_phrase"] = "match_phrase"
+
+    def to_dict(self):
+        parameters = {"query": self.query}
+        if self.analyzer is not None:
+            parameters["analyzer"] = self.analyzer
+        if self.slop is not None:
+            parameters["slop"] = self.slop
+        if self.zero_terms_query is not None:
+            parameters["zero_terms_query"] = self.zero_terms_query
+        if self.boost is not None:
+            parameters["boost"] = self.boost
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class SortItem:
     field: StrictStr
     order: Optional[SortOrder] = None

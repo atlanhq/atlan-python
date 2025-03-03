@@ -14,6 +14,7 @@ from pyatlan.model.enums import AtlanComparisonOperator, SortOrder
 from pyatlan.model.search import (
     Exists,
     Match,
+    MatchPhrase,
     Prefix,
     Query,
     Range,
@@ -323,6 +324,22 @@ class TextField(SearchableField):
                   (which will also be analyzed)
         """
         return Match(
+            field=self.text_field_name,
+            query=value,
+        )
+
+    def match_phrase(self, value: StrictStr) -> Query:
+        """
+        Returns a query that will textually match the specified phrase within the field,
+        ensuring that the words appear in the exact order provided. This analyzes the
+        provided value according to the same analysis carried out on the field
+        (for example, tokenization, stemming, and so on).
+
+        :param value: the string value to match against
+        :returns: a query that will only match assets whose analyzed value for the field matches the value provided
+                  (which will also be analyzed)
+        """
+        return MatchPhrase(
             field=self.text_field_name,
             query=value,
         )
