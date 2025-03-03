@@ -1,4 +1,4 @@
-sphinx~=7.2.6
+sphinx~=8.2.3
 furo~=2024.1.29
 requests>=2.24
 pydantic~=2.6.1
