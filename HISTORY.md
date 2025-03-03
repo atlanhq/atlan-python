@@ -1,4 +1,21 @@
-## 5.0.0 (February 26, 2024)
+## 5.0.1 (March 03, 2025)
+
+### New Features
+
+- Added support for the `MatchPhase` query.
+
+### Bug Fixes
+
+- Fixed handling of `aggregations` in `AuditSearchResults`.
+- Added `Asset.TYPE_NAME` condition in `FluentSearch` for append terms, replace terms, and remove terms methods to ensure an exact asset match. Previously, only `Asset.GUID/QUALIFIED_NAME` was used, which could return multiple assets if different asset types had the same qualified name.
+
+### QOL Improvements
+
+- Bumped `ruff` to the latest version (`0.9.9`).
+- Removed redundant asset relationship fields.
+- Updated the **"Installing for Development"** section in `README.md`.
+
+## 5.0.0 (February 26, 2025)
 
 ### New Features
 
@@ -25,7 +42,7 @@
 - Upgraded SDK dependencies (main, dev, and tooling) to the latest versions.
 - Replaced the existing linter and formatter stack (`black`, `flake8`, `isort`, `autoflake8`) with `ruff`, significantly reducing development and QA check times while consolidating all configurations into a single file.
 
-## 4.2.5 (February 19, 2024)
+## 4.2.5 (February 19, 2025)
 
 ### New Features
 
@@ -43,20 +60,20 @@
 - Added a new job to the `pyatlan-publish.yml` workflow to publish the SDK image to Docker Hub.
 - Introduced `dependabot.yml` to manage dependencies and actions, and removed unused secret variables.
 
-## 4.2.4 (February 13, 2024)
+## 4.2.4 (February 13, 2025)
 
 ### Bug Fixes
 
 - Added safeguards for search pagination methods.
 
-## 4.2.3 (February 13, 2024)
+## 4.2.3 (February 13, 2025)
 
 ### QOL Improvements
 
 - Refactored the `Asset._convert_to_real_type_()` method for improved clarity and robustness.
   In certain cases, asset types may be undefined or invalid—likely due to an unhandled backend edge case. To handle this gracefully, the method now ignores deserialization of `Asset` API responses in such scenarios instead of raising `AttributeError` or `TypeError` exceptions.
 
-## 4.2.2 (February 11, 2024)
+## 4.2.2 (February 11, 2025)
 
 ### New Features
 
@@ -72,13 +89,13 @@
 - Upgraded pre-commit `black` to `24.4.2`
 - Enhanced `Credential.creator()` validation to prevent creating fake credentials when `test=False`.
 
-## 4.2.1 (February 6, 2024)
+## 4.2.1 (February 6, 2025)
 
 ### New Features
 
 - Added an optional boolean parameter `test=True` to `CredentialClient.creator()` method.
 
-## 4.2.0 (February 4, 2024)
+## 4.2.0 (February 4, 2025)
 
 ### New Features
 
