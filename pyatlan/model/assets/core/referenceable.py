@@ -52,7 +52,8 @@ class Referenceable(AtlanObject):
         return values
 
     def json(self, *args, **kwargs) -> str:
-        self.business_attributes = self._metadata_proxy.business_attributes
+        if self._metadata_proxy and self._metadata_proxy.business_attributes:
+            self.business_attributes = self._metadata_proxy.business_attributes
         return super().json(**kwargs)
 
     def validate_required(self):
@@ -110,7 +111,11 @@ class Referenceable(AtlanObject):
 
     @property
     def qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qualified_name
+        return (
+            self.unique_attributes.get("qualifiedName")
+            if self.unique_attributes
+            else (self.attributes.qualified_name if self.attributes else None)
+        )
 
     @qualified_name.setter
     def qualified_name(self, qualified_name: Optional[str]):
@@ -280,11 +285,11 @@ class Referenceable(AtlanObject):
         example="Hard",
     )
     guid: str = Field(
-        default="",
+        default=None,
         description="Unique identifier of the entity instance.",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
-    is_incomplete: Optional[bool] = Field(default=True, description="", example=True)
+    is_incomplete: Optional[bool] = Field(default=None, description="", example=True)
     labels: Optional[List[str]] = Field(
         default=None, description="Arbitrary textual labels for the asset."
     )
