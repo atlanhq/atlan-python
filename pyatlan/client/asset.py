@@ -1341,6 +1341,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
                 .execute(client=client)
             )
@@ -1348,6 +1349,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
                 .execute(client=client)
             )
@@ -1418,6 +1420,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
                 .execute(client=client)
             )
@@ -1425,6 +1428,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
                 .execute(client=client)
             )
@@ -1497,6 +1501,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
                 .execute(client=client)
             )
@@ -1504,6 +1509,7 @@ class AssetClient:
             results = (
                 FluentSearch()
                 .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
                 .execute(client=client)
             )
