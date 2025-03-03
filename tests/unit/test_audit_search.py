@@ -37,7 +37,9 @@ def audit_search_paging_json():
     return load_json(AUDIT_SEARCH_PAGING_JSON)
 
 
-def _assert_audit_search_results(results, response_json, sorts, bulk=False):
+def _assert_audit_search_results(
+    results: AuditSearchResults, response_json, sorts, bulk=False
+):
     for audit in results:
         assert audit.entity_id == response_json["entityAudits"][0]["entity_id"]
         assert (
@@ -81,6 +83,9 @@ def test_audit_search_pagination(
     )
     audit_search_request = AuditSearchRequest(dsl=dsl)
     response = client.search(criteria=audit_search_request, bulk=False)
+
+    assert response and response.aggregations
+    assert audit_search_paging_json["aggregations"] == response.aggregations
     expected_sorts = [SortItem(field="entityId", order=SortOrder.ASCENDING)]
 
     _assert_audit_search_results(response, audit_search_paging_json, expected_sorts)
