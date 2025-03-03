@@ -24,6 +24,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    Schema,
     Table,
 )
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
@@ -137,6 +138,24 @@ def database(
     db = create_database(client, connection, database_name)
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
+
+
+@pytest.fixture()
+def schema(
+    client: AtlanClient,
+    connection: Connection,
+    database: Database,
+) -> Generator[Schema, None, None]:
+    assert database.qualified_name
+    schema_name = TestId.make_unique("my_schema")
+    to_create = Schema.create(
+        name=schema_name, database_qualified_name=database.qualified_name
+    )
+    to_create.qualified_name = database.qualified_name
+    result = client.asset.save(to_create)
+    sch = result.assets_created(asset_type=Schema)[0]
+    yield sch
+    delete_asset(client, guid=sch.guid, asset_type=Schema)
 
 
 @pytest.fixture()
@@ -321,6 +340,27 @@ def test_append_terms_using_ref_by_guid_for_term(
     assert database.assigned_terms[0].guid == term1.guid
 
 
+def test_append_terms_with_same_qn(
+    client: AtlanClient, term1: AtlasGlossaryTerm, database: Database, schema: Schema
+):
+    time.sleep(5)
+    assert schema.qualified_name == database.qualified_name
+    assert (
+        database := client.asset.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
+        )
+    )
+    assert (
+        schema := client.asset.append_terms(
+            qualified_name=schema.qualified_name,
+            asset_type=Schema,
+            terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
+        )
+    )
+
+
 def test_replace_a_term(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
@@ -348,6 +388,23 @@ def test_replace_a_term(
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term2.guid
+
+
+def test_replace_terms_with_same_qn(
+    client: AtlanClient, term2: AtlasGlossaryTerm, database: Database, schema: Schema
+):
+    time.sleep(5)
+    assert schema.qualified_name == database.qualified_name
+    assert (
+        database := client.asset.replace_terms(
+            guid=database.guid, asset_type=Database, terms=[term2]
+        )
+    )
+    assert (
+        schema := client.asset.replace_terms(
+            guid=schema.guid, asset_type=Schema, terms=[term2]
+        )
+    )
 
 
 def test_replace_all_term(
@@ -409,6 +466,51 @@ def test_remove_term(
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term2.guid
+
+
+def test_remove_terms_with_same_qn(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    database: Database,
+    schema: Schema,
+):
+    time.sleep(5)
+    assert schema.qualified_name == database.qualified_name
+    assert (
+        database := client.asset.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[
+                AtlasGlossaryTerm.ref_by_guid(guid=term1.guid),
+                AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            ],
+        )
+    )
+    assert (
+        database := client.asset.remove_terms(
+            guid=database.guid,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
+        )
+    )
+    assert (
+        schema := client.asset.append_terms(
+            qualified_name=schema.qualified_name,
+            asset_type=Schema,
+            terms=[
+                AtlasGlossaryTerm.ref_by_guid(guid=term1.guid),
+                AtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
+            ],
+        )
+    )
+    assert (
+        schema := client.asset.remove_terms(
+            guid=schema.guid,
+            asset_type=Schema,
+            terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
+        )
+    )
 
 
 def test_find_connections_by_name(client: AtlanClient):
