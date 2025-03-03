@@ -1,15 +1,151 @@
 {
   "totalCount": 1,
   "entityAudits": [
-      {
-          "entity_qualified_name": "sample_entity_1",
-          "type_name": "AtlasGlossaryTerm",
-          "entity_id": "guid_1",
-          "timestamp": 1733491479782,
-          "created": 1733491480576,
-          "user": "user1",
-          "action": "ENTITY_CREATE",
-          "eventKey": "guid_1:1733491479782"
-      }
-  ]
+    {
+      "entity_qualified_name": "sample_entity_1",
+      "type_name": "AtlasGlossaryTerm",
+      "entity_id": "guid_1",
+      "timestamp": 1733491479782,
+      "created": 1733491480576,
+      "user": "user1",
+      "action": "ENTITY_CREATE",
+      "eventKey": "guid_1:1733491479782"
+    }
+  ],
+  "aggregations": {
+    "by_date": {
+      "meta": {},
+      "buckets": [
+        {
+          "key_as_string": "2025-02-19T00:00:00.000Z",
+          "key": 1739923200000,
+          "doc_count": 67507,
+          "by_user": {
+            "meta": {},
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "t1@atlan.com",
+                "doc_count": 43598,
+                "readmes": {
+                  "doc_count": 0
+                },
+                "classifications": {
+                  "doc_count": 0,
+                  "distinct": {
+                    "value": 0
+                  }
+                },
+                "group_by_cm": {
+                  "doc_count": 43598
+                },
+                "group_by_meta": {
+                  "meta": {},
+                  "doc_count": 43598,
+                  "group_by_certi": {
+                    "doc_count": 0
+                  },
+                  "group_by_announcement": {
+                    "doc_count": 0
+                  },
+                  "group_by_technical": {
+                    "meta": {},
+                    "doc_count": 0
+                  },
+                  "group_by_desc": {
+                    "doc_count": 0
+                  },
+                  "group_by_owners": {
+                    "doc_count": 0
+                  },
+                  "group_by_term": {
+                    "doc_count": 0
+                  }
+                }
+              },
+              {
+                "key": "t2@atlan.com",
+                "doc_count": 11658,
+                "readmes": {
+                  "doc_count": 0
+                },
+                "classifications": {
+                  "doc_count": 219,
+                  "distinct": {
+                    "value": 6
+                  }
+                },
+                "group_by_cm": {
+                  "doc_count": 11056
+                },
+                "group_by_meta": {
+                  "meta": {},
+                  "doc_count": 11056,
+                  "group_by_certi": {
+                    "doc_count": 0
+                  },
+                  "group_by_announcement": {
+                    "doc_count": 0
+                  },
+                  "group_by_technical": {
+                    "meta": {},
+                    "doc_count": 0
+                  },
+                  "group_by_desc": {
+                    "doc_count": 0
+                  },
+                  "group_by_owners": {
+                    "doc_count": 0
+                  },
+                  "group_by_term": {
+                    "doc_count": 0
+                  }
+                }
+              },
+              {
+                "key": "atlansupport",
+                "doc_count": 5838,
+                "readmes": {
+                  "doc_count": 0
+                },
+                "classifications": {
+                  "doc_count": 0,
+                  "distinct": {
+                    "value": 0
+                  }
+                },
+                "group_by_cm": {
+                  "doc_count": 650
+                },
+                "group_by_meta": {
+                  "meta": {},
+                  "doc_count": 650,
+                  "group_by_certi": {
+                    "doc_count": 0
+                  },
+                  "group_by_announcement": {
+                    "doc_count": 0
+                  },
+                  "group_by_technical": {
+                    "meta": {},
+                    "doc_count": 0
+                  },
+                  "group_by_desc": {
+                    "doc_count": 649
+                  },
+                  "group_by_owners": {
+                    "doc_count": 0
+                  },
+                  "group_by_term": {
+                    "doc_count": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
 }

@@ -8,6 +8,7 @@ from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.errors import ErrorCode, NotFoundError
+from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Asset
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanObject, AtlanTag
@@ -244,6 +245,7 @@ class AuditSearchResults(Iterable):
         entity_audits: List[EntityAudit],
         count: int,
         bulk: bool = False,
+        aggregations: Optional[Aggregation] = None,
     ):
         self._client = client
         self._endpoint = AUDIT_SEARCH
@@ -254,9 +256,14 @@ class AuditSearchResults(Iterable):
         self._count = count
         self._approximate_count = count
         self._bulk = bulk
+        self._aggregations = aggregations
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
         self._processed_entity_keys: Set[str] = set()
+
+    @property
+    def aggregations(self) -> Optional[Aggregation]:
+        return self._aggregations
 
     @property
     def total_count(self) -> int:
