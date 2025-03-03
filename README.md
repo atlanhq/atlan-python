@@ -41,7 +41,10 @@ To get started developing the SDK:
 
 4. Install the required dependencies:
    ```bash
-   pip install -e . && pip install -r requirements-dev.txt
+   # Upgrade pip before installing dependencies
+   python -m pip install --upgrade pip
+   # Install required dependencies for development
+   pip install -e . && pip install -r requirements-dev.txt  
    ```
 
 ### Code Formatting
@@ -64,14 +67,20 @@ For running integration tests, you'll need to configure your environment:
       ```bash
       export $(cat .env | xargs)
       ```
-    - For Windows (PowerShell):
+    - For Windows (PowerShell): Load environment variables
       ```powershell
-      Get-Content .env | ForEach-Object {
-          if ($_ -match '^(.*?)=(.*)$') {
-              $env:($matches[1]) = $matches[2]
-          }
+      # Run this in PowerShell (not Command Prompt)   
+      Get-Content .env | ForEach-Object {  
+       if ($_ -match '^(.*?)=(.*)$') {  
+        $env:($matches[1]) = $matches[2]  
+       }  
       }
       ```
+    - For macOS/Linux: Load environment variables from .env file
+      ```bash
+      export $(cat .env | xargs)
+      ```
+
 
 ## Testing the SDK
 
