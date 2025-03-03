@@ -141,9 +141,8 @@ def database(
 
 
 @pytest.fixture()
-def schema(
+def schema_with_db_qn(
     client: AtlanClient,
-    connection: Connection,
     database: Database,
 ) -> Generator[Schema, None, None]:
     assert database.qualified_name
@@ -341,10 +340,13 @@ def test_append_terms_using_ref_by_guid_for_term(
 
 
 def test_append_terms_with_same_qn(
-    client: AtlanClient, term1: AtlasGlossaryTerm, database: Database, schema: Schema
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    database: Database,
+    schema_with_db_qn: Schema,
 ):
     time.sleep(5)
-    assert schema.qualified_name == database.qualified_name
+    assert schema_with_db_qn.qualified_name == database.qualified_name
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -353,8 +355,8 @@ def test_append_terms_with_same_qn(
         )
     )
     assert (
-        schema := client.asset.append_terms(
-            qualified_name=schema.qualified_name,
+        schema_with_db_qn := client.asset.append_terms(
+            qualified_name=schema_with_db_qn.qualified_name,
             asset_type=Schema,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
         )
@@ -391,18 +393,21 @@ def test_replace_a_term(
 
 
 def test_replace_terms_with_same_qn(
-    client: AtlanClient, term2: AtlasGlossaryTerm, database: Database, schema: Schema
+    client: AtlanClient,
+    term2: AtlasGlossaryTerm,
+    database: Database,
+    schema_with_db_qn: Schema,
 ):
     time.sleep(5)
-    assert schema.qualified_name == database.qualified_name
+    assert schema_with_db_qn.qualified_name == database.qualified_name
     assert (
         database := client.asset.replace_terms(
             guid=database.guid, asset_type=Database, terms=[term2]
         )
     )
     assert (
-        schema := client.asset.replace_terms(
-            guid=schema.guid, asset_type=Schema, terms=[term2]
+        schema_with_db_qn := client.asset.replace_terms(
+            guid=schema_with_db_qn.guid, asset_type=Schema, terms=[term2]
         )
     )
 
@@ -473,10 +478,10 @@ def test_remove_terms_with_same_qn(
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
     database: Database,
-    schema: Schema,
+    schema_with_db_qn: Schema,
 ):
     time.sleep(5)
-    assert schema.qualified_name == database.qualified_name
+    assert schema_with_db_qn.qualified_name == database.qualified_name
     assert (
         database := client.asset.append_terms(
             qualified_name=database.qualified_name,
@@ -495,8 +500,8 @@ def test_remove_terms_with_same_qn(
         )
     )
     assert (
-        schema := client.asset.append_terms(
-            qualified_name=schema.qualified_name,
+        schema_with_db_qn := client.asset.append_terms(
+            qualified_name=schema_with_db_qn.qualified_name,
             asset_type=Schema,
             terms=[
                 AtlasGlossaryTerm.ref_by_guid(guid=term1.guid),
@@ -505,8 +510,8 @@ def test_remove_terms_with_same_qn(
         )
     )
     assert (
-        schema := client.asset.remove_terms(
-            guid=schema.guid,
+        schema_with_db_qn := client.asset.remove_terms(
+            guid=schema_with_db_qn.guid,
             asset_type=Schema,
             terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
         )
