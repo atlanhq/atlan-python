@@ -127,3 +127,13 @@ class AbstractCrawler(AbstractPackage):
             return dumps(to_include)
         except (AttributeError, TypeError):
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
+
+    def _add_optional_params(self, params: Dict[str, Optional[Any]]) -> None:
+        """
+        Helper method to add non-None params to `self._parameters`.
+
+        :param params: dict of param names and values.
+        """
+        for name, value in params.items():
+            if value is not None:
+                self._parameters.append({"name": name, "value": value})

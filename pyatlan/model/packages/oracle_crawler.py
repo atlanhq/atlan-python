@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from enum import Enum
+from json import dumps
+from typing import Any, Dict, List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -34,6 +36,26 @@ class OracleCrawler(AbstractCrawler):
         "https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico"
     )
 
+    class AuthType(str, Enum):
+        BASIC = "basic"
+        KERBEROS = "kerberos"
+
+    class AWS_AUTH_METHOD(str, Enum):
+        IAM = "iam"
+        IAM_ASSUME_ROLE = "iam-assume-role"
+        ACCESS_KEY = "access-key"
+
+    class AZURE_AUTH_METHOD(str, Enum):
+        MANAGED_IDENTITY = "managed_identity"
+        SERVICE_PRINCIPAL = "service_principal"
+
+    class SecretStore(str, Enum):
+        SECRET_INJECTION_ENV = "secretinjectionenvironment"
+        AWS_SECRET_MANAGER = "awssecretmanager"
+        AZURE_KEY_VAULT = "azurekeyvault"
+        GCP_SECRET_MANAGER = "gcpsecretmanager"
+        CUSTOM = "custom"
+
     def __init__(
         self,
         connection_name: str,
@@ -45,6 +67,7 @@ class OracleCrawler(AbstractCrawler):
         row_limit: int = 10000,
     ):
         self._advanced_config = False
+        self._agent_config = False
         super().__init__(
             connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
@@ -95,6 +118,75 @@ class OracleCrawler(AbstractCrawler):
         self._parameters.append(dict(name="extraction-method", value="direct"))
         return self
 
+    def agent_config(
+        self,
+        hostname: str,
+        default_db_name: str,
+        sid: str,
+        agent_name: str,
+        port: int = 1521,
+        user_env_var: Optional[str] = None,
+        password_env_var: Optional[str] = None,
+        secret_store: SecretStore = SecretStore.CUSTOM,
+        auth_type: AuthType = AuthType.BASIC,
+        aws_region: str = "us-east-1",
+        aws_auth_method: AWS_AUTH_METHOD = AWS_AUTH_METHOD.IAM,
+        azure_auth_method: AZURE_AUTH_METHOD = AZURE_AUTH_METHOD.MANAGED_IDENTITY,
+        secret_path: Optional[str] = None,
+        principal: Optional[str] = None,
+        azure_vault_name: Optional[str] = None,
+        agent_custom_config: Optional[Dict[str, Any]] = None,
+    ) -> OracleCrawler:
+        """
+        Configure the agent for Oracle extraction.
+
+        :param hostname: host address of the Oracle instance.
+        :param default_db_name: default database name.
+        :param sid: SID (system identifier) of the Oracle instance.
+        :param agent_name: name of the agent.
+        :param secret_store: secret store to use (e.g AWS, Azure, GCP, etc)
+        :param port: port number for the Oracle instance. Defaults to `1521`.
+        :param user_env_var: (optional) environment variable storing the username.
+        :param password_env_var: (optional) environment variable storing the password.
+        :param auth_type: authentication type (`basic` or `kerberos`). Defaults to `basic`.
+        :param aws_region: AWS region where secrets are stored. Defaults to `us-east-1`.
+        :param aws_auth_method: AWS authentication method (`iam`, `iam-assume-role`, `access-key`). Defaults to `iam`.
+        :param azure_auth_method: Azure authentication method (`managed_identity` or `service_principal`). Defaults to `managed_identity`.
+        :param secret_path: (optional) path to the secret in the secret manager.
+        :param principal: (optional) Kerberos principal (required if using Kerberos authentication).
+        :param azure_vault_name: (optional) Azure Key Vault name (required if using Azure secret store).
+        :param agent_custom_config: (optional Custom JSON configuration for the agent.
+
+        :returns: crawler, set up to extraction from offline agent.
+        """
+        self._agent_config = True
+        _agent_dict = {
+            "host": hostname,
+            "port": port,
+            "auth-type": auth_type,
+            "database": default_db_name,
+            "extra-service": sid,
+            "agent-name": agent_name,
+            "secret-manager": secret_store,
+            "user-env": user_env_var,
+            "password-env": password_env_var,
+            "agent-config": agent_custom_config,
+            "aws-auth-method": aws_auth_method,
+            "aws-region": aws_region,
+            "azure-auth-method": azure_auth_method,
+        }
+        if secret_path:
+            _agent_dict["secret-path"] = secret_path
+        if principal:
+            _agent_dict["extra-principal"] = principal
+        if agent_custom_config:
+            _agent_dict["agent-config"] = agent_custom_config
+        if azure_vault_name:
+            _agent_dict["azure-vault-name"] = azure_vault_name
+        self._parameters.append(dict(name="extraction-method", value="agent"))
+        self._parameters.append(dict(name="agent-json", value=dumps(_agent_dict)))
+        return self
+
     def basic_auth(
         self,
         username: str,
@@ -133,7 +225,14 @@ class OracleCrawler(AbstractCrawler):
         include_assets = assets or {}
         to_include = self.build_hierarchical_filter(include_assets)
         self._parameters.append(
-            dict(dict(name="include-filter", value=to_include or "{}"))
+            dict(
+                dict(
+                    name="include-filter"
+                    if not self._agent_config
+                    else "include-filter-agent",
+                    value=to_include or "{}",
+                )
+            )
         )
         return self
 
@@ -148,7 +247,14 @@ class OracleCrawler(AbstractCrawler):
         """
         exclude_assets = assets or {}
         to_exclude = self.build_hierarchical_filter(exclude_assets)
-        self._parameters.append(dict(name="exclude-filter", value=to_exclude or "{}"))
+        self._parameters.append(
+            dict(
+                name="exclude-filter"
+                if not self._agent_config
+                else "exclude-filter-agent",
+                value=to_exclude or "{}",
+            )
+        )
         return self
 
     def exclude_regex(self, regex: str) -> OracleCrawler:
@@ -199,9 +305,6 @@ class OracleCrawler(AbstractCrawler):
         self._parameters.append(
             {"name": "credentials-fetch-strategy", "value": "credential_guid"}
         )
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
         self._parameters.append(dict(name="publish-mode", value="production"))
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
         self._parameters.append(
@@ -218,6 +321,10 @@ class OracleCrawler(AbstractCrawler):
                 ),
             }
         )
+        if not self._agent_config:
+            self._parameters.append(
+                {"name": "credential-guid", "value": "{{credentialGuid}}"}
+            )
 
     def _get_metadata(self) -> WorkflowMetadata:
         self._set_required_metadata_params()
