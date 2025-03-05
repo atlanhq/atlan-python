@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from json import dumps
 from typing import List, Optional
 
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
@@ -45,6 +46,7 @@ class OracleCrawler(AbstractCrawler):
         row_limit: int = 10000,
     ):
         self._advanced_config = False
+        self._agent_config = False
         super().__init__(
             connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
@@ -93,6 +95,41 @@ class OracleCrawler(AbstractCrawler):
         }
         self._credentials_body.update(local_creds)
         self._parameters.append(dict(name="extraction-method", value="direct"))
+        return self
+
+    def agent_config(
+        self,
+        hostname: str,
+        default_db_name: str,
+        sid: str,
+        agent_name: str,
+        secret_store: str,
+        user_env_var: str,
+        password_env_var: str,
+        agent_custom_config: str,
+        port: int = 1521,
+        auth_type: str = "basic",
+    ):
+        """
+        Set up the crawler to do extraction in the offline agent.
+        """
+        self._agent_config = True
+        _agent_dict = {
+            "host": hostname,
+            "port": port,
+            "auth-type": auth_type,
+            "database": default_db_name,
+            "extra-service": sid,
+            "agent-name": agent_name,
+            "secret-manager": secret_store,
+            "user-env": user_env_var,
+            "password-env": password_env_var,
+            "agent-config": agent_custom_config,
+            "aws-auth-method": "iam",
+            "aws-region": "us-east-1",
+            "azure-auth-method": "managed_identity",
+        }
+        self._parameters.append(dict(name="agent-json", value=dumps(_agent_dict)))
         return self
 
     def basic_auth(
@@ -199,9 +236,6 @@ class OracleCrawler(AbstractCrawler):
         self._parameters.append(
             {"name": "credentials-fetch-strategy", "value": "credential_guid"}
         )
-        self._parameters.append(
-            {"name": "credential-guid", "value": "{{credentialGuid}}"}
-        )
         self._parameters.append(dict(name="publish-mode", value="production"))
         self._parameters.append(dict(name="atlas-auth-type", value="internal"))
         self._parameters.append(
@@ -218,6 +252,10 @@ class OracleCrawler(AbstractCrawler):
                 ),
             }
         )
+        if not self._agent_config:
+            self._parameters.append(
+                {"name": "credential-guid", "value": "{{credentialGuid}}"}
+            )
 
     def _get_metadata(self) -> WorkflowMetadata:
         self._set_required_metadata_params()
