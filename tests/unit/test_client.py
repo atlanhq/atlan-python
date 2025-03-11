@@ -2020,7 +2020,8 @@ def test_atlan_call_api_server_error_messages(
             }
         ],
         "errorCause": "something went wrong",
-        "errorId": "95d80a45999cabc"
+        "errorId": "95d80a45999cabc",
+        "doc": "https://ask.atlan.com/hc/en-us/articles/6645223434141-Is-there-a-limit-on-the-number-of-API-requests-that-can-be-performed"
     }
     """
     ],
@@ -2049,6 +2050,7 @@ def test_atlan_call_api_server_error_messages_with_causes(
         error_code = test_error.get("errorCode")
         error_message = test_error.get("errorMessage")
         error_cause = test_error.get("errorCause")
+        error_doc = test_error.get("doc")
         error_id = test_error.get("errorId")
         error_causes = test_error.get("causes")[0]
         glossary = AtlasGlossary.creator(name="test-glossary")
@@ -2060,6 +2062,7 @@ def test_atlan_call_api_server_error_messages_with_causes(
             error_causes,
             error_cause=error_cause,
             backend_error_id=error_id,
+            error_doc=error_doc,
         )
 
         with pytest.raises(

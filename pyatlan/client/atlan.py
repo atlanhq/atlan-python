@@ -430,6 +430,12 @@ class AtlanClient(BaseSettings):
                     error_message = error_info.get(
                         "errorMessage", ""
                     ) or error_info.get("message", "")
+                    error_doc = (
+                        error_info.get("doc")
+                        or error_info.get("errorDoc")
+                        or error_info.get("errorDocument")
+                        or error_info.get("errorDocumentation")
+                    )
                     error_cause = error_info.get("errorCause", [])
                     causes = error_info.get("causes", [])
                     backend_error_id = error_info.get("errorId")
@@ -481,6 +487,7 @@ class AtlanClient(BaseSettings):
                             error_cause_details_str,
                             error_cause=error_cause,
                             backend_error_id=backend_error_id,
+                            error_doc=error_doc,
                         )
                 raise AtlanError(
                     SimpleNamespace(
