@@ -23,6 +23,9 @@ class ErrorInfo(Protocol):
     # A human-readable explanation
     # of what caused the error
     error_cause: str
+    # A URL linking to
+    # documentation that explains the error
+    error_doc: str
 
 
 class AtlanError(Exception):
@@ -35,12 +38,14 @@ class AtlanError(Exception):
         self.error_code = error_code
         self.error_code.backend_error_id = kwargs.get("backend_error_id", "")
         self.error_code.error_cause = kwargs.get("error_cause", "")
+        self.error_code.error_doc = kwargs.get("error_doc", "")
 
     def __str__(self):
         return (
             f"{self.error_code.error_id or ''}"
             f"{' ' if self.error_code.error_id else ''}{super().__str__()}"
             f"{' errorCause: ' + self.error_code.error_cause if self.error_code.error_cause else ''}"
+            f"{' errorDocument: ' + self.error_code.error_doc if self.error_code.error_doc else ''}"
             f"{' (errorId: ' + self.error_code.backend_error_id + ')' if self.error_code.backend_error_id else ''}"
             f" Suggestion: {self.error_code.user_action}"
         )
