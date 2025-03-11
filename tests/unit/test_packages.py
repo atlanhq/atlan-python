@@ -94,6 +94,8 @@ DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
 )
 ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
 ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
+ORACLE_CRAWLER_BASIC_AGENT = "oracle_crawler_basic_agent.json"
+ORACLE_CRAWLER_KERBEROS_AGENT = "oracle_crawler_kerberos_agent.json"
 LINEAGE_BUILDER_S3 = "lineage_builder_s3.json"
 LINEAGE_BUILDER_GCS = "lineage_builder_gcs.json"
 LINEAGE_BUILDER_ADLS = "lineage_builder_adls.json"
@@ -1443,6 +1445,68 @@ def test_oracle_crawler(mock_package_env):
     )
     request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
+
+    oracle_crawler_basic_agent = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .agent_config(
+            hostname="test.oracle.com",
+            port=1234,
+            auth_type=OracleCrawler.AuthType.BASIC,
+            default_db_name="test-db",
+            sid="test-sid",
+            agent_name="test-agent",
+            aws_region="us-east-1",
+            aws_auth_method=OracleCrawler.AwsAuthMethod.IAM_ASSUME_ROLE,
+            secret_store=OracleCrawler.SecretStore.AWS_SECRET_MANAGER,
+            secret_path="some/test/path",
+            agent_custom_config={"test": "config"},
+        )
+        .include(assets={"t1": ["t11", "t12", "t13"]})
+        .exclude(assets={"t2": ["t21", "t22", "t23"]})
+        .jdbc_internal_methods(True)
+        .source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(
+        oracle_crawler_basic_agent.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(ORACLE_CRAWLER_BASIC_AGENT)
+
+    oracle_crawler_kerberos_agent = (
+        OracleCrawler(
+            connection_name="test-oracle-conn",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+        )
+        .agent_config(
+            hostname="test.oracle.com",
+            port=1234,
+            auth_type=OracleCrawler.AuthType.KERBEROS,
+            default_db_name="test-db",
+            sid="test-sid",
+            agent_name="test-agent",
+            principal="test-principal",
+            secret_store=OracleCrawler.SecretStore.SECRET_INJECTION_ENV,
+            user_env_var="test-user-env",
+            password_env_var="test-pass-env",
+            agent_custom_config={"test": "config"},
+        )
+        .include(assets={"t1": ["t11", "t12", "t13"]})
+        .exclude(assets={"t2": ["t21", "t22", "t23"]})
+        .jdbc_internal_methods(True)
+        .source_level_filtering(False)
+        .to_workflow()
+    )
+    request_json = loads(
+        oracle_crawler_kerberos_agent.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(ORACLE_CRAWLER_KERBEROS_AGENT)
 
 
 def test_lineage_builder(mock_package_env):

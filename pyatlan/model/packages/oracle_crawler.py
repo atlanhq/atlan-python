@@ -40,12 +40,12 @@ class OracleCrawler(AbstractCrawler):
         BASIC = "basic"
         KERBEROS = "kerberos"
 
-    class AWS_AUTH_METHOD(str, Enum):
+    class AwsAuthMethod(str, Enum):
         IAM = "iam"
         IAM_ASSUME_ROLE = "iam-assume-role"
         ACCESS_KEY = "access-key"
 
-    class AZURE_AUTH_METHOD(str, Enum):
+    class AzureAuthMethod(str, Enum):
         MANAGED_IDENTITY = "managed_identity"
         SERVICE_PRINCIPAL = "service_principal"
 
@@ -130,8 +130,8 @@ class OracleCrawler(AbstractCrawler):
         secret_store: SecretStore = SecretStore.CUSTOM,
         auth_type: AuthType = AuthType.BASIC,
         aws_region: str = "us-east-1",
-        aws_auth_method: AWS_AUTH_METHOD = AWS_AUTH_METHOD.IAM,
-        azure_auth_method: AZURE_AUTH_METHOD = AZURE_AUTH_METHOD.MANAGED_IDENTITY,
+        aws_auth_method: AwsAuthMethod = AwsAuthMethod.IAM,
+        azure_auth_method: AzureAuthMethod = AzureAuthMethod.MANAGED_IDENTITY,
         secret_path: Optional[str] = None,
         principal: Optional[str] = None,
         azure_vault_name: Optional[str] = None,

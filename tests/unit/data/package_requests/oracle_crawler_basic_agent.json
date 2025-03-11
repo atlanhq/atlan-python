@@ -48,15 +48,19 @@
                   "parameters": [
                     {
                       "name": "extraction-method",
-                      "value": "s3"
+                      "value": "agent"
                     },
                     {
-                      "name": "metadata-s3-bucket",
-                      "value": "test-bucket"
+                      "name": "agent-json",
+                      "value": "{\"host\": \"test.oracle.com\", \"port\": 1234, \"auth-type\": \"basic\", \"database\": \"test-db\", \"extra-service\": \"test-sid\", \"agent-name\": \"test-agent\", \"secret-manager\": \"awssecretmanager\", \"user-env\": null, \"password-env\": null, \"agent-config\": {\"test\": \"config\"}, \"aws-auth-method\": \"iam-assume-role\", \"aws-region\": \"us-east-1\", \"azure-auth-method\": \"managed_identity\", \"secret-path\": \"some/test/path\"}"
                     },
                     {
-                      "name": "metadata-s3-prefix",
-                      "value": "test-prefix"
+                      "name": "include-filter-agent",
+                      "value": "{\"^t1$\": [\"^t11$\", \"^t12$\", \"^t13$\"]}"
+                    },
+                    {
+                      "name": "exclude-filter-agent",
+                      "value": "{\"^t2$\": [\"^t21$\", \"^t22$\", \"^t23$\"]}"
                     },
                     {
                       "name": "use-jdbc-internal-methods",
@@ -85,10 +89,6 @@
                     {
                       "name": "connection",
                       "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/oracle/123456\", \"name\": \"test-oracle-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"oracle\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico\"}, \"guid\": \"-1234567890000000000000000\"}"
-                    },
-                    {
-                      "name": "credential-guid",
-                      "value": "{{credentialGuid}}"
                     }
                   ]
                 },

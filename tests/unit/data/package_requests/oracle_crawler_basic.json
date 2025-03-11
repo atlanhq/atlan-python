@@ -75,10 +75,6 @@
                       "value": "credential_guid"
                     },
                     {
-                      "name": "credential-guid",
-                      "value": "{{credentialGuid}}"
-                    },
-                    {
                       "name": "publish-mode",
                       "value": "production"
                     },
@@ -93,6 +89,10 @@
                     {
                       "name": "connection",
                       "value": "{\"typeName\": \"Connection\", \"attributes\": {\"qualifiedName\": \"default/oracle/123456\", \"name\": \"test-oracle-conn\", \"adminUsers\": [], \"adminGroups\": [], \"connectorName\": \"oracle\", \"isDiscoverable\": true, \"isEditable\": false, \"adminRoles\": [\"admin-guid-1234\"], \"category\": \"warehouse\", \"allowQuery\": true, \"allowQueryPreview\": true, \"rowLimit\": 10000, \"defaultCredentialGuid\": \"{{credentialGuid}}\", \"sourceLogo\": \"https://docs.oracle.com/sp_common/book-template/ohc-common/img/favicon.ico\"}, \"guid\": \"-1234567890000000000000000\"}"
+                    },
+                    {
+                      "name": "credential-guid",
+                      "value": "{{credentialGuid}}"
                     }
                   ]
                 },
