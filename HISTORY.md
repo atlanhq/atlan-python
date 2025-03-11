@@ -1,3 +1,14 @@
+## 5.0.2 (March 11, 2025)
+
+### New Features
+
+- Added handling for `doc` and `errorDoc` in `AtlanError`.
+- Introduced secure agent support in `OracleCrawler`.
+
+### QOL Improvements
+
+- Fixed vulnerabilities reported by `dependabot`.
+
 ## 5.0.1 (March 03, 2025)
 
 ### New Features
