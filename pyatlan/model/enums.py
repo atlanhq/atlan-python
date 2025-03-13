@@ -349,6 +349,7 @@ class AtlanConnectorType(str, Enum):
     RDS = ("rds", AtlanConnectionCategory.WAREHOUSE)
     CRATEDB = ("cratedb", AtlanConnectionCategory.DATABASE)
     KX = ("kx", AtlanConnectionCategory.DATABASE)
+    DOCUMENTDB = ("documentdb", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
