@@ -255,7 +255,7 @@ class UserResponse(AtlanObject):
         self._criteria.offset = self._start
         self._criteria.limit = self._size
         raw_json = self._client._call_api(
-            api=self._endpoint,
+            api=self._endpoint.format_path_with_params(),
             query_params=self._criteria.query_params,
         )
         if not raw_json.get("records"):
