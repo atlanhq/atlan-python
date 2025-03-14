@@ -12,6 +12,7 @@ import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
+from threading import local
 from types import SimpleNamespace
 from typing import (
     Any,
@@ -141,7 +142,7 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _default_client: "ClassVar[Optional[AtlanClient]]" = None
+    _default_client_storage: ClassVar[local] = local()  # Thread-local storage
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
@@ -180,7 +181,7 @@ class AtlanClient(BaseSettings):
         """
         if not isinstance(client, AtlanClient):
             raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
-        cls._default_client = client
+        cls._default_client_storage.client = client
 
     @classmethod
     def get_default_client(cls) -> AtlanClient:
@@ -189,9 +190,9 @@ class AtlanClient(BaseSettings):
 
         :returns: the default client
         """
-        if cls._default_client is None:
+        if not hasattr(cls._default_client_storage, "client"):
             raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
-        return cls._default_client
+        return cls._default_client_storage.client
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -204,7 +205,7 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        AtlanClient._default_client = self
+        AtlanClient.set_default_client(self)
 
     @property
     def cache_key(self) -> int:
