@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock
+from threading import Lock, local
 from typing import Dict, Optional, Set
 
 from pyatlan.client.typedef import TypeDefClient
@@ -9,6 +9,7 @@ from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AtlanTagDef
 
 lock: Lock = Lock()
+thread_local_storage = local()
 
 
 class AtlanTagCache:
@@ -26,9 +27,16 @@ class AtlanTagCache:
         with lock:
             client = AtlanClient.get_default_client()
             cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = AtlanTagCache(typedef_client=client.typedef)
-            return cls.caches[cache_key]
+
+            if not hasattr(thread_local_storage, "caches"):
+                thread_local_storage.caches = {}
+
+            if cache_key not in thread_local_storage.caches:
+                thread_local_storage.caches[cache_key] = AtlanTagCache(
+                    typedef_client=client.typedef
+                )
+
+            return thread_local_storage.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:
