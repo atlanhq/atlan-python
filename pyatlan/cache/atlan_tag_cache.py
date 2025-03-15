@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock, local
-from typing import Dict, Optional, Set
+# Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
-from pyatlan.client.typedef import TypeDefClient
+from threading import Lock, local
+from typing import TYPE_CHECKING, Dict, Optional, Set
+
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AtlanTagDef
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
 thread_local_storage = local()
@@ -18,23 +22,31 @@ class AtlanTagCache:
     for Atlan tags.
     """
 
-    caches: Dict[int, "AtlanTagCache"] = {}
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
+        self.cache_by_id: Dict[str, AtlanTagDef] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.deleted_ids: Set[str] = set()
+        self.deleted_names: Set[str] = set()
+        self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
 
     @classmethod
-    def get_cache(cls) -> "AtlanTagCache":
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> AtlanTagCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            client = AtlanClient.get_default_client()
+            client = client or AtlanClient.get_default_client()
             cache_key = client.cache_key
 
             if not hasattr(thread_local_storage, "caches"):
                 thread_local_storage.caches = {}
 
             if cache_key not in thread_local_storage.caches:
-                thread_local_storage.caches[cache_key] = AtlanTagCache(
-                    typedef_client=client.typedef
-                )
+                cache_instance = AtlanTagCache(client=client)
+                cache_instance._refresh_cache()  # Refresh on new cache instance
+                thread_local_storage.caches[cache_key] = cache_instance
 
             return thread_local_storage.caches[cache_key]
 
@@ -76,22 +88,12 @@ class AtlanTagCache:
         """
         return cls.get_cache()._get_source_tags_attr_id(id)
 
-    def __init__(self, typedef_client: TypeDefClient):
-        self.typdef_client: TypeDefClient = typedef_client
-        self.cache_by_id: Dict[str, AtlanTagDef] = {}
-        self.map_id_to_name: Dict[str, str] = {}
-        self.map_name_to_id: Dict[str, str] = {}
-        self.deleted_ids: Set[str] = set()
-        self.deleted_names: Set[str] = set()
-        self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
-        self.lock: Lock = Lock()
-
     def _refresh_cache(self) -> None:
         """
         Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
         """
         with self.lock:
-            response = self.typdef_client.get(
+            response = self.client.typedef.get(
                 type_category=[
                     AtlanTypeCategory.CLASSIFICATION,
                     AtlanTypeCategory.STRUCT,
