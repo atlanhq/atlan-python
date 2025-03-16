@@ -43,6 +43,7 @@ from urllib3.util.retry import Retry
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
@@ -144,7 +145,7 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _default_client_storage: ClassVar[local] = local()  # Thread-local storage
+    _default_client_tls: ClassVar[local] = local()  # Thread-local storage (TLS)
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
@@ -173,6 +174,7 @@ class AtlanClient(BaseSettings):
     _contract_client: Optional[ContractClient] = PrivateAttr(default=None)
     _open_lineage_client: Optional[OpenLineageClient] = PrivateAttr(default=None)
     _atlan_tag_cache: Optional[AtlanTagCache] = PrivateAttr(default=None)
+    _enum_cache: Optional[EnumCache] = PrivateAttr(default=None)
     _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
 
     class Config:
@@ -185,7 +187,7 @@ class AtlanClient(BaseSettings):
         """
         if not isinstance(client, AtlanClient):
             raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
-        cls._default_client_storage.client = client
+        cls._default_client_tls.client = client
 
     @classmethod
     def get_default_client(cls) -> AtlanClient:
@@ -194,9 +196,9 @@ class AtlanClient(BaseSettings):
 
         :returns: the default client
         """
-        if not hasattr(cls._default_client_storage, "client"):
+        if not hasattr(cls._default_client_tls, "client"):
             raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
-        return cls._default_client_storage.client
+        return cls._default_client_tls.client
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -328,6 +330,12 @@ class AtlanClient(BaseSettings):
         if self._atlan_tag_cache is None:
             self._atlan_tag_cache = AtlanTagCache.get_cache(client=self)
         return self._atlan_tag_cache
+
+    @property
+    def enum_cache(self) -> EnumCache:
+        if self._enum_cache is None:
+            self._enum_cache = EnumCache.get_cache(client=self)
+        return self._enum_cache
 
     @property
     def custom_metadata_cache(self) -> CustomMetadataCache:
