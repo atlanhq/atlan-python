@@ -45,6 +45,7 @@ from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.cache.group_cache import GroupCache
+from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
@@ -177,6 +178,7 @@ class AtlanClient(BaseSettings):
     _atlan_tag_cache: Optional[AtlanTagCache] = PrivateAttr(default=None)
     _enum_cache: Optional[EnumCache] = PrivateAttr(default=None)
     _group_cache: Optional[GroupCache] = PrivateAttr(default=None)
+    _role_cache: Optional[RoleCache] = PrivateAttr(default=None)
     _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
 
     class Config:
@@ -344,6 +346,12 @@ class AtlanClient(BaseSettings):
         if self._group_cache is None:
             self._group_cache = GroupCache.get_cache(client=self)
         return self._group_cache
+
+    @property
+    def role_cache(self) -> RoleCache:
+        if self._role_cache is None:
+            self._role_cache = RoleCache.get_cache(client=self)
+        return self._role_cache
 
     @property
     def custom_metadata_cache(self) -> CustomMetadataCache:
