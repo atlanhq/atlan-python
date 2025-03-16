@@ -188,7 +188,7 @@ class ConnectionName(AbstractAssetName):
         elif isinstance(connection, str):
             tokens = connection.split("/")
             if len(tokens) > 1:
-                self.type = AtlanConnectorType(tokens[0])  # type: ignore[call-arg]
+                self.type = AtlanConnectorType(tokens[0]).value  # type: ignore[call-arg]
                 self.name = connection[len(tokens[0]) + 1 :]  # noqa
 
     def __hash__(self):
