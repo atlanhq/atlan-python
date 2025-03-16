@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock
-from typing import Dict, Iterable, Optional
+# Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
-from pyatlan.client.group import GroupClient
+from threading import Lock, local
+from typing import TYPE_CHECKING, Dict, Iterable, Optional
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
+group_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class GroupCache:
@@ -15,16 +19,30 @@ class GroupCache:
 
     caches: Dict[int, "GroupCache"] = {}
 
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_alias_to_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
+
     @classmethod
-    def get_cache(cls) -> "GroupCache":
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> GroupCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            client = AtlanClient.get_default_client()
+            client = client or AtlanClient.get_default_client()
             cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = GroupCache(group_client=client.group)
-            return cls.caches[cache_key]
+
+            if not hasattr(group_cache_tls, "caches"):
+                group_cache_tls.caches = {}
+
+            if cache_key not in group_cache_tls.caches:
+                cache_instance = GroupCache(client=client)
+                cache_instance._refresh_cache()  # Refresh on new cache instance
+                group_cache_tls.caches[cache_key] = cache_instance
+
+            return group_cache_tls.caches[cache_key]
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -65,27 +83,21 @@ class GroupCache:
         """
         return cls.get_cache()._validate_aliases(aliases)
 
-    def __init__(self, group_client: GroupClient):
-        self.group_client: GroupClient = group_client
-        self.map_id_to_name: Dict[str, str] = {}
-        self.map_name_to_id: Dict[str, str] = {}
-        self.map_alias_to_id: Dict[str, str] = {}
-        self.lock: Lock = Lock()
-
     def _refresh_cache(self) -> None:
         with self.lock:
-            groups = self.group_client.get_all()
-            if groups is not None:
-                self.map_id_to_name = {}
-                self.map_name_to_id = {}
-                self.map_alias_to_id = {}
-                for group in groups:
-                    group_id = str(group.id)
-                    group_name = str(group.name)
-                    group_alias = str(group.alias)
-                    self.map_id_to_name[group_id] = group_name
-                    self.map_name_to_id[group_name] = group_id
-                    self.map_alias_to_id[group_alias] = group_id
+            groups = self.client.group.get_all()
+            if not groups:
+                return
+            self.map_id_to_name = {}
+            self.map_name_to_id = {}
+            self.map_alias_to_id = {}
+            for group in groups:
+                group_id = str(group.id)
+                group_name = str(group.name)
+                group_alias = str(group.alias)
+                self.map_id_to_name[group_id] = group_name
+                self.map_name_to_id[group_name] = group_id
+                self.map_alias_to_id[group_alias] = group_id
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
