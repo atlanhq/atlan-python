@@ -1,21 +1,24 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import logging
 import threading
-from typing import Dict, Optional, Union
+from threading import local
+from typing import TYPE_CHECKING, Optional, Union
 
 from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Connection
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import Term
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 LOGGER = logging.getLogger(__name__)
 
 lock = threading.Lock()
+connection_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class ConnectionCache(AbstractAssetCache):
@@ -37,21 +40,26 @@ class ConnectionCache(AbstractAssetCache):
         Connection.CONNECTOR_NAME,
     ]
     SEARCH_ATTRIBUTES = [field.atlan_field_name for field in _SEARCH_FIELDS]
-    caches: Dict[int, ConnectionCache] = dict()
 
     def __init__(self, client: AtlanClient):
         super().__init__(client)
 
     @classmethod
-    def get_cache(cls) -> ConnectionCache:
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> ConnectionCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            default_client = AtlanClient.get_default_client()
-            cache_key = default_client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = ConnectionCache(client=default_client)
-            return cls.caches[cache_key]
+            client = client or AtlanClient.get_default_client()
+            cache_key = client.cache_key
+
+            if not hasattr(connection_cache_tls, "caches"):
+                connection_cache_tls.caches = {}
+
+            if cache_key not in connection_cache_tls.caches:
+                cache_instance = ConnectionCache(client=client)
+                connection_cache_tls.caches[cache_key] = cache_instance
+
+            return connection_cache_tls.caches[cache_key]
 
     @classmethod
     def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Connection:
@@ -139,21 +147,22 @@ class ConnectionCache(AbstractAssetCache):
     def lookup_by_name(self, name: ConnectionName) -> None:
         if not isinstance(name, ConnectionName):
             return
-        results = self.client.asset.find_connections_by_name(
-            name=name.name,
-            connector_type=name.type,
-            attributes=self.SEARCH_ATTRIBUTES,
-        )
-        if not results:
-            return
-        if len(results) > 1:
-            LOGGER.warning(
-                (
-                    "Found multiple connections of the same type with the same name, caching only the first: %s"
-                ),
-                name,
+        with self.lock:
+            results = self.client.asset.find_connections_by_name(
+                name=name.name,
+                connector_type=name.type,
+                attributes=self.SEARCH_ATTRIBUTES,
             )
-        self.cache(results[0])
+            if not results:
+                return
+            if len(results) > 1:
+                LOGGER.warning(
+                    (
+                        "Found multiple connections of the same type with the same name, caching only the first: %s"
+                    ),
+                    name,
+                )
+            self.cache(results[0])
 
     def get_name(self, asset: Asset):
         if not isinstance(asset, Connection):

@@ -42,6 +42,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+from pyatlan.cache.connection_cache import ConnectionCache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.cache.group_cache import GroupCache
@@ -182,6 +183,7 @@ class AtlanClient(BaseSettings):
     _role_cache: Optional[RoleCache] = PrivateAttr(default=None)
     _user_cache: Optional[UserCache] = PrivateAttr(default=None)
     _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
+    _connection_cache: Optional[ConnectionCache] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -366,6 +368,12 @@ class AtlanClient(BaseSettings):
         if self._custom_metadata_cache is None:
             self._custom_metadata_cache = CustomMetadataCache.get_cache(client=self)
         return self._custom_metadata_cache
+
+    @property
+    def connection_cache(self) -> ConnectionCache:
+        if self._connection_cache is None:
+            self._connection_cache = ConnectionCache.get_cache(client=self)
+        return self._connection_cache
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
