@@ -1,14 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2023 Atlan Pte. Ltd.
-from threading import Lock
-from typing import Dict, Optional
+# Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
-from pyatlan.client.typedef import TypeDefClient
+from threading import Lock, local
+from typing import TYPE_CHECKING, Dict, Optional
+
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import EnumDef
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
 lock: Lock = Lock()
+enum_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class EnumCache:
@@ -16,18 +21,28 @@ class EnumCache:
     Lazily-loaded cache for accessing details of an enumeration.
     """
 
-    caches: Dict[int, "EnumCache"] = {}
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
+        self.cache_by_name: Dict[str, EnumDef] = {}
+        self.lock: Lock = Lock()
 
     @classmethod
-    def get_cache(cls) -> "EnumCache":
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> EnumCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            client = AtlanClient.get_default_client()
+            client = client or AtlanClient.get_default_client()
             cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
-            return cls.caches[cache_key]
+
+            if not hasattr(enum_cache_tls, "caches"):
+                enum_cache_tls.caches = {}
+
+            if cache_key not in enum_cache_tls.caches:
+                cache_instance = EnumCache(client=client)
+                cache_instance._refresh_cache()  # Refresh on new cache instance
+                enum_cache_tls.caches[cache_key] = cache_instance
+
+            return enum_cache_tls.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:
@@ -49,17 +64,12 @@ class EnumCache:
             raise ErrorCode.ENUM_NOT_FOUND.exception_with_parameters(name)
         return enum
 
-    def __init__(self, typedef_client: TypeDefClient):
-        self.typedef_client: TypeDefClient = typedef_client
-        self.cache_by_name: Dict[str, EnumDef] = {}
-        self.lock: Lock = Lock()
-
     def _refresh_cache(self) -> None:
         """
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
         with self.lock:
-            response = self.typedef_client.get(type_category=AtlanTypeCategory.ENUM)
+            response = self.client.typedef.get(type_category=AtlanTypeCategory.ENUM)
             if not response or not response.enum_defs:
                 raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
             self.cache_by_name = {}
