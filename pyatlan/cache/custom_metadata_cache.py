@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
-thread_local_storage = local()
+cm_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class CustomMetadataCache:
@@ -42,15 +42,15 @@ class CustomMetadataCache:
             client = client or AtlanClient.get_default_client()
             cache_key = client.cache_key
 
-            if not hasattr(thread_local_storage, "caches"):
-                thread_local_storage.caches = {}
+            if not hasattr(cm_cache_tls, "caches"):
+                cm_cache_tls.caches = {}
 
-            if cache_key not in thread_local_storage.caches:
+            if cache_key not in cm_cache_tls.caches:
                 cache_instance = CustomMetadataCache(client=client)
                 cache_instance._refresh_cache()  # Refresh on new cache instance
-                thread_local_storage.caches[cache_key] = cache_instance
+                cm_cache_tls.caches[cache_key] = cache_instance
 
-            return thread_local_storage.caches[cache_key]
+            return cm_cache_tls.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:
