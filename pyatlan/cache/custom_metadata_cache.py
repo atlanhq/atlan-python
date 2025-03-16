@@ -22,6 +22,18 @@ class CustomMetadataCache:
     and human-readable names for custom metadata (including attributes).
     """
 
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
+        self.cache_by_id: Dict[str, CustomMetadataDef] = {}
+        self.attr_cache_by_id: Dict[str, AttributeDef] = {}
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_attr_id_to_name: Dict[str, Dict[str, str]] = {}
+        self.map_attr_name_to_id: Dict[str, Dict[str, str]] = {}
+        self.archived_attr_ids: Dict[str, str] = {}
+        self.types_by_asset: Dict[str, Set[type]] = {}
+        self.lock: Lock = Lock()
+
     @classmethod
     def get_cache(cls, client: Optional[AtlanClient] = None) -> CustomMetadataCache:
         from pyatlan.client.atlan import AtlanClient
@@ -179,18 +191,6 @@ class CustomMetadataCache:
         :raises NotFoundError: if the custom metadata attribute cannot be found
         """
         return cls.get_cache()._get_attribute_def(attr_id=attr_id)
-
-    def __init__(self, client: AtlanClient):
-        self.client: AtlanClient = client
-        self.cache_by_id: Dict[str, CustomMetadataDef] = {}
-        self.attr_cache_by_id: Dict[str, AttributeDef] = {}
-        self.map_id_to_name: Dict[str, str] = {}
-        self.map_name_to_id: Dict[str, str] = {}
-        self.map_attr_id_to_name: Dict[str, Dict[str, str]] = {}
-        self.map_attr_name_to_id: Dict[str, Dict[str, str]] = {}
-        self.archived_attr_ids: Dict[str, str] = {}
-        self.types_by_asset: Dict[str, Set[type]] = {}
-        self.lock: Lock = Lock()
 
     def _refresh_cache(self) -> None:
         """
