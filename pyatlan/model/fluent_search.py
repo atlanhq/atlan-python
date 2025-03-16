@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import dataclasses
 import logging
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, TypeVar, Union
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.asset import IndexSearchResults
@@ -23,6 +23,9 @@ from pyatlan.model.search import (
     SpanWithin,
     Term,
 )
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 LOGGER = logging.getLogger(__name__)
 
@@ -160,6 +163,8 @@ class CompoundQuery:
         :returns: a query that will only match assets that have
         a particular value assigned for the given Atlan tag
         """
+        from pyatlan.client.atlan import AtlanClient
+
         big_spans = []
         little_spans = []
         tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name) or ""
@@ -523,6 +528,3 @@ class FluentSearch(CompoundQuery):
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
         return client.asset.search(criteria=self.to_request(), bulk=bulk)
-
-
-from pyatlan.client.atlan import AtlanClient  # noqa: E402
