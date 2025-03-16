@@ -15,10 +15,10 @@ from pyatlan.model.search import Term
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
-LOGGER = logging.getLogger(__name__)
 
 lock = threading.Lock()
 connection_cache_tls = local()  # Thread-local storage (TLS)
+LOGGER = logging.getLogger(__name__)
 
 
 class ConnectionCache(AbstractAssetCache):

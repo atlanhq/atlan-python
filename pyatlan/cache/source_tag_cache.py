@@ -1,22 +1,25 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import logging
 import threading
-from typing import Dict, Union
+from threading import local
+from typing import TYPE_CHECKING, Optional, Union
 
 from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
 from pyatlan.cache.connection_cache import ConnectionCache, ConnectionName
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError
 from pyatlan.model.assets import Asset, Tag
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import Term
 
-LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock = threading.Lock()
+source_tag_cache_tls = local()  # Thread-local storage (TLS)
+LOGGER = logging.getLogger(__name__)
 
 
 class SourceTagCache(AbstractAssetCache):
@@ -34,21 +37,26 @@ class SourceTagCache(AbstractAssetCache):
 
     _SEARCH_FIELDS = [Asset.NAME]
     SEARCH_ATTRIBUTES = [field.atlan_field_name for field in _SEARCH_FIELDS]
-    caches: Dict[int, SourceTagCache] = dict()
 
     def __init__(self, client: AtlanClient):
         super().__init__(client)
 
     @classmethod
-    def get_cache(cls) -> SourceTagCache:
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> SourceTagCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            default_client = AtlanClient.get_default_client()
-            cache_key = default_client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = SourceTagCache(client=default_client)
-            return cls.caches[cache_key]
+            client = client or AtlanClient.get_default_client()
+            cache_key = client.cache_key
+
+            if not hasattr(source_tag_cache_tls, "caches"):
+                source_tag_cache_tls.caches = {}
+
+            if cache_key not in source_tag_cache_tls.caches:
+                cache_instance = SourceTagCache(client=client)
+                source_tag_cache_tls.caches[cache_key] = cache_instance
+
+            return source_tag_cache_tls.caches[cache_key]
 
     @classmethod
     def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Tag:
