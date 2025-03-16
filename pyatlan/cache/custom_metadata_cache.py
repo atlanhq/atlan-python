@@ -1,37 +1,44 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock
-from typing import Dict, List, Optional, Set
+# Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
-from pyatlan.client.typedef import TypeDefClient
+from threading import Lock, local
+from typing import TYPE_CHECKING, Dict, List, Optional, Set
+
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
-lock = Lock()
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
+lock: Lock = Lock()
+thread_local_storage = local()
 
 
 class CustomMetadataCache:
     """
-    Lazily-loaded cache for translating between Atlan-internal ID strings and human-readable names
-    for custom metadata (including attributes).
+    Lazily-loaded cache for translating between Atlan-internal ID strings
+    and human-readable names for custom metadata (including attributes).
     """
 
-    caches: Dict[int, "CustomMetadataCache"] = dict()
-
     @classmethod
-    def get_cache(cls) -> "CustomMetadataCache":
+    def get_cache(cls, client: Optional[AtlanClient] = None) -> CustomMetadataCache:
         from pyatlan.client.atlan import AtlanClient
 
         with lock:
-            client = AtlanClient.get_default_client()
+            client = client or AtlanClient.get_default_client()
             cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = CustomMetadataCache(
-                    typedef_client=client.typedef
-                )
-            cache = cls.caches[cache_key]
-        return cache
+
+            if not hasattr(thread_local_storage, "caches"):
+                thread_local_storage.caches = {}
+
+            if cache_key not in thread_local_storage.caches:
+                cache_instance = CustomMetadataCache(client=client)
+                cache_instance._refresh_cache()  # Refresh on new cache instance
+                thread_local_storage.caches[cache_key] = cache_instance
+
+            return thread_local_storage.caches[cache_key]
 
     @classmethod
     def refresh_cache(cls) -> None:
@@ -173,8 +180,8 @@ class CustomMetadataCache:
         """
         return cls.get_cache()._get_attribute_def(attr_id=attr_id)
 
-    def __init__(self, typedef_client: TypeDefClient):
-        self.typedef_client: TypeDefClient = typedef_client
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
         self.cache_by_id: Dict[str, CustomMetadataDef] = {}
         self.attr_cache_by_id: Dict[str, AttributeDef] = {}
         self.map_id_to_name: Dict[str, str] = {}
@@ -192,7 +199,7 @@ class CustomMetadataCache:
         :raises LogicError: if duplicate custom attributes are detected
         """
         with self.lock:
-            response = self.typedef_client.get(
+            response = self.client.typedef.get(
                 type_category=[
                     AtlanTypeCategory.CUSTOM_METADATA,
                     AtlanTypeCategory.STRUCT,

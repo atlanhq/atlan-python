@@ -42,6 +42,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
@@ -172,6 +173,7 @@ class AtlanClient(BaseSettings):
     _contract_client: Optional[ContractClient] = PrivateAttr(default=None)
     _open_lineage_client: Optional[OpenLineageClient] = PrivateAttr(default=None)
     _atlan_tag_cache: Optional[AtlanTagCache] = PrivateAttr(default=None)
+    _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -326,6 +328,12 @@ class AtlanClient(BaseSettings):
         if self._atlan_tag_cache is None:
             self._atlan_tag_cache = AtlanTagCache.get_cache(client=self)
         return self._atlan_tag_cache
+
+    @property
+    def custom_metadata_cache(self) -> CustomMetadataCache:
+        if self._custom_metadata_cache is None:
+            self._custom_metadata_cache = CustomMetadataCache.get_cache(client=self)
+        return self._custom_metadata_cache
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
