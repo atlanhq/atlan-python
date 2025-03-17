@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import threading
+import time
 from importlib.resources import read_text
 from json import load, loads
 from pathlib import Path
@@ -2070,6 +2072,62 @@ def test_atlan_call_api_server_error_messages_with_causes(
             match=escape(str(error_info)),
         ):
             client.asset.save(glossary)
+
+
+@pytest.mark.parametrize("thread_count", [3])  # Run with three threads
+def test_atlan_client_tls(thread_count):
+    """Tests that AtlanClient instances remain isolated across multiple threads."""
+    validation_results = {}
+    results_lock = threading.Lock()
+
+    def _test_atlan_client_isolation(name, api_key1, api_key2, api_key3):
+        """Creates three AtlanClient instances within the same thread and verifies isolation."""
+        # Instantiate three separate AtlanClient instances
+        client1 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key1)
+        time.sleep(0.2)
+        observed1 = client1.get_default_client().api_key  # Should match api_key1
+
+        client2 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key2)
+        time.sleep(0.2)
+        observed2 = client2.get_default_client().api_key  # Should match api_key2
+
+        client3 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key3)
+        time.sleep(0.2)
+        observed3 = client3.get_default_client().api_key  # Should match api_key3
+
+        # Store results in a thread-safe way
+        with results_lock:
+            validation_results[name] = (observed1, observed2, observed3)
+
+    # Define unique API keys for each thread
+    api_keys = [
+        ("API_KEY_1A", "API_KEY_1B", "API_KEY_1C"),
+        ("API_KEY_2A", "API_KEY_2B", "API_KEY_2C"),
+        ("API_KEY_3A", "API_KEY_3B", "API_KEY_3C"),
+    ]
+
+    threads = []
+    for i in range(thread_count):
+        thread = threading.Thread(
+            target=_test_atlan_client_isolation,
+            args=(f"thread{i + 1}", *api_keys[i]),
+        )
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    # Validate that each thread's clients retained their assigned API keys
+    for i in range(thread_count):
+        thread_name = f"thread{i + 1}"
+        expected_keys = api_keys[i]
+
+        assert validation_results[thread_name] == expected_keys, (
+            f"Clients were overwritten across threads! "
+            f"{thread_name} saw {validation_results[thread_name]} instead of {expected_keys}"
+        )
 
 
 class TestBatch:
