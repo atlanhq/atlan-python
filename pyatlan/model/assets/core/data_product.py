@@ -11,6 +11,7 @@ from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.enums import (
     DataProductCriticality,
@@ -129,6 +130,7 @@ class DataProduct(DataMesh):
 
         :param client: connectivity to an Atlan tenant (optional). If not provided, the default client will be used.
 
+        :raises NotFoundError: if DataProduct asset DSL cannot be found (does not exist) in Atlan
         :raises AtlanError: if there is an issue interacting with the API
         :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product
 
@@ -137,9 +139,12 @@ class DataProduct(DataMesh):
 
         client = AtlanClient.get_current_client() if not client else client
         dp_dsl = self.data_product_assets_d_s_l
-        json_object = json.loads(dp_dsl) if dp_dsl else {}
-        request = IndexSearchRequest(**json_object.get("query", {}))
-        response = client.asset.search(request)
+        if dp_dsl:
+            json_object = json.loads(dp_dsl) if dp_dsl else {}
+            request = IndexSearchRequest(**json_object.get("query", {}))
+            response = client.asset.search(request)
+        else:
+            raise ErrorCode.MISSING_DP_Asset_DSL.exception_with_parameters()
         return response
 
     type_name: str = Field(default="DataProduct", allow_mutation=False)

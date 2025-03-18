@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import AtlasGlossary, DataProduct
 from pyatlan.model.enums import CertificateStatus, DataProductStatus
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
@@ -142,6 +144,19 @@ def test_create_for_modification():
         qualified_name=DATA_PRODUCT_QUALIFIED_NAME,
     )
     _assert_product(test_product)
+
+
+def test_get_assets_with_missing_dp_asset_dsl_raise_not_found_error():
+    data_product = DataProduct()
+    client = AtlanClient()
+    data_product.attributes.name = DATA_PRODUCT_NAME
+    data_product.parent_domain_qualified_name = DATA_PRODUCT_QUALIFIED_NAME
+    data_product.data_product_assets_d_s_l = None
+    with pytest.raises(
+        NotFoundError,
+        match="No DataProduct Aseet DSL was found. Suggestion: You must provide a DataProduct asset DSL when retrieving DataProduct assets.",
+    ):
+        data_product.get_assets(client)
 
 
 def test_trim_to_required():
