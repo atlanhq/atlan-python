@@ -186,7 +186,7 @@ def _get_all_qualified_names(asset_type: str) -> Set[str]:
     from pyatlan.model.assets import Asset
     from pyatlan.model.fluent_search import FluentSearch
 
-    client = AtlanClient.get_default_client()
+    client = AtlanClient.get_current_client()
     request = (
         FluentSearch.select()
         .where(Asset.TYPE_NAME.eq(asset_type))
@@ -327,7 +327,7 @@ class EnumDef(TypeDef):
         or if `False` the new ones will be appended to the existing set
         :returns: the minimal object necessary to update the enumeration typedef
         """
-        from pyatlan.cache.enum_cache import EnumCache
+        from pyatlan.client.atlan import AtlanClient
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
@@ -338,7 +338,10 @@ class EnumDef(TypeDef):
             values
             if replace_existing
             else EnumDef.ElementDef.extend_elements(
-                new=values, current=EnumCache.get_by_name(str(name)).get_valid_values()
+                new=values,
+                current=AtlanClient.get_current_client()
+                .enum_cache.get_by_name(str(name))
+                .get_valid_values(),
             )
         )
         return EnumDef(
@@ -871,9 +874,11 @@ class AttributeDef(AtlanObject):
         else:
             attr_def.type_name = base_type
         if add_enum_values:
-            from pyatlan.cache.enum_cache import EnumCache
+            from pyatlan.client.atlan import AtlanClient
 
-            if enum_def := EnumCache.get_by_name(str(options_name)):
+            if enum_def := AtlanClient.get_current_client().enum_cache.get_by_name(
+                str(options_name)
+            ):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []

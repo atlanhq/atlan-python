@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from threading import Lock, local
+from threading import Lock
 from typing import TYPE_CHECKING, Dict, List, Optional, Set
 
 from pyatlan.errors import ErrorCode
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
-cm_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class CustomMetadataCache:
@@ -34,35 +33,15 @@ class CustomMetadataCache:
         self.types_by_asset: Dict[str, Set[type]] = {}
         self.lock: Lock = Lock()
 
-    @classmethod
-    def get_cache(cls, client: Optional[AtlanClient] = None) -> CustomMetadataCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = client or AtlanClient.get_default_client()
-            cache_key = client.cache_key
-
-            if not hasattr(cm_cache_tls, "caches"):
-                cm_cache_tls.caches = {}
-
-            if cache_key not in cm_cache_tls.caches:
-                cache_instance = CustomMetadataCache(client=client)
-                cache_instance._refresh_cache()  # Refresh on new cache instance
-                cm_cache_tls.caches[cache_key] = cache_instance
-
-            return cm_cache_tls.caches[cache_key]
-
-    @classmethod
-    def refresh_cache(cls) -> None:
+    def refresh_cache(self) -> None:
         """
         Refreshes the cache of custom metadata structures by requesting the full set of custom metadata
         structures from Atlan.
         :raises LogicError: if duplicate custom attributes are detected
         """
-        cls.get_cache()._refresh_cache()
+        self._refresh_cache()
 
-    @classmethod
-    def get_id_for_name(cls, name: str) -> str:
+    def get_id_for_name(self, name: str) -> str:
         """
         Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.
 
@@ -71,10 +50,9 @@ class CustomMetadataCache:
         :raises InvalidRequestError: if no name was provided
         :raises NotFoundError: if the custom metadata cannot be found
         """
-        return cls.get_cache()._get_id_for_name(name=name)
+        return self._get_id_for_name(name=name)
 
-    @classmethod
-    def get_name_for_id(cls, idstr: str) -> str:
+    def get_name_for_id(self, idstr: str) -> str:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
 
@@ -83,11 +61,10 @@ class CustomMetadataCache:
         :raises InvalidRequestError: if no ID was provided
         :raises NotFoundError: if the custom metadata cannot be found
         """
-        return cls.get_cache()._get_name_for_id(idstr=idstr)
+        return self._get_name_for_id(idstr=idstr)
 
-    @classmethod
     def get_all_custom_attributes(
-        cls, include_deleted: bool = False, force_refresh: bool = False
+        self, include_deleted: bool = False, force_refresh: bool = False
     ) -> Dict[str, List[AttributeDef]]:
         """
         Retrieve all the custom metadata attributes. The dict will be keyed by custom metadata set
@@ -101,12 +78,11 @@ class CustomMetadataCache:
         :returns: a dict from custom metadata set name to all details about its attributes
         :raises NotFoundError: if the custom metadata cannot be found
         """
-        return cls.get_cache()._get_all_custom_attributes(
+        return self._get_all_custom_attributes(
             include_deleted=include_deleted, force_refresh=force_refresh
         )
 
-    @classmethod
-    def get_attr_id_for_name(cls, set_name: str, attr_name: str) -> str:
+    def get_attr_id_for_name(self, set_name: str, attr_name: str) -> str:
         """
         Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
         for the attribute.
@@ -116,12 +92,9 @@ class CustomMetadataCache:
         :returns: Atlan-internal ID string for the attribute
         :raises NotFoundError: if the custom metadata attribute cannot be found
         """
-        return cls.get_cache()._get_attr_id_for_name(
-            set_name=set_name, attr_name=attr_name
-        )
+        return self._get_attr_id_for_name(set_name=set_name, attr_name=attr_name)
 
-    @classmethod
-    def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> str:
+    def get_attr_name_for_id(self, set_id: str, attr_id: str) -> str:
         """
         Given the Atlan-internal ID string for the set and the Atlan-internal ID for the attribute return the
         human-readable custom metadata name for the attribute.
@@ -131,30 +104,27 @@ class CustomMetadataCache:
         :returns: human-readable name of the attribute
         :raises NotFoundError: if the custom metadata attribute cannot be found
         """
-        return cls.get_cache()._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
+        return self._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
 
-    @classmethod
-    def is_attr_archived(cls, attr_id: str) -> bool:
+    def is_attr_archived(self, attr_id: str) -> bool:
         """
         Determine if an attribute is archived
         :param attr_id: Atlan-internal ID string for the attribute
         :returns: True if the attribute has been archived
         """
-        return cls.get_cache()._is_attr_archived(attr_id=attr_id)
+        return self._is_attr_archived(attr_id=attr_id)
 
-    @classmethod
-    def get_attributes_for_search_results(cls, set_name: str) -> Optional[List[str]]:
+    def get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
 
         :param set_name: human-readable name of the custom metadata set for which to retrieve attribute names
         :returns: a list of the attribute names, strictly useful for inclusion in search results
         """
-        return cls.get_cache()._get_attributes_for_search_results(set_name=set_name)
+        return self._get_attributes_for_search_results(set_name=set_name)
 
-    @classmethod
     def get_attribute_for_search_results(
-        cls, set_name: str, attr_name: str
+        self, set_name: str, attr_name: str
     ) -> Optional[str]:
         """
         Retrieve a single custom attribute name to include on search results.
@@ -164,12 +134,11 @@ class CustomMetadataCache:
         :param attr_name: human-readable name of the attribute
         :returns: the attribute name, strictly useful for inclusion in search results
         """
-        return cls.get_cache()._get_attribute_for_search_results(
+        return self._get_attribute_for_search_results(
             set_name=set_name, attr_name=attr_name
         )
 
-    @classmethod
-    def get_custom_metadata_def(cls, name: str) -> CustomMetadataDef:
+    def get_custom_metadata_def(self, name: str) -> CustomMetadataDef:
         """
         Retrieve the full custom metadata structure definition.
 
@@ -178,10 +147,9 @@ class CustomMetadataCache:
         :raises InvalidRequestError: if no name was provided
         :raises NotFoundError: if the custom metadata cannot be found
         """
-        return cls.get_cache()._get_custom_metadata_def(name=name)
+        return self._get_custom_metadata_def(name=name)
 
-    @classmethod
-    def get_attribute_def(cls, attr_id: str) -> AttributeDef:
+    def get_attribute_def(self, attr_id: str) -> AttributeDef:
         """
         Retrieve a specific custom metadata attribute definition by its unique Atlan-internal ID string.
 
@@ -190,7 +158,7 @@ class CustomMetadataCache:
         :raises InvalidRequestError: if no attribute ID was provided
         :raises NotFoundError: if the custom metadata attribute cannot be found
         """
-        return cls.get_cache()._get_attribute_def(attr_id=attr_id)
+        return self._get_attribute_def(attr_id=attr_id)
 
     def _refresh_cache(self) -> None:
         """

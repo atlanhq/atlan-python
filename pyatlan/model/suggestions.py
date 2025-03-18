@@ -6,7 +6,6 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.asset import Batch
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.aggregation import AggregationBucketResult, Aggregations
@@ -61,7 +60,7 @@ class Suggestions(AtlanObject):
     AGG_TERMS: ClassVar[str] = "group_by_terms"
 
     client: AtlanClient = Field(
-        default_factory=lambda: AtlanClient.get_default_client()
+        default_factory=lambda: AtlanClient.get_current_client()
     )
     """Client through which to find suggestions."""
     asset: Optional[Asset] = Field(default=None)
@@ -222,7 +221,7 @@ class Suggestions(AtlanObject):
         :return: the start of a suggestion finder
         for the provided asset, against the specified tenant
         """
-        client = AtlanClient.get_default_client() if not client else client
+        client = AtlanClient.get_current_client() if not client else client
         self.client = client
         self.asset = asset
         return self
@@ -343,7 +342,7 @@ class Suggestions(AtlanObject):
             for bucket in result.buckets:
                 count = bucket.doc_count
                 value = bucket.key
-                name = AtlanTagCache.get_name_for_id(value)
+                name = self.client.atlan_tag_cache.get_name_for_id(value)
                 if count and name:
                     results.append(
                         SuggestionResponse.SuggestedItem(count=count, value=name)

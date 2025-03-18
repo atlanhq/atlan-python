@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from threading import Lock, local
+from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
 from pyatlan.model.role import AtlanRole
@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
-role_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class RoleCache:
@@ -26,52 +25,31 @@ class RoleCache:
         self.map_name_to_id: Dict[str, str] = {}
         self.lock: Lock = Lock()
 
-    @classmethod
-    def get_cache(cls, client: Optional[AtlanClient] = None) -> RoleCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = client or AtlanClient.get_default_client()
-            cache_key = client.cache_key
-
-            if not hasattr(role_cache_tls, "caches"):
-                role_cache_tls.caches = {}
-
-            if cache_key not in role_cache_tls.caches:
-                cache_instance = RoleCache(client=client)
-                cache_instance._refresh_cache()  # Refresh on new cache instance
-                role_cache_tls.caches[cache_key] = cache_instance
-
-            return role_cache_tls.caches[cache_key]
-
-    @classmethod
-    def get_id_for_name(cls, name: str) -> Optional[str]:
+    def get_id_for_name(self, name: str) -> Optional[str]:
         """
         Translate the provided human-readable role name to its GUID.
 
         :param name: human-readable name of the role
         :returns: unique identifier (GUID) of the role
         """
-        return cls.get_cache()._get_id_for_name(name=name)
+        return self._get_id_for_name(name=name)
 
-    @classmethod
-    def get_name_for_id(cls, idstr: str) -> Optional[str]:
+    def get_name_for_id(self, idstr: str) -> Optional[str]:
         """
         Translate the provided role GUID to the human-readable role name.
 
         :param idstr: unique identifier (GUID) of the role
         :returns: human-readable name of the role
         """
-        return cls.get_cache()._get_name_for_id(idstr=idstr)
+        return self._get_name_for_id(idstr=idstr)
 
-    @classmethod
-    def validate_idstrs(cls, idstrs: Iterable[str]):
+    def validate_idstrs(self, idstrs: Iterable[str]):
         """
         Validate that the given role GUIDs are valid. A ValueError will be raised in any are not.
 
         :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
         """
-        return cls.get_cache()._validate_idstrs(idstrs=idstrs)
+        return self._validate_idstrs(idstrs=idstrs)
 
     def _refresh_cache(self) -> None:
         with self.lock:

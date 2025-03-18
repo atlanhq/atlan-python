@@ -47,7 +47,7 @@ class OpenLineageClient:
         """
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client()
+        client = AtlanClient.get_current_client()
 
         create_credential = Credential()
         create_credential.auth_type = "atlan_api_key"

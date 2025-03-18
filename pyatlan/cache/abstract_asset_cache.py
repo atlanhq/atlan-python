@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import threading
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any, Dict
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.enums import AtlanConnectorType
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 
 class AbstractAssetCache(ABC):
@@ -17,17 +20,12 @@ class AbstractAssetCache(ABC):
     to all caches, where a cache is populated entry-by-entry.
     """
 
-    def __init__(self, client):
+    def __init__(self, client: AtlanClient):
         self.client = client
         self.lock = threading.Lock()
-        self.name_to_guid = dict()
-        self.guid_to_asset = dict()
-        self.qualified_name_to_guid = dict()
-
-    @classmethod
-    @abstractmethod
-    def get_cache(cls):
-        """Abstract method to retreive cache."""
+        self.name_to_guid: Dict[str, str] = dict()
+        self.guid_to_asset: Dict[str, Asset] = dict()
+        self.qualified_name_to_guid: Dict[str, str] = dict()
 
     @abstractmethod
     def lookup_by_guid(self, guid: str):
@@ -84,9 +82,9 @@ class AbstractAssetCache(ABC):
         name = asset and self.get_name(asset)
         if not all([name, asset.guid, asset.qualified_name]):
             return
-        self.name_to_guid[name] = asset.guid
-        self.guid_to_asset[asset.guid] = asset
-        self.qualified_name_to_guid[asset.qualified_name] = asset.guid
+        self.name_to_guid[name] = asset.guid  # type: ignore[index]
+        self.guid_to_asset[asset.guid] = asset  # type: ignore[index]
+        self.qualified_name_to_guid[asset.qualified_name] = asset.guid  # type: ignore[index]
 
     def _get_by_guid(self, guid: str, allow_refresh: bool = True):
         """

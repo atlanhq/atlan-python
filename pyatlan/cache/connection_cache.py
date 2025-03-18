@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import threading
-from threading import local
 from typing import TYPE_CHECKING, Optional, Union
 
 from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
@@ -17,7 +16,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock = threading.Lock()
-connection_cache_tls = local()  # Thread-local storage (TLS)
 LOGGER = logging.getLogger(__name__)
 
 
@@ -44,25 +42,7 @@ class ConnectionCache(AbstractAssetCache):
     def __init__(self, client: AtlanClient):
         super().__init__(client)
 
-    @classmethod
-    def get_cache(cls, client: Optional[AtlanClient] = None) -> ConnectionCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = client or AtlanClient.get_default_client()
-            cache_key = client.cache_key
-
-            if not hasattr(connection_cache_tls, "caches"):
-                connection_cache_tls.caches = {}
-
-            if cache_key not in connection_cache_tls.caches:
-                cache_instance = ConnectionCache(client=client)
-                connection_cache_tls.caches[cache_key] = cache_instance
-
-            return connection_cache_tls.caches[cache_key]
-
-    @classmethod
-    def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Connection:
+    def get_by_guid(self, guid: str, allow_refresh: bool = True) -> Connection:
         """
         Retrieve a connection from the cache by its UUID.
         If the asset is not found, it will be looked up and added to the cache.
@@ -74,11 +54,10 @@ class ConnectionCache(AbstractAssetCache):
         :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no UUID was provided for the connection to retrieve
         """
-        return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
+        return self._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
-    @classmethod
     def get_by_qualified_name(
-        cls, qualified_name: str, allow_refresh: bool = True
+        self, qualified_name: str, allow_refresh: bool = True
     ) -> Connection:
         """
         Retrieve a connection from the cache by its unique Atlan-internal name.
@@ -92,13 +71,12 @@ class ConnectionCache(AbstractAssetCache):
         :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no qualified_name was provided for the connection to retrieve
         """
-        return cls.get_cache()._get_by_qualified_name(
+        return self._get_by_qualified_name(
             qualified_name=qualified_name, allow_refresh=allow_refresh
         )
 
-    @classmethod
     def get_by_name(
-        cls, name: ConnectionName, allow_refresh: bool = True
+        self, name: ConnectionName, allow_refresh: bool = True
     ) -> Connection:
         """
         Retrieve an connection from the cache by its uniquely identifiable name.
@@ -112,7 +90,7 @@ class ConnectionCache(AbstractAssetCache):
         :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no name was provided for the connection to retrieve
         """
-        return cls.get_cache()._get_by_name(name=name, allow_refresh=allow_refresh)
+        return self._get_by_name(name=name, allow_refresh=allow_refresh)
 
     def lookup_by_guid(self, guid: str) -> None:
         if not guid:
@@ -149,8 +127,8 @@ class ConnectionCache(AbstractAssetCache):
             return
         with self.lock:
             results = self.client.asset.find_connections_by_name(
-                name=name.name,
-                connector_type=name.type,
+                name=name.name,  # type: ignore[arg-type]
+                connector_type=name.type,  # type: ignore[arg-type]
                 attributes=self.SEARCH_ATTRIBUTES,
             )
             if not results:

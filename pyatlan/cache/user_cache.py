@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from threading import Lock, local
+from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
 from pyatlan.errors import ErrorCode
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock = Lock()
-user_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class UserCache:
@@ -27,62 +26,40 @@ class UserCache:
         self.map_email_to_id: Dict[str, str] = {}
         self.lock: Lock = Lock()
 
-    @classmethod
-    def get_cache(cls, client: Optional[AtlanClient] = None) -> UserCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = client or AtlanClient.get_default_client()
-            cache_key = client.cache_key
-
-            if not hasattr(user_cache_tls, "caches"):
-                user_cache_tls.caches = {}
-
-            if cache_key not in user_cache_tls.caches:
-                cache_instance = UserCache(client=client)
-                cache_instance._refresh_cache()  # Refresh on new cache instance
-                user_cache_tls.caches[cache_key] = cache_instance
-
-            return user_cache_tls.caches[cache_key]
-
-    @classmethod
-    def get_id_for_name(cls, name: str) -> Optional[str]:
+    def get_id_for_name(self, name: str) -> Optional[str]:
         """
         Translate the provided human-readable username to its GUID.
 
         :param name: human-readable name of the user
         :returns: unique identifier (GUID) of the user
         """
-        return cls.get_cache()._get_id_for_name(name=name)
+        return self._get_id_for_name(name=name)
 
-    @classmethod
-    def get_id_for_email(cls, email: str) -> Optional[str]:
+    def get_id_for_email(self, email: str) -> Optional[str]:
         """
         Translate the provided email to its GUID.
 
         :param email: email address of the user
         :returns: unique identifier (GUID) of the user
         """
-        return cls.get_cache()._get_id_for_email(email=email)
+        return self._get_id_for_email(email=email)
 
-    @classmethod
-    def get_name_for_id(cls, idstr: str) -> Optional[str]:
+    def get_name_for_id(self, idstr: str) -> Optional[str]:
         """
         Translate the provided user GUID to the human-readable username.
 
         :param idstr: unique identifier (GUID) of the user
         :returns: username of the user
         """
-        return cls.get_cache()._get_name_for_id(idstr=idstr)
+        return self._get_name_for_id(idstr=idstr)
 
-    @classmethod
-    def validate_names(cls, names: Iterable[str]):
+    def validate_names(self, names: Iterable[str]):
         """
         Validate that the given human-readable usernames are valid. A ValueError will be raised in any are not.
 
         :param names: a collection of usernames to be checked
         """
-        return cls.get_cache()._validate_names(names)
+        return self._validate_names(names)
 
     def _refresh_cache(self) -> None:
         with self.lock:

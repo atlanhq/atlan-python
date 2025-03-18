@@ -8,7 +8,6 @@ from typing import List, Optional, Type
 from nanoid import generate as generate_nanoid  # type: ignore
 from pydantic.v1 import StrictStr
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import (
@@ -106,7 +105,7 @@ def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:
 def create_connection(
     client: AtlanClient, name: str, connector_type: AtlanConnectorType
 ) -> Connection:
-    admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
+    admin_role_guid = str(client.role_cache.get_id_for_name("$admin"))
     to_create = Connection.create(
         name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
     )

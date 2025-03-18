@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from threading import Lock, local
+from threading import Lock
 from typing import TYPE_CHECKING, Dict, Optional
 
 from pyatlan.errors import ErrorCode
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
-enum_cache_tls = local()  # Thread-local storage (TLS)
 
 
 class EnumCache:
@@ -26,33 +25,7 @@ class EnumCache:
         self.cache_by_name: Dict[str, EnumDef] = {}
         self.lock: Lock = Lock()
 
-    @classmethod
-    def get_cache(cls, client: Optional[AtlanClient] = None) -> EnumCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = client or AtlanClient.get_default_client()
-            cache_key = client.cache_key
-
-            if not hasattr(enum_cache_tls, "caches"):
-                enum_cache_tls.caches = {}
-
-            if cache_key not in enum_cache_tls.caches:
-                cache_instance = EnumCache(client=client)
-                cache_instance._refresh_cache()  # Refresh on new cache instance
-                enum_cache_tls.caches[cache_key] = cache_instance
-
-            return enum_cache_tls.caches[cache_key]
-
-    @classmethod
-    def refresh_cache(cls) -> None:
-        """
-        Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
-        """
-        cls.get_cache()._refresh_cache()
-
-    @classmethod
-    def get_by_name(cls, name: str) -> EnumDef:
+    def get_by_name(self, name: str) -> EnumDef:
         """
         Retrieve the enumeration definition by its name.
 
@@ -60,11 +33,11 @@ class EnumCache:
         :raises `NotFoundError`: if the enumeration with the given name does not exist.
         :returns: enumeration definition
         """
-        if not (enum := cls.get_cache()._get_by_name(name=name)):
+        if not (enum := self._get_by_name(name=name)):
             raise ErrorCode.ENUM_NOT_FOUND.exception_with_parameters(name)
         return enum
 
-    def _refresh_cache(self) -> None:
+    def refresh_cache(self) -> None:
         """
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
@@ -88,6 +61,6 @@ class EnumCache:
         if name:
             if enum_def := self.cache_by_name.get(name):
                 return enum_def
-            self._refresh_cache()
+            self.refresh_cache()
             return self.cache_by_name.get(name)
         return None

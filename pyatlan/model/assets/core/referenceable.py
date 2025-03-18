@@ -87,12 +87,13 @@ class Referenceable(AtlanObject):
 
     @property
     def atlan_tag_names(self) -> List[str]:
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.constants import DELETED_
 
         if self.classification_names:
             return [
-                AtlanTagCache.get_name_for_id(tag_id) or DELETED_
+                AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(tag_id)
+                or DELETED_
                 for tag_id in self.classification_names
             ]
         return []

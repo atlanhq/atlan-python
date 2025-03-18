@@ -140,10 +140,11 @@ class Badge(Asset, type_name="Badge"):
                 ["name", "cm_name", "cm_attribute", "badge_conditions"],
                 [name, cm_name, cm_attribute, badge_conditions],
             )
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+            from pyatlan.client.atlan import AtlanClient
 
-            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
-            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+            client = AtlanClient.get_current_client()
+            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
+            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(

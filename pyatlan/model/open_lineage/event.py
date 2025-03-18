@@ -79,7 +79,7 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         """
         from pyatlan.client.atlan import AtlanClient
 
-        client = client or AtlanClient.get_default_client()
+        client = client or AtlanClient.get_current_client()
         return client.open_lineage.send(
             request=self, connector_type=AtlanConnectorType.SPARK
         )
