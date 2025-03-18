@@ -1,7 +1,8 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
 import pytest
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.custom_metadata import (
     CustomMetadataDict,
@@ -23,10 +24,31 @@ CM_ATTRIBUTES = {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME, ATTR_LAST_NAME_ID: ATTR_LA
 META_DATA = {CM_ID: CM_ATTRIBUTES}
 
 
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
 @pytest.fixture()
-def mock_cache():
-    with patch("pyatlan.model.custom_metadata.CustomMetadataCache") as cache:
-        yield cache
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
+    return mock_cache
 
 
 def get_attr_id_for_name(*args, **kwargs):
@@ -41,7 +63,6 @@ class TestCustomMetadataDict:
     @pytest.fixture()
     def sut(self, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
-        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
         mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
 
@@ -153,7 +174,7 @@ class TestCustomMetadataProxy:
 
     def test_after_modifying_metadata_modified_is_true(self, sut, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
-        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
 
         cm = sut.get_custom_metadata(name=CM_NAME)
@@ -165,7 +186,7 @@ class TestCustomMetadataProxy:
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
         mock_cache.get_id_for_name.return_value = CM_ID
-        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
 
@@ -177,7 +198,7 @@ class TestCustomMetadataProxy:
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.side_effect = get_attr_name_for_id
         mock_cache.get_id_for_name.return_value = CM_ID
-        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
         mock_cache.get_attr_id_for_name.side_effect = get_attr_id_for_name
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
@@ -206,7 +227,7 @@ class TestCustomMetadataProxy:
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
         mock_cache.get_id_for_name.return_value = CM_ID
-        mock_cache.get_cache.return_value.map_attr_id_to_name = META_DATA
+        mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = True
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
         sut = CustomMetadataProxy(business_attributes=ba)

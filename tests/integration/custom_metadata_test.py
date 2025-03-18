@@ -6,7 +6,6 @@ from typing import Generator, List, Optional, Tuple
 
 import pytest
 
-from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
@@ -623,7 +622,7 @@ def test_search_by_any_accountable(
     term: AtlasGlossaryTerm,
 ):
     attributes = ["name", "anchor"]
-    cm_attributes = CustomMetadataCache.get_attributes_for_search_results(
+    cm_attributes = client.custom_metadata_cache.get_attributes_for_search_results(
         set_name=CM_RACI
     )
     assert cm_attributes
@@ -724,7 +723,7 @@ def test_remove_term_cm_ipr(
 def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
     cm_name = CM_RACI
-    existing = CustomMetadataCache.get_custom_metadata_def(name=cm_name)
+    existing = client.custom_metadata_cache.get_custom_metadata_def(name=cm_name)
     existing_attrs = existing.attribute_defs
     updated_attrs = []
     for existing_attr in existing_attrs:
@@ -758,7 +757,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
 @pytest.mark.order(after="test_remove_attribute")
 def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes()
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
     assert CM_RACI in custom_attributes.keys()
@@ -766,7 +765,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     assert CM_QUALITY in custom_attributes.keys()
     extra = _validate_raci_structure(custom_attributes.get(CM_RACI), 4)
     assert not extra
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes(
         include_deleted=True
     )
     assert custom_attributes
@@ -785,7 +784,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
 
 @pytest.mark.order(after="test_retrieve_structures")
 def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
-    existing = CustomMetadataCache.get_custom_metadata_def(name=CM_RACI)
+    existing = client.custom_metadata_cache.get_custom_metadata_def(name=CM_RACI)
     existing_attrs = existing.attribute_defs
     updated_attrs = []
     for existing_attr in existing_attrs:
@@ -819,7 +818,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
 def test_retrieve_structure_without_archived(
     client: AtlanClient, cm_raci: CustomMetadataDef
 ):
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes()
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
     assert CM_RACI in custom_attributes.keys()
@@ -838,7 +837,7 @@ def test_retrieve_structure_without_archived(
 def test_retrieve_structure_with_archived(
     client: AtlanClient, cm_raci: CustomMetadataDef
 ):
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes(
         include_deleted=True
     )
     assert custom_attributes

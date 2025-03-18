@@ -3,6 +3,7 @@
 
 from json import load
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -26,6 +27,22 @@ def client():
     return AtlanClient()
 
 
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_cm_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
+    return mock_cache
+
+
 def load_json(respones_dir, filename):
     with (respones_dir / filename).open() as input_file:
         return load(input_file)
@@ -40,9 +57,7 @@ def mc_monitor_response_json():
     return load_json(STRUCT_RESPONSES_DIR, MC_MONITOR_JSON)
 
 
-def test_structs_flatten_attributes(
-    client, mock_custom_metadata_cache, mc_monitor_response_json
-):
+def test_structs_flatten_attributes(client, mock_cm_cache, mc_monitor_response_json):
     asset_response = {"referredEntities": {}, "entity": mc_monitor_response_json}
     mc_monitor_model = MCMonitor(**mc_monitor_response_json)
     mc_monitor_asset_response = AssetResponse[MCMonitor](**asset_response).entity

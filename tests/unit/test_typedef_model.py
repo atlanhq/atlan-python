@@ -58,6 +58,15 @@ def client():
     return AtlanClient()
 
 
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
 @pytest.fixture(scope="module")
 def mock_api_caller():
     return Mock(spec=ApiCaller)
@@ -110,9 +119,10 @@ def check_has_attributes(type_def: TypeDef, type_def_json: dict):
 
 class TestEnumDef:
     @pytest.fixture()
-    def mock_get_enum_cache(self):
-        with patch.object(EnumCache, "get_cache") as cache:
-            yield cache
+    def mock_enum_cache(self, current_client, monkeypatch):
+        mock_cache = EnumCache(current_client)
+        monkeypatch.setattr(AtlanClient, "enum_cache", mock_cache)
+        return mock_cache
 
     def test_create_element_def(self):
         element_def = EnumDef.ElementDef(**(TEST_ENUM_DEF["elementDefs"][0]))
@@ -156,9 +166,8 @@ class TestEnumDef:
         assert enum.element_defs[0].value == "test-val1"
         assert enum.element_defs[1].value == "test-val2"
 
-    def test_update_method_enum_not_found(self, client, mock_get_enum_cache):
-        mock_get_by_name = Mock(return_value=None)
-        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+    def test_update_method_enum_not_found(self, client, mock_enum_cache):
+        mock_enum_cache._get_by_name = Mock(return_value=None)
 
         with pytest.raises(
             NotFoundError,
@@ -170,13 +179,13 @@ class TestEnumDef:
                 replace_existing=False,
             )
 
-    def test_update_method(self, client, mock_get_enum_cache):
+    def test_update_method(self, client, mock_enum_cache):
         existing_enum = {
             "name": "test-enum",
             "elementDefs": [{"value": "test-val0"}],
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
-        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
             name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
         )
@@ -199,7 +208,7 @@ class TestEnumDef:
             ],
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
-        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
             name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
         )
@@ -222,7 +231,7 @@ class TestEnumDef:
             ],
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
-        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
@@ -252,7 +261,7 @@ class TestEnumDef:
             ],
         }
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
-        mock_get_enum_cache.return_value._get_by_name = mock_get_by_name
+        mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],

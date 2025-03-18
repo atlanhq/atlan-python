@@ -2,7 +2,6 @@ import time
 
 import pytest
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Connection, Process, SparkJob
 from pyatlan.model.audit import AuditSearchRequest
@@ -17,7 +16,7 @@ MODULE_NAME = TestId.make_unique("OL")
 
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient):
-    admin_role_guid = RoleCache.get_id_for_name("$admin")
+    admin_role_guid = client.role_cache.get_id_for_name("$admin")
     assert admin_role_guid
     response = client.open_lineage.create_connection(
         name=MODULE_NAME, admin_roles=[admin_role_guid]

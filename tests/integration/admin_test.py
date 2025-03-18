@@ -6,7 +6,6 @@ from typing import Generator
 import pytest
 from pydantic.v1 import StrictStr
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupRequest
 from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
@@ -35,7 +34,7 @@ def delete_group(client: AtlanClient, guid: str) -> None:
 
 
 def test_retrieve_roles(client: AtlanClient):
-    admin_role_guid = RoleCache.get_id_for_name("$admin")
+    admin_role_guid = client.role_cache.get_id_for_name("$admin")
     assert admin_role_guid
 
 

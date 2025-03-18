@@ -222,7 +222,7 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        self._current_client_tls.client = None
+        AtlanClient.set_current_client(self)
 
     @property
     def cache_key(self) -> int:
