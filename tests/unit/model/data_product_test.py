@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import NotFoundError
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import AtlasGlossary, DataProduct
 from pyatlan.model.enums import CertificateStatus, DataProductStatus
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
@@ -21,6 +21,26 @@ TEST_DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_PRODUCT_ASSETS_DSL_JSON = "data_product_assets_dsl.json"
 DATA_MESH_DIR = TEST_DATA_DIR / "data_mesh_requests"
 ASSETS_PLAYBOOK_FILTER = '{"condition":"AND","isGroupLocked":false,"rules":[]}'
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
 
 
 def load_json(respones_dir, filename):
@@ -146,17 +166,19 @@ def test_create_for_modification():
     _assert_product(test_product)
 
 
-def test_get_assets_with_missing_dp_asset_dsl_raise_not_found_error():
+def test_get_assets_with_missing_dp_asset_dsl(client: AtlanClient):
     data_product = DataProduct()
-    client = AtlanClient()
     data_product.attributes.name = DATA_PRODUCT_NAME
     data_product.parent_domain_qualified_name = DATA_PRODUCT_QUALIFIED_NAME
     data_product.data_product_assets_d_s_l = None
     with pytest.raises(
-        NotFoundError,
-        match="No DataProduct Aseet DSL was found. Suggestion: You must provide a DataProduct asset DSL when retrieving DataProduct assets.",
+        InvalidRequestError,
+        match=(
+            "Missing value for `data_product_assets_d_s_l`, "
+            "which is required to retrieve DataProduct assets."
+        ),
     ):
-        data_product.get_assets(client)
+        data_product.get_assets(client=client)
 
 
 def test_trim_to_required():

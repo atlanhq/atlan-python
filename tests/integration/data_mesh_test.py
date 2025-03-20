@@ -6,7 +6,6 @@ import pytest
 
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -501,26 +500,6 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
         counter += 1
     assert TOTAL_ASSETS == counter
     assert isinstance(asset_list, IndexSearchResults)
-
-
-@pytest.mark.order(after="test_retrieve_product")
-def test_dp_dsl_missing(client: AtlanClient, product: DataProduct):
-    assert product.guid
-    test_product = (
-        FluentSearch.select()
-        .where(Asset.GUID.eq(product.guid))
-        .where(Asset.TYPE_NAME.eq("DataProduct"))
-        .to_request()
-    )
-    retrieved_dp = client.asset.search(test_product).current_page()[0]
-    assert retrieved_dp
-    assert retrieved_dp.data_product_assets_d_s_l is None  # type: ignore
-
-    with pytest.raises(
-        NotFoundError,
-        match="No DataProduct Aseet DSL was found. Suggestion: You must provide a DataProduct asset DSL when retrieving DataProduct assets.",
-    ):
-        retrieved_dp.get_assets(client)  # type: ignore
 
 
 @pytest.mark.order(after="test_retrieve_contract")
