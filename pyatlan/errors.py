@@ -629,6 +629,13 @@ class ErrorCode(Enum):
         "Set `test` to `True` or remove `username` and `password`.",
         InvalidRequestError,
     )
+    MISSING_DATA_PRODUCT_ASSET_DSL = (
+        400,
+        "ATLAN-PYTHON-400-072",
+        "Missing value for `data_product_assets_d_s_l`, which is required to retrieve DataProduct assets.",
+        "Ensure your product instance has a valid `data_product_assets_d_s_l` value before making the request.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
