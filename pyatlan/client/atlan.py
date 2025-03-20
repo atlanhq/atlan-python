@@ -225,10 +225,6 @@ class AtlanClient(BaseSettings):
         AtlanClient.set_current_client(self)
 
     @property
-    def cache_key(self) -> int:
-        return f"{self.base_url}/{self.api_key}".__hash__()
-
-    @property
     def admin(self) -> AdminClient:
         if self._admin_client is None:
             AtlanClient.set_current_client(self)
@@ -357,6 +353,7 @@ class AtlanClient(BaseSettings):
     @property
     def atlan_tag_cache(self) -> AtlanTagCache:
         if self._atlan_tag_cache is None:
+            print("yes... calling cache")
             AtlanClient.set_current_client(self)
             self._atlan_tag_cache = AtlanTagCache(client=self)
         return self._atlan_tag_cache
@@ -698,7 +695,7 @@ class AtlanClient(BaseSettings):
 
         returns: HTTP response received after retrying the request with the refreshed token
         """
-        new_token = self.get_current_client().impersonate.user(user_id=self._user_id)
+        new_token = self.impersonate.user(user_id=self._user_id)
         self.api_key = new_token
         self._has_retried_for_401 = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"

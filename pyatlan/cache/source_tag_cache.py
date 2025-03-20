@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import threading
-from threading import local
 from typing import TYPE_CHECKING, Union
 
 from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
@@ -18,7 +17,6 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 lock = threading.Lock()
-source_tag_cache_tls = local()  # Thread-local storage (TLS)
 LOGGER = logging.getLogger(__name__)
 
 

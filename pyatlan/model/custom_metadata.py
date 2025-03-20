@@ -119,17 +119,17 @@ class CustomMetadataProxy:
         if self._business_attributes is None:
             return
         self._metadata = {}
-        self._client = AtlanClient.get_current_client()
+        client = AtlanClient.get_current_client()
         for cm_id, cm_attributes in self._business_attributes.items():
             try:
-                cm_name = self._client.custom_metadata_cache.get_name_for_id(cm_id)
+                cm_name = client.custom_metadata_cache.get_name_for_id(cm_id)
                 attribs = CustomMetadataDict(name=cm_name)
                 for attr_id, properties in cm_attributes.items():
-                    attr_name = self._client.custom_metadata_cache.get_attr_name_for_id(
+                    attr_name = client.custom_metadata_cache.get_attr_name_for_id(
                         cm_id, attr_id
                     )
                     # Only set active custom metadata attributes
-                    if not self._client.custom_metadata_cache.is_attr_archived(
+                    if not client.custom_metadata_cache.is_attr_archived(
                         attr_id=attr_id
                     ):
                         attribs[attr_name] = properties
@@ -164,8 +164,10 @@ class CustomMetadataProxy:
     @property
     def business_attributes(self) -> Optional[Dict[str, Any]]:
         if self.modified and self._metadata is not None:
+            from pyatlan.client.atlan import AtlanClient
+
             return {
-                self._client.custom_metadata_cache.get_id_for_name(
+                AtlanClient.get_current_client().custom_metadata_cache.get_id_for_name(
                     key
                 ): value.business_attributes
                 for key, value in self._metadata.items()
