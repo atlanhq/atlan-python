@@ -550,6 +550,7 @@ class AtlanClient(BaseSettings):
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
                         try:
+                            LOGGER.debug("Starting 401 automatic token refresh.")
                             return self._handle_401_token_refresh(
                                 api,
                                 path,
@@ -560,7 +561,7 @@ class AtlanClient(BaseSettings):
                             )
                         except Exception as e:
                             LOGGER.debug(
-                                "Attempt to impersonate user %s failed, not retrying. Error: %s",
+                                "Failed to impersonate user %s for 401 token refresh. Not retrying. Error: %s",
                                 self._user_id,
                                 e,
                             )
@@ -700,6 +701,7 @@ class AtlanClient(BaseSettings):
         self._has_retried_for_401 = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
+        LOGGER.debug("Successfully completed 401 automatic token refresh.")
         return self._call_api_internal(
             api,
             path,
