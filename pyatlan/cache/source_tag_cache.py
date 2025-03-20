@@ -1,22 +1,23 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import logging
 import threading
-from typing import Dict, Union
+from typing import TYPE_CHECKING, Union
 
 from pyatlan.cache.abstract_asset_cache import AbstractAssetCache, AbstractAssetName
-from pyatlan.cache.connection_cache import ConnectionCache, ConnectionName
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.cache.connection_cache import ConnectionName
 from pyatlan.errors import AtlanError
 from pyatlan.model.assets import Asset, Tag
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import Term
 
-LOGGER = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock = threading.Lock()
+LOGGER = logging.getLogger(__name__)
 
 
 class SourceTagCache(AbstractAssetCache):
@@ -34,24 +35,11 @@ class SourceTagCache(AbstractAssetCache):
 
     _SEARCH_FIELDS = [Asset.NAME]
     SEARCH_ATTRIBUTES = [field.atlan_field_name for field in _SEARCH_FIELDS]
-    caches: Dict[int, SourceTagCache] = dict()
 
     def __init__(self, client: AtlanClient):
         super().__init__(client)
 
-    @classmethod
-    def get_cache(cls) -> SourceTagCache:
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            default_client = AtlanClient.get_default_client()
-            cache_key = default_client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = SourceTagCache(client=default_client)
-            return cls.caches[cache_key]
-
-    @classmethod
-    def get_by_guid(cls, guid: str, allow_refresh: bool = True) -> Tag:
+    def get_by_guid(self, guid: str, allow_refresh: bool = True) -> Tag:
         """
         Retrieve a source tag from the cache by its UUID.
         If the asset is not found, it will be looked up and added to the cache.
@@ -63,11 +51,10 @@ class SourceTagCache(AbstractAssetCache):
         :raises NotFoundError: if the source tag cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no UUID was provided for the source tag to retrieve
         """
-        return cls.get_cache()._get_by_guid(guid=guid, allow_refresh=allow_refresh)
+        return self._get_by_guid(guid=guid, allow_refresh=allow_refresh)
 
-    @classmethod
     def get_by_qualified_name(
-        cls, qualified_name: str, allow_refresh: bool = True
+        self, qualified_name: str, allow_refresh: bool = True
     ) -> Tag:
         """
         Retrieve a source tag from the cache by its unique Atlan-internal name.
@@ -81,12 +68,11 @@ class SourceTagCache(AbstractAssetCache):
         :raises NotFoundError: if the source tag cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no qualified_name was provided for the source tag to retrieve
         """
-        return cls.get_cache()._get_by_qualified_name(
+        return self._get_by_qualified_name(
             qualified_name=qualified_name, allow_refresh=allow_refresh
         )
 
-    @classmethod
-    def get_by_name(cls, name: SourceTagName, allow_refresh: bool = True) -> Tag:
+    def get_by_name(self, name: SourceTagName, allow_refresh: bool = True) -> Tag:
         """
         Retrieve an connection from the cache by its uniquely identifiable name.
 
@@ -99,7 +85,7 @@ class SourceTagCache(AbstractAssetCache):
         :raises NotFoundError: if the object cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no name was provided for the object to retrieve
         """
-        return cls.get_cache()._get_by_name(name=name, allow_refresh=allow_refresh)
+        return self._get_by_name(name=name, allow_refresh=allow_refresh)
 
     def lookup_by_guid(self, guid: str) -> None:
         if not guid:
@@ -141,7 +127,9 @@ class SourceTagCache(AbstractAssetCache):
         if not isinstance(stn, SourceTagName):
             return
         connection_name = stn.connection
-        connection_qn = ConnectionCache.get_by_name(connection_name).qualified_name  # type: ignore[arg-type]
+        connection_qn = self.client.connection_cache.get_by_name(
+            connection_name  # type: ignore[arg-type]
+        ).qualified_name
         source_tag_qn = f"{connection_qn}/{stn.partial_tag_name}"
 
         with self.lock:
@@ -194,10 +182,16 @@ class SourceTagName(AbstractAssetName):
         # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
         # preventing Dbt tags from being excluded from caching:
         if isinstance(tag, Asset):
+            from pyatlan.client.atlan import AtlanClient
+
             source_tag_qn = tag.qualified_name or ""
             tokens = source_tag_qn.split("/")
             connection_qn = "/".join(tokens[:3]) if len(tokens) >= 3 else ""
-            conn = ConnectionCache.get_by_qualified_name(connection_qn)
+            conn = (
+                AtlanClient.get_current_client().connection_cache.get_by_qualified_name(
+                    connection_qn
+                )
+            )
             self.connection = ConnectionName(conn)
             self.partial_tag_name = source_tag_qn[len(connection_qn) + 1 :]  # noqa
 

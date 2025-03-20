@@ -1,14 +1,42 @@
 from __future__ import annotations
 
 from typing import no_type_check
-from unittest.mock import call
+from unittest.mock import MagicMock, call
 
 import pytest
 from pydantic.v1 import Field
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.core import AtlanObject, AtlanTag, AtlanTagName
 
 DISPLAY_TEXT = "Something"
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_tag_cache(current_client, monkeypatch):
+    mock_cache = MagicMock(current_client)
+    monkeypatch.setattr(AtlanClient, "atlan_tag_cache", mock_cache)
+    return mock_cache
 
 
 class TestAtlanTagName:

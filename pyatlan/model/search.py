@@ -181,10 +181,13 @@ class Exists(Query):
     @classmethod
     @validate_arguments()
     def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+        from pyatlan.client.atlan import AtlanClient
 
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(
-            set_name=set_name, attr_name=attr_name
+        if (
+            attr_id
+            := AtlanClient.get_current_client().custom_metadata_cache.get_attr_id_for_name(
+                set_name=set_name, attr_name=attr_name
+            )
         ):
             return cls(field=attr_id)
         else:
@@ -368,10 +371,13 @@ class Term(Query):
     def with_custom_metadata(
         cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
     ):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+        from pyatlan.client.atlan import AtlanClient
 
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(
-            set_name=set_name, attr_name=attr_name
+        if (
+            attr_id
+            := AtlanClient.get_current_client().custom_metadata_cache.get_attr_id_for_name(
+                set_name=set_name, attr_name=attr_name
+            )
         ):
             return cls(field=attr_id, value=value)
         else:

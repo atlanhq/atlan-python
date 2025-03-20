@@ -389,7 +389,7 @@ class AssetClient:
         if (attributes and len(attributes)) or (
             related_attributes and len(related_attributes)
         ):
-            client = AtlanClient.get_default_client()
+            client = AtlanClient.get_current_client()
             search = (
                 FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
@@ -462,7 +462,7 @@ class AssetClient:
         if (attributes and len(attributes)) or (
             related_attributes and len(related_attributes)
         ):
-            client = AtlanClient.get_default_client()
+            client = AtlanClient.get_current_client()
             search = FluentSearch().select().where(Asset.GUID.eq(guid))
             for attribute in attributes:
                 search = search.include_on_results(attribute)
@@ -962,9 +962,13 @@ class AssetClient:
         :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
-        classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
+        classification_id = (
+            AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+                atlan_tag_name
+            )
+        )
         if not classification_id:
             raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
                 atlan_tag_name
@@ -1334,7 +1338,7 @@ class AssetClient:
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_default_client()
+        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1413,7 +1417,7 @@ class AssetClient:
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_default_client()
+        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1494,7 +1498,7 @@ class AssetClient:
         from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_default_client()
+        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()

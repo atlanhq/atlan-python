@@ -2,7 +2,6 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import pytest
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
@@ -14,7 +13,7 @@ MODULE_NAME = TestId.make_unique("CONN")
 def create_connection(
     client: AtlanClient, name: str, connector_type: AtlanConnectorType
 ) -> Connection:
-    admin_role_guid = str(RoleCache.get_id_for_name("$admin"))
+    admin_role_guid = str(client.role_cache.get_id_for_name("$admin"))
     to_create = Connection.create(
         name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
     )

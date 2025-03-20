@@ -6,7 +6,6 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field
 
-from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.asset import Batch
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.aggregation import AggregationBucketResult, Aggregations
@@ -59,10 +58,6 @@ class Suggestions(AtlanObject):
     AGG_OWNER_GROUPS: ClassVar[str] = "group_by_ownerGroups"
     AGG_ATLAN_TAGS: ClassVar[str] = "group_by_tags"
     AGG_TERMS: ClassVar[str] = "group_by_terms"
-
-    client: AtlanClient = Field(
-        default_factory=lambda: AtlanClient.get_default_client()
-    )
     """Client through which to find suggestions."""
     asset: Optional[Asset] = Field(default=None)
     """Asset for which to find suggestions."""
@@ -212,24 +207,22 @@ class Suggestions(AtlanObject):
         clone.where_nots.append(query)
         return clone
 
-    def finder(self, asset: Asset, client: Optional[AtlanClient] = None) -> Suggestions:
+    def finder(self, asset: Asset) -> Suggestions:
         """
         Build a suggestion finder against
         the provided Atlan tenant for the provided asset
 
-        :param: client connectivity to an Atlan tenant
         :param: asset for which to find suggestions
         :return: the start of a suggestion finder
         for the provided asset, against the specified tenant
         """
-        client = AtlanClient.get_default_client() if not client else client
-        self.client = client
         self.asset = asset
         return self
 
-    def get(self) -> SuggestionResponse:
+    def get(self, client: Optional[AtlanClient] = None) -> SuggestionResponse:
         asset_name = ""
         all_types = []
+        client = client or AtlanClient.get_current_client()
 
         if self.asset and self.asset.name:
             asset_name = self.asset.name
@@ -303,12 +296,17 @@ class Suggestions(AtlanObject):
                 )
 
             search_request = search.to_request()
-            search_response = self.client.search(criteria=search_request)
+            search_response = client.search(criteria=search_request)
             aggregations = search_response.aggregations
             suggestion_response = SuggestionResponse()
 
             for include in self.includes:
-                self._build_response(include, suggestion_response, aggregations)
+                self._build_response(
+                    client,
+                    include,
+                    suggestion_response,
+                    aggregations,
+                )
         return suggestion_response
 
     def _get_descriptions(self, result: Aggregations, field: AtlanField):
@@ -337,13 +335,13 @@ class Suggestions(AtlanObject):
                     )
         return results
 
-    def _get_tags(self, result: Aggregations):
+    def _get_tags(self, client: AtlanClient, result: Aggregations):
         results = []
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
                 count = bucket.doc_count
                 value = bucket.key
-                name = AtlanTagCache.get_name_for_id(value)
+                name = client.atlan_tag_cache.get_name_for_id(value)
                 if count and name:
                     results.append(
                         SuggestionResponse.SuggestedItem(count=count, value=name)
@@ -362,7 +360,7 @@ class Suggestions(AtlanObject):
                     )
         return results
 
-    def _build_response(self, include, suggestion_response, aggregations):
+    def _build_response(self, client, include, suggestion_response, aggregations):
         if include == Suggestions.TYPE.SYSTEM_DESCRIPTION:
             suggestion_response.system_descriptions.extend(
                 self._get_descriptions(
@@ -391,9 +389,7 @@ class Suggestions(AtlanObject):
             )
         elif include == Suggestions.TYPE.TAGS:
             suggestion_response.atlan_tags.extend(
-                self._get_tags(
-                    aggregations.get(Suggestions.AGG_ATLAN_TAGS),
-                )
+                self._get_tags(client, aggregations.get(Suggestions.AGG_ATLAN_TAGS))
             )
         elif include == Suggestions.TYPE.TERMS:
             suggestion_response.assigned_terms.extend(
@@ -403,7 +399,10 @@ class Suggestions(AtlanObject):
             )
 
     def apply(
-        self, allow_multiple: bool = False, batch: Optional[Batch] = None
+        self,
+        allow_multiple: bool = False,
+        batch: Optional[Batch] = None,
+        client: Optional[AtlanClient] = None,
     ) -> Optional[AssetMutationResponse]:
         """
         Find the requested suggestions and apply the top suggestions as changes to the asset.
@@ -417,14 +416,16 @@ class Suggestions(AtlanObject):
         :param allow_multiple: if `True`, allow multiple suggestions to be applied
         to the asset (up to `max_suggestions` requested), i.e: for owners, terms and tags
         :param batch: (optional) the batch in which you want to apply the top suggestions as changes to the asset
+        :param client: (optional) client connectivity to an Atlan tenant
         """
+        client = client or AtlanClient.get_current_client()
         if batch:
-            return batch.add(self._apply(allow_multiple).asset)
-        result = self._apply(allow_multiple)
-        return self.client.save(result.asset, result.include_tags)
+            return batch.add(self._apply(client, allow_multiple).asset)
+        result = self._apply(client, allow_multiple)
+        return client.save(result.asset, result.include_tags)
 
-    def _apply(self, allow_multiple: bool):
-        response = self.get()
+    def _apply(self, client: AtlanClient, allow_multiple: bool):
+        response = self.get(client)
         asset = self.asset.trim_to_required()  # type: ignore[union-attr]
 
         description_to_apply = self._get_description_to_apply(response)

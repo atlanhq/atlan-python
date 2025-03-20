@@ -3,7 +3,6 @@
 import logging
 from typing import List, Optional
 
-from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError, ConflictError, NotFoundError
 from pyatlan.events.atlan_event_handler import (
@@ -56,9 +55,11 @@ def _create_cm_if_not_exists() -> Optional[str]:
 
     :returns: unique identifier for the custom metadata structure
     """
+    from pyatlan.client.atlan import AtlanClient
 
+    client = AtlanClient.get_current_client()
     try:
-        return CustomMetadataCache.get_id_for_name(CM_DAAP)
+        return client.custom_metadata_cache.get_id_for_name(CM_DAAP)
     except NotFoundError:
         try:
             cm_def = CustomMetadataDef.create(display_name=CM_DAAP)
@@ -96,7 +97,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
             try:
                 client.asset.save(badge)
                 logger.info("Created DaaP completeness score badge.")
-                return CustomMetadataCache.get_id_for_name(CM_DAAP)
+                return client.custom_metadata_cache.get_id_for_name(CM_DAAP)
             except AtlanError:
                 logger.info("Unable to create badge over DaaP score.")
             return None
@@ -104,7 +105,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
             # Handle cross-thread race condition that the typedef has since
             # been created
             try:
-                return CustomMetadataCache.get_id_for_name(CM_DAAP)
+                return client.custom_metadata_cache.get_id_for_name(CM_DAAP)
             except NotFoundError:
                 logger.error(
                     "Unable to look up DaaP custom metadata, even though itshould already exist."
@@ -141,10 +142,13 @@ class LambdaScorer(AtlanEventHandler):
         :returns: current state of the asset in Atlan, if it still exists in
             Atlan
         """
+        from pyatlan.client.atlan import AtlanClient
 
         search_attrs = SCORED_ATTRS
-        custom_metadata_attrs = CustomMetadataCache.get_attributes_for_search_results(
-            CM_DAAP
+        custom_metadata_attrs = (
+            AtlanClient()
+            .get_current_client()
+            .custom_metadata_cache.get_attributes_for_search_results(CM_DAAP)
         )
 
         if custom_metadata_attrs is not None:

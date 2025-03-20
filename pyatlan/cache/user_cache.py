@@ -1,12 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock
-from typing import Dict, Iterable, Optional
+from __future__ import annotations
 
-from pyatlan.client.token import TokenClient
-from pyatlan.client.user import UserClient
+from threading import Lock
+from typing import TYPE_CHECKING, Dict, Iterable, Optional
+
 from pyatlan.errors import ErrorCode
 from pyatlan.model.constants import SERVICE_ACCOUNT_
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock = Lock()
 
@@ -16,82 +19,63 @@ class UserCache:
     Lazily-loaded cache for translating Atlan-internal users into their various IDs.
     """
 
-    caches: Dict[int, "UserCache"] = {}
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
+        self.map_id_to_name: Dict[str, str] = {}
+        self.map_name_to_id: Dict[str, str] = {}
+        self.map_email_to_id: Dict[str, str] = {}
+        self.lock: Lock = Lock()
 
-    @classmethod
-    def get_cache(cls) -> "UserCache":
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = AtlanClient.get_default_client()
-            cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = UserCache(
-                    user_client=client.user, token_client=client.token
-                )
-            return cls.caches[cache_key]
-
-    @classmethod
-    def get_id_for_name(cls, name: str) -> Optional[str]:
+    def get_id_for_name(self, name: str) -> Optional[str]:
         """
         Translate the provided human-readable username to its GUID.
 
         :param name: human-readable name of the user
         :returns: unique identifier (GUID) of the user
         """
-        return cls.get_cache()._get_id_for_name(name=name)
+        return self._get_id_for_name(name=name)
 
-    @classmethod
-    def get_id_for_email(cls, email: str) -> Optional[str]:
+    def get_id_for_email(self, email: str) -> Optional[str]:
         """
         Translate the provided email to its GUID.
 
         :param email: email address of the user
         :returns: unique identifier (GUID) of the user
         """
-        return cls.get_cache()._get_id_for_email(email=email)
+        return self._get_id_for_email(email=email)
 
-    @classmethod
-    def get_name_for_id(cls, idstr: str) -> Optional[str]:
+    def get_name_for_id(self, idstr: str) -> Optional[str]:
         """
         Translate the provided user GUID to the human-readable username.
 
         :param idstr: unique identifier (GUID) of the user
         :returns: username of the user
         """
-        return cls.get_cache()._get_name_for_id(idstr=idstr)
+        return self._get_name_for_id(idstr=idstr)
 
-    @classmethod
-    def validate_names(cls, names: Iterable[str]):
+    def validate_names(self, names: Iterable[str]):
         """
         Validate that the given human-readable usernames are valid. A ValueError will be raised in any are not.
 
         :param names: a collection of usernames to be checked
         """
-        return cls.get_cache()._validate_names(names)
-
-    def __init__(self, user_client: UserClient, token_client: TokenClient):
-        self.user_client: UserClient = user_client
-        self.token_client: TokenClient = token_client
-        self.map_id_to_name: Dict[str, str] = {}
-        self.map_name_to_id: Dict[str, str] = {}
-        self.map_email_to_id: Dict[str, str] = {}
-        self.lock: Lock = Lock()
+        return self._validate_names(names)
 
     def _refresh_cache(self) -> None:
         with self.lock:
-            users = self.user_client.get_all()
-            if users is not None:
-                self.map_id_to_name = {}
-                self.map_name_to_id = {}
-                self.map_email_to_id = {}
-                for user in users:
-                    user_id = str(user.id)
-                    username = str(user.username)
-                    user_email = str(user.email)
-                    self.map_id_to_name[user_id] = username
-                    self.map_name_to_id[username] = user_id
-                    self.map_email_to_id[user_email] = user_id
+            users = self.client.user.get_all()
+            if not users:
+                return
+            self.map_id_to_name = {}
+            self.map_name_to_id = {}
+            self.map_email_to_id = {}
+            for user in users:
+                user_id = str(user.id)
+                username = str(user.username)
+                user_email = str(user.email)
+                self.map_id_to_name[user_id] = username
+                self.map_name_to_id[username] = user_id
+                self.map_email_to_id[user_email] = user_id
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
@@ -105,7 +89,7 @@ class UserCache:
         # If we are translating an API token,
         # short-circuit any further cache refresh
         if name.startswith(SERVICE_ACCOUNT_):
-            token = self.token_client.get_by_id(client_id=name)
+            token = self.client.token.get_by_id(client_id=name)
             if token and token.guid:
                 self.map_name_to_id[name] = token.guid
                 return token.guid
@@ -138,7 +122,7 @@ class UserCache:
         if username := self.map_id_to_name.get(idstr):
             return username
         # If the username isn't found, check if it is an API token
-        token = self.token_client.get_by_guid(guid=idstr)
+        token = self.client.token.get_by_guid(guid=idstr)
         if token and token.client_id:
             return token.username
         else:
@@ -152,7 +136,7 @@ class UserCache:
         :param names: a collection of usernames to be checked
         """
         for username in names:
-            if not self.get_id_for_name(username) and not self.token_client.get_by_id(
+            if not self.get_id_for_name(username) and not self.client.token.get_by_id(
                 username
             ):
                 raise ValueError(

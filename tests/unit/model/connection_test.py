@@ -1,5 +1,5 @@
 from typing import List, Optional
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -8,6 +8,47 @@ from pyatlan.client.token import TokenClient
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_group_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "group_cache", mock_cache)
+    return mock_cache
+
+
+@pytest.fixture()
+def mock_user_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "user_cache", mock_cache)
+    return mock_cache
+
+
+@pytest.fixture()
+def mock_role_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "role_cache", mock_cache)
+    return mock_cache
 
 
 @pytest.mark.parametrize(

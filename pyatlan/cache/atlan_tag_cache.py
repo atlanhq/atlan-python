@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-from threading import Lock
-from typing import Dict, Optional, Set
+# Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
-from pyatlan.client.typedef import TypeDefClient
+from threading import Lock
+from typing import TYPE_CHECKING, Dict, Optional, Set
+
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AtlanTagDef
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 lock: Lock = Lock()
 
@@ -17,59 +21,8 @@ class AtlanTagCache:
     for Atlan tags.
     """
 
-    caches: Dict[int, "AtlanTagCache"] = {}
-
-    @classmethod
-    def get_cache(cls) -> "AtlanTagCache":
-        from pyatlan.client.atlan import AtlanClient
-
-        with lock:
-            client = AtlanClient.get_default_client()
-            cache_key = client.cache_key
-            if cache_key not in cls.caches:
-                cls.caches[cache_key] = AtlanTagCache(typedef_client=client.typedef)
-            return cls.caches[cache_key]
-
-    @classmethod
-    def refresh_cache(cls) -> None:
-        """
-        Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
-        """
-        cls.get_cache()._refresh_cache()
-
-    @classmethod
-    def get_id_for_name(cls, name: str) -> Optional[str]:
-        """
-        Translate the provided human-readable Atlan tag name to its Atlan-internal ID string.
-
-        :param name: human-readable name of the Atlan tag
-        :returns: Atlan-internal ID string of the Atlan tag
-        """
-        return cls.get_cache()._get_id_for_name(name=name)
-
-    @classmethod
-    def get_name_for_id(cls, idstr: str) -> Optional[str]:
-        """
-        Translate the provided Atlan-internal classification ID string to the human-readable Atlan tag name.
-
-        :param idstr: Atlan-internal ID string of the Atlan tag
-        :returns: human-readable name of the Atlan tag
-        """
-        return cls.get_cache()._get_name_for_id(idstr=idstr)
-
-    @classmethod
-    def get_source_tags_attr_id(cls, id: str) -> Optional[str]:
-        """
-        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
-        captures tag attachment details (for source-synced tags).
-
-        :param id: Atlan-internal ID string of the Atlan tag
-        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
-        """
-        return cls.get_cache()._get_source_tags_attr_id(id)
-
-    def __init__(self, typedef_client: TypeDefClient):
-        self.typdef_client: TypeDefClient = typedef_client
+    def __init__(self, client: AtlanClient):
+        self.client: AtlanClient = client
         self.cache_by_id: Dict[str, AtlanTagDef] = {}
         self.map_id_to_name: Dict[str, str] = {}
         self.map_name_to_id: Dict[str, str] = {}
@@ -78,12 +31,46 @@ class AtlanTagCache:
         self.map_id_to_source_tags_attr_id: Dict[str, str] = {}
         self.lock: Lock = Lock()
 
+    def refresh_cache(self) -> None:
+        """
+        Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
+        """
+        self._refresh_cache()
+
+    def get_id_for_name(self, name: str) -> Optional[str]:
+        """
+        Translate the provided human-readable Atlan tag name to its Atlan-internal ID string.
+
+        :param name: human-readable name of the Atlan tag
+        :returns: Atlan-internal ID string of the Atlan tag
+        """
+        return self._get_id_for_name(name=name)
+
+    def get_name_for_id(self, idstr: str) -> Optional[str]:
+        """
+        Translate the provided Atlan-internal classification ID string to the human-readable Atlan tag name.
+
+        :param idstr: Atlan-internal ID string of the Atlan tag
+        :returns: human-readable name of the Atlan tag
+        """
+        return self._get_name_for_id(idstr=idstr)
+
+    def get_source_tags_attr_id(self, id: str) -> Optional[str]:
+        """
+        Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
+        captures tag attachment details (for source-synced tags).
+
+        :param id: Atlan-internal ID string of the Atlan tag
+        :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
+        """
+        return self._get_source_tags_attr_id(id)
+
     def _refresh_cache(self) -> None:
         """
         Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
         """
         with self.lock:
-            response = self.typdef_client.get(
+            response = self.client.typedef.get(
                 type_category=[
                     AtlanTypeCategory.CLASSIFICATION,
                     AtlanTypeCategory.STRUCT,

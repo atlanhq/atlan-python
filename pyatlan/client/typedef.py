@@ -65,18 +65,15 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
 
 
 def _refresh_caches(typedef: TypeDef) -> None:
+    from pyatlan.client.atlan import AtlanClient
+
+    client = AtlanClient.get_current_client()
     if isinstance(typedef, AtlanTagDef):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-        AtlanTagCache.refresh_cache()
+        client.atlan_tag_cache.refresh_cache()
     if isinstance(typedef, CustomMetadataDef):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        CustomMetadataCache.refresh_cache()
+        client.custom_metadata_cache.refresh_cache()
     if isinstance(typedef, EnumDef):
-        from pyatlan.cache.enum_cache import EnumCache
-
-        EnumCache.refresh_cache()
+        client.enum_cache.refresh_cache()
 
 
 class TypeDefFactory:
@@ -229,16 +226,15 @@ class TypeDefClient:
         :raises NotFoundError: if the typedef you are trying to delete cannot be found
         :raises AtlanError: on any API communication issue
         """
-        if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+        from pyatlan.client.atlan import AtlanClient
 
-            internal_name = CustomMetadataCache.get_id_for_name(name)
+        client = AtlanClient.get_current_client()
+        if typedef_type == CustomMetadataDef:
+            internal_name = client.custom_metadata_cache.get_id_for_name(name)
         elif typedef_type == EnumDef:
             internal_name = name
         elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            internal_name = str(AtlanTagCache.get_id_for_name(name))
+            internal_name = str(client.atlan_tag_cache.get_id_for_name(name))
         else:
             raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
                 typedef_type
@@ -251,14 +247,8 @@ class TypeDefClient:
             raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
         if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
+            client.custom_metadata_cache.refresh_cache()
         elif typedef_type == EnumDef:
-            from pyatlan.cache.enum_cache import EnumCache
-
-            EnumCache.refresh_cache()
+            client.enum_cache.refresh_cache()
         elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            AtlanTagCache.refresh_cache()
+            client.atlan_tag_cache.refresh_cache()

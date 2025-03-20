@@ -134,7 +134,7 @@ class SourceTagAttachment(AtlanObject):
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.cache.source_tag_cache import SourceTagCache
+        from pyatlan.client.atlan import AtlanClient
 
         """
         Create a source-synced tag attachment with
@@ -150,7 +150,7 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = SourceTagCache.get_by_name(name)
+        tag = AtlanClient.get_current_client().source_tag_cache.get_by_name(name)
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             tag.qualified_name or ""
         )
@@ -178,8 +178,6 @@ class SourceTagAttachment(AtlanObject):
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.cache.source_tag_cache import SourceTagCache
-
         """
         Create a source-synced tag attachment with
         a particular value when the attachment is synced to the source.
@@ -194,7 +192,11 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = SourceTagCache.get_by_qualified_name(source_tag_qualified_name)
+        from pyatlan.client.atlan import AtlanClient
+
+        tag = AtlanClient.get_current_client().source_tag_cache.get_by_qualified_name(
+            source_tag_qualified_name
+        )
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             source_tag_qualified_name or ""
         )

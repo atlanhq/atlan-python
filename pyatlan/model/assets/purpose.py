@@ -80,10 +80,12 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
+                from pyatlan.client.atlan import AtlanClient
 
                 for group_name in policy_groups:
-                    if not GroupCache.get_id_for_name(group_name):
+                    if not AtlanClient.get_current_client().group_cache.get_id_for_name(
+                        group_name
+                    ):
                         raise ValueError(
                             f"Provided group name {group_name} was not found in Atlan."
                         )
@@ -92,10 +94,12 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
+                from pyatlan.client.atlan import AtlanClient
 
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not AtlanClient.get_current_client().user_cache.get_id_for_name(
+                        username
+                    ):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -137,10 +141,12 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
+                from pyatlan.client.atlan import AtlanClient
 
                 for group_name in policy_groups:
-                    if not GroupCache.get_id_for_name(group_name):
+                    if not AtlanClient.get_current_client().group_cache.get_id_for_name(
+                        group_name
+                    ):
                         raise ValueError(
                             f"Provided group name {group_name} was not found in Atlan."
                         )
@@ -149,10 +155,12 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
+                from pyatlan.client.atlan import AtlanClient
 
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not AtlanClient.get_current_client().user_cache.get_id_for_name(
+                        username
+                    ):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )

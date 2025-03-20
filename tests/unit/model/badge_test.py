@@ -1,5 +1,8 @@
+from unittest.mock import MagicMock
+
 import pytest
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Badge
 from pyatlan.model.enums import BadgeComparisonOperator, BadgeConditionColor
 from pyatlan.model.structs import BadgeCondition
@@ -21,6 +24,33 @@ CM_ATTR_ID = "WQ6XGXwq9o7UnZlkWyKhQN"
 CM_ID = "scAesIb5UhKQdTwu4GuCSN"
 BADGE_QUALIFIED_NAME = f"badges/global/{CM_ID}.{CM_ATTR_ID}"
 BADGE_METADATA_ATTRIBUTE = f"{CM_ID}.{CM_ATTR_ID}"
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_cm_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
+    return mock_cache
 
 
 @pytest.mark.parametrize(
@@ -47,9 +77,9 @@ def test_create_when_required_parameters_are_missing_raises_value_error(
         )
 
 
-def test_create(mock_custom_metadata_cache):
-    mock_custom_metadata_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
-    mock_custom_metadata_cache.get_id_for_name.return_value = CM_ID
+def test_create(mock_cm_cache):
+    mock_cm_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
+    mock_cm_cache.get_id_for_name.return_value = CM_ID
 
     badge = Badge.create(
         name=BADGE_NAME,

@@ -12,6 +12,7 @@ import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
+from threading import local
 from types import SimpleNamespace
 from typing import (
     Any,
@@ -40,6 +41,14 @@ from pydantic.v1 import (
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+from pyatlan.cache.connection_cache import ConnectionCache
+from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.cache.enum_cache import EnumCache
+from pyatlan.cache.group_cache import GroupCache
+from pyatlan.cache.role_cache import RoleCache
+from pyatlan.cache.source_tag_cache import SourceTagCache
+from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
@@ -141,7 +150,7 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _default_client: "ClassVar[Optional[AtlanClient]]" = None
+    _current_client_tls: ClassVar[local] = local()  # Thread-local storage (TLS)
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
@@ -169,29 +178,38 @@ class AtlanClient(BaseSettings):
     _file_client: Optional[FileClient] = PrivateAttr(default=None)
     _contract_client: Optional[ContractClient] = PrivateAttr(default=None)
     _open_lineage_client: Optional[OpenLineageClient] = PrivateAttr(default=None)
+    _atlan_tag_cache: Optional[AtlanTagCache] = PrivateAttr(default=None)
+    _enum_cache: Optional[EnumCache] = PrivateAttr(default=None)
+    _group_cache: Optional[GroupCache] = PrivateAttr(default=None)
+    _role_cache: Optional[RoleCache] = PrivateAttr(default=None)
+    _user_cache: Optional[UserCache] = PrivateAttr(default=None)
+    _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
+    _connection_cache: Optional[ConnectionCache] = PrivateAttr(default=None)
+    _source_tag_cache: Optional[SourceTagCache] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
 
     @classmethod
-    def set_default_client(cls, client: "AtlanClient"):
+    def set_current_client(cls, client: AtlanClient):
         """
-        Sets the default client to be used by caches
+        Sets the current client to thread-local storage (TLS)
         """
         if not isinstance(client, AtlanClient):
             raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
-        cls._default_client = client
+        cls._current_client_tls.client = client
 
     @classmethod
-    def get_default_client(cls) -> AtlanClient:
+    def get_current_client(cls) -> AtlanClient:
         """
-        Retrieves the default client.
-
-        :returns: the default client
+        Retrieves the current client
         """
-        if cls._default_client is None:
+        if (
+            not hasattr(cls._current_client_tls, "client")
+            or not cls._current_client_tls.client
+        ):
             raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
-        return cls._default_client
+        return cls._current_client_tls.client
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -204,119 +222,190 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        AtlanClient._default_client = self
-
-    @property
-    def cache_key(self) -> int:
-        return f"{self.base_url}/{self.api_key}".__hash__()
+        AtlanClient.set_current_client(self)
 
     @property
     def admin(self) -> AdminClient:
         if self._admin_client is None:
+            AtlanClient.set_current_client(self)
             self._admin_client = AdminClient(client=self)
         return self._admin_client
 
     @property
     def audit(self) -> AuditClient:
         if self._audit_client is None:
+            AtlanClient.set_current_client(self)
             self._audit_client = AuditClient(client=self)
         return self._audit_client
 
     @property
     def search_log(self) -> SearchLogClient:
         if self._search_log_client is None:
+            AtlanClient.set_current_client(self)
             self._search_log_client = SearchLogClient(client=self)
         return self._search_log_client
 
     @property
     def workflow(self) -> WorkflowClient:
         if self._workflow_client is None:
+            AtlanClient.set_current_client(self)
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
 
     @property
     def credentials(self) -> CredentialClient:
         if self._credential_client is None:
+            AtlanClient.set_current_client(self)
             self._credential_client = CredentialClient(client=self)
         return self._credential_client
 
     @property
     def group(self) -> GroupClient:
         if self._group_client is None:
+            AtlanClient.set_current_client(self)
             self._group_client = GroupClient(client=self)
         return self._group_client
 
     @property
     def role(self) -> RoleClient:
         if self._role_client is None:
+            AtlanClient.set_current_client(self)
             self._role_client = RoleClient(client=self)
         return self._role_client
 
     @property
     def asset(self) -> AssetClient:
         if self._asset_client is None:
+            AtlanClient.set_current_client(self)
             self._asset_client = AssetClient(client=self)
         return self._asset_client
 
     @property
     def impersonate(self) -> ImpersonationClient:
         if self._impersonate_client is None:
+            AtlanClient.set_current_client(self)
             self._impersonate_client = ImpersonationClient(client=self)
         return self._impersonate_client
 
     @property
     def queries(self) -> QueryClient:
         if self._query_client is None:
+            AtlanClient.set_current_client(self)
             self._query_client = QueryClient(client=self)
         return self._query_client
 
     @property
     def token(self) -> TokenClient:
         if self._token_client is None:
+            AtlanClient.set_current_client(self)
             self._token_client = TokenClient(client=self)
         return self._token_client
 
     @property
     def typedef(self) -> TypeDefClient:
         if self._typedef_client is None:
+            AtlanClient.set_current_client(self)
             self._typedef_client = TypeDefClient(client=self)
         return self._typedef_client
 
     @property
     def user(self) -> UserClient:
         if self._user_client is None:
+            AtlanClient.set_current_client(self)
             self._user_client = UserClient(client=self)
         return self._user_client
 
     @property
     def tasks(self) -> TaskClient:
         if self._task_client is None:
+            AtlanClient.set_current_client(self)
             self._task_client = TaskClient(client=self)
         return self._task_client
 
     @property
     def sso(self) -> SSOClient:
         if self._sso_client is None:
+            AtlanClient.set_current_client(self)
             self._sso_client = SSOClient(client=self)
         return self._sso_client
 
     @property
     def open_lineage(self) -> OpenLineageClient:
         if self._open_lineage_client is None:
+            AtlanClient.set_current_client(self)
             self._open_lineage_client = OpenLineageClient(client=self)
         return self._open_lineage_client
 
     @property
     def files(self) -> FileClient:
         if self._file_client is None:
+            AtlanClient.set_current_client(self)
             self._file_client = FileClient(client=self)
         return self._file_client
 
     @property
     def contracts(self) -> ContractClient:
         if self._contract_client is None:
+            AtlanClient.set_current_client(self)
             self._contract_client = ContractClient(client=self)
         return self._contract_client
+
+    @property
+    def atlan_tag_cache(self) -> AtlanTagCache:
+        if self._atlan_tag_cache is None:
+            print("yes... calling cache")
+            AtlanClient.set_current_client(self)
+            self._atlan_tag_cache = AtlanTagCache(client=self)
+        return self._atlan_tag_cache
+
+    @property
+    def enum_cache(self) -> EnumCache:
+        if self._enum_cache is None:
+            AtlanClient.set_current_client(self)
+            self._enum_cache = EnumCache(client=self)
+        return self._enum_cache
+
+    @property
+    def group_cache(self) -> GroupCache:
+        if self._group_cache is None:
+            AtlanClient.set_current_client(self)
+            self._group_cache = GroupCache(client=self)
+        return self._group_cache
+
+    @property
+    def role_cache(self) -> RoleCache:
+        if self._role_cache is None:
+            AtlanClient.set_current_client(self)
+            self._role_cache = RoleCache(client=self)
+        return self._role_cache
+
+    @property
+    def user_cache(self) -> UserCache:
+        if self._user_cache is None:
+            AtlanClient.set_current_client(self)
+            self._user_cache = UserCache(client=self)
+        return self._user_cache
+
+    @property
+    def custom_metadata_cache(self) -> CustomMetadataCache:
+        if self._custom_metadata_cache is None:
+            AtlanClient.set_current_client(self)
+            self._custom_metadata_cache = CustomMetadataCache(client=self)
+        return self._custom_metadata_cache
+
+    @property
+    def connection_cache(self) -> ConnectionCache:
+        if self._connection_cache is None:
+            AtlanClient.set_current_client(self)
+            self._connection_cache = ConnectionCache(client=self)
+        return self._connection_cache
+
+    @property
+    def source_tag_cache(self) -> SourceTagCache:
+        if self._source_tag_cache is None:
+            AtlanClient.set_current_client(self)
+            self._source_tag_cache = SourceTagCache(client=self)
+        return self._source_tag_cache
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)
@@ -606,7 +695,7 @@ class AtlanClient(BaseSettings):
 
         returns: HTTP response received after retrying the request with the refreshed token
         """
-        new_token = self.get_default_client().impersonate.user(user_id=self._user_id)
+        new_token = self.impersonate.user(user_id=self._user_id)
         self.api_key = new_token
         self._has_retried_for_401 = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
@@ -1713,7 +1802,7 @@ def client_connection(
     :param base_url: the base_url to be used for the new connection. If not specified the current value will be used
     :param api_key: the api_key to be used for the new connection. If not specified the current value will be used
     """
-    current_client = AtlanClient.get_default_client()
+    current_client = AtlanClient.get_current_client()
     tmp_client = AtlanClient(
         base_url=base_url or current_client.base_url,
         api_key=api_key or current_client.api_key,
@@ -1724,7 +1813,7 @@ def client_connection(
     try:
         yield tmp_client
     finally:
-        AtlanClient.set_default_client(current_client)
+        AtlanClient.set_current_client(current_client)
 
 
 from pyatlan.model.keycloak_events import (  # noqa: E402

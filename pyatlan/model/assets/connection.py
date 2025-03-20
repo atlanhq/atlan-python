@@ -670,26 +670,32 @@ class Connection(Asset, type_name="Connection"):
 
         @validator("admin_users")
         def admin_users_valid(cls, admin_users, values):
-            from pyatlan.cache.user_cache import UserCache
+            from pyatlan.client.atlan import AtlanClient
 
             if values.get("is_loaded", False):
-                UserCache.validate_names(names=admin_users)
+                AtlanClient.get_current_client().user_cache.validate_names(
+                    names=admin_users
+                )
             return admin_users
 
         @validator("admin_roles")
         def admin_roles_valid(cls, admin_roles, values):
-            from pyatlan.cache.role_cache import RoleCache
+            from pyatlan.client.atlan import AtlanClient
 
             if values.get("is_loaded", False):
-                RoleCache.validate_idstrs(idstrs=admin_roles)
+                AtlanClient.get_current_client().role_cache.validate_idstrs(
+                    idstrs=admin_roles
+                )
             return admin_roles
 
         @validator("admin_groups")
         def admin_groups_valid(cls, admin_groups, values):
-            from pyatlan.cache.group_cache import GroupCache
+            from pyatlan.client.atlan import AtlanClient
 
             if values.get("is_loaded", False):
-                GroupCache.validate_aliases(aliases=admin_groups)
+                AtlanClient.get_current_client().group_cache.validate_aliases(
+                    aliases=admin_groups
+                )
                 return admin_groups
 
     attributes: Connection.Attributes = Field(

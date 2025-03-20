@@ -3,9 +3,8 @@ from __future__ import annotations
 import copy
 import dataclasses
 import logging
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, TypeVar, Union
 
-from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
@@ -23,6 +22,9 @@ from pyatlan.model.search import (
     SpanWithin,
     Term,
 )
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 LOGGER = logging.getLogger(__name__)
 
@@ -107,12 +109,17 @@ class CompoundQuery:
                          even propagated tags will suffice
         :returns: a query that will only match assets that have at least one of the Atlan tags provided
         """
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
         values: List[str] = []
         if with_one_of:
             for name in with_one_of:
-                if tag_id := AtlanTagCache.get_id_for_name(name):
+                if (
+                    tag_id
+                    := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+                        name
+                    )
+                ):
                     values.append(tag_id)
                 else:
                     raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -160,10 +167,12 @@ class CompoundQuery:
         :returns: a query that will only match assets that have
         a particular value assigned for the given Atlan tag
         """
+        from pyatlan.client.atlan import AtlanClient
+
         big_spans = []
         little_spans = []
-        tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name) or ""
-        client = AtlanClient.get_default_client()
+        client = AtlanClient.get_current_client()
+        tag_id = client.atlan_tag_cache.get_id_for_name(atlan_tag_name) or ""
         synced_tags = [
             tag
             for tag in (
@@ -523,6 +532,3 @@ class FluentSearch(CompoundQuery):
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
         return client.asset.search(criteria=self.to_request(), bulk=bulk)
-
-
-from pyatlan.client.atlan import AtlanClient  # noqa: E402

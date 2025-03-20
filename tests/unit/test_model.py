@@ -13,6 +13,7 @@ import pytest
 from pydantic.v1.error_wrappers import ValidationError
 
 import pyatlan.cache.atlan_tag_cache
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import (
     SQL,
@@ -767,6 +768,26 @@ def type_def_response():
     return TypeDefResponse(**data)
 
 
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
 @pytest.fixture()
 def glossary_term_json():
     return load_json(GLOSSARY_TERM_JSON)
@@ -918,11 +939,11 @@ def test_validate_single_required_field_with_only_one_field_does_not_raise_value
     validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
 
 
-def test_atlan_tag_names(monkeypatch):
+def test_atlan_tag_names(current_client: AtlanClient, monkeypatch):
     tag_name = "Issue"
     tag_id = "123"
 
-    def get_name_for_id(value):
+    def get_name_for_id(_, value):
         if value == tag_id:
             return tag_name
         return ""

@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import threading
+import time
 from importlib.resources import read_text
 from json import load, loads
 from pathlib import Path
 from re import escape
-from unittest.mock import DEFAULT, Mock, call, patch
+from unittest.mock import DEFAULT, MagicMock, Mock, call, patch
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -127,13 +129,37 @@ TEST_MISSING_GLOSSARY_GUID_ERROR = "ATLAN-PYTHON-400-055 'glossary_guid' keyword
 
 @pytest.fixture(autouse=True)
 def set_env(monkeypatch):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
 
 
 @pytest.fixture()
 def client():
     return AtlanClient()
+
+
+@pytest.fixture()
+def current_client(client, monkeypatch):
+    monkeypatch.setattr(
+        AtlanClient,
+        "get_current_client",
+        lambda: client,
+    )
+
+
+@pytest.fixture()
+def mock_cm_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    mock_cache.get_name_for_id.return_value = CM_NAME
+    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
+    return mock_cache
+
+
+@pytest.fixture()
+def mock_role_cache(current_client, monkeypatch):
+    mock_cache = MagicMock()
+    monkeypatch.setattr(AtlanClient, "role_cache", mock_cache)
+    return mock_cache
 
 
 @pytest.fixture
@@ -149,12 +175,6 @@ def mock_atlan_client():
 @pytest.fixture(scope="module")
 def mock_api_caller():
     return Mock(spec=ApiCaller)
-
-
-@pytest.fixture()
-def mock_cm_cache():
-    with patch("pyatlan.model.custom_metadata.CustomMetadataCache") as cache:
-        yield cache
 
 
 def load_json(respones_dir, filename):
@@ -707,16 +727,15 @@ def test_register_client_with_bad_parameter_raises_value_error(client):
     with pytest.raises(
         InvalidRequestError, match="client must be an instance of AtlanClient"
     ):
-        AtlanClient.set_default_client("")
-    assert AtlanClient.get_default_client() is client
+        AtlanClient.set_current_client("")
 
 
 def test_register_client(client):
     other = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
-    assert AtlanClient.get_default_client() == other
+    assert AtlanClient.get_current_client() == other
 
-    AtlanClient.set_default_client(client)
-    assert AtlanClient.get_default_client() == client
+    AtlanClient.set_current_client(client)
+    assert AtlanClient.get_current_client() == client
 
 
 @pytest.mark.parametrize(
@@ -1474,17 +1493,16 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
 
 
 def test_asset_get_lineage_list_response_with_custom_metadata(
-    mock_api_caller, mock_cm_cache, lineage_list_json
+    mock_cm_cache, mock_api_caller, lineage_list_json
 ):
-    client = AssetClient(mock_api_caller)
-    mock_cm_cache.get_name_for_id.return_value = CM_NAME
+    asset_client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
 
     lineage_request = LineageListRequest(
         guid="test-guid", depth=1, direction=LineageDirection.UPSTREAM
     )
     lineage_request.attributes = [CM_NAME]
-    lineage_response = client.get_lineage_list(lineage_request=lineage_request)
+    lineage_response = asset_client.get_lineage_list(lineage_request=lineage_request)
 
     for asset in lineage_response:
         assert asset
@@ -1497,6 +1515,7 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
         assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
 
     assert mock_api_caller._call_api.call_count == 1
+    assert mock_cm_cache.get_name_for_id.call_count == 1
     mock_api_caller.reset_mock()
 
 
@@ -1758,6 +1777,7 @@ def test_asset_retrieve_minimal_without_asset_type(
 
 
 def test_user_create(
+    current_client,
     mock_api_caller,
     mock_role_cache,
 ):
@@ -1779,7 +1799,9 @@ def test_user_create(
     mock_api_caller.reset_mock()
 
 
-def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json):
+def test_user_create_with_info(
+    current_client, mock_api_caller, mock_role_cache, user_list_json
+):
     test_role_id = "role-guid-123"
     client = UserClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [
@@ -2070,6 +2092,62 @@ def test_atlan_call_api_server_error_messages_with_causes(
             match=escape(str(error_info)),
         ):
             client.asset.save(glossary)
+
+
+@pytest.mark.parametrize("thread_count", [3])  # Run with three threads
+def test_atlan_client_tls(thread_count):
+    """Tests that AtlanClient instances remain isolated across multiple threads."""
+    validation_results = {}
+    results_lock = threading.Lock()
+
+    def _test_atlan_client_isolation(name, api_key1, api_key2, api_key3):
+        """Creates three AtlanClient instances within the same thread and verifies isolation."""
+        # Instantiate three separate AtlanClient instances
+        client1 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key1)
+        time.sleep(0.2)
+        observed1 = client1.get_current_client().api_key  # Should match api_key1
+
+        client2 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key2)
+        time.sleep(0.2)
+        observed2 = client2.get_current_client().api_key  # Should match api_key2
+
+        client3 = AtlanClient(base_url="https://test.atlan.com", api_key=api_key3)
+        time.sleep(0.2)
+        observed3 = client3.get_current_client().api_key  # Should match api_key3
+
+        # Store results in a thread-safe way
+        with results_lock:
+            validation_results[name] = (observed1, observed2, observed3)
+
+    # Define unique API keys for each thread
+    api_keys = [
+        ("API_KEY_1A", "API_KEY_1B", "API_KEY_1C"),
+        ("API_KEY_2A", "API_KEY_2B", "API_KEY_2C"),
+        ("API_KEY_3A", "API_KEY_3B", "API_KEY_3C"),
+    ]
+
+    threads = []
+    for i in range(thread_count):
+        thread = threading.Thread(
+            target=_test_atlan_client_isolation,
+            args=(f"thread{i + 1}", *api_keys[i]),
+        )
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
+
+    # Validate that each thread's clients retained their assigned API keys
+    for i in range(thread_count):
+        thread_name = f"thread{i + 1}"
+        expected_keys = api_keys[i]
+
+        assert validation_results[thread_name] == expected_keys, (
+            f"Clients were overwritten across threads! "
+            f"{thread_name} saw {validation_results[thread_name]} instead of {expected_keys}"
+        )
 
 
 class TestBatch:
@@ -2545,7 +2623,7 @@ def test_get_all_sorting(group_client, mock_api_caller):
     mock_api_caller.reset_mock()
 
 
-def test_get_by_guid_asset_not_found_fluent_search():
+def test_get_by_guid_asset_not_found_fluent_search(current_client):
     guid = "123"
     asset_type = Table
 
@@ -2566,7 +2644,9 @@ def test_get_by_guid_asset_not_found_fluent_search():
         mock_execute.assert_called_once()
 
 
-def test_get_by_guid_type_mismatch_fluent_search():
+def test_get_by_guid_type_mismatch_fluent_search(
+    current_client: AtlanClient, mock_api_caller
+):
     guid = "123"
     expected_asset_type = Table
     returned_asset_type = View
@@ -2574,7 +2654,7 @@ def test_get_by_guid_type_mismatch_fluent_search():
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
         mock_execute.return_value.current_page.return_value = [returned_asset_type()]
 
-        client = AssetClient(client=ApiCaller)
+        client = AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
@@ -2591,7 +2671,9 @@ def test_get_by_guid_type_mismatch_fluent_search():
         mock_execute.assert_called_once()
 
 
-def test_get_by_qualified_name_type_mismatch():
+def test_get_by_qualified_name_type_mismatch(
+    current_client: AtlanClient, mock_api_caller
+):
     qualified_name = "example_qualified_name"
     expected_asset_type = Table
     returned_asset_type = View
@@ -2599,7 +2681,7 @@ def test_get_by_qualified_name_type_mismatch():
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
         mock_execute.return_value.current_page.return_value = [returned_asset_type()]
 
-        client = AssetClient(client=ApiCaller)
+        client = AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -2615,14 +2697,16 @@ def test_get_by_qualified_name_type_mismatch():
         mock_execute.assert_called_once()
 
 
-def test_get_by_qualified_name_asset_not_found():
+def test_get_by_qualified_name_asset_not_found(
+    current_client: AtlanClient, mock_api_caller
+):
     qualified_name = "example_qualified_name"
     asset_type = Table
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
         mock_execute.return_value.current_page.return_value = []
 
-        client = AssetClient(client=ApiCaller)
+        client = AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(

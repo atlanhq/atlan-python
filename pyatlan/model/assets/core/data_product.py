@@ -135,7 +135,7 @@ class DataProduct(DataMesh):
         """
         from pyatlan.client.atlan import AtlanClient
 
-        client = AtlanClient.get_default_client() if not client else client
+        client = AtlanClient.get_current_client() if not client else client
         dp_dsl = self.data_product_assets_d_s_l
         json_object = json.loads(dp_dsl) if dp_dsl else {}
         request = IndexSearchRequest(**json_object.get("query", {}))

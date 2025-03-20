@@ -38,9 +38,13 @@ class AtlanTagName:
         return obj
 
     def __init__(self, display_text: str):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
-        if not (id := AtlanTagCache.get_id_for_name(display_text)):
+        if not (
+            id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+                display_text
+            )
+        ):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
         self._id = id
@@ -77,20 +81,26 @@ class AtlanTagName:
 
     @classmethod
     def _convert_to_display_text(cls, data):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
         if isinstance(data, AtlanTagName):
             return data
-        if display_text := AtlanTagCache.get_name_for_id(data):
+
+        if (
+            display_text
+            := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
+        ):
             return AtlanTagName(display_text)
         else:
             return cls.get_deleted_sentinel()
 
     @staticmethod
     def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
-        return AtlanTagCache.get_id_for_name(atlan_tag_name._display_text)
+        return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+            atlan_tag_name._display_text
+        )
 
 
 class AtlanObject(BaseModel):
@@ -250,11 +260,13 @@ class AtlanTag(AtlanObject):
         return AtlanTagName._convert_to_display_text(value)
 
     def __init__(self, *args, **kwargs):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
         super().__init__(*args, **kwargs)
         if self.type_name != AtlanTagName.get_deleted_sentinel():
-            attr_id = AtlanTagCache.get_source_tags_attr_id(self.type_name.id)
+            attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
+                self.type_name.id
+            )
         if self.attributes and attr_id in self.attributes:
             self._source_tag_attachements = [
                 SourceTagAttachment(**source_tag["attributes"])
@@ -269,7 +281,7 @@ class AtlanTag(AtlanObject):
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
     ) -> AtlanTag:
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.client.atlan import AtlanClient
 
         """
         Construct an Atlan tag assignment for a specific entity.
@@ -285,7 +297,10 @@ class AtlanTag(AtlanObject):
             tag.entity_status = EntityStatus.ACTIVE
         if source_tag_attachment:
             source_tag_attr_id = (
-                AtlanTagCache.get_source_tags_attr_id(atlan_tag_name.id) or ""
+                AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
+                    atlan_tag_name.id
+                )
+                or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
             tag._source_tag_attachements.append(source_tag_attachment)
