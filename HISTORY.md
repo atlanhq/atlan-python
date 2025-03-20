@@ -1,3 +1,59 @@
+## 6.0.0 (February 20, 2025)
+
+### New Features
+
+- Added a new connector type: `DOCUMENTDB`.
+
+### Breaking Changes
+
+- `DataProduct.get_assets()` method now raises `InvalidRequestError` when there is a missing value for `data_product_assets_d_s_l`, which is required to retrieve product assets.
+- Fixed SDK cache inconsistencies and unexpected behavior when running in concurrent/multi-threaded environments.
+
+  - Completely migrated from `AtlanClient._default_client` to `AtlanClient._current_client_tls` (which uses thread-local storage) to prevent sharing this class variable across multiple threads. Previously, it was shared across threads, resulting in inconsistent behavior in SDK caches.
+  - Removed `cache_key` maintenance that used to maintain cache instances per Atlan client hash (`cache_key(base_url, api_key)`).
+  - Now, all caches are bound to an `AtlanClient` instance, requiring the migration of all cache methods from class methods to instance methods.
+  - Caches remain tracked even in cases of automatic token refresh for the client.
+
+  The following example illustrates the migration:
+
+  ### Before
+
+  ```py
+  from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+
+  c1 = AtlanClient()
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # <-- Uses default client (c1), populates the caches (API call), and uses cache_key to store the cache instance
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+
+  c2 = AtlanClient()
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # <-- Uses default client (c2), populates the caches, and uses cache_key to store the cache instance
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+
+  c1 = AtlanClient()
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # <-- c1 initialized again. Since cache_key was used for c1 previously, the populated cache instance in memory is reused, avoiding an API call.
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+  ```
+
+  ### Now (caches are bound to the client and maintained only upon the first client initialization):
+
+  ```py
+  c1 = AtlanClient()
+
+  tag_id = c1.atlan_tag_cache.get_id_for_name(atlan_tag_name)  # <-- Uses default client (c1) and populates the caches (API call)
+
+  # OR
+  tag_id = AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(atlan_tag_name) # <-- Uses default client (c1) and populates the caches (API call)
+  tag_id = AtlanTagCache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+
+  c2 = AtlanClient()
+  tag_id = c2.atlan_tag_cache.get_id_for_name(atlan_tag_name)  # <-- Uses default client (c2) and populates the cache (API call)
+  tag_id = c2.atlan_tag_cache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+
+  c1 = AtlanClient()
+  tag_id = c1.atlan_tag_cache.get_id_for_name(atlan_tag_name)  # <-- c1 initialized again. Since no cache_key is used in the latest approach, the previously populated cache instance is gone, and we need to make an API call to populate the cache for c1.
+  tag_id = c1.atlan_tag_cache.get_id_for_name(atlan_tag_name)  # Returns the ID from the cache (no API call)
+  ```
+
 ## 5.0.2 (March 11, 2025)
 
 ### New Features
