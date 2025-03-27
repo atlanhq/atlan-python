@@ -158,7 +158,7 @@ class AtlanClient(BaseSettings):
     retry: Retry = DEFAULT_RETRY
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
-    _has_retried_for_401: bool = PrivateAttr(default=False)
+    _401_tls: local = local()
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
@@ -223,6 +223,7 @@ class AtlanClient(BaseSettings):
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
         AtlanClient.set_current_client(self)
+        self._401_tls.has_retried = False
 
     @property
     def admin(self) -> AdminClient:
@@ -462,7 +463,7 @@ class AtlanClient(BaseSettings):
             if response is None:
                 return None
             if response.status_code == api.expected_status:
-                self._has_retried_for_401 = False
+                self._401_tls.has_retried = False
                 try:
                     if (
                         response.content is None
@@ -545,7 +546,7 @@ class AtlanClient(BaseSettings):
                     # on authentication failure (token may have expired)
                     if (
                         self._user_id
-                        and not self._has_retried_for_401
+                        and not self._401_tls.has_retried
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
@@ -698,7 +699,7 @@ class AtlanClient(BaseSettings):
         """
         new_token = self.impersonate.user(user_id=self._user_id)
         self.api_key = new_token
-        self._has_retried_for_401 = True
+        self._401_tls.has_retried = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
