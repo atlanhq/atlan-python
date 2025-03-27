@@ -29,14 +29,14 @@ class CustomMetadataDict(UserDict):
     def attribute_names(self) -> Set[str]:
         return self._names
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, client=None):
         """Inits CustomMetadataDict with a string containing the human-readable name of a set of custom metadata"""
         from pyatlan.client.atlan import AtlanClient
 
         super().__init__()
         self._name = name
         self._modified = False
-        self._client = AtlanClient.get_current_client()
+        self._client = client or AtlanClient.get_current_client()
         _id = self._client.custom_metadata_cache.get_id_for_name(name)
         self._names = {
             value
@@ -180,14 +180,10 @@ class CustomMetadataRequest(AtlanObject):
     _set_id: str = PrivateAttr()
 
     @classmethod
-    def create(cls, custom_metadata_dict: CustomMetadataDict):
-        from pyatlan.client.atlan import AtlanClient
-
+    def create(cls, custom_metadata_dict: CustomMetadataDict, client=None):
         ret_val = cls(__root__=custom_metadata_dict.business_attributes)
-        ret_val._set_id = (
-            AtlanClient.get_current_client().custom_metadata_cache.get_id_for_name(
-                custom_metadata_dict._name
-            )
+        ret_val._set_id = client.custom_metadata_cache.get_id_for_name(
+            custom_metadata_dict._name
         )
         return ret_val
 

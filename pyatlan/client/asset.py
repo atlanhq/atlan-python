@@ -1276,7 +1276,7 @@ class AssetClient:
         # clear unset attributes so that they are removed
         custom_metadata.clear_unset()
         custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
+            custom_metadata_dict=custom_metadata, client=custom_metadata._client
         )
         self._client._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
