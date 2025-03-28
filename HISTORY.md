@@ -1,4 +1,10 @@
-## 6.0.0 (February 20, 2025)
+## 6.0.1 (March 28, 2025)
+
+### QOL Improvements
+
+- Migrated the boolean field `AtlanClient.401_tls.has_retried` to thread-local storage (`TLS`) to enhance `401` token handling in a multithreaded environment.
+
+## 6.0.0 (March 20, 2025)
 
 ### New Features
 
