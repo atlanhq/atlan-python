@@ -462,8 +462,24 @@ class AtlanClient(BaseSettings):
                 LOGGER.debug("HTTP Status: %s", response.status_code)
             if response is None:
                 return None
-            if response.status_code == api.expected_status:
+
+            # Reset `has_retried` flag if:
+            # - SDK already attempted a 401 token refresh (`has_retried = True`)
+            # - and the current response status code is NOT 401
+            #
+            # Real-world scenario:
+            # - First 401 triggers `_handle_401_token_refresh`, setting `has_retried = True`
+            # - If the next response is also 401 → SDK returns 401 (won’t retry again)
+            # - But if the next response is != 401 (e.g. 403), and `has_retried = True`,
+            # then we should reset `has_retried = False` so that future 401s can trigger a new token refresh.
+            if (
+                self._401_tls.has_retried
+                and response.status_code
+                != ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
+            ):
                 self._401_tls.has_retried = False
+
+            if response.status_code == api.expected_status:
                 try:
                     if (
                         response.content is None
@@ -562,10 +578,10 @@ class AtlanClient(BaseSettings):
                             )
                         except Exception as e:
                             LOGGER.debug(
-                                "Failed to impersonate user %s for 401 token refresh. Not retrying. Error: %s",
-                                self._user_id,
+                                "API call failed after a successful 401 token refresh. Error details: %s",
                                 e,
                             )
+                            raise
 
                     if error_code and error_message:
                         error = ERROR_CODE_FOR_HTTP_STATUS.get(
@@ -697,12 +713,31 @@ class AtlanClient(BaseSettings):
 
         returns: HTTP response received after retrying the request with the refreshed token
         """
-        new_token = self.impersonate.user(user_id=self._user_id)
+        try:
+            new_token = self.impersonate.user(user_id=self._user_id)
+        except Exception as e:
+            LOGGER.debug(
+                "Failed to impersonate user %s for 401 token refresh. Not retrying. Error: %s",
+                self._user_id,
+                e,
+            )
+            raise
         self.api_key = new_token
         self._401_tls.has_retried = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
+
+        # Adding a short delay after token refresh
+        # This helps ensure that when we fetch typedefs using the new token,
+        # the backend has fully recognized the token as valid.
+        # Without this delay, we occasionally get an empty response `[]` from the API,
+        # likely because the backend hasn’t fully propagated token validity yet.
+        import time
+
+        time.sleep(5)
+
+        # Retry the API call with the new token
         return self._call_api_internal(
             api,
             path,
