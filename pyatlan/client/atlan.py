@@ -354,7 +354,6 @@ class AtlanClient(BaseSettings):
     @property
     def atlan_tag_cache(self) -> AtlanTagCache:
         if self._atlan_tag_cache is None:
-            print("yes... calling cache")
             AtlanClient.set_current_client(self)
             self._atlan_tag_cache = AtlanTagCache(client=self)
         return self._atlan_tag_cache

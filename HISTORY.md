@@ -1,3 +1,14 @@
+## 6.0.2 (April 07, 2025)
+
+### QOL Improvements
+
+- Updated SDK generator templates to align with `Pyatlan v6` changes.
+- Added a delay after token refresh to avoid empty (`[]`) typedef responses.
+
+### Bug Fixes
+
+- Reset `has_retried` if the last retry wasn't a `401` to allow future token refresh attempts.
+
 ## 6.0.1 (March 28, 2025)
 
 ### QOL Improvements
