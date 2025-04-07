@@ -15,7 +15,7 @@ from pyatlan.client.search_log import (
     SearchLogResults,
     SearchLogViewResults,
 )
-from pyatlan.errors import AuthenticationError, NotFoundError
+from pyatlan.errors import AuthenticationError, InvalidRequestError, NotFoundError
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import (
     Asset,
@@ -1506,8 +1506,8 @@ def test_client_401_token_refresh(
     # Test that providing an invalid user ID results in the same authentication error
     client._user_id = "invalid-user-id"
     with pytest.raises(
-        AuthenticationError,
-        match="Server responded with an authentication error 401",
+        InvalidRequestError,
+        match="Missing privileged credentials to impersonate users",
     ):
         FluentSearch().where(CompoundQuery.active_assets()).where(
             CompoundQuery.asset_type(AtlasGlossary)
