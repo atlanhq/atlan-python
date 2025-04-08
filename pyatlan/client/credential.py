@@ -83,6 +83,7 @@ class CredentialClient:
         filter: Optional[Dict[str, Any]] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
+        workflow_name: Optional[str] = None,
     ) -> CredentialListResponse:
         """
         Retrieves all credentials.
@@ -90,6 +91,7 @@ class CredentialClient:
         :param filter: (optional) dictionary specifying the filter criteria.
         :param limit: (optional) maximum number of credentials to retrieve.
         :param offset: (optional) number of credentials to skip before starting retrieval.
+        :param workflow_name: (optional) name of the workflow to retrieve credentials for.
         :returns: CredentialListResponse instance.
         :raises: AtlanError on any error during API invocation.
         """
@@ -100,6 +102,17 @@ class CredentialClient:
             params["limit"] = limit
         if offset is not None:
             params["offset"] = offset
+
+        if workflow_name is not None:
+            if filter is None:
+                filter = {}
+
+            if workflow_name.startswith("atlan-"):
+                workflow_name = "default-" + workflow_name[len("atlan-") :]
+
+            filter["name"] = f"{workflow_name}-0"
+
+            params["filter"] = dumps(filter)
 
         raw_json = self._client._call_api(
             GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params
