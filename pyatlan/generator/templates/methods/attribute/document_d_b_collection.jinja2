@@ -1,0 +1,36 @@
+        @classmethod
+        @init_guid
+        def create(cls,
+            *,
+            name: str,
+            database_qualified_name: str,
+            database_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> DocumentDBCollection.Attributes:
+            validate_required_fields(
+                ["name, database_qualified_name"], [name, database_qualified_name]
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    database_qualified_name, "database_qualified_name", 4
+                )
+
+            fields = database_qualified_name.split("/")
+            database_name = database_name or fields[3]
+            qualified_name = f"{database_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database = DocumentDBDatabase.ref_by_qualified_name(database_qualified_name)
+
+            return DocumentDBCollection.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                database=database,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+            )

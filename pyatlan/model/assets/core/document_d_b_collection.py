@@ -6,10 +6,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, Dict, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import TableType
+from pyatlan.model.enums import AtlanConnectorType, TableType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -18,12 +19,51 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .table import Table
 
 
 class DocumentDBCollection(Table):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> DocumentDBCollection:  #
+        validate_required_fields(
+            ["name, database_qualified_name"], [name, database_qualified_name]
+        )
+        attributes = DocumentDBCollection.Attributes.create(
+            name=name,
+            database_qualified_name=database_qualified_name,
+            database_name=database_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, connection_qualified_name: str
+    ) -> DocumentDBCollection:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
 
     type_name: str = Field(default="DocumentDBCollection", allow_mutation=False)
 
@@ -42,7 +82,7 @@ class DocumentDBCollection(Table):
         "documentDBCollectionSubtype", "documentDBCollectionSubtype"
     )
     """
-    Subtype of a DocumentDB collection, for example: Capped, Time Series, etc.
+    Subtype of a DocumentDBCollection, for example: Capped, Time Series, etc.
     """
     DOCUMENT_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
         "documentDBCollectionIsCapped", "documentDBCollectionIsCapped"
@@ -185,6 +225,12 @@ class DocumentDBCollection(Table):
     PARTITION_LIST: ClassVar[TextField] = TextField("partitionList", "partitionList")
     """
     List of partitions in this table.
+    """
+    SYNTHETIC_DATA_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "syntheticDataUrl", "syntheticDataUrl", "syntheticDataUrl.text"
+    )
+    """
+    TBC
     """
     IS_SHARDED: ClassVar[BooleanField] = BooleanField("isSharded", "isSharded")
     """
@@ -334,6 +380,12 @@ class DocumentDBCollection(Table):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    SQL_ASSET_COMMENT: ClassVar[TextField] = TextField(
+        "sqlAssetComment", "sqlAssetComment"
+    )
+    """
+    Comments added in SAP tables, columns and views to document their purpose and functionality.
+    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -373,6 +425,7 @@ class DocumentDBCollection(Table):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "synthetic_data_url",
         "is_sharded",
         "table_type",
         "iceberg_catalog_name",
@@ -399,6 +452,7 @@ class DocumentDBCollection(Table):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "sql_asset_comment",
         "no_s_q_l_schema_definition",
         "document_d_b_database",
     ]
@@ -768,6 +822,16 @@ class DocumentDBCollection(Table):
         self.attributes.partition_list = partition_list
 
     @property
+    def synthetic_data_url(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.synthetic_data_url
+
+    @synthetic_data_url.setter
+    def synthetic_data_url(self, synthetic_data_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.synthetic_data_url = synthetic_data_url
+
+    @property
     def is_sharded(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_sharded
 
@@ -1066,6 +1130,16 @@ class DocumentDBCollection(Table):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def sql_asset_comment(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sql_asset_comment
+
+    @sql_asset_comment.setter
+    def sql_asset_comment(self, sql_asset_comment: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_asset_comment = sql_asset_comment
+
+    @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
@@ -1146,6 +1220,7 @@ class DocumentDBCollection(Table):
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
+        synthetic_data_url: Optional[str] = Field(default=None, description="")
         is_sharded: Optional[bool] = Field(default=None, description="")
         table_type: Optional[TableType] = Field(default=None, description="")
         iceberg_catalog_name: Optional[str] = Field(default=None, description="")
@@ -1176,10 +1251,49 @@ class DocumentDBCollection(Table):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        sql_asset_comment: Optional[str] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         document_d_b_database: Optional[DocumentDBDatabase] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            database_qualified_name: str,
+            database_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> DocumentDBCollection.Attributes:
+            validate_required_fields(
+                ["name, database_qualified_name"], [name, database_qualified_name]
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    database_qualified_name, "database_qualified_name", 4
+                )
+
+            fields = database_qualified_name.split("/")
+            database_name = database_name or fields[3]
+            qualified_name = f"{database_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            database = DocumentDBDatabase.ref_by_qualified_name(database_qualified_name)
+
+            return DocumentDBCollection.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                database=database,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+            )
 
     attributes: DocumentDBCollection.Attributes = Field(
         default_factory=lambda: DocumentDBCollection.Attributes(),
