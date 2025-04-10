@@ -29,6 +29,7 @@ from pyatlan.model.workflow import (
     ReRunRequest,
     ScheduleQueriesSearchRequest,
     Workflow,
+    WorkflowMetadata,
     WorkflowResponse,
     WorkflowRunResponse,
     WorkflowSchedule,
@@ -407,20 +408,29 @@ class WorkflowClient:
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def monitor(
-        self, workflow_response: WorkflowResponse, logger: Optional[Logger] = None
+        self,
+        workflow_response: Optional[WorkflowResponse] = None,
+        workflow_name: Optional[str] = None,
+        logger: Optional[Logger] = None,
     ) -> Optional[AtlanWorkflowPhase]:
         """
         Monitor the status of the workflow's run.
 
         :param workflow_response: The workflow_response returned from running the workflow
+        :param workflow_name: name of the workflow to be monitored
         :param logger: the logger to log status information
         (logging.INFO for summary info. logging:DEBUG for detail info)
         :returns: the status at completion or None if the workflow wasn't run
         :raises ValidationError: If the provided `workflow_response`, `logger` is invalid
         :raises AtlanError: on any API communication issue
         """
-        if workflow_response.metadata and workflow_response.metadata.name:
-            name = workflow_response.metadata.name
+        if workflow_name and not workflow_response:
+            workflow_response = WorkflowResponse(
+                metadata=WorkflowMetadata(name=workflow_name)
+            )
+
+        if workflow_response.metadata and workflow_response.metadata.name:  # type: ignore
+            name = workflow_response.metadata.name  # type: ignore
             status: Optional[AtlanWorkflowPhase] = None
             while status not in {
                 AtlanWorkflowPhase.SUCCESS,
