@@ -410,8 +410,8 @@ class WorkflowClient:
     def monitor(
         self,
         workflow_response: Optional[WorkflowResponse] = None,
-        workflow_name: Optional[str] = None,
         logger: Optional[Logger] = None,
+        workflow_name: Optional[str] = None,
     ) -> Optional[AtlanWorkflowPhase]:
         """
         Monitor the status of the workflow's run.

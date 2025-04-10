@@ -527,7 +527,6 @@ TEST_WORKFLOW_CLIENT_METHODS = {
             ],
             "instance of Logger expected",
         ),
-        ([None, "test-logger"], "none is not an allowed value"),
     ],
     "get_runs": [
         ([[123], AtlanWorkflowPhase.RUNNING, 123, 456], "str type expected"),
