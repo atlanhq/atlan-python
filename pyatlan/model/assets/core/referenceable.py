@@ -160,6 +160,18 @@ class Referenceable(AtlanObject):
     def assigned_terms(self) -> Optional[List[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.meanings
 
+    @property
+    def get_status(self) -> Optional[EntityStatus]:
+        return (
+            self.status
+            if self.status is not None
+            else (
+                self.attributes.status
+                if self.attributes and self.attributes.status is not None
+                else None
+            )
+        )
+
     @assigned_terms.setter
     def assigned_terms(self, assigned_terms: Optional[List[AtlasGlossaryTerm]]):
         if self.attributes is None:
@@ -177,6 +189,12 @@ class Referenceable(AtlanObject):
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
+        status: Optional[EntityStatus] = Field(
+            alias="__state",
+            default=None,
+            description="Status of the entity",
+            example=EntityStatus.ACTIVE,
+        )
 
         def validate_required(self):
             pass
