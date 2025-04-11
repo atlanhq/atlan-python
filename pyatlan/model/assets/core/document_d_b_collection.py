@@ -9,7 +9,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import TableType
+from pyatlan.model.enums import AtlanConnectorType, TableType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -18,12 +18,34 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .table import Table
 
 
 class DocumentDBCollection(Table):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        database_qualified_name: str,
+        database_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> DocumentDBCollection:
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
+        attributes = DocumentDBCollection.Attributes.creator(
+            name=name,
+            database_qualified_name=database_qualified_name,
+            database_name=database_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="DocumentDBCollection", allow_mutation=False)
 
@@ -42,7 +64,7 @@ class DocumentDBCollection(Table):
         "documentDBCollectionSubtype", "documentDBCollectionSubtype"
     )
     """
-    Subtype of a DocumentDB collection, for example: Capped, Time Series, etc.
+    Subtype of a DocumentDBCollection, for example: Capped, Time Series, etc.
     """
     DOCUMENT_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
         "documentDBCollectionIsCapped", "documentDBCollectionIsCapped"
@@ -1180,6 +1202,42 @@ class DocumentDBCollection(Table):
         document_d_b_database: Optional[DocumentDBDatabase] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            database_qualified_name: str,
+            database_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> DocumentDBCollection.Attributes:
+            validate_required_fields(
+                ["name", "database_qualified_name"], [name, database_qualified_name]
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    database_qualified_name, "database_qualified_name", 4
+                )
+
+            fields = database_qualified_name.split("/")
+            database_name = database_name or fields[3]
+            qualified_name = f"{database_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+
+            return DocumentDBCollection.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                database_name=database_name,
+                database_qualified_name=database_qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+            )
 
     attributes: DocumentDBCollection.Attributes = Field(
         default_factory=lambda: DocumentDBCollection.Attributes(),
