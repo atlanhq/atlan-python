@@ -29,7 +29,6 @@ from pyatlan.model.workflow import (
     ReRunRequest,
     ScheduleQueriesSearchRequest,
     Workflow,
-    WorkflowMetadata,
     WorkflowResponse,
     WorkflowRunResponse,
     WorkflowSchedule,
@@ -417,37 +416,39 @@ class WorkflowClient:
         Monitor the status of the workflow's run.
 
         :param workflow_response: The workflow_response returned from running the workflow
-        :param workflow_name: name of the workflow to be monitored
         :param logger: the logger to log status information
-        (logging.INFO for summary info. logging:DEBUG for detail info)
+        (logging.INFO for summary info. logging.DEBUG for detail info)
+        :param workflow_name: name of the workflow to be monitored
         :returns: the status at completion or None if the workflow wasn't run
         :raises ValidationError: If the provided `workflow_response`, `logger` is invalid
         :raises AtlanError: on any API communication issue
         """
-        if workflow_name and not workflow_response:
-            workflow_response = WorkflowResponse(
-                metadata=WorkflowMetadata(name=workflow_name)
-            )
+        name = workflow_name or (
+            workflow_response.metadata.name
+            if workflow_response and workflow_response.metadata
+            else None
+        )
 
-        if workflow_response.metadata and workflow_response.metadata.name:  # type: ignore
-            name = workflow_response.metadata.name  # type: ignore
-            status: Optional[AtlanWorkflowPhase] = None
-            while status not in {
-                AtlanWorkflowPhase.SUCCESS,
-                AtlanWorkflowPhase.ERROR,
-                AtlanWorkflowPhase.FAILED,
-            }:
-                sleep(MONITOR_SLEEP_SECONDS)
-                if run_details := self._get_run_details(name):
-                    status = run_details.status
+        if not name:
+            if logger:
+                logger.info("Skipping workflow monitoring — nothing to monitor.")
+            return None
+
+        status: Optional[AtlanWorkflowPhase] = None
+        while status not in {
+            AtlanWorkflowPhase.SUCCESS,
+            AtlanWorkflowPhase.ERROR,
+            AtlanWorkflowPhase.FAILED,
+        }:
+            sleep(MONITOR_SLEEP_SECONDS)
+            if run_details := self._get_run_details(name):
+                status = run_details.status
                 if logger:
                     logger.debug("Workflow status: %s", status)
-            if logger:
-                logger.info("Workflow completion status: %s", status)
-            return status
+
         if logger:
-            logger.info("Skipping workflow monitoring — nothing to monitor.")
-        return None
+            logger.info("Workflow completion status: %s", status)
+        return status
 
     def _get_run_details(self, name: str) -> Optional[WorkflowSearchResult]:
         return self._find_latest_run(workflow_name=name)
