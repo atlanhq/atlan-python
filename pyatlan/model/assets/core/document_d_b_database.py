@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import ClassVar, Dict, List, Optional
-from warnings import warn
 
 from pydantic.v1 import Field, validator
 
@@ -35,25 +34,10 @@ class DocumentDBDatabase(DocumentDB):
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
-        attributes = DocumentDBDatabase.Attributes.create(
+        attributes = DocumentDBDatabase.Attributes.creator(
             name=name, connection_qualified_name=connection_qualified_name
         )
         return cls(attributes=attributes)
-
-    @classmethod
-    @init_guid
-    def create(cls, *, name: str, connection_qualified_name: str) -> DocumentDBDatabase:
-        warn(
-            (
-                "This method is deprecated, please use 'creator' "
-                "instead, which offers identical functionality."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.creator(
-            name=name, connection_qualified_name=connection_qualified_name
-        )
 
     type_name: str = Field(default="DocumentDBDatabase", allow_mutation=False)
 
@@ -176,12 +160,6 @@ class DocumentDBDatabase(DocumentDB):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
-    SQL_ASSET_COMMENT: ClassVar[TextField] = TextField(
-        "sqlAssetComment", "sqlAssetComment"
-    )
-    """
-    Comments added in SAP tables, columns and views to document their purpose and functionality.
-    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -234,7 +212,6 @@ class DocumentDBDatabase(DocumentDB):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
-        "sql_asset_comment",
         "dbt_sources",
         "sql_dbt_models",
         "dbt_tests",
@@ -463,16 +440,6 @@ class DocumentDBDatabase(DocumentDB):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def sql_asset_comment(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sql_asset_comment
-
-    @sql_asset_comment.setter
-    def sql_asset_comment(self, sql_asset_comment: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_asset_comment = sql_asset_comment
-
-    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -572,7 +539,6 @@ class DocumentDBDatabase(DocumentDB):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
-        sql_asset_comment: Optional[str] = Field(default=None, description="")
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
@@ -597,13 +563,13 @@ class DocumentDBDatabase(DocumentDB):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls, *, name: str, connection_qualified_name: str
         ) -> DocumentDBDatabase.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
-            return DocumentDBDatabase.Attributes(  #
+            return DocumentDBDatabase.Attributes(
                 name=name,
                 qualified_name=f"{connection_qualified_name}/{name}",
                 connection_qualified_name=connection_qualified_name,
