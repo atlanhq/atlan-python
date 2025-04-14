@@ -2007,6 +2007,14 @@ class IndexSearchRequest(SearchRequest):
         ),
         alias="includeClassificationNames",
     )
+    persona: Optional[str] = Field(
+        default=None,
+        description="Qualified name of the persona eg: default/tL6uqsrZGuf1hz9XFYnw8x",
+    )
+    purpose: Optional[str] = Field(
+        default=None,
+        description="Qualified name of the purpose eg: default/zL6uqsrZGuf1hz9XFYnw9x",
+    )
 
     class Metadata(AtlanObject):
         save_search_log: bool = Field(
