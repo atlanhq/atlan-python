@@ -11,7 +11,7 @@ import requests.exceptions
 from urllib3 import Retry
 
 from pyatlan.cache.source_tag_cache import SourceTagName
-from pyatlan.client.asset import LOGGER, IndexSearchResults
+from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
 from pyatlan.client.atlan import AtlanClient, client_connection
 from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
 from pyatlan.model.core import AtlanTag, AtlanTagName
@@ -92,6 +92,18 @@ VALUES_FOR_TEXT_QUERIES = {
     "with_type_name": "Schema",
     "with_user_description": "this",
 }
+EXISTING_PURPOSE_NAME = "Known Issues"
+EXISTING_PERSONA_NAME = "Business Definitions"
+
+
+@pytest.fixture(scope="module")
+def business_definitions_persona(client: AtlanClient):
+    return client.asset.find_personas_by_name(EXISTING_PERSONA_NAME)[0]
+
+
+@pytest.fixture(scope="module")
+def known_issues_purpose(client: AtlanClient):
+    return client.asset.find_purposes_by_name(EXISTING_PURPOSE_NAME)[0]
 
 
 @pytest.fixture(scope="module")
@@ -762,6 +774,56 @@ def test_default_sorting(client: AtlanClient):
     assert len(sort_options) == 2
     assert sort_options[0].field == QUALIFIED_NAME
     assert sort_options[1].field == ASSET_GUID
+
+
+def test_persona_search(
+    client: AtlanClient,
+    business_definitions_persona: Persona,
+    known_issues_purpose: Purpose,
+):
+    request1 = (
+        FluentSearch.select()
+        .aggregate("type", Asset.TYPE_NAME.bucket_by())
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+    ).to_request()
+
+    request2 = (
+        FluentSearch.select()
+        .aggregate("type", Asset.TYPE_NAME.bucket_by())
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+    ).to_request()
+    request2.persona = business_definitions_persona.qualified_name
+
+    results_without_persona = client.asset.search(request1)
+    results_with_persona = client.asset.search(request2)
+
+    # Make sure the results are different (total assets count != glossary assets count)
+    assert results_without_persona.count != results_with_persona.count
+
+
+def test_purpose_search(client: AtlanClient, known_issues_purpose: Purpose):
+    request1 = (
+        FluentSearch.select()
+        .aggregate("type", Asset.TYPE_NAME.bucket_by())
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+    ).to_request()
+
+    request2 = (
+        FluentSearch.select()
+        .aggregate("type", Asset.TYPE_NAME.bucket_by())
+        .sort(Asset.CREATE_TIME.order())
+        .page_size(0)  # only interested in checking aggregation results
+    ).to_request()
+    request2.purpose = known_issues_purpose.qualified_name
+
+    results_without_purpose = client.asset.search(request1)
+    results_with_purpose = client.asset.search(request2)
+
+    # Make sure the results are different (total assets count != assets tagged with "Known issues" count)
+    assert results_without_purpose.count != results_with_purpose.count
 
 
 def test_read_timeout(client: AtlanClient):
