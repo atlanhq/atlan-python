@@ -1,3 +1,16 @@
+## 6.0.3 (April 15, 2025)
+
+### New Features
+
+- Added `creator()` methods for `DocumentDB` assets.
+- Added support for `purpose` and `persona` in `IndexSearchRequest`.
+- Added an optional `workflow_name` parameter to the `WorkflowClient.monitor()` method.
+- Added an optional `workflow_name` parameter to the `CredentialClient.get_all()` method.
+
+### QOL Improvements
+
+- Generated the latest typedef models.
+
 ## 6.0.2 (April 07, 2025)
 
 ### QOL Improvements
