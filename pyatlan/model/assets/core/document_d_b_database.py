@@ -9,6 +9,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -17,12 +18,26 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .document_d_b import DocumentDB
 
 
 class DocumentDBDatabase(DocumentDB):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, connection_qualified_name: str
+    ) -> DocumentDBDatabase:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = DocumentDBDatabase.Attributes.creator(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="DocumentDBDatabase", allow_mutation=False)
 
@@ -545,6 +560,23 @@ class DocumentDBDatabase(DocumentDB):
         schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> DocumentDBDatabase.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            return DocumentDBDatabase.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: DocumentDBDatabase.Attributes = Field(
         default_factory=lambda: DocumentDBDatabase.Attributes(),
