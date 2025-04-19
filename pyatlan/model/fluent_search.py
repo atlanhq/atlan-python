@@ -151,7 +151,10 @@ class CompoundQuery:
 
     @staticmethod
     def tagged_with_value(
-        atlan_tag_name: str, value: str, directly: bool = False
+        atlan_tag_name: str,
+        value: str,
+        directly: bool = False,
+        source_tag_qualified_name: Optional[str] = None,
     ) -> Query:
         """
         Returns a query that will match assets that have a
@@ -160,6 +163,7 @@ class CompoundQuery:
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param value: tag should have to match the query
         :param directly: when `True`, the asset must have the tag and
+        :param source_tag_qualified_name: qualifiedName of the source tag to match (when there are multiple)
         value directly assigned (otherwise even propagated tags with the value will suffice)
 
         :raises: AtlanError on any error communicating
@@ -182,17 +186,20 @@ class CompoundQuery:
                 .execute(client=client)
             )
         ]
-        if len(synced_tags) > 1:
+        if len(synced_tags) > 1 and source_tag_qualified_name is None:
             synced_tag_qn = synced_tags[0].qualified_name or ""
             LOGGER.warning(
                 (
                     "Multiple mapped source-synced tags found for tag %s -- using only the first: %s",
+                    "You can specify the source tag qualified name so we can match to the specific one",
                 ),
                 atlan_tag_name,
                 synced_tag_qn,
             )
         elif synced_tags:
-            synced_tag_qn = synced_tags[0].qualified_name or ""
+            synced_tag_qn = (
+                source_tag_qualified_name or synced_tags[0].qualified_name or ""
+            )
         else:
             synced_tag_qn = "NON_EXISTENT"
 
