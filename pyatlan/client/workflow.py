@@ -166,12 +166,11 @@ class WorkflowClient:
         """
         Find workflows based on their status and interval
 
-        :status: list of the status of the workflows to filter with
-        :interval: time interval in hours to search for workflows
+        :param status: list of the status of the workflows to filter with
+        :param interval: time interval in hours to search for workflows
         :returns: the list of workflows of the provided type, with the most-recently created first
         :raises ValidationError: If the provided status is an invalid AtlanWorkflowPhase
         :raises AtlanError: on any API communication issue
-
         """
 
         run_lookup_query = Bool(
