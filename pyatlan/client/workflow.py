@@ -24,7 +24,17 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, Regexp, Term
+from pyatlan.model.search import (
+    Bool,
+    Exists,
+    NestedQuery,
+    Prefix,
+    Query,
+    Range,
+    Regexp,
+    Term,
+    Terms,
+)
 from pyatlan.model.workflow import (
     ReRunRequest,
     ScheduleQueriesSearchRequest,
@@ -148,6 +158,43 @@ class WorkflowClient:
         )
         response = self._find_runs(query, size=1)
         return results[0] if (results := response.hits and response.hits.hits) else None
+
+    @validate_arguments
+    def find_by_status_and_interval(
+        self, status: List[AtlanWorkflowPhase], interval: int
+    ) -> List[WorkflowSearchResult]:
+        """
+        Find workflows based on their status and interval
+
+        :status: list of the status of the workflows to filter with
+        :interval: time interval in hours to search for workflows
+        :returns: the list of workflows of the provided type, with the most-recently created first
+        :raises ValidationError: If the provided status is an invalid AtlanWorkflowPhase
+        :raises AtlanError: on any API communication issue
+
+        """
+
+        run_lookup_query = Bool(
+            must=[
+                NestedQuery(
+                    query=Terms(
+                        field="metadata.labels.workflows.argoproj.io/phase.keyword",
+                        values=[state.value for state in status],
+                    ),
+                    path="metadata",
+                ),
+                Range(field="status.finishedAt", gt=f"now-{interval}h"),
+                NestedQuery(
+                    query=Exists(field="metadata.labels.workflows.argoproj.io/creator"),
+                    path="metadata",
+                ),
+            ],
+            must_not=[NestedQuery(query=Exists(field="spec.shutdown"), path="spec")],
+        )
+
+        run_lookup_results = self._find_runs(run_lookup_query)
+
+        return run_lookup_results.hits and run_lookup_results.hits.hits or []
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
