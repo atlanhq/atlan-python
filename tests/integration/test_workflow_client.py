@@ -162,7 +162,17 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     workflow_status = client.workflow.monitor(workflow_name=workflow_name)
     assert workflow_status == AtlanWorkflowPhase.FAILED
 
-    # Test find run by status and interval
+    # Test find run by id
+    workflow_run = client.workflow.find_run_by_id(id=run.id)
+    assert (
+        workflow_run
+        and workflow_run.source
+        and workflow_run.source.status
+        and workflow_run.source.status.phase == AtlanWorkflowPhase.FAILED
+    )
+
+
+def test_workflow_find_by_status_and_interval(client: AtlanClient):
     runs_status = client.workflow.find_by_status_and_interval(
         [AtlanWorkflowPhase.FAILED], 1
     )
@@ -173,15 +183,6 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
         and workflow_run_status.source
         and workflow_run_status.source.status
         and workflow_run_status.source.status.phase == AtlanWorkflowPhase.FAILED
-    )
-
-    # Test find run by id
-    workflow_run = client.workflow.find_run_by_id(id=run.id)
-    assert (
-        workflow_run
-        and workflow_run.source
-        and workflow_run.source.status
-        and workflow_run.source.status.phase == AtlanWorkflowPhase.FAILED
     )
 
 
