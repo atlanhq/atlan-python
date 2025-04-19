@@ -272,6 +272,20 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     )
 
 
+def test_find_by_status_and_interval(client: WorkflowClient, mock_api_caller):
+    raw_json = {"shards": {"dummy": None}, "hits": {"total": {"dummy": None}}}
+    mock_api_caller._call_api.return_value = raw_json
+
+    status = [AtlanWorkflowPhase.SUCCESS, AtlanWorkflowPhase.FAILED]
+    interval = 50
+
+    assert client.find_by_status_and_interval(status, interval) == []
+    mock_api_caller._call_api.assert_called_once()
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
+    )
+
+
 def test_find_by_id(
     client: WorkflowClient, search_response: WorkflowSearchResponse, mock_api_caller
 ):
