@@ -158,7 +158,7 @@ class DataContractSpec(AtlanYamlModel):
         )
         required: Optional[bool] = Field(
             default=None,
-            description="When true, this column is the required for the table.",
+            description="When true, this column is required for the table.",
         )
         data_type: Optional[str] = Field(
             default=None,

@@ -787,6 +787,11 @@ class TestColumn:
             contract_spec
             and contract_spec.dataset  # type: ignore[union-attr]
             and contract_spec.dataset == TestTable.table.name  # type: ignore[union-attr]
+            # Ensure non-modeled fields are retained correctly
+            # (enabled by AtlanYamlModel → Config → Extra.allow)
+            and contract_spec.columns
+            and len(contract_spec.columns) >= 1
+            and contract_spec.columns[0].tags == contract_spec.columns[0].terms == []
         )
         self._assert_table_contract(contract_spec.to_yaml(), TestColumn, is_raw=False)  # type: ignore[union-attr]
 
