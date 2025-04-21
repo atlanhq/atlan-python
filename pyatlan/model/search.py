@@ -2017,8 +2017,11 @@ class IndexSearchRequest(SearchRequest):
     )
 
     class Metadata(AtlanObject):
+        # Set this to `False` to prevent the frequent
+        # Out of memory (OOM) issue in Metastore pods.
         save_search_log: bool = Field(
-            default=True, description="Whether to log this search (True) or not (False)"
+            default=False,
+            description="Whether to log this search (True) or not (False)",
         )
         utm_tags: List[str] = Field(
             default_factory=list,

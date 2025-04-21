@@ -165,19 +165,22 @@ class WorkflowClient:
         status: List[AtlanWorkflowPhase],
         started_at: Optional[str] = None,
         finished_at: Optional[str] = None,
+        from_: int = 0,
+        size: int = 100,
     ) -> List[WorkflowSearchResult]:
         """
-        Find workflows by status and optional time filters on startedAt and/or finishedAt.
+        Find workflows based on their status and interval
 
         :param status: list of the workflow statuses to filter
         :param started_at: (optional) lower bound on 'status.startedAt' (e.g 'now-2h')
         :param finished_at: (optional) lower bound on 'status.finishedAt' (e.g 'now-1h')
+        :param from_:(optional) starting index of the search results (default: `0`).
+        :param size: (optional) maximum number of search results to return (default: `100`).
         :returns: list of workflows matching the filters
         :raises ValidationError: if inputs are invalid
         :raises AtlanError: on any API communication issue
         """
         time_filters = []
-
         if started_at:
             time_filters.append(Range(field="status.startedAt", gte=started_at))
         if finished_at:
@@ -199,9 +202,9 @@ class WorkflowClient:
                 ),
             ],
         )
-
-        run_lookup_results = self._find_runs(run_lookup_query)
-
+        run_lookup_results = self._find_runs(
+            query=run_lookup_query, from_=from_, size=size
+        )
         return run_lookup_results.hits and run_lookup_results.hits.hits or []
 
     @validate_arguments
