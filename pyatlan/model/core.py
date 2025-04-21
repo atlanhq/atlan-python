@@ -146,7 +146,9 @@ class AtlanYamlModel(BaseModel):
     """
 
     class Config:
-        extra = Extra.ignore
+        # Allow extra fields for contracts
+        # if they are not defined in the model
+        extra = Extra.allow
         validate_assignment = True
         allow_population_by_field_name = True
 
