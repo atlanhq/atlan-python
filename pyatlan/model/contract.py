@@ -120,7 +120,7 @@ class DataContractSpec(AtlanYamlModel):
         name: Optional[str] = Field(
             default=None, description="Human-readable name of the Atlan tag."
         )
-        propagate: Optional[str] = Field(
+        propagate: Optional[Union[bool, str]] = Field(
             default=None, description="Whether to propagate the tag or not."
         )
         propagate_through_lineage: Optional[bool] = Field(
@@ -156,6 +156,10 @@ class DataContractSpec(AtlanYamlModel):
             default=None,
             description="When true, this column is the primary key for the table.",
         )
+        required: Optional[bool] = Field(
+            default=None,
+            description="When true, this column is the required for the table.",
+        )
         data_type: Optional[str] = Field(
             default=None,
             description="Physical data type of values in this column (e.g. varchar(20)).",
@@ -188,7 +192,7 @@ class DataContractSpec(AtlanYamlModel):
             default_factory=list,
             description="Enumeration of values that should be considered missing.",
         )
-        not_null: Optional[bool] = Field(
+        not_null: Optional[Any] = Field(
             default=None, description="When true, this column cannot be empty."
         )
         valid_length: Optional[int] = Field(
@@ -205,6 +209,6 @@ class DataContractSpec(AtlanYamlModel):
             default=None,
             description="Minimum length for a string to be considered valid.",
         )
-        unique: Optional[bool] = Field(
+        unique: Optional[Any] = Field(
             default=None, description="When true, this column must have unique values."
         )
