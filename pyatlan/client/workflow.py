@@ -160,35 +160,44 @@ class WorkflowClient:
         return results[0] if (results := response.hits and response.hits.hits) else None
 
     @validate_arguments
-    def find_by_status_and_interval(
-        self, status: List[AtlanWorkflowPhase], interval: int
+    def find_runs_by_status_and_time_range(
+        self,
+        status: List[AtlanWorkflowPhase],
+        started_at: Optional[str] = None,
+        finished_at: Optional[str] = None,
     ) -> List[WorkflowSearchResult]:
         """
-        Find workflows based on their status and interval
+        Find workflows by status and optional time filters on startedAt and/or finishedAt.
 
-        :param status: list of the status of the workflows to filter with
-        :param interval: time interval in hours to search for workflows
-        :returns: the list of workflows of the provided type, with the most-recently created first
-        :raises ValidationError: If the provided status is an invalid AtlanWorkflowPhase
+        :param status: list of the workflow statuses to filter
+        :param started_at: (optional) lower bound on 'status.startedAt' (e.g 'now-2h')
+        :param finished_at: (optional) lower bound on 'status.finishedAt' (e.g 'now-1h')
+        :returns: list of workflows matching the filters
+        :raises ValidationError: if inputs are invalid
         :raises AtlanError: on any API communication issue
         """
+        time_filters = []
+
+        if started_at:
+            time_filters.append(Range(field="status.startedAt", gte=started_at))
+        if finished_at:
+            time_filters.append(Range(field="status.finishedAt", gte=finished_at))
 
         run_lookup_query = Bool(
             must=[
                 NestedQuery(
                     query=Terms(
                         field="metadata.labels.workflows.argoproj.io/phase.keyword",
-                        values=[state.value for state in status],
+                        values=[s.value for s in status],
                     ),
                     path="metadata",
                 ),
-                Range(field="status.finishedAt", gt=f"now-{interval}h"),
+                *time_filters,
                 NestedQuery(
                     query=Exists(field="metadata.labels.workflows.argoproj.io/creator"),
                     path="metadata",
                 ),
             ],
-            must_not=[NestedQuery(query=Exists(field="spec.shutdown"), path="spec")],
         )
 
         run_lookup_results = self._find_runs(run_lookup_query)

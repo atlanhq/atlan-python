@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2024 Atlan Pte. Ltd.
 import time
+from datetime import datetime, timedelta, timezone
 from typing import Generator
 
 import pytest
@@ -171,18 +172,23 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
         and workflow_run.source.status.phase == AtlanWorkflowPhase.FAILED
     )
 
-
-def test_workflow_find_by_status_and_interval(client: AtlanClient):
-    runs_status = client.workflow.find_by_status_and_interval(
-        [AtlanWorkflowPhase.FAILED], 1
+    # Test find run by status and time range
+    runs_status = client.workflow.find_runs_by_status_and_time_range(
+        [AtlanWorkflowPhase.FAILED], started_at="now-1h"
     )
     assert runs_status
     workflow_run_status = runs_status[0]
+    start_time = workflow_run_status.source.status.startedAt  # type: ignore
+    start_datetime = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")  # type: ignore
+    start_datetime = start_datetime.replace(tzinfo=timezone.utc)
+    current_time = datetime.now(timezone.utc)
+    time_diff = current_time - start_datetime
     assert (
         workflow_run_status
         and workflow_run_status.source
         and workflow_run_status.source.status
         and workflow_run_status.source.status.phase == AtlanWorkflowPhase.FAILED
+        and time_diff < timedelta(hours=1)
     )
 
 
