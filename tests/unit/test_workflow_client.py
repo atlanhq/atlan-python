@@ -281,7 +281,14 @@ def test_find_runs_by_status_and_time_range(client: WorkflowClient, mock_api_cal
     finished_at = "now-1h"
 
     assert (
-        client.find_runs_by_status_and_time_range(status, started_at, finished_at) == []
+        client.find_runs_by_status_and_time_range(
+            status=status,
+            started_at=started_at,
+            finished_at=finished_at,
+            from_=10,
+            size=5,
+        )
+        == []
     )
     mock_api_caller._call_api.assert_called_once()
     assert isinstance(
