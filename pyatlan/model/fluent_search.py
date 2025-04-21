@@ -163,9 +163,9 @@ class CompoundQuery:
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param value: tag should have to match the query
         :param directly: when `True`, the asset must have the tag and
-        :param source_tag_qualified_name: qualifiedName of the source tag to match (when there are multiple)
         value directly assigned (otherwise even propagated tags with the value will suffice)
-
+        :param source_tag_qualified_name: (optional) qualified name of
+        the source tag to match (when there are multiple)
         :raises: AtlanError on any error communicating
         with the API to refresh the Atlan tag cache
         :returns: a query that will only match assets that have
@@ -189,10 +189,8 @@ class CompoundQuery:
         if len(synced_tags) > 1 and source_tag_qualified_name is None:
             synced_tag_qn = synced_tags[0].qualified_name or ""
             LOGGER.warning(
-                (
-                    "Multiple mapped source-synced tags found for tag %s -- using only the first: %s",
-                    "You can specify the source tag qualified name so we can match to the specific one",
-                ),
+                "Multiple mapped source-synced tags found for tag %s -- using only the first: %s. "
+                "You can specify the `source_tag_qualified_name` so we can match to the specific one.",
                 atlan_tag_name,
                 synced_tag_qn,
             )
