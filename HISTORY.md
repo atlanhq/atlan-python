@@ -1,3 +1,16 @@
+## 6.0.4 (April 22, 2025)
+
+### New Features
+
+- Added a new optional parameter `source_tag_qualified_name` to `tagged_with_value()`, allowing users to explicitly provide the qualified name of the source tag to match (useful when multiple tags share the same name).
+- Added support for undefined fields in `DataContract` models by allowing extra fields in `AtlanYamlModel` (`Extra.allow`).
+- Added a new method `WorkflowClient.find_runs_by_status_and_time_range()` to search workflow runs based on their status and a specified time range (`started_at` / `finished_at`).
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+- Fixed an indentation issue in the `DocumentDB` generator Jinja templates.
+
 ## 6.0.3 (April 15, 2025)
 
 ### New Features
