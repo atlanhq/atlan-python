@@ -169,7 +169,7 @@ class WorkflowClient:
         size: int = 100,
     ) -> List[WorkflowSearchResult]:
         """
-        Find workflows based on their status and interval
+        Find workflow runs based on their status and time range.
 
         :param status: list of the workflow statuses to filter
         :param started_at: (optional) lower bound on 'status.startedAt' (e.g 'now-2h')
