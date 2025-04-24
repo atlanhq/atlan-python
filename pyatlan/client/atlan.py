@@ -191,6 +191,17 @@ class AtlanClient(BaseSettings):
         env_prefix = "atlan_"
 
     @classmethod
+    def init_for_thread(cls, client: AtlanClient):
+        """
+        Prepares the given client for use in the current thread.
+
+        Sets the thread-local context and
+        resets internal retry flags for multi-threaded environments.
+        """
+        AtlanClient.set_current_client(client)
+        client._401_tls.has_retried = False
+
+    @classmethod
     def set_current_client(cls, client: AtlanClient):
         """
         Sets the current client to thread-local storage (TLS)
@@ -222,8 +233,7 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        AtlanClient.set_current_client(self)
-        self._401_tls.has_retried = False
+        AtlanClient.init_for_thread(self)
 
     @property
     def admin(self) -> AdminClient:
