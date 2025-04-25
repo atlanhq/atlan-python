@@ -3,13 +3,27 @@
 
 import pkg_resources  # type: ignore[import-untyped]
 
-from pyatlan.utils import DependencyNotFoundError
+from pyatlan.errors import DependencyNotFoundError
 
+# Check if pytest-vcr plugin is installed
 try:
-    # Check if pytest-vcr plugin is installed
     pkg_resources.get_distribution("pytest-vcr")
 except pkg_resources.DistributionNotFound:
-    raise DependencyNotFoundError("pytest-vcr")
+    raise DependencyNotFoundError(
+        "pytest-vcr plugin is not installed. Please install pytest-vcr."
+    )
+
+# Check if vcrpy is installed and ensure the version is 6.0.x
+try:
+    vcr_version = pkg_resources.get_distribution("vcrpy").version
+    if not vcr_version.startswith("6.0"):
+        raise DependencyNotFoundError(
+            f"vcrpy version 6.0.x is required, but found {vcr_version}. Please install the correct version."
+        )
+except pkg_resources.DistributionNotFound:
+    raise DependencyNotFoundError(
+        "vcrpy version 6.0.x is not installed. Please install vcrpy version 6.0.x."
+    )
 
 import json
 import os
