@@ -1093,6 +1093,16 @@ class Asset(Referenceable):
     """
     Array of policy ids non-compliant to this asset
     """
+    PRODUCT_GUIDS: ClassVar[KeywordField] = KeywordField("productGUIDs", "productGUIDs")
+    """
+    Array of product guids linked to this asset
+    """
+    OUTPUT_PRODUCT_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "outputProductGUIDs", "outputProductGUIDs"
+    )
+    """
+    Array of product guids which have this asset as outputPort
+    """
     APPLICATION_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "applicationQualifiedName", "applicationQualifiedName"
     )
@@ -1332,6 +1342,8 @@ class Asset(Referenceable):
         "asset_policies_count",
         "domain_g_u_i_ds",
         "non_compliant_asset_policy_g_u_i_ds",
+        "product_g_u_i_ds",
+        "output_product_g_u_i_ds",
         "application_qualified_name",
         "application_field_qualified_name",
         "schema_registry_subjects",
@@ -3270,6 +3282,28 @@ class Asset(Referenceable):
         )
 
     @property
+    def product_g_u_i_ds(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.product_g_u_i_ds
+
+    @product_g_u_i_ds.setter
+    def product_g_u_i_ds(self, product_g_u_i_ds: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.product_g_u_i_ds = product_g_u_i_ds
+
+    @property
+    def output_product_g_u_i_ds(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.output_product_g_u_i_ds
+        )
+
+    @output_product_g_u_i_ds.setter
+    def output_product_g_u_i_ds(self, output_product_g_u_i_ds: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_product_g_u_i_ds = output_product_g_u_i_ds
+
+    @property
     def application_qualified_name(self) -> Optional[str]:
         return (
             None
@@ -3780,6 +3814,10 @@ class Asset(Referenceable):
         asset_policies_count: Optional[int] = Field(default=None, description="")
         domain_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
         non_compliant_asset_policy_g_u_i_ds: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        product_g_u_i_ds: Optional[Set[str]] = Field(default=None, description="")
+        output_product_g_u_i_ds: Optional[Set[str]] = Field(
             default=None, description=""
         )
         application_qualified_name: Optional[str] = Field(default=None, description="")

@@ -10,6 +10,7 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -175,6 +176,12 @@ class DbtMetric(Dbt):
     """
     List of time grains to be applied to the metric query.
     """
+    DQ_IS_PART_OF_CONTRACT: ClassVar[BooleanField] = BooleanField(
+        "dqIsPartOfContract", "dqIsPartOfContract"
+    )
+    """
+    Whether this data quality is part of contract (true) or not (false).
+    """
 
     METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
         "metricTimestampColumn"
@@ -228,6 +235,7 @@ class DbtMetric(Dbt):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
+        "dq_is_part_of_contract",
         "metric_timestamp_column",
         "assets",
         "dbt_model",
@@ -498,6 +506,18 @@ class DbtMetric(Dbt):
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
+    def dq_is_part_of_contract(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.dq_is_part_of_contract
+        )
+
+    @dq_is_part_of_contract.setter
+    def dq_is_part_of_contract(self, dq_is_part_of_contract: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_is_part_of_contract = dq_is_part_of_contract
+
+    @property
     def metric_timestamp_column(self) -> Optional[Column]:
         return (
             None if self.attributes is None else self.attributes.metric_timestamp_column
@@ -592,6 +612,7 @@ class DbtMetric(Dbt):
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")
         metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
+        dq_is_part_of_contract: Optional[bool] = Field(default=None, description="")
         metric_timestamp_column: Optional[Column] = Field(
             default=None, description=""
         )  # relationship

@@ -9,7 +9,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .custom import Custom
@@ -42,6 +42,13 @@ class CustomEntity(Custom):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    CUSTOM_CHILDREN_SUBTYPE: ClassVar[KeywordField] = KeywordField(
+        "customChildrenSubtype", "customChildrenSubtype"
+    )
+    """
+    Label of the children column for this asset type.
+    """
+
     CUSTOM_PARENT_ENTITY: ClassVar[RelationField] = RelationField("customParentEntity")
     """
     TBC
@@ -66,11 +73,24 @@ class CustomEntity(Custom):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "custom_children_subtype",
         "custom_parent_entity",
         "custom_child_entities",
         "custom_related_to_entities",
         "custom_related_from_entities",
     ]
+
+    @property
+    def custom_children_subtype(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.custom_children_subtype
+        )
+
+    @custom_children_subtype.setter
+    def custom_children_subtype(self, custom_children_subtype: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.custom_children_subtype = custom_children_subtype
 
     @property
     def custom_parent_entity(self) -> Optional[CustomEntity]:
@@ -129,6 +149,7 @@ class CustomEntity(Custom):
         self.attributes.custom_related_from_entities = custom_related_from_entities
 
     class Attributes(Custom.Attributes):
+        custom_children_subtype: Optional[str] = Field(default=None, description="")
         custom_parent_entity: Optional[CustomEntity] = Field(
             default=None, description=""
         )  # relationship

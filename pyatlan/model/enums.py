@@ -2476,6 +2476,14 @@ class AIApplicationDevelopmentStage(str, Enum):
     ARCHIVED = "ARCHIVED"
 
 
+class AIDatasetType(str, Enum):
+    TRAINING = "TRAINING"
+    TESTING = "TESTING"
+    INFERENCE = "INFERENCE"
+    VALIDATION = "VALIDATION"
+    OUTPUT = "OUTPUT"
+
+
 class AIModelStatus(str, Enum):
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
@@ -2568,6 +2576,13 @@ class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
+
+
+class DataProductLineageStatus(str, Enum):
+    COMPLETED = "Completed"
+    IN_PROGRESS = "InProgress"
+    PENDING = "Pending"
+    FAILED = "Failed"
 
 
 class DataProductSensitivity(str, Enum):
@@ -2682,6 +2697,20 @@ class FivetranConnectorStatus(str, Enum):
     FAILURE_WITH_TASK = "FAILURE_WITH_TASK"
     RESCHEDULED = "RESCHEDULED"
     NO_STATUS = "NO_STATUS"
+
+
+class FormFieldDimension(str, Enum):
+    SINGLE = "SINGLE"
+    MULTI = "MULTI"
+
+
+class FormFieldType(str, Enum):
+    INT = "INT"
+    STRING = "STRING"
+    DATE = "DATE"
+    BOOLEAN = "BOOLEAN"
+    LONG = "LONG"
+    JSON = "JSON"
 
 
 class GoogleDatastudioAssetType(str, Enum):

@@ -43,7 +43,11 @@ class LookerTile(Looker):
     """
     QUERY_ID: ClassVar[NumericField] = NumericField("queryID", "queryID")
     """
-    Identifier for the query used to build this tile, from Looker.
+    (Deprecated) Please use lookerQueryID instead.
+    """
+    LOOKER_QUERY_ID: ClassVar[TextField] = TextField("lookerQueryID", "lookerQueryID")
+    """
+    Identifier of the query for the Look, from Looker.
     """
     RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
         "resultMakerID", "resultMakerID"
@@ -82,6 +86,7 @@ class LookerTile(Looker):
         "merge_result_id",
         "note_text",
         "query_i_d",
+        "looker_query_i_d",
         "result_maker_i_d",
         "subtitle_text",
         "look_id",
@@ -130,6 +135,16 @@ class LookerTile(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_i_d = query_i_d
+
+    @property
+    def looker_query_i_d(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.looker_query_i_d
+
+    @looker_query_i_d.setter
+    def looker_query_i_d(self, looker_query_i_d: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_query_i_d = looker_query_i_d
 
     @property
     def result_maker_i_d(self) -> Optional[int]:
@@ -206,6 +221,7 @@ class LookerTile(Looker):
         merge_result_id: Optional[str] = Field(default=None, description="")
         note_text: Optional[str] = Field(default=None, description="")
         query_i_d: Optional[int] = Field(default=None, description="")
+        looker_query_i_d: Optional[str] = Field(default=None, description="")
         result_maker_i_d: Optional[int] = Field(default=None, description="")
         subtitle_text: Optional[str] = Field(default=None, description="")
         look_id: Optional[int] = Field(default=None, description="")

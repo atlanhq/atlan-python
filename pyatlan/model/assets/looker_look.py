@@ -79,6 +79,12 @@ class LookerLook(Looker):
         "sourceQueryId", "sourceQueryId"
     )
     """
+    (Deprecated) Please use lookerSourceQueryId instead.
+    """
+    LOOKER_SOURCE_QUERY_ID: ClassVar[TextField] = TextField(
+        "lookerSourceQueryId", "lookerSourceQueryId"
+    )
+    """
     Identifier of the query for the Look, from Looker.
     """
     MODEL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
@@ -122,6 +128,7 @@ class LookerLook(Looker):
         "source_last_viewed_at",
         "source_content_metadata_id",
         "source_query_id",
+        "looker_source_query_id",
         "model_name",
         "tile",
         "model",
@@ -222,6 +229,18 @@ class LookerLook(Looker):
         self.attributes.source_query_id = source_query_id
 
     @property
+    def looker_source_query_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.looker_source_query_id
+        )
+
+    @looker_source_query_id.setter
+    def looker_source_query_id(self, looker_source_query_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looker_source_query_id = looker_source_query_id
+
+    @property
     def model_name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.model_name
 
@@ -302,6 +321,7 @@ class LookerLook(Looker):
         source_last_viewed_at: Optional[datetime] = Field(default=None, description="")
         source_content_metadata_id: Optional[int] = Field(default=None, description="")
         source_query_id: Optional[int] = Field(default=None, description="")
+        looker_source_query_id: Optional[str] = Field(default=None, description="")
         model_name: Optional[str] = Field(default=None, description="")
         tile: Optional[LookerTile] = Field(default=None, description="")  # relationship
         model: Optional[LookerModel] = Field(
