@@ -471,3 +471,10 @@ def validate_single_required_field(field_names: List[str], values: List[Any]):
         raise ValueError(
             f"Only one of the following parameters are allowed: {', '.join(names)}"
         )
+
+
+class DependencyNotFoundError(Exception):
+    def __init__(self, dependency):
+        super().__init__(
+            f"{dependency} is not installed, but it is required to use this module. Please install {dependency}."
+        )
