@@ -29,29 +29,33 @@ class SourceTag(Tag):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CUSTOM_CONFIGURATION: ClassVar[KeywordField] = KeywordField(
-        "customConfiguration", "customConfiguration"
+    TAG_CUSTOM_CONFIGURATION: ClassVar[KeywordField] = KeywordField(
+        "tagCustomConfiguration", "tagCustomConfiguration"
     )
     """
-    Specifies custom configuration elements based on the system the tag is being sourced from.
+    Specifies custom configuration elements based on the system the tag is being imported from.
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "custom_configuration",
+        "tag_custom_configuration",
     ]
 
     @property
-    def custom_configuration(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.custom_configuration
+    def tag_custom_configuration(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tag_custom_configuration
+        )
 
-    @custom_configuration.setter
-    def custom_configuration(self, custom_configuration: Optional[str]):
+    @tag_custom_configuration.setter
+    def tag_custom_configuration(self, tag_custom_configuration: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.custom_configuration = custom_configuration
+        self.attributes.tag_custom_configuration = tag_custom_configuration
 
     class Attributes(Tag.Attributes):
-        custom_configuration: Optional[str] = Field(default=None, description="")
+        tag_custom_configuration: Optional[str] = Field(default=None, description="")
 
     attributes: SourceTag.Attributes = Field(
         default_factory=lambda: SourceTag.Attributes(),

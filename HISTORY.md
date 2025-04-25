@@ -1,3 +1,13 @@
+## 6.0.5 (April 25, 2025)
+
+### New Features
+
+- Added a public method `AtlanClient.init_for_multithreading()` to allow users to prepare the given client for use in multi-threaded environments.
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+
 ## 6.0.4 (April 22, 2025)
 
 ### New Features

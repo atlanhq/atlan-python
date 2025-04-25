@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
+
+from pyatlan.model.fields.atlan_fields import BooleanField
 
 from .catalog import Catalog
 
@@ -27,4 +29,37 @@ class DataQuality(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convenience_properties: ClassVar[List[str]] = []
+    DQ_IS_PART_OF_CONTRACT: ClassVar[BooleanField] = BooleanField(
+        "dqIsPartOfContract", "dqIsPartOfContract"
+    )
+    """
+    Whether this data quality is part of contract (true) or not (false).
+    """
+
+    _convenience_properties: ClassVar[List[str]] = [
+        "dq_is_part_of_contract",
+    ]
+
+    @property
+    def dq_is_part_of_contract(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.dq_is_part_of_contract
+        )
+
+    @dq_is_part_of_contract.setter
+    def dq_is_part_of_contract(self, dq_is_part_of_contract: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_is_part_of_contract = dq_is_part_of_contract
+
+    class Attributes(Catalog.Attributes):
+        dq_is_part_of_contract: Optional[bool] = Field(default=None, description="")
+
+    attributes: DataQuality.Attributes = Field(
+        default_factory=lambda: DataQuality.Attributes(),
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
+    )

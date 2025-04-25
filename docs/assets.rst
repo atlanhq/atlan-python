@@ -70,6 +70,12 @@ You can interact with all of the following different kinds of assets:
     asset/businesspolicyincident
     asset/businesspolicylog
     asset/calculationview
+    asset/cassandra
+    asset/cassandracolumn
+    asset/cassandraindex
+    asset/cassandrakeyspace
+    asset/cassandratable
+    asset/cassandraview
     asset/catalog
     asset/cloud
     asset/cognite
@@ -142,6 +148,7 @@ You can interact with all of the following different kinds of assets:
     asset/fivetran
     asset/fivetranconnector
     asset/folder
+    asset/form
     asset/function
     asset/gcs
     asset/gcsbucket
@@ -256,9 +263,11 @@ You can interact with all of the following different kinds of assets:
     asset/redashvisualization
     asset/referenceable
     asset/resource
+    asset/response
     asset/s3
     asset/s3bucket
     asset/s3object
+    asset/sap
     asset/sql
     asset/saas
     asset/salesforce
@@ -267,6 +276,13 @@ You can interact with all of the following different kinds of assets:
     asset/salesforceobject
     asset/salesforceorganization
     asset/salesforcereport
+    asset/saperpabapprogram
+    asset/saperpcolumn
+    asset/saperpcomponent
+    asset/saperpfunctionmodule
+    asset/saperptable
+    asset/saperptransactioncode
+    asset/saperpview
     asset/schema
     asset/schemaregistry
     asset/schemaregistrysubject

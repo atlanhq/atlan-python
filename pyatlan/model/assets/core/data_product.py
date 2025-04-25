@@ -15,6 +15,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.enums import (
     DataProductCriticality,
+    DataProductLineageStatus,
     DataProductSensitivity,
     DataProductStatus,
     DataProductVisibility,
@@ -251,6 +252,12 @@ class DataProduct(DataMesh):
     """
     Input ports guids for this data product.
     """
+    DAAP_LINEAGE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "daapLineageStatus", "daapLineageStatus"
+    )
+    """
+    Status of this data product lineage.
+    """
 
     OUTPUT_PORTS: ClassVar[RelationField] = RelationField("outputPorts")
     """
@@ -282,6 +289,7 @@ class DataProduct(DataMesh):
         "daap_visibility_groups",
         "daap_output_port_guids",
         "daap_input_port_guids",
+        "daap_lineage_status",
         "output_ports",
         "data_domain",
         "input_ports",
@@ -494,6 +502,18 @@ class DataProduct(DataMesh):
         self.attributes.daap_input_port_guids = daap_input_port_guids
 
     @property
+    def daap_lineage_status(self) -> Optional[DataProductLineageStatus]:
+        return None if self.attributes is None else self.attributes.daap_lineage_status
+
+    @daap_lineage_status.setter
+    def daap_lineage_status(
+        self, daap_lineage_status: Optional[DataProductLineageStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.daap_lineage_status = daap_lineage_status
+
+    @property
     def output_ports(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.output_ports
 
@@ -558,6 +578,9 @@ class DataProduct(DataMesh):
         daap_visibility_groups: Optional[Set[str]] = Field(default=None, description="")
         daap_output_port_guids: Optional[Set[str]] = Field(default=None, description="")
         daap_input_port_guids: Optional[Set[str]] = Field(default=None, description="")
+        daap_lineage_status: Optional[DataProductLineageStatus] = Field(
+            default=None, description=""
+        )
         output_ports: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship

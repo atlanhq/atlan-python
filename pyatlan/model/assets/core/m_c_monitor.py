@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -156,6 +156,12 @@ class MCMonitor(MonteCarlo):
     """
     Whether the monitor is OOTB or not
     """
+    MC_MONITOR_NOTIFICATION_CHANNELS: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorNotificationChannels", "mcMonitorNotificationChannels"
+    )
+    """
+    Channels through which notifications are sent for this monitor (e.g., email, slack, webhook).
+    """
 
     MC_MONITOR_ASSETS: ClassVar[RelationField] = RelationField("mcMonitorAssets")
     """
@@ -183,6 +189,7 @@ class MCMonitor(MonteCarlo):
         "mc_monitor_alert_count",
         "mc_monitor_priority",
         "mc_monitor_is_ootb",
+        "mc_monitor_notification_channels",
         "mc_monitor_assets",
     ]
 
@@ -449,6 +456,24 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_is_ootb = mc_monitor_is_ootb
 
     @property
+    def mc_monitor_notification_channels(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.mc_monitor_notification_channels
+        )
+
+    @mc_monitor_notification_channels.setter
+    def mc_monitor_notification_channels(
+        self, mc_monitor_notification_channels: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_notification_channels = (
+            mc_monitor_notification_channels
+        )
+
+    @property
     def mc_monitor_assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.mc_monitor_assets
 
@@ -489,6 +514,9 @@ class MCMonitor(MonteCarlo):
         mc_monitor_alert_count: Optional[int] = Field(default=None, description="")
         mc_monitor_priority: Optional[str] = Field(default=None, description="")
         mc_monitor_is_ootb: Optional[bool] = Field(default=None, description="")
+        mc_monitor_notification_channels: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         mc_monitor_assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship

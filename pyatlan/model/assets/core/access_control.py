@@ -46,6 +46,12 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DENY_ASSET_METADATA_TYPES: ClassVar[KeywordField] = KeywordField(
+        "denyAssetMetadataTypes", "denyAssetMetadataTypes"
+    )
+    """
+    TBC
+    """
     DENY_ASSET_TABS: ClassVar[KeywordField] = KeywordField(
         "denyAssetTabs", "denyAssetTabs"
     )
@@ -95,6 +101,7 @@ class AccessControl(Asset, type_name="AccessControl"):
     _convenience_properties: ClassVar[List[str]] = [
         "is_access_control_enabled",
         "deny_custom_metadata_guids",
+        "deny_asset_metadata_types",
         "deny_asset_tabs",
         "deny_asset_filters",
         "channel_link",
@@ -134,6 +141,20 @@ class AccessControl(Asset, type_name="AccessControl"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.deny_custom_metadata_guids = deny_custom_metadata_guids
+
+    @property
+    def deny_asset_metadata_types(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.deny_asset_metadata_types
+        )
+
+    @deny_asset_metadata_types.setter
+    def deny_asset_metadata_types(self, deny_asset_metadata_types: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_asset_metadata_types = deny_asset_metadata_types
 
     @property
     def deny_asset_tabs(self) -> Optional[Set[str]]:
@@ -220,6 +241,9 @@ class AccessControl(Asset, type_name="AccessControl"):
     class Attributes(Asset.Attributes):
         is_access_control_enabled: Optional[bool] = Field(default=None, description="")
         deny_custom_metadata_guids: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        deny_asset_metadata_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
         deny_asset_tabs: Optional[Set[str]] = Field(default=None, description="")

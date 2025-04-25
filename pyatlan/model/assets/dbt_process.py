@@ -9,6 +9,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AIDatasetType
 from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
@@ -175,6 +176,12 @@ class DbtProcess(Dbt):
     """
     Additional Context of the ETL pipeline/notebook which creates the process.
     """
+    AI_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "aiDatasetType", "aiDatasetType"
+    )
+    """
+    Dataset type for AI Model - dataset process.
+    """
 
     ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
     """
@@ -232,6 +239,7 @@ class DbtProcess(Dbt):
         "sql",
         "ast",
         "additional_etl_context",
+        "ai_dataset_type",
         "adf_activity",
         "spark_jobs",
         "matillion_component",
@@ -528,6 +536,16 @@ class DbtProcess(Dbt):
         self.attributes.additional_etl_context = additional_etl_context
 
     @property
+    def ai_dataset_type(self) -> Optional[AIDatasetType]:
+        return None if self.attributes is None else self.attributes.ai_dataset_type
+
+    @ai_dataset_type.setter
+    def ai_dataset_type(self, ai_dataset_type: Optional[AIDatasetType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_dataset_type = ai_dataset_type
+
+    @property
     def adf_activity(self) -> Optional[AdfActivity]:
         return None if self.attributes is None else self.attributes.adf_activity
 
@@ -628,6 +646,7 @@ class DbtProcess(Dbt):
         sql: Optional[str] = Field(default=None, description="")
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
+        ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
         adf_activity: Optional[AdfActivity] = Field(
             default=None, description=""
         )  # relationship

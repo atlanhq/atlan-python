@@ -9,6 +9,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     RelationField,
@@ -59,6 +60,12 @@ class QlikDataset(Qlik):
     """
     Subtype this dataset asset.
     """
+    QLIK_IS_IMPLICIT: ClassVar[BooleanField] = BooleanField(
+        "qlikIsImplicit", "qlikIsImplicit"
+    )
+    """
+    Whether the Qlik dataset is an implicit dataset
+    """
 
     QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
     """
@@ -70,6 +77,7 @@ class QlikDataset(Qlik):
         "qlik_dataset_type",
         "qlik_dataset_uri",
         "qlik_dataset_subtype",
+        "qlik_is_implicit",
         "qlik_space",
     ]
 
@@ -118,6 +126,16 @@ class QlikDataset(Qlik):
         self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
 
     @property
+    def qlik_is_implicit(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.qlik_is_implicit
+
+    @qlik_is_implicit.setter
+    def qlik_is_implicit(self, qlik_is_implicit: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_is_implicit = qlik_is_implicit
+
+    @property
     def qlik_space(self) -> Optional[QlikSpace]:
         return None if self.attributes is None else self.attributes.qlik_space
 
@@ -132,6 +150,7 @@ class QlikDataset(Qlik):
         qlik_dataset_type: Optional[str] = Field(default=None, description="")
         qlik_dataset_uri: Optional[str] = Field(default=None, description="")
         qlik_dataset_subtype: Optional[str] = Field(default=None, description="")
+        qlik_is_implicit: Optional[bool] = Field(default=None, description="")
         qlik_space: Optional[QlikSpace] = Field(
             default=None, description=""
         )  # relationship
