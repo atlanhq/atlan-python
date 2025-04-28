@@ -75,6 +75,8 @@ DQ_TYPE_LIST = [
     "Uniqueness",
 ]
 DQ_TYPE_EXTRA_LIST = ["Unknown", "Others"]
+CM_DESCRIPTION = "Automated testing of the Python SDK (cm)."
+ATTRIBUTE_DESCRIPTION = "Automated testing of the Python SDK (attribute)."
 
 _removal_epoch: Optional[int]
 
@@ -88,7 +90,7 @@ def create_custom_metadata(
     icon: Optional[AtlanIcon] = None,
     color: Optional[AtlanTagColor] = None,
 ) -> CustomMetadataDef:
-    cm_def = CustomMetadataDef.create(display_name=name)
+    cm_def = CustomMetadataDef.create(display_name=name, description=CM_DESCRIPTION)
     cm_def.attribute_defs = attribute_defs
     if icon and color:
         cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(
@@ -143,6 +145,7 @@ def cm_ipr(
         AttributeDef.create(
             display_name=CM_ATTR_IPR_LICENSE,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            description=ATTRIBUTE_DESCRIPTION,
             **limit_attribute_applicability_kwargs,
         ),
         AttributeDef.create(
@@ -175,6 +178,7 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs)
     assert cm_ipr.guid
     assert cm_ipr.name != cm_name
     assert cm_ipr.display_name == cm_name
+    assert cm_ipr.description == CM_DESCRIPTION
     attributes = cm_ipr.attribute_defs
     assert attributes
     assert len(attributes) == 5
@@ -183,6 +187,7 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs)
     assert one_with_limited.options
     assert one_with_limited.display_name == CM_ATTR_IPR_LICENSE
     assert one_with_limited.name
+    assert one_with_limited.description == ATTRIBUTE_DESCRIPTION
     assert one_with_limited.name != CM_ATTR_IPR_LICENSE
     assert one_with_limited.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert not one_with_limited.options.multi_value_select
