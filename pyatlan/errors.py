@@ -51,6 +51,17 @@ class AtlanError(Exception):
         )
 
 
+class DependencyNotFoundError(Exception):
+    """
+    Raised when a required external dependency is not installed.
+
+    This exception is typically used to indicate that an optional library
+    or plugin needed for a specific feature is missing.
+    """
+
+    pass
+
+
 class ApiConnectionError(AtlanError):
     """Error that occurs when there is an intermittent issue with the API, such as a network outage or an inability
     to connect due to an incorrect URL."""
