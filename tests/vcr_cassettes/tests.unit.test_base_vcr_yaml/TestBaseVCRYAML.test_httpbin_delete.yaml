@@ -1,0 +1,31 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: DELETE
+    uri: https://httpbin.org/delete
+  response:
+    body:
+      string: |-
+        {
+          "args": {},
+          "data": "",
+          "files": {},
+          "form": {},
+          "headers": {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Content-Length": "0",
+            "Host": "httpbin.org",
+            "User-Agent": "python-requests/2.32.3",
+            "X-Amzn-Trace-Id": "Root=1-680f7294-550da7df2956737310f29c0c"
+          },
+          "json": null,
+          "origin": "x.x.x.x",
+          "url": "https://httpbin.org/delete"
+        }
+    headers: {}
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -204,26 +204,6 @@ class VCRPrettyPrintJSONBody:
         return cassette_dict
 
 
-class VCRRemoveAllHeaders:
-    """
-    A class responsible for removing all headers from requests and responses.
-    This can be useful for scenarios where headers are not needed for matching or comparison
-    in VCR (Virtual Cassette Recorder) interactions, such as when recording or replaying HTTP requests.
-    """
-
-    @staticmethod
-    def remove_all_request_headers(request):
-        # Save only what's necessary for matching
-        request.headers = {}
-        return request
-
-    @staticmethod
-    def remove_all_response_headers(response):
-        # Save only what's necessary for matching
-        response["headers"] = {}
-        return response
-
-
 class BaseVCR:
     """
     A base class for configuring VCR (Virtual Cassette Recorder)
@@ -234,7 +214,37 @@ class BaseVCR:
     It also handles cassette directory configuration.
     """
 
+    class VCRRemoveAllHeaders:
+        """
+        A class responsible for removing all headers from requests and responses.
+        This can be useful for scenarios where headers are not needed for matching or comparison
+        in VCR (Virtual Cassette Recorder) interactions, such as when recording or replaying HTTP requests.
+        """
+
+        @staticmethod
+        def remove_all_request_headers(request):
+            # Save only what's necessary for matching
+            request.headers = {}
+            return request
+
+        @staticmethod
+        def remove_all_response_headers(response):
+            # Save only what's necessary for matching
+            response["headers"] = {}
+            return response
+
     _CASSETTES_DIR = None
+    _BASE_CONFIG = {
+        # More config options can be found at:
+        # https://vcrpy.readthedocs.io/en/latest/configuration.html#configuration
+        "record_mode": "once",  # (default: "once", "always", "none", "new_episodes")
+        "serializer": "pretty-yaml",  # (default: "yaml")
+        "decode_compressed_response": True,  # Decode compressed responses
+        # (optional) Replace the Authorization request header with "**REDACTED**" in cassettes
+        # "filter_headers": [("authorization", "**REDACTED**")],
+        "before_record_request": VCRRemoveAllHeaders.remove_all_request_headers,
+        "before_record_response": VCRRemoveAllHeaders.remove_all_response_headers,
+    }
 
     @pytest.fixture(scope="module")
     def vcr(self, vcr):
@@ -263,17 +273,7 @@ class BaseVCR:
 
         :returns: a dictionary with VCR configuration options
         """
-        return {
-            # More config options can be found at:
-            # https://vcrpy.readthedocs.io/en/latest/configuration.html#configuration
-            "record_mode": "once",  # (default: "once", "always", "none", "new_episodes")
-            "serializer": "pretty-yaml",  # (default: "yaml")
-            "decode_compressed_response": True,  # Decode compressed responses
-            # (optional) Replace the Authorization request header with "**REDACTED**" in cassettes
-            # "filter_headers": [("authorization", "**REDACTED**")],
-            "before_record_request": VCRRemoveAllHeaders.remove_all_request_headers,
-            "before_record_response": VCRRemoveAllHeaders.remove_all_response_headers,
-        }
+        return self._BASE_CONFIG
 
     @pytest.fixture(scope="module")
     def vcr_cassette_dir(self, request):
@@ -290,5 +290,5 @@ class BaseVCR:
         """
         # Set self._CASSETTES_DIR or use the default directory path based on the test module name
         return self._CASSETTES_DIR or os.path.join(
-            "tests/cassettes", request.module.__name__
+            "tests/vcr_cassettes", request.module.__name__
         )

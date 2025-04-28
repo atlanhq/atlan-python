@@ -1,0 +1,39 @@
+interactions:
+- request:
+    body: |-
+      {
+        "name": "atlan",
+        "type": "integration-test"
+      }
+    headers: {}
+    method: POST
+    uri: https://httpbin.org/post
+  response:
+    body:
+      string: |-
+        {
+          "args": {},
+          "data": "{\"name\": \"atlan\", \"type\": \"integration-test\"}",
+          "files": {},
+          "form": {},
+          "headers": {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Content-Length": "45",
+            "Content-Type": "application/json",
+            "Host": "httpbin.org",
+            "User-Agent": "python-requests/2.32.3",
+            "X-Amzn-Trace-Id": "Root=1-680f7290-276efa7f015f83d24d9fdfc4"
+          },
+          "json": {
+            "name": "atlan",
+            "type": "integration-test"
+          },
+          "origin": "x.x.x.x",
+          "url": "https://httpbin.org/post"
+        }
+    headers: {}
+    status:
+      code: 200
+      message: OK
+version: 1

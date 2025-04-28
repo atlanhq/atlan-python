@@ -1,0 +1,28 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://httpbin.org/get?test=value
+  response:
+    body:
+      string: |-
+        {
+          "args": {
+            "test": "value"
+          },
+          "headers": {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Host": "httpbin.org",
+            "User-Agent": "python-requests/2.32.3",
+            "X-Amzn-Trace-Id": "Root=1-680f728f-7e7ba4866bd0c4c847de2cc2"
+          },
+          "origin": "x.x.x.x",
+          "url": "https://httpbin.org/get?test=value"
+        }
+    headers: {}
+    status:
+      code: 200
+      message: OK
+version: 1
