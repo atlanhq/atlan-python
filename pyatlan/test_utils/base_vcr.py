@@ -13,17 +13,17 @@ except pkg_resources.DistributionNotFound:
         "pytest-vcr plugin is not installed. Please install pytest-vcr."
     )
 
-# Check if vcrpy is installed and ensure the version is 6.0.x
-try:
-    vcr_version = pkg_resources.get_distribution("vcrpy").version
-    if not vcr_version.startswith("6.0"):
-        raise DependencyNotFoundError(
-            f"vcrpy version 6.0.x is required, but found {vcr_version}. Please install the correct version."
-        )
-except pkg_resources.DistributionNotFound:
-    raise DependencyNotFoundError(
-        "vcrpy version 6.0.x is not installed. Please install vcrpy version 6.0.x."
-    )
+# # Check if vcrpy is installed and ensure the version is 6.0.x
+# try:
+#     vcr_version = pkg_resources.get_distribution("vcrpy").version
+#     if not vcr_version.startswith("6.0"):
+#         raise DependencyNotFoundError(
+#             f"vcrpy version 6.0.x is required, but found {vcr_version}. Please install the correct version."
+#         )
+# except pkg_resources.DistributionNotFound:
+#     raise DependencyNotFoundError(
+#         "vcrpy version 6.0.x is not installed. Please install vcrpy version 6.0.x."
+#     )
 
 import json
 import os
