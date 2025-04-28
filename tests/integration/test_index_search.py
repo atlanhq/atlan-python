@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import math
 from dataclasses import dataclass, field
 from datetime import datetime
 from time import sleep, time
@@ -335,8 +336,6 @@ def _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, bulk=Fal
 
 @patch.object(LOGGER, "debug")
 def test_search_pagination(mock_logger, client: AtlanClient):
-    size = 2
-
     # Avoid testing on integration tests objects
     exclude_sdk_terms = [
         Asset.NAME.wildcard("psdk_*"),
@@ -352,13 +351,22 @@ def test_search_pagination(mock_logger, client: AtlanClient):
     dsl = DSL(
         query=query,
         post_filter=Term.with_type_name(value="AtlasGlossaryTerm"),
-        size=size,
+        size=0,  # to get the total count
     )
+
     request = IndexSearchRequest(dsl=dsl)
     results = client.asset.search(criteria=request)
     # Assigning this here to ensure the total assets
     # remain constant across different test cases
     TOTAL_ASSETS = results.count
+
+    # set page_size to divide into ~5 API calls
+    size = max(1, math.ceil(TOTAL_ASSETS / 5))
+    request.dsl.size = size
+
+    # Now, we can test different test scenarios for search() with the dynamic page size
+    results = client.asset.search(criteria=request)
+
     expected_sorts = [Asset.GUID.order(SortOrder.ASCENDING)]
     _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS)
 
@@ -385,7 +393,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .page_size(2)
+        .page_size(size)
     ).to_request()
     results = client.asset.search(criteria=request)
     expected_sorts = [Asset.GUID.order(SortOrder.ASCENDING)]
@@ -396,7 +404,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .page_size(2)
+        .page_size(size)
     ).to_request()
     results = client.asset.search(criteria=request, bulk=True)
     expected_sorts = [
@@ -413,7 +421,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
         FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .page_size(2)
+        .page_size(size)
     ).execute(client, bulk=True)
     expected_sorts = [
         Asset.CREATE_TIME.order(SortOrder.ASCENDING),
@@ -431,7 +439,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
             FluentSearch(where_nots=exclude_sdk_terms)
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-            .page_size(2)
+            .page_size(size)
         ).to_request()
         results = client.asset.search(criteria=request)
         expected_sorts = [
