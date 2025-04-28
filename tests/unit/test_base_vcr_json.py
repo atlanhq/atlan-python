@@ -13,7 +13,7 @@ class TestBaseVCRJSON(BaseVCR):
 
     BASE_URL = "https://httpbin.org"
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="module")
     def vcr_config(self):
         """
         Override the VCR configuration to use JSON serialization across the module.

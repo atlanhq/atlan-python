@@ -832,6 +832,7 @@ class AttributeDef(AtlanObject):
         applicable_other_asset_types: Optional[OtherAssetTypes] = None,
         applicable_domains: Optional[Set[str]] = None,
         applicable_domain_types: Optional[DomainTypes] = None,
+        description: Optional[str] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
 
@@ -847,7 +848,7 @@ class AttributeDef(AtlanObject):
             ),
             is_new=True,
             cardinality=Cardinality.SINGLE,
-            description="",
+            description=description,
             name="",
             include_in_notification=False,
             is_indexable=True,
@@ -1152,7 +1153,9 @@ class CustomMetadataDef(TypeDef):
     )
 
     @staticmethod
-    def create(display_name: str) -> CustomMetadataDef:
+    def create(
+        display_name: str, description: Optional[str] = None
+    ) -> CustomMetadataDef:
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
@@ -1164,6 +1167,7 @@ class CustomMetadataDef(TypeDef):
             category=AtlanTypeCategory.CUSTOM_METADATA,
             display_name=display_name,
             name=display_name,
+            description=description,
         )
 
 
