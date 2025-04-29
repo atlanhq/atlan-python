@@ -1,3 +1,14 @@
+## 6.0.6 (April 29, 2025)
+
+### New Features
+
+- Added optional `description` parameter to `CustomMetadataDef/AttributeDef.create()` methods.
+
+### QOL Improvements
+
+- Added issue and pull request templates.
+- Added support for [`vcrpy`](https://vcrpy.readthedocs.io/en/latest) to enable easy mocking/patching of HTTP interactions, especially useful for 3rd-party API testing.
+
 ## 6.0.5 (April 25, 2025)
 
 ### New Features
