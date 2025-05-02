@@ -201,7 +201,7 @@ class UserClient:
         limit: int = 20,
         offset: int = 0,
         sort: Optional[str] = "username",
-    ) -> List[AtlanUser]:
+    ) -> UserResponse:
         """
         Retrieve all users defined in Atlan.
 
@@ -210,9 +210,8 @@ class UserClient:
         :param sort: property by which to sort the results, by default : `username`
         :returns: a list of all the users in Atlan
         """
-        if response := self.get(offset=offset, limit=limit, sort=sort):
-            return response.records  # type: ignore
-        return None  # type: ignore
+        response: UserResponse = self.get(offset=offset, limit=limit, sort=sort)
+        return response
 
     @validate_arguments
     def get_by_email(

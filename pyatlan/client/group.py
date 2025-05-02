@@ -142,7 +142,7 @@ class GroupClient:
         offset: int = 0,
         sort: Optional[str] = "name",
         columns: Optional[List[str]] = None,
-    ) -> List[AtlanGroup]:
+    ) -> GroupResponse:
         """
         Retrieve all groups defined in Atlan.
 
@@ -152,9 +152,10 @@ class GroupClient:
         :param columns: provides columns projection support for groups endpoint
         :returns: a list of all the groups in Atlan
         """
-        if response := self.get(offset=offset, limit=limit, sort=sort, columns=columns):
-            return response.records  # type: ignore
-        return None  # type: ignore
+        response: GroupResponse = self.get(
+            offset=offset, limit=limit, sort=sort, columns=columns
+        )
+        return response  # type: ignore
 
     @validate_arguments
     def get_by_name(
