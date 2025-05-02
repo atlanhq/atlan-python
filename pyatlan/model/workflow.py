@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 from pydantic.v1 import Field
 
@@ -207,6 +207,7 @@ class WorkflowSearchRequest(AtlanObject):
             )
         ],
     )
+    source: Optional[WorkflowSearchResultDetail] = Field(default=None, alias="_source")
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
