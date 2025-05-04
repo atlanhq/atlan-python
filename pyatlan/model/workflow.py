@@ -1,12 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 
-from pydantic.v1 import Field
+from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
+from pyatlan.client.common import ApiCaller
+from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanWorkflowPhase, SortOrder
 from pyatlan.model.search import Query, SortItem
+from pyatlan.utils import API
 
 
 class PackageParameter(AtlanObject):
@@ -132,12 +135,6 @@ class WorkflowSearchHits(AtlanObject):
     hits: Optional[List[WorkflowSearchResult]] = Field(default=None)
 
 
-class WorkflowSearchResponse(AtlanObject):
-    took: Optional[int] = Field(default=None)
-    hits: Optional[WorkflowSearchHits] = Field(default=None)
-    shards: Optional[Dict[str, Any]] = Field(alias="_shards", default=None)
-
-
 class ReRunRequest(AtlanObject):
     namespace: Optional[str] = Field(default="default")
     resource_kind: Optional[str] = Field(default="WorkflowTemplate")
@@ -217,3 +214,57 @@ class WorkflowSearchRequest(AtlanObject):
         __pydantic_self__.__fields_set__.update(
             ["from_", "size", "track_total_hits", "sort"]
         )
+
+
+class WorkflowSearchResponse(AtlanObject):
+    _size: int = PrivateAttr()
+    _start: int = PrivateAttr()
+    _endpoint: API = PrivateAttr()
+    _client: ApiCaller = PrivateAttr()
+    _criteria: WorkflowSearchRequest = PrivateAttr()
+    took: Optional[int] = Field(default=None)
+    hits: Optional[WorkflowSearchHits] = Field(default=None)
+    shards: Optional[Dict[str, Any]] = Field(alias="_shards", default=None)
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self._endpoint = data.get("endpoint")  # type: ignore[assignment]
+        self._client = data.get("client")  # type: ignore[assignment]
+        self._criteria = data.get("criteria")  # type: ignore[assignment]
+        self._size = data.get("size")  # type: ignore[assignment]
+        self._start = data.get("from")  # type: ignore[assignment]
+
+    def current_page(self) -> Optional[List[WorkflowSearchResult]]:
+        return self.records
+
+    def next_page(self, start=None, size=None) -> bool:
+        self._start = start or self._start + self._size
+        if size:
+            self._size = size
+        return self._get_next_page() if self.records else False
+
+    def _get_next_page(self):
+        self._criteria.from_ = self._start
+        self._criteria.size = self._size
+        raw_json = self._client._call_api(
+            api=self._endpoint.format_path_with_params(),
+            query_params=self._criteria,
+        )
+        if not raw_json.get("records"):
+            self.records = []
+            return False
+        try:
+            self.records = parse_obj_as(
+                List[WorkflowSearchResult], raw_json.get("records")
+            )
+        except ValidationError as err:
+            raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                raw_json, 200, str(err)
+            ) from err
+        return True
+
+    def __iter__(self) -> Generator[WorkflowSearchResult, None, None]:  # type: ignore[override]
+        while True:
+            yield from self.current_page() or []
+            if not self.next_page():
+                break
