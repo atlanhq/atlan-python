@@ -72,10 +72,10 @@ def test_create_group(client: AtlanClient, group: CreateGroupResponse):
 
 def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
-    groups = client.group.get_all()  # type: ignore
-    assert groups
-    assert len(groups) >= 1  # type: ignore
-    for group1 in groups:
+    groups = client.group.get_all()
+    assert groups.records
+    assert len(groups.records) >= 1
+    for group1 in groups.records:
         if group1.is_default():
             _default_group_count += 1
 
@@ -299,10 +299,10 @@ def test_retrieve_admin_logs(
 def test_get_all_with_limit(client: AtlanClient, group: CreateGroupResponse):
     limit = 2
     groups = client.group.get_all(limit=limit)
-    assert groups
-    assert len(groups) == limit  # type: ignore
+    assert groups.records
+    assert len(groups.records) == limit
 
-    for group1 in groups:
+    for group1 in groups.records:
         assert group1.id
         assert group1.name
         assert group1.path is not None
@@ -313,9 +313,10 @@ def test_get_all_with_columns(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_all(columns=columns)
 
     assert groups
-    assert len(groups) >= 1  # type: ignore
+    assert groups.records
+    assert len(groups.records) >= 1
 
-    for group1 in groups:
+    for group1 in groups.records:
         assert group1.name
         assert group1.path is not None
         assert group1.attributes is None
@@ -326,9 +327,9 @@ def test_get_all_with_sorting(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_all(sort="name")
 
     assert groups
-    assert len(groups) >= 1  # type: ignore
+    assert len(groups.records) >= 1  # type: ignore
 
-    sorted_names = [group.name for group in groups if group.name is not None]
+    sorted_names = [group.name for group in groups.records if group.name is not None]  # type: ignore
     assert sorted_names == sorted(sorted_names)
 
 
@@ -340,11 +341,11 @@ def test_get_all_with_everything(client: AtlanClient, group: CreateGroupResponse
     groups = client.group.get_all(limit=limit, columns=columns, sort=sort)
 
     assert groups
-    assert len(groups) == limit  # type: ignore
-    sorted_names = [group.name for group in groups if group.name is not None]
+    assert len(groups.records) == limit  # type: ignore
+    sorted_names = [group.name for group in groups.records if group.name is not None]  # type: ignore
     assert sorted_names == sorted(sorted_names)
 
-    for group1 in groups:
+    for group1 in groups.records:  # type: ignore
         assert group1.name
         assert group1.path is not None
         assert group1.roles is None
