@@ -72,9 +72,9 @@ def test_create_group(client: AtlanClient, group: CreateGroupResponse):
 
 def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
-    groups = client.group.get_all()
+    groups = client.group.get_all()  # type: ignore
     assert groups
-    assert len(groups) >= 1
+    assert len(groups) >= 1  # type: ignore
     for group1 in groups:
         if group1.is_default():
             _default_group_count += 1
@@ -169,7 +169,7 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     global _default_group_count
     all_users = client.user.get_all()
     assert all_users
-    assert len(all_users) >= 1
+    assert len(all_users) >= 1  # type: ignore
     user1 = client.user.get_by_username(FIXED_USER)
     assert user1
     assert user1.id
@@ -300,7 +300,7 @@ def test_get_all_with_limit(client: AtlanClient, group: CreateGroupResponse):
     limit = 2
     groups = client.group.get_all(limit=limit)
     assert groups
-    assert len(groups) == limit
+    assert len(groups) == limit  # type: ignore
 
     for group1 in groups:
         assert group1.id
@@ -313,7 +313,7 @@ def test_get_all_with_columns(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_all(columns=columns)
 
     assert groups
-    assert len(groups) >= 1
+    assert len(groups) >= 1  # type: ignore
 
     for group1 in groups:
         assert group1.name
@@ -326,7 +326,7 @@ def test_get_all_with_sorting(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_all(sort="name")
 
     assert groups
-    assert len(groups) >= 1
+    assert len(groups) >= 1  # type: ignore
 
     sorted_names = [group.name for group in groups if group.name is not None]
     assert sorted_names == sorted(sorted_names)
@@ -340,7 +340,7 @@ def test_get_all_with_everything(client: AtlanClient, group: CreateGroupResponse
     groups = client.group.get_all(limit=limit, columns=columns, sort=sort)
 
     assert groups
-    assert len(groups) == limit
+    assert len(groups) == limit  # type: ignore
     sorted_names = [group.name for group in groups if group.name is not None]
     assert sorted_names == sorted(sorted_names)
 
