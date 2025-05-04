@@ -215,6 +215,17 @@ class WorkflowSearchRequest(AtlanObject):
             ["from_", "size", "track_total_hits", "sort"]
         )
 
+    @property
+    def query_params(self) -> dict:
+        qp: Dict[str, object] = {}
+        if self.post_filter:
+            qp["filter"] = self.post_filter
+        if self.sort:
+            qp["sort"] = self.sort
+        qp["from_"] = self.from_
+        qp["size"] = self.size
+        return qp
+
 
 class WorkflowSearchResponse(AtlanObject):
     _size: int = PrivateAttr()
@@ -248,7 +259,7 @@ class WorkflowSearchResponse(AtlanObject):
         self._criteria.size = self._size
         raw_json = self._client._call_api(
             api=self._endpoint.format_path_with_params(),
-            query_params=self._criteria,
+            query_params=self._criteria.query_params,
         )
         if not raw_json.get("records"):
             self.records = []
