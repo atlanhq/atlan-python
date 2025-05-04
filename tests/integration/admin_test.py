@@ -168,8 +168,8 @@ def test_user_groups_pagination(client: AtlanClient, group: CreateGroupResponse)
 def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
     all_users = client.user.get_all()
-    assert all_users
-    assert len(all_users) >= 1  # type: ignore
+    assert all_users.records
+    assert len(all_users.records) >= 1  # type: ignore
     user1 = client.user.get_by_username(FIXED_USER)
     assert user1
     assert user1.id
