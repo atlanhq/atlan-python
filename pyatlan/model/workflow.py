@@ -215,17 +215,6 @@ class WorkflowSearchRequest(AtlanObject):
             ["from_", "size", "track_total_hits", "sort"]
         )
 
-    @property
-    def query_params(self) -> dict:
-        qp: Dict[str, object] = {}
-        if self.post_filter:
-            qp["filter"] = self.post_filter
-        if self.sort:
-            qp["sort"] = self.sort
-        qp["from_"] = self.from_
-        qp["size"] = self.size
-        return qp
-
 
 class WorkflowSearchResponse(AtlanObject):
     _size: int = PrivateAttr()
@@ -243,30 +232,31 @@ class WorkflowSearchResponse(AtlanObject):
         self._client = data.get("client")  # type: ignore[assignment]
         self._criteria = data.get("criteria")  # type: ignore[assignment]
         self._size = data.get("size")  # type: ignore[assignment]
-        self._start = data.get("from")  # type: ignore[assignment]
+        self._start = data.get("start")  # type: ignore[assignment]
 
     def current_page(self) -> Optional[List[WorkflowSearchResult]]:
-        return self.records
+        return self.hits.hits  # type: ignore
 
     def next_page(self, start=None, size=None) -> bool:
         self._start = start or self._start + self._size
         if size:
             self._size = size
-        return self._get_next_page() if self.records else False
+        return self._get_next_page() if self.hits.hits else False  # type: ignore
 
     def _get_next_page(self):
-        self._criteria.from_ = self._start
-        self._criteria.size = self._size
-        raw_json = self._client._call_api(
-            api=self._endpoint.format_path_with_params(),
-            query_params=self._criteria.query_params,
+        request = WorkflowSearchRequest(
+            query=self._criteria, from_=self._start, size=self._size
         )
-        if not raw_json.get("records"):
-            self.records = []
+        raw_json = self._client._call_api(
+            api=self._endpoint,
+            request_obj=request,
+        )
+        if not raw_json.get("hits", {}).get("hits"):
+            self.hits.hits = []
             return False
         try:
-            self.records = parse_obj_as(
-                List[WorkflowSearchResult], raw_json.get("records")
+            self.hits.hits = parse_obj_as(
+                List[WorkflowSearchResult], raw_json["hits"]["hits"]
             )
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
