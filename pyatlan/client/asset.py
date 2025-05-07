@@ -500,7 +500,7 @@ class AssetClient:
                 raw_json["entity"]["relationshipAttributes"]
             )
         raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
+        asset = AssetResponse[A].with_client(raw_json, client=self._client).entity
         asset.is_incomplete = False
         return asset
 

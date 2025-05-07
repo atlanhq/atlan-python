@@ -103,11 +103,18 @@ class AtlanTagName:
         )
 
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
+
 class AtlanObject(BaseModel):
     __atlan_extra__: Dict[str, Any] = Field(
         default_factory=dict,
         description="Contains extra fields from the Atlan API response.",
     )
+
+    # Private attribute to store the client reference
+    _atlan_client: Optional[Any] = PrivateAttr(default=None)
 
     class Config:
         extra = Extra.ignore
@@ -115,6 +122,45 @@ class AtlanObject(BaseModel):
         validate_assignment = True
         alias_generator = to_camel_case
         allow_population_by_field_name = True
+
+    def __init__(self, **data):
+        client = data.pop("_atlan_client", None)
+        super().__init__(**data)
+        self._atlan_client = client
+
+    @property
+    def atlan_client(self) -> Optional["AtlanClient"]:
+        return self._atlan_client
+
+    @classmethod
+    def with_client(cls, data: Dict[str, Any], client: "AtlanClient") -> "AtlanObject":
+        """
+        Factory method to inject `_atlan_client` into only known AtlanObject-like structures.
+        """
+
+        def should_inject(obj: dict) -> bool:
+            # Heuristic: inject only if it looks like an Atlan model
+            return isinstance(obj, dict) and "typeName" in obj
+
+        def inject_client(obj: Any, parent_key: Optional[str] = None) -> Any:
+            if isinstance(obj, dict):
+                if parent_key == "relationshipAttributes":
+                    return obj  # skip entire subtree under relationshipAttributes
+
+                obj = dict(obj)  # shallow copy
+
+                if should_inject(obj):
+                    obj["_atlan_client"] = client
+
+                return {k: inject_client(v, parent_key=k) for k, v in obj.items()}
+
+            elif isinstance(obj, list):
+                return [inject_client(item, parent_key) for item in obj]
+
+            return obj
+
+        data_with_client = inject_client(data)
+        return cls.parse_obj(data_with_client)
 
     @classmethod
     def _populate_extra_fields(cls, values: Dict[str, Any]) -> Dict[str, Any]:

@@ -54,7 +54,7 @@ class Referenceable(AtlanObject):
     def json(self, *args, **kwargs) -> str:
         if self._metadata_proxy and self._metadata_proxy.business_attributes:
             self.business_attributes = self._metadata_proxy.business_attributes
-        return super().json(**kwargs)
+        return super().json(*args, **kwargs)
 
     def validate_required(self):
         if not self.create_time or self.created_by:
@@ -108,6 +108,7 @@ class Referenceable(AtlanObject):
         "user_def_relationship_to",
         "user_def_relationship_from",
         "assigned_terms",
+        "_atlan_client",
     ]
 
     @property
