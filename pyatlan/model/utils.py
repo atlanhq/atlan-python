@@ -14,17 +14,6 @@ CAMEL_CASE_OVERRIDES = {
 }
 
 
-def encoders():
-    from datetime import datetime
-
-    from pyatlan.model.core import AtlanTagName
-
-    return {
-        datetime: lambda v: int(v.timestamp() * 1000),
-        AtlanTagName: AtlanTagName.json_encode_atlan_tag,
-    }
-
-
 def to_camel_case(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("Value must be a string")

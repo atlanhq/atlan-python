@@ -25,13 +25,22 @@ def client():
     return AtlanClient()
 
 
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
+# @pytest.fixture()
+# def current_client(client, monkeypatch):
+#     monkeypatch.setattr(
+#         AtlanClient,
+#         "get_current_client",
+#         lambda: client,
+#     )
+
+# @pytest.fixture()
+# def current_client(client, monkeypatch):
+#     ao = AtlanTagName(None)
+#     monkeypatch.setattr(
+#         ao,
+#         "__atlan_client__",
+#         lambda: client,
+#     )
 
 
 def test_init_with_bad_atlan_tag_name_raises_value_error(
@@ -64,7 +73,7 @@ def good_atlan_tag(current_client: AtlanClient, monkeypatch):
     return AtlanTagName(GOOD_ATLAN_TAG_NAME)
 
 
-def test_init_with_good_name(current_client: AtlanClient, monkeypatch):
+def test_init_with_good_name(client: AtlanClient, monkeypatch):
     def get_id_for_name(_, value):
         assert value == GOOD_ATLAN_TAG_NAME
         return GOOD_ATLAN_TAG_NAME
@@ -74,7 +83,8 @@ def test_init_with_good_name(current_client: AtlanClient, monkeypatch):
         "get_id_for_name",
         get_id_for_name,
     )
-    sut = AtlanTagName(GOOD_ATLAN_TAG_NAME)
+    # import ipdb; ipdb.set_trace()
+    sut = AtlanTagName(GOOD_ATLAN_TAG_NAME, client=client)
     assert sut._display_text == GOOD_ATLAN_TAG_NAME
     assert str(sut) == GOOD_ATLAN_TAG_NAME
     assert sut.__repr__() == f"AtlanTagName('{GOOD_ATLAN_TAG_NAME}')"

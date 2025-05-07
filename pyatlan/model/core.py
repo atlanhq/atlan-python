@@ -4,50 +4,153 @@ from __future__ import annotations
 
 import json
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import yaml  # type: ignore[import-untyped]
 from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
 
-from pyatlan.model.utils import encoders, to_camel_case
+from pyatlan.model.utils import to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
+
 else:
     from pydantic.v1.dataclasses import dataclass
 
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, TypeVar
 
 from pydantic.v1.generics import GenericModel
 
-from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
+from pyatlan.model.constants import DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
 from pyatlan.model.structs import SourceTagAttachment
 
 
-class AtlanTagName:
+def encoders():
+    from datetime import datetime
+
+    return {
+        datetime: lambda v: int(v.timestamp() * 1000),
+    }
+
+
+@staticmethod
+def json_encode_atlan_tag(obj: Any) -> Optional[str]:
+    """
+    Static method to encode AtlanTagName using the Atlan client's tag cache.
+    """
+    if isinstance(obj, AtlanTagName):
+        client = obj.get_atlan_client()
+        return client.atlan_tag_cache.get_id_for_name(obj._display_text)
+    raise TypeError(f"Expected AtlanTagName, got {type(obj)}")
+
+
+class AtlanObject(BaseModel):
+    __atlan_extra__: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Contains extra fields from the Atlan API response.",
+    )
+    __atlan_client__: Optional[Any] = PrivateAttr(default=None)
+
+    class Config:
+        extra = Extra.allow
+        json_encoders = encoders()
+        validate_assignment = True
+        alias_generator = to_camel_case
+        allow_population_by_field_name = True
+
+    def __init__(self, **data):
+        client = data.pop("__atlan_client__", None)
+        # super().__init__(**data)
+        try:
+            super().__init__(**data)
+        except Exception as e:
+            print(e)
+            import ipdb; 
+            ipdb.set_trace()
+        self.__atlan_client__ = client
+
+    def get_atlan_client(self):
+        if not self.__atlan_client__:
+            raise ValueError("Client not set")
+        return self.__atlan_client__
+
+    @classmethod
+    def parse_obj_from_client(cls, data: Dict[str, Any], atlan_client: Any):
+        # Inject client into all nested objects manually before parsing
+        def inject_client_recursively(obj):
+            # if "classifications" == obj:
+            #     # Skip the classification field
+            #     return
+            if isinstance(obj, dict):
+                obj["__atlan_client__"] = atlan_client
+                for v in obj.values():
+                    inject_client_recursively(v)
+            elif isinstance(obj, list):
+                for item in obj:
+                    inject_client_recursively(item)
+
+        # Shallow copy to avoid modifying original
+        if isinstance(data, dict):
+            data_copy = dict(data)
+            inject_client_recursively(data_copy)
+        else:
+            data_copy = data
+        import ipdb; ipdb.set_trace()
+        return cls.parse_obj(data_copy)
+
+    @classmethod
+    def _populate_extra_fields(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Helper method to populate extra fields from the API response.
+        """
+        extra: Dict[str, Any] = {}
+        # Collect all required field names
+        all_required_field_names = {field.alias for field in cls.__fields__.values()}
+        # Populate extra fields not defined in the model
+        for field_name, value in values.items():
+            if field_name not in all_required_field_names:
+                extra[field_name] = value
+        return extra
+
+    @root_validator(pre=True)
+    def build_extra(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Populates extra fields from the API response.
+        """
+        extra = cls._populate_extra_fields(values)
+        cls.__atlan_extra__ = extra
+        return values
+
+
+class AtlanTagName(AtlanObject):
     _sentinel: Optional["AtlanTagName"] = None
+    _display_text: Optional[str] = PrivateAttr(default=None)
+    _id: Optional[str] = PrivateAttr(default=None)
 
     def __new__(cls, *args, **kwargs):
+        # Only handle the sentinel case here
         if args and args[0] == DELETED_SENTINEL and cls._sentinel:
             return cls._sentinel
-        obj = super().__new__(cls)
-        if args and args[0] == DELETED_SENTINEL:
-            obj._display_text = DELETED_
-            cls._sentinel = obj
-        return obj
 
-    def __init__(self, display_text: str):
-        from pyatlan.client.atlan import AtlanClient
+        # Call BaseModel's __new__ to ensure private attributes work
+        return super().__new__(cls)
 
-        if not (
-            id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-                display_text
-            )
-        ):
-            raise ValueError(f"{display_text} is not a valid Classification")
-        self._display_text = display_text
-        self._id = id
+    def __init__(self, display_text: str, client: Optional[Any] = None):
+        import ipdb
+
+        ipdb.set_trace()
+        self._convert_to_display_text_new(display_text, client)
+        super().__init__()  # Important: call BaseModel.__init__
+        if display_text == DELETED_SENTINEL:
+            self._display_text = "deleted"
+            self._id = "deleted-id"
+        else:
+            tag_id = client or self.__atlan_client__.atlan_tag_cache.get_id_for_name(display_text)
+            if not tag_id:
+                raise ValueError(f"{display_text} is not a valid Classification")
+            self._display_text = display_text
+            self._id = tag_id
 
     @property
     def id(self):
@@ -81,63 +184,39 @@ class AtlanTagName:
 
     @classmethod
     def _convert_to_display_text(cls, data):
-        from pyatlan.client.atlan import AtlanClient
+        print("Converting to display text, called with data:", data)
+        pass
+        # from pyatlan.client.atlan import AtlanClient
 
+        # if isinstance(data, AtlanTagName):
+        #     return data
+
+        # if (
+        #     display_text
+        #     := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
+        # ):
+        #     return AtlanTagName(display_text)
+        # else:
+        #     return cls.get_deleted_sentinel()
+
+    def _convert_to_display_text_new(self, data, client):
         if isinstance(data, AtlanTagName):
             return data
 
-        if (
-            display_text
-            := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
+        client = client or self.get_atlan_client()
+        if display_text := client.atlan_tag_cache.get_name_for_id(
+            data
         ):
-            return AtlanTagName(display_text)
+            return AtlanTagName.parse_obj_from_client(display_text, self.get_atlan_client())
         else:
-            return cls.get_deleted_sentinel()
-
-    @staticmethod
-    def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-        from pyatlan.client.atlan import AtlanClient
-
-        return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-            atlan_tag_name._display_text
-        )
+            return self.get_deleted_sentinel()
 
 
-class AtlanObject(BaseModel):
-    __atlan_extra__: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Contains extra fields from the Atlan API response.",
+AtlanObject.Config.json_encoders[AtlanTagName] = (
+    lambda tag: tag.get_atlan_client().atlan_tag_cache.get_id_for_name(
+        tag._display_text
     )
-
-    class Config:
-        extra = Extra.ignore
-        json_encoders = encoders()
-        validate_assignment = True
-        alias_generator = to_camel_case
-        allow_population_by_field_name = True
-
-    @classmethod
-    def _populate_extra_fields(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Helper method to populate extra fields from the API response.
-        """
-        extra: Dict[str, Any] = {}
-        # Collect all required field names
-        all_required_field_names = {field.alias for field in cls.__fields__.values()}
-        # Populate extra fields not defined in the model
-        for field_name, value in values.items():
-            if field_name not in all_required_field_names:
-                extra[field_name] = value
-        return extra
-
-    @root_validator(pre=True)
-    def build_extra(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Populates extra fields from the API response.
-        """
-        extra = cls._populate_extra_fields(values)
-        cls.__atlan_extra__ = extra
-        return values
+)
 
 
 class AtlanYamlModel(BaseModel):
@@ -244,7 +323,7 @@ class AtlanTag(AtlanObject):
         ),
         alias="restrictPropagationThroughHierarchy",
     )
-    validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
+    validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods",)
     _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
         default_factory=list
     )
@@ -255,20 +334,36 @@ class AtlanTag(AtlanObject):
     def source_tag_attachements(self) -> List[SourceTagAttachment]:
         return self._source_tag_attachements
 
-    @validator("type_name", pre=True)
-    def type_name_is_tag_name(cls, value):
-        if isinstance(value, AtlanTagName):
-            return value
-        return AtlanTagName._convert_to_display_text(value)
+    # @validator("type_name", pre=True)
+    # def type_name_is_tag_name(cls, value):
+    #     import ipdb; ipdb.set_trace()
+    #     if isinstance(value, AtlanTagName):
+    #         return value
+    #     return AtlanTagName._convert_to_display_text(value)
+
+    @staticmethod
+    def _convert_to_display_text_new(client, data):
+        if isinstance(data, AtlanTagName):
+            return data
+
+        if display_text := client.atlan_tag_cache.get_name_for_id(data):
+            import ipdb; ipdb.set_trace()
+            return AtlanTagName(display_text, client=client)
+        else:
+            return AtlanTagName.get_deleted_sentinel()
 
     def __init__(self, *args, **kwargs):
-        from pyatlan.client.atlan import AtlanClient
-
+        client = kwargs.pop("__atlan_client__", None)
+        kwargs["typeName"] = self._convert_to_display_text_new(
+            client, kwargs.get("typeName")
+        )
+        import ipdb; ipdb.set_trace()
         super().__init__(*args, **kwargs)
         if self.type_name != AtlanTagName.get_deleted_sentinel():
-            attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-                self.type_name.id
-            )
+            if self.__atlan_client__:
+                attr_id = self.get_atlan_client().atlan_tag_cache.get_source_tags_attr_id(
+                    self.type_name.id
+                )
         if self.attributes and attr_id in self.attributes:
             self._source_tag_attachements = [
                 SourceTagAttachment(**source_tag["attributes"])

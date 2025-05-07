@@ -500,7 +500,18 @@ class AssetClient:
                 raw_json["entity"]["relationshipAttributes"]
             )
         raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
+        import ipdb
+
+        ipdb.set_trace()
+        # asset = AssetResponse[A](**raw_json, client=self._client).entity
+        asset = (
+            AssetResponse[A]
+            .parse_obj_from_client(raw_json, atlan_client=self._client)
+            .entity
+        )
+        import ipdb
+
+        ipdb.set_trace()
         asset.is_incomplete = False
         return asset
 
