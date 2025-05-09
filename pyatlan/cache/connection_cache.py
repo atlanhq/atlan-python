@@ -175,8 +175,18 @@ class ConnectionName(AbstractAssetName):
         elif isinstance(connection, str):
             tokens = connection.split("/")
             if len(tokens) > 1:
-                self.type = AtlanConnectorType(tokens[0]).value  # type: ignore[call-arg]
-                self.name = connection[len(tokens[0]) + 1 :]  # noqa
+                # Try enum conversion; fallback to custom connector if it fails
+                try:
+                    self.type = AtlanConnectorType(tokens[0]).value  # type: ignore[call-arg]
+                    self.name = connection[len(tokens[0]) + 1 :]  # noqa
+                except ValueError:
+                    custom_connector = AtlanConnectorType.CREATE_CUSTOM(
+                        # Ensure the enum name is converted to UPPER_SNAKE_CASE from kebab-case
+                        name=tokens[0].replace("-", "_").upper(),
+                        value=tokens[0],
+                    )
+                    self.type = custom_connector.value
+                    self.name = connection[len(tokens[0]) + 1 :]
 
     def __hash__(self):
         return hash((self.name, self.type))

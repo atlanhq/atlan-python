@@ -140,8 +140,20 @@ class AtlanConnectionCategory(str, Enum):
     CUSTOM = "custom"
 
 
-class AtlanConnectorType(str, Enum):
+class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     category: AtlanConnectionCategory
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls._member_map_.values()]
+
+    @classmethod
+    def get_names(cls):
+        return list(cls._member_map_.keys())
+
+    @classmethod
+    def get_items(cls):
+        return [(name, member.value) for name, member in cls._member_map_.items()]
 
     @classmethod
     def _get_connector_type_from_qualified_name(
@@ -152,12 +164,17 @@ class AtlanConnectorType(str, Enum):
             raise ValueError(
                 f"Qualified name '{qualified_name}' does not contain enough segments."
             )
-        connector_type_key = tokens[1].upper()
-        # Check if the connector_type_key exists in AtlanConnectorType
+
+        connector_value = tokens[1]
+        # Ensure the enum name is converted to UPPER_SNAKE_CASE from kebab-case
+        connector_type_key = tokens[1].replace("-", "_").upper()
+
+        # Check if the connector_type_key exists in AtlanConnectorType;
+        # if so, return it directly. Otherwise, it may be a custom type.
         if connector_type_key not in AtlanConnectorType.__members__:
-            raise ValueError(
-                f"Could not determine AtlanConnectorType from '{qualified_name}'; "
-                f"'{connector_type_key}' is not a valid connector type."
+            return AtlanConnectorType.CREATE_CUSTOM(
+                name=connector_type_key,
+                value=connector_value,
             )
         return AtlanConnectorType[connector_type_key]
 
@@ -168,6 +185,12 @@ class AtlanConnectorType(str, Enum):
         obj._value_ = value
         obj.category = category
         return obj
+
+    @classmethod
+    def CREATE_CUSTOM(
+        cls, name: str, value: str, category=AtlanConnectionCategory.CUSTOM
+    ) -> "AtlanConnectorType":
+        return cls.add_value(name, value, category)
 
     def to_qualified_name(self):
         return f"default/{self.value}/{int(utils.get_epoch_timestamp())}"
@@ -193,14 +216,22 @@ class AtlanConnectorType(str, Enum):
         fields = qualified_name.split("/")
         if len(fields) != qualified_name_len:
             raise ValueError(err)
+
+        connector_value = fields[1]
+        # Try enum conversion; fallback to custom connector if it fails
         try:
-            connector_name = AtlanConnectorType(fields[1]).value  # type:ignore
-            if attribute_name != "connection_qualified_name":
-                connection_qn = f"{fields[0]}/{fields[1]}/{fields[2]}"
-                return connection_qn, connector_name
-            return connector_name
-        except ValueError as e:
-            raise ValueError(err) from e
+            connector_name = AtlanConnectorType(connector_value).value  # type: ignore
+        except ValueError:
+            custom_connection = AtlanConnectorType.CREATE_CUSTOM(
+                # Ensure the enum name is converted to UPPER_SNAKE_CASE from kebab-case
+                name=connector_value.replace("-", "_").upper(),
+                value=connector_value,
+            )
+            connector_name = custom_connection.value
+        if attribute_name != "connection_qualified_name":
+            connection_qn = f"{fields[0]}/{fields[1]}/{fields[2]}"
+            return connection_qn, connector_name
+        return connector_name
 
     SNOWFLAKE = ("snowflake", AtlanConnectionCategory.WAREHOUSE)
     TABLEAU = ("tableau", AtlanConnectionCategory.BI)
