@@ -6,7 +6,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.token import TokenClient
 from pyatlan.model.assets import Connection
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
 
 
@@ -144,6 +144,69 @@ def test_create_with_missing_parameters_raise_value_error(
     ],
 )
 def test_create(
+    name: str,
+    connector_type: AtlanConnectorType,
+    admin_users: List[str],
+    admin_groups: List[str],
+    admin_roles: List[str],
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    mock_role_cache.validate_idstrs
+    mock_user_cache.validate_names
+    mock_group_cache.validate_aliases
+
+    sut = Connection.create(
+        name=name,
+        connector_type=connector_type,
+        admin_users=admin_users,
+        admin_groups=admin_groups,
+        admin_roles=admin_roles,
+    )
+
+    assert sut.name == name
+    assert sut.qualified_name
+    assert sut.qualified_name[:20] == connector_type.to_qualified_name()[:20]
+    assert sut.connector_name == connector_type.value
+    assert sut.admin_users == set(admin_users)
+    assert sut.admin_groups == set(admin_groups)
+    assert sut.admin_roles == set(admin_roles)
+
+
+@pytest.mark.parametrize(
+    "name, connector_type, admin_users, admin_groups, admin_roles",
+    [
+        (
+            CONNECTION_NAME,
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="FOO", value="foo", category=AtlanConnectionCategory.BI
+            ),
+            ["ernest"],
+            [],
+            [],
+        ),
+        (
+            CONNECTION_NAME,
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="BAR", value="bar", category=AtlanConnectionCategory.API
+            ),
+            [],
+            ["ernest"],
+            [],
+        ),
+        (
+            CONNECTION_NAME,
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="BAZ", value="baz", category=AtlanConnectionCategory.WAREHOUSE
+            ),
+            [],
+            [],
+            ["ernest"],
+        ),
+    ],
+)
+def test_creator_with_custom_type(
     name: str,
     connector_type: AtlanConnectorType,
     admin_users: List[str],

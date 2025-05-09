@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from typing import Generator
+
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection
-from pyatlan.model.enums import AtlanConnectorType
-from tests.integration.client import TestId
+from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
+from tests.integration.client import TestId, delete_asset
 
 MODULE_NAME = TestId.make_unique("CONN")
 
@@ -22,6 +24,29 @@ def create_connection(
     return client.asset.get_by_guid(
         result.guid, asset_type=Connection, ignore_relationships=False
     )
+
+
+@pytest.fixture(scope="module")
+def custom_connection(client: AtlanClient) -> Generator[Connection, None, None]:
+    CUSTOM_CONNECTOR_TYPE = AtlanConnectorType.CREATE_CUSTOM(
+        name=f"{MODULE_NAME}_NAME",
+        value=f"{MODULE_NAME}_type",
+        category=AtlanConnectionCategory.API,
+    )
+    result = create_connection(
+        client=client, name=MODULE_NAME, connector_type=CUSTOM_CONNECTOR_TYPE
+    )
+    yield result
+    # TODO: proper connection delete workflow
+    delete_asset(client, guid=result.guid, asset_type=Connection)
+
+
+def test_custom_connection(custom_connection: Connection):
+    assert custom_connection.name == MODULE_NAME
+    assert custom_connection.connector_name == f"{MODULE_NAME}_type"
+    assert custom_connection.qualified_name
+    assert f"default/{MODULE_NAME}_type" in custom_connection.qualified_name
+    assert AtlanConnectorType[f"{MODULE_NAME}_NAME"].value == f"{MODULE_NAME}_type"
 
 
 def test_invalid_connection(client: AtlanClient):

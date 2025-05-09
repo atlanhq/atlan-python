@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import (
     ComparisonCategory,
@@ -292,3 +293,120 @@ def test_validate_type_with_valid_values(name, the_type, value):
 def test_contruct_object_key(prefix, name, expected_key):
     key = construct_object_key(prefix, name)
     assert key == expected_key
+
+
+@pytest.mark.parametrize(
+    "custom_connectors",
+    [
+        [
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="FOO", value="foo", category=AtlanConnectionCategory.BI
+            ),
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="BAR", value="bar", category=AtlanConnectionCategory.API
+            ),
+            AtlanConnectorType.CREATE_CUSTOM(
+                name="BAZ", value="baz", category=AtlanConnectionCategory.WAREHOUSE
+            ),
+        ]
+    ],
+)
+def test_atlan_connector_type_create_custom(custom_connectors):
+    for custom_connector in custom_connectors:
+        assert custom_connector and custom_connector.category
+        assert custom_connector.value in AtlanConnectorType.get_values()
+        assert custom_connector.strip() in AtlanConnectorType.get_values()
+        assert custom_connector.name in AtlanConnectorType.get_names()
+        assert (
+            custom_connector.name,
+            custom_connector.value,
+        ) in AtlanConnectorType.get_items()
+
+
+@pytest.mark.parametrize(
+    "custom_asset_qns",
+    [
+        [
+            "default/c1/1234567890/asset/name",
+            "default/c2/1234567890/asset/name",
+            "default/c3/1234567890/asset/name",
+            # Duplicate custom connector names
+            "default/c1/1234567890/asset/name",
+            "default/c2/1234567890/asset/name",
+            "default/c3/1234567890/asset/name",
+            # Duplicate custom connector names
+            "default/c1/1234567890/asset/name",
+            "default/c2/1234567890/asset/name",
+            "default/c3/1234567890/asset/name",
+        ]
+    ],
+)
+def test_atlan_connector_type_custom_asset_qn(custom_asset_qns):
+    # Calculate the unique custom QNs
+    unique_custom_qns = set(custom_asset_qns)
+
+    # Calculate the initial lengths of predefined values, names, and items
+    len_get_values = len(AtlanConnectorType.get_values())
+    len_get_names = len(AtlanConnectorType.get_names())
+    len_get_items = len(AtlanConnectorType.get_items())
+
+    # Check each custom QN
+    for custom_qn in custom_asset_qns:
+        custom_connector = AtlanConnectorType._get_connector_type_from_qualified_name(
+            custom_qn
+        )
+        custom_connector.category = AtlanConnectionCategory.CUSTOM
+        assert custom_connector.value in AtlanConnectorType.get_values()
+        assert custom_connector.strip() in AtlanConnectorType.get_values()
+        assert (
+            custom_connector.name,
+            custom_connector.value,
+        ) in AtlanConnectorType.get_items()
+
+    # Ensure the value is only added once (i.e no duplicates)
+    assert len(AtlanConnectorType.get_values()) == len_get_values + len(
+        unique_custom_qns
+    )
+    assert len(AtlanConnectorType.get_names()) == len_get_names + len(unique_custom_qns)
+    assert len(AtlanConnectorType.get_items()) == len_get_items + len(unique_custom_qns)
+
+
+@pytest.mark.parametrize(
+    "custom_connection_qns",
+    [
+        [
+            "default/cm1/1234567890",
+            "default/cm2/1234567890",
+            "default/cm3/1234567890",
+            # Duplicate custom connector names
+            "default/cm1/1234567890",
+            "default/cm2/1234567890",
+            "default/cm3/1234567890",
+            # Duplicate custom connector names
+            "default/cm1/1234567890",
+            "default/cm2/1234567890",
+            "default/cm3/1234567890",
+        ]
+    ],
+)
+def test_atlan_connector_type_custom_connection_qn(custom_connection_qns):
+    # Calculate the unique custom QNs
+    unique_custom_qns = set(custom_connection_qns)
+
+    # Calculate the initial lengths of predefined values, names, and items
+    len_get_values = len(AtlanConnectorType.get_values())
+    len_get_names = len(AtlanConnectorType.get_names())
+    len_get_items = len(AtlanConnectorType.get_items())
+
+    # Check each custom QN
+    for custom_qn in custom_connection_qns:
+        custom_connector_name = AtlanConnectorType.get_connector_name(custom_qn)
+        assert custom_connector_name in AtlanConnectorType.get_values()
+        assert custom_connector_name.strip() in AtlanConnectorType.get_values()
+
+    # Ensure the value is only added once (i.e no duplicates)
+    assert len(AtlanConnectorType.get_values()) == len_get_values + len(
+        unique_custom_qns
+    )
+    assert len(AtlanConnectorType.get_names()) == len_get_names + len(unique_custom_qns)
+    assert len(AtlanConnectorType.get_items()) == len_get_items + len(unique_custom_qns)
