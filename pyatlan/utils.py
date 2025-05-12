@@ -10,7 +10,7 @@ import re
 import time
 from contextvars import ContextVar
 from datetime import datetime
-from enum import Enum
+from enum import Enum, EnumMeta
 from functools import reduce, wraps
 from typing import Any, Dict, List, Mapping, Optional
 
@@ -471,3 +471,21 @@ def validate_single_required_field(field_names: List[str], values: List[Any]):
         raise ValueError(
             f"Only one of the following parameters are allowed: {', '.join(names)}"
         )
+
+
+class ExtendableEnumMeta(EnumMeta):
+    def __init__(cls, name, bases, namespace):
+        super().__init__(name, bases, namespace)
+        cls._additional_members = {}
+
+    def add_value(cls, name, value, category=None):
+        member = str.__new__(cls, value)
+        member._name_ = name
+        member._value_ = value
+        member.category = category
+
+        cls._member_map_[name] = member
+        cls._value2member_map_[value] = member
+        cls._member_names_.append(name)
+        cls._additional_members[name] = member
+        return member
