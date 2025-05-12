@@ -234,6 +234,10 @@ class WorkflowSearchResponse(AtlanObject):
         self._size = data.get("size")  # type: ignore[assignment]
         self._start = data.get("start")  # type: ignore[assignment]
 
+    @property
+    def count(self):
+        return self.hits.total.get("value", 0) if self.hits and self.hits.total else 0
+
     def current_page(self) -> Optional[List[WorkflowSearchResult]]:
         return self.hits.hits  # type: ignore
 

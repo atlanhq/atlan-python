@@ -2563,9 +2563,9 @@ def test_get_all_pagation(group_client, mock_api_caller):
     ]
 
     groups = group_client.get_all(limit=2)
-    assert len(groups.records) == 2
-    assert groups.records[0].id == "1"
-    assert groups.records[1].id == "2"
+    assert len(groups.current_page()) == 2
+    assert groups.current_page()[0].id == "1"
+    assert groups.current_page()[1].id == "2"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
@@ -2577,7 +2577,7 @@ def test_get_all_empty_response_with_raw_records(group_client, mock_api_caller):
     ]
 
     groups = group_client.get_all()
-    assert len(groups.records) == 0
+    assert len(groups.current_page()) == 0
     mock_api_caller.reset_mock()
 
 
@@ -2593,9 +2593,9 @@ def test_get_all_with_columns(group_client, mock_api_caller):
     columns = ["alias"]
     groups = group_client.get_all(limit=10, columns=columns)
 
-    assert len(groups.records) == 2
-    assert groups.records[0].id == "1"
-    assert groups.records[0].alias == "Group1"
+    assert len(groups.current_page()) == 2
+    assert groups.current_page()[0].id == "1"
+    assert groups.current_page()[0].alias == "Group1"
     mock_api_caller._call_api.assert_called_once()
     query_params = mock_api_caller._call_api.call_args.kwargs["query_params"]
     assert query_params["columns"] == columns
@@ -2613,9 +2613,9 @@ def test_get_all_sorting(group_client, mock_api_caller):
 
     groups = group_client.get_all(limit=10, sort="alias")
 
-    assert len(groups.records) == 2
-    assert groups.records[0].id == "1"
-    assert groups.records[0].alias == "Group1"
+    assert len(groups.current_page()) == 2
+    assert groups.current_page()[0].id == "1"
+    assert groups.current_page()[0].alias == "Group1"
     mock_api_caller._call_api.assert_called_once()
     query_params = mock_api_caller._call_api.call_args.kwargs["query_params"]
     assert query_params["sort"] == "alias"
