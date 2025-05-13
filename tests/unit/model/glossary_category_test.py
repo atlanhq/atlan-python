@@ -58,11 +58,16 @@ def test_create(
         anchor=anchor,
         parent_category=parent_category,
     )
-
     assert sut.name == GLOSSARY_CATEGORY_NAME
     assert sut.qualified_name
-    assert sut.parent_category == parent_category
-    assert sut.anchor == anchor
+
+    expected_parent = (
+        parent_category.trim_to_reference() if sut.parent_category else parent_category
+    )
+    assert sut.parent_category == expected_parent
+
+    expected_anchor = anchor.trim_to_reference() if sut.anchor else anchor
+    assert sut.anchor == expected_anchor
 
 
 @pytest.mark.parametrize(

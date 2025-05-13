@@ -52,7 +52,15 @@ def test_create_atttributes_without_required_parameters_raises_value_error(
 @pytest.mark.parametrize(
     "name, anchor, glossary_qualified_name, glossary_guid",
     [
-        ("Glossary", AtlasGlossary(), None, None),
+        ("Glossary", AtlasGlossary.ref_by_guid(guid="123"), None, None),
+        (
+            "Glossary",
+            AtlasGlossary.ref_by_qualified_name(
+                qualified_name="glossary/qualifiedName"
+            ),
+            None,
+            None,
+        ),
         ("Glossary", None, "glossary/qualifiedName", None),
         ("Glossary", None, None, "123"),
     ],
@@ -126,7 +134,15 @@ def test_create_without_required_parameters_raises_value_error(
 @pytest.mark.parametrize(
     "name, anchor, glossary_qualified_name, glossary_guid",
     [
-        ("Glossary", AtlasGlossary(), None, None),
+        ("Glossary", AtlasGlossary.ref_by_guid(guid="123"), None, None),
+        (
+            "Glossary",
+            AtlasGlossary.ref_by_qualified_name(
+                qualified_name="glossary/qualifiedName"
+            ),
+            None,
+            None,
+        ),
         ("Glossary", None, "glossary/qualifiedName", None),
         ("Glossary", None, None, "123"),
     ],
