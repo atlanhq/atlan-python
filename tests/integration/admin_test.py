@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import math
 from datetime import datetime, timedelta
 from typing import Generator
 
@@ -48,6 +49,17 @@ def group(client: AtlanClient) -> Generator[CreateGroupResponse, None, None]:
     delete_group(client, g.group)
 
 
+def _assert_search_results(results, size, TOTAL_ASSETS):
+    assert results.total_record > size
+    assert len(results.records) == size
+    counter = 0
+    for result in results:
+        assert result
+        counter += 1
+    assert counter == TOTAL_ASSETS
+    assert results
+
+
 def test_create_group(client: AtlanClient, group: CreateGroupResponse):
     assert group
     r = client.group.get_by_name(GROUP_NAME)
@@ -81,6 +93,16 @@ def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
             _default_group_count += 1
 
 
+def test_group_get_all_pagination(client: AtlanClient):
+    results = client.group.get_all(limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    groups = client.group.get_all(limit=limit)
+    _assert_search_results(groups, limit, TOTAL_ASSETS)
+
+
 def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
     response = client.group.get(limit=1, count=True)
 
@@ -98,6 +120,16 @@ def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
     current_page = response.current_page()
     assert current_page is not None
     assert len(current_page) == 0
+
+
+def test_group_get_by_name_pagination(client: AtlanClient):
+    results = client.group.get_by_name(alias=GROUP_NAME, limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    groups = client.group.get_by_name(alias=GROUP_NAME, limit=limit)
+    _assert_search_results(groups, limit, TOTAL_ASSETS)
 
 
 def test_group_get_members_pagination(client: AtlanClient, group: CreateGroupResponse):
@@ -164,6 +196,46 @@ def test_user_groups_pagination(client: AtlanClient, group: CreateGroupResponse)
     current_page = response.current_page()
     assert current_page is not None
     assert len(current_page) == 0
+
+
+def test_user_get_all_pagination(client: AtlanClient):
+    results = client.user.get_all(limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    users = client.user.get_all(limit=limit)
+    _assert_search_results(users, limit, TOTAL_ASSETS)
+
+
+def test_user_get_by_usernames_pagination(client: AtlanClient):
+    results = client.user.get_by_usernames(usernames=[FIXED_USER], limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    users = client.user.get_by_usernames(usernames=[FIXED_USER], limit=limit)
+    _assert_search_results(users, limit, TOTAL_ASSETS)
+
+
+def test_user_get_by_email_and_emails_pagination(client: AtlanClient):
+    results = client.user.get_by_email(email=EMAIL_DOMAIN, limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    assert results.records is not None
+    email = results.records[0].email
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    emails = client.user.get_by_email(email=EMAIL_DOMAIN, limit=limit)
+    _assert_search_results(emails, limit, TOTAL_ASSETS)
+    assert email is not None
+    results = client.user.get_by_emails(emails=[email], limit=0)
+    assert results is not None
+    assert results.filter_record is not None
+    TOTAL_ASSETS = results.filter_record
+    limit = max(1, math.ceil(TOTAL_ASSETS / 5))
+    emails = client.user.get_by_emails(emails=[email], limit=limit)
+    _assert_search_results(emails, limit, TOTAL_ASSETS)
 
 
 @pytest.mark.order(after="test_retrieve_all_groups")
