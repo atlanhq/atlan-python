@@ -52,8 +52,9 @@ def test_create_group(client: AtlanClient, group: CreateGroupResponse):
     assert group
     r = client.group.get_by_name(GROUP_NAME)
     assert r
-    assert len(r) == 1
-    group1_full = r[0]
+    assert r.records is not None
+    assert len(r.records) == 1
+    group1_full = r.records[0]
     assert group1_full
     assert group1_full.path
     assert group1_full.name
@@ -102,8 +103,9 @@ def test_group_get_pagination(client: AtlanClient, group: CreateGroupResponse):
 def test_group_get_members_pagination(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
-    assert len(groups) == 1
-    group1 = groups[0]
+    assert groups.records
+    assert len(groups.records) == 1
+    group1 = groups.records[0]
     assert group1.id
     response = client.group.get_members(guid=group1.id, request=UserRequest(limit=1))
 
@@ -177,29 +179,33 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert user1.group_count == 1 + _default_group_count
     response = client.user.get_by_usernames(usernames=[FIXED_USER])
     assert response
-    assert len(response) == 1
-    fixed_user = response[0]
+    assert response.records is not None
+    assert len(response.records) == 1
+    fixed_user = response.records[0]
     assert fixed_user
     assert fixed_user.id
     users_list = client.user.get_by_usernames(usernames=[])
     assert users_list == []
     users_list = client.user.get_by_email(EMAIL_DOMAIN)
     assert users_list
-    assert len(users_list) >= 1
+    assert users_list.records is not None
+    assert len(users_list.records) >= 1
     email = user1.email
     assert email
     users_list = client.user.get_by_email(email)
     assert users_list
-    assert len(users_list) == 1
-    assert user1.email == users_list[0].email
-    assert user1.username == users_list[0].username
-    assert user1.attributes == users_list[0].attributes
+    assert users_list.records is not None
+    assert len(users_list.records) == 1
+    assert user1.email == users_list.records[0].email
+    assert user1.username == users_list.records[0].username
+    assert user1.attributes == users_list.records[0].attributes
     users_list = client.user.get_by_emails(emails=[email])
     assert users_list
-    assert len(users_list) == 1
-    assert user1.email == users_list[0].email
-    assert user1.username == users_list[0].username
-    assert user1.attributes == users_list[0].attributes
+    assert users_list.records is not None
+    assert len(users_list.records) == 1
+    assert user1.email == users_list.records[0].email
+    assert user1.username == users_list.records[0].username
+    assert user1.attributes == users_list.records[0].attributes
     users_list = client.user.get_by_emails(emails=[])
     assert users_list == []
 
@@ -208,8 +214,9 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
 def test_update_groups(client: AtlanClient, group: CreateGroupResponse):
     groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
-    assert len(groups) == 1
-    group1 = groups[0]
+    assert groups.records is not None
+    assert len(groups.records) == 1
+    group1 = groups.records[0]
     group1.attributes = AtlanGroup.Attributes(description=["Now with a description!"])
     client.group.update(group1)
 
@@ -221,8 +228,9 @@ def test_updated_groups(
 ):
     groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
-    assert len(groups) == 1
-    group1 = groups[0]
+    assert groups.records is not None
+    assert len(groups.records) == 1
+    group1 = groups.records[0]
     assert group1
     assert group1.id == group.group
     assert group1.attributes
@@ -237,8 +245,9 @@ def test_remove_user_from_group(
 ):
     groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
-    assert len(groups) == 1
-    group1 = groups[0]
+    assert groups.records is not None
+    assert len(groups.records) == 1
+    group1 = groups.records[0]
     assert group1.id
     fixed_user = client.user.get_by_username(FIXED_USER)
     assert fixed_user

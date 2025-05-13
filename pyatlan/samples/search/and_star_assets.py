@@ -46,8 +46,8 @@ def list_users_in_group(name: str) -> List[str]:
     """
     usernames: List[str] = []
     if groups := client.group.get_by_name(alias=name):
-        if groups[0].id is not None and (
-            response := client.group.get_members(guid=groups[0].id)
+        if groups.records[0].id is not None and (  # type: ignore
+            response := client.group.get_members(guid=groups.records[0].id)  # type: ignore
         ):
             if response.records and len(response.records) > 0:
                 usernames.extend(

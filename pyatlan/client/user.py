@@ -48,7 +48,7 @@ class UserClient:
     @validate_arguments
     def create(
         self, users: List[AtlanUser], return_info: bool = False
-    ) -> Optional[List[AtlanUser]]:
+    ) -> Optional[UserResponse]:
         """
         Create one or more new users.
 
@@ -219,7 +219,7 @@ class UserClient:
         email: str,
         limit: int = 20,
         offset: int = 0,
-    ) -> Optional[List[AtlanUser]]:
+    ) -> Optional[UserResponse]:
         """
         Retrieves all users with email addresses that contain the provided email.
         (This could include a complete email address, in which case there should be at
@@ -232,13 +232,12 @@ class UserClient:
         :param offset: starting point for the list of users when pagin
         :returns: all users whose email addresses contain the provided string
         """
-        if response := self.get(
+        response: UserResponse = self.get(
             offset=offset,
             limit=limit,
             post_filter='{"email":{"$ilike":"%' + email + '%"}}',
-        ):
-            return response.records
-        return None
+        )
+        return response
 
     @validate_arguments
     def get_by_emails(
@@ -246,7 +245,7 @@ class UserClient:
         emails: List[str],
         limit: int = 20,
         offset: int = 0,
-    ) -> Optional[List[AtlanUser]]:
+    ) -> Optional[UserResponse]:
         """
         Retrieves all users with email addresses that match the provided list of emails.
 
@@ -256,9 +255,10 @@ class UserClient:
         :returns: list of users whose email addresses match the provided list
         """
         email_filter = '{"email":{"$in":' + dumps(emails or [""]) + "}}"
-        if response := self.get(offset=offset, limit=limit, post_filter=email_filter):
-            return response.records
-        return None
+        response: UserResponse = self.get(
+            offset=offset, limit=limit, post_filter=email_filter
+        )
+        return response
 
     @validate_arguments
     def get_by_username(self, username: str) -> Optional[AtlanUser]:
@@ -281,7 +281,7 @@ class UserClient:
     @validate_arguments
     def get_by_usernames(
         self, usernames: List[str], limit: int = 5, offset: int = 0
-    ) -> Optional[List[AtlanUser]]:
+    ) -> Optional[UserResponse]:
         """
         Retrieves users based on their usernames.
 
@@ -291,11 +291,10 @@ class UserClient:
         :returns: the users with the specified usernames
         """
         username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
-        if response := self.get(
+        response: UserResponse = self.get(
             offset=offset, limit=limit, post_filter=username_filter
-        ):
-            return response.records
-        return None
+        )
+        return response.records  # type: ignore
 
     @validate_arguments
     def add_to_groups(

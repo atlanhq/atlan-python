@@ -1816,8 +1816,8 @@ def test_user_create_with_info(
     test_users = [AtlanUser.create(email="test@test.com", role_name="$member")]
     response = client.create(users=test_users, return_info=True)
 
-    assert len(response) == 1
-    user = response[0]
+    assert len(response.current_page()) == 1
+    user = response.current_page()[0]
     assert user
     assert user.username
     assert user.email

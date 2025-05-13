@@ -155,7 +155,7 @@ class GroupClient:
         response: GroupResponse = self.get(
             offset=offset, limit=limit, sort=sort, columns=columns
         )
-        return response  # type: ignore
+        return response
 
     @validate_arguments
     def get_by_name(
@@ -163,7 +163,7 @@ class GroupClient:
         alias: str,
         limit: int = 20,
         offset: int = 0,
-    ) -> Optional[List[AtlanGroup]]:
+    ) -> Optional[GroupResponse]:
         """
         Retrieve all groups with a name that contains the provided string.
         (This could include a complete group name, in which case there should be at most
@@ -175,13 +175,12 @@ class GroupClient:
         :param offset: starting point for the list of groups when paging
         :returns: all groups whose name (in the UI) contains the provided string
         """
-        if response := self.get(
+        response: GroupResponse = self.get(
             offset=offset,
             limit=limit,
             post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
-        ):
-            return response.records
-        return None
+        )
+        return response
 
     @validate_arguments
     def get_members(
