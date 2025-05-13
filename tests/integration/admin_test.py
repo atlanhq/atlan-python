@@ -185,7 +185,7 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert fixed_user
     assert fixed_user.id
     users_list = client.user.get_by_usernames(usernames=[])
-    assert users_list == []
+    assert users_list.records == []  # type: ignore
     users_list = client.user.get_by_email(EMAIL_DOMAIN)
     assert users_list
     assert users_list.records is not None
@@ -207,7 +207,7 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert user1.username == users_list.records[0].username
     assert user1.attributes == users_list.records[0].attributes
     users_list = client.user.get_by_emails(emails=[])
-    assert users_list == []
+    assert users_list.records == []  # type: ignore
 
 
 @pytest.mark.order(after="test_create_group")
