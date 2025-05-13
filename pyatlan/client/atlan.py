@@ -150,7 +150,12 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _current_client_tls: ClassVar[local] = local()  # Thread-local storage (TLS)
+    _current_client_ctx: ClassVar[ContextVar] = ContextVar(
+        "_current_client_ctx", default=None
+    )
+    _401_has_retried_ctx: ClassVar[ContextVar] = ContextVar(
+        "_401_has_retried_ctx", default=False
+    )
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
@@ -191,36 +196,23 @@ class AtlanClient(BaseSettings):
         env_prefix = "atlan_"
 
     @classmethod
-    def init_for_multithreading(cls, client: AtlanClient):
-        """
-        Prepares the given client for use in multi-threaded environments.
-
-        This sets the thread-local context and resets internal retry flags
-        to ensure correct behavior when using the client across multiple threads.
-        """
-        AtlanClient.set_current_client(client)
-        client._401_tls.has_retried = False
-
-    @classmethod
     def set_current_client(cls, client: AtlanClient):
         """
-        Sets the current client to thread-local storage (TLS)
+        Sets the current client context
         """
         if not isinstance(client, AtlanClient):
             raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
-        cls._current_client_tls.client = client
+        cls._current_client_ctx.set(client)
 
     @classmethod
     def get_current_client(cls) -> AtlanClient:
         """
-        Retrieves the current client
+        Retrieves the current client context
         """
-        if (
-            not hasattr(cls._current_client_tls, "client")
-            or not cls._current_client_tls.client
-        ):
+        client = cls._current_client_ctx.get()
+        if not client:
             raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
-        return cls._current_client_tls.client
+        return client
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -233,7 +225,8 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        AtlanClient.init_for_multithreading(self)
+        AtlanClient.set_current_client(self)
+        self._401_has_retried_ctx.set(False)
 
     @property
     def admin(self) -> AdminClient:
@@ -482,11 +475,11 @@ class AtlanClient(BaseSettings):
             # - But if the next response is != 401 (e.g. 403), and `has_retried = True`,
             # then we should reset `has_retried = False` so that future 401s can trigger a new token refresh.
             if (
-                self._401_tls.has_retried
+                self._401_has_retried_ctx.get()
                 and response.status_code
                 != ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
             ):
-                self._401_tls.has_retried = False
+                self._401_has_retried_ctx.set(False)
 
             if response.status_code == api.expected_status:
                 try:
@@ -571,7 +564,7 @@ class AtlanClient(BaseSettings):
                     # on authentication failure (token may have expired)
                     if (
                         self._user_id
-                        and not self._401_tls.has_retried
+                        and not self._401_has_retried_ctx.get()
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
@@ -732,7 +725,7 @@ class AtlanClient(BaseSettings):
             )
             raise
         self.api_key = new_token
-        self._401_tls.has_retried = True
+        self._401_has_retried_ctx.set(True)
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
