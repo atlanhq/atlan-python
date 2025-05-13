@@ -294,7 +294,7 @@ class UserClient:
         response: UserResponse = self.get(
             offset=offset, limit=limit, post_filter=username_filter
         )
-        return response.records  # type: ignore
+        return response
 
     @validate_arguments
     def add_to_groups(
