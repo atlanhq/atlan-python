@@ -11,7 +11,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from contextvars import ContextVar, copy_context
 from datetime import datetime
-from enum import Enum
+from enum import Enum, EnumMeta
 from functools import reduce, wraps
 from typing import Any, Dict, List, Mapping, Optional
 
@@ -518,4 +518,20 @@ class PyAtlanThreadPoolExecutor(ThreadPoolExecutor):
                     var.set(value)
             return fn(*args, **kwargs)
 
-        return super().submit(_fn)
+
+class ExtendableEnumMeta(EnumMeta):
+    def __init__(cls, name, bases, namespace):
+        super().__init__(name, bases, namespace)
+        cls._additional_members = {}
+
+    def add_value(cls, name, value, category=None):
+        member = str.__new__(cls, value)
+        member._name_ = name
+        member._value_ = value
+        member.category = category
+
+        cls._member_map_[name] = member
+        cls._value2member_map_[value] = member
+        cls._member_names_.append(name)
+        cls._additional_members[name] = member
+        return member

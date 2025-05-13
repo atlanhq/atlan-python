@@ -134,7 +134,7 @@ def test_create():
         ),
         (
             ADLS_OBJECT_NAME,
-            "default/adls-invalid/production",
+            "default/adls/invalid/production",
             "abc",
             ADLS_CONTAINER_NAME,
             ADLS_CONTAINER_QUALIFIED_NAME,
