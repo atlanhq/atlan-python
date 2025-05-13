@@ -70,6 +70,7 @@ __all__ = [
     "Function",
     "TablePartition",
     "Column",
+    "SnowflakeStage",
     "SnowflakeStream",
     "DatabricksUnityCatalogTag",
     "CalculationView",
@@ -89,17 +90,18 @@ __all__ = [
     "SparkJob",
     "SchemaRegistrySubject",
     "PowerBIReport",
+    "PowerBIDatasource",
+    "PowerBIWorkspace",
+    "PowerBIDashboard",
+    "PowerBIDataflow",
+    "PowerBIDataflowEntityColumn",
     "PowerBIMeasure",
     "PowerBIColumn",
     "PowerBITable",
     "PowerBITile",
-    "PowerBIDatasource",
     "PowerBIDataset",
-    "PowerBIWorkspace",
-    "PowerBIDashboard",
+    "PowerBIApp",
     "PowerBIPage",
-    "PowerBIDataflow",
-    "PowerBIDataflowEntityColumn",
     "CosmosMongoDBCollection",
     "CosmosMongoDBAccount",
     "CosmosMongoDBDatabase",
@@ -128,6 +130,7 @@ __all__ = [
     "BusinessPolicy",
     "WorkflowRun",
     "Response",
+    "ConnectionProcess",
     "Cloud",
     "Incident",
     "DbtProcess",
@@ -150,6 +153,7 @@ __all__ = [
     "DbtColumnProcess",
     "SapErpTable",
     "SapErpColumn",
+    "SapErpCdsView",
     "SapErpAbapProgram",
     "SapErpTransactionCode",
     "SapErpComponent",
@@ -401,6 +405,7 @@ from .cognos_package import CognosPackage
 from .cognos_report import CognosReport
 from .collection import Collection
 from .connection import Connection
+from .connection_process import ConnectionProcess
 from .core.a_d_f import ADF
 from .core.access_control import AccessControl
 from .core.adf_activity import AdfActivity
@@ -477,6 +482,7 @@ from .core.namespace import Namespace
 from .core.no_s_q_l import NoSQL
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
+from .core.power_b_i_app import PowerBIApp
 from .core.power_b_i_column import PowerBIColumn
 from .core.power_b_i_dashboard import PowerBIDashboard
 from .core.power_b_i_dataflow import PowerBIDataflow
@@ -501,6 +507,7 @@ from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable
 from .core.snowflake_pipe import SnowflakePipe
+from .core.snowflake_stage import SnowflakeStage
 from .core.snowflake_stream import SnowflakeStream
 from .core.snowflake_tag import SnowflakeTag
 from .core.soda import Soda
@@ -623,6 +630,7 @@ from .salesforce_object import SalesforceObject
 from .salesforce_organization import SalesforceOrganization
 from .salesforce_report import SalesforceReport
 from .sap_erp_abap_program import SapErpAbapProgram
+from .sap_erp_cds_view import SapErpCdsView
 from .sap_erp_column import SapErpColumn
 from .sap_erp_component import SapErpComponent
 from .sap_erp_function_module import SapErpFunctionModule

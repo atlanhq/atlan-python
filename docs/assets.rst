@@ -98,6 +98,7 @@ You can interact with all of the following different kinds of assets:
     asset/column
     asset/columnprocess
     asset/connection
+    asset/connectionprocess
     asset/cosmosmongodb
     asset/cosmosmongodbaccount
     asset/cosmosmongodbcollection
@@ -218,6 +219,7 @@ You can interact with all of the following different kinds of assets:
     asset/objectstore
     asset/persona
     asset/powerbi
+    asset/powerbiapp
     asset/powerbicolumn
     asset/powerbidashboard
     asset/powerbidataflow
@@ -277,6 +279,7 @@ You can interact with all of the following different kinds of assets:
     asset/salesforceorganization
     asset/salesforcereport
     asset/saperpabapprogram
+    asset/saperpcdsview
     asset/saperpcolumn
     asset/saperpcomponent
     asset/saperpfunctionmodule
@@ -301,6 +304,7 @@ You can interact with all of the following different kinds of assets:
     asset/sisensewidget
     asset/snowflakedynamictable
     asset/snowflakepipe
+    asset/snowflakestage
     asset/snowflakestream
     asset/snowflaketag
     asset/soda

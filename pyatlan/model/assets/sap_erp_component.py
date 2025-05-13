@@ -41,6 +41,10 @@ class SapErpComponent(SAP):
     """
     TBC
     """
+    SAP_ERP_CDS_VIEWS: ClassVar[RelationField] = RelationField("sapErpCdsViews")
+    """
+    TBC
+    """
     SAP_ERP_FUNCTION_MODULES: ClassVar[RelationField] = RelationField(
         "sapErpFunctionModules"
     )
@@ -66,6 +70,7 @@ class SapErpComponent(SAP):
         "sap_erp_tables",
         "sap_erp_views",
         "child_components",
+        "sap_erp_cds_views",
         "sap_erp_function_modules",
         "sap_erp_abap_programs",
         "sap_erp_transaction_codes",
@@ -101,6 +106,16 @@ class SapErpComponent(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.child_components = child_components
+
+    @property
+    def sap_erp_cds_views(self) -> Optional[List[SapErpCdsView]]:
+        return None if self.attributes is None else self.attributes.sap_erp_cds_views
+
+    @sap_erp_cds_views.setter
+    def sap_erp_cds_views(self, sap_erp_cds_views: Optional[List[SapErpCdsView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_cds_views = sap_erp_cds_views
 
     @property
     def sap_erp_function_modules(self) -> Optional[List[SapErpFunctionModule]]:
@@ -168,6 +183,9 @@ class SapErpComponent(SAP):
         child_components: Optional[List[SapErpComponent]] = Field(
             default=None, description=""
         )  # relationship
+        sap_erp_cds_views: Optional[List[SapErpCdsView]] = Field(
+            default=None, description=""
+        )  # relationship
         sap_erp_function_modules: Optional[List[SapErpFunctionModule]] = Field(
             default=None, description=""
         )  # relationship
@@ -192,6 +210,7 @@ class SapErpComponent(SAP):
 
 
 from .sap_erp_abap_program import SapErpAbapProgram  # noqa: E402, F401
+from .sap_erp_cds_view import SapErpCdsView  # noqa: E402, F401
 from .sap_erp_function_module import SapErpFunctionModule  # noqa: E402, F401
 from .sap_erp_table import SapErpTable  # noqa: E402, F401
 from .sap_erp_transaction_code import SapErpTransactionCode  # noqa: E402, F401

@@ -106,6 +106,20 @@ class SapErpColumn(SAP):
     """
     Unique name of the SAP ERP view in which this column asset exists.
     """
+    SAP_ERP_CDS_VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sapErpCdsViewName", "sapErpCdsViewName.keyword", "sapErpCdsViewName"
+    )
+    """
+    Simple name of the SAP ERP CDS view in which this column asset exists.
+    """
+    SAP_ERP_CDS_VIEW_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sapErpCdsViewQualifiedName",
+        "sapErpCdsViewQualifiedName",
+        "sapErpCdsViewQualifiedName.text",
+    )
+    """
+    Unique name of the SAP ERP CDS view in which this column asset exists.
+    """
     SAP_TECHNICAL_NAME: ClassVar[KeywordField] = KeywordField(
         "sapTechnicalName", "sapTechnicalName"
     )
@@ -263,6 +277,10 @@ class SapErpColumn(SAP):
     """
     TBC
     """
+    SAP_ERP_CDS_VIEW: ClassVar[RelationField] = RelationField("sapErpCdsView")
+    """
+    TBC
+    """
     SAP_ERP_VIEW: ClassVar[RelationField] = RelationField("sapErpView")
     """
     TBC
@@ -280,6 +298,8 @@ class SapErpColumn(SAP):
         "sap_erp_table_qualified_name",
         "sap_erp_view_name",
         "sap_erp_view_qualified_name",
+        "sap_erp_cds_view_name",
+        "sap_erp_cds_view_qualified_name",
         "sap_technical_name",
         "sap_logical_name",
         "sap_package_name",
@@ -309,6 +329,7 @@ class SapErpColumn(SAP):
         "dbt_tests",
         "sql_dbt_sources",
         "dbt_models",
+        "sap_erp_cds_view",
         "sap_erp_view",
     ]
 
@@ -457,6 +478,36 @@ class SapErpColumn(SAP):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sap_erp_view_qualified_name = sap_erp_view_qualified_name
+
+    @property
+    def sap_erp_cds_view_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sap_erp_cds_view_name
+        )
+
+    @sap_erp_cds_view_name.setter
+    def sap_erp_cds_view_name(self, sap_erp_cds_view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_cds_view_name = sap_erp_cds_view_name
+
+    @property
+    def sap_erp_cds_view_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sap_erp_cds_view_qualified_name
+        )
+
+    @sap_erp_cds_view_qualified_name.setter
+    def sap_erp_cds_view_qualified_name(
+        self, sap_erp_cds_view_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_cds_view_qualified_name = (
+            sap_erp_cds_view_qualified_name
+        )
 
     @property
     def sap_technical_name(self) -> Optional[str]:
@@ -765,6 +816,16 @@ class SapErpColumn(SAP):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def sap_erp_cds_view(self) -> Optional[SapErpCdsView]:
+        return None if self.attributes is None else self.attributes.sap_erp_cds_view
+
+    @sap_erp_cds_view.setter
+    def sap_erp_cds_view(self, sap_erp_cds_view: Optional[SapErpCdsView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_cds_view = sap_erp_cds_view
+
+    @property
     def sap_erp_view(self) -> Optional[SapErpView]:
         return None if self.attributes is None else self.attributes.sap_erp_view
 
@@ -792,6 +853,10 @@ class SapErpColumn(SAP):
         )
         sap_erp_view_name: Optional[str] = Field(default=None, description="")
         sap_erp_view_qualified_name: Optional[str] = Field(default=None, description="")
+        sap_erp_cds_view_name: Optional[str] = Field(default=None, description="")
+        sap_erp_cds_view_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         sap_technical_name: Optional[str] = Field(default=None, description="")
         sap_logical_name: Optional[str] = Field(default=None, description="")
         sap_package_name: Optional[str] = Field(default=None, description="")
@@ -835,6 +900,9 @@ class SapErpColumn(SAP):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        sap_erp_cds_view: Optional[SapErpCdsView] = Field(
+            default=None, description=""
+        )  # relationship
         sap_erp_view: Optional[SapErpView] = Field(
             default=None, description=""
         )  # relationship
@@ -852,6 +920,7 @@ class SapErpColumn(SAP):
 from .core.dbt_model import DbtModel  # noqa: E402, F401
 from .core.dbt_source import DbtSource  # noqa: E402, F401
 from .core.dbt_test import DbtTest  # noqa: E402, F401
+from .sap_erp_cds_view import SapErpCdsView  # noqa: E402, F401
 from .sap_erp_table import SapErpTable  # noqa: E402, F401
 from .sap_erp_view import SapErpView  # noqa: E402, F401
 

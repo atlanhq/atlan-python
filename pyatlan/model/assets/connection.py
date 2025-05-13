@@ -15,6 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     NumericField,
+    RelationField,
     TextField,
 )
 from pyatlan.utils import init_guid, validate_required_fields
@@ -243,6 +244,19 @@ class Connection(Asset, type_name="Connection"):
 
     """
 
+    INPUT_TO_CONNECTION_PROCESSES: ClassVar[RelationField] = RelationField(
+        "inputToConnectionProcesses"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_CONNECTION_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromConnectionProcesses"
+    )
+    """
+    TBC
+    """
+
     _convenience_properties: ClassVar[List[str]] = [
         "category",
         "sub_category",
@@ -272,6 +286,8 @@ class Connection(Asset, type_name="Connection"):
         "object_storage_upload_threshold",
         "vector_embeddings_enabled",
         "vector_embeddings_updated_at",
+        "input_to_connection_processes",
+        "output_from_connection_processes",
     ]
 
     @property
@@ -618,6 +634,40 @@ class Connection(Asset, type_name="Connection"):
             self.attributes = self.Attributes()
         self.attributes.vector_embeddings_updated_at = vector_embeddings_updated_at
 
+    @property
+    def input_to_connection_processes(self) -> Optional[List[ConnectionProcess]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.input_to_connection_processes
+        )
+
+    @input_to_connection_processes.setter
+    def input_to_connection_processes(
+        self, input_to_connection_processes: Optional[List[ConnectionProcess]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_connection_processes = input_to_connection_processes
+
+    @property
+    def output_from_connection_processes(self) -> Optional[List[ConnectionProcess]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_from_connection_processes
+        )
+
+    @output_from_connection_processes.setter
+    def output_from_connection_processes(
+        self, output_from_connection_processes: Optional[List[ConnectionProcess]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_connection_processes = (
+            output_from_connection_processes
+        )
+
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(default=None, description="")
         sub_category: Optional[str] = Field(default=None, description="")
@@ -665,6 +715,12 @@ class Connection(Asset, type_name="Connection"):
         vector_embeddings_updated_at: Optional[datetime] = Field(
             default=None, description=""
         )
+        input_to_connection_processes: Optional[List[ConnectionProcess]] = Field(
+            default=None, description=""
+        )  # relationship
+        output_from_connection_processes: Optional[List[ConnectionProcess]] = Field(
+            default=None, description=""
+        )  # relationship
 
         is_loaded: bool = Field(default=True)
 
@@ -707,5 +763,7 @@ class Connection(Asset, type_name="Connection"):
         ),
     )
 
+
+from .connection_process import ConnectionProcess  # noqa: E402, F401
 
 Connection.Attributes.update_forward_refs()

@@ -78,6 +78,7 @@ from .namespace import Namespace
 from .no_s_q_l import NoSQL
 from .persona import Persona
 from .power_b_i import PowerBI
+from .power_b_i_app import PowerBIApp
 from .power_b_i_column import PowerBIColumn
 from .power_b_i_dashboard import PowerBIDashboard
 from .power_b_i_dataflow import PowerBIDataflow
@@ -101,6 +102,7 @@ from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
 from .snowflake_dynamic_table import SnowflakeDynamicTable
 from .snowflake_pipe import SnowflakePipe
+from .snowflake_stage import SnowflakeStage
 from .snowflake_stream import SnowflakeStream
 from .snowflake_tag import SnowflakeTag
 from .soda import Soda
@@ -185,6 +187,7 @@ MaterialisedView.Attributes.update_forward_refs(**localns)
 Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
+SnowflakeStage.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
@@ -204,17 +207,18 @@ ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 PowerBIReport.Attributes.update_forward_refs(**localns)
+PowerBIDatasource.Attributes.update_forward_refs(**localns)
+PowerBIWorkspace.Attributes.update_forward_refs(**localns)
+PowerBIDashboard.Attributes.update_forward_refs(**localns)
+PowerBIDataflow.Attributes.update_forward_refs(**localns)
+PowerBIDataflowEntityColumn.Attributes.update_forward_refs(**localns)
 PowerBIMeasure.Attributes.update_forward_refs(**localns)
 PowerBIColumn.Attributes.update_forward_refs(**localns)
 PowerBITable.Attributes.update_forward_refs(**localns)
 PowerBITile.Attributes.update_forward_refs(**localns)
-PowerBIDatasource.Attributes.update_forward_refs(**localns)
 PowerBIDataset.Attributes.update_forward_refs(**localns)
-PowerBIWorkspace.Attributes.update_forward_refs(**localns)
-PowerBIDashboard.Attributes.update_forward_refs(**localns)
+PowerBIApp.Attributes.update_forward_refs(**localns)
 PowerBIPage.Attributes.update_forward_refs(**localns)
-PowerBIDataflow.Attributes.update_forward_refs(**localns)
-PowerBIDataflowEntityColumn.Attributes.update_forward_refs(**localns)
 CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
 CosmosMongoDBAccount.Attributes.update_forward_refs(**localns)
 CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)

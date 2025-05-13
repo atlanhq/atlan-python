@@ -55,6 +55,10 @@ class PowerBIDashboard(PowerBI):
     """
     TBC
     """
+    POWER_BI_APPS: ClassVar[RelationField] = RelationField("powerBIApps")
+    """
+    TBC
+    """
     TILES: ClassVar[RelationField] = RelationField("tiles")
     """
     TBC
@@ -65,6 +69,7 @@ class PowerBIDashboard(PowerBI):
         "web_url",
         "tile_count",
         "workspace",
+        "power_b_i_apps",
         "tiles",
     ]
 
@@ -113,6 +118,16 @@ class PowerBIDashboard(PowerBI):
         self.attributes.workspace = workspace
 
     @property
+    def power_b_i_apps(self) -> Optional[List[PowerBIApp]]:
+        return None if self.attributes is None else self.attributes.power_b_i_apps
+
+    @power_b_i_apps.setter
+    def power_b_i_apps(self, power_b_i_apps: Optional[List[PowerBIApp]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_apps = power_b_i_apps
+
+    @property
     def tiles(self) -> Optional[List[PowerBITile]]:
         return None if self.attributes is None else self.attributes.tiles
 
@@ -129,6 +144,9 @@ class PowerBIDashboard(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             default=None, description=""
         )  # relationship
+        power_b_i_apps: Optional[List[PowerBIApp]] = Field(
+            default=None, description=""
+        )  # relationship
         tiles: Optional[List[PowerBITile]] = Field(
             default=None, description=""
         )  # relationship
@@ -143,5 +161,6 @@ class PowerBIDashboard(PowerBI):
     )
 
 
+from .power_b_i_app import PowerBIApp  # noqa: E402, F401
 from .power_b_i_tile import PowerBITile  # noqa: E402, F401
 from .power_b_i_workspace import PowerBIWorkspace  # noqa: E402, F401
