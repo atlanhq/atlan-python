@@ -28,13 +28,19 @@
         cls,
         *,
         name: StrictStr,
-        anchor: AtlasGlossary,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
         parent_category: Optional[AtlasGlossaryCategory] = None,
     ) -> AtlasGlossaryCategory:
-        validate_required_fields(["name", "anchor"], [name, anchor])
+        validate_required_fields(["name"], [name])
         return cls(
             attributes=AtlasGlossaryCategory.Attributes.create(
-                name=name, anchor=anchor, parent_category=parent_category
+                name=name,
+                anchor=anchor,
+                glossary_qualified_name=glossary_qualified_name,
+                glossary_guid=glossary_guid,
+                parent_category=parent_category,
             )
         )
 
