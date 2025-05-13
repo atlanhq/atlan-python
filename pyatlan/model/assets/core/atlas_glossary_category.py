@@ -11,7 +11,12 @@ from pydantic.v1 import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.enums import AtlasGlossaryCategoryType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
-from pyatlan.utils import init_guid, next_id, validate_required_fields
+from pyatlan.utils import (
+    init_guid,
+    next_id,
+    validate_required_fields,
+    validate_single_required_field,
+)
 
 from .asset import Asset, SelfAsset
 
@@ -48,13 +53,19 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         cls,
         *,
         name: StrictStr,
-        anchor: AtlasGlossary,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
         parent_category: Optional[AtlasGlossaryCategory] = None,
     ) -> AtlasGlossaryCategory:
-        validate_required_fields(["name", "anchor"], [name, anchor])
+        validate_required_fields(["name"], [name])
         return cls(
             attributes=AtlasGlossaryCategory.Attributes.create(
-                name=name, anchor=anchor, parent_category=parent_category
+                name=name,
+                anchor=anchor,
+                glossary_qualified_name=glossary_qualified_name,
+                glossary_guid=glossary_guid,
+                parent_category=parent_category,
             )
         )
 
@@ -304,14 +315,31 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             cls,
             *,
             name: StrictStr,
-            anchor: AtlasGlossary,
+            anchor: Optional[AtlasGlossary] = None,
+            glossary_qualified_name: Optional[StrictStr] = None,
+            glossary_guid: Optional[StrictStr] = None,
             parent_category: Optional[AtlasGlossaryCategory] = None,
         ) -> AtlasGlossaryCategory.Attributes:
-            validate_required_fields(["name", "anchor"], [name, anchor])
+            validate_required_fields(["name"], [name])
+            validate_single_required_field(
+                ["anchor", "glossary_qualified_name", "glossary_guid"],
+                [anchor, glossary_qualified_name, glossary_guid],
+            )
+
+            ref_anchor = None
+            if anchor:
+                ref_anchor = anchor.trim_to_reference()
+            elif glossary_qualified_name:
+                ref_anchor = AtlasGlossary.ref_by_qualified_name(
+                    qualified_name=glossary_qualified_name
+                )
+            elif glossary_guid:
+                ref_anchor = AtlasGlossary.ref_by_guid(guid=glossary_guid)
+
             return AtlasGlossaryCategory.Attributes(
                 name=name,
-                anchor=anchor,
-                parent_category=parent_category,
+                anchor=ref_anchor,
+                parent_category=parent_category and parent_category.trim_to_reference(),
                 qualified_name=next_id(),
             )
 

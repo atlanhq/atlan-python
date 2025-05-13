@@ -37,26 +37,50 @@ def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
 def create_category(
     client: AtlanClient,
     name: str,
-    glossary: AtlasGlossary,
+    glossary: Optional[AtlasGlossary] = None,
+    glossary_guid: Optional[str] = None,
+    glossary_qualified_name: Optional[str] = None,
     parent: Optional[AtlasGlossaryCategory] = None,
 ) -> AtlasGlossaryCategory:
-    c = AtlasGlossaryCategory.create(
-        name=name, anchor=glossary, parent_category=parent or None
-    )
+    if glossary:
+        c = AtlasGlossaryCategory.creator(
+            name=name, anchor=glossary, parent_category=parent or None
+        )
+    elif glossary_guid:
+        c = AtlasGlossaryCategory.creator(
+            name=name, glossary_guid=glossary_guid, parent_category=parent or None
+        )
+    elif glossary_qualified_name:
+        c = AtlasGlossaryCategory.creator(
+            name=name,
+            glossary_qualified_name=glossary_qualified_name,
+            parent_category=parent or None,
+        )
     return client.asset.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
 def create_term(
     client: AtlanClient,
     name: str,
-    glossary_guid: str,
+    glossary: Optional[AtlasGlossary] = None,
+    glossary_guid: Optional[str] = None,
+    glossary_qualified_name: Optional[str] = None,
     categories: Optional[List[AtlasGlossaryCategory]] = None,
 ) -> AtlasGlossaryTerm:
-    t = AtlasGlossaryTerm.create(
-        name=StrictStr(name),
-        glossary_guid=StrictStr(glossary_guid),
-        categories=categories,
-    )
+    if glossary:
+        t = AtlasGlossaryTerm.creator(name=name, anchor=glossary, categories=categories)
+    elif glossary_guid:
+        t = AtlasGlossaryTerm.creator(
+            name=name,
+            glossary_guid=glossary_guid,
+            categories=categories,
+        )
+    elif glossary_qualified_name:
+        t = AtlasGlossaryTerm.creator(
+            name=name,
+            glossary_qualified_name=glossary_qualified_name,
+            categories=categories,
+        )
     r = client.asset.save(t)
     return r.assets_created(AtlasGlossaryTerm)[0]
 
@@ -144,8 +168,12 @@ def leaf1aa_category(
     hierarchy_glossary: AtlasGlossary,
     mid1a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
+    assert hierarchy_glossary and hierarchy_glossary.guid
     c = create_category(
-        client, TestId.make_unique("leaf1aa"), hierarchy_glossary, parent=mid1a_category
+        client,
+        TestId.make_unique("leaf1aa"),
+        glossary_guid=hierarchy_glossary.guid,
+        parent=mid1a_category,
     )
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
@@ -158,7 +186,10 @@ def leaf1ab_category(
     mid1a_category: AtlasGlossaryCategory,
 ) -> Generator[AtlasGlossaryCategory, None, None]:
     c = create_category(
-        client, TestId.make_unique("leaf1ab"), hierarchy_glossary, parent=mid1a_category
+        client,
+        TestId.make_unique("leaf1ab"),
+        glossary_qualified_name=hierarchy_glossary.qualified_name,
+        parent=mid1a_category,
     )
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
@@ -283,7 +314,7 @@ def test_category(
 def term1(
     client: AtlanClient, glossary: AtlasGlossary
 ) -> Generator[AtlasGlossaryTerm, None, None]:
-    t = create_term(client, name=TERM_NAME1, glossary_guid=glossary.guid)
+    t = create_term(client, name=TERM_NAME1, glossary=glossary)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
@@ -353,7 +384,9 @@ def test_term2(
 def term3(
     client: AtlanClient, glossary: AtlasGlossary
 ) -> Generator[AtlasGlossaryTerm, None, None]:
-    t = create_term(client, name=TERM_NAME3, glossary_guid=glossary.guid)
+    t = create_term(
+        client, name=TERM_NAME3, glossary_qualified_name=glossary.qualified_name
+    )
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 

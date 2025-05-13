@@ -122,7 +122,7 @@ def test_create(
     assert sut.qualified_name
     assert sut.categories == categories
     assert (
-        (anchor and sut.anchor == anchor)
+        (anchor and sut.anchor == anchor.trim_to_reference())
         or (
             glossary_qualified_name
             and sut.anchor is not None

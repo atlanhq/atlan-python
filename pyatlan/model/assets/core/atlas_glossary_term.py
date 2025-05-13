@@ -580,15 +580,20 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
                 ["anchor", "glossary_qualified_name", "glossary_guid"],
                 [anchor, glossary_qualified_name, glossary_guid],
             )
-            if glossary_qualified_name:
-                anchor = AtlasGlossary()
-                anchor.unique_attributes = {"qualifiedName": glossary_qualified_name}
-            if glossary_guid:
-                anchor = AtlasGlossary()
-                anchor.guid = glossary_guid
+
+            ref_anchor = None
+            if anchor:
+                ref_anchor = anchor.trim_to_reference()
+            elif glossary_qualified_name:
+                ref_anchor = AtlasGlossary.ref_by_qualified_name(
+                    qualified_name=glossary_qualified_name
+                )
+            elif glossary_guid:
+                ref_anchor = AtlasGlossary.ref_by_guid(guid=glossary_guid)
+
             return AtlasGlossaryTerm.Attributes(
                 name=name,
-                anchor=anchor,
+                anchor=ref_anchor,
                 categories=categories,
                 qualified_name=next_id(),
             )
