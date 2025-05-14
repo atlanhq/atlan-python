@@ -169,14 +169,14 @@ class WorkflowClient:
         size: int = 100,
     ) -> WorkflowSearchResponse:
         """
-        Find workflow runs based on their status and time range.
+        Retrieves a WorkflowSearchResponse object containing workflow runs based on their status and time range.
 
         :param status: list of the workflow statuses to filter
         :param started_at: (optional) lower bound on 'status.startedAt' (e.g 'now-2h')
         :param finished_at: (optional) lower bound on 'status.finishedAt' (e.g 'now-1h')
         :param from_:(optional) starting index of the search results (default: `0`).
         :param size: (optional) maximum number of search results to return (default: `100`).
-        :returns: list of workflows matching the filters
+        :returns: a WorkflowSearchResponse object containing a list of workflows matching the filters
         :raises ValidationError: if inputs are invalid
         :raises AtlanError: on any API communication issue
         """

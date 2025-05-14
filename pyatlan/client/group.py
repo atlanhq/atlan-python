@@ -144,13 +144,13 @@ class GroupClient:
         columns: Optional[List[str]] = None,
     ) -> GroupResponse:
         """
-        Retrieve all groups defined in Atlan.
+        Retrieve a GroupResponse object containing a list of all groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param offset: starting point for the list of groups when paging
         :param sort: property by which to sort the results, by default : name
         :param columns: provides columns projection support for groups endpoint
-        :returns: a list of all the groups in Atlan
+        :returns: a GroupResponse object with all groups based on the parameters; results are iterable.
         """
         response: GroupResponse = self.get(
             offset=offset, limit=limit, sort=sort, columns=columns
@@ -165,7 +165,7 @@ class GroupClient:
         offset: int = 0,
     ) -> Optional[GroupResponse]:
         """
-        Retrieve all groups with a name that contains the provided string.
+        Retrieves a GroupResponse object containing a list of groups that match the specified string.
         (This could include a complete group name, in which case there should be at most
         a single item in the returned list, or could be a partial group name to retrieve
         all groups with that naming convention.)
@@ -173,7 +173,7 @@ class GroupClient:
         :param alias: name (as it appears in the UI) on which to filter the groups
         :param limit: maximum number of groups to retrieve
         :param offset: starting point for the list of groups when paging
-        :returns: all groups whose name (in the UI) contains the provided string
+        :returns: a GroupResponse object containing a list of groups whose UI names include the given string; the results are iterable.
         """
         response: GroupResponse = self.get(
             offset=offset,
