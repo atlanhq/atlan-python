@@ -491,7 +491,7 @@ class PyAtlanThreadPoolExecutor(ThreadPoolExecutor):
     client = AtlanClient()
 
     async def fetch_asset():
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         sdk_func = partial(
             client.asset.get_by_guid, "ef1ffe2c-8fc9-433a-8cf8-b4583f2d2375", Table
         )
@@ -517,6 +517,8 @@ class PyAtlanThreadPoolExecutor(ThreadPoolExecutor):
                 if var.name in self._SDK_CONTEXT_VAR_NAMES:
                     var.set(value)
             return fn(*args, **kwargs)
+
+        return super().submit(_fn)
 
 
 class ExtendableEnumMeta(EnumMeta):
