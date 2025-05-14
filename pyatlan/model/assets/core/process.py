@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import hashlib
 from io import StringIO
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -92,6 +92,12 @@ class Process(Asset, type_name="Process"):
     """
     SQL query that ran to produce the outputs.
     """
+    PARENT_CONNECTION_PROCESS_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
+    )
+    """
+
+    """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
@@ -143,6 +149,7 @@ class Process(Asset, type_name="Process"):
         "outputs",
         "code",
         "sql",
+        "parent_connection_process_qualified_name",
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
@@ -194,6 +201,24 @@ class Process(Asset, type_name="Process"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql = sql
+
+    @property
+    def parent_connection_process_qualified_name(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_connection_process_qualified_name
+        )
+
+    @parent_connection_process_qualified_name.setter
+    def parent_connection_process_qualified_name(
+        self, parent_connection_process_qualified_name: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_connection_process_qualified_name = (
+            parent_connection_process_qualified_name
+        )
 
     @property
     def ast(self) -> Optional[str]:
@@ -302,6 +327,9 @@ class Process(Asset, type_name="Process"):
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
+        parent_connection_process_qualified_name: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")

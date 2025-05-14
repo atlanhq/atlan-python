@@ -1,3 +1,21 @@
+## 6.1.0 (May 13, 2025)
+
+### New Features
+
+- Added support for dynamic extension of `AtlanConnectorType` to enable custom connectors.
+- Migrated from `TLS` to `ContextVars` to support both multithreaded and asynchronous environments.
+- Introduced `PyAtlanThreadPoolExecutor` in `pyatlan.utils`, which preserves context variables across threads—useful for running SDK methods in multithreaded or asynchronous environments.
+- Implemented iterative pagination in `WorkflowClient` search methods.
+
+### Bug Fixes
+
+- Resolved pagination issues in `UserClient` and `GroupClient` search methods.
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+- Simplified the `creator()` methods in both `AtlasGlossaryTerm` and `AtlasGlossaryCategory`.
+
 ## 6.0.6 (April 29, 2025)
 
 ### New Features

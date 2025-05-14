@@ -166,6 +166,12 @@ class DbtProcess(Dbt):
     """
     SQL query that ran to produce the outputs.
     """
+    PARENT_CONNECTION_PROCESS_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
+    )
+    """
+
+    """
     AST: ClassVar[TextField] = TextField("ast", "ast")
     """
     Parsed AST of the code or SQL statements that describe the logic of this process.
@@ -237,6 +243,7 @@ class DbtProcess(Dbt):
         "outputs",
         "code",
         "sql",
+        "parent_connection_process_qualified_name",
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
@@ -514,6 +521,24 @@ class DbtProcess(Dbt):
         self.attributes.sql = sql
 
     @property
+    def parent_connection_process_qualified_name(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_connection_process_qualified_name
+        )
+
+    @parent_connection_process_qualified_name.setter
+    def parent_connection_process_qualified_name(
+        self, parent_connection_process_qualified_name: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_connection_process_qualified_name = (
+            parent_connection_process_qualified_name
+        )
+
+    @property
     def ast(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.ast
 
@@ -644,6 +669,9 @@ class DbtProcess(Dbt):
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
         sql: Optional[str] = Field(default=None, description="")
+        parent_connection_process_qualified_name: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")

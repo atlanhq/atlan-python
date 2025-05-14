@@ -112,6 +112,10 @@ class Schema(SQL):
     """
     TBC
     """
+    SNOWFLAKE_STAGES: ClassVar[RelationField] = RelationField("snowflakeStages")
+    """
+    TBC
+    """
     TABLES: ClassVar[RelationField] = RelationField("tables")
     """
     TBC
@@ -157,6 +161,7 @@ class Schema(SQL):
         "linked_schema_qualified_name",
         "snowflake_tags",
         "functions",
+        "snowflake_stages",
         "tables",
         "database",
         "procedures",
@@ -221,6 +226,16 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.functions = functions
+
+    @property
+    def snowflake_stages(self) -> Optional[List[SnowflakeStage]]:
+        return None if self.attributes is None else self.attributes.snowflake_stages
+
+    @snowflake_stages.setter
+    def snowflake_stages(self, snowflake_stages: Optional[List[SnowflakeStage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stages = snowflake_stages
 
     @property
     def tables(self) -> Optional[List[Table]]:
@@ -330,6 +345,9 @@ class Schema(SQL):
         functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
+        snowflake_stages: Optional[List[SnowflakeStage]] = Field(
+            default=None, description=""
+        )  # relationship
         tables: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
@@ -413,6 +431,7 @@ from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
 from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
+from .snowflake_stage import SnowflakeStage  # noqa: E402, F401
 from .snowflake_stream import SnowflakeStream  # noqa: E402, F401
 from .snowflake_tag import SnowflakeTag  # noqa: E402, F401
 from .table import Table  # noqa: E402, F401
