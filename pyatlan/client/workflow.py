@@ -167,16 +167,16 @@ class WorkflowClient:
         finished_at: Optional[str] = None,
         from_: int = 0,
         size: int = 100,
-    ) -> List[WorkflowSearchResult]:
+    ) -> WorkflowSearchResponse:
         """
-        Find workflow runs based on their status and time range.
+        Retrieves a WorkflowSearchResponse object containing workflow runs based on their status and time range.
 
         :param status: list of the workflow statuses to filter
         :param started_at: (optional) lower bound on 'status.startedAt' (e.g 'now-2h')
         :param finished_at: (optional) lower bound on 'status.finishedAt' (e.g 'now-1h')
         :param from_:(optional) starting index of the search results (default: `0`).
         :param size: (optional) maximum number of search results to return (default: `100`).
-        :returns: list of workflows matching the filters
+        :returns: a WorkflowSearchResponse object containing a list of workflows matching the filters
         :raises ValidationError: if inputs are invalid
         :raises AtlanError: on any API communication issue
         """
@@ -205,7 +205,7 @@ class WorkflowClient:
         run_lookup_results = self._find_runs(
             query=run_lookup_query, from_=from_, size=size
         )
-        return run_lookup_results.hits and run_lookup_results.hits.hits or []
+        return run_lookup_results
 
     @validate_arguments
     def _find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -280,7 +280,16 @@ class WorkflowClient:
             WORKFLOW_INDEX_RUN_SEARCH,
             request_obj=request,
         )
-        return WorkflowSearchResponse(**raw_json)
+        return WorkflowSearchResponse(
+            client=self._client,
+            endpoint=WORKFLOW_INDEX_RUN_SEARCH,
+            criteria=query,
+            start=request.from_,
+            size=request.size,
+            took=raw_json.get("took"),
+            hits=raw_json.get("hits"),
+            shards=raw_json.get("_shards"),
+        )
 
     def _add_schedule(
         self,
@@ -517,7 +526,7 @@ class WorkflowClient:
         workflow_phase: AtlanWorkflowPhase,
         from_: int = 0,
         size: int = 100,
-    ) -> Optional[List[WorkflowSearchResult]]:
+    ) -> Optional[WorkflowSearchResponse]:
         """
         Retrieves all workflow runs.
 
@@ -542,7 +551,7 @@ class WorkflowClient:
             filter=[Term(field="status.phase.keyword", value=workflow_phase.value)],
         )
         response = self._find_runs(query, from_=from_, size=size)
-        return results if (results := response.hits and response.hits.hits) else None
+        return response
 
     @validate_arguments
     def stop(

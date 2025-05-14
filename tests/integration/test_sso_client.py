@@ -40,8 +40,9 @@ def group(client: AtlanClient) -> Generator[AtlanGroup, None, None]:
     g = client.group.create(group=to_create, user_ids=[str(fixed_user.id)])
     groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
-    assert len(groups) == 1
-    yield groups[0]
+    assert groups.records is not None
+    assert len(groups.records) == 1
+    yield groups.records[0]
     assert g.group
     delete_group(client, g.group)
 

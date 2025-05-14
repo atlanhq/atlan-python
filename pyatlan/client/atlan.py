@@ -847,7 +847,7 @@ class AtlanClient(BaseSettings):
     def get_all_groups(
         self,
         limit: int = 20,
-    ) -> List[AtlanGroup]:
+    ) -> GroupResponse:
         """Deprecated - use group.get_all() instead."""
         warn(
             "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
@@ -860,7 +860,7 @@ class AtlanClient(BaseSettings):
         self,
         alias: str,
         limit: int = 20,
-    ) -> Optional[List[AtlanGroup]]:
+    ) -> Optional[GroupResponse]:
         """Deprecated - use group.get_by_name() instead."""
         warn(
             "This method is deprecated, please use 'group.get_by_name' instead, which offers identical functionality.",
@@ -982,7 +982,7 @@ class AtlanClient(BaseSettings):
     def get_all_users(
         self,
         limit: int = 20,
-    ) -> List[AtlanUser]:
+    ) -> UserResponse:
         """Deprecated - use user.get_all() instead."""
         warn(
             "This method is deprecated, please use 'user.get_all' instead, which offers identical functionality.",
@@ -995,7 +995,7 @@ class AtlanClient(BaseSettings):
         self,
         email: str,
         limit: int = 20,
-    ) -> Optional[List[AtlanUser]]:
+    ) -> Optional[UserResponse]:
         """Deprecated - use user.get_by_email() instead."""
         warn(
             "This method is deprecated, please use 'user.get_by_email' instead, which offers identical functionality.",

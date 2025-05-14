@@ -134,9 +134,10 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     runs = client.workflow.get_runs(
         workflow_name=workflow.metadata.name, workflow_phase=AtlanWorkflowPhase.RUNNING
     )
-    assert runs
-    assert len(runs) == 1
-    run = runs[0]
+    assert runs and runs.count == 1
+    current_page = runs.current_page()
+    assert current_page is not None and len(current_page) == 1
+    run = current_page[0]
     assert run and run.id
     assert workflow.metadata.name and (workflow.metadata.name in run.id)
 
@@ -177,7 +178,7 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
         [AtlanWorkflowPhase.FAILED], started_at="now-1h"
     )
     assert runs_status
-    workflow_run_status = runs_status[0]
+    workflow_run_status = runs_status.current_page()[0]  # type: ignore
     start_time = workflow_run_status.source.status.startedAt  # type: ignore
     start_datetime = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")  # type: ignore
     start_datetime = start_datetime.replace(tzinfo=timezone.utc)

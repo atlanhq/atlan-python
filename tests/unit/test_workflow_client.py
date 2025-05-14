@@ -273,23 +273,19 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
 
 
 def test_find_runs_by_status_and_time_range(client: WorkflowClient, mock_api_caller):
-    raw_json = {"shards": {"dummy": None}, "hits": {"total": {"dummy": None}}}
+    raw_json = {"_shards": {"dummy": None}, "hits": {"total": {"dummy": None}}}
     mock_api_caller._call_api.return_value = raw_json
 
     status = [AtlanWorkflowPhase.SUCCESS, AtlanWorkflowPhase.FAILED]
     started_at = "now-2h"
     finished_at = "now-1h"
-
-    assert (
-        client.find_runs_by_status_and_time_range(
-            status=status,
-            started_at=started_at,
-            finished_at=finished_at,
-            from_=10,
-            size=5,
-        )
-        == []
-    )
+    assert client.find_runs_by_status_and_time_range(
+        status=status,
+        started_at=started_at,
+        finished_at=finished_at,
+        from_=10,
+        size=5,
+    ) == WorkflowSearchResponse(**raw_json)
     mock_api_caller._call_api.assert_called_once()
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
@@ -556,14 +552,13 @@ def test_workflow_get_runs(
     mock_api_caller,
     search_response: WorkflowSearchResponse,
 ):
-    mock_api_caller._call_api.return_value = search_response.dict()
+    mock_api_caller._call_api.return_value = search_response.dict(by_alias=True)
     response = client.get_runs(
         workflow_name="test-workflow",
         workflow_phase=AtlanWorkflowPhase.RUNNING,
     )
 
-    assert search_response.hits
-    assert response == search_response.hits.hits
+    assert response == WorkflowSearchResponse(**search_response.dict())
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 

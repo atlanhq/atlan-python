@@ -438,10 +438,12 @@ def owner_group(
     response = client.group.create(group=to_create)
     assert response
     group = client.group.get_by_name(PREFIX)
-    assert group and len(group) == 1
-    assert group[0].id
-    yield group[0]
-    client.group.purge(group[0].id)
+    assert group
+    assert group.records is not None
+    assert len(group.records) == 1
+    assert group.records[0].id
+    yield group.records[0]
+    client.group.purge(group.records[0].id)
 
 
 def test_connection(client: AtlanClient, connection: Connection):

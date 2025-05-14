@@ -500,12 +500,14 @@ def _get_groups(
 ) -> Tuple[AtlanGroup, AtlanGroup]:
     candidates = client.group.get_by_name(GROUP_NAME1)
     assert candidates
-    assert len(candidates) == 1
-    group1 = candidates[0]
+    assert candidates.records is not None
+    assert len(candidates.records) == 1
+    group1 = candidates.records[0]
     candidates = client.group.get_by_name(GROUP_NAME2)
     assert candidates
-    assert len(candidates) == 1
-    group2 = candidates[0]
+    assert candidates.records is not None
+    assert len(candidates.records) == 1
+    group2 = candidates.records[0]
     return group1, group2
 
 
