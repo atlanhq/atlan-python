@@ -164,6 +164,33 @@ class AssetClient:
             + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
         )
 
+    @staticmethod
+    def _ensure_type_filter_present(criteria: IndexSearchRequest) -> None:
+        """
+        Ensures that at least one 'typeName' filter is present in the given search criteria.
+        If no such filter exists, appends a default filter for 'Referenceable'.
+        """
+        if not (
+            criteria
+            and criteria.dsl
+            and criteria.dsl.query
+            and isinstance(criteria.dsl.query, Bool)
+            and criteria.dsl.query.filter
+            and isinstance(criteria.dsl.query.filter, list)
+        ):
+            return
+
+        has_type_filter = any(
+            isinstance(f, Term)
+            and f.field == Referenceable.TYPE_NAME.keyword_field_name
+            for f in criteria.dsl.query.filter
+        )
+
+        if not has_type_filter:
+            criteria.dsl.query.filter.append(
+                Term.with_super_type_names(Referenceable.__name__)
+            )
+
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
@@ -194,6 +221,7 @@ class AssetClient:
                 raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
             criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
             LOGGER.debug(self._get_bulk_search_log_message(bulk))
+        self._ensure_type_filter_present(criteria)
         raw_json = self._client._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
