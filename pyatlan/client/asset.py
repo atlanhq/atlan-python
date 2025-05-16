@@ -1929,8 +1929,8 @@ class SearchResults(ABC, Iterable):
         try:
             self._process_entities(raw_json["entities"])
             if is_bulk_search:
-                self._update_first_last_record_creation_times()
                 self._filter_processed_assets()
+                self._update_first_last_record_creation_times()
             return raw_json
 
         except ValidationError as err:
