@@ -237,7 +237,7 @@ class AtlanTag(AtlanObject):
     class Config:
         extra = "forbid"
 
-    type_name: Optional[str] = Field(
+    type_name: Optional[Union[str, AtlanTagName]] = Field(
         default=None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",

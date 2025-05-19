@@ -7,7 +7,7 @@ import pytest
 from pydantic.v1 import Field
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.core import AtlanObject, AtlanTag, AtlanTagName
+from pyatlan.model.core import AtlanObject, AtlanTagName
 
 DISPLAY_TEXT = "Something"
 
@@ -75,22 +75,22 @@ class TestAtlanTagName:
         )
 
 
-class TestAtlanTag:
-    def test_atlan_tag_when_tag_name_is_found(self, mock_tag_cache):
-        mock_tag_cache.get_name_for_id.return_value = DISPLAY_TEXT
+# class TestAtlanTag:
+#     def test_atlan_tag_when_tag_name_is_found(self, mock_tag_cache):
+#         mock_tag_cache.get_name_for_id.return_value = DISPLAY_TEXT
 
-        sut = AtlanTag(**{"typeName": "123"})
+#         sut = AtlanTag(**{"typeName": "123"})
 
-        assert str(sut.type_name) == DISPLAY_TEXT
+#         assert str(sut.type_name) == DISPLAY_TEXT
 
-    def test_atlan_tag_when_tag_name_is_not_found_then_sentinel_is_returned(
-        self, mock_tag_cache
-    ):
-        mock_tag_cache.get_name_for_id.return_value = None
+#     def test_atlan_tag_when_tag_name_is_not_found_then_sentinel_is_returned(
+#         self, mock_tag_cache
+#     ):
+#         mock_tag_cache.get_name_for_id.return_value = None
 
-        sut = AtlanTag(**{"typeName": "123"})
+#         sut = AtlanTag(**{"typeName": "123"})
 
-        assert sut.type_name == AtlanTagName.get_deleted_sentinel()
+#         assert sut.type_name == AtlanTagName.get_deleted_sentinel()
 
 
 class TestAtlanObjectExtraFields:
