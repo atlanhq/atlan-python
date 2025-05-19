@@ -70,6 +70,7 @@ from pyatlan.model.core import (
     AssetRequest,
     AssetResponse,
     AtlanObject,
+    AtlanResponse,
     AtlanTag,
     AtlanTagName,
     BulkRequest,
@@ -246,7 +247,10 @@ class AssetClient:
                     unflatten_custom_metadata_for_entity(
                         entity=entity, attributes=criteria.attributes
                     )
-                assets = parse_obj_as(List[Asset], raw_json["entities"])
+                translated_entities = AtlanResponse(
+                    raw_json=raw_json["entities"], client=self._client
+                ).to_dict()
+                assets = parse_obj_as(List[Asset], translated_entities)
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
                     raw_json, 200, str(err)
@@ -318,7 +322,10 @@ class AssetClient:
                     unflatten_custom_metadata_for_entity(
                         entity=entity, attributes=lineage_request.attributes
                     )
-                assets = parse_obj_as(List[Asset], raw_json["entities"])
+                translated_entities = AtlanResponse(
+                    raw_json=raw_json["entities"], client=self._client
+                ).to_dict()
+                assets = parse_obj_as(List[Asset], translated_entities)
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:
                 raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -546,7 +553,10 @@ class AssetClient:
                 raw_json["entity"]["relationshipAttributes"]
             )
         raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
+        translated_raw_json = AtlanResponse(
+            raw_json=raw_json, client=self._client
+        ).to_dict()
+        asset = AssetResponse[A](**translated_raw_json).entity
         asset.is_incomplete = False
         return asset
 
@@ -2082,7 +2092,10 @@ class SearchResults(ABC, Iterable):
             unflatten_custom_metadata_for_entity(
                 entity=entity, attributes=self._criteria.attributes
             )
-        self._assets = parse_obj_as(List[Asset], entities)
+        translated_entities = AtlanResponse(
+            raw_json=entities, client=self._client
+        ).to_dict()
+        self._assets = parse_obj_as(List[Asset], translated_entities)
 
     def _update_first_last_record_creation_times(self):
         self._first_record_creation_time = self._last_record_creation_time = -2

@@ -13,16 +13,19 @@ from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
+
+    from pyatlan.client.atlan import AtlanClient
 else:
     from pydantic.v1.dataclasses import dataclass
 
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 from pydantic.v1.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
 from pyatlan.model.structs import SourceTagAttachment
+from pyatlan.model.translators import AtlanTagTranslator
 
 
 class AtlanTagName:
@@ -178,6 +181,38 @@ class AtlanYamlModel(BaseModel):
         return cls(**data)
 
 
+class AtlanResponse:
+    def __init__(self, raw_json: Dict[str, Any], client: AtlanClient):
+        self.raw_json = raw_json
+        self.client = client
+        self.translators = [
+            AtlanTagTranslator(client),
+            # Register more translators here
+        ]
+        self.translated = self._deep_translate(self.raw_json)
+
+    def _deep_translate(
+        self, data: Union[Dict[str, Any], List[Any], Any]
+    ) -> Union[Dict[str, Any], List[Any], Any]:
+        if isinstance(data, dict):
+            # Apply translators to this dict if any apply
+            for translator in self.translators:
+                if translator.applies_to(data):
+                    data = translator.translate(data)
+
+            # Recursively apply to each value
+            return {key: self._deep_translate(value) for key, value in data.items()}
+
+        elif isinstance(data, list):
+            return [self._deep_translate(item) for item in data]
+
+        else:
+            return data
+
+    def to_dict(self) -> Dict[str, Any]:
+        return self.translated
+
+
 class SearchRequest(AtlanObject, ABC):
     attributes: Optional[List[str]] = Field(
         default_factory=list,
@@ -202,7 +237,7 @@ class AtlanTag(AtlanObject):
     class Config:
         extra = "forbid"
 
-    type_name: Optional[AtlanTagName] = Field(
+    type_name: Optional[str] = Field(
         default=None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",
@@ -255,26 +290,26 @@ class AtlanTag(AtlanObject):
     def source_tag_attachements(self) -> List[SourceTagAttachment]:
         return self._source_tag_attachements
 
-    @validator("type_name", pre=True)
-    def type_name_is_tag_name(cls, value):
-        if isinstance(value, AtlanTagName):
-            return value
-        return AtlanTagName._convert_to_display_text(value)
+    # @validator("type_name", pre=True)
+    # def type_name_is_tag_name(cls, value):
+    #     if isinstance(value, AtlanTagName):
+    #         return value
+    #     return AtlanTagName._convert_to_display_text(value)
 
-    def __init__(self, *args, **kwargs):
-        from pyatlan.client.atlan import AtlanClient
+    # def __init__(self, *args, **kwargs):
+    #     from pyatlan.client.atlan import AtlanClient
 
-        super().__init__(*args, **kwargs)
-        if self.type_name != AtlanTagName.get_deleted_sentinel():
-            attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-                self.type_name.id
-            )
-        if self.attributes and attr_id in self.attributes:
-            self._source_tag_attachements = [
-                SourceTagAttachment(**source_tag["attributes"])
-                for source_tag in self.attributes[attr_id]
-                if isinstance(source_tag, dict) and source_tag.get("attributes")
-            ]
+    #     super().__init__(*args, **kwargs)
+    #     if self.type_name != AtlanTagName.get_deleted_sentinel():
+    #         attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
+    #             self.type_name.id
+    #         )
+    #     if self.attributes and attr_id in self.attributes:
+    #         self._source_tag_attachements = [
+    #             SourceTagAttachment(**source_tag["attributes"])
+    #             for source_tag in self.attributes[attr_id]
+    #             if isinstance(source_tag, dict) and source_tag.get("attributes")
+    #         ]
 
     @classmethod
     def of(
