@@ -7,7 +7,7 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 import yaml  # type: ignore[import-untyped]
-from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
+from pydantic.v1 import BaseModel, Extra, Field, root_validator, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
@@ -280,15 +280,15 @@ class AtlanTag(AtlanObject):
         alias="restrictPropagationThroughHierarchy",
     )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
-    _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
-        default_factory=list
+    source_tag_attachements: List[SourceTagAttachment] = Field(
+        default_factory=list, exclude=True
     )
 
     attributes: Optional[Dict[str, Any]] = None
 
-    @property
-    def source_tag_attachements(self) -> List[SourceTagAttachment]:
-        return self._source_tag_attachements
+    # @property
+    # def source_tag_attachements(self) -> List[SourceTagAttachment]:
+    #     return self._source_tag_attachements
 
     # @validator("type_name", pre=True)
     # def type_name_is_tag_name(cls, value):
@@ -340,7 +340,7 @@ class AtlanTag(AtlanObject):
                 or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
-            tag._source_tag_attachements.append(source_tag_attachment)
+            tag.source_tag_attachements.append(source_tag_attachment)
         return tag
 
 

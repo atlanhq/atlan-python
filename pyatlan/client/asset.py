@@ -640,7 +640,10 @@ class AssetClient:
             asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
-        response = AssetMutationResponse(**raw_json)
+        translated_raw_json = AtlanResponse(
+            raw_json=raw_json, client=self._client
+        ).to_dict()
+        response = AssetMutationResponse(**translated_raw_json)
         if connections_created := response.assets_created(Connection):
             self._wait_for_connections_to_be_created(connections_created)
         return response
