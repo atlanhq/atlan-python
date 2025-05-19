@@ -3,6 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict
 
+from pyatlan.model.structs import SourceTagAttachment
+
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
@@ -41,8 +43,22 @@ class AtlanTagTranslator(BaseTranslator):
             for classification in raw_json[self._CLASSIFICATIONS]:
                 tag_id = classification.get(self._TYPE_NAME)
                 if tag_id:
-                    classification[self._TYPE_NAME] = (
-                        self.client.atlan_tag_cache.get_name_for_id(tag_id)
+                    tag_name = self.client.atlan_tag_cache.get_name_for_id(tag_id)
+                    if not tag_name:
+                        return
+                    classification[self._TYPE_NAME] = tag_name
+                    # Check if the tag is a source tag (in that case tag has "attributes")
+                    attr_id = self.client.atlan_tag_cache.get_source_tags_attr_id(
+                        tag_id
                     )
+                    if attr_id:
+                        classification["source_tag_attachements"] = [
+                            SourceTagAttachment(**source_tag["attributes"])
+                            for source_tag in classification.get("attributes").get(
+                                attr_id
+                            )
+                            if isinstance(source_tag, dict)
+                            and source_tag.get("attributes")
+                        ]
 
         return raw_json
