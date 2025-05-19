@@ -81,7 +81,7 @@ from pyatlan.model.assets import (
     Purpose,
 )
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.core import Announcement, AtlanObject
+from pyatlan.model.core import Announcement, AtlanObject, AtlanResponse
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
@@ -511,6 +511,9 @@ class AtlanClient(BaseSettings):
                         response_ = response.text
                     else:
                         response_ = events if events else response.json()
+                        response_ = AtlanResponse(
+                            raw_json=response.json(), client=self
+                        ).to_dict()
                     LOGGER.debug("response: %s", response_)
                     return response_
                 except (
