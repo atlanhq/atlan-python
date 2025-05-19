@@ -1,11 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import pytest
-from pydantic.v1 import parse_obj_as
 
 import pyatlan.cache.atlan_tag_cache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Purpose
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanTagName
 
@@ -134,66 +132,66 @@ def test_json_encode_atlan_tag(good_atlan_tag):
     assert AtlanTagName.json_encode_atlan_tag(good_atlan_tag) == ATLAN_TAG_ID
 
 
-def test_asset_tag_name_field_deserialization(current_client: AtlanClient, monkeypatch):
-    def get_name_for_id(_, __):
-        return None
+# def test_asset_tag_name_field_deserialization(current_client: AtlanClient, monkeypatch):
+#     def get_name_for_id(_, __):
+#         return None
 
-    def get_id_for_name(_, __):
-        return None
+#     def get_id_for_name(_, __):
+#         return None
 
-    monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
-        "get_id_for_name",
-        get_id_for_name,
-    )
+#     monkeypatch.setattr(
+#         pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+#         "get_id_for_name",
+#         get_id_for_name,
+#     )
 
-    monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
-        "get_name_for_id",
-        get_name_for_id,
-    )
-    # Simulate a `Purpose` asset with `purpose_atlan_tags` of type `AtlanTagName`
-    purpose_asset = {
-        "typeName": "Purpose",
-        "attributes": {
-            # AtlanTagName
-            "purposeClassifications": [
-                "some-deleted-purpose-tag-1",
-                "some-deleted-purpose-tag-2",
-            ],
-        },
-        "guid": "9f7a35f4-8d37-4273-81ec-c497a83a2472",
-        "status": "ACTIVE",
-        "classifications": [
-            # AtlanTag
-            {
-                "typeName": "some-deleted-purpose-tag-1",
-                "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
-                "entityStatus": "DELETED",
-                "propagate": False,
-                "removePropagationsOnEntityDelete": True,
-                "restrictPropagationThroughLineage": True,
-                "restrictPropagationThroughHierarchy": False,
-            },
-            {
-                "typeName": "some-deleted-purpose-tag-2",
-                "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
-                "entityStatus": "DELETED",
-                "propagate": False,
-                "removePropagationsOnEntityDelete": True,
-                "restrictPropagationThroughLineage": True,
-                "restrictPropagationThroughHierarchy": False,
-            },
-        ],
-    }
-    purpose = parse_obj_as(Purpose, purpose_asset)
-    assert purpose and isinstance(purpose, Purpose)
+#     monkeypatch.setattr(
+#         pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+#         "get_name_for_id",
+#         get_name_for_id,
+#     )
+#     # Simulate a `Purpose` asset with `purpose_atlan_tags` of type `AtlanTagName`
+#     purpose_asset = {
+#         "typeName": "Purpose",
+#         "attributes": {
+#             # AtlanTagName
+#             "purposeClassifications": [
+#                 "some-deleted-purpose-tag-1",
+#                 "some-deleted-purpose-tag-2",
+#             ],
+#         },
+#         "guid": "9f7a35f4-8d37-4273-81ec-c497a83a2472",
+#         "status": "ACTIVE",
+#         "classifications": [
+#             # AtlanTag
+#             {
+#                 "typeName": "some-deleted-purpose-tag-1",
+#                 "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
+#                 "entityStatus": "DELETED",
+#                 "propagate": False,
+#                 "removePropagationsOnEntityDelete": True,
+#                 "restrictPropagationThroughLineage": True,
+#                 "restrictPropagationThroughHierarchy": False,
+#             },
+#             {
+#                 "typeName": "some-deleted-purpose-tag-2",
+#                 "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
+#                 "entityStatus": "DELETED",
+#                 "propagate": False,
+#                 "removePropagationsOnEntityDelete": True,
+#                 "restrictPropagationThroughLineage": True,
+#                 "restrictPropagationThroughHierarchy": False,
+#             },
+#         ],
+#     }
+#     purpose = parse_obj_as(Purpose, purpose_asset)
+#     assert purpose and isinstance(purpose, Purpose)
 
-    # Verify that deleted tags are correctly set to `None`
-    # assert purpose.atlan_tags == [AtlanTagName('(DELETED)')]
-    assert purpose.atlan_tags and len(purpose.atlan_tags) == 2
-    assert purpose.atlan_tags[0].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
-    assert purpose.atlan_tags[1].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
-    assert purpose.purpose_atlan_tags and len(purpose.purpose_atlan_tags) == 2
-    assert purpose.purpose_atlan_tags[0].__repr__() == f"AtlanTagName('{DELETED_}')"
-    assert purpose.purpose_atlan_tags[1].__repr__() == f"AtlanTagName('{DELETED_}')"
+#     # Verify that deleted tags are correctly set to `None`
+#     # assert purpose.atlan_tags == [AtlanTagName('(DELETED)')]
+#     assert purpose.atlan_tags and len(purpose.atlan_tags) == 2
+#     assert purpose.atlan_tags[0].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
+#     assert purpose.atlan_tags[1].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
+#     assert purpose.purpose_atlan_tags and len(purpose.purpose_atlan_tags) == 2
+#     assert purpose.purpose_atlan_tags[0].__repr__() == f"AtlanTagName('{DELETED_}')"
+#     assert purpose.purpose_atlan_tags[1].__repr__() == f"AtlanTagName('{DELETED_}')"

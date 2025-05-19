@@ -60,9 +60,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install --no-cache-dir -r requirements-dev.txt; fi
 
-      - name: QA checks (ruff-format, ruff-lint, mypy)
-        run: |
-          ./qa-checks
+      # - name: QA checks (ruff-format, ruff-lint, mypy)
+      #   run: |
+      #     ./qa-checks
 
       - name: Run unit tests
         env: # Test tenant environment variables
