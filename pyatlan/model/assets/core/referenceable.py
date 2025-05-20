@@ -362,6 +362,10 @@ class Referenceable(AtlanObject):
         default=None,
         description="Map of remove relationship attributes.",
     )
+    classifications: Optional[List[AtlanTag]] = Field(
+        default=None,
+        description="Map of replace classifcations of atlan tag.",
+    )
     add_or_update_classifications: Optional[List[AtlanTag]] = Field(
         default=None,
         description="Map of add/update classifcations of atlan tag.",

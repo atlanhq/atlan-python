@@ -787,6 +787,29 @@ def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
 
 
 @pytest.mark.order(after="test_add_classification")
+def test_update_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
+    client.asset.update_atlan_tags(
+        AtlasGlossaryTerm,
+        term1.qualified_name,
+        [CLASSIFICATION_NAME],
+        propagate=True,
+        remove_propagation_on_delete=False,
+    )
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
+    assert glossary_term.atlan_tags
+    assert len(glossary_term.atlan_tags) == 1
+    classification = glossary_term.atlan_tags[0]
+    assert str(classification.type_name) == CLASSIFICATION_NAME
+    assert classification.propagate
+    assert not classification.remove_propagations_on_entity_delete
+    assert classification.restrict_propagation_through_lineage
+    assert not classification.restrict_propagation_through_hierarchy
+
+
+@pytest.mark.order(after="test_update_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
     client.asset.remove_atlan_tags(
