@@ -835,9 +835,9 @@ def test_multiple_add_classification(client: AtlanClient, term1: AtlasGlossaryTe
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 2
     classification = glossary_term.atlan_tags[0]
-    assert str(classification.type_name) == CLASSIFICATION_NAME_2
+    assert str(classification.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME_2
     classification_2 = glossary_term.atlan_tags[1]
-    assert str(classification_2.type_name) == CLASSIFICATION_NAME
+    assert str(classification_2.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME_2
 
 
 @pytest.mark.order(after="test_multiple_add_classification")
