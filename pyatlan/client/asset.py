@@ -905,14 +905,21 @@ class AssetClient:
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_current_client()
-
         name_asset = client.asset.get_by_qualified_name(
-            qualified_name=qualified_name, asset_type=asset_type
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            ignore_relationships=False,
         )
-
-        updated_asset = asset_type.updater(
-            qualified_name=qualified_name, name=name_asset.name
-        )
+        if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name,
+                name=name_asset.name,
+                glossary_guid=name_asset.anchor.guid,  # type: ignore
+            )
+        else:
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name, name=name_asset.name
+            )
 
         atlan_tag = [
             AtlanTag(
@@ -964,11 +971,20 @@ class AssetClient:
 
         client = AtlanClient.get_current_client()
         name_asset = client.asset.get_by_qualified_name(
-            qualified_name=qualified_name, asset_type=asset_type
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            ignore_relationships=False,
         )
-        updated_asset = asset_type.updater(
-            qualified_name=qualified_name, name=name_asset.name
-        )
+        if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name,
+                name=name_asset.name,
+                glossary_guid=name_asset.anchor.guid,  # type: ignore
+            )
+        else:
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name, name=name_asset.name
+            )
 
         atlan_tag = [
             AtlanTag(
@@ -1005,11 +1021,21 @@ class AssetClient:
 
         client = AtlanClient.get_current_client()
         name_asset = client.asset.get_by_qualified_name(
-            qualified_name=qualified_name, asset_type=asset_type
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            ignore_relationships=False,
         )
-        updated_asset = asset_type.updater(
-            qualified_name=qualified_name, name=name_asset.name
-        )
+
+        if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name,
+                name=name_asset.name,
+                glossary_guid=name_asset.anchor.guid,  # type: ignore
+            )
+        else:
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name, name=name_asset.name
+            )
 
         atlan_tag = [
             AtlanTag(type_name=AtlanTagName(display_text=name))
