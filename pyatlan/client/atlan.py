@@ -1351,7 +1351,7 @@ class AtlanClient(BaseSettings):
         self.asset.remove_atlan_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
-            atlan_tag_names=atlan_tag_names
+            atlan_tag_names=atlan_tag_names,
         )
 
     @validate_arguments

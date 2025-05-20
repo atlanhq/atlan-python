@@ -120,7 +120,10 @@ TEST_ASSET_CLIENT_METHODS = {
         (["asset-type", None, ["tag-name"]], "none is not an allowed value"),
         ([None, "qn", ["tag-name"]], "none is not an allowed value"),
         (["asset-type", "qn", ["tag-name"]], "asset_type\n  a class is expected"),
-        ([AtlasGlossary, "qn", "tag-name"], "atlan_tag_names\n  value is not a valid list"),
+        (
+            [AtlasGlossary, "qn", "tag-name"],
+            "atlan_tag_names\n  value is not a valid list",
+        ),
         ([AtlasGlossary, "qn", None], "none is not an allowed value"),
     ],
     "update_certificate": [
