@@ -1015,6 +1015,7 @@ class AssetClient:
         :param asset_type: type of asset to which to add the Atlan tags
         :param qualified_name: qualified_name of the asset to which to add the Atlan tags
         :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
+        :returns: the asset that was updated (note that it will NOT contain details of the deleted Atlan tag)
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.atlan import AtlanClient
@@ -1057,6 +1058,7 @@ class AssetClient:
         :param asset_type: type of asset to which to add the Atlan tags
         :param qualified_name: qualified_name of the asset to which to add the Atlan tags
         :param atlan_tag_names: human-readable name of the Atlan tag to remove from the asset
+        :returns: the asset that was updated (note that it will NOT contain details of the deleted Atlan tags)
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.atlan import AtlanClient

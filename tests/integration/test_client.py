@@ -44,6 +44,7 @@ from tests.integration.lineage_test import create_database, delete_asset
 from tests.integration.requests_test import delete_token
 
 CLASSIFICATION_NAME = "Issue"
+CLASSIFICATION_NAME_2 = "Confidential"
 SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
 SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
 SL_SORT_BY_QUALIFIED_NAME = SortItem(
@@ -814,6 +815,38 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
     client.asset.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
+    )
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
+    assert not glossary_term.atlan_tags
+
+
+def test_multiple_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
+    client.asset.add_atlan_tags(
+        AtlasGlossaryTerm,
+        term1.qualified_name,
+        [CLASSIFICATION_NAME, CLASSIFICATION_NAME_2],
+    )
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+    )
+    assert glossary_term.atlan_tags
+    assert len(glossary_term.atlan_tags) == 2
+    classification = glossary_term.atlan_tags[0]
+    assert str(classification.type_name) == CLASSIFICATION_NAME_2
+    classification_2 = glossary_term.atlan_tags[1]
+    assert str(classification_2.type_name) == CLASSIFICATION_NAME
+
+
+@pytest.mark.order(after="test_multiple_add_classification")
+def test_multiple_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
+    client.asset.remove_atlan_tags(
+        AtlasGlossaryTerm,
+        term1.qualified_name,
+        [CLASSIFICATION_NAME, CLASSIFICATION_NAME_2],
     )
     glossary_term = client.asset.get_by_guid(
         term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
