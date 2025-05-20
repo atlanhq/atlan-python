@@ -812,8 +812,8 @@ def test_update_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 @pytest.mark.order(after="test_update_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
-    client.asset.remove_atlan_tags(
-        AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
+    client.asset.remove_atlan_tag(
+        AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
     glossary_term = client.asset.get_by_guid(
         term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False

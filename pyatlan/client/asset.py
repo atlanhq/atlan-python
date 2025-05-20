@@ -1003,6 +1003,48 @@ class AssetClient:
         return updated_asset
 
     @validate_arguments
+    def remove_atlan_tag(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        atlan_tag_name: str,
+    ) -> A:
+        """
+        Removes a single Atlan tag from the provided asset.
+
+        :param asset_type: type of asset to which to add the Atlan tags
+        :param qualified_name: qualified_name of the asset to which to add the Atlan tags
+        :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
+        :raises AtlanError: on any API communication issue
+        """
+        from pyatlan.client.atlan import AtlanClient
+
+        client = AtlanClient.get_current_client()
+        name_asset = client.asset.get_by_qualified_name(
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            ignore_relationships=False,
+        )
+
+        if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name,
+                name=name_asset.name,
+                glossary_guid=name_asset.anchor.guid,  # type: ignore
+            )
+        else:
+            updated_asset = asset_type.updater(
+                qualified_name=qualified_name, name=name_asset.name
+            )
+
+        atlan_tag = [AtlanTag(type_name=AtlanTagName(display_text=atlan_tag_name))]
+        updated_asset.remove_classifications = atlan_tag
+        response = self.save(entity=updated_asset, append_atlan_tags=True)
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return updated_asset
+
+    @validate_arguments
     def remove_atlan_tags(
         self,
         asset_type: Type[A],

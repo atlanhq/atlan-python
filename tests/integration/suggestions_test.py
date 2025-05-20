@@ -287,25 +287,25 @@ def create_atlan_tag1(
     assert table1.qualified_name and table3.qualified_name
     assert t1c1.qualified_name and v2c1.qualified_name
     yield make_atlan_tag(ATLAN_TAG_NAME1)
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME1],
+        atlan_tag_name=ATLAN_TAG_NAME1,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table3.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME1],
+        atlan_tag_name=ATLAN_TAG_NAME1,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=t1c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME1],
+        atlan_tag_name=ATLAN_TAG_NAME1,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=v2c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME1],
+        atlan_tag_name=ATLAN_TAG_NAME1,
     )
 
 
@@ -324,35 +324,35 @@ def create_atlan_tag2(
     assert t1c1.qualified_name and t2c1.qualified_name
     assert v1c1.qualified_name and v2c1.qualified_name
     yield make_atlan_tag(ATLAN_TAG_NAME2)
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Table,
         qualified_name=table3.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=t1c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=v1c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=t2c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=v2c1.qualified_name,
-        atlan_tag_names=[ATLAN_TAG_NAME2],
+        atlan_tag_name=ATLAN_TAG_NAME2,
     )
 
 

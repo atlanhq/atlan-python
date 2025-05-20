@@ -50,10 +50,10 @@ def snowflake_column(
     )
     yield snowflake_column
 
-    client.asset.remove_atlan_tags(
+    client.asset.remove_atlan_tag(
         asset_type=Column,
         qualified_name=snowflake_column_qn,
-        atlan_tag_names=[TAG_NAME],
+        atlan_tag_name=TAG_NAME,
     )
 
 
