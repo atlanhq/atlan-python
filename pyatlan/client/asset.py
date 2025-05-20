@@ -40,13 +40,11 @@ from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
     DELETE_ENTITIES_BY_GUIDS,
-    DELETE_ENTITY_BY_ATTRIBUTE,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_LINEAGE_LIST,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
-    UPDATE_ENTITY_BY_ATTRIBUTE,
 )
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
@@ -74,7 +72,6 @@ from pyatlan.model.core import (
     AtlanObject,
     AtlanTag,
     AtlanTagName,
-    AtlanTags,
     BulkRequest,
     SearchRequest,
 )
@@ -587,6 +584,7 @@ class AssetClient:
         self,
         entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
+        append_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
@@ -604,7 +602,8 @@ class AssetClient:
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
         query_params = {
-            "replaceClassifications": replace_atlan_tags,
+            "replaceTags": replace_atlan_tags,
+            "appendTags": append_atlan_tags,
             "replaceBusinessAttributes": replace_custom_metadata,
             "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
@@ -876,36 +875,6 @@ class AssetClient:
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
-    def _modify_tags(
-        self,
-        api: API,
-        asset_type: Type[A],
-        qualified_name: str,
-        atlan_tag_names: List[str],
-        propagate: bool = False,
-        remove_propagation_on_delete: bool = True,
-        restrict_lineage_propagation: bool = False,
-        restrict_propagation_through_hierarchy: bool = False,
-    ) -> None:
-        atlan_tags = AtlanTags(
-            __root__=[
-                AtlanTag(
-                    type_name=AtlanTagName(display_text=name),
-                    propagate=propagate,
-                    remove_propagations_on_entity_delete=remove_propagation_on_delete,
-                    restrict_propagation_through_lineage=restrict_lineage_propagation,
-                    restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
-                )
-                for name in atlan_tag_names
-            ]
-        )
-        query_params = {"attr:qualifiedName": qualified_name}
-        self._client._call_api(
-            api.format_path_with_params(asset_type.__name__, "classifications"),
-            query_params,
-            atlan_tags,
-        )
-
     @validate_arguments
     def add_atlan_tags(
         self,
@@ -916,11 +885,9 @@ class AssetClient:
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
-    ) -> None:
+    ) -> A:
         """
         Add one or more Atlan tags to the provided asset.
-        Note: if one or more of the provided Atlan tags already exist on the asset, an error
-        will be raised. (In other words, this operation is NOT idempotent.)
 
         :param asset_type: type of asset to which to add the Atlan tags
         :param qualified_name: qualified_name of the asset to which to add the Atlan tags
@@ -932,18 +899,39 @@ class AssetClient:
         through lineage (True) or do propagate through lineage (False)
         :param restrict_propagation_through_hierarchy: whether to prevent this Atlan tag from
         propagating through hierarchy (True) or allow it to propagate through hierarchy (False)
+        :returns: the asset that was updated (note that it will NOT contain details of the added Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-        self._modify_tags(
-            UPDATE_ENTITY_BY_ATTRIBUTE,
-            asset_type,
-            qualified_name,
-            atlan_tag_names,
-            propagate,
-            remove_propagation_on_delete,
-            restrict_lineage_propagation,
-            restrict_propagation_through_hierarchy,
+        from pyatlan.client.atlan import AtlanClient
+
+        client = AtlanClient.get_current_client()
+
+        name_asset = client.asset.get_by_qualified_name(
+            qualified_name=qualified_name, asset_type=asset_type
         )
+
+        updated_asset = asset_type.updater(
+            qualified_name=qualified_name, name=name_asset.name
+        )
+
+        atlan_tag = [
+            AtlanTag(
+                type_name=AtlanTagName(display_text=name),
+                propagate=propagate,
+                remove_propagations_on_entity_delete=remove_propagation_on_delete,
+                restrict_propagation_through_lineage=restrict_lineage_propagation,
+                restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
+            )
+            for name in atlan_tag_names
+        ]
+
+        updated_asset.add_or_update_classifications = atlan_tag
+
+        response = self.save(entity=updated_asset, append_atlan_tags=True)
+
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return updated_asset
 
     @validate_arguments
     def update_atlan_tags(
@@ -955,11 +943,9 @@ class AssetClient:
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
         restrict_propagation_through_hierarchy: bool = False,
-    ) -> None:
+    ) -> A:
         """
         Update one or more Atlan tags to the provided asset.
-        Note: if one or more of the provided Atlan tags already exist on the asset, an error
-        will be raised. (In other words, this operation is NOT idempotent.)
 
         :param asset_type: type of asset to which to update the Atlan tags
         :param qualified_name: qualified_name of the asset to which to update the Atlan tags
@@ -971,51 +957,69 @@ class AssetClient:
         through lineage (True) or do propagate through lineage (False)
         :param restrict_propagation_through_hierarchy: whether to prevent this Atlan tag from
         propagating through hierarchy (True) or allow it to propagate through hierarchy (False)
-        :raises AtlanError: on any API communication issue
-        """
-        self._modify_tags(
-            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
-            asset_type,
-            qualified_name,
-            atlan_tag_names,
-            propagate,
-            remove_propagation_on_delete,
-            restrict_lineage_propagation,
-            restrict_propagation_through_hierarchy,
-        )
-
-    @validate_arguments
-    def remove_atlan_tag(
-        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
-    ) -> None:
-        """
-        Removes a single Atlan tag from the provided asset.
-        Note: if the provided Atlan tag does not exist on the asset, an error will be raised.
-        (In other words, this operation is NOT idempotent.)
-
-        :param asset_type: type of asset to which to add the Atlan tags
-        :param qualified_name: qualified_name of the asset to which to add the Atlan tags
-        :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
+        :returns: the asset that was updated (note that it will NOT contain details of the updated Atlan tags)
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.atlan import AtlanClient
 
-        classification_id = (
-            AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-                atlan_tag_name
-            )
+        client = AtlanClient.get_current_client()
+        name_asset = client.asset.get_by_qualified_name(
+            qualified_name=qualified_name, asset_type=asset_type
         )
-        if not classification_id:
-            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
-                atlan_tag_name
-            )
-        query_params = {"attr:qualifiedName": qualified_name}
-        self._client._call_api(
-            DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
-                asset_type.__name__, "classification", classification_id
-            ),
-            query_params,
+        updated_asset = asset_type.updater(
+            qualified_name=qualified_name, name=name_asset.name
         )
+
+        atlan_tag = [
+            AtlanTag(
+                type_name=AtlanTagName(display_text=name),
+                propagate=propagate,
+                remove_propagations_on_entity_delete=remove_propagation_on_delete,
+                restrict_propagation_through_lineage=restrict_lineage_propagation,
+                restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
+            )
+            for name in atlan_tag_names
+        ]
+        updated_asset.add_or_update_classifications = atlan_tag
+        response = self.save(entity=updated_asset, append_atlan_tags=True)
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return updated_asset
+
+    @validate_arguments
+    def remove_atlan_tags(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        atlan_tag_names: List[str],
+    ) -> A:
+        """
+        Removes one or more Atlan tag from the provided asset.
+
+        :param asset_type: type of asset to which to add the Atlan tags
+        :param qualified_name: qualified_name of the asset to which to add the Atlan tags
+        :param atlan_tag_names: human-readable name of the Atlan tag to remove from the asset
+        :raises AtlanError: on any API communication issue
+        """
+        from pyatlan.client.atlan import AtlanClient
+
+        client = AtlanClient.get_current_client()
+        name_asset = client.asset.get_by_qualified_name(
+            qualified_name=qualified_name, asset_type=asset_type
+        )
+        updated_asset = asset_type.updater(
+            qualified_name=qualified_name, name=name_asset.name
+        )
+
+        atlan_tag = [
+            AtlanTag(type_name=AtlanTagName(display_text=name))
+            for name in atlan_tag_names
+        ]
+        updated_asset.remove_classifications = atlan_tag
+        response = self.save(entity=updated_asset, append_atlan_tags=True)
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return updated_asset
 
     def _update_asset_by_attribute(
         self, asset: A, asset_type: Type[A], qualified_name: str

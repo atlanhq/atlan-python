@@ -1339,19 +1339,19 @@ class AtlanClient(BaseSettings):
 
     @validate_arguments
     def remove_atlan_tag(
-        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
+        self, asset_type: Type[A], qualified_name: str, atlan_tag_names: List[str]
     ) -> None:
-        """Deprecated - use asset.remove_atlan_tag() instead."""
+        """Deprecated - use asset.remove_atlan_tags() instead."""
         warn(
-            "This method is deprecated, please use 'asset.remove_atlan_tag' instead, which offers identical "
+            "This method is deprecated, please use 'asset.remove_atlan_tags' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        self.asset.remove_atlan_tag(
+        self.asset.remove_atlan_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
-            atlan_tag_name=atlan_tag_name,
+            atlan_tag_names=atlan_tag_names
         )
 
     @validate_arguments

@@ -115,12 +115,12 @@ TEST_ASSET_CLIENT_METHODS = {
         ([AtlasGlossary, "qn", [int]], "atlan_tag_names -> 0\n  str type expected"),
         ([AtlasGlossary, "qn", None], "none is not an allowed value"),
     ],
-    "remove_atlan_tag": [
-        (["asset-type", [123], "tag-name"], "name\n  str type expected"),
-        (["asset-type", None, "tag-name"], "none is not an allowed value"),
-        ([None, "qn", "tag-name"], "none is not an allowed value"),
-        (["asset-type", "qn", "tag-name"], "asset_type\n  a class is expected"),
-        ([AtlasGlossary, "qn", [123]], "atlan_tag_name\n  str type expected"),
+    "remove_atlan_tags": [
+        (["asset-type", [123], ["tag-name"]], "name\n  str type expected"),
+        (["asset-type", None, ["tag-name"]], "none is not an allowed value"),
+        ([None, "qn", ["tag-name"]], "none is not an allowed value"),
+        (["asset-type", "qn", ["tag-name"]], "asset_type\n  a class is expected"),
+        ([AtlasGlossary, "qn", "tag-name"], "atlan_tag_names\n  value is not a valid list"),
         ([AtlasGlossary, "qn", None], "none is not an allowed value"),
     ],
     "update_certificate": [

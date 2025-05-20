@@ -478,11 +478,11 @@ def test_get_user_by_username(mock_type_def_client, client: AtlanClient):
         ),
         (
             "remove_atlan_tag",
-            "remove_atlan_tag",
+            "remove_atlan_tags",
             {
                 "asset_type": AtlasGlossary,
                 "qualified_name": "qname",
-                "atlan_tag_name": "Something",
+                "atlan_tag_names": ["Something"],
             },
         ),
         (
