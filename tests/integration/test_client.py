@@ -44,7 +44,7 @@ from tests.integration.lineage_test import create_database, delete_asset
 from tests.integration.requests_test import delete_token
 
 CLASSIFICATION_NAME = "Issue"
-CLASSIFICATION_NAME_2 = "Confidential"
+CLASSIFICATION_NAME2 = "Confidential"
 SL_SORT_BY_TIMESTAMP = SortItem(field="timestamp", order=SortOrder.ASCENDING)
 SL_SORT_BY_GUID = SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING)
 SL_SORT_BY_QUALIFIED_NAME = SortItem(
@@ -751,7 +751,7 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
     glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
     )
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
@@ -798,7 +798,7 @@ def test_update_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         remove_propagation_on_delete=False,
     )
     glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
     )
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
@@ -817,7 +817,7 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
     glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
     )
     assert not glossary_term.atlan_tags
 
@@ -827,19 +827,45 @@ def test_multiple_add_classification(client: AtlanClient, term1: AtlasGlossaryTe
     client.asset.add_atlan_tags(
         AtlasGlossaryTerm,
         term1.qualified_name,
-        [CLASSIFICATION_NAME, CLASSIFICATION_NAME_2],
+        [CLASSIFICATION_NAME, CLASSIFICATION_NAME2],
     )
     glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
     )
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 2
     classification = glossary_term.atlan_tags[0]
-    assert str(classification.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME_2
-    classification_2 = glossary_term.atlan_tags[1]
-    assert (
-        str(classification_2.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME_2
+    assert str(classification.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME2
+    classification2 = glossary_term.atlan_tags[1]
+    assert str(classification2.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME2
+
+
+def test_multiple_update_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
+    client.asset.update_atlan_tags(
+        AtlasGlossaryTerm,
+        term1.qualified_name,
+        [CLASSIFICATION_NAME, CLASSIFICATION_NAME2],
+        propagate=True,
+        remove_propagation_on_delete=False,
     )
+    glossary_term = client.asset.get_by_guid(
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
+    )
+    assert glossary_term.atlan_tags
+    assert len(glossary_term.atlan_tags) == 2
+    classification = glossary_term.atlan_tags[0]
+    assert str(classification.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME2
+    assert classification.propagate
+    assert not classification.remove_propagations_on_entity_delete
+    assert classification.restrict_propagation_through_lineage
+    assert not classification.restrict_propagation_through_hierarchy
+    classification2 = glossary_term.atlan_tags[1]
+    assert str(classification2.type_name) == CLASSIFICATION_NAME or CLASSIFICATION_NAME2
+    assert classification2.propagate
+    assert not classification2.remove_propagations_on_entity_delete
+    assert classification2.restrict_propagation_through_lineage
+    assert not classification2.restrict_propagation_through_hierarchy
 
 
 @pytest.mark.order(after="test_multiple_add_classification")
@@ -848,10 +874,10 @@ def test_multiple_remove_classification(client: AtlanClient, term1: AtlasGlossar
     client.asset.remove_atlan_tags(
         AtlasGlossaryTerm,
         term1.qualified_name,
-        [CLASSIFICATION_NAME, CLASSIFICATION_NAME_2],
+        [CLASSIFICATION_NAME, CLASSIFICATION_NAME2],
     )
     glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
+        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
     )
     assert not glossary_term.atlan_tags
 
