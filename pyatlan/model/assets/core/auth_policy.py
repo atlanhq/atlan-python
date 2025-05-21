@@ -15,6 +15,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     NumericField,
     RelationField,
+    TextField,
 )
 from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
 from pyatlan.utils import init_guid, validate_required_fields
@@ -80,6 +81,12 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    POLICY_FILTER_CRITERIA: ClassVar[TextField] = TextField(
+        "policyFilterCriteria", "policyFilterCriteria"
+    )
+    """
+    TBC
+    """
     POLICY_TYPE: ClassVar[KeywordField] = KeywordField("policyType", "policyType")
     """
     TBC
@@ -181,6 +188,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "policy_filter_criteria",
         "policy_type",
         "policy_service_name",
         "policy_category",
@@ -200,6 +208,18 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         "policy_conditions",
         "access_control",
     ]
+
+    @property
+    def policy_filter_criteria(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.policy_filter_criteria
+        )
+
+    @policy_filter_criteria.setter
+    def policy_filter_criteria(self, policy_filter_criteria: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_filter_criteria = policy_filter_criteria
 
     @property
     def policy_type(self) -> Optional[AuthPolicyType]:
@@ -398,6 +418,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.access_control = access_control
 
     class Attributes(Asset.Attributes):
+        policy_filter_criteria: Optional[str] = Field(default=None, description="")
         policy_type: Optional[AuthPolicyType] = Field(default=None, description="")
         policy_service_name: Optional[str] = Field(default=None, description="")
         policy_category: Optional[str] = Field(default=None, description="")

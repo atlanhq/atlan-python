@@ -2867,6 +2867,7 @@ class SourceCostUnitType(str, Enum):
 class TableType(str, Enum):
     TEMPORARY = "TEMPORARY"
     ICEBERG = "ICEBERG"
+    KUDU = "KUDU"
 
 
 class WorkflowRunStatus(str, Enum):

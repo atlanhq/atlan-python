@@ -201,6 +201,18 @@ class Column(SQL):
     """
     Sub-data type of this column.
     """
+    COLUMN_COMPRESSION: ClassVar[KeywordField] = KeywordField(
+        "columnCompression", "columnCompression"
+    )
+    """
+    Compression type of this column.
+    """
+    COLUMN_ENCODING: ClassVar[KeywordField] = KeywordField(
+        "columnEncoding", "columnEncoding"
+    )
+    """
+    Encoding type of this column.
+    """
     RAW_DATA_TYPE_DEFINITION: ClassVar[TextField] = TextField(
         "rawDataTypeDefinition", "rawDataTypeDefinition"
     )
@@ -548,6 +560,8 @@ class Column(SQL):
     _convenience_properties: ClassVar[List[str]] = [
         "data_type",
         "sub_data_type",
+        "column_compression",
+        "column_encoding",
         "raw_data_type_definition",
         "order",
         "nested_column_order",
@@ -638,6 +652,26 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sub_data_type = sub_data_type
+
+    @property
+    def column_compression(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.column_compression
+
+    @column_compression.setter
+    def column_compression(self, column_compression: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_compression = column_compression
+
+    @property
+    def column_encoding(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.column_encoding
+
+    @column_encoding.setter
+    def column_encoding(self, column_encoding: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_encoding = column_encoding
 
     @property
     def raw_data_type_definition(self) -> Optional[str]:
@@ -1452,6 +1486,8 @@ class Column(SQL):
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(default=None, description="")
         sub_data_type: Optional[str] = Field(default=None, description="")
+        column_compression: Optional[str] = Field(default=None, description="")
+        column_encoding: Optional[str] = Field(default=None, description="")
         raw_data_type_definition: Optional[str] = Field(default=None, description="")
         order: Optional[int] = Field(default=None, description="")
         nested_column_order: Optional[str] = Field(default=None, description="")
