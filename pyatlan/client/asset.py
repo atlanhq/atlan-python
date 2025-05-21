@@ -1876,13 +1876,13 @@ class AssetClient:
 
         This function iteratively searches for assets using the search provider and processes each
         unique asset using the provided callable function. The uniqueness of assets is determined
-        based on their GUIDs. If new assets are found in subsequent iterations that haven't been
+        based on their GUIDs. If new assets are found in later iterations that haven't been
         processed yet, the process continues until no more new assets are available to process.
 
         Arguments:
             search: IndexSearchRequestProvider
                 The search provider that generates search queries and contains the criteria for
-                searching the assets.
+                searching the assets such as a FluentSearch.
             func: Callable[[Asset], None]
                 A callable function that receives each unique asset as its parameter and performs
                 the required operations on it.
