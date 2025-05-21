@@ -730,14 +730,26 @@ class AtlanClient(BaseSettings):
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
 
-        # Adding a short delay after token refresh
+        # Added a retry loop to ensure a token is active before retrying original request
         # This helps ensure that when we fetch typedefs using the new token,
         # the backend has fully recognized the token as valid.
         # Without this delay, we occasionally get an empty response `[]` from the API,
         # likely because the backend hasn’t fully propagated token validity yet.
         import time
 
-        time.sleep(5)
+        retry_count = 1
+        while retry_count <= self.retry.total:
+            try:
+                response = self.typedef.get(type_category=[AtlanTypeCategory.STRUCT])
+                if response and response.struct_defs:
+                    break
+            except Exception as e:
+                LOGGER.debug(
+                    "Retrying to get typedefs (to ensure token is active) after token refresh failed: %s",
+                    e,
+                )
+            time.sleep(retry_count)  # Linear backoff
+            retry_count += 1
 
         # Retry the API call with the new token
         return self._call_api_internal(
