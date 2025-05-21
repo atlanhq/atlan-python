@@ -54,6 +54,7 @@ AUDIT_SORT_BY_LATEST = SortItem("created", order=SortOrder.DESCENDING)
 MODULE_NAME = TestId.make_unique("Client")
 TEST_USER_DESCRIPTION = "Automated testing of the Python SDK. (USER)"
 TEST_SYSTEM_DESCRIPTION = "Automated testing of the Python SDK. (SYSTEM)"
+call_count = 0
 
 
 @pytest.fixture(scope="module")
@@ -1536,3 +1537,38 @@ def test_client_401_token_refresh(
     # Confirm the API key has been updated and results are returned
     assert client.api_key != expired_api_token
     assert results and results.count >= 1
+
+
+def test_process_assets_when_no_assets_found(client: AtlanClient):
+    def should_never_be_called(_: Asset):
+        pytest.fail("Should not be called")
+
+    search = (
+        FluentSearch()
+        .where(Term.with_state("ACTIVE"))
+        .where(Asset.NAME.startswith("zXZ"))
+    )
+
+    processed_count = client.asset.process_assets(
+        search=search, func=should_never_be_called
+    )
+    assert processed_count == 0
+
+
+def test_process_assets_when_assets_found(client: AtlanClient):
+    def doit(asset: Asset):
+        global call_count
+        call_count += 1
+
+    search = (
+        FluentSearch()
+        .where(Term.with_state("ACTIVE"))
+        .where(Asset.TYPE_NAME.eq("Table"))
+        .where(Asset.NAME.startswith("B"))
+    )
+    expected_count = client.asset.search(search.to_request()).count
+
+    processed_count = client.asset.process_assets(search=search, func=doit)
+
+    assert call_count == expected_count
+    assert processed_count == expected_count

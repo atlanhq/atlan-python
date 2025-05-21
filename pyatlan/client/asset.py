@@ -9,11 +9,13 @@ from abc import ABC
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
+    Callable,
     Dict,
     Generator,
     Iterable,
     List,
     Optional,
+    Protocol,
     Set,
     Type,
     TypeVar,
@@ -132,6 +134,11 @@ Asset_Types = Union[
 ]
 
 LOGGER = logging.getLogger(__name__)
+
+
+class IndexSearchRequestProvider(Protocol):
+    def to_request(self) -> IndexSearchRequest:
+        pass
 
 
 class AssetClient:
@@ -1860,6 +1867,45 @@ class AssetClient:
                 glossary.guid, glossary.qualified_name
             )
         return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
+
+    def process_assets(
+        self, search: IndexSearchRequestProvider, func: Callable[[Asset], None]
+    ) -> int:
+        """
+        Process assets matching a search query and apply a processing function to each unique asset.
+
+        This function iteratively searches for assets using the search provider and processes each
+        unique asset using the provided callable function. The uniqueness of assets is determined
+        based on their GUIDs. If new assets are found in subsequent iterations that haven't been
+        processed yet, the process continues until no more new assets are available to process.
+
+        Arguments:
+            search: IndexSearchRequestProvider
+                The search provider that generates search queries and contains the criteria for
+                searching the assets.
+            func: Callable[[Asset], None]
+                A callable function that receives each unique asset as its parameter and performs
+                the required operations on it.
+
+        Returns:
+            int: The total number of unique assets that have been processed.
+        """
+        guids_processed: set[str] = set()
+        has_assets_to_process: bool = True
+        iteration_count = 0
+        while has_assets_to_process:
+            iteration_count += 1
+            has_assets_to_process = False
+            response = self.search(search.to_request())
+            LOGGER.debug(
+                "Iteration %d found %d assets.", iteration_count, response.count
+            )
+            for asset in response:
+                if asset.guid not in guids_processed:
+                    guids_processed.add(asset.guid)
+                    has_assets_to_process = True
+                    func(asset)
+        return len(guids_processed)
 
 
 class SearchResults(ABC, Iterable):
