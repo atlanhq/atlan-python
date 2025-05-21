@@ -341,8 +341,8 @@ class AuditSearchResults(Iterable):
                 List[EntityAudit], raw_json[ENTITY_AUDITS]
             )
             if is_bulk_search:
-                self._update_first_last_record_creation_times()
                 self._filter_processed_entities()
+                self._update_first_last_record_creation_times()
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
