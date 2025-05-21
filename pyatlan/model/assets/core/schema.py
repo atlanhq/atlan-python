@@ -93,6 +93,12 @@ class Schema(SQL):
     """
     Number of tables in this schema.
     """
+    SCHEMA_EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "schemaExternalLocation", "schemaExternalLocation"
+    )
+    """
+    External location of this schema, for example: an S3 object location.
+    """
     VIEWS_COUNT: ClassVar[NumericField] = NumericField("viewsCount", "viewsCount")
     """
     Number of views in this schema.
@@ -157,6 +163,7 @@ class Schema(SQL):
 
     _convenience_properties: ClassVar[List[str]] = [
         "table_count",
+        "schema_external_location",
         "views_count",
         "linked_schema_qualified_name",
         "snowflake_tags",
@@ -182,6 +189,20 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.table_count = table_count
+
+    @property
+    def schema_external_location(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.schema_external_location
+        )
+
+    @schema_external_location.setter
+    def schema_external_location(self, schema_external_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_external_location = schema_external_location
 
     @property
     def views_count(self) -> Optional[int]:
@@ -335,6 +356,7 @@ class Schema(SQL):
 
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
+        schema_external_location: Optional[str] = Field(default=None, description="")
         views_count: Optional[int] = Field(default=None, description="")
         linked_schema_qualified_name: Optional[str] = Field(
             default=None, description=""

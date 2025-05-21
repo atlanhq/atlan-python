@@ -1,3 +1,19 @@
+## 6.1.1 (May 21, 2025)
+
+### New Features
+
+- Added a utility method (`AssetClient.process_assets()`) to simplify processing (e.g: updating) assets while iterating through search results.
+
+### Bug Fixes
+
+- Fixed an issue where the search pagination loop would break due to invalid assets.
+- If `typeName` is not explicitly provided in the search request, the SDK now defaults to retrieving only assets with the `Referenceable` supertype. This avoids including non-asset records in the response.
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+- Added a retry loop to ensure the token is fully active before retrying the original request after a `401` response.
+
 ## 6.1.0 (May 13, 2025)
 
 ### New Features

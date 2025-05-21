@@ -69,6 +69,18 @@ class TableauDashboard(Tableau):
     """
     TBC
     """
+    TABLEAU_PARENT_DASHBOARDS: ClassVar[RelationField] = RelationField(
+        "tableauParentDashboards"
+    )
+    """
+    TBC
+    """
+    TABLEAU_EMBEDDED_DASHBOARDS: ClassVar[RelationField] = RelationField(
+        "tableauEmbeddedDashboards"
+    )
+    """
+    TBC
+    """
     WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
@@ -81,6 +93,8 @@ class TableauDashboard(Tableau):
         "top_level_project_qualified_name",
         "project_hierarchy",
         "workbook",
+        "tableau_parent_dashboards",
+        "tableau_embedded_dashboards",
         "worksheets",
     ]
 
@@ -157,6 +171,38 @@ class TableauDashboard(Tableau):
         self.attributes.workbook = workbook
 
     @property
+    def tableau_parent_dashboards(self) -> Optional[List[TableauDashboard]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_parent_dashboards
+        )
+
+    @tableau_parent_dashboards.setter
+    def tableau_parent_dashboards(
+        self, tableau_parent_dashboards: Optional[List[TableauDashboard]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_parent_dashboards = tableau_parent_dashboards
+
+    @property
+    def tableau_embedded_dashboards(self) -> Optional[List[TableauDashboard]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_embedded_dashboards
+        )
+
+    @tableau_embedded_dashboards.setter
+    def tableau_embedded_dashboards(
+        self, tableau_embedded_dashboards: Optional[List[TableauDashboard]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_embedded_dashboards = tableau_embedded_dashboards
+
+    @property
     def worksheets(self) -> Optional[List[TableauWorksheet]]:
         return None if self.attributes is None else self.attributes.worksheets
 
@@ -177,6 +223,12 @@ class TableauDashboard(Tableau):
             default=None, description=""
         )
         workbook: Optional[TableauWorkbook] = Field(
+            default=None, description=""
+        )  # relationship
+        tableau_parent_dashboards: Optional[List[TableauDashboard]] = Field(
+            default=None, description=""
+        )  # relationship
+        tableau_embedded_dashboards: Optional[List[TableauDashboard]] = Field(
             default=None, description=""
         )  # relationship
         worksheets: Optional[List[TableauWorksheet]] = Field(

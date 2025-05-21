@@ -39,6 +39,10 @@ class AuthService(Asset, type_name="AuthService"):
     """
     TBC
     """
+    ABAC_SERVICE: ClassVar[KeywordField] = KeywordField("abacService", "abacService")
+    """
+    TBC
+    """
     AUTH_SERVICE_IS_ENABLED: ClassVar[BooleanField] = BooleanField(
         "authServiceIsEnabled", "authServiceIsEnabled"
     )
@@ -61,6 +65,7 @@ class AuthService(Asset, type_name="AuthService"):
     _convenience_properties: ClassVar[List[str]] = [
         "auth_service_type",
         "tag_service",
+        "abac_service",
         "auth_service_is_enabled",
         "auth_service_config",
         "auth_service_policy_last_sync",
@@ -85,6 +90,16 @@ class AuthService(Asset, type_name="AuthService"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tag_service = tag_service
+
+    @property
+    def abac_service(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.abac_service
+
+    @abac_service.setter
+    def abac_service(self, abac_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.abac_service = abac_service
 
     @property
     def auth_service_is_enabled(self) -> Optional[bool]:
@@ -127,6 +142,7 @@ class AuthService(Asset, type_name="AuthService"):
     class Attributes(Asset.Attributes):
         auth_service_type: Optional[str] = Field(default=None, description="")
         tag_service: Optional[str] = Field(default=None, description="")
+        abac_service: Optional[str] = Field(default=None, description="")
         auth_service_is_enabled: Optional[bool] = Field(default=None, description="")
         auth_service_config: Optional[Dict[str, str]] = Field(
             default=None, description=""

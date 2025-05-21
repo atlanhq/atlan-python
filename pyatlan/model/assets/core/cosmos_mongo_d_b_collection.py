@@ -140,6 +140,12 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Size of this table, in bytes.
     """
+    TABLE_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "tableObjectCount", "tableObjectCount"
+    )
+    """
+    Number of objects in this table.
+    """
     ALIAS: ClassVar[TextField] = TextField("alias", "alias")
     """
     Alias for this table.
@@ -196,6 +202,12 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Number of partitions in this table.
     """
+    TABLE_DEFINITION: ClassVar[TextField] = TextField(
+        "tableDefinition", "tableDefinition"
+    )
+    """
+    Definition of the table.
+    """
     PARTITION_LIST: ClassVar[TextField] = TextField("partitionList", "partitionList")
     """
     List of partitions in this table.
@@ -212,43 +224,49 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "icebergCatalogName", "icebergCatalogName"
     )
     """
-    iceberg table catalog name (can be any user defined name)
+    Iceberg table catalog name (can be any user defined name)
     """
     ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
         "icebergTableType", "icebergTableType"
     )
     """
-    iceberg table type (managed vs unmanaged)
+    Iceberg table type (managed vs unmanaged)
     """
     ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField(
         "icebergCatalogSource", "icebergCatalogSource"
     )
     """
-    iceberg table catalog type (glue, polaris, snowflake)
+    Iceberg table catalog type (glue, polaris, snowflake)
     """
     ICEBERG_CATALOG_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
         "icebergCatalogTableName", "icebergCatalogTableName"
     )
     """
-    catalog table name (actual table name on the catalog side).
+    Catalog table name (actual table name on the catalog side).
+    """
+    TABLE_IMPALA_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "tableImpalaParameters", "tableImpalaParameters"
+    )
+    """
+    Extra attributes for Impala
     """
     ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[KeywordField] = KeywordField(
         "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
     )
     """
-    catalog table namespace (actual database name on the catalog side).
+    Catalog table namespace (actual database name on the catalog side).
     """
     TABLE_EXTERNAL_VOLUME_NAME: ClassVar[KeywordField] = KeywordField(
         "tableExternalVolumeName", "tableExternalVolumeName"
     )
     """
-    external volume name for the table.
+    External volume name for the table.
     """
     ICEBERG_TABLE_BASE_LOCATION: ClassVar[KeywordField] = KeywordField(
         "icebergTableBaseLocation", "icebergTableBaseLocation"
     )
     """
-    iceberg table base location inside the external volume.
+    Iceberg table base location inside the external volume.
     """
     TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField(
         "tableRetentionTime", "tableRetentionTime"
@@ -422,6 +440,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "column_count",
         "row_count",
         "size_bytes",
+        "table_object_count",
         "alias",
         "is_temporary",
         "is_query_preview",
@@ -432,6 +451,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "is_partitioned",
         "partition_strategy",
         "partition_count",
+        "table_definition",
         "partition_list",
         "is_sharded",
         "table_type",
@@ -439,6 +459,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "iceberg_table_type",
         "iceberg_catalog_source",
         "iceberg_catalog_table_name",
+        "table_impala_parameters",
         "iceberg_catalog_table_namespace",
         "table_external_volume_name",
         "iceberg_table_base_location",
@@ -745,6 +766,16 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.size_bytes = size_bytes
 
     @property
+    def table_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.table_object_count
+
+    @table_object_count.setter
+    def table_object_count(self, table_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_object_count = table_object_count
+
+    @property
     def alias(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.alias
 
@@ -853,6 +884,16 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.partition_count = partition_count
 
     @property
+    def table_definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_definition
+
+    @table_definition.setter
+    def table_definition(self, table_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_definition = table_definition
+
+    @property
     def partition_list(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.partition_list
 
@@ -927,6 +968,20 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.iceberg_catalog_table_name = iceberg_catalog_table_name
+
+    @property
+    def table_impala_parameters(self) -> Optional[Dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.table_impala_parameters
+        )
+
+    @table_impala_parameters.setter
+    def table_impala_parameters(
+        self, table_impala_parameters: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_impala_parameters = table_impala_parameters
 
     @property
     def iceberg_catalog_table_namespace(self) -> Optional[str]:
@@ -1340,6 +1395,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         column_count: Optional[int] = Field(default=None, description="")
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
+        table_object_count: Optional[int] = Field(default=None, description="")
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
@@ -1352,6 +1408,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         is_partitioned: Optional[bool] = Field(default=None, description="")
         partition_strategy: Optional[str] = Field(default=None, description="")
         partition_count: Optional[int] = Field(default=None, description="")
+        table_definition: Optional[str] = Field(default=None, description="")
         partition_list: Optional[str] = Field(default=None, description="")
         is_sharded: Optional[bool] = Field(default=None, description="")
         table_type: Optional[TableType] = Field(default=None, description="")
@@ -1359,6 +1416,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         iceberg_table_type: Optional[str] = Field(default=None, description="")
         iceberg_catalog_source: Optional[str] = Field(default=None, description="")
         iceberg_catalog_table_name: Optional[str] = Field(default=None, description="")
+        table_impala_parameters: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         iceberg_catalog_table_namespace: Optional[str] = Field(
             default=None, description=""
         )
