@@ -55,7 +55,7 @@ from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.group import GroupRequest
 from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.search import Bool, Term
+from pyatlan.model.search import Bool, Term, TermAttributes
 from pyatlan.model.search_log import SearchLogRequest
 from pyatlan.model.typedef import EnumDef
 from pyatlan.model.user import AtlanUser, UserRequest
@@ -1606,6 +1606,56 @@ def test_index_search_with_no_aggregation_results(
     mock_api_caller.reset_mock()
 
 
+def test_type_name_in_asset_search(mock_api_caller):
+    # When the type name is not present in the request
+    request = (FluentSearch().where(CompoundQuery.active_assets())).to_request()
+    client = AssetClient(mock_api_caller)
+    client._ensure_type_filter_present(request)
+
+    assert request.dsl.query and request.dsl.query.filter
+    assert isinstance(request.dsl.query.filter, list)
+
+    has_type_filter = any(
+        isinstance(f, Term) and f.field == TermAttributes.SUPER_TYPE_NAMES.value
+        for f in request.dsl.query.filter
+    )
+    assert has_type_filter is True
+
+    # When the type name is present in the request (no need to add super type filter)
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+    ).to_request()
+    client._ensure_type_filter_present(request)
+
+    assert request.dsl.query and request.dsl.query.filter
+    assert isinstance(request.dsl.query.filter, list)
+
+    has_type_filter = any(
+        isinstance(f, Term) and f.field == TermAttributes.SUPER_TYPE_NAMES.value
+        for f in request.dsl.query.filter
+    )
+    assert has_type_filter is False
+
+    # When multiple type name(s) is present in the request (no need to add super type filter)
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_types([AtlasGlossary, AtlasGlossaryTerm]))
+    ).to_request()
+    client._ensure_type_filter_present(request)
+
+    assert request.dsl.query and request.dsl.query.filter
+    assert isinstance(request.dsl.query.filter, list)
+
+    has_type_filter = any(
+        isinstance(f, Term) and f.field == TermAttributes.SUPER_TYPE_NAMES.value
+        for f in request.dsl.query.filter
+    )
+    assert has_type_filter is False
+
+
 def _assert_search_results(results, response_json, sorts, bulk=False):
     for i, result in enumerate(results):
         assert result and response_json["entities"][i]
@@ -2553,7 +2603,7 @@ def test_atlan_client_headers(client: AtlanClient):
     assert expected == client._session.headers
 
 
-def test_get_all_pagation(group_client, mock_api_caller):
+def test_get_all_pagination(group_client, mock_api_caller):
     mock_page_1 = [
         {"id": "1", "alias": "Group3"},
         {"id": "2", "alias": "Group4"},

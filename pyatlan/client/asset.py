@@ -97,6 +97,7 @@ from pyatlan.model.search import (
     Range,
     SortItem,
     Term,
+    Terms,
     with_active_category,
     with_active_glossary,
     with_active_term,
@@ -181,7 +182,7 @@ class AssetClient:
             return
 
         has_type_filter = any(
-            isinstance(f, Term)
+            isinstance(f, (Term, Terms))
             and f.field == Referenceable.TYPE_NAME.keyword_field_name
             for f in criteria.dsl.query.filter
         )
