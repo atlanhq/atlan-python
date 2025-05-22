@@ -750,9 +750,7 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     client.asset.add_atlan_tags(
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
     classification = glossary_term.atlan_tags[0]
@@ -797,9 +795,7 @@ def test_update_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         propagate=True,
         remove_propagation_on_delete=False,
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
     classification = glossary_term.atlan_tags[0]
@@ -816,9 +812,7 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     client.asset.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert not glossary_term.atlan_tags
 
 
@@ -829,9 +823,7 @@ def test_multiple_add_classification(client: AtlanClient, term1: AtlasGlossaryTe
         term1.qualified_name,
         [CLASSIFICATION_NAME, CLASSIFICATION_NAME2],
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 2
     classification = glossary_term.atlan_tags[0]
@@ -849,9 +841,7 @@ def test_multiple_update_classification(client: AtlanClient, term1: AtlasGlossar
         propagate=True,
         remove_propagation_on_delete=False,
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 2
     classification = glossary_term.atlan_tags[0]
@@ -876,9 +866,7 @@ def test_multiple_remove_classification(client: AtlanClient, term1: AtlasGlossar
         term1.qualified_name,
         [CLASSIFICATION_NAME, CLASSIFICATION_NAME2],
     )
-    glossary_term = client.asset.get_by_guid(
-        term1.guid, asset_type=AtlasGlossaryTerm, attributes=["atlanTags"]
-    )
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert not glossary_term.atlan_tags
 
 

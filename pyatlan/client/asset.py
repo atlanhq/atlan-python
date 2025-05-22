@@ -892,7 +892,7 @@ class AssetClient:
         reterieved_asset = self.get_by_qualified_name(
             qualified_name=qualified_name,
             asset_type=asset_type,
-            attributes=["anchor"],
+            attributes=[AtlasGlossaryTerm.ANCHOR.atlan_field_name],
         )
         if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
             updated_asset = asset_type.updater(
