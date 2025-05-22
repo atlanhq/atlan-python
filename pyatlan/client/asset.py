@@ -385,6 +385,14 @@ class AssetClient:
             allow_multiple=True,
         )
 
+    def _normalize_search_fields(
+        self,
+        fields: Optional[Union[List[str], List[AtlanField]]],
+    ) -> List[str]:
+        if not fields:
+            return []
+        return [f.atlan_field_name if isinstance(f, AtlanField) else f for f in fields]
+
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_qualified_name(
         self,
@@ -408,7 +416,6 @@ class AssetClient:
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
         query_params = {
@@ -416,13 +423,12 @@ class AssetClient:
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        attributes = attributes or []
-        related_attributes = related_attributes or []
+        attributes = self._normalize_search_fields(attributes)
+        related_attributes = self._normalize_search_fields(related_attributes)
 
         if (attributes and len(attributes)) or (
             related_attributes and len(related_attributes)
         ):
-            client = AtlanClient.get_current_client()
             search = (
                 FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
             )
@@ -430,7 +436,7 @@ class AssetClient:
                 search = search.include_on_results(attribute)
             for relation_attribute in related_attributes:
                 search = search.include_on_relations(relation_attribute)
-            results = search.execute(client=client)
+            results = search.execute(client=self._client)  # type: ignore[arg-type]
             if results and results.current_page():
                 first_result = results.current_page()[0]
                 if isinstance(first_result, asset_type):
@@ -482,26 +488,24 @@ class AssetClient:
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        attributes = attributes or []
-        related_attributes = related_attributes or []
+        attributes = self._normalize_search_fields(attributes)
+        related_attributes = self._normalize_search_fields(related_attributes)
 
         if (attributes and len(attributes)) or (
             related_attributes and len(related_attributes)
         ):
-            client = AtlanClient.get_current_client()
             search = FluentSearch().select().where(Asset.GUID.eq(guid))
             for attribute in attributes:
                 search = search.include_on_results(attribute)
             for relation_attribute in related_attributes:
                 search = search.include_on_relations(relation_attribute)
-            results = search.execute(client=client)
+            results = search.execute(client=self._client)  # type: ignore[arg-type]
             if results and results.current_page():
                 first_result = results.current_page()[0]
                 if isinstance(first_result, asset_type):
@@ -892,13 +896,13 @@ class AssetClient:
         reterieved_asset = self.get_by_qualified_name(
             qualified_name=qualified_name,
             asset_type=asset_type,
-            attributes=[AtlasGlossaryTerm.ANCHOR.atlan_field_name],
+            attributes=[AtlasGlossaryTerm.ANCHOR],  # type: ignore[arg-type]
         )
         if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
             updated_asset = asset_type.updater(
                 qualified_name=qualified_name,
                 name=reterieved_asset.name,
-                glossary_guid=reterieved_asset.anchor.guid,  # type: ignore
+                glossary_guid=reterieved_asset.anchor.guid,  # type: ignore[attr-defined]
             )
         else:
             updated_asset = asset_type.updater(
@@ -1428,10 +1432,8 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to link the terms
         :returns: the asset that was updated (note that it will NOT contain details of the appended terms)
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1440,7 +1442,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         elif qualified_name:
             results = (
@@ -1448,7 +1450,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
@@ -1507,10 +1509,8 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to replace the terms
         :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1519,7 +1519,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         elif qualified_name:
             results = (
@@ -1527,7 +1527,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
@@ -1588,10 +1588,8 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset from which to remove the terms
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.model.fluent_search import FluentSearch
 
-        client = AtlanClient.get_current_client()
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
@@ -1600,7 +1598,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.GUID.eq(guid))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         elif qualified_name:
             results = (
@@ -1608,7 +1606,7 @@ class AssetClient:
                 .select()
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
                 .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=client)
+                .execute(client=self._client)  # type: ignore[arg-type]
             )
         else:
             raise ErrorCode.QN_OR_GUID.exception_with_parameters()
@@ -2567,7 +2565,7 @@ class Batch:
                     )
                 results = search.page_size(
                     max(self._max_size * 2, DSL.__fields__.get("size").default)  # type: ignore[union-attr]
-                ).execute(client=self._client)
+                ).execute(client=self._client)  # type: ignore[arg-type]
 
                 for asset in results:
                     asset_id = AssetIdentity(
