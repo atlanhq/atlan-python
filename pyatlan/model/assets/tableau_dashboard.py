@@ -65,6 +65,12 @@ class TableauDashboard(Tableau):
     List of top-level projects and their nested child projects.
     """
 
+    TABLEAU_DASHBOARD_FIELDS: ClassVar[RelationField] = RelationField(
+        "tableauDashboardFields"
+    )
+    """
+    TBC
+    """
     WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
     """
     TBC
@@ -92,6 +98,7 @@ class TableauDashboard(Tableau):
         "workbook_qualified_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
+        "tableau_dashboard_fields",
         "workbook",
         "tableau_parent_dashboards",
         "tableau_embedded_dashboards",
@@ -161,6 +168,22 @@ class TableauDashboard(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
+    def tableau_dashboard_fields(self) -> Optional[List[TableauDashboardField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.tableau_dashboard_fields
+        )
+
+    @tableau_dashboard_fields.setter
+    def tableau_dashboard_fields(
+        self, tableau_dashboard_fields: Optional[List[TableauDashboardField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_dashboard_fields = tableau_dashboard_fields
+
+    @property
     def workbook(self) -> Optional[TableauWorkbook]:
         return None if self.attributes is None else self.attributes.workbook
 
@@ -222,6 +245,9 @@ class TableauDashboard(Tableau):
         project_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
+        tableau_dashboard_fields: Optional[List[TableauDashboardField]] = Field(
+            default=None, description=""
+        )  # relationship
         workbook: Optional[TableauWorkbook] = Field(
             default=None, description=""
         )  # relationship
@@ -245,6 +271,7 @@ class TableauDashboard(Tableau):
     )
 
 
+from .tableau_dashboard_field import TableauDashboardField  # noqa: E402, F401
 from .tableau_workbook import TableauWorkbook  # noqa: E402, F401
 from .tableau_worksheet import TableauWorksheet  # noqa: E402, F401
 

@@ -73,8 +73,8 @@ __all__ = [
     "SnowflakeStage",
     "SnowflakeStream",
     "DatabricksUnityCatalogTag",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "SnowflakeTag",
     "MatillionGroup",
@@ -230,9 +230,11 @@ __all__ = [
     "AnaplanDimension",
     "AnaplanView",
     "TableauWorkbook",
+    "TableauWorksheetField",
     "TableauDatasourceField",
     "TableauCalculatedField",
     "TableauProject",
+    "TableauDashboardField",
     "TableauMetric",
     "TableauSite",
     "TableauDatasource",
@@ -658,6 +660,7 @@ from .superset_dataset import SupersetDataset
 from .tableau import Tableau
 from .tableau_calculated_field import TableauCalculatedField
 from .tableau_dashboard import TableauDashboard
+from .tableau_dashboard_field import TableauDashboardField
 from .tableau_datasource import TableauDatasource
 from .tableau_datasource_field import TableauDatasourceField
 from .tableau_flow import TableauFlow
@@ -666,6 +669,7 @@ from .tableau_project import TableauProject
 from .tableau_site import TableauSite
 from .tableau_workbook import TableauWorkbook
 from .tableau_worksheet import TableauWorksheet
+from .tableau_worksheet_field import TableauWorksheetField
 from .tag_attachment import TagAttachment
 from .task import Task
 from .thoughtspot import Thoughtspot

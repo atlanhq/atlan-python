@@ -323,6 +323,7 @@ You can interact with all of the following different kinds of assets:
     asset/tableau
     asset/tableaucalculatedfield
     asset/tableaudashboard
+    asset/tableaudashboardfield
     asset/tableaudatasource
     asset/tableaudatasourcefield
     asset/tableauflow
@@ -331,6 +332,7 @@ You can interact with all of the following different kinds of assets:
     asset/tableausite
     asset/tableauworkbook
     asset/tableauworksheet
+    asset/tableauworksheetfield
     asset/tag
     asset/tagattachment
     asset/task
