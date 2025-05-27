@@ -172,29 +172,38 @@ class AssetClient:
     @staticmethod
     def _ensure_type_filter_present(criteria: IndexSearchRequest) -> None:
         """
-        Ensures that at least one 'typeName' filter is present in the given search criteria.
-        If no such filter exists, appends a default filter for 'Referenceable'.
+        Ensures that at least one 'typeName' filter is present in both 'must' and 'filter' clauses.
+        If missing in either, appends a default filter for 'Referenceable' to that clause.
         """
         if not (
             criteria
             and criteria.dsl
             and criteria.dsl.query
             and isinstance(criteria.dsl.query, Bool)
-            and criteria.dsl.query.filter
-            and isinstance(criteria.dsl.query.filter, list)
         ):
             return
 
-        has_type_filter = any(
-            isinstance(f, (Term, Terms))
-            and f.field == Referenceable.TYPE_NAME.keyword_field_name
-            for f in criteria.dsl.query.filter
-        )
+        query = criteria.dsl.query
+        default_filter = Term.with_super_type_names(Referenceable.__name__)
+        type_field = Referenceable.TYPE_NAME.keyword_field_name
 
-        if not has_type_filter:
-            criteria.dsl.query.filter.append(
-                Term.with_super_type_names(Referenceable.__name__)
+        def needs_type_filter(clause: Optional[List]) -> bool:
+            return not any(
+                isinstance(f, (Term, Terms)) and f.field == type_field
+                for f in clause or []
             )
+
+        # Update 'filter' clause if needed
+        if needs_type_filter(query.filter):
+            if query.filter is None:
+                query.filter = []
+            query.filter.append(default_filter)
+
+        # Update 'must' clause if needed
+        if needs_type_filter(query.must):
+            if query.must is None:
+                query.must = []
+            query.must.append(default_filter)
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
