@@ -133,6 +133,12 @@ class TableauDatasourceField(Tableau):
     Type of this datasource field.
     """
 
+    TABLEAU_WORKSHEET_FIELD: ClassVar[RelationField] = RelationField(
+        "tableauWorksheetField"
+    )
+    """
+    TBC
+    """
     WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
     """
     TBC
@@ -159,6 +165,7 @@ class TableauDatasourceField(Tableau):
         "upstream_columns",
         "upstream_fields",
         "datasource_field_type",
+        "tableau_worksheet_field",
         "worksheets",
         "datasource",
     ]
@@ -382,6 +389,20 @@ class TableauDatasourceField(Tableau):
         self.attributes.datasource_field_type = datasource_field_type
 
     @property
+    def tableau_worksheet_field(self) -> Optional[TableauWorksheetField]:
+        return (
+            None if self.attributes is None else self.attributes.tableau_worksheet_field
+        )
+
+    @tableau_worksheet_field.setter
+    def tableau_worksheet_field(
+        self, tableau_worksheet_field: Optional[TableauWorksheetField]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tableau_worksheet_field = tableau_worksheet_field
+
+    @property
     def worksheets(self) -> Optional[List[TableauWorksheet]]:
         return None if self.attributes is None else self.attributes.worksheets
 
@@ -438,6 +459,9 @@ class TableauDatasourceField(Tableau):
             default=None, description=""
         )
         datasource_field_type: Optional[str] = Field(default=None, description="")
+        tableau_worksheet_field: Optional[TableauWorksheetField] = Field(
+            default=None, description=""
+        )  # relationship
         worksheets: Optional[List[TableauWorksheet]] = Field(
             default=None, description=""
         )  # relationship
@@ -457,5 +481,6 @@ class TableauDatasourceField(Tableau):
 
 from .tableau_datasource import TableauDatasource  # noqa: E402, F401
 from .tableau_worksheet import TableauWorksheet  # noqa: E402, F401
+from .tableau_worksheet_field import TableauWorksheetField  # noqa: E402, F401
 
 TableauDatasourceField.Attributes.update_forward_refs()

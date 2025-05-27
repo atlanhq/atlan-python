@@ -1,3 +1,23 @@
+## 6.2.0 (May 27, 2025)
+
+### New Features
+
+- Added support for `append_atlan_tags` in the `AssetClient.save()` method.
+- Introduced `AssetClient.remove_atlan_tags()` to allow users to remove one or more Atlan tags from a given asset.
+- Enhanced the SDK to use the `/bulk` endpoint for all tag mutation operations.
+
+### Breaking Changes
+
+- All tag mutation methods (`add_atlan_tags`, `update_atlan_tags`, `remove_atlan_tag`, `remove_atlan_tags`) now use the `/bulk` endpoint. As a result, these methods will now return an `AssetMutationResponse` instead of `None`, reflecting the updated API response structure.
+
+### Bug Fixes
+
+- Added default `typeName=Referenceable` to `Bool`(must) clauses when `typeName` is not explicitly provided in the search request. This ensures the SDK retrieves only assets that inherit from the `Referenceable` supertype.
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+
 ## 6.1.1 (May 21, 2025)
 
 ### New Features
