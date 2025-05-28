@@ -81,7 +81,7 @@ from pyatlan.model.assets import (
     Purpose,
 )
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.core import Announcement, AtlanObject, AtlanResponse
+from pyatlan.model.core import Announcement, AtlanObject, AtlanRequest, AtlanResponse
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
@@ -510,10 +510,13 @@ class AtlanClient(BaseSettings):
                     if text_response:
                         response_ = response.text
                     else:
-                        response_ = events if events else response.json()
-                        response_ = AtlanResponse(
-                            raw_json=response.json(), client=self
-                        ).to_dict()
+                        response_ = (
+                            events
+                            if events
+                            else AtlanResponse(
+                                raw_json=response.json(), client=self
+                            ).to_dict()
+                        )
                     LOGGER.debug("response: %s", response_)
                     return response_
                 except (
@@ -692,9 +695,7 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(
-                    by_alias=True, exclude_unset=exclude_unset
-                )
+                params["data"] = AtlanRequest(request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
             else:

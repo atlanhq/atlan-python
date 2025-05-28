@@ -24,6 +24,7 @@ from pydantic.v1.generics import GenericModel
 
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
+from pyatlan.model.retranslators import AtlanTagRetranslator
 from pyatlan.model.structs import SourceTagAttachment
 from pyatlan.model.translators import AtlanTagTranslator
 
@@ -103,13 +104,13 @@ class AtlanTagName:
             return data
         return AtlanTagName(data) if data else cls.get_deleted_sentinel()
 
-    @staticmethod
-    def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-        from pyatlan.client.atlan import AtlanClient
+    # @staticmethod
+    # def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
+    #     from pyatlan.client.atlan import AtlanClient
 
-        return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-            atlan_tag_name._display_text
-        )
+    #     return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+    #         atlan_tag_name._display_text
+    #     )
 
 
 class AtlanObject(BaseModel):
@@ -217,6 +218,33 @@ class AtlanResponse:
 
     def to_dict(self) -> Dict[str, Any]:
         return self.translated
+
+
+class AtlanRequest:
+    def __init__(self, model: BaseModel, client: "AtlanClient"):
+        self.client = client
+        self.model = model
+        self.retranslators = [
+            AtlanTagRetranslator(client),
+            # add others...
+        ]
+        # Do: model.json() → parse → translate → store
+        raw_json = self.model.json(by_alias=True, exclude_unset=True)
+        parsed = json.loads(raw_json)
+        self.translated = self._deep_retranslate(parsed)
+
+    def _deep_retranslate(self, data: Any) -> Any:
+        if isinstance(data, dict):
+            for retranslator in self.retranslators:
+                if retranslator.applies_to(data):
+                    data = retranslator.retranslate(data)
+            return {key: self._deep_retranslate(value) for key, value in data.items()}
+        elif isinstance(data, list):
+            return [self._deep_retranslate(item) for item in data]
+        return data
+
+    def json(self, **kwargs) -> str:
+        return json.dumps(self.translated, **kwargs)
 
 
 class SearchRequest(AtlanObject, ABC):
