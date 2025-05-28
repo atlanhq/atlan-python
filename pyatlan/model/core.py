@@ -41,14 +41,14 @@ class AtlanTagName:
         return obj
 
     def __init__(self, display_text: str):
-        from pyatlan.client.atlan import AtlanClient
+        # from pyatlan.client.atlan import AtlanClient
 
-        if not (
-            id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-                display_text
-            )
-        ):
-            raise ValueError(f"{display_text} is not a valid Classification")
+        # if not (
+        #     id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+        #         display_text
+        #     )
+        # ):
+        #     raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
         self._id = id
 
@@ -65,7 +65,7 @@ class AtlanTagName:
 
     @classmethod
     def __get_validators__(cls):
-        yield cls._convert_to_display_text
+        yield cls._convert_to_tag_name
 
     def __str__(self):
         return self._display_text
@@ -82,20 +82,26 @@ class AtlanTagName:
             and self._display_text == other._display_text
         )
 
-    @classmethod
-    def _convert_to_display_text(cls, data):
-        from pyatlan.client.atlan import AtlanClient
+    # @classmethod
+    # def _convert_to_display_text(cls, data):
+    #     from pyatlan.client.atlan import AtlanClient
 
+    #     if isinstance(data, AtlanTagName):
+    #         return data
+
+    #     if (
+    #         display_text
+    #         := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
+    #     ):
+    #         return AtlanTagName(display_text)
+    #     else:
+    #         return cls.get_deleted_sentinel()
+
+    @classmethod
+    def _convert_to_tag_name(cls, data):
         if isinstance(data, AtlanTagName):
             return data
-
-        if (
-            display_text
-            := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
-        ):
-            return AtlanTagName(display_text)
-        else:
-            return cls.get_deleted_sentinel()
+        return AtlanTagName(data) if data else cls.get_deleted_sentinel()
 
     @staticmethod
     def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
@@ -237,7 +243,7 @@ class AtlanTag(AtlanObject):
     class Config:
         extra = "forbid"
 
-    type_name: Optional[Union[str, AtlanTagName]] = Field(
+    type_name: Optional[AtlanTagName] = Field(
         default=None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",
