@@ -21,7 +21,7 @@ def encoders():
 
     return {
         datetime: lambda v: int(v.timestamp() * 1000),
-        AtlanTagName: AtlanTagName.json_encode_atlan_tag,
+        AtlanTagName: lambda atn: atn._display_text,
     }
 
 

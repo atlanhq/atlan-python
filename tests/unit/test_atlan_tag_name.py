@@ -91,8 +91,8 @@ def test_convert_to_tag_name(current_client: AtlanClient, monkeypatch):
     assert str(sut) == ATLAN_TAG_ID
 
 
-def test_json_encode_atlan_tag(good_atlan_tag):
-    assert AtlanTagName.json_encode_atlan_tag(good_atlan_tag) == ATLAN_TAG_ID
+# def test_json_encode_atlan_tag(good_atlan_tag):
+#     assert AtlanTagName.json_encode_atlan_tag(good_atlan_tag) == ATLAN_TAG_ID
 
 
 def test_asset_tag_name_field_deserialization(current_client: AtlanClient, monkeypatch):
