@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import time
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, cast
 
@@ -662,17 +663,25 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_asset_types.setter
-    def applicable_asset_types(self, asset_types: AssetTypes):
+    def applicable_asset_types(self, asset_types):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "applicable_asset_types", AssetTypes
             )
-        if not asset_types.issubset(_complete_type_list):
+        invalid_types = set()
+        for asset_type in asset_types:
+            if not getattr(
+                sys.modules.get("pyatlan.model.assets", {}), asset_type, None
+            ):
+                invalid_types.add(asset_type)
+
+        if invalid_types:
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
-                asset_types, "applicable_asset_types", _complete_type_list
+                asset_types, "applicable_asset_types", "SDK asset types"
             )
+
         self.options.applicable_asset_types = json.dumps(list(asset_types))
 
     @property
