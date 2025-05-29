@@ -3,7 +3,7 @@ ruff~=0.9.9
 # [PINNED] for Python 3.8 compatibility
 # higher versions require urllib3>=2.0
 types-requests~=2.31.0.6
-types-setuptools~=75.8.0.20250110
+types-setuptools~=80.9.0.20250529
 pytest~=8.3.4
 pytest-vcr~=1.0.2
 # [PINNED] to v6.x since vcrpy>=7.0 requires urllib3>=2.0
