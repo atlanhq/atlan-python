@@ -1,4 +1,4 @@
-mypy~=1.9.0
+mypy~=1.16.0
 ruff~=0.9.9
 # [PINNED] for Python 3.8 compatibility
 # higher versions require urllib3>=2.0
