@@ -484,8 +484,8 @@ class ErrorCode(Enum):
     INVALID_PARAMETER_VALUE = (
         400,
         "ATLAN-PYTHON-400-051",
-        "{0} is an invalid value for {1} should be in {2}.",
-        "Check that value you are using is valid.",
+        "Invalid value(s) {0} provided for '{1}'. Expected one or more of the supported {2}.",
+        "Verify that each value corresponds to a valid SDK asset type.",
         InvalidRequestError,
     )
     ASSET_CAN_NOT_BE_ARCHIVED = (

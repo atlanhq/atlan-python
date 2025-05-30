@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import time
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, cast
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, Union, cast
 
 from pydantic.v1 import Field, PrivateAttr
 
@@ -652,7 +652,7 @@ class AttributeDef(AtlanObject):
         self.options.applicable_entity_types = json.dumps(list(entity_types))
 
     @property
-    def applicable_asset_types(self) -> AssetTypes:
+    def applicable_asset_types(self) -> Union[Set[str], AssetTypes]:
         """
         Asset type names to which to restrict the attribute.
         Only assets of one of these types will have this attribute available.
@@ -663,25 +663,27 @@ class AttributeDef(AtlanObject):
         return set()
 
     @applicable_asset_types.setter
-    def applicable_asset_types(self, asset_types):
+    def applicable_asset_types(self, asset_types: Union[Set[str], AssetTypes]):
         if self.options is None:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+
         if not isinstance(asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "applicable_asset_types", AssetTypes
             )
-        invalid_types = set()
-        for asset_type in asset_types:
+
+        # Validate asset type names against SDK asset classes
+        invalid_types = {
+            asset_type
+            for asset_type in asset_types
             if not getattr(
                 sys.modules.get("pyatlan.model.assets", {}), asset_type, None
-            ):
-                invalid_types.add(asset_type)
-
+            )
+        }
         if invalid_types:
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
-                asset_types, "applicable_asset_types", "SDK asset types"
+                invalid_types, "applicable_asset_types", "SDK asset types"
             )
-
         self.options.applicable_asset_types = json.dumps(list(asset_types))
 
     @property
@@ -835,7 +837,7 @@ class AttributeDef(AtlanObject):
         multi_valued: bool = False,
         options_name: Optional[str] = None,
         applicable_connections: Optional[Set[str]] = None,
-        applicable_asset_types: Optional[AssetTypes] = None,
+        applicable_asset_types: Optional[Union[Set[str], AssetTypes]] = None,
         applicable_glossaries: Optional[Set[str]] = None,
         applicable_glossary_types: Optional[GlossaryTypes] = None,
         applicable_other_asset_types: Optional[OtherAssetTypes] = None,
