@@ -7,22 +7,27 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 import yaml  # type: ignore[import-untyped]
-from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr, root_validator, validator
+from pydantic.v1 import BaseModel, Extra, Field, root_validator, validator
 
 from pyatlan.model.utils import encoders, to_camel_case
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
+
+    from pyatlan.client.atlan import AtlanClient
 else:
     from pydantic.v1.dataclasses import dataclass
 
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 from pydantic.v1.generics import GenericModel
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
+from pyatlan.model.retranslators import AtlanTagRetranslator
 from pyatlan.model.structs import SourceTagAttachment
+from pyatlan.model.translators import AtlanTagTranslator
 
 
 class AtlanTagName:
@@ -38,20 +43,20 @@ class AtlanTagName:
         return obj
 
     def __init__(self, display_text: str):
-        from pyatlan.client.atlan import AtlanClient
+        # from pyatlan.client.atlan import AtlanClient
 
-        if not (
-            id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-                display_text
-            )
-        ):
-            raise ValueError(f"{display_text} is not a valid Classification")
+        # if not (
+        #     id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+        #         display_text
+        #     )
+        # ):
+        #     raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
-        self._id = id
+        # self._id = id
 
-    @property
-    def id(self):
-        return self._id
+    # @property
+    # def id(self):
+    #     return self._id
 
     @classmethod
     def get_deleted_sentinel(cls) -> "AtlanTagName":
@@ -62,7 +67,7 @@ class AtlanTagName:
 
     @classmethod
     def __get_validators__(cls):
-        yield cls._convert_to_display_text
+        yield cls._convert_to_tag_name
 
     def __str__(self):
         return self._display_text
@@ -79,28 +84,34 @@ class AtlanTagName:
             and self._display_text == other._display_text
         )
 
-    @classmethod
-    def _convert_to_display_text(cls, data):
-        from pyatlan.client.atlan import AtlanClient
+    # @classmethod
+    # def _convert_to_display_text(cls, data):
+    #     from pyatlan.client.atlan import AtlanClient
 
+    #     if isinstance(data, AtlanTagName):
+    #         return data
+
+    #     if (
+    #         display_text
+    #         := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
+    #     ):
+    #         return AtlanTagName(display_text)
+    #     else:
+    #         return cls.get_deleted_sentinel()
+
+    @classmethod
+    def _convert_to_tag_name(cls, data):
         if isinstance(data, AtlanTagName):
             return data
+        return AtlanTagName(data) if data else cls.get_deleted_sentinel()
 
-        if (
-            display_text
-            := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
-        ):
-            return AtlanTagName(display_text)
-        else:
-            return cls.get_deleted_sentinel()
+    # @staticmethod
+    # def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
+    #     from pyatlan.client.atlan import AtlanClient
 
-    @staticmethod
-    def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-        from pyatlan.client.atlan import AtlanClient
-
-        return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-            atlan_tag_name._display_text
-        )
+    #     return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
+    #         atlan_tag_name._display_text
+    #     )
 
 
 class AtlanObject(BaseModel):
@@ -178,6 +189,65 @@ class AtlanYamlModel(BaseModel):
         return cls(**data)
 
 
+class AtlanResponse:
+    def __init__(self, raw_json: Dict[str, Any], client: AtlanClient):
+        self.raw_json = raw_json
+        self.client = client
+        self.translators = [
+            AtlanTagTranslator(client),
+            # Register more translators here
+        ]
+        self.translated = self._deep_translate(self.raw_json)
+
+    def _deep_translate(
+        self, data: Union[Dict[str, Any], List[Any], Any]
+    ) -> Union[Dict[str, Any], List[Any], Any]:
+        if isinstance(data, dict):
+            # Apply translators to this dict if any apply
+            for translator in self.translators:
+                if translator.applies_to(data):
+                    data = translator.translate(data)
+
+            # Recursively apply to each value
+            return {key: self._deep_translate(value) for key, value in data.items()}
+
+        elif isinstance(data, list):
+            return [self._deep_translate(item) for item in data]
+
+        else:
+            return data
+
+    def to_dict(self) -> Dict[str, Any]:
+        return self.translated
+
+
+class AtlanRequest:
+    def __init__(self, model: BaseModel, client: "AtlanClient"):
+        self.client = client
+        self.model = model
+        self.retranslators = [
+            AtlanTagRetranslator(client),
+            # add others...
+        ]
+        # Do: model.json() → parse → translate → store
+        raw_json = self.model.json(by_alias=True, exclude_unset=True)
+        parsed = json.loads(raw_json)
+        self.translated = self._deep_retranslate(parsed)
+
+    def _deep_retranslate(self, data: Any) -> Any:
+        if isinstance(data, dict):
+            for retranslator in self.retranslators:
+                if retranslator.applies_to(data):
+                    data = retranslator.retranslate(data)
+            return {key: self._deep_retranslate(value) for key, value in data.items()}
+        elif isinstance(data, list):
+            return [self._deep_retranslate(item) for item in data]
+        return data
+
+    def json(self, **kwargs) -> str:
+        return json.dumps(self.translated, **kwargs)
+
+
 class SearchRequest(AtlanObject, ABC):
     attributes: Optional[List[str]] = Field(
         default_factory=list,
@@ -245,36 +315,31 @@ class AtlanTag(AtlanObject):
         alias="restrictPropagationThroughHierarchy",
     )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
-    _source_tag_attachements: List[SourceTagAttachment] = PrivateAttr(
-        default_factory=list
+    source_tag_attachements: List[SourceTagAttachment] = Field(
+        default_factory=list, exclude=True
     )
 
     attributes: Optional[Dict[str, Any]] = None
+    tag_id: Optional[str] = Field(default=True, exclude=True)
 
-    @property
-    def source_tag_attachements(self) -> List[SourceTagAttachment]:
-        return self._source_tag_attachements
+    # @property
+    # def source_tag_attachements(self) -> List[SourceTagAttachment]:
+    #     return self._source_tag_attachements
 
-    @validator("type_name", pre=True)
-    def type_name_is_tag_name(cls, value):
-        if isinstance(value, AtlanTagName):
-            return value
-        return AtlanTagName._convert_to_display_text(value)
+    # def __init__(self, *args, **kwargs):
+    #     from pyatlan.client.atlan import AtlanClient
 
-    def __init__(self, *args, **kwargs):
-        from pyatlan.client.atlan import AtlanClient
-
-        super().__init__(*args, **kwargs)
-        if self.type_name != AtlanTagName.get_deleted_sentinel():
-            attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-                self.type_name.id
-            )
-        if self.attributes and attr_id in self.attributes:
-            self._source_tag_attachements = [
-                SourceTagAttachment(**source_tag["attributes"])
-                for source_tag in self.attributes[attr_id]
-                if isinstance(source_tag, dict) and source_tag.get("attributes")
-            ]
+    #     super().__init__(*args, **kwargs)
+    #     if self.type_name != AtlanTagName.get_deleted_sentinel():
+    #         attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
+    #             self.type_name.id
+    #         )
+    #     if self.attributes and attr_id in self.attributes:
+    #         self._source_tag_attachements = [
+    #             SourceTagAttachment(**source_tag["attributes"])
+    #             for source_tag in self.attributes[attr_id]
+    #             if isinstance(source_tag, dict) and source_tag.get("attributes")
+    #         ]
 
     @classmethod
     def of(
@@ -282,30 +347,31 @@ class AtlanTag(AtlanObject):
         atlan_tag_name: AtlanTagName,
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
+        client: Optional[AtlanClient] = None,
     ) -> AtlanTag:
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Construct an Atlan tag assignment for a specific entity.
 
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
+        :param client: (optional) client instance used for translating source-specific details
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
         tag = AtlanTag(type_name=atlan_tag_name)
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
         if source_tag_attachment:
+            if not client:
+                raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
+            tag_id = client.atlan_tag_cache.get_id_for_name(str(atlan_tag_name))
             source_tag_attr_id = (
-                AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-                    atlan_tag_name.id
-                )
-                or ""
+                client.atlan_tag_cache.get_source_tags_attr_id(tag_id) or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
-            tag._source_tag_attachements.append(source_tag_attachment)
+            tag.source_tag_attachements.append(source_tag_attachment)
         return tag
 
 
