@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import importlib
 import json
-import sys
 import time
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, Union, cast
 
@@ -677,7 +677,7 @@ class AttributeDef(AtlanObject):
             asset_type
             for asset_type in asset_types
             if not getattr(
-                sys.modules.get("pyatlan.model.assets", {}), asset_type, None
+                importlib.import_module("pyatlan.model.assets"), asset_type, None
             )
         }
         if invalid_types:
