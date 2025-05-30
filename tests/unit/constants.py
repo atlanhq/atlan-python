@@ -699,7 +699,7 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
     (
         APPLICABLE_ASSET_TYPES,
         {"Bogus"},
-        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_asset_types should be in ",
+        "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_asset_types'.",
     ),
     (
         APPLICABLE_GLOSSARY_TYPES,
@@ -709,7 +709,7 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
     (
         APPLICABLE_GLOSSARY_TYPES,
         {"Bogus"},
-        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_glossary_types should be in ",
+        "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_glossary_types'.",
     ),
     (
         APPLICABLE_DOMAIN_TYPES,
@@ -719,7 +719,7 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
     (
         APPLICABLE_DOMAIN_TYPES,
         {"Bogus"},
-        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_domain_types should be in ",
+        "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_domain_types'.",
     ),
     (
         APPLICABLE_OTHER_ASSET_TYPES,
@@ -729,7 +729,7 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
     (
         APPLICABLE_OTHER_ASSET_TYPES,
         {"Bogus"},
-        "ATLAN-PYTHON-400-051 {'Bogus'} is an invalid value for applicable_other_asset_types should be in ",
+        "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_other_asset_types'.",
     ),
     (
         APPLICABLE_ENTITY_TYPES,
