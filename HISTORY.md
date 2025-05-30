@@ -1,3 +1,14 @@
+## 6.2.1 (May 30, 2025)
+
+### Bug Fixes
+
+- Extended the `applicable_asset_types` attribute definition to accept `Union[Set[str], AssetTypes]`.
+- Fixed validation to ensure provided asset type names match existing SDK asset classes, replacing the previously hard-coded set of asset types.
+
+### QOL Improvements
+
+- Regenerated the latest typedef models.
+
 ## 6.2.0 (May 27, 2025)
 
 ### New Features

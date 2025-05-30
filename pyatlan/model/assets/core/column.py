@@ -479,6 +479,18 @@ class Column(SQL):
     """
     Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection.
     """  # noqa: E501
+    COLUMN_IS_MEASURE: ClassVar[BooleanField] = BooleanField(
+        "columnIsMeasure", "columnIsMeasure"
+    )
+    """
+    When true, this column is of type measure/calculated.
+    """
+    COLUMN_MEASURE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "columnMeasureType", "columnMeasureType"
+    )
+    """
+    The type of measure/calculated column this is, eg: base, calcaluted, derived.
+    """
 
     SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
         "snowflakeDynamicTable"
@@ -614,6 +626,8 @@ class Column(SQL):
         "column_depth_level",
         "nosql_collection_name",
         "nosql_collection_qualified_name",
+        "column_is_measure",
+        "column_measure_type",
         "snowflake_dynamic_table",
         "view",
         "nested_columns",
@@ -1292,6 +1306,26 @@ class Column(SQL):
         )
 
     @property
+    def column_is_measure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.column_is_measure
+
+    @column_is_measure.setter
+    def column_is_measure(self, column_is_measure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_is_measure = column_is_measure
+
+    @property
+    def column_measure_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.column_measure_type
+
+    @column_measure_type.setter
+    def column_measure_type(self, column_measure_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_measure_type = column_measure_type
+
+    @property
     def snowflake_dynamic_table(self) -> Optional[SnowflakeDynamicTable]:
         return (
             None if self.attributes is None else self.attributes.snowflake_dynamic_table
@@ -1568,6 +1602,8 @@ class Column(SQL):
         nosql_collection_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        column_is_measure: Optional[bool] = Field(default=None, description="")
+        column_measure_type: Optional[str] = Field(default=None, description="")
         snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(
             default=None, description=""
         )  # relationship
