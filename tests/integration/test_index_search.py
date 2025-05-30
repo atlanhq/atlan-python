@@ -229,6 +229,7 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
                     SourceTagAttachmentValue(tag_attachment_value="Not Restricted")
                 ],
             ),
+            client=client,
         ),
     ]
     response = client.asset.save(to_update, replace_atlan_tags=True)

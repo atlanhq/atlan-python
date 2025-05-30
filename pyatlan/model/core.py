@@ -22,6 +22,7 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 from pydantic.v1.generics import GenericModel
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus, SaveSemantic
 from pyatlan.model.retranslators import AtlanTagRetranslator
@@ -51,11 +52,11 @@ class AtlanTagName:
         # ):
         #     raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
-        self._id = id
+        # self._id = id
 
-    @property
-    def id(self):
-        return self._id
+    # @property
+    # def id(self):
+    #     return self._id
 
     @classmethod
     def get_deleted_sentinel(cls) -> "AtlanTagName":
@@ -319,16 +320,11 @@ class AtlanTag(AtlanObject):
     )
 
     attributes: Optional[Dict[str, Any]] = None
+    tag_id: Optional[str] = Field(default=True, exclude=True)
 
     # @property
     # def source_tag_attachements(self) -> List[SourceTagAttachment]:
     #     return self._source_tag_attachements
-
-    # @validator("type_name", pre=True)
-    # def type_name_is_tag_name(cls, value):
-    #     if isinstance(value, AtlanTagName):
-    #         return value
-    #     return AtlanTagName._convert_to_display_text(value)
 
     # def __init__(self, *args, **kwargs):
     #     from pyatlan.client.atlan import AtlanClient
@@ -351,27 +347,28 @@ class AtlanTag(AtlanObject):
         atlan_tag_name: AtlanTagName,
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
+        client: Optional[AtlanClient] = None,
     ) -> AtlanTag:
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Construct an Atlan tag assignment for a specific entity.
 
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
+        :param client: (optional) client instance used for translating source-specific details
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
         tag = AtlanTag(type_name=atlan_tag_name)
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
         if source_tag_attachment:
+            if not client:
+                raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
+            tag_id = client.atlan_tag_cache.get_id_for_name(str(atlan_tag_name))
             source_tag_attr_id = (
-                AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-                    atlan_tag_name.id
-                )
-                or ""
+                client.atlan_tag_cache.get_source_tags_attr_id(tag_id) or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
             tag.source_tag_attachements.append(source_tag_attachment)
