@@ -347,10 +347,11 @@ class TestTypeDefResponse:
 
 class TestAttributeDef:
     @pytest.fixture()
-    def sut(self) -> AttributeDef:
+    def sut(self, client: AtlanClient) -> AttributeDef:
         with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
             return AttributeDef.create(
+                client=client,
                 display_name="My Count",
                 attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
             )

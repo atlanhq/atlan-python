@@ -167,17 +167,17 @@ class TestCustomMetadataProxy:
         assert sut.business_attributes is None
 
     def test_set_custom_metadata(self, sut):
-        cm = CustomMetadataDict(name=CM_NAME)
+        cm = CustomMetadataDict(name=CM_NAME, client=client)
         sut.set_custom_metadata(cm)
         assert sut.modified is True
-        assert sut.get_custom_metadata(name=CM_NAME) is cm
+        assert sut.get_custom_metadata(client=client, name=CM_NAME) is cm
 
     def test_after_modifying_metadata_modified_is_true(self, sut, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
 
-        cm = sut.get_custom_metadata(name=CM_NAME)
+        cm = sut.get_custom_metadata(client=client, name=CM_NAME)
         cm[ATTR_FIRST_NAME] = "James"
 
         assert sut.modified is True
@@ -204,7 +204,7 @@ class TestCustomMetadataProxy:
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
 
         sut = CustomMetadataProxy(business_attributes=ba)
-        cm = sut.get_custom_metadata(name=CM_NAME)
+        cm = sut.get_custom_metadata(client=client, name=CM_NAME)
         joey = "Joey"
         donna = "Donna"
         cm[ATTR_FIRST_NAME] = donna

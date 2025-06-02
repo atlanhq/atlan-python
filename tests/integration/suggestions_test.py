@@ -594,11 +594,11 @@ def test_update_table1(
     to_update.description = SYSTEM_DESCRIPTION
     to_update.user_description = DESCRIPTION
     to_update.atlan_tags = [
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME1),
             propagate=False,
         ),
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME2),
             propagate=False,
         ),
@@ -639,11 +639,11 @@ def test_update_table3(
     to_update.description = SYSTEM_DESCRIPTION
     to_update.user_description = DESCRIPTION
     to_update.atlan_tags = [
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME1),
             propagate=False,
         ),
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME2),
             propagate=False,
         ),
@@ -683,11 +683,11 @@ def test_update_table1_column1(
     to_update.description = SYSTEM_DESCRIPTION
     to_update.user_description = DESCRIPTION
     to_update.atlan_tags = [
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME1),
             propagate=False,
         ),
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME2),
             propagate=False,
         ),
@@ -727,7 +727,7 @@ def test_update_view1_column1(
     to_update.description = SYSTEM_DESCRIPTION
     to_update.user_description = DESCRIPTION
     to_update.atlan_tags = [
-        AtlanTag(
+        AtlanTag(  # type: ignore[call-arg]
             type_name=AtlanTagName(ATLAN_TAG_NAME2),
             propagate=False,
         ),
@@ -751,6 +751,7 @@ def test_update_view1_column1(
 
 
 def test_suggestions_default(
+    client: AtlanClient,
     t2c1: Column,
     owner_group: AtlanGroup,
     term1: AtlasGlossaryTerm,
@@ -759,7 +760,9 @@ def test_suggestions_default(
 ):
     assert owner_group and owner_group.name
     assert term1.qualified_name and term2.qualified_name
-    response = Suggestions(includes=Suggestions.TYPE.all()).finder(t2c1).get()
+    response = (
+        Suggestions(includes=Suggestions.TYPE.all()).finder(t2c1).get(client=client)
+    )
 
     assert response
     assert response.owner_groups and len(response.owner_groups) == 1
@@ -788,6 +791,7 @@ def test_suggestions_default(
 
 
 def test_suggestions_accross_types(
+    client: AtlanClient,
     view1: View,
     owner_group: AtlanGroup,
     term1: AtlasGlossaryTerm,
@@ -801,7 +805,7 @@ def test_suggestions_accross_types(
         Suggestions(includes=Suggestions.TYPE.all())
         .finder(view1)
         .with_other_type("Table")
-        .get()
+        .get(client=client)
     )
 
     assert response
@@ -829,6 +833,7 @@ def test_suggestions_accross_types(
 
 
 def test_limited_suggestions(
+    client: AtlanClient,
     table2: Table,
     owner_group: AtlanGroup,
     wait_for_consistency,
@@ -839,7 +844,7 @@ def test_limited_suggestions(
         .finder(table2)
         .include(Suggestions.TYPE.GROUP_OWNERS)
         .include(Suggestions.TYPE.SYSTEM_DESCRIPTION)
-        .get()
+        .get(client=client)
     )
 
     assert response
@@ -855,6 +860,7 @@ def test_limited_suggestions(
 
 
 def test_apply_t2c1(
+    client: AtlanClient,
     t2c1: Column,
     owner_group: AtlanGroup,
     term2: AtlasGlossaryTerm,
@@ -870,7 +876,7 @@ def test_apply_t2c1(
         .include(Suggestions.TYPE.GROUP_OWNERS)
         .include(Suggestions.TYPE.USER_DESCRIPTION)
         .include(Suggestions.TYPE.INDIVIDUAL_OWNERS)
-        .apply()
+        .apply(client=client)
     )
 
     assert response and response.mutated_entities
@@ -889,6 +895,7 @@ def test_apply_t2c1(
 
 
 def test_apply_v2c1(
+    client: AtlanClient,
     v2c1: Column,
     wait_for_consistency,
 ):
@@ -897,7 +904,7 @@ def test_apply_v2c1(
         .finder(v2c1)
         .include(Suggestions.TYPE.TAGS)
         .include(Suggestions.TYPE.SYSTEM_DESCRIPTION)
-        .apply(allow_multiple=True)
+        .apply(client=client, allow_multiple=True)
     )
 
     assert response and response.mutated_entities

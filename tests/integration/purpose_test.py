@@ -196,6 +196,7 @@ def test_add_policies_to_purpose(
     token: ApiToken,
 ):
     metadata = Purpose.create_metadata_policy(
+        client=client,
         name="Simple read access",
         purpose_id=purpose.guid,
         policy_type=AuthPolicyType.ALLOW,
@@ -203,6 +204,7 @@ def test_add_policies_to_purpose(
         all_users=True,
     )
     data = Purpose.create_data_policy(
+        client=client,
         name="Mask the data",
         purpose_id=purpose.guid,
         policy_type=AuthPolicyType.DATA_MASK,
