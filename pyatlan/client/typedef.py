@@ -233,7 +233,7 @@ class TypeDefClient:
                 typedef_type
             )
         if internal_name:
-            self._client._client._call_api(  # type: ignore[attr-defined]
+            self._client._call_api(  # type: ignore[attr-defined]
                 DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
             )
         else:

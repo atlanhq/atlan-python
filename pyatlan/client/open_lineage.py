@@ -63,6 +63,7 @@ class OpenLineageClient:
         }
         response = self._client.credentials.creator(credential=create_credential)  # type: ignore[attr-defined]
         connection = Connection.creator(
+            client=self._client,
             name=name,
             connector_type=connector_type,
             admin_users=admin_users,

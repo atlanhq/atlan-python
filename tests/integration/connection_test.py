@@ -56,7 +56,9 @@ def test_invalid_connection(client: AtlanClient):
     with pytest.raises(
         ValueError, match="One of admin_user, admin_groups or admin_roles is required"
     ):
-        Connection.create(name=MODULE_NAME, connector_type=AtlanConnectorType.POSTGRES)
+        Connection.create(
+            client=client, name=MODULE_NAME, connector_type=AtlanConnectorType.POSTGRES
+        )
 
 
 def test_invalid_connection_admin_role(
@@ -66,6 +68,7 @@ def test_invalid_connection_admin_role(
         ValueError, match="Provided role ID abc123 was not found in Atlan."
     ):
         Connection.create(
+            client=client,
             name=MODULE_NAME,
             connector_type=AtlanConnectorType.SAPHANA,
             admin_roles=["abc123"],
@@ -79,6 +82,7 @@ def test_invalid_connection_admin_group(
         ValueError, match="Provided group name abc123 was not found in Atlan."
     ):
         Connection.create(
+            client=client,
             name=MODULE_NAME,
             connector_type=AtlanConnectorType.SAPHANA,
             admin_groups=["abc123"],
@@ -92,6 +96,7 @@ def test_invalid_connection_admin_user(
         ValueError, match="Provided username abc123 was not found in Atlan."
     ):
         Connection.create(
+            client=client,
             name=MODULE_NAME,
             connector_type=AtlanConnectorType.SAPHANA,
             admin_users=["abc123"],

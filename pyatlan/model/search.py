@@ -1968,6 +1968,17 @@ class DSL(AtlanObject):
         return sort
 
 
+class IndexSearchRequestMetadata(AtlanObject):
+    save_search_log: bool = Field(
+        default=False,
+        description="Whether to log this search (True) or not (False)",
+    )
+    utm_tags: List[str] = Field(
+        default_factory=list,
+        description="Tags to associate with the search request",
+    )
+
+
 class IndexSearchRequest(SearchRequest):
     dsl: DSL
     relation_attributes: Optional[List[str]] = Field(
@@ -2013,26 +2024,13 @@ class IndexSearchRequest(SearchRequest):
         default=None,
         description="Qualified name of the purpose eg: default/zL6uqsrZGuf1hz9XFYnw9x",
     )
-
-    class Metadata(AtlanObject):
-        # Set this to `False` to prevent the frequent
-        # Out of memory (OOM) issue in Metastore pods.
-        save_search_log: bool = Field(
-            default=False,
-            description="Whether to log this search (True) or not (False)",
-        )
-        utm_tags: List[str] = Field(
-            default_factory=list,
-            description="Tags to associate with the search request",
-        )
-
-    request_metadata: Optional[Metadata] = Field(
-        default_factory=lambda: IndexSearchRequest.Metadata(
+    request_metadata: Optional[IndexSearchRequestMetadata] = Field(
+        default_factory=lambda: IndexSearchRequestMetadata(
             # Set this to `False` to prevent the frequent
             # Out of memory (OOM) issue in Metastore pods.
             save_search_log=False,
             utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
-        ),
+        )
     )
 
     class Config:

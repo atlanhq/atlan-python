@@ -79,6 +79,7 @@ class TestConnection:
         assert role
         connection_name = TestId.make_unique("INT")
         c = Connection.create(
+            client=client,
             name=connection_name,
             connector_type=AtlanConnectorType.SNOWFLAKE,
             admin_roles=[role],
