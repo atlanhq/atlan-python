@@ -52,6 +52,8 @@ class AtlanTagRetranslator(BaseRetranslator):
                     tag_name = str(classification.get(self._TYPE_NAME))
                     if tag_name:
                         tag_id = self.client.atlan_tag_cache.get_id_for_name(tag_name)
+                        if not tag_id:
+                            continue
                         classification[self._TYPE_NAME] = tag_id
 
                         # Rebuild source tag attributes

@@ -48,16 +48,13 @@ SCORED_ATTRS = [
 client = AtlanClient()
 
 
-def _create_cm_if_not_exists() -> Optional[str]:
+def _create_cm_if_not_exists(client: AtlanClient) -> Optional[str]:
     """
     Creates the custom metadata structure, if it does not already exist. (If it
     already exists, does nothing.)
 
     :returns: unique identifier for the custom metadata structure
     """
-    from pyatlan.client.atlan import AtlanClient
-
-    client = AtlanClient.get_current_client()
     try:
         return client.custom_metadata_cache.get_id_for_name(CM_DAAP)
     except NotFoundError:
@@ -65,6 +62,7 @@ def _create_cm_if_not_exists() -> Optional[str]:
             cm_def = CustomMetadataDef.create(display_name=CM_DAAP)
             cm_def.attribute_defs = [
                 AttributeDef.create(
+                    client=client,
                     display_name=CM_ATTR_DAAP_SCORE,
                     attribute_type=AtlanCustomAttributePrimitiveType.DECIMAL,
                 )
@@ -128,7 +126,7 @@ class LambdaScorer(AtlanEventHandler):
         """
 
         return (
-            _create_cm_if_not_exists() is not None
+            _create_cm_if_not_exists(client) is not None
             and isinstance(event.payload, AtlanEventPayload)
             and isinstance(event.payload.asset, Asset)
         )
@@ -142,13 +140,10 @@ class LambdaScorer(AtlanEventHandler):
         :returns: current state of the asset in Atlan, if it still exists in
             Atlan
         """
-        from pyatlan.client.atlan import AtlanClient
 
         search_attrs = SCORED_ATTRS
         custom_metadata_attrs = (
-            AtlanClient()
-            .get_current_client()
-            .custom_metadata_cache.get_attributes_for_search_results(CM_DAAP)
+            client.custom_metadata_cache.get_attributes_for_search_results(CM_DAAP)
         )
 
         if custom_metadata_attrs is not None:
@@ -176,9 +171,9 @@ class LambdaScorer(AtlanEventHandler):
 
         score_original: Optional[float] = -1.0
         score_modified: Optional[float] = -1.0
-        if cm_original := original.get_custom_metadata(CM_DAAP):
+        if cm_original := original.get_custom_metadata(client=client, name=CM_DAAP):
             score_original = cm_original.get(CM_ATTR_DAAP_SCORE)
-        if cm_modified := modified.get_custom_metadata(CM_DAAP):
+        if cm_modified := modified.get_custom_metadata(client=client, name=CM_DAAP):
             score_modified = cm_modified.get(CM_ATTR_DAAP_SCORE)
         logger.info(
             "Existing score = %s, new score = %s", score_original, score_modified
@@ -241,7 +236,7 @@ class LambdaScorer(AtlanEventHandler):
 
         if score >= 0:
             revised = asset.trim_to_required()
-            cma = revised.get_custom_metadata(CM_DAAP)
+            cma = revised.get_custom_metadata(client=client, name=CM_DAAP)
             cma[CM_ATTR_DAAP_SCORE] = score
             return [revised] if self.has_changes(asset, revised) else []
         return []

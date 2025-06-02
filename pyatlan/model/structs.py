@@ -21,6 +21,7 @@ from pyatlan.utils import select_optional_set_fields, validate_required_fields
 
 if TYPE_CHECKING:
     from pyatlan.cache.source_tag_cache import SourceTagName
+    from pyatlan.client.atlan import AtlanClient
 
 
 class AtlanObject(BaseModel):
@@ -239,14 +240,13 @@ class SourceTagAttachment(AtlanObject):
     @classmethod
     def by_name(
         cls,
+        client: AtlanClient,
         name: SourceTagName,
         source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Create a source-synced tag attachment with
         a particular value when the attachment is synced to the source.
@@ -261,7 +261,7 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = AtlanClient.get_current_client().source_tag_cache.get_by_name(name)
+        tag = client.source_tag_cache.get_by_name(name)
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             tag.qualified_name or ""
         )
@@ -283,14 +283,13 @@ class SourceTagAttachment(AtlanObject):
     @classmethod
     def by_qualified_name(
         cls,
+        client: AtlanClient,
         source_tag_qualified_name: str,
         source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Create a source-synced tag attachment with
         a particular value when the attachment is synced to the source.
@@ -305,9 +304,7 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = AtlanClient.get_current_client().source_tag_cache.get_by_qualified_name(
-            source_tag_qualified_name
-        )
+        tag = client.source_tag_cache.get_by_qualified_name(source_tag_qualified_name)
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             source_tag_qualified_name or ""
         )

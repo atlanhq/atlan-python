@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
+from __future__ import annotations
+
 import copy
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -180,14 +182,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
-    def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
-        from pyatlan.client.atlan import AtlanClient
-
-        if (
-            attr_id
-            := AtlanClient.get_current_client().custom_metadata_cache.get_attr_id_for_name(
-                set_name=set_name, attr_name=attr_name
-            )
+    def with_custom_metadata(
+        cls, client: Any, set_name: StrictStr, attr_name: StrictStr
+    ):
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id)
         else:
@@ -369,15 +368,14 @@ class Term(Query):
     @classmethod
     @validate_arguments()
     def with_custom_metadata(
-        cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
+        cls,
+        client: Any,
+        set_name: StrictStr,
+        attr_name: StrictStr,
+        value: SearchFieldType,
     ):
-        from pyatlan.client.atlan import AtlanClient
-
-        if (
-            attr_id
-            := AtlanClient.get_current_client().custom_metadata_cache.get_attr_id_for_name(
-                set_name=set_name, attr_name=attr_name
-            )
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id, value=value)
         else:

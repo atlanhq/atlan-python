@@ -3,7 +3,18 @@ from __future__ import annotations
 import importlib
 import json
 import time
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Set, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Union,
+    cast,
+)
 
 from pydantic.v1 import Field, PrivateAttr
 
@@ -27,6 +38,8 @@ from pyatlan.model.enums import (
     TagIconType,
 )
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 _complete_type_list: AssetTypes = {
     "ADLSAccount",
     "ADLSContainer",
@@ -182,12 +195,10 @@ _all_domain_types: DomainTypes = {
 _all_other_types: OtherAssetTypes = {"File"}
 
 
-def _get_all_qualified_names(asset_type: str) -> Set[str]:
-    from pyatlan.client.atlan import AtlanClient
+def _get_all_qualified_names(client: AtlanClient, asset_type: str) -> Set[str]:
     from pyatlan.model.assets import Asset
     from pyatlan.model.fluent_search import FluentSearch
 
-    client = AtlanClient.get_current_client()
     request = (
         FluentSearch.select()
         .where(Asset.TYPE_NAME.eq(asset_type))
@@ -316,7 +327,9 @@ class EnumDef(TypeDef):
         )
 
     @staticmethod
-    def update(name: str, values: List[str], replace_existing: bool) -> EnumDef:
+    def update(
+        client: AtlanClient, name: str, values: List[str], replace_existing: bool
+    ) -> EnumDef:
         """
         Builds the minimal object necessary to update an enumeration definition.
 
@@ -328,7 +341,6 @@ class EnumDef(TypeDef):
         or if `False` the new ones will be appended to the existing set
         :returns: the minimal object necessary to update the enumeration typedef
         """
-        from pyatlan.client.atlan import AtlanClient
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
@@ -340,9 +352,7 @@ class EnumDef(TypeDef):
             if replace_existing
             else EnumDef.ElementDef.extend_elements(
                 new=values,
-                current=AtlanClient.get_current_client()
-                .enum_cache.get_by_name(str(name))
-                .get_valid_values(),
+                current=client.enum_cache.get_by_name(str(name)).get_valid_values(),
             )
         )
         return EnumDef(
@@ -832,6 +842,7 @@ class AttributeDef(AtlanObject):
 
     @staticmethod
     def create(
+        client: AtlanClient,
         display_name: str,
         attribute_type: AtlanCustomAttributePrimitiveType,
         multi_valued: bool = False,
@@ -886,11 +897,7 @@ class AttributeDef(AtlanObject):
         else:
             attr_def.type_name = base_type
         if add_enum_values:
-            from pyatlan.client.atlan import AtlanClient
-
-            if enum_def := AtlanClient.get_current_client().enum_cache.get_by_name(
-                str(options_name)
-            ):
+            if enum_def := client.enum_cache.get_by_name(str(options_name)):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
@@ -904,10 +911,10 @@ class AttributeDef(AtlanObject):
             applicable_other_asset_types or _all_other_types
         )
         attr_def.applicable_connections = (
-            applicable_connections or _get_all_qualified_names("Connection")
+            applicable_connections or _get_all_qualified_names(client, "Connection")
         )
         attr_def.applicable_glossaries = (
-            applicable_glossaries or _get_all_qualified_names("AtlasGlossary")
+            applicable_glossaries or _get_all_qualified_names(client, "AtlasGlossary")
         )
         attr_def.applicable_domains = applicable_domains or _all_domains
         return attr_def

@@ -217,12 +217,12 @@ class AtlanResponse:
         else:
             return data
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Union[Dict[str, Any], List[Any], Any]:
         return self.translated
 
 
 class AtlanRequest:
-    def __init__(self, model: BaseModel, client: "AtlanClient"):
+    def __init__(self, model: AtlanObject, client: AtlanClient):
         self.client = client
         self.model = model
         self.retranslators = [
@@ -230,7 +230,15 @@ class AtlanRequest:
             # add others...
         ]
         # Do: model.json() → parse → translate → store
-        raw_json = self.model.json(by_alias=True, exclude_unset=True)
+        try:
+            raw_json = self.model.json(
+                by_alias=True, exclude_unset=True, client=self.client
+            )
+        except TypeError:
+            raw_json = self.model.json(
+                by_alias=True,
+                exclude_unset=True,
+            )
         parsed = json.loads(raw_json)
         self.translated = self._deep_retranslate(parsed)
 
@@ -359,7 +367,7 @@ class AtlanTag(AtlanObject):
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
-        tag = AtlanTag(type_name=atlan_tag_name)
+        tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
@@ -367,10 +375,10 @@ class AtlanTag(AtlanObject):
             if not client:
                 raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
             tag_id = client.atlan_tag_cache.get_id_for_name(str(atlan_tag_name))
-            source_tag_attr_id = (
-                client.atlan_tag_cache.get_source_tags_attr_id(tag_id) or ""
+            source_tag_attr_id = client.atlan_tag_cache.get_source_tags_attr_id(
+                tag_id or ""
             )
-            tag.attributes = {source_tag_attr_id: [source_tag_attachment]}
+            tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]
             tag.source_tag_attachements.append(source_tag_attachment)
         return tag
 
@@ -415,20 +423,12 @@ class AssetResponse(AtlanObject, GenericModel, Generic[T]):
 class AssetRequest(AtlanObject, GenericModel, Generic[T]):
     entity: T
 
-    @validator("entity")
-    def flush_custom_metadata(cls, v):
-        from pyatlan.model.assets import Asset
-
-        if isinstance(v, Asset):
-            v.flush_custom_metadata()
-        return v
-
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: List[T]
 
     @validator("entities", each_item=True)
-    def process_attributes_and_flush_cm(cls, asset):
+    def process_attributes(cls, asset):
         from pyatlan.model.assets import Asset
 
         if not isinstance(asset, Asset):
@@ -460,7 +460,6 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                 **{"attributes": exclude_attributes},
                 **exclude_relationship_attributes,
             }
-        asset.flush_custom_metadata()
         return asset.__class__(
             **asset.dict(
                 by_alias=True,

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from json import JSONDecodeError, loads
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, root_validator
 
@@ -23,6 +23,9 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.lineage_ref import LineageRef
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
 
 class Referenceable(AtlanObject):
     """Description"""
@@ -30,9 +33,6 @@ class Referenceable(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
-        __pydantic_self__._metadata_proxy = CustomMetadataProxy(
-            __pydantic_self__.business_attributes
-        )
 
     @root_validator(pre=True)
     def parse_custom_attributes(cls, values):
@@ -52,7 +52,11 @@ class Referenceable(AtlanObject):
         return values
 
     def json(self, *args, **kwargs) -> str:
-        if self._metadata_proxy and self._metadata_proxy.business_attributes:
+        if not self._metadata_proxy and kwargs.get("client"):
+            self._metadata_proxy = CustomMetadataProxy(
+                client=kwargs.get("client"),  # type: ignore[arg-type]
+                business_attributes=self.business_attributes,
+            )
             self.business_attributes = self._metadata_proxy.business_attributes
         return super().json(**kwargs)
 
@@ -60,13 +64,27 @@ class Referenceable(AtlanObject):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
 
-    def get_custom_metadata(self, name: str) -> CustomMetadataDict:
+    def get_custom_metadata(self, client: AtlanClient, name: str) -> CustomMetadataDict:
+        if not self._metadata_proxy:
+            self._metadata_proxy = CustomMetadataProxy(
+                business_attributes=self.business_attributes, client=client
+            )
         return self._metadata_proxy.get_custom_metadata(name=name)
 
-    def set_custom_metadata(self, custom_metadata: CustomMetadataDict):
+    def set_custom_metadata(
+        self, client: AtlanClient, custom_metadata: CustomMetadataDict
+    ):
+        if not self._metadata_proxy:
+            self._metadata_proxy = CustomMetadataProxy(
+                business_attributes=self.business_attributes, client=client
+            )
         return self._metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
 
-    def flush_custom_metadata(self):
+    def flush_custom_metadata(self, client: AtlanClient):
+        if not self._metadata_proxy:
+            self._metadata_proxy = CustomMetadataProxy(
+                business_attributes=self.business_attributes, client=client
+            )
         self.business_attributes = self._metadata_proxy.business_attributes
 
     @classmethod
@@ -263,7 +281,7 @@ class Referenceable(AtlanObject):
         default="Referenceable",
         description="Name of the type definition that defines this instance.",
     )
-    _metadata_proxy: CustomMetadataProxy = PrivateAttr()
+    _metadata_proxy: CustomMetadataProxy = PrivateAttr(default=None)
     attributes: Referenceable.Attributes = Field(
         default_factory=lambda: Referenceable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "

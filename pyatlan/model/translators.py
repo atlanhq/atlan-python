@@ -45,7 +45,7 @@ class AtlanTagTranslator(BaseTranslator):
                 if tag_id:
                     tag_name = self.client.atlan_tag_cache.get_name_for_id(tag_id)
                     if not tag_name:
-                        return
+                        continue
                     classification[self._TYPE_NAME] = tag_name
                     classification["tag_id"] = tag_id
                     # Check if the tag is a source tag (in that case tag has "attributes")

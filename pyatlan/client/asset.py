@@ -628,6 +628,7 @@ class AssetClient:
             entities.append(entity)
         for asset in entities:
             asset.validate_required()
+            asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
         request = BulkRequest[Asset](entities=entities)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         response = AssetMutationResponse(**raw_json)
@@ -745,6 +746,7 @@ class AssetClient:
             entities.append(entity)
         for asset in entities:
             asset.validate_required()
+            asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
         request = BulkRequest[Asset](entities=entities)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
@@ -885,6 +887,7 @@ class AssetClient:
             "replaceBusinessAttributes": False,
             "overwriteBusinessAttributes": False,
         }
+        to_restore.flush_custom_metadata(self._client)  # type: ignore[arg-type]
         request = BulkRequest[Asset](entities=[to_restore])
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
@@ -919,7 +922,7 @@ class AssetClient:
             )
 
         atlan_tag = [
-            AtlanTag(
+            AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName(display_text=name),
                 propagate=propagate,
                 remove_propagations_on_entity_delete=remove_propagation_on_delete,
@@ -1091,6 +1094,7 @@ class AssetClient:
         self, asset: A, asset_type: Type[A], qualified_name: str
     ):
         query_params = {"attr:qualifiedName": qualified_name}
+        asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
         raw_json = self._client._call_api(
             PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
                 asset_type.__name__
@@ -1404,7 +1408,7 @@ class AssetClient:
         :param cm_name: human-readable name of the custom metadata to remove
         :raises AtlanError: on any API communication issue
         """
-        custom_metadata = CustomMetadataDict(name=cm_name)
+        custom_metadata = CustomMetadataDict(client=self._client, name=cm_name)  # type: ignore[arg-type]
         # invoke clear_all so all attributes are set to None and consequently removed
         custom_metadata.clear_all()
         custom_metadata_request = CustomMetadataRequest.create(

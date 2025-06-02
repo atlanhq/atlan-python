@@ -219,10 +219,9 @@ class Suggestions(AtlanObject):
         self.asset = asset
         return self
 
-    def get(self, client: Optional[AtlanClient] = None) -> SuggestionResponse:
+    def get(self, client: AtlanClient) -> SuggestionResponse:
         asset_name = ""
         all_types = []
-        client = client or AtlanClient.get_current_client()
 
         if self.asset and self.asset.name:
             asset_name = self.asset.name
@@ -400,9 +399,9 @@ class Suggestions(AtlanObject):
 
     def apply(
         self,
+        client: AtlanClient,
         allow_multiple: bool = False,
         batch: Optional[Batch] = None,
-        client: Optional[AtlanClient] = None,
     ) -> Optional[AssetMutationResponse]:
         """
         Find the requested suggestions and apply the top suggestions as changes to the asset.
@@ -413,12 +412,11 @@ class Suggestions(AtlanObject):
         you are only building a finder for suggestions for values that do not already
         exist on the asset in question.
 
+        :param client: client connectivity to an Atlan tenant
         :param allow_multiple: if `True`, allow multiple suggestions to be applied
         to the asset (up to `max_suggestions` requested), i.e: for owners, terms and tags
         :param batch: (optional) the batch in which you want to apply the top suggestions as changes to the asset
-        :param client: (optional) client connectivity to an Atlan tenant
         """
-        client = client or AtlanClient.get_current_client()
         if batch:
             return batch.add(self._apply(client, allow_multiple).asset)
         result = self._apply(client, allow_multiple)
@@ -450,12 +448,12 @@ class Suggestions(AtlanObject):
             includes_tags = True
             if allow_multiple:
                 asset.atlan_tags = [
-                    AtlanTag(type_name=AtlanTagName(tag.value), propagate=False)
+                    AtlanTag(type_name=AtlanTagName(tag.value), propagate=False)  # type: ignore[call-arg]
                     for tag in response.atlan_tags
                 ]
             else:
                 asset.atlan_tags = [
-                    AtlanTag(
+                    AtlanTag(  # type: ignore[call-arg]
                         type_name=AtlanTagName(response.atlan_tags[0].value),
                         propagate=False,
                     )

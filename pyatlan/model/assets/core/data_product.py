@@ -125,18 +125,15 @@ class DataProduct(DataMesh):
             name=name,
         )
 
-    def get_assets(self, client: Optional[AtlanClient] = None):
+    def get_assets(self, client: AtlanClient):
         """
         Reterieves list of all assets linked to the provided data product.
 
-        :param client: connectivity to an Atlan tenant (optional). If not provided, the default client will be used.
+        :param client: connectivity to an Atlan tenant. If not provided, the default client will be used.
         :raises InvalidRequestError: if DataProduct asset DSL cannot be found (does not exist) in Atlan
         :raises AtlanError: if there is an issue interacting with the API
         :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product
         """
-        from pyatlan.client.atlan import AtlanClient
-
-        client = AtlanClient.get_current_client() if not client else client
         dp_dsl = self.data_product_assets_d_s_l
         if not dp_dsl:
             raise ErrorCode.MISSING_DATA_PRODUCT_ASSET_DSL.exception_with_parameters()

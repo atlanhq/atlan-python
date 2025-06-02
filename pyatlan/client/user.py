@@ -57,15 +57,12 @@ class UserClient:
         :raises AtlanError: on any API communication issue
         :returns: a UserResponse object which contains the list of details of created users if `return_info` is `True`, otherwise `None`
         """
-        from pyatlan.client.atlan import AtlanClient
 
         cur = CreateUserRequest(users=[])
         for user in users:
             role_name = str(user.workspace_role)
             if (
-                role_id := AtlanClient.get_current_client().role_cache.get_id_for_name(
-                    role_name
-                )
+                role_id := self._client.role_cache.get_id_for_name(role_name)  # type: ignore[attr-defined]
             ) and user.email:
                 to_create = CreateUserRequest.CreateUser(
                     email=user.email,

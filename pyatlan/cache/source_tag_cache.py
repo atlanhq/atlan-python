@@ -154,7 +154,7 @@ class SourceTagCache(AbstractAssetCache):
         if not isinstance(asset, Asset):
             return
         try:
-            source_tag_name = str(SourceTagName(asset))
+            source_tag_name = str(SourceTagName(client=self.client, tag=asset))
         except AtlanError as e:
             LOGGER.error(
                 "Unable to construct a source tag name for: %s", asset.qualified_name
@@ -174,7 +174,7 @@ class SourceTagName(AbstractAssetName):
     _TYPE_NAME = "SourceTagAttachment"
     _CONNECTION_DELIMITER = "@@"
 
-    def __init__(self, tag: Union[str, Asset]):
+    def __init__(self, client: AtlanClient, tag: Union[str, Asset]):
         self.connection = None
         self.partial_tag_name = None
 
@@ -182,16 +182,10 @@ class SourceTagName(AbstractAssetName):
         # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
         # preventing Dbt tags from being excluded from caching:
         if isinstance(tag, Asset):
-            from pyatlan.client.atlan import AtlanClient
-
             source_tag_qn = tag.qualified_name or ""
             tokens = source_tag_qn.split("/")
             connection_qn = "/".join(tokens[:3]) if len(tokens) >= 3 else ""
-            conn = (
-                AtlanClient.get_current_client().connection_cache.get_by_qualified_name(
-                    connection_qn
-                )
-            )
+            conn = client.connection_cache.get_by_qualified_name(connection_qn)
             self.connection = ConnectionName(conn)
             self.partial_tag_name = source_tag_qn[len(connection_qn) + 1 :]  # noqa
 
