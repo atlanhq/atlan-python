@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
@@ -37,22 +35,6 @@ def client():
     return AtlanClient()
 
 
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_cm_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
-    return mock_cache
-
-
 @pytest.mark.parametrize(
     "name, cm_name, cm_attribute, badge_conditions, message",
     [
@@ -78,9 +60,9 @@ def test_create_when_required_parameters_are_missing_raises_value_error(
         )
 
 
-def test_create(mock_cm_cache, client: AtlanClient):
-    mock_cm_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
-    mock_cm_cache.get_id_for_name.return_value = CM_ID
+def test_create(mock_custom_metadata_cache, client: AtlanClient):
+    mock_custom_metadata_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
+    mock_custom_metadata_cache.get_id_for_name.return_value = CM_ID
 
     badge = Badge.create(
         client=client,

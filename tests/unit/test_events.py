@@ -2,7 +2,6 @@
 # Copyright 2024 Atlan Pte. Ltd.
 from json import load, loads
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import pytest
 
@@ -45,22 +44,6 @@ def set_env(monkeypatch):
 @pytest.fixture()
 def client():
     return AtlanClient()
-
-
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_tag_cache(current_client, monkeypatch):
-    mock_cache = MagicMock(current_client)
-    monkeypatch.setattr(AtlanClient, "atlan_tag_cache", mock_cache)
-    return mock_cache
 
 
 @pytest.fixture()

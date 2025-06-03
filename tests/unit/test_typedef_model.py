@@ -58,15 +58,6 @@ def client():
     return AtlanClient()
 
 
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
 @pytest.fixture(scope="module")
 def mock_api_caller():
     return Mock(spec=ApiCaller)
@@ -119,8 +110,8 @@ def check_has_attributes(type_def: TypeDef, type_def_json: dict):
 
 class TestEnumDef:
     @pytest.fixture()
-    def mock_enum_cache(self, current_client, monkeypatch):
-        mock_cache = EnumCache(current_client)
+    def mock_enum_cache(self, client, monkeypatch):
+        mock_cache = EnumCache(client)
         monkeypatch.setattr(AtlanClient, "enum_cache", mock_cache)
         return mock_cache
 

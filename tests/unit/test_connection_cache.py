@@ -22,23 +22,14 @@ def client():
 
 
 @pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_connection_cache(current_client, monkeypatch):
-    mock_cache = ConnectionCache(current_client)
+def mock_connection_cache(client, monkeypatch):
+    mock_cache = ConnectionCache(client)
     monkeypatch.setattr(AtlanClient, "connection_cache", mock_cache)
     return mock_cache
 
 
-def test_get_by_guid_with_not_found_error(current_client):
-    connection_cache = ConnectionCache(current_client)
+def test_get_by_guid_with_not_found_error(client):
+    connection_cache = ConnectionCache(client)
     with pytest.raises(InvalidRequestError, match=ErrorCode.MISSING_ID.error_message):
         connection_cache.get_by_guid("")
 

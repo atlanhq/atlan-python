@@ -24,17 +24,8 @@ def client():
 
 
 @pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_tag_cache(current_client, monkeypatch):
-    mock_cache = MagicMock(current_client)
+def mock_tag_cache(client, monkeypatch):
+    mock_cache = MagicMock(client)
     monkeypatch.setattr(AtlanClient, "atlan_tag_cache", mock_cache)
     return mock_cache
 

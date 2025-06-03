@@ -6,7 +6,7 @@ from importlib.resources import read_text
 from json import load, loads
 from pathlib import Path
 from re import escape
-from unittest.mock import DEFAULT, MagicMock, Mock, call, patch
+from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -136,30 +136,6 @@ def set_env(monkeypatch):
 @pytest.fixture()
 def client():
     return AtlanClient()
-
-
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_cm_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    mock_cache.get_name_for_id.return_value = CM_NAME
-    monkeypatch.setattr(AtlanClient, "custom_metadata_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
-def mock_role_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "role_cache", mock_cache)
-    return mock_cache
 
 
 @pytest.fixture
@@ -1878,7 +1854,6 @@ def test_asset_retrieve_minimal_without_asset_type(
 
 
 def test_user_create(
-    current_client,
     mock_api_caller,
     mock_role_cache,
 ):
@@ -1901,9 +1876,7 @@ def test_user_create(
     mock_api_caller.reset_mock()
 
 
-def test_user_create_with_info(
-    current_client, mock_api_caller, mock_role_cache, user_list_json
-):
+def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json):
     test_role_id = "role-guid-123"
     client = UserClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [
@@ -2724,7 +2697,7 @@ def test_get_all_sorting(group_client, mock_api_caller):
     mock_api_caller.reset_mock()
 
 
-def test_get_by_guid_asset_not_found_fluent_search(current_client):
+def test_get_by_guid_asset_not_found_fluent_search():
     guid = "123"
     asset_type = Table
 
@@ -2745,9 +2718,7 @@ def test_get_by_guid_asset_not_found_fluent_search(current_client):
         mock_execute.assert_called_once()
 
 
-def test_get_by_guid_type_mismatch_fluent_search(
-    current_client: AtlanClient, mock_api_caller
-):
+def test_get_by_guid_type_mismatch_fluent_search(mock_api_caller):
     guid = "123"
     expected_asset_type = Table
     returned_asset_type = View
@@ -2772,9 +2743,7 @@ def test_get_by_guid_type_mismatch_fluent_search(
         mock_execute.assert_called_once()
 
 
-def test_get_by_qualified_name_type_mismatch(
-    current_client: AtlanClient, mock_api_caller
-):
+def test_get_by_qualified_name_type_mismatch(mock_api_caller):
     qualified_name = "example_qualified_name"
     expected_asset_type = Table
     returned_asset_type = View
@@ -2798,9 +2767,7 @@ def test_get_by_qualified_name_type_mismatch(
         mock_execute.assert_called_once()
 
 
-def test_get_by_qualified_name_asset_not_found(
-    current_client: AtlanClient, mock_api_caller
-):
+def test_get_by_qualified_name_asset_not_found(mock_api_caller):
     qualified_name = "example_qualified_name"
     asset_type = Table
 

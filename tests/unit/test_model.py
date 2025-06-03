@@ -778,15 +778,6 @@ def client():
 
 
 @pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
 def glossary_term_json():
     return load_json(GLOSSARY_TERM_JSON)
 

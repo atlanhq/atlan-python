@@ -1,5 +1,5 @@
 from typing import List, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -19,36 +19,6 @@ def set_env(monkeypatch):
 @pytest.fixture()
 def client():
     return AtlanClient()
-
-
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_group_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "group_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
-def mock_user_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "user_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
-def mock_role_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "role_cache", mock_cache)
-    return mock_cache
 
 
 @pytest.mark.parametrize(

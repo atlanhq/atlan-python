@@ -22,17 +22,8 @@ def client():
 
 
 @pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_source_tag_cache(current_client, monkeypatch):
-    mock_cache = SourceTagCache(current_client)
+def mock_source_tag_cache(client, monkeypatch):
+    mock_cache = SourceTagCache(client)
     monkeypatch.setattr(AtlanClient, "source_tag_cache", mock_cache)
     return mock_cache
 
@@ -54,8 +45,8 @@ def test_get_by_guid_with_no_invalid_request_error(
         mock_source_tag_cache.get_by_guid(test_guid)
 
 
-def test_get_by_qualified_name_with_not_found_error(current_client):
-    source_tag_cache = SourceTagCache(current_client)
+def test_get_by_qualified_name_with_not_found_error(client):
+    source_tag_cache = SourceTagCache(client)
     with pytest.raises(InvalidRequestError, match=ErrorCode.MISSING_ID.error_message):
         source_tag_cache.get_by_qualified_name("")
 
@@ -75,8 +66,8 @@ def test_get_by_qualified_name_with_no_invalid_request_error(
         mock_source_tag_cache.get_by_qualified_name(test_qn)
 
 
-def test_get_by_name_with_not_found_error(current_client):
-    source_tag_cache = SourceTagCache(current_client)
+def test_get_by_name_with_not_found_error(client):
+    source_tag_cache = SourceTagCache(client)
     with pytest.raises(InvalidRequestError, match=ErrorCode.MISSING_NAME.error_message):
         source_tag_cache.get_by_name("")
 

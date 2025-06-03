@@ -4,7 +4,6 @@ import pytest
 from pydantic.v1 import parse_obj_as
 
 import pyatlan.cache.atlan_tag_cache
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Purpose
 from pyatlan.model.core import AtlanTagName
 
@@ -13,28 +12,8 @@ ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
 GOOD_ATLAN_TAG_NAME = "PII"
 
 
-@pytest.fixture(autouse=True)
-def set_env(monkeypatch):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
-
-
 @pytest.fixture()
-def client():
-    return AtlanClient()
-
-
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def good_atlan_tag(current_client: AtlanClient, monkeypatch):
+def good_atlan_tag(monkeypatch):
     def get_id_for_name(_, value):
         return ATLAN_TAG_ID
 
@@ -46,7 +25,7 @@ def good_atlan_tag(current_client: AtlanClient, monkeypatch):
     return AtlanTagName(GOOD_ATLAN_TAG_NAME)
 
 
-def test_init_with_good_name(current_client: AtlanClient, monkeypatch):
+def test_init_with_good_name(monkeypatch):
     def get_id_for_name(_, value):
         assert value == GOOD_ATLAN_TAG_NAME
         return GOOD_ATLAN_TAG_NAME
@@ -70,9 +49,7 @@ def test_convert_to_display_text_when_atlan_tag_passed_returns_same_atlan_tag(
     assert good_atlan_tag is AtlanTagName._convert_to_tag_name(good_atlan_tag)
 
 
-def test_convert_to_display_text_when_bad_string(
-    current_client: AtlanClient, monkeypatch
-):
+def test_convert_to_display_text_when_bad_string(monkeypatch):
     def get_name_for_id(_, __):
         return None
 
@@ -85,7 +62,7 @@ def test_convert_to_display_text_when_bad_string(
     assert AtlanTagName._convert_to_tag_name("bad").__repr__() == "AtlanTagName('bad')"
 
 
-def test_convert_to_tag_name(current_client: AtlanClient, monkeypatch):
+def test_convert_to_tag_name(monkeypatch):
     sut = AtlanTagName._convert_to_tag_name(ATLAN_TAG_ID)
 
     assert str(sut) == ATLAN_TAG_ID
@@ -95,7 +72,7 @@ def test_convert_to_tag_name(current_client: AtlanClient, monkeypatch):
 #     assert AtlanTagName.json_encode_atlan_tag(good_atlan_tag) == ATLAN_TAG_ID
 
 
-def test_asset_tag_name_field_deserialization(current_client: AtlanClient, monkeypatch):
+def test_asset_tag_name_field_deserialization(monkeypatch):
     def get_name_for_id(_, __):
         return None
 
