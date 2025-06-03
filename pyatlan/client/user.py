@@ -414,7 +414,7 @@ class UserClient:
             )
 
         token_user = self.get_current().username or ""
-        with client_connection(api_key=impersonation_token) as tmp:
+        with client_connection(client=self._client, api_key=impersonation_token) as tmp:  # type: ignore[arg-type]
             request = (
                 FluentSearch()
                 .where(Asset.GUID.eq(asset_guid))

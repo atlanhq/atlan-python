@@ -843,7 +843,9 @@ def test_purpose_search(client: AtlanClient, known_issues_purpose: Purpose):
 
 def test_read_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
-    with client_connection(read_timeout=0.1, retry=Retry(total=0)) as timed_client:
+    with client_connection(
+        client=client, read_timeout=0.1, retry=Retry(total=0)
+    ) as timed_client:
         with pytest.raises(
             requests.exceptions.ReadTimeout,
             match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
@@ -854,7 +856,7 @@ def test_read_timeout(client: AtlanClient):
 def test_connect_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
     with client_connection(
-        connect_timeout=0.0001, retry=Retry(total=0)
+        client=client, connect_timeout=0.0001, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
             requests.exceptions.ConnectionError,
