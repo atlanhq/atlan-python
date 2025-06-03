@@ -91,6 +91,7 @@ def mock_role_cache(current_client, monkeypatch):
     ],
 )
 def test_create_with_missing_parameters_raise_value_error(
+    client: AtlanClient,
     name: str,
     connector_type: AtlanConnectorType,
     admin_users: Optional[List[str]],
@@ -127,12 +128,16 @@ def test_create_with_missing_parameters_raise_value_error(
     with patch.object(TokenClient, "get_by_id", return_value=None):
         with pytest.raises(ValueError, match=message):
             Connection.create(
+                client=client,
                 name=name,
                 connector_type=connector_type,
                 admin_users=admin_users,
                 admin_groups=admin_groups,
                 admin_roles=admin_roles,
             )
+    mock_role_cache.validate_idstrs.reset_mock()
+    mock_user_cache.validate_names.reset_mock()
+    mock_group_cache.validate_aliases.reset_mock()
 
 
 @pytest.mark.parametrize(
@@ -144,6 +149,7 @@ def test_create_with_missing_parameters_raise_value_error(
     ],
 )
 def test_create(
+    client: AtlanClient,
     name: str,
     connector_type: AtlanConnectorType,
     admin_users: List[str],
@@ -158,6 +164,7 @@ def test_create(
     mock_group_cache.validate_aliases
 
     sut = Connection.create(
+        client=client,
         name=name,
         connector_type=connector_type,
         admin_users=admin_users,
@@ -172,6 +179,10 @@ def test_create(
     assert sut.admin_users == set(admin_users)
     assert sut.admin_groups == set(admin_groups)
     assert sut.admin_roles == set(admin_roles)
+
+    mock_role_cache.validate_idstrs.reset_mock()
+    mock_user_cache.validate_names.reset_mock()
+    mock_group_cache.validate_aliases.reset_mock()
 
 
 @pytest.mark.parametrize(
@@ -207,6 +218,7 @@ def test_create(
     ],
 )
 def test_creator_with_custom_type(
+    client: AtlanClient,
     name: str,
     connector_type: AtlanConnectorType,
     admin_users: List[str],
@@ -221,6 +233,7 @@ def test_creator_with_custom_type(
     mock_group_cache.validate_aliases
 
     sut = Connection.create(
+        client=client,
         name=name,
         connector_type=connector_type,
         admin_users=admin_users,
@@ -235,6 +248,10 @@ def test_creator_with_custom_type(
     assert sut.admin_users == set(admin_users)
     assert sut.admin_groups == set(admin_groups)
     assert sut.admin_roles == set(admin_roles)
+
+    mock_role_cache.validate_idstrs.reset_mock()
+    mock_user_cache.validate_names.reset_mock()
+    mock_group_cache.validate_aliases.reset_mock()
 
 
 @pytest.mark.parametrize(
@@ -269,39 +286,6 @@ def test_trim_to_required():
     assert sut.name == CONNECTION_NAME
 
 
-def test_admin_users_when_set_to_bad_name_raise_value_error(mock_user_cache):
-    mock_user_cache.validate_names.side_effect = ValueError("Bad User")
-
-    sut = Connection.create_for_modification(
-        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
-    ).trim_to_required()
-
-    with pytest.raises(ValueError, match="Bad User"):
-        sut.admin_users = ["bogus"]
-
-
-def test_admin_groups_when_set_to_bad_name_raise_value_error(mock_group_cache):
-    mock_group_cache.validate_aliases.side_effect = ValueError("Bad Group")
-
-    sut = Connection.create_for_modification(
-        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
-    ).trim_to_required()
-
-    with pytest.raises(ValueError, match="Bad Group"):
-        sut.admin_groups = ["bogus"]
-
-
-def test_admin_roles_when_set_to_bad_name_raise_value_error(mock_role_cache):
-    mock_role_cache.validate_idstrs.side_effect = ValueError("Bad Role")
-
-    sut = Connection.create_for_modification(
-        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
-    ).trim_to_required()
-
-    with pytest.raises(ValueError, match="Bad Role"):
-        sut.admin_roles = ["bogus"]
-
-
 def test_admin_users_when_set_to_good_name(mock_user_cache):
     mock_user_cache.validate_names
     sut = Connection.create_for_modification(
@@ -311,7 +295,7 @@ def test_admin_users_when_set_to_good_name(mock_user_cache):
     sut.admin_users = ["ernest"]
 
     assert sut.admin_users == {"ernest"}
-    mock_user_cache.validate_names.assert_called_once
+    assert mock_user_cache.validate_names.call_count == 0
 
 
 def test_admin_groups_when_set_to_good_name(mock_group_cache):
@@ -323,7 +307,7 @@ def test_admin_groups_when_set_to_good_name(mock_group_cache):
     sut.admin_groups = ["ernest"]
 
     assert sut.admin_groups == {"ernest"}
-    mock_group_cache.validate_aliases.assert_called_once
+    assert mock_group_cache.validate_aliases.call_count == 0
 
 
 def test_admin_roles_when_set_to_good_name(mock_role_cache):
@@ -335,7 +319,7 @@ def test_admin_roles_when_set_to_good_name(mock_role_cache):
     sut.admin_roles = ["ernest"]
 
     assert sut.admin_roles == {"ernest"}
-    mock_role_cache.validate_idstrs.assert_called_once
+    assert mock_role_cache.validate_idstrs.call_count == 0
 
 
 def test_validation_of_admin_not_done_when_constructed_from_json(

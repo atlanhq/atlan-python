@@ -61,19 +61,21 @@ def get_attr_name_for_id(*args, **kwargs):
 
 class TestCustomMetadataDict:
     @pytest.fixture()
-    def sut(self, mock_cache):
+    def sut(self, mock_cache, client: AtlanClient):
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
 
-        return CustomMetadataDict(CM_NAME)
+        return CustomMetadataDict(client=client, name=CM_NAME)
 
-    def test_init_when_invalid_name_throws_not_found_error(self, mock_cache):
+    def test_init_when_invalid_name_throws_not_found_error(
+        self, mock_cache, client: AtlanClient
+    ):
         mock_cache.get_id_for_name.side_effect = (
             ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters("123")
         )
         with pytest.raises(NotFoundError):
-            CustomMetadataDict(CM_NAME)
+            CustomMetadataDict(client=client, name=CM_NAME)
         mock_cache.get_id_for_name.assert_called_with(CM_NAME)
 
     def test_modified_after_init_returns_false(self, sut):
@@ -152,8 +154,8 @@ class TestCustomMetadataDict:
 
 class TestCustomMetadataProxy:
     @pytest.fixture()
-    def sut(self, mock_cache):
-        yield CustomMetadataProxy(business_attributes=None)
+    def sut(self, mock_cache, client: AtlanClient):
+        yield CustomMetadataProxy(client=client, business_attributes=None)
 
     def test_when_intialialized_with_no_business_attributes_then_modified_is_false(
         self, sut
@@ -166,23 +168,25 @@ class TestCustomMetadataProxy:
     ):
         assert sut.business_attributes is None
 
-    def test_set_custom_metadata(self, sut):
-        cm = CustomMetadataDict(name=CM_NAME, client=client)
+    def test_set_custom_metadata(self, sut, client: AtlanClient):
+        cm = CustomMetadataDict(client=client, name=CM_NAME)
         sut.set_custom_metadata(cm)
         assert sut.modified is True
-        assert sut.get_custom_metadata(client=client, name=CM_NAME) is cm
+        assert sut.get_custom_metadata(name=CM_NAME) is cm
 
     def test_after_modifying_metadata_modified_is_true(self, sut, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = False
 
-        cm = sut.get_custom_metadata(client=client, name=CM_NAME)
+        cm = sut.get_custom_metadata(name=CM_NAME)
         cm[ATTR_FIRST_NAME] = "James"
 
         assert sut.modified is True
 
-    def test_when_not_modified_returns_business_attributes(self, mock_cache):
+    def test_when_not_modified_returns_business_attributes(
+        self, mock_cache, client: AtlanClient
+    ):
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
         mock_cache.get_id_for_name.return_value = CM_ID
@@ -190,11 +194,13 @@ class TestCustomMetadataProxy:
         mock_cache.is_attr_archived.return_value = False
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
 
-        sut = CustomMetadataProxy(business_attributes=ba)
+        sut = CustomMetadataProxy(client=client, business_attributes=ba)
 
         assert sut.business_attributes is ba
 
-    def test_when_modified_returns_updated_business_attributes(self, mock_cache):
+    def test_when_modified_returns_updated_business_attributes(
+        self, mock_cache, client: AtlanClient
+    ):
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.side_effect = get_attr_name_for_id
         mock_cache.get_id_for_name.return_value = CM_ID
@@ -203,43 +209,45 @@ class TestCustomMetadataProxy:
         mock_cache.get_attr_id_for_name.side_effect = get_attr_id_for_name
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
 
-        sut = CustomMetadataProxy(business_attributes=ba)
-        cm = sut.get_custom_metadata(client=client, name=CM_NAME)
+        sut = CustomMetadataProxy(client=client, business_attributes=ba)
+        cm = sut.get_custom_metadata(name=CM_NAME)
         joey = "Joey"
         donna = "Donna"
         cm[ATTR_FIRST_NAME] = donna
         cm[ATTR_LAST_NAME] = joey
-        ba = sut.business_attributes
+        ba = sut.business_attributes  # type: ignore[assignment]
 
         assert ba == {CM_ID: {ATTR_FIRST_NAME_ID: donna, ATTR_LAST_NAME_ID: joey}}
 
-    def test_when_invalid_metadata_set_then_delete_sentinel_is_used(self, mock_cache):
+    def test_when_invalid_metadata_set_then_delete_sentinel_is_used(
+        self, mock_cache, client: AtlanClient
+    ):
         mock_cache.get_name_for_id.side_effect = (
             ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(CM_ID)
         )
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
 
-        sut = CustomMetadataProxy(business_attributes=ba)
+        sut = CustomMetadataProxy(client=client, business_attributes=ba)
 
         assert len(sut.get_custom_metadata("(DELETED)")) == 0
 
-    def test_when_property_is_archived(self, mock_cache):
+    def test_when_property_is_archived(self, mock_cache, client: AtlanClient):
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.return_value = ATTR_FIRST_NAME
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.map_attr_id_to_name = META_DATA
         mock_cache.is_attr_archived.return_value = True
         ba = {CM_ID: {ATTR_FIRST_NAME_ID: ATTR_FIRST_NAME}}
-        sut = CustomMetadataProxy(business_attributes=ba)
+        sut = CustomMetadataProxy(client=client, business_attributes=ba)
         assert sut.business_attributes is ba
         assert sut.get_custom_metadata(CM_NAME) == {}
 
 
 class TestCustomMetadataRequest:
-    def test_create(self, mock_cache):
+    def test_create(self, mock_cache, client: AtlanClient):
         mock_cache.get_id_for_name.return_value = CM_ID
         mock_cache.map_attr_id_to_name = META_DATA
 
-        cm = CustomMetadataDict(CM_NAME)
+        cm = CustomMetadataDict(client=client, name=CM_NAME)
         request = CustomMetadataRequest.create(custom_metadata_dict=cm)
         assert request.__root__ == {}

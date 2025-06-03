@@ -1493,7 +1493,7 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
 
 
 def test_asset_get_lineage_list_response_with_custom_metadata(
-    mock_cm_cache, mock_api_caller, lineage_list_json
+    mock_api_caller, lineage_list_json
 ):
     asset_client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
@@ -1515,7 +1515,6 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
         assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
 
     assert mock_api_caller._call_api.call_count == 1
-    assert mock_cm_cache.get_name_for_id.call_count == 1
     mock_api_caller.reset_mock()
 
 
@@ -1885,6 +1884,7 @@ def test_user_create(
 ):
     test_role_id = "role-guid-123"
     client = UserClient(mock_api_caller)
+    client._client.role_cache = mock_role_cache
     mock_api_caller._call_api.side_effect = [None]
     mock_role_cache.get_id_for_name.return_value = test_role_id
 

@@ -2,6 +2,7 @@ from json import dumps
 from typing import Any, Dict, List, Optional
 
 from pyatlan import utils
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Connection
 from pyatlan.model.packages.base.package import AbstractPackage
@@ -27,6 +28,7 @@ class AbstractCrawler(AbstractPackage):
 
     def __init__(
         self,
+        client: AtlanClient,
         connection_name: str,
         connection_type: str,
         admin_roles: Optional[List[str]] = None,
@@ -38,6 +40,7 @@ class AbstractCrawler(AbstractPackage):
         source_logo: str = "",
     ):
         super().__init__()
+        self._client = client
         self._connection_name = connection_name
         self._connection_type = connection_type
         self._admin_roles = admin_roles
@@ -55,6 +58,7 @@ class AbstractCrawler(AbstractPackage):
         which will be the target for the package to crawl assets.
         """
         connection = Connection.create(
+            client=self._client,
             name=self._connection_name,
             connector_type=self._connection_type,
             admin_roles=self._admin_roles,

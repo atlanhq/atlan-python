@@ -78,11 +78,12 @@ def test_create_when_required_parameters_are_missing_raises_value_error(
         )
 
 
-def test_create(mock_cm_cache):
+def test_create(mock_cm_cache, client: AtlanClient):
     mock_cm_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
     mock_cm_cache.get_id_for_name.return_value = CM_ID
 
     badge = Badge.create(
+        client=client,
         name=BADGE_NAME,
         cm_name=CM_SET_NAME,
         cm_attribute=CM_ATTRIBUTE_NAME,

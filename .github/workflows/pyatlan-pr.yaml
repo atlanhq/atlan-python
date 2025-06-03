@@ -60,16 +60,16 @@ jobs:
           if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install --no-cache-dir -r requirements-dev.txt; fi
 
-      # - name: QA checks (ruff-format, ruff-lint, mypy)
-      #   run: |
-      #     ./qa-checks
+      - name: QA checks (ruff-format, ruff-lint, mypy)
+        run: |
+          ./qa-checks
 
-      # - name: Run unit tests
-      #   env: # Test tenant environment variables
-      #     ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
-      #     ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
-      #   # Run with `pytest-sugar` for enhancing the overall test report output
-      #   run: pytest tests/unit --force-sugar
+      - name: Run unit tests
+        env: # Test tenant environment variables
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        # Run with `pytest-sugar` for enhancing the overall test report output
+        run: pytest tests/unit --force-sugar
 
       - name: Prepare integration tests distribution
         id: distribute-integration-test-files

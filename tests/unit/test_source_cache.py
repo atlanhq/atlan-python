@@ -83,9 +83,9 @@ def test_get_by_name_with_not_found_error(current_client):
 
 @patch.object(SourceTagCache, "lookup_by_name")
 def test_get_by_name_with_no_invalid_request_error(
-    mock_lookup_by_name, mock_source_tag_cache
+    mock_lookup_by_name, mock_source_tag_cache, client: AtlanClient
 ):
-    test_name = SourceTagName("snowflake/test@@DB/SCHEMA/TEST_TAG")
+    test_name = SourceTagName(client=client, tag="snowflake/test@@DB/SCHEMA/TEST_TAG")
     with pytest.raises(
         NotFoundError,
         match=ErrorCode.ASSET_NOT_FOUND_BY_NAME.error_message.format(
@@ -206,8 +206,10 @@ def test_get_by_qualified_name(
 
 @patch.object(SourceTagCache, "lookup_by_guid")
 @patch.object(SourceTagCache, "lookup_by_name")
-def test_get_by_name(mock_lookup_by_name, mock_lookup_by_guid, mock_source_tag_cache):
-    test_name = SourceTagName("snowflake/test@@DB/SCHEMA/TEST_TAG")
+def test_get_by_name(
+    mock_lookup_by_name, mock_lookup_by_guid, mock_source_tag_cache, client: AtlanClient
+):
+    test_name = SourceTagName(client=client, tag="snowflake/test@@DB/SCHEMA/TEST_TAG")
     test_guid = "test-guid-123"
     test_qn = "test-qualified-name"
     conn = Connection()
