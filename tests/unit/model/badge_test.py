@@ -70,6 +70,7 @@ def test_create_when_required_parameters_are_missing_raises_value_error(
 ):
     with pytest.raises(ValueError, match=message):
         Badge.create(
+            client=client,
             name=name,
             cm_name=cm_name,
             cm_attribute=cm_attribute,

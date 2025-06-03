@@ -43,7 +43,9 @@ class Connection(Asset, type_name="Connection"):
         host: Optional[str] = None,
         port: Optional[int] = None,
     ) -> Connection:
-        validate_required_fields(["name", "connector_type"], [name, connector_type])
+        validate_required_fields(
+            ["client", "name", "connector_type"], [client, name, connector_type]
+        )
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"

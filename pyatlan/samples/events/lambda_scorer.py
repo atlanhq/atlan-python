@@ -71,6 +71,7 @@ def _create_cm_if_not_exists(client: AtlanClient) -> Optional[str]:
             client.typedef.create(cm_def)
             logger.info("Created DaaP custom metadata structure.")
             badge = Badge.create(
+                client=client,
                 name=CM_ATTR_DAAP_SCORE,
                 cm_name=CM_DAAP,
                 cm_attribute=CM_ATTR_DAAP_SCORE,

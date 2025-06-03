@@ -118,13 +118,13 @@ class CustomMetadataProxy:
         client: AtlanClient,
         business_attributes: Optional[Dict[str, Any]],
     ):
+        self._client = client
         self._metadata: Optional[Dict[str, CustomMetadataDict]] = None
         self._business_attributes = business_attributes
         self._modified = False
         if self._business_attributes is None:
             return
         self._metadata = {}
-        self._client = client
         for cm_id, cm_attributes in self._business_attributes.items():
             try:
                 cm_name = self._client.custom_metadata_cache.get_name_for_id(cm_id)

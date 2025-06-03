@@ -1117,6 +1117,7 @@ def test_add_badge_cm_dq(
     cm_dq: CustomMetadataDef,
 ):
     badge = Badge.create(
+        client=client,
         name=CM_ATTR_QUALITY_COUNT,
         cm_name=CM_QUALITY,
         cm_attribute=CM_ATTR_QUALITY_COUNT,

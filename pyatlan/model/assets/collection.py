@@ -103,7 +103,7 @@ class Collection(Namespace):
             client: AtlanClient,
             name: str,
         ) -> Collection.Attributes:
-            validate_required_fields(["name"], [name])
+            validate_required_fields(["client", "name"], [client, name])
             return Collection.Attributes(
                 name=name,
                 qualified_name=Collection._generate_qualified_name(client),
