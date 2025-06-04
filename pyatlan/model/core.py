@@ -43,20 +43,7 @@ class AtlanTagName:
         return obj
 
     def __init__(self, display_text: str):
-        # from pyatlan.client.atlan import AtlanClient
-
-        # if not (
-        #     id := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-        #         display_text
-        #     )
-        # ):
-        #     raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
-        # self._id = id
-
-    # @property
-    # def id(self):
-    #     return self._id
 
     @classmethod
     def get_deleted_sentinel(cls) -> "AtlanTagName":
@@ -84,34 +71,11 @@ class AtlanTagName:
             and self._display_text == other._display_text
         )
 
-    # @classmethod
-    # def _convert_to_display_text(cls, data):
-    #     from pyatlan.client.atlan import AtlanClient
-
-    #     if isinstance(data, AtlanTagName):
-    #         return data
-
-    #     if (
-    #         display_text
-    #         := AtlanClient.get_current_client().atlan_tag_cache.get_name_for_id(data)
-    #     ):
-    #         return AtlanTagName(display_text)
-    #     else:
-    #         return cls.get_deleted_sentinel()
-
     @classmethod
     def _convert_to_tag_name(cls, data):
         if isinstance(data, AtlanTagName):
             return data
         return AtlanTagName(data) if data else cls.get_deleted_sentinel()
-
-    # @staticmethod
-    # def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-    #     from pyatlan.client.atlan import AtlanClient
-
-    #     return AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-    #         atlan_tag_name._display_text
-    #     )
 
 
 class AtlanObject(BaseModel):
@@ -222,20 +186,20 @@ class AtlanResponse:
 
 
 class AtlanRequest:
-    def __init__(self, model: AtlanObject, client: AtlanClient):
+    def __init__(self, instance: AtlanObject, client: AtlanClient):
         self.client = client
-        self.model = model
+        self.instance = instance
         self.retranslators = [
             AtlanTagRetranslator(client),
             # add others...
         ]
-        # Do: model.json() → parse → translate → store
+        # Do: instance.json() → parse → translate → store
         try:
-            raw_json = self.model.json(
+            raw_json = self.instance.json(
                 by_alias=True, exclude_unset=True, client=self.client
             )
         except TypeError:
-            raw_json = self.model.json(
+            raw_json = self.instance.json(
                 by_alias=True,
                 exclude_unset=True,
             )
@@ -328,7 +292,7 @@ class AtlanTag(AtlanObject):
     )
 
     attributes: Optional[Dict[str, Any]] = None
-    tag_id: Optional[str] = Field(default=True, exclude=True)
+    tag_id: Optional[str] = Field(default=None, exclude=True)
 
     # @property
     # def source_tag_attachements(self) -> List[SourceTagAttachment]:

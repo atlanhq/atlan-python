@@ -646,7 +646,7 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = AtlanRequest(request_obj, client=self).json()
+                params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
             else:
