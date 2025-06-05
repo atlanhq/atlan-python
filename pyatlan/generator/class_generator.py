@@ -213,6 +213,14 @@ class AssetInfo:
     entity_defs_by_name: Dict[str, EntityDef] = {}
     sub_type_names_to_ignore: Set[str] = set()
     is_core_asset: bool = False
+    _ASSETS_REQUIRE_CLIENT = {
+        "Badge",
+        "Collection",
+        "Connection",
+        "DataProduct",
+        "Referenceable",
+        "Purpose",
+    }
     _CORE_ASSETS = {
         "Referenceable",
         "Asset",

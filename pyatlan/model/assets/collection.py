@@ -4,18 +4,20 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import TYPE_CHECKING, ClassVar, List, Optional
 from uuid import uuid4
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.enums import IconType
 from pyatlan.model.fields.atlan_fields import KeywordField, TextField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.namespace import Namespace
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 
 class Collection(Namespace):
