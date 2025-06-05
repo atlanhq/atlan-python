@@ -12,20 +12,8 @@ import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
-from threading import local
 from types import SimpleNamespace
-from typing import (
-    Any,
-    ClassVar,
-    Dict,
-    Generator,
-    List,
-    Literal,
-    Optional,
-    Set,
-    Type,
-    Union,
-)
+from typing import Any, Dict, Generator, List, Literal, Optional, Set, Type, Union
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -150,17 +138,14 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _401_has_retried_ctx: ClassVar[ContextVar] = ContextVar(
-        "_401_has_retried_ctx", default=False
-    )
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
+    _401_has_retried: bool = PrivateAttr(default=False)
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
-    _401_tls: local = local()
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
@@ -203,7 +188,7 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        self._401_has_retried_ctx.set(False)
+        self._401_has_retried = False
 
     @property
     def admin(self) -> AdminClient:
@@ -426,11 +411,11 @@ class AtlanClient(BaseSettings):
             # - But if the next response is != 401 (e.g. 403), and `has_retried = True`,
             # then we should reset `has_retried = False` so that future 401s can trigger a new token refresh.
             if (
-                self._401_has_retried_ctx.get()
+                self._401_has_retried
                 and response.status_code
                 != ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
             ):
-                self._401_has_retried_ctx.set(False)
+                self._401_has_retried = False
 
             if response.status_code == api.expected_status:
                 try:
@@ -521,7 +506,7 @@ class AtlanClient(BaseSettings):
                     # on authentication failure (token may have expired)
                     if (
                         self._user_id
-                        and not self._401_has_retried_ctx.get()
+                        and not self._401_has_retried
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
@@ -680,7 +665,7 @@ class AtlanClient(BaseSettings):
             )
             raise
         self.api_key = new_token
-        self._401_has_retried_ctx.set(True)
+        self._401_has_retried = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
