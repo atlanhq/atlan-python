@@ -129,7 +129,7 @@ class DataProduct(DataMesh):
         """
         Reterieves list of all assets linked to the provided data product.
 
-        :param client: connectivity to an Atlan tenant. If not provided, the default client will be used.
+        :param client: connectivity to an Atlan tenant
         :raises InvalidRequestError: if DataProduct asset DSL cannot be found (does not exist) in Atlan
         :raises AtlanError: if there is an issue interacting with the API
         :returns: instance of `IndexSearchResults` with list of all assets linked to the provided data product

@@ -333,6 +333,7 @@ class EnumDef(TypeDef):
         """
         Builds the minimal object necessary to update an enumeration definition.
 
+        :param client: connectivity to an Atlan tenant
         :param name: display name the human-readable name for the enumeration
         :param values: the list of additional valid values
         (as strings) to add to the existing enumeration
