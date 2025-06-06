@@ -177,7 +177,7 @@ def _assert_source_tag(tables, source_tag, source_tag_value):
         synced_tags = [tag for tag in tags if str(tag.type_name) == source_tag]
         assert synced_tags and len(synced_tags) > 0
         for st in synced_tags:
-            attachments = st.source_tag_attachements
+            attachments = st.source_tag_attachments
             assert attachments and len(attachments) > 0
             for sta in attachments:
                 values = sta.source_tag_value

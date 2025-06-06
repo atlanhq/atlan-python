@@ -12,6 +12,7 @@ class AbstractCrawler(AbstractPackage):
     """
     Abstract class for crawlers
 
+    :param client: connectivity to an Atlan tenant
     :param connection_name: name for the connection
     :param connection_type: type of connector for the connection
     :param admin_roles: admin roles for the connection

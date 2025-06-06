@@ -8,18 +8,36 @@ if TYPE_CHECKING:
 
 
 class BaseRetranslator(ABC):
+    """
+    Abstract base class for retranslators that reverse-translate structured
+    API-ready payloads from user-friendly form to internal backend format.
+    """
+
     @abstractmethod
     def applies_to(self, data: Dict[str, Any]) -> bool:
+        """
+        Determines if this retranslator should process the provided data.
+        """
         pass
 
     @abstractmethod
     def retranslate(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Converts user-friendly values (like tag names)
+        into backend-compatible values (like hashed tag IDs).
+        """
         pass
 
 
 class AtlanTagRetranslator(BaseRetranslator):
+    """
+    Retranslator that converts human-readable Atlan tag names into
+    hashed ID representations, and re-injects source tag attributes
+    under the correct format for API submission.
+    """
+
     _TYPE_NAME = "typeName"
-    _SOURCE_ATTACHMENTS = "source_tag_attachements"
+    _SOURCE_ATTACHMENTS = "source_tag_attachments"
     _CLASSIFICATION_NAMES = {"classificationNames", "purposeClassifications"}
     _CLASSIFICATION_KEYS = {
         "classifications",
@@ -27,15 +45,25 @@ class AtlanTagRetranslator(BaseRetranslator):
         "removeClassifications",
     }
 
-    def __init__(self, client: "AtlanClient"):
+    def __init__(self, client: AtlanClient):
+        """
+        Initializes the retranslator with a client instance to access the Atlan tag cache.
+        """
         self.client = client
 
     def applies_to(self, data: Dict[str, Any]) -> bool:
+        """
+        Checks whether the input dictionary contains fields related to classifications or tags.
+        """
         return any(key in data for key in self._CLASSIFICATION_NAMES) or any(
             key in data for key in self._CLASSIFICATION_KEYS
         )
 
     def retranslate(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Replaces tag names with tag IDs, and reconstructs source tag attachment blocks
+        in their expected API form (including nested attributes).
+        """
         from pyatlan.model.constants import DELETED_
 
         data = data.copy()

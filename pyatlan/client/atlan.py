@@ -446,6 +446,11 @@ class AtlanClient(BaseSettings):
                     if text_response:
                         response_ = response.text
                     else:
+                        # The response may be either a JSON object or a list of events
+                        # If it's an event stream, return the list of events directly
+                        # Otherwise, parse the JSON response using AtlanResponse,
+                        # which handles translation tasks such as converting
+                        # Atlan tag hashed IDs into human-readable strings
                         response_ = (
                             events
                             if events
@@ -631,6 +636,9 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
+                # Always use AtlanRequest, which accepts a Pydantic model instance and the client
+                # Behind the scenes, it handles retranslation tasks—such as converting
+                # human-readable Atlan tag names back into hashed IDs as required by the backend
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj

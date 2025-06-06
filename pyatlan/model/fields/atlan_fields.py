@@ -3,7 +3,7 @@
 from abc import ABC
 from datetime import date
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, overload
+from typing import Any, Dict, List, Optional, Union, overload
 
 from pydantic.v1 import StrictBool, StrictFloat, StrictInt, StrictStr
 
@@ -27,9 +27,6 @@ from pyatlan.model.search import (
 )
 from pyatlan.model.typedef import AttributeDef
 from pyatlan.utils import ComparisonCategory, is_comparable_type
-
-if TYPE_CHECKING:
-    pass
 
 
 class AtlanField(ABC):

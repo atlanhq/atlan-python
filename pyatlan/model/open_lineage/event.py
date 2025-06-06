@@ -75,6 +75,7 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         """
         Send the OpenLineage event to Atlan to be processed.
 
+        :param client: connectivity to an Atlan tenant
         :raises AtlanError: on any API communication issues
         """
         return client.open_lineage.send(

@@ -54,66 +54,6 @@ def test_convert_to_tag_name():
     assert str(sut) == ATLAN_TAG_ID
 
 
-def test_asset_tag_name_field_deserialization():
-    # Simulate a `Purpose` asset with `purpose_atlan_tags` of type `AtlanTagName`
-    purpose_asset = {
-        "typeName": "Purpose",
-        "attributes": {
-            # AtlanTagName
-            "purposeClassifications": [
-                "some-deleted-purpose-tag-1",
-                "some-deleted-purpose-tag-2",
-            ],
-        },
-        "guid": "9f7a35f4-8d37-4273-81ec-c497a83a2472",
-        "status": "ACTIVE",
-        "classifications": [
-            # AtlanTag
-            {
-                "typeName": "some-deleted-purpose-tag-1",
-                "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
-                "entityStatus": "DELETED",
-                "propagate": False,
-                "removePropagationsOnEntityDelete": True,
-                "restrictPropagationThroughLineage": True,
-                "restrictPropagationThroughHierarchy": False,
-            },
-            {
-                "typeName": "some-deleted-purpose-tag-2",
-                "entityGuid": "82683fb9-1501-4627-a5d0-0da9be64c0d5",
-                "entityStatus": "DELETED",
-                "propagate": False,
-                "removePropagationsOnEntityDelete": True,
-                "restrictPropagationThroughLineage": True,
-                "restrictPropagationThroughHierarchy": False,
-            },
-        ],
-    }
-    purpose = parse_obj_as(Purpose, purpose_asset)
-    assert purpose and isinstance(purpose, Purpose)
-
-    # Verify that deleted tags are correctly set to `None`
-    # assert purpose.atlan_tags == [AtlanTagName('(DELETED)')]
-    assert purpose.atlan_tags and len(purpose.atlan_tags) == 2
-    assert (
-        purpose.atlan_tags[0].type_name.__repr__()
-        == "AtlanTagName('some-deleted-purpose-tag-1')"
-    )
-    assert (
-        purpose.atlan_tags[1].type_name.__repr__()
-        == "AtlanTagName('some-deleted-purpose-tag-2')"
-    )
-    assert purpose.purpose_atlan_tags and len(purpose.purpose_atlan_tags) == 2
-    assert (
-        purpose.purpose_atlan_tags[0].__repr__()
-        == "AtlanTagName('some-deleted-purpose-tag-1')"
-    )
-    assert (
-        purpose.purpose_atlan_tags[1].__repr__()
-        == "AtlanTagName('some-deleted-purpose-tag-2')"
-    )
-
-
 def test_get_deleted_sentinel():
     sentinel = AtlanTagName.get_deleted_sentinel()
 
@@ -124,9 +64,10 @@ def test_get_deleted_sentinel():
 def _assert_asset_tags(asset):
     assert asset and isinstance(asset, Purpose)
     # Verify that deleted tags are correctly set to `None`
-    assert asset.atlan_tags and len(asset.atlan_tags) == 2
+    assert asset.atlan_tags and len(asset.atlan_tags) == 3
     assert asset.atlan_tags[0].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.atlan_tags[1].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
+    assert asset.atlan_tags[2].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.purpose_atlan_tags and len(asset.purpose_atlan_tags) == 2
     assert asset.purpose_atlan_tags[0].__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.purpose_atlan_tags[1].__repr__() == f"AtlanTagName('{DELETED_}')"
@@ -190,6 +131,23 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
                 "removePropagationsOnEntityDelete": True,
                 "restrictPropagationThroughLineage": True,
                 "restrictPropagationThroughHierarchy": False,
+            },
+            # Source tags
+            {
+                "typeName": "some-deleted-source-tag-1",
+                "attributes": {
+                    "XzEYmFzETBrS7nuxeImNie": [
+                        {
+                            "sourceTagName": "CONFIDENTIAL",
+                            "sourceTagQualifiedName": "default/snowflake/1747816988/ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL",
+                            "sourceTagGuid": "2a9dab90-1b86-432d-a28a-9f3d9b61192b",
+                            "sourceTagConnectorName": "snowflake",
+                            "sourceTagValue": [
+                                {"tagAttachmentValue": "Not Restricted"}
+                            ],
+                        }
+                    ]
+                },
             },
         ],
     }

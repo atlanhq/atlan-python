@@ -8,8 +8,6 @@ from re import escape
 from unittest.mock import create_autospec
 
 import pytest
-
-# from deepdiff import DeepDiff
 from pydantic.v1.error_wrappers import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
@@ -926,27 +924,6 @@ def test_validate_single_required_field_with_bad_values_raises_value_error(
 
 def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
     validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
-
-
-# def test_atlan_tag_names(current_client: AtlanClient, monkeypatch):
-#     tag_name = "Issue"
-#     tag_id = "123"
-
-#     def get_name_for_id(_, value):
-#         if value == tag_id:
-#             return tag_name
-#         return ""
-
-#     monkeypatch.setattr(
-#         pyatlan.cache.atlan_tag_cache.AtlanTagCache,
-#         "get_name_for_id",
-#         get_name_for_id,
-#     )
-
-#     referenceable = Referenceable()
-#     referenceable.classification_names = [tag_id, "456"]
-
-#     assert referenceable.atlan_tag_names == [tag_name, DELETED_]
 
 
 def test_create_for_modification_on_asset_raises_exception():

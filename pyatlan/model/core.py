@@ -154,7 +154,16 @@ class AtlanYamlModel(BaseModel):
 
 
 class AtlanResponse:
+    """
+    A wrapper class to handle and translate raw JSON responses
+    from the Atlan API into human-readable formats using registered translators.
+    """
+
     def __init__(self, raw_json: Dict[str, Any], client: AtlanClient):
+        """
+        Initialize the AtlanResponse with raw JSON and client.
+        Automatically applies translations to the raw JSON.
+        """
         self.raw_json = raw_json
         self.client = client
         self.translators = [
@@ -166,6 +175,9 @@ class AtlanResponse:
     def _deep_translate(
         self, data: Union[Dict[str, Any], List[Any], Any]
     ) -> Union[Dict[str, Any], List[Any], Any]:
+        """
+        Recursively translate fields in a JSON structure using registered translators.
+        """
         if isinstance(data, dict):
             # Apply translators to this dict if any apply
             for translator in self.translators:
@@ -182,11 +194,25 @@ class AtlanResponse:
             return data
 
     def to_dict(self) -> Union[Dict[str, Any], List[Any], Any]:
+        """
+        Returns the translated version of the raw JSON response.
+        """
         return self.translated
 
 
 class AtlanRequest:
+    """
+    A wrapper class to handle and retranslate an AtlanObject instance
+    into a backend-compatible JSON format by applying retranslators.
+    """
+
     def __init__(self, instance: AtlanObject, client: AtlanClient):
+        """
+        Initialize an AtlanRequest for a given asset/model instance.
+
+        Serializes the instance to JSON, applies retranslation logic, and prepares
+        a structure compatible with Atlan's API (e.g: converts tag names back to hashed IDs).
+        """
         self.client = client
         self.instance = instance
         self.retranslators = [
@@ -207,6 +233,9 @@ class AtlanRequest:
         self.translated = self._deep_retranslate(parsed)
 
     def _deep_retranslate(self, data: Any) -> Any:
+        """
+        Recursively traverse and apply retranslators to JSON-like data.
+        """
         if isinstance(data, dict):
             for retranslator in self.retranslators:
                 if retranslator.applies_to(data):
@@ -217,6 +246,9 @@ class AtlanRequest:
         return data
 
     def json(self, **kwargs) -> str:
+        """
+        Returns the fully retranslated JSON string, suitable for API calls.
+        """
         return json.dumps(self.translated, **kwargs)
 
 
@@ -287,31 +319,12 @@ class AtlanTag(AtlanObject):
         alias="restrictPropagationThroughHierarchy",
     )
     validity_periods: Optional[List[str]] = Field(default=None, alias="validityPeriods")
-    source_tag_attachements: List[SourceTagAttachment] = Field(
+    source_tag_attachments: List[SourceTagAttachment] = Field(
         default_factory=list, exclude=True
     )
 
     attributes: Optional[Dict[str, Any]] = None
     tag_id: Optional[str] = Field(default=None, exclude=True)
-
-    # @property
-    # def source_tag_attachements(self) -> List[SourceTagAttachment]:
-    #     return self._source_tag_attachements
-
-    # def __init__(self, *args, **kwargs):
-    #     from pyatlan.client.atlan import AtlanClient
-
-    #     super().__init__(*args, **kwargs)
-    #     if self.type_name != AtlanTagName.get_deleted_sentinel():
-    #         attr_id = AtlanClient.get_current_client().atlan_tag_cache.get_source_tags_attr_id(
-    #             self.type_name.id
-    #         )
-    #     if self.attributes and attr_id in self.attributes:
-    #         self._source_tag_attachements = [
-    #             SourceTagAttachment(**source_tag["attributes"])
-    #             for source_tag in self.attributes[attr_id]
-    #             if isinstance(source_tag, dict) and source_tag.get("attributes")
-    #         ]
 
     @classmethod
     def of(
@@ -343,7 +356,7 @@ class AtlanTag(AtlanObject):
                 tag_id or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]
-            tag.source_tag_attachements.append(source_tag_attachment)
+            tag.source_tag_attachments.append(source_tag_attachment)
         return tag
 
 

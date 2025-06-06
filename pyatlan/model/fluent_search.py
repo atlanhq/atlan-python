@@ -106,6 +106,7 @@ class CompoundQuery:
         provided. This will match irrespective of the Atlan tag being directly applied to the
         asset, or if it was propagated to the asset.
 
+        :param client: connectivity to an Atlan tenant
         :param with_one_of: human-readable names of the Atlan tags
         :param directly: when True, the asset must have at least one Atlan tag directly assigned, otherwise
                          even propagated tags will suffice
@@ -156,6 +157,7 @@ class CompoundQuery:
         Returns a query that will match assets that have a
         specific value for the specified tag (for source-synced tags).
 
+        :param client: connectivity to an Atlan tenant
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param value: tag should have to match the query
         :param directly: when `True`, the asset must have the tag and

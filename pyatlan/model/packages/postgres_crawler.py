@@ -12,6 +12,7 @@ class PostgresCrawler(AbstractCrawler):
     """
     Base configuration for a new PostgreSQL crawler.
 
+    :param client: connectivity to an Atlan tenant
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
     :param admin_groups: admin groups for the connection
