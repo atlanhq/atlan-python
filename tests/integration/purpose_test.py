@@ -196,6 +196,7 @@ def test_add_policies_to_purpose(
     token: ApiToken,
 ):
     metadata = Purpose.create_metadata_policy(
+        client=client,
         name="Simple read access",
         purpose_id=purpose.guid,
         policy_type=AuthPolicyType.ALLOW,
@@ -203,6 +204,7 @@ def test_add_policies_to_purpose(
         all_users=True,
     )
     data = Purpose.create_data_policy(
+        client=client,
         name="Mask the data",
         purpose_id=purpose.guid,
         policy_type=AuthPolicyType.DATA_MASK,
@@ -297,8 +299,10 @@ def test_token_permissions(client: AtlanClient, token):
 
 @pytest.mark.skip(reason="Test failing with HekaException")
 @pytest.mark.order(after="test_token_permissions")
-def test_run_query_with_policy(assign_tag_to_asset, token, query):
-    with client_connection(api_key=token.attributes.access_token) as redacted:
+def test_run_query_with_policy(assign_tag_to_asset, token, query, client: AtlanClient):
+    with client_connection(
+        client=client, api_key=token.attributes.access_token
+    ) as redacted:
         # The policy will take some time to go into effect
         # start by waiting a reasonable set amount of time
         # (limit the same query re-running multiple times on data store)

@@ -79,6 +79,7 @@ def create_badge():
     custom metadata structure.
     """
     badge = Badge.create(
+        client=client,
         name="Rating",
         cm_name=CUSTOM_METADATA_NAME,
         cm_attribute="Rating",

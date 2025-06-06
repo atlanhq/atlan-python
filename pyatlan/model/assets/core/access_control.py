@@ -40,6 +40,12 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DENY_SIDEBAR_TABS: ClassVar[KeywordField] = KeywordField(
+        "denySidebarTabs", "denySidebarTabs"
+    )
+    """
+    TBC
+    """
     DENY_CUSTOM_METADATA_GUIDS: ClassVar[KeywordField] = KeywordField(
         "denyCustomMetadataGuids", "denyCustomMetadataGuids"
     )
@@ -100,6 +106,7 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     _convenience_properties: ClassVar[List[str]] = [
         "is_access_control_enabled",
+        "deny_sidebar_tabs",
         "deny_custom_metadata_guids",
         "deny_asset_metadata_types",
         "deny_asset_tabs",
@@ -125,6 +132,16 @@ class AccessControl(Asset, type_name="AccessControl"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_access_control_enabled = is_access_control_enabled
+
+    @property
+    def deny_sidebar_tabs(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.deny_sidebar_tabs
+
+    @deny_sidebar_tabs.setter
+    def deny_sidebar_tabs(self, deny_sidebar_tabs: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_sidebar_tabs = deny_sidebar_tabs
 
     @property
     def deny_custom_metadata_guids(self) -> Optional[Set[str]]:
@@ -240,6 +257,7 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     class Attributes(Asset.Attributes):
         is_access_control_enabled: Optional[bool] = Field(default=None, description="")
+        deny_sidebar_tabs: Optional[Set[str]] = Field(default=None, description="")
         deny_custom_metadata_guids: Optional[Set[str]] = Field(
             default=None, description=""
         )

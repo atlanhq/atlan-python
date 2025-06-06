@@ -12,20 +12,8 @@ import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
-from threading import local
 from types import SimpleNamespace
-from typing import (
-    Any,
-    ClassVar,
-    Dict,
-    Generator,
-    List,
-    Literal,
-    Optional,
-    Set,
-    Type,
-    Union,
-)
+from typing import Any, Dict, Generator, List, Literal, Optional, Set, Type, Union
 from urllib.parse import urljoin
 from warnings import warn
 
@@ -81,7 +69,7 @@ from pyatlan.model.assets import (
     Purpose,
 )
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.core import Announcement, AtlanObject
+from pyatlan.model.core import Announcement, AtlanObject, AtlanRequest, AtlanResponse
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
@@ -150,20 +138,14 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
-    _current_client_ctx: ClassVar[ContextVar] = ContextVar(
-        "_current_client_ctx", default=None
-    )
-    _401_has_retried_ctx: ClassVar[ContextVar] = ContextVar(
-        "_401_has_retried_ctx", default=False
-    )
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
     connect_timeout: float = 30.0  # 30 secs
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
+    _401_has_retried: bool = PrivateAttr(default=False)
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
-    _401_tls: local = local()
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
@@ -195,25 +177,6 @@ class AtlanClient(BaseSettings):
     class Config:
         env_prefix = "atlan_"
 
-    @classmethod
-    def set_current_client(cls, client: AtlanClient):
-        """
-        Sets the current client context
-        """
-        if not isinstance(client, AtlanClient):
-            raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
-        cls._current_client_ctx.set(client)
-
-    @classmethod
-    def get_current_client(cls) -> AtlanClient:
-        """
-        Retrieves the current client context
-        """
-        client = cls._current_client_ctx.get()
-        if not client:
-            raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
-        return client
-
     def __init__(self, **data):
         super().__init__(**data)
         self._request_params = {
@@ -225,188 +188,161 @@ class AtlanClient(BaseSettings):
         adapter = HTTPAdapter(max_retries=self.retry)
         session.mount(HTTPS_PREFIX, adapter)
         session.mount(HTTP_PREFIX, adapter)
-        AtlanClient.set_current_client(self)
-        self._401_has_retried_ctx.set(False)
+        self._401_has_retried = False
 
     @property
     def admin(self) -> AdminClient:
         if self._admin_client is None:
-            AtlanClient.set_current_client(self)
             self._admin_client = AdminClient(client=self)
         return self._admin_client
 
     @property
     def audit(self) -> AuditClient:
         if self._audit_client is None:
-            AtlanClient.set_current_client(self)
             self._audit_client = AuditClient(client=self)
         return self._audit_client
 
     @property
     def search_log(self) -> SearchLogClient:
         if self._search_log_client is None:
-            AtlanClient.set_current_client(self)
             self._search_log_client = SearchLogClient(client=self)
         return self._search_log_client
 
     @property
     def workflow(self) -> WorkflowClient:
         if self._workflow_client is None:
-            AtlanClient.set_current_client(self)
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
 
     @property
     def credentials(self) -> CredentialClient:
         if self._credential_client is None:
-            AtlanClient.set_current_client(self)
             self._credential_client = CredentialClient(client=self)
         return self._credential_client
 
     @property
     def group(self) -> GroupClient:
         if self._group_client is None:
-            AtlanClient.set_current_client(self)
             self._group_client = GroupClient(client=self)
         return self._group_client
 
     @property
     def role(self) -> RoleClient:
         if self._role_client is None:
-            AtlanClient.set_current_client(self)
             self._role_client = RoleClient(client=self)
         return self._role_client
 
     @property
     def asset(self) -> AssetClient:
         if self._asset_client is None:
-            AtlanClient.set_current_client(self)
             self._asset_client = AssetClient(client=self)
         return self._asset_client
 
     @property
     def impersonate(self) -> ImpersonationClient:
         if self._impersonate_client is None:
-            AtlanClient.set_current_client(self)
             self._impersonate_client = ImpersonationClient(client=self)
         return self._impersonate_client
 
     @property
     def queries(self) -> QueryClient:
         if self._query_client is None:
-            AtlanClient.set_current_client(self)
             self._query_client = QueryClient(client=self)
         return self._query_client
 
     @property
     def token(self) -> TokenClient:
         if self._token_client is None:
-            AtlanClient.set_current_client(self)
             self._token_client = TokenClient(client=self)
         return self._token_client
 
     @property
     def typedef(self) -> TypeDefClient:
         if self._typedef_client is None:
-            AtlanClient.set_current_client(self)
             self._typedef_client = TypeDefClient(client=self)
         return self._typedef_client
 
     @property
     def user(self) -> UserClient:
         if self._user_client is None:
-            AtlanClient.set_current_client(self)
             self._user_client = UserClient(client=self)
         return self._user_client
 
     @property
     def tasks(self) -> TaskClient:
         if self._task_client is None:
-            AtlanClient.set_current_client(self)
             self._task_client = TaskClient(client=self)
         return self._task_client
 
     @property
     def sso(self) -> SSOClient:
         if self._sso_client is None:
-            AtlanClient.set_current_client(self)
             self._sso_client = SSOClient(client=self)
         return self._sso_client
 
     @property
     def open_lineage(self) -> OpenLineageClient:
         if self._open_lineage_client is None:
-            AtlanClient.set_current_client(self)
             self._open_lineage_client = OpenLineageClient(client=self)
         return self._open_lineage_client
 
     @property
     def files(self) -> FileClient:
         if self._file_client is None:
-            AtlanClient.set_current_client(self)
             self._file_client = FileClient(client=self)
         return self._file_client
 
     @property
     def contracts(self) -> ContractClient:
         if self._contract_client is None:
-            AtlanClient.set_current_client(self)
             self._contract_client = ContractClient(client=self)
         return self._contract_client
 
     @property
     def atlan_tag_cache(self) -> AtlanTagCache:
         if self._atlan_tag_cache is None:
-            AtlanClient.set_current_client(self)
             self._atlan_tag_cache = AtlanTagCache(client=self)
         return self._atlan_tag_cache
 
     @property
     def enum_cache(self) -> EnumCache:
         if self._enum_cache is None:
-            AtlanClient.set_current_client(self)
             self._enum_cache = EnumCache(client=self)
         return self._enum_cache
 
     @property
     def group_cache(self) -> GroupCache:
         if self._group_cache is None:
-            AtlanClient.set_current_client(self)
             self._group_cache = GroupCache(client=self)
         return self._group_cache
 
     @property
     def role_cache(self) -> RoleCache:
         if self._role_cache is None:
-            AtlanClient.set_current_client(self)
             self._role_cache = RoleCache(client=self)
         return self._role_cache
 
     @property
     def user_cache(self) -> UserCache:
         if self._user_cache is None:
-            AtlanClient.set_current_client(self)
             self._user_cache = UserCache(client=self)
         return self._user_cache
 
     @property
     def custom_metadata_cache(self) -> CustomMetadataCache:
         if self._custom_metadata_cache is None:
-            AtlanClient.set_current_client(self)
             self._custom_metadata_cache = CustomMetadataCache(client=self)
         return self._custom_metadata_cache
 
     @property
     def connection_cache(self) -> ConnectionCache:
         if self._connection_cache is None:
-            AtlanClient.set_current_client(self)
             self._connection_cache = ConnectionCache(client=self)
         return self._connection_cache
 
     @property
     def source_tag_cache(self) -> SourceTagCache:
         if self._source_tag_cache is None:
-            AtlanClient.set_current_client(self)
             self._source_tag_cache = SourceTagCache(client=self)
         return self._source_tag_cache
 
@@ -475,11 +411,11 @@ class AtlanClient(BaseSettings):
             # - But if the next response is != 401 (e.g. 403), and `has_retried = True`,
             # then we should reset `has_retried = False` so that future 401s can trigger a new token refresh.
             if (
-                self._401_has_retried_ctx.get()
+                self._401_has_retried
                 and response.status_code
                 != ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
             ):
-                self._401_has_retried_ctx.set(False)
+                self._401_has_retried = False
 
             if response.status_code == api.expected_status:
                 try:
@@ -510,7 +446,18 @@ class AtlanClient(BaseSettings):
                     if text_response:
                         response_ = response.text
                     else:
-                        response_ = events if events else response.json()
+                        # The response may be either a JSON object or a list of events
+                        # If it's an event stream, return the list of events directly
+                        # Otherwise, parse the JSON response using AtlanResponse,
+                        # which handles translation tasks such as converting
+                        # Atlan tag hashed IDs into human-readable strings
+                        response_ = (
+                            events
+                            if events
+                            else AtlanResponse(
+                                raw_json=response.json(), client=self
+                            ).to_dict()
+                        )
                     LOGGER.debug("response: %s", response_)
                     return response_
                 except (
@@ -564,7 +511,7 @@ class AtlanClient(BaseSettings):
                     # on authentication failure (token may have expired)
                     if (
                         self._user_id
-                        and not self._401_has_retried_ctx.get()
+                        and not self._401_has_retried
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
@@ -689,9 +636,10 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(
-                    by_alias=True, exclude_unset=exclude_unset
-                )
+                # Always use AtlanRequest, which accepts a Pydantic model instance and the client
+                # Behind the scenes, it handles retranslation tasks—such as converting
+                # human-readable Atlan tag names back into hashed IDs as required by the backend
+                params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
             else:
@@ -725,7 +673,7 @@ class AtlanClient(BaseSettings):
             )
             raise
         self.api_key = new_token
-        self._401_has_retried_ctx.set(True)
+        self._401_has_retried = True
         params["headers"]["authorization"] = f"Bearer {self.api_key}"
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
@@ -1841,6 +1789,7 @@ class AtlanClient(BaseSettings):
 
 @contextlib.contextmanager
 def client_connection(
+    client: AtlanClient,
     base_url: Optional[HttpUrl] = None,
     api_key: Optional[str] = None,
     connect_timeout: float = 30.0,
@@ -1848,24 +1797,21 @@ def client_connection(
     retry: Retry = DEFAULT_RETRY,
 ) -> Generator[AtlanClient, None, None]:
     """
-    Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
-    be set to the new client. AtlanClient.default_client will be reset to the current default_client before
-    exiting the context.
-    :param base_url: the base_url to be used for the new connection. If not specified the current value will be used
-    :param api_key: the api_key to be used for the new connection. If not specified the current value will be used
+    Creates a new client created with the given base_url and/api_key.
+
+    :param base_url: the base_url to be used for the new connection.
+    If not specified the current value will be used
+    :param api_key: the api_key to be used for the new connection.
+    If not specified the current value will be used
     """
-    current_client = AtlanClient.get_current_client()
     tmp_client = AtlanClient(
-        base_url=base_url or current_client.base_url,
-        api_key=api_key or current_client.api_key,
+        base_url=base_url or client.base_url,
+        api_key=api_key or client.api_key,
         connect_timeout=connect_timeout,
         read_timeout=read_timeout,
         retry=retry,
     )
-    try:
-        yield tmp_client
-    finally:
-        AtlanClient.set_current_client(current_client)
+    yield tmp_client
 
 
 from pyatlan.model.keycloak_events import (  # noqa: E402

@@ -4,6 +4,7 @@
     def creator(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[List[str]] = None,
@@ -12,7 +13,9 @@
         host: Optional[str] = None,
         port: Optional[int] = None,
     ) -> Connection:
-        validate_required_fields(["name", "connector_type"], [name, connector_type])
+        validate_required_fields(
+            ["client", "name", "connector_type"], [client, name, connector_type]
+        )
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -23,6 +26,9 @@
             connector_name=connector_type.value,
             category=connector_type.category.value,
         )
+        client.user_cache.validate_names(names=admin_users or [])
+        client.role_cache.validate_idstrs(idstrs=admin_roles or [])
+        client.group_cache.validate_aliases(aliases=admin_groups or [])
         attr.admin_users = set() if admin_users is None else set(admin_users)
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
@@ -35,6 +41,7 @@
     def create(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[List[str]] = None,
@@ -50,6 +57,7 @@
             stacklevel=2,
         )
         return cls.creator(
+            client=client,
             name=name,
             connector_type=connector_type,
             admin_users=admin_users,

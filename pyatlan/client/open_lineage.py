@@ -45,10 +45,6 @@ class OpenLineageClient:
         :param admin_groups:list of admin groups to associate with this connection
         :return: details of the connection created
         """
-        from pyatlan.client.atlan import AtlanClient
-
-        client = AtlanClient.get_current_client()
-
         create_credential = Credential()
         create_credential.auth_type = "atlan_api_key"
         create_credential.name = (
@@ -65,8 +61,9 @@ class OpenLineageClient:
             "events.topic": f"openlineage_{connector_type.value}",
             "events.urlPath": f"/events/openlineage/{connector_type.value}/api/v1/lineage",
         }
-        response = client.credentials.creator(credential=create_credential)
+        response = self._client.credentials.creator(credential=create_credential)  # type: ignore[attr-defined]
         connection = Connection.creator(
+            client=self._client,
             name=name,
             connector_type=connector_type,
             admin_users=admin_users,
@@ -75,7 +72,7 @@ class OpenLineageClient:
         )
 
         connection.default_credential_guid = response.id
-        return client.asset.save(connection)
+        return self._client.asset.save(connection)  # type: ignore[attr-defined]
 
     @validate_arguments
     def send(

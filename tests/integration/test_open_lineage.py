@@ -64,12 +64,12 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
         od,
         job.create_output(namespace=namespace, asset_name="AN.OTHER.VIEW"),
     ]
-    start.emit()
+    start.emit(client=client)
 
     complete = OpenLineageEvent.creator(
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
-    complete.emit()
+    complete.emit(client=client)
 
     assert job
     assert start.event_type == OpenLineageEventType.START

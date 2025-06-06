@@ -34,15 +34,6 @@ def client():
     return AtlanClient()
 
 
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
 def load_json(respones_dir, filename):
     with (respones_dir / filename).open() as input_file:
         return load(input_file)

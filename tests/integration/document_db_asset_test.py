@@ -30,6 +30,7 @@ class TestConnection:
         assert role
         connection_name = TestId.make_unique("DOC_Conn")
         c = Connection.creator(
+            client=client,
             name=connection_name,
             connector_type=AtlanConnectorType.DOCUMENTDB,
             admin_roles=[role],

@@ -635,10 +635,7 @@ class CustomMetadataField(SearchableField):
     attribute_name: str
     attribute_def: AttributeDef
 
-    def __init__(self, set_name: str, attribute_name: str):
-        from pyatlan.client.atlan import AtlanClient
-
-        client = AtlanClient.get_current_client()
+    def __init__(self, client: Any, set_name: str, attribute_name: str):
         super().__init__(
             StrictStr(
                 client.custom_metadata_cache.get_attribute_for_search_results(
@@ -653,10 +650,8 @@ class CustomMetadataField(SearchableField):
         )
         self.set_name = set_name
         self.attribute_name = attribute_name
-        self.attribute_def = (
-            AtlanClient.get_current_client().custom_metadata_cache.get_attribute_def(
-                self.elastic_field_name
-            )
+        self.attribute_def = client.custom_metadata_cache.get_attribute_def(
+            self.elastic_field_name
         )
 
     def eq(self, value: SearchFieldType, case_insensitive: bool = False) -> Query:

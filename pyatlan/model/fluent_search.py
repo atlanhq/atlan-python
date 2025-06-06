@@ -97,29 +97,25 @@ class CompoundQuery:
 
     @staticmethod
     def tagged(
-        with_one_of: Optional[List[str]] = None, directly: bool = False
+        client: AtlanClient,
+        with_one_of: Optional[List[str]] = None,
+        directly: bool = False,
     ) -> Query:
         """
         Returns a query that will only match assets that have at least one of the Atlan tags
         provided. This will match irrespective of the Atlan tag being directly applied to the
         asset, or if it was propagated to the asset.
 
+        :param client: connectivity to an Atlan tenant
         :param with_one_of: human-readable names of the Atlan tags
         :param directly: when True, the asset must have at least one Atlan tag directly assigned, otherwise
                          even propagated tags will suffice
         :returns: a query that will only match assets that have at least one of the Atlan tags provided
         """
-        from pyatlan.client.atlan import AtlanClient
-
         values: List[str] = []
         if with_one_of:
             for name in with_one_of:
-                if (
-                    tag_id
-                    := AtlanClient.get_current_client().atlan_tag_cache.get_id_for_name(
-                        name
-                    )
-                ):
+                if tag_id := client.atlan_tag_cache.get_id_for_name(name):
                     values.append(tag_id)
                 else:
                     raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -151,6 +147,7 @@ class CompoundQuery:
 
     @staticmethod
     def tagged_with_value(
+        client: AtlanClient,
         atlan_tag_name: str,
         value: str,
         directly: bool = False,
@@ -160,6 +157,7 @@ class CompoundQuery:
         Returns a query that will match assets that have a
         specific value for the specified tag (for source-synced tags).
 
+        :param client: connectivity to an Atlan tenant
         :param atlan_tag_name: human-readable name of the Atlan tag
         :param value: tag should have to match the query
         :param directly: when `True`, the asset must have the tag and
@@ -171,11 +169,8 @@ class CompoundQuery:
         :returns: a query that will only match assets that have
         a particular value assigned for the given Atlan tag
         """
-        from pyatlan.client.atlan import AtlanClient
-
         big_spans = []
         little_spans = []
-        client = AtlanClient.get_current_client()
         tag_id = client.atlan_tag_cache.get_id_for_name(atlan_tag_name) or ""
         synced_tags = [
             tag

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -22,6 +22,9 @@ from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.asset import Asset
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
 
 class Connection(Asset, type_name="Connection"):
     """Description"""
@@ -31,6 +34,7 @@ class Connection(Asset, type_name="Connection"):
     def creator(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[List[str]] = None,
@@ -39,7 +43,9 @@ class Connection(Asset, type_name="Connection"):
         host: Optional[str] = None,
         port: Optional[int] = None,
     ) -> Connection:
-        validate_required_fields(["name", "connector_type"], [name, connector_type])
+        validate_required_fields(
+            ["client", "name", "connector_type"], [client, name, connector_type]
+        )
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -50,6 +56,9 @@ class Connection(Asset, type_name="Connection"):
             connector_name=connector_type.value,
             category=connector_type.category.value,
         )
+        client.user_cache.validate_names(names=admin_users or [])
+        client.role_cache.validate_idstrs(idstrs=admin_roles or [])
+        client.group_cache.validate_aliases(aliases=admin_groups or [])
         attr.admin_users = set() if admin_users is None else set(admin_users)
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
@@ -62,6 +71,7 @@ class Connection(Asset, type_name="Connection"):
     def create(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[List[str]] = None,
@@ -77,6 +87,7 @@ class Connection(Asset, type_name="Connection"):
             stacklevel=2,
         )
         return cls.creator(
+            client=client,
             name=name,
             connector_type=connector_type,
             admin_users=admin_users,
@@ -723,36 +734,6 @@ class Connection(Asset, type_name="Connection"):
         )  # relationship
 
         is_loaded: bool = Field(default=True)
-
-        @validator("admin_users")
-        def admin_users_valid(cls, admin_users, values):
-            from pyatlan.client.atlan import AtlanClient
-
-            if values.get("is_loaded", False):
-                AtlanClient.get_current_client().user_cache.validate_names(
-                    names=admin_users
-                )
-            return admin_users
-
-        @validator("admin_roles")
-        def admin_roles_valid(cls, admin_roles, values):
-            from pyatlan.client.atlan import AtlanClient
-
-            if values.get("is_loaded", False):
-                AtlanClient.get_current_client().role_cache.validate_idstrs(
-                    idstrs=admin_roles
-                )
-            return admin_roles
-
-        @validator("admin_groups")
-        def admin_groups_valid(cls, admin_groups, values):
-            from pyatlan.client.atlan import AtlanClient
-
-            if values.get("is_loaded", False):
-                AtlanClient.get_current_client().group_cache.validate_aliases(
-                    aliases=admin_groups
-                )
-                return admin_groups
 
     attributes: Connection.Attributes = Field(
         default_factory=lambda: Connection.Attributes(),

@@ -21,6 +21,7 @@ from pyatlan.utils import select_optional_set_fields, validate_required_fields
 
 if TYPE_CHECKING:
     from pyatlan.cache.source_tag_cache import SourceTagName
+    from pyatlan.client.atlan import AtlanClient
 
 
 class AtlanObject(BaseModel):
@@ -44,19 +45,6 @@ class AtlanObject(BaseModel):
         return values
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -71,6 +59,19 @@ class DbtJobRun(AtlanObject):
     dbt_model_run_status: Optional[str] = Field(default=None, description="")
     dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
+
+
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
 class AwsCloudWatchMetric(AtlanObject):
@@ -103,6 +104,13 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(default=None, description="")
 
 
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
 class BadgeCondition(AtlanObject):
     """Description"""
 
@@ -133,13 +141,6 @@ class BadgeCondition(AtlanObject):
     badge_condition_operator: Optional[str] = Field(default=None, description="")
     badge_condition_value: Optional[str] = Field(default=None, description="")
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class StarredDetails(AtlanObject):
@@ -239,14 +240,13 @@ class SourceTagAttachment(AtlanObject):
     @classmethod
     def by_name(
         cls,
+        client: AtlanClient,
         name: SourceTagName,
         source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Create a source-synced tag attachment with
         a particular value when the attachment is synced to the source.
@@ -261,7 +261,7 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = AtlanClient.get_current_client().source_tag_cache.get_by_name(name)
+        tag = client.source_tag_cache.get_by_name(name)
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             tag.qualified_name or ""
         )
@@ -283,14 +283,13 @@ class SourceTagAttachment(AtlanObject):
     @classmethod
     def by_qualified_name(
         cls,
+        client: AtlanClient,
         source_tag_qualified_name: str,
         source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
     ):
-        from pyatlan.client.atlan import AtlanClient
-
         """
         Create a source-synced tag attachment with
         a particular value when the attachment is synced to the source.
@@ -305,9 +304,7 @@ class SourceTagAttachment(AtlanObject):
         :raises AtlanError: on any error communicating via the underlying APIs
         :raises NotFoundError: if the source-synced tag cannot be resolved
         """
-        tag = AtlanClient.get_current_client().source_tag_cache.get_by_qualified_name(
-            source_tag_qualified_name
-        )
+        tag = client.source_tag_cache.get_by_qualified_name(source_tag_qualified_name)
         tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
             source_tag_qualified_name or ""
         )
@@ -447,9 +444,9 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-MCRuleSchedule.update_forward_refs()
-
 DbtJobRun.update_forward_refs()
+
+MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
@@ -459,9 +456,9 @@ Action.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
+
+BadgeCondition.update_forward_refs()
 
 StarredDetails.update_forward_refs()
 

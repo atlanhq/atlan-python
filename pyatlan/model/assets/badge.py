@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import TYPE_CHECKING, ClassVar, List, Optional
 from warnings import warn
 
 from pydantic.v1 import Field, StrictStr, validator
@@ -16,6 +16,9 @@ from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.asset import Asset
 
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+
 
 class Badge(Asset, type_name="Badge"):
     """Description"""
@@ -25,6 +28,7 @@ class Badge(Asset, type_name="Badge"):
     def creator(
         cls,
         *,
+        client: AtlanClient,
         name: StrictStr,
         cm_name: str,
         cm_attribute: str,
@@ -33,6 +37,7 @@ class Badge(Asset, type_name="Badge"):
         return cls(
             status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
+                client=client,
                 name=name,
                 cm_name=cm_name,
                 cm_attribute=cm_attribute,
@@ -45,6 +50,7 @@ class Badge(Asset, type_name="Badge"):
     def create(
         cls,
         *,
+        client: AtlanClient,
         name: StrictStr,
         cm_name: str,
         cm_attribute: str,
@@ -59,6 +65,7 @@ class Badge(Asset, type_name="Badge"):
             stacklevel=2,
         )
         return cls.creator(
+            client=client,
             name=name,
             cm_name=cm_name,
             cm_attribute=cm_attribute,
@@ -131,18 +138,16 @@ class Badge(Asset, type_name="Badge"):
         def create(
             cls,
             *,
+            client: AtlanClient,
             name: StrictStr,
             cm_name: str,
             cm_attribute: str,
             badge_conditions: List[BadgeCondition],
         ) -> Badge.Attributes:
             validate_required_fields(
-                ["name", "cm_name", "cm_attribute", "badge_conditions"],
-                [name, cm_name, cm_attribute, badge_conditions],
+                ["client", "name", "cm_name", "cm_attribute", "badge_conditions"],
+                [client, name, cm_name, cm_attribute, badge_conditions],
             )
-            from pyatlan.client.atlan import AtlanClient
-
-            client = AtlanClient.get_current_client()
             cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
             cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
                 set_name=cm_name, attr_name=cm_attribute

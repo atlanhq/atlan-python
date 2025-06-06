@@ -67,13 +67,13 @@ def update_custom_metadata(
     :returns: the result of the update
     """
 
-    cma = asset.get_custom_metadata(CUSTOM_METADATA_NAME)
+    cma = asset.get_custom_metadata(client=client, name=CUSTOM_METADATA_NAME)
     cma["Rating"] = rating
     cma["Passed count"] = passed
     cma["Failed count"] = failed
     cma["Detailed reports"] = reports
     to_update = asset.trim_to_required()
-    to_update.set_custom_metadata(cma)
+    to_update.set_custom_metadata(custom_metadata=cma, client=client)
     result = client.asset.save_merging_cm(to_update)
     updates = result.assets_updated(asset_type=type(asset))
     return updates[0] if updates else None

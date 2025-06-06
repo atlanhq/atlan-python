@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 from collections import UserDict
-from typing import Any, Dict, Optional, Set
+from typing import TYPE_CHECKING, Any, Dict, Optional, Set
 
 from pydantic.v1 import PrivateAttr
 
 from pyatlan.errors import NotFoundError
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.core import AtlanObject
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 
 class CustomMetadataDict(UserDict):
@@ -29,14 +34,12 @@ class CustomMetadataDict(UserDict):
     def attribute_names(self) -> Set[str]:
         return self._names
 
-    def __init__(self, name: str):
+    def __init__(self, client: AtlanClient, name: str):
         """Inits CustomMetadataDict with a string containing the human-readable name of a set of custom metadata"""
-        from pyatlan.client.atlan import AtlanClient
-
         super().__init__()
         self._name = name
         self._modified = False
-        self._client = AtlanClient.get_current_client()
+        self._client = client
         _id = self._client.custom_metadata_cache.get_id_for_name(name)
         self._names = {
             value
@@ -110,26 +113,28 @@ class CustomMetadataDict(UserDict):
 
 
 class CustomMetadataProxy:
-    def __init__(self, business_attributes: Optional[Dict[str, Any]]):
-        from pyatlan.client.atlan import AtlanClient
-
+    def __init__(
+        self,
+        client: AtlanClient,
+        business_attributes: Optional[Dict[str, Any]],
+    ):
+        self._client = client
         self._metadata: Optional[Dict[str, CustomMetadataDict]] = None
         self._business_attributes = business_attributes
         self._modified = False
         if self._business_attributes is None:
             return
         self._metadata = {}
-        client = AtlanClient.get_current_client()
         for cm_id, cm_attributes in self._business_attributes.items():
             try:
-                cm_name = client.custom_metadata_cache.get_name_for_id(cm_id)
-                attribs = CustomMetadataDict(name=cm_name)
+                cm_name = self._client.custom_metadata_cache.get_name_for_id(cm_id)
+                attribs = CustomMetadataDict(name=cm_name, client=self._client)
                 for attr_id, properties in cm_attributes.items():
-                    attr_name = client.custom_metadata_cache.get_attr_name_for_id(
+                    attr_name = self._client.custom_metadata_cache.get_attr_name_for_id(
                         cm_id, attr_id
                     )
                     # Only set active custom metadata attributes
-                    if not client.custom_metadata_cache.is_attr_archived(
+                    if not self._client.custom_metadata_cache.is_attr_archived(
                         attr_id=attr_id
                     ):
                         attribs[attr_name] = properties
@@ -143,7 +148,7 @@ class CustomMetadataProxy:
         if self._metadata is None:
             self._metadata = {}
         if name not in self._metadata:
-            attribs = CustomMetadataDict(name=name)
+            attribs = CustomMetadataDict(name=name, client=self._client)
             self._metadata[name] = attribs
         return self._metadata[name]
 
@@ -164,10 +169,8 @@ class CustomMetadataProxy:
     @property
     def business_attributes(self) -> Optional[Dict[str, Any]]:
         if self.modified and self._metadata is not None:
-            from pyatlan.client.atlan import AtlanClient
-
             return {
-                AtlanClient.get_current_client().custom_metadata_cache.get_id_for_name(
+                self._client.custom_metadata_cache.get_id_for_name(
                     key
                 ): value.business_attributes
                 for key, value in self._metadata.items()
@@ -181,11 +184,9 @@ class CustomMetadataRequest(AtlanObject):
 
     @classmethod
     def create(cls, custom_metadata_dict: CustomMetadataDict):
-        from pyatlan.client.atlan import AtlanClient
-
         ret_val = cls(__root__=custom_metadata_dict.business_attributes)
         ret_val._set_id = (
-            AtlanClient.get_current_client().custom_metadata_cache.get_id_for_name(
+            custom_metadata_dict._client.custom_metadata_cache.get_id_for_name(
                 custom_metadata_dict._name
             )
         )

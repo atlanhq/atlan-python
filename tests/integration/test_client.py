@@ -37,7 +37,14 @@ from pyatlan.model.enums import (
     UTMTags,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, SortItem, Term
+from pyatlan.model.search import (
+    DSL,
+    Bool,
+    IndexSearchRequest,
+    IndexSearchRequestMetadata,
+    SortItem,
+    Term,
+)
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
@@ -1227,7 +1234,7 @@ def _view_test_glossary_by_search(
     index = (
         FluentSearch().where(Asset.GUID.eq(sl_glossary.guid, case_insensitive=True))
     ).to_request()
-    index.request_metadata = IndexSearchRequest.Metadata(
+    index.request_metadata = IndexSearchRequestMetadata(
         utm_tags=[
             UTMTags.ACTION_ASSET_VIEWED,
             UTMTags.UI_PROFILE,
