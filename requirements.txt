@@ -1,4 +1,4 @@
-requests~=2.32.3
+requests~=2.32.4
 pydantic~=2.10.6
 jinja2~=3.1.6
 tenacity~=9.0.0
