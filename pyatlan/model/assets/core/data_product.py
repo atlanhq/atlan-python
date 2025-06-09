@@ -127,7 +127,7 @@ class DataProduct(DataMesh):
 
     def get_assets(self, client: AtlanClient):
         """
-        Reterieves list of all assets linked to the provided data product.
+        Retrieves list of all assets linked to the provided data product.
 
         :param client: connectivity to an Atlan tenant
         :raises InvalidRequestError: if DataProduct asset DSL cannot be found (does not exist) in Atlan
