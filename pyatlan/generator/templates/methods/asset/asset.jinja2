@@ -104,6 +104,8 @@
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+        from .indistinct_asset import IndistinctAsset
+
         """Convert raw asset data into the appropriate asset type."""
         if isinstance(data, Asset):
             return data
@@ -123,7 +125,9 @@
             sys.modules.get("pyatlan.model.assets", {}), data_type, None
         )
 
-        return sub_type(**data) if sub_type else None  # Gracefully handle missing types
+        return (
+            sub_type(**data) if sub_type else IndistinctAsset(**data)
+        )  # If no subtype found, return IndistinctAsset
 
     if TYPE_CHECKING:
         from pyatlan.model.lineage import FluentLineage
