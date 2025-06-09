@@ -5,9 +5,11 @@ from datetime import datetime
 from inspect import signature
 from pathlib import Path
 from re import escape
+from typing import List
 from unittest.mock import create_autospec
 
 import pytest
+from pydantic.v1 import parse_obj_as
 from pydantic.v1.error_wrappers import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
@@ -57,6 +59,7 @@ from pyatlan.model.assets import (
     Function,
     GCSBucket,
     GCSObject,
+    IndistinctAsset,
     KafkaConsumerGroup,
     KafkaTopic,
     Link,
@@ -975,3 +978,93 @@ def test_tableau_upstream_fields_deserialization(test_data):
         **{"typeName": "TableauDatasourceField", "attributes": test_data}
     )
     assert tdf.upstream_tables == test_data["upstreamTables"]
+
+
+def test_indistict_asset_type_deserialization():
+    data = {
+        "entities": [
+            {
+                "typeName": "UnknownAsset1",
+                "attributes": {
+                    "name": "Batman",
+                    "connectorName": "mssql",
+                    "ownerUsers": ["admin1"],
+                    "qualifiedName": "default/mssql/1709355572/Batman",
+                    "meanings": [
+                        {
+                            "guid": "728d8571-a4fc-42ed-8d47-62377384570c",
+                            "typeName": "AtlasGlossaryTerm",
+                            "attributes": {"name": "test-term1"},
+                            "uniqueAttributes": {"qualifiedName": "test-term1-qn"},
+                        }
+                    ],
+                },
+                "guid": "558c5cc8-0b18-4b27-b7c7-0c1693c9d1e5",
+                "isIncomplete": False,
+                "status": "ACTIVE",
+                "createdBy": "service-account-apikey-123",
+                "updatedBy": "service-account-apikey-123",
+                "createTime": 1709355972663,
+                "updateTime": 1709356203915,
+                "version": 0,
+                "labels": [],
+            },
+            {
+                "typeName": "UnknownAsset2",
+                "attributes": {
+                    "name": "Superman",
+                    "connectorName": "sqlserver",
+                    "ownerUsers": ["admin2"],
+                    "qualifiedName": "default/mssql/1709355572/Superman",
+                    "meanings": [
+                        {
+                            "guid": "828d8571-a4fc-42ed-8d47-62377384570c",
+                            "typeName": "AtlasGlossaryTerm",
+                            "attributes": {"name": "test-term21"},
+                            "uniqueAttributes": {"qualifiedName": "test-term21-qn"},
+                        },
+                        {
+                            "guid": "928d8571-a4fc-42ed-8d47-62377384570c",
+                            "typeName": "AtlasGlossaryTerm",
+                            "attributes": {"name": "test-term22"},
+                            "uniqueAttributes": {"qualifiedName": "test-term22-qn"},
+                        },
+                    ],
+                },
+                "guid": "458c5cc8-0b18-4b27-b7c7-0c1693c9d1e5",
+                "isIncomplete": False,
+                "status": "ACTIVE",
+                "createdBy": "service-account-apikey-123",
+                "updatedBy": "service-account-apikey-123",
+                "createTime": 1709355972663,
+                "updateTime": 1709356203915,
+                "version": 0,
+                "labels": [],
+            },
+        ]
+    }
+
+    assets = parse_obj_as(List[Asset], data["entities"])
+    assert (
+        len(assets) == 2
+        and isinstance(assets[0], IndistinctAsset)
+        and isinstance(assets[1], IndistinctAsset)
+    )
+
+    assert assets[0].type_name == "UnknownAsset1"
+    assert assets[0].name == "Batman"
+    assert assets[0].connector_name == "mssql"
+    assert assets[0].owner_users == {"admin1"}
+    assert len(assets[0].assigned_terms) == 1
+    assert assets[0].assigned_terms[0].name == "test-term1"
+    assert assets[0].assigned_terms[0].qualified_name == "test-term1-qn"
+
+    assert assets[1].type_name == "UnknownAsset2"
+    assert assets[1].name == "Superman"
+    assert assets[1].connector_name == "sqlserver"
+    assert assets[1].owner_users == {"admin2"}
+    assert len(assets[1].assigned_terms) == 2
+    assert assets[1].assigned_terms[0].name == "test-term21"
+    assert assets[1].assigned_terms[0].qualified_name == "test-term21-qn"
+    assert assets[1].assigned_terms[1].name == "test-term22"
+    assert assets[1].assigned_terms[1].qualified_name == "test-term22-qn"
