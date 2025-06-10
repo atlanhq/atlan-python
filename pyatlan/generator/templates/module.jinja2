@@ -6,7 +6,7 @@
 
 {% include 'imports.jinja2' %}
 
-{% if asset_info.name != 'DataProduct' %}
+{% if asset_info.name not in asset_info._ASSETS_REQUIRE_CLIENT %}
 from pyatlan.client.atlan import AtlanClient
 {% endif %}
 
@@ -32,7 +32,7 @@ from .asset import SelfAsset
 
 {{ asset_info.import_super_class }}
 
-{% if asset_info.name == 'DataProduct' %}
+{% if asset_info.name in asset_info._ASSETS_REQUIRE_CLIENT %}
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 {% endif %}

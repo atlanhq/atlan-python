@@ -64,18 +64,6 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     return payload
 
 
-def _refresh_caches(typedef: TypeDef) -> None:
-    from pyatlan.client.atlan import AtlanClient
-
-    client = AtlanClient.get_current_client()
-    if isinstance(typedef, AtlanTagDef):
-        client.atlan_tag_cache.refresh_cache()
-    if isinstance(typedef, CustomMetadataDef):
-        client.custom_metadata_cache.refresh_cache()
-    if isinstance(typedef, EnumDef):
-        client.enum_cache.refresh_cache()
-
-
 class TypeDefFactory:
     @staticmethod
     def create(raw_json: dict) -> TypeDef:
@@ -116,6 +104,14 @@ class TypeDefClient:
                 "client", "ApiCaller"
             )
         self._client = client
+
+    def _refresh_caches(self, typedef: TypeDef) -> None:
+        if isinstance(typedef, AtlanTagDef):
+            self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]
+        if isinstance(typedef, CustomMetadataDef):
+            self._client.custom_metadata_cache.refresh_cache()  # type: ignore[attr-defined]
+        if isinstance(typedef, EnumDef):
+            self._client.enum_cache.refresh_cache()  # type: ignore[attr-defined]
 
     def get_all(self) -> TypeDefResponse:
         """
@@ -189,7 +185,7 @@ class TypeDefClient:
         raw_json = self._client._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
-        _refresh_caches(typedef)
+        self._refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
     @validate_arguments
@@ -210,7 +206,7 @@ class TypeDefClient:
         raw_json = self._client._call_api(
             UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
-        _refresh_caches(typedef)
+        self._refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
     @validate_arguments
@@ -226,29 +222,26 @@ class TypeDefClient:
         :raises NotFoundError: if the typedef you are trying to delete cannot be found
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.atlan import AtlanClient
-
-        client = AtlanClient.get_current_client()
         if typedef_type == CustomMetadataDef:
-            internal_name = client.custom_metadata_cache.get_id_for_name(name)
+            internal_name = self._client.custom_metadata_cache.get_id_for_name(name)  # type: ignore[attr-defined]
         elif typedef_type == EnumDef:
             internal_name = name
         elif typedef_type == AtlanTagDef:
-            internal_name = str(client.atlan_tag_cache.get_id_for_name(name))
+            internal_name = str(self._client.atlan_tag_cache.get_id_for_name(name))  # type: ignore[attr-defined]
         else:
             raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
                 typedef_type
             )
         if internal_name:
-            self._client._call_api(
+            self._client._call_api(  # type: ignore[attr-defined]
                 DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
             )
         else:
             raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
         if typedef_type == CustomMetadataDef:
-            client.custom_metadata_cache.refresh_cache()
+            self._client.custom_metadata_cache.refresh_cache()  # type: ignore[attr-defined]
         elif typedef_type == EnumDef:
-            client.enum_cache.refresh_cache()
+            self._client.enum_cache.refresh_cache()  # type: ignore[attr-defined]
         elif typedef_type == AtlanTagDef:
-            client.atlan_tag_cache.refresh_cache()
+            self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]

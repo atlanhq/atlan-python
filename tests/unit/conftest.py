@@ -2,34 +2,36 @@ from unittest.mock import patch
 
 import pytest
 
+from pyatlan.client.atlan import AtlanClient
+
 
 @pytest.fixture()
 def mock_role_cache():
-    with patch("pyatlan.cache.role_cache.RoleCache") as cache:
+    with patch.object(AtlanClient, "role_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_user_cache():
-    with patch("pyatlan.cache.user_cache.UserCache") as cache:
+    with patch.object(AtlanClient, "user_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_group_cache():
-    with patch("pyatlan.cache.group_cache.GroupCache") as cache:
+    with patch.object(AtlanClient, "group_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_custom_metadata_cache():
-    with patch("pyatlan.cache.custom_metadata_cache.CustomMetadataCache") as cache:
+    with patch.object(AtlanClient, "custom_metadata_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_tag_cache():
-    with patch("pyatlan.cache.atlan_tag_cache.AtlanTagCache") as cache:
+    with patch.object(AtlanClient, "atlan_tag_cache") as cache:
         yield cache
 
 

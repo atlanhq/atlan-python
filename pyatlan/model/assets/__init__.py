@@ -118,6 +118,7 @@ __PYATLAN_ASSETS__ = {
         "MCMonitor",
         "SodaCheck",
         "SnowflakeDynamicTable",
+        "IndistinctAsset",
     ],
     "task": ["Task"],
     "form": ["Form"],

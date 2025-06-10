@@ -71,15 +71,13 @@ class OpenLineageEvent(OpenLineageBaseEvent):
             event_time=datetime.now(tz=utc).isoformat(),  # type:ignore[call-arg]
         )
 
-    def emit(self, client: Optional[AtlanClient] = None) -> None:
+    def emit(self, client: AtlanClient) -> None:
         """
         Send the OpenLineage event to Atlan to be processed.
 
+        :param client: connectivity to an Atlan tenant
         :raises AtlanError: on any API communication issues
         """
-        from pyatlan.client.atlan import AtlanClient
-
-        client = client or AtlanClient.get_current_client()
         return client.open_lineage.send(
             request=self, connector_type=AtlanConnectorType.SPARK
         )

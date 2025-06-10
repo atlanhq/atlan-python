@@ -341,6 +341,7 @@ __all__ = [
     "AzureEventHubConsumerGroup",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
+    "IndistinctAsset",
 ]
 
 from .a_d_l_s import ADLS
@@ -460,6 +461,7 @@ from .core.fivetran import Fivetran
 from .core.fivetran_connector import FivetranConnector
 from .core.folder import Folder
 from .core.function import Function
+from .core.indistinct_asset import IndistinctAsset
 from .core.link import Link
 from .core.m_c_incident import MCIncident
 from .core.m_c_monitor import MCMonitor

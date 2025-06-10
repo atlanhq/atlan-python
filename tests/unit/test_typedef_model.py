@@ -58,15 +58,6 @@ def client():
     return AtlanClient()
 
 
-@pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
 @pytest.fixture(scope="module")
 def mock_api_caller():
     return Mock(spec=ApiCaller)
@@ -119,8 +110,8 @@ def check_has_attributes(type_def: TypeDef, type_def_json: dict):
 
 class TestEnumDef:
     @pytest.fixture()
-    def mock_enum_cache(self, current_client, monkeypatch):
-        mock_cache = EnumCache(current_client)
+    def mock_enum_cache(self, client, monkeypatch):
+        mock_cache = EnumCache(client)
         monkeypatch.setattr(AtlanClient, "enum_cache", mock_cache)
         return mock_cache
 
@@ -174,6 +165,7 @@ class TestEnumDef:
             match="ATLAN-PYTHON-404-013 Enumeration with name test-enum does not exist.",
         ):
             EnumDef.update(
+                client=client,
                 name="test-enum",
                 values=["test-val1", "test-val2"],
                 replace_existing=False,
@@ -187,7 +179,10 @@ class TestEnumDef:
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
-            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+            client=client,
+            name="test-enum",
+            values=["test-val1", "test-val2"],
+            replace_existing=False,
         )
         assert enum
         assert enum.name == "test-enum"
@@ -210,7 +205,10 @@ class TestEnumDef:
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
-            name="test-enum", values=["test-val1", "test-val2"], replace_existing=False
+            client=client,
+            name="test-enum",
+            values=["test-val1", "test-val2"],
+            replace_existing=False,
         )
         assert enum
         assert enum.name == "test-enum"
@@ -233,6 +231,7 @@ class TestEnumDef:
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
+            client=client,
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
             replace_existing=False,
@@ -263,6 +262,7 @@ class TestEnumDef:
         mock_get_by_name = Mock(return_value=EnumDef(**existing_enum))
         mock_enum_cache.get_by_name = mock_get_by_name
         enum = EnumDef.update(
+            client=client,
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
             replace_existing=True,
@@ -347,10 +347,11 @@ class TestTypeDefResponse:
 
 class TestAttributeDef:
     @pytest.fixture()
-    def sut(self) -> AttributeDef:
+    def sut(self, client: AtlanClient) -> AttributeDef:
         with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
             return AttributeDef.create(
+                client=client,
                 display_name="My Count",
                 attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
             )
@@ -410,7 +411,7 @@ class TestAttributeDef:
         options = sut.options
         assert getattr(options, attribute) == json.dumps(list(value))
 
-    def test_attribute_create_with_limited_applicability(self):
+    def test_attribute_create_with_limited_applicability(self, client: AtlanClient):
         applicable_kwargs = dict(
             applicable_asset_types={"Link"},
             applicable_other_asset_types={"File"},
@@ -424,11 +425,12 @@ class TestAttributeDef:
             applicable_domains={"default/domain/uuBI8WSqeom1PXs7oo20L/super"},
         )
         attribute_def_with_limited = AttributeDef.create(
+            client=client,
             display_name="test-attr-def",
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
             # Optional kwargs that allow limiting
             # the applicability of an attribute within Atlan
-            **applicable_kwargs,
+            **applicable_kwargs,  # type: ignore[arg-type]
         )
 
         assert attribute_def_with_limited
@@ -439,5 +441,5 @@ class TestAttributeDef:
                 attribute_def_with_limited, attribute
             ) == applicable_kwargs.get(attribute)
             assert getattr(options, attribute) == json.dumps(
-                list(applicable_kwargs.get(attribute))
+                list(applicable_kwargs.get(attribute))  # type: ignore[arg-type]
             )

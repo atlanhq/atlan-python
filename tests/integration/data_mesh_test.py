@@ -222,6 +222,7 @@ def data_domain_cm(
     assert domain.qualified_name
     attribute_defs = [
         AttributeDef.create(
+            client=client,
             display_name=DD_ATTR,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
             applicable_domain_types={"DataDomain", "DataProduct"},
@@ -491,7 +492,7 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
     )
     assert test_product
     assert test_product.data_product_assets_d_s_l
-    asset_list = test_product.get_assets()
+    asset_list = test_product.get_assets(client=client)
     assert asset_list.count and asset_list.count > 0
     TOTAL_ASSETS = asset_list.count
     counter = 0

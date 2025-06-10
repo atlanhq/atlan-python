@@ -118,7 +118,7 @@ def update_enum(
     client: AtlanClient, name: str, values: List[str], replace_existing: bool = False
 ) -> EnumDef:
     enum_def = EnumDef.update(
-        name=name, values=values, replace_existing=replace_existing
+        client=client, name=name, values=values, replace_existing=replace_existing
     )
     r = client.typedef.update(enum_def)
     return r.enum_defs[0]
@@ -143,24 +143,29 @@ def cm_ipr(
 ) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_IPR_LICENSE,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
             description=ATTRIBUTE_DESCRIPTION,
             **limit_attribute_applicability_kwargs,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_IPR_VERSION,
             attribute_type=AtlanCustomAttributePrimitiveType.DECIMAL,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_IPR_MANDATORY,
             attribute_type=AtlanCustomAttributePrimitiveType.BOOLEAN,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_IPR_DATE,
             attribute_type=AtlanCustomAttributePrimitiveType.DATE,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_IPR_URL,
             attribute_type=AtlanCustomAttributePrimitiveType.URL,
         ),
@@ -230,6 +235,7 @@ def cm_raci(
     client: AtlanClient,
 ) -> Generator[CustomMetadataDef, None, None]:
     TEST_MULTI_VALUE_USING_SETTER = AttributeDef.create(
+        client=client,
         display_name=CM_ATTR_RACI_INFORMED,
         attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
     )
@@ -237,21 +243,25 @@ def cm_raci(
     TEST_MULTI_VALUE_USING_SETTER.options.multi_value_select = True
     attribute_defs = [
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_RACI_RESPONSIBLE,
             attribute_type=AtlanCustomAttributePrimitiveType.USERS,
             multi_valued=True,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_RACI_ACCOUNTABLE,
             attribute_type=AtlanCustomAttributePrimitiveType.USERS,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_RACI_CONSULTED,
             attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
             multi_valued=True,
         ),
         TEST_MULTI_VALUE_USING_SETTER,
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_RACI_EXTRA,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
         ),
@@ -394,14 +404,17 @@ def cm_dq(
 ) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_QUALITY_COUNT,
             attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_QUALITY_SQL,
             attribute_type=AtlanCustomAttributePrimitiveType.SQL,
         ),
         AttributeDef.create(
+            client=client,
             display_name=CM_ATTR_QUALITY_TYPE,
             attribute_type=AtlanCustomAttributePrimitiveType.OPTIONS,
             options_name=DQ_ENUM,
@@ -518,7 +531,7 @@ def test_add_term_cm_raci(
     groups: List[AtlanGroup],
 ):
     cm_name = CM_RACI
-    raci_attrs = CustomMetadataDict(cm_name)
+    raci_attrs = CustomMetadataDict(client=client, name=cm_name)
     _validate_raci_empty(raci_attrs)
     group1, group2 = _get_groups(client)
     raci_attrs[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
@@ -528,7 +541,9 @@ def test_add_term_cm_raci(
     client.asset.update_custom_metadata_attributes(term.guid, raci_attrs)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes(client, t.get_custom_metadata(name=cm_name))
+    _validate_raci_attributes(
+        client, t.get_custom_metadata(client=client, name=cm_name)
+    )
 
 
 def test_add_term_cm_ipr(
@@ -537,7 +552,7 @@ def test_add_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_IPR
-    ipr_attrs = CustomMetadataDict(cm_name)
+    ipr_attrs = CustomMetadataDict(client=client, name=cm_name)
     _validate_ipr_empty(ipr_attrs)
     ipr_attrs[CM_ATTR_IPR_LICENSE] = "CC BY"
     ipr_attrs[CM_ATTR_IPR_VERSION] = 2.0
@@ -548,7 +563,7 @@ def test_add_term_cm_ipr(
     client.asset.update_custom_metadata_attributes(term.guid, ipr_attrs)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_ipr_attributes(t.get_custom_metadata(name=cm_name))
+    _validate_ipr_attributes(t.get_custom_metadata(client=client, name=cm_name))
 
 
 def test_add_term_cm_dq(
@@ -557,7 +572,7 @@ def test_add_term_cm_dq(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_QUALITY
-    dq_attrs = CustomMetadataDict(cm_name)
+    dq_attrs = CustomMetadataDict(client=client, name=cm_name)
     _validate_dq_empty(dq_attrs)
     dq_attrs[CM_ATTR_QUALITY_COUNT] = 42
     dq_attrs[CM_ATTR_QUALITY_SQL] = "SELECT * from SOMEWHERE;"
@@ -565,7 +580,7 @@ def test_add_term_cm_dq(
     client.asset.update_custom_metadata_attributes(term.guid, dq_attrs)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_dq_attributes(t.get_custom_metadata(name=cm_name))
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=cm_name))
 
 
 @pytest.mark.order(after="test_add_term_cm_dq")
@@ -575,15 +590,19 @@ def test_update_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_IPR
-    ipr = CustomMetadataDict(cm_name)
+    ipr = CustomMetadataDict(client=client, name=cm_name)
     # Note: MUST access the getter / setter, not the underlying store
     ipr[CM_ATTR_IPR_MANDATORY] = False
     client.asset.update_custom_metadata_attributes(term.guid, ipr)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_ipr_attributes(t.get_custom_metadata(name=cm_name), mandatory=False)
-    _validate_raci_attributes(client, t.get_custom_metadata(name=CM_RACI))
-    _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
+    _validate_ipr_attributes(
+        t.get_custom_metadata(client=client, name=cm_name), mandatory=False
+    )
+    _validate_raci_attributes(
+        client, t.get_custom_metadata(client=client, name=CM_RACI)
+    )
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=CM_QUALITY))
 
 
 @pytest.mark.order(after="test_update_term_cm_ipr")
@@ -592,7 +611,7 @@ def test_replace_term_cm_raci(
     cm_raci: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    raci = CustomMetadataDict(CM_RACI)
+    raci = CustomMetadataDict(client=client, name=CM_RACI)
     group1, group2 = _get_groups(client)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
@@ -601,9 +620,13 @@ def test_replace_term_cm_raci(
     client.asset.replace_custom_metadata(term.guid, raci)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
-    _validate_ipr_attributes(t.get_custom_metadata(name=CM_IPR), mandatory=False)
-    _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
+    _validate_raci_attributes_replacement(
+        client, t.get_custom_metadata(client=client, name=CM_RACI)
+    )
+    _validate_ipr_attributes(
+        t.get_custom_metadata(client=client, name=CM_IPR), mandatory=False
+    )
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=CM_QUALITY))
 
 
 @pytest.mark.order(after="test_replace_term_cm_raci")
@@ -612,13 +635,15 @@ def test_replace_term_cm_ipr(
     cm_ipr: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    term_cm_ipr = CustomMetadataDict(CM_IPR)
+    term_cm_ipr = CustomMetadataDict(client=client, name=CM_IPR)
     client.asset.replace_custom_metadata(term.guid, term_cm_ipr)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
-    _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
-    _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
+    _validate_raci_attributes_replacement(
+        client, t.get_custom_metadata(client=client, name=CM_RACI)
+    )
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=CM_QUALITY))
+    _validate_ipr_empty(t.get_custom_metadata(client=client, name=CM_IPR))
 
 
 @pytest.mark.order(after="test_replace_term_cm_ipr")
@@ -638,7 +663,11 @@ def test_search_by_any_accountable(
         FluentSearch(_includes_on_results=attributes)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).has_any_value())
+        .where(
+            CustomMetadataField(
+                client, CM_RACI, CM_ATTR_RACI_ACCOUNTABLE
+            ).has_any_value()
+        )
         .include_on_relations(Asset.NAME)
     ).to_request()
     response = client.asset.search(criteria=request)
@@ -658,7 +687,7 @@ def test_search_by_any_accountable(
         assert anchor
         assert anchor.name == glossary.name
         _validate_raci_attributes_replacement(
-            client, t.get_custom_metadata(name=CM_RACI)
+            client, t.get_custom_metadata(client=client, name=CM_RACI)
         )
 
 
@@ -673,7 +702,11 @@ def test_search_by_specific_accountable(
         FluentSearch()
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).eq(FIXED_USER))
+        .where(
+            CustomMetadataField(client, CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).eq(
+                FIXED_USER
+            )
+        )
         .include_on_results(Asset.NAME)
         .include_on_results(AtlasGlossaryTerm.ANCHOR)
         .include_on_relations(Asset.NAME)
@@ -707,9 +740,9 @@ def test_remove_term_cm_raci(
     client.asset.remove_custom_metadata(term.guid, cm_name=CM_RACI)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
-    _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
-    _validate_raci_empty(t.get_custom_metadata(name=CM_RACI))
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=CM_QUALITY))
+    _validate_ipr_empty(t.get_custom_metadata(client=client, name=CM_IPR))
+    _validate_raci_empty(t.get_custom_metadata(client=client, name=CM_RACI))
 
 
 @pytest.mark.order(after="test_remove_term_cm_raci")
@@ -721,9 +754,9 @@ def test_remove_term_cm_ipr(
     client.asset.remove_custom_metadata(term.guid, cm_name=CM_IPR)
     t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
-    _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
-    _validate_raci_empty(t.get_custom_metadata(name=CM_RACI))
+    _validate_dq_attributes(t.get_custom_metadata(client=client, name=CM_QUALITY))
+    _validate_ipr_empty(t.get_custom_metadata(client=client, name=CM_IPR))
+    _validate_raci_empty(t.get_custom_metadata(client=client, name=CM_RACI))
 
 
 @pytest.mark.order(after="test_remove_term_cm_raci")
@@ -798,6 +831,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
         existing_attr.is_new = None
         updated_attrs.append(existing_attr)
     new_attr = AttributeDef.create(
+        client=client,
         display_name=CM_ATTR_RACI_EXTRA,
         attribute_type=AtlanCustomAttributePrimitiveType.STRING,
     )
@@ -870,7 +904,7 @@ def test_update_replacing_cm(
     cm_dq: CustomMetadataDef,
     client: AtlanClient,
 ):
-    raci = CustomMetadataDict(CM_RACI)
+    raci = CustomMetadataDict(client=client, name=CM_RACI)
     group1, group2 = _get_groups(client)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
@@ -882,7 +916,7 @@ def test_update_replacing_cm(
     to_update = AtlasGlossaryTerm.create_for_modification(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
     )
-    to_update.set_custom_metadata(custom_metadata=raci)
+    to_update.set_custom_metadata(custom_metadata=raci, client=client)
     response = client.asset.update_replacing_cm(to_update, replace_atlan_tags=False)
     assert response
     assert len(response.assets_deleted(asset_type=AtlasGlossaryTerm)) == 0
@@ -901,11 +935,11 @@ def test_update_replacing_cm(
     assert x
     assert not x.is_incomplete
     assert x.qualified_name == term.qualified_name
-    raci = x.get_custom_metadata(CM_RACI)
+    raci = x.get_custom_metadata(client=client, name=CM_RACI)
     _validate_raci_attributes(client, raci)
     assert raci[CM_ATTR_RACI_EXTRA] == "something extra..."
-    _validate_ipr_empty(x.get_custom_metadata(CM_IPR))
-    _validate_dq_empty(x.get_custom_metadata(CM_QUALITY))
+    _validate_ipr_empty(x.get_custom_metadata(client=client, name=CM_IPR))
+    _validate_dq_empty(x.get_custom_metadata(client=client, name=CM_QUALITY))
 
 
 # TODO: test entity audit retrieval and parsing, once available
@@ -1083,6 +1117,7 @@ def test_add_badge_cm_dq(
     cm_dq: CustomMetadataDef,
 ):
     badge = Badge.create(
+        client=client,
         name=CM_ATTR_QUALITY_COUNT,
         cm_name=CM_QUALITY,
         cm_attribute=CM_ATTR_QUALITY_COUNT,

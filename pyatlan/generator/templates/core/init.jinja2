@@ -6,6 +6,7 @@
 {{ asset_import }}
 {% endif %}
 {% endfor %}
+from .indistinct_asset import IndistinctAsset  # noqa: F401
 
 # Update asset forward references:
 localns = locals()

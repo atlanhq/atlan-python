@@ -4,6 +4,7 @@
     def creator(
         cls,
         *,
+        client: AtlanClient,
         name: StrictStr,
         cm_name: str,
         cm_attribute: str,
@@ -12,6 +13,7 @@
         return cls(
             status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
+                client=client,
                 name=name,
                 cm_name=cm_name,
                 cm_attribute=cm_attribute,
@@ -24,6 +26,7 @@
     def create(
         cls,
         *,
+        client: AtlanClient,
         name: StrictStr,
         cm_name: str,
         cm_attribute: str,
@@ -38,6 +41,7 @@
             stacklevel=2,
         )
         return cls.creator(
+            client=client,
             name=name,
             cm_name=cm_name,
             cm_attribute=cm_attribute,

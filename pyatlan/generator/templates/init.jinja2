@@ -9,6 +9,7 @@ __PYATLAN_ASSETS__ = {
                 "{{ asset.name }}"{% if not loop.last %},{% endif %}
             {% endif %}
         {% endfor %}
+        "IndistinctAsset"
     ],
     {% for asset in assets -%}
         {% if not asset.is_core_asset and asset.name not in asset._CORE_ASSETS  %}

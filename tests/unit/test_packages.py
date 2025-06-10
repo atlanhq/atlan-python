@@ -1,6 +1,6 @@
 from json import load, loads
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -143,36 +143,6 @@ def client():
 
 
 @pytest.fixture()
-def current_client(client, monkeypatch):
-    monkeypatch.setattr(
-        AtlanClient,
-        "get_current_client",
-        lambda: client,
-    )
-
-
-@pytest.fixture()
-def mock_group_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "group_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
-def mock_user_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "user_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
-def mock_role_cache(current_client, monkeypatch):
-    mock_cache = MagicMock()
-    monkeypatch.setattr(AtlanClient, "role_cache", mock_cache)
-    return mock_cache
-
-
-@pytest.fixture()
 def mock_package_env(
     mock_role_cache,
     mock_user_cache,
@@ -185,9 +155,10 @@ def mock_package_env(
     mock_group_cache.validate_aliases
 
 
-def test_snowflake_package(mock_package_env):
+def test_snowflake_package(mock_package_env, client: AtlanClient):
     snowflake_with_connection_default = (
         SnowflakeCrawler(
+            client=client,
             connection_name="test-snowflake-basic-conn",
             admin_roles=["admin-guid-1234"],
         )
@@ -199,7 +170,7 @@ def test_snowflake_package(mock_package_env):
             warehouse="test-warehouse",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .lineage(True)
         .tags(True)
         .to_workflow()
@@ -211,6 +182,7 @@ def test_snowflake_package(mock_package_env):
 
     snowflake_basic_auth = (
         SnowflakeCrawler(
+            client=client,
             connection_name="test-snowflake-basic-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -224,7 +196,7 @@ def test_snowflake_package(mock_package_env):
             warehouse="test-warehouse",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .lineage(True)
         .tags(True)
         .to_workflow()
@@ -234,6 +206,7 @@ def test_snowflake_package(mock_package_env):
 
     snowflake_keypair_auth = (
         SnowflakeCrawler(
+            client=client,
             connection_name="test-snowflake-keypair-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -250,7 +223,7 @@ def test_snowflake_package(mock_package_env):
             warehouse="test-warehouse",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .lineage(True)
         .tags(False)
         .to_workflow()
@@ -259,9 +232,10 @@ def test_snowflake_package(mock_package_env):
     assert request_json == load_json(SNOWFLAKE_KEYPAIR)
 
 
-def test_glue_package(mock_package_env):
+def test_glue_package(mock_package_env, client: AtlanClient):
     glue_iam_user_auth = (
         GlueCrawler(
+            client=client,
             connection_name="test-glue-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -273,16 +247,17 @@ def test_glue_package(mock_package_env):
         )
         .direct(region="test-region")
         .include(assets=["test-asset-1", "test-asset-2"])
-        .exclude(assets=None)
+        .exclude(assets=[])
         .to_workflow()
     )
     request_json = loads(glue_iam_user_auth.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(GLUE_IAM_USER)
 
 
-def test_tableau_package(mock_package_env):
+def test_tableau_package(mock_package_env, client: AtlanClient):
     tableau_basic_auth = (
         TableauCrawler(
+            client=client,
             connection_name="test-tableau-basic-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -296,7 +271,7 @@ def test_tableau_package(mock_package_env):
             password="test-password",
         )
         .include(projects=["test-project-guid-1", "test-project-guid-2"])
-        .exclude(projects=None)
+        .exclude(projects=[])
         .crawl_unpublished(True)
         .crawl_hidden_fields(False)
         .to_workflow()
@@ -306,6 +281,7 @@ def test_tableau_package(mock_package_env):
 
     tableau_access_token_auth = (
         TableauCrawler(
+            client=client,
             connection_name="test-tableau-access-token-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -317,7 +293,7 @@ def test_tableau_package(mock_package_env):
             access_token="test-access-token",
         )
         .include(projects=["test-project-guid-1", "test-project-guid-2"])
-        .exclude(projects=None)
+        .exclude(projects=[])
         .crawl_unpublished(True)
         .crawl_hidden_fields(False)
         .to_workflow()
@@ -329,6 +305,7 @@ def test_tableau_package(mock_package_env):
 
     tableau_offline = (
         TableauCrawler(
+            client=client,
             connection_name="test-tableau-offline-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -345,9 +322,10 @@ def test_tableau_package(mock_package_env):
     assert request_json == load_json(TABLEAU_OFFLINE)
 
 
-def test_powerbi_package(mock_package_env):
+def test_powerbi_package(mock_package_env, client: AtlanClient):
     powerbi_delegated_user = (
         PowerBICrawler(
+            client=client,
             connection_name="test-powerbi-du-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -362,7 +340,7 @@ def test_powerbi_package(mock_package_env):
             client_secret="test-client-secret",
         )
         .include(workspaces=["test-workspace-guid"])
-        .exclude(workspaces=None)
+        .exclude(workspaces=[])
         .to_workflow()
     )
     request_json = loads(powerbi_delegated_user.json(by_alias=True, exclude_none=True))
@@ -370,6 +348,7 @@ def test_powerbi_package(mock_package_env):
 
     powerbi_service_principal = (
         PowerBICrawler(
+            client=client,
             connection_name="test-powerbi-sp-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -382,7 +361,7 @@ def test_powerbi_package(mock_package_env):
             client_secret="test-client-secret",
         )
         .include(workspaces=["test-workspace-guid"])
-        .exclude(workspaces=None)
+        .exclude(workspaces=[])
         .to_workflow()
     )
     request_json = loads(
@@ -391,9 +370,10 @@ def test_powerbi_package(mock_package_env):
     assert request_json == load_json(POWEBI_SERVICE_PRINCIPAL)
 
 
-def test_confluent_kafka_package(mock_package_env):
+def test_confluent_kafka_package(mock_package_env, client: AtlanClient):
     conf_kafka_direct = (
         ConfluentKafkaCrawler(
+            client=client,
             connection_name="test-conf-kafka-direct-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -403,16 +383,17 @@ def test_confluent_kafka_package(mock_package_env):
         .api_token(api_key="test-api-key", api_secret="test-api-secret")
         .skip_internal(False)
         .include(regex=".*_TEST")
-        .exclude(regex=None)
+        .exclude(regex="")
         .to_workflow()
     )
     request_json = loads(conf_kafka_direct.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(CONFLUENT_KAFKA_DIRECT)
 
 
-def test_dbt_package(mock_package_env):
+def test_dbt_package(mock_package_env, client: AtlanClient):
     dbt_core = (
         DbtCrawler(
+            client=client,
             connection_name="test-dbt-core-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -433,6 +414,7 @@ def test_dbt_package(mock_package_env):
 
     dbt_cloud = (
         DbtCrawler(
+            client=client,
             connection_name="test-dbt-cloud-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -445,7 +427,7 @@ def test_dbt_package(mock_package_env):
         )
         .limit_to_connection(connection_qualified_name="default/dbt/1234567890")
         .include(filter='{"1234":{"4321":{}}}')
-        .exclude(filter=None)
+        .exclude(filter="")
         .tags(True)
         .enrich_materialized_assets(False)
         .to_workflow()
@@ -454,9 +436,10 @@ def test_dbt_package(mock_package_env):
     assert request_json == load_json(DBT_CLOUD)
 
 
-def test_sigma_package(mock_package_env):
+def test_sigma_package(mock_package_env, client: AtlanClient):
     sigma_api_token = (
         SigmaCrawler(
+            client=client,
             connection_name="test-sigma-basic-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -472,9 +455,10 @@ def test_sigma_package(mock_package_env):
     assert request_json == load_json(SIGMA_API_TOKEN)
 
 
-def test_sql_server_package(mock_package_env):
+def test_sql_server_package(mock_package_env, client: AtlanClient):
     sql_server_basic = (
         SQLServerCrawler(
+            client=client,
             connection_name="test-sigma-basic-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -607,10 +591,12 @@ def test_databricks_miner_package(mock_package_env):
     assert request_json == load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
 
 
-def test_big_query_package(mock_package_env):
+def test_big_query_package(mock_package_env, client: AtlanClient):
     big_query_direct = (
         BigQueryCrawler(
-            connection_name="test-big-query-conn", admin_roles=["admin-guid-1234"]
+            client=client,
+            connection_name="test-big-query-conn",
+            admin_roles=["admin-guid-1234"],
         )
         .service_account_auth(
             project_id="test-project-id",
@@ -618,7 +604,7 @@ def test_big_query_package(mock_package_env):
             service_account_email="test@test.com",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .exclude_regex(regex=".*_TEST")
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
@@ -627,10 +613,12 @@ def test_big_query_package(mock_package_env):
     assert request_json == load_json(BIG_QUERY_DIRECT)
 
 
-def test_dynamo_db_package(mock_package_env):
+def test_dynamo_db_package(mock_package_env, client: AtlanClient):
     dynamo_db_direct_iam_user = (
         DynamoDBCrawler(
-            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+            client=client,
+            connection_name="test-dynamodb-conn",
+            admin_roles=["admin-guid-1234"],
         )
         .direct(region="test-region")
         .iam_user_auth(access_key="test-access-key", secret_key="test-secret-key")
@@ -645,7 +633,9 @@ def test_dynamo_db_package(mock_package_env):
 
     dynamo_db_direct_iam_user_role = (
         DynamoDBCrawler(
-            connection_name="test-dynamodb-conn", admin_roles=["admin-guid-1234"]
+            client=client,
+            connection_name="test-dynamodb-conn",
+            admin_roles=["admin-guid-1234"],
         )
         .direct(region="test-region")
         .iam_role_auth(
@@ -661,9 +651,10 @@ def test_dynamo_db_package(mock_package_env):
     assert request_json == load_json(DYNAMO_DB_IAM_USER_ROLE)
 
 
-def test_postgres_package(mock_package_env):
+def test_postgres_package(mock_package_env, client: AtlanClient):
     postgres_direct_basic = (
         PostgresCrawler(
+            client=client,
             connection_name="test-sdk-postgresql",
             admin_roles=["admin-guid-1234"],
         )
@@ -673,7 +664,7 @@ def test_postgres_package(mock_package_env):
             password="test-password",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .exclude_regex(regex=".*_TEST")
         .source_level_filtering(enable=True)
         .jdbc_internal_methods(enable=True)
@@ -685,6 +676,7 @@ def test_postgres_package(mock_package_env):
 
     postgres_direct_iam_user = (
         PostgresCrawler(
+            client=client,
             connection_name="test-sdk-postgresql",
             admin_roles=["admin-guid-1234"],
         )
@@ -695,7 +687,7 @@ def test_postgres_package(mock_package_env):
             secret_key="test-secret-key",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .exclude_regex(regex=".*_TEST")
         .source_level_filtering(enable=True)
         .jdbc_internal_methods(enable=True)
@@ -709,6 +701,7 @@ def test_postgres_package(mock_package_env):
 
     postgres_direct_iam_role = (
         PostgresCrawler(
+            client=client,
             connection_name="test-sdk-postgresql",
             admin_roles=["admin-guid-1234"],
         )
@@ -719,7 +712,7 @@ def test_postgres_package(mock_package_env):
             external_id="test-ext-id",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .exclude_regex(regex=".*_TEST")
         .source_level_filtering(enable=True)
         .jdbc_internal_methods(enable=True)
@@ -733,6 +726,7 @@ def test_postgres_package(mock_package_env):
 
     postgres_s3_offline = (
         PostgresCrawler(
+            client=client,
             connection_name="test-sdk-postgresql",
             admin_roles=["admin-guid-1234"],
         )
@@ -742,7 +736,7 @@ def test_postgres_package(mock_package_env):
             bucket_region="test-region",
         )
         .include(assets={"test-include": ["test-asset-1", "test-asset-2"]})
-        .exclude(assets=None)
+        .exclude(assets={})
         .exclude_regex(regex=".*_TEST")
         .source_level_filtering(enable=True)
         .jdbc_internal_methods(enable=True)
@@ -753,9 +747,10 @@ def test_postgres_package(mock_package_env):
     assert request_json == load_json(POSTGRES_S3_OFFLINE)
 
 
-def test_mongodb_package(mock_package_env):
+def test_mongodb_package(mock_package_env, client: AtlanClient):
     mongodb_basic = (
         MongoDBCrawler(
+            client=client,
             connection_name="test-sdk-mongodb",
             admin_roles=["admin-guid-1234"],
         )
@@ -794,9 +789,10 @@ def test_connection_delete_package(mock_package_env):
     assert request_json == load_json(CONNECTION_DELETE_SOFT)
 
 
-def test_databricks_crawler(mock_package_env):
+def test_databricks_crawler(mock_package_env, client: AtlanClient):
     databricks_basic_jdbc = (
         DatabricksCrawler(
+            client=client,
             connection_name="test-databricks-basic",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -823,6 +819,7 @@ def test_databricks_crawler(mock_package_env):
 
     databricks_basic_rest = (
         DatabricksCrawler(
+            client=client,
             connection_name="test-databricks-basic",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -849,6 +846,7 @@ def test_databricks_crawler(mock_package_env):
 
     databricks_aws = (
         DatabricksCrawler(
+            client=client,
             connection_name="test-databricks-basic",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -875,6 +873,7 @@ def test_databricks_crawler(mock_package_env):
 
     databricks_azure = (
         DatabricksCrawler(
+            client=client,
             connection_name="test-databricks-basic",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -902,6 +901,7 @@ def test_databricks_crawler(mock_package_env):
 
     databricks_offline = (
         DatabricksCrawler(
+            client=client,
             connection_name="test-databricks-basic",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1450,9 +1450,10 @@ def test_relational_assets_builder(mock_package_env):
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
 
 
-def test_oracle_crawler(mock_package_env):
+def test_oracle_crawler(mock_package_env, client: AtlanClient):
     oracle_crawler_basic = (
         OracleCrawler(
+            client=client,
             connection_name="test-oracle-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1477,6 +1478,7 @@ def test_oracle_crawler(mock_package_env):
 
     oracle_crawler_offline = (
         OracleCrawler(
+            client=client,
             connection_name="test-oracle-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1490,6 +1492,7 @@ def test_oracle_crawler(mock_package_env):
 
     oracle_crawler_basic_agent = (
         OracleCrawler(
+            client=client,
             connection_name="test-oracle-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1521,6 +1524,7 @@ def test_oracle_crawler(mock_package_env):
 
     oracle_crawler_kerberos_agent = (
         OracleCrawler(
+            client=client,
             connection_name="test-oracle-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1685,13 +1689,14 @@ def test_api_token_connection_admin(mock_package_env):
     ],
 )
 def test_wrong_hierarchical_filter_raises_invalid_req_err(
-    test_assets, mock_package_env
+    test_assets, mock_package_env, client: AtlanClient
 ):
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
     ):
         SnowflakeCrawler(
+            client=client,
             connection_name="test-snowflake-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1703,12 +1708,15 @@ def test_wrong_hierarchical_filter_raises_invalid_req_err(
     "test_projects",
     [[NonSerializable()], NonSerializable()],
 )
-def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_env):
+def test_wrong_flat_filter_raises_invalid_req_err(
+    test_projects, mock_package_env, client: AtlanClient
+):
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
     ):
         TableauCrawler(
+            client=client,
             connection_name="test-tableau-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,
@@ -1721,13 +1729,14 @@ def test_wrong_flat_filter_raises_invalid_req_err(test_projects, mock_package_en
     [NonSerializable(), [NonSerializable()]],
 )
 def test_wrong_glue_package_filter_raises_invalid_req_err(
-    test_assets, mock_package_env
+    test_assets, mock_package_env, client: AtlanClient
 ):
     with pytest.raises(
         InvalidRequestError,
         match=INVALID_REQ_ERROR,
     ):
         GlueCrawler(
+            client=client,
             connection_name="test-glue-conn",
             admin_roles=["admin-guid-1234"],
             admin_groups=None,

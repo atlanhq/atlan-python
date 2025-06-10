@@ -54,6 +54,7 @@ from .fivetran import Fivetran
 from .fivetran_connector import FivetranConnector
 from .folder import Folder
 from .function import Function
+from .indistinct_asset import IndistinctAsset  # noqa: F401
 from .link import Link
 from .m_c_incident import MCIncident
 from .m_c_monitor import MCMonitor

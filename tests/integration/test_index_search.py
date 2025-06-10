@@ -177,7 +177,7 @@ def _assert_source_tag(tables, source_tag, source_tag_value):
         synced_tags = [tag for tag in tags if str(tag.type_name) == source_tag]
         assert synced_tags and len(synced_tags) > 0
         for st in synced_tags:
-            attachments = st.source_tag_attachements
+            attachments = st.source_tag_attachments
             assert attachments and len(attachments) > 0
             for sta in attachments:
                 values = sta.source_tag_value
@@ -196,7 +196,9 @@ def test_search_source_synced_assets(client: AtlanClient):
             .where(CompoundQuery.asset_type(Table))
             .where(
                 CompoundQuery.tagged_with_value(
-                    EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted"
+                    client=client,
+                    atlan_tag_name=EXISTING_SOURCE_SYNCED_TAG,
+                    value="Highly Restricted",
                 )
             )
             .execute(client=client)
@@ -216,7 +218,8 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
     assert table.name and table.qualified_name
 
     source_tag_name = SourceTagName(
-        "snowflake/development@@ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL"
+        client=client,
+        tag="snowflake/development@@ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL",
     )
     to_update = table.updater(table.qualified_name, table.name)
     to_update.atlan_tags = [
@@ -224,11 +227,13 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
         AtlanTag.of(
             atlan_tag_name=AtlanTagName(EXISTING_SOURCE_SYNCED_TAG),
             source_tag_attachment=SourceTagAttachment.by_name(
+                client=client,
                 name=source_tag_name,
                 source_tag_values=[
                     SourceTagAttachmentValue(tag_attachment_value="Not Restricted")
                 ],
             ),
+            client=client,
         ),
     ]
     response = client.asset.save(to_update, replace_atlan_tags=True)
@@ -255,7 +260,9 @@ def test_source_tag_assign_with_value(client: AtlanClient, table: Table):
             .where(Table.QUALIFIED_NAME.eq(table.qualified_name))
             .where(
                 CompoundQuery.tagged_with_value(
-                    EXISTING_SOURCE_SYNCED_TAG, "Not Restricted"
+                    client=client,
+                    atlan_tag_name=EXISTING_SOURCE_SYNCED_TAG,
+                    value="Not Restricted",
                 )
             )
             .execute(client=client)
@@ -836,7 +843,9 @@ def test_purpose_search(client: AtlanClient, known_issues_purpose: Purpose):
 
 def test_read_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
-    with client_connection(read_timeout=0.1, retry=Retry(total=0)) as timed_client:
+    with client_connection(
+        client=client, read_timeout=0.1, retry=Retry(total=0)
+    ) as timed_client:
         with pytest.raises(
             requests.exceptions.ReadTimeout,
             match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
@@ -847,7 +856,7 @@ def test_read_timeout(client: AtlanClient):
 def test_connect_timeout(client: AtlanClient):
     request = (FluentSearch().select()).to_request()
     with client_connection(
-        connect_timeout=0.0001, retry=Retry(total=0)
+        client=client, connect_timeout=0.0001, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
             requests.exceptions.ConnectionError,

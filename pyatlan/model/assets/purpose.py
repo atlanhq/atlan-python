@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -23,6 +23,9 @@ from pyatlan.utils import init_guid, validate_required_fields
 from .core.access_control import AccessControl
 from .core.asset import SelfAsset
 from .core.auth_policy import AuthPolicy
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 
 class Purpose(AccessControl):
@@ -52,6 +55,7 @@ class Purpose(AccessControl):
     def create_metadata_policy(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         purpose_id: str,
         policy_type: AuthPolicyType,
@@ -61,8 +65,8 @@ class Purpose(AccessControl):
         all_users: bool = False,
     ) -> AuthPolicy:
         validate_required_fields(
-            ["name", "purpose_id", "policy_type", "actions"],
-            [name, purpose_id, policy_type, actions],
+            ["client", "name", "purpose_id", "policy_type", "actions"],
+            [client, name, purpose_id, policy_type, actions],
         )
         target_found = False
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
@@ -80,12 +84,8 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.client.atlan import AtlanClient
-
                 for group_name in policy_groups:
-                    if not AtlanClient.get_current_client().group_cache.get_id_for_name(
-                        group_name
-                    ):
+                    if not client.group_cache.get_id_for_name(group_name):
                         raise ValueError(
                             f"Provided group name {group_name} was not found in Atlan."
                         )
@@ -94,12 +94,8 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.client.atlan import AtlanClient
-
                 for username in policy_users:
-                    if not AtlanClient.get_current_client().user_cache.get_id_for_name(
-                        username
-                    ):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -116,6 +112,7 @@ class Purpose(AccessControl):
     def create_data_policy(
         cls,
         *,
+        client: AtlanClient,
         name: str,
         purpose_id: str,
         policy_type: AuthPolicyType,
@@ -124,7 +121,8 @@ class Purpose(AccessControl):
         all_users: bool = False,
     ) -> AuthPolicy:
         validate_required_fields(
-            ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
+            ["client", "name", "purpose_id", "policy_type"],
+            [client, name, purpose_id, policy_type],
         )
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore[attr-defined]
         policy.policy_actions = {DataAction.SELECT.value}
@@ -141,12 +139,8 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.client.atlan import AtlanClient
-
                 for group_name in policy_groups:
-                    if not AtlanClient.get_current_client().group_cache.get_id_for_name(
-                        group_name
-                    ):
+                    if not client.group_cache.get_id_for_name(group_name):
                         raise ValueError(
                             f"Provided group name {group_name} was not found in Atlan."
                         )
@@ -155,12 +149,8 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.client.atlan import AtlanClient
-
                 for username in policy_users:
-                    if not AtlanClient.get_current_client().user_cache.get_id_for_name(
-                        username
-                    ):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )

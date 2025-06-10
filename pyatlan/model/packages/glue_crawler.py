@@ -3,6 +3,7 @@ from __future__ import annotations
 from json import dumps
 from typing import List, Optional
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
@@ -13,6 +14,7 @@ class GlueCrawler(AbstractCrawler):
     """
     Base configuration for a new Glue crawler.
 
+    :param client: connectivity to an Atlan tenant
     :param connection_name: name for the connection
     :param admin_roles: admin roles for the connection
     :param admin_groups: admin groups for the connection
@@ -39,6 +41,7 @@ class GlueCrawler(AbstractCrawler):
 
     def __init__(
         self,
+        client: AtlanClient,
         connection_name: str,
         admin_roles: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
@@ -48,6 +51,7 @@ class GlueCrawler(AbstractCrawler):
         row_limit: int = 0,
     ):
         super().__init__(
+            client=client,
             connection_name=connection_name,
             connection_type=self._CONNECTOR_TYPE,
             admin_roles=admin_roles,

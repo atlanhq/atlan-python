@@ -213,6 +213,14 @@ class AssetInfo:
     entity_defs_by_name: Dict[str, EntityDef] = {}
     sub_type_names_to_ignore: Set[str] = set()
     is_core_asset: bool = False
+    _ASSETS_REQUIRE_CLIENT = {
+        "Badge",
+        "Collection",
+        "Connection",
+        "DataProduct",
+        "Referenceable",
+        "Purpose",
+    }
     _CORE_ASSETS = {
         "Referenceable",
         "Asset",
@@ -930,6 +938,9 @@ if __name__ == "__main__":
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
     for file in (CORE_ASSETS_DIR).glob("*.py"):
+        # Remove all files in the core assets directory except `indistinct.py`
+        if file.name == "indistinct_asset.py":
+            continue
         file.unlink()
     generator = Generator()
     EnumDefInfo.create(type_defs.enum_defs)
