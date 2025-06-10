@@ -394,6 +394,7 @@ class AtlanCustomAttributePrimitiveType(str, Enum):
     GROUPS = "groups"
     URL = "url"
     SQL = "SQL"
+    LONG = "long"
 
 
 class AtlanDeleteType(str, Enum):
