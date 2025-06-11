@@ -11,8 +11,6 @@ This repository houses the code for a Python SDK to interact with [Atlan](https:
 
 [https://developer.atlan.com/getting-started/python-sdk/](https://developer.atlan.com/getting-started/python-sdk/)
 
-
-
 ## Installing for Development
 
 ### Initial Setup
@@ -44,7 +42,7 @@ To get started developing the SDK:
    # Upgrade pip before installing dependencies
    python -m pip install --upgrade pip
    # Install required dependencies for development
-   pip install -e . && pip install -r requirements-dev.txt  
+   pip install -e . && pip install -r requirements-dev.txt
    ```
 
 ### Code Formatting
@@ -69,11 +67,11 @@ For running integration tests, you'll need to configure your environment:
       ```
     - For Windows (PowerShell): Load environment variables
       ```powershell
-      # Run this in PowerShell (not Command Prompt)   
-      Get-Content .env | ForEach-Object {  
-       if ($_ -match '^(.*?)=(.*)$') {  
-        $env:($matches[1]) = $matches[2]  
-       }  
+      # Run this in PowerShell (not Command Prompt)
+      Get-Content .env | ForEach-Object {
+       if ($_ -match '^(.*?)=(.*)$') {
+        $env:($matches[1]) = $matches[2]
+       }
       }
       ```
     - For macOS/Linux: Load environment variables from .env file
@@ -109,6 +107,31 @@ Once the environment is set up, you can run integration tests:
   ```bash
   pytest tests/integration/<test_specific_feature>.py
   ```
+
+### Running the SDK Model Generator
+
+If you've pushed new typedefs to Atlan and want to generate SDK asset models to manage them via the SDK, this section covers how to run the SDK generator.
+
+> [!NOTE]
+> Before running any generator scripts, make sure you have [configured your environment variables](https://developer.atlan.com/sdks/python/#configure-the-sdk) specifically `ATLAN_BASE_URL` and `ATLAN_API_KEY`.
+
+1. Retrieve the typedefs from your Atlan instance and save them to a JSON file by running:
+
+   ```shell
+   python3 pyatlan/generator/create_typedefs_file.py
+   ```
+
+2. Generate the asset `models`, `enums`, and `struct` modules in the SDK based on the typedefs by running:
+
+   ```shell
+   python3 pyatlan/generator/class_generator.py
+   ```
+
+3. The generated files will be unformatted. To format them properly, run the formatter:
+
+   ```shell
+   ./pyatlan-formatter
+   ```
 
 ## Attribution
 
