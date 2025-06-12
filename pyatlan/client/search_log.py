@@ -209,4 +209,5 @@ class SearchLogClient:
             log_entries=log_entries,
             aggregations={},
             bulk=bulk,
+            processed_log_entries_count=len(log_entries),
         )

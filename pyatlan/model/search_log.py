@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Generator, Iterable, List, Optional, Set
+from typing import Any, Dict, Generator, Iterable, List, Optional
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as
 
@@ -23,7 +23,6 @@ from pyatlan.model.search import (
     Term,
     Terms,
 )
-from pyatlan.utils import deep_get
 
 BY_TIMESTAMP = [SortItem("timestamp", order=SortOrder.ASCENDING)]
 
@@ -377,6 +376,7 @@ class SearchLogResults(Iterable):
         log_entries: List[SearchLogEntry],
         aggregations: Dict[str, Aggregation],
         bulk: bool = False,
+        processed_log_entries_count: int = 0,
     ):
         self._client = client
         self._endpoint = SEARCH_LOG
@@ -390,7 +390,8 @@ class SearchLogResults(Iterable):
         self._bulk = bulk
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
-        self._processed_log_entries: Set[str] = set()
+        self._duplicate_timestamp_page_count: int = 0
+        self._processed_log_entries_count: int = processed_log_entries_count
 
     @property
     def count(self) -> int:
@@ -404,41 +405,6 @@ class SearchLogResults(Iterable):
         """
         return self._log_entries
 
-    def _get_sl_unique_key(self, entity: SearchLogEntry) -> Optional[str]:
-        """
-        Returns a unique key for a `SearchLogEntry` by
-        combining `entity_guid` with the timestamp.
-
-        NOTE: This is necessary because the search log API
-        does not provide a unique identifier for logs.
-
-        :param: search log entry
-        :returns: unique key or None if no valid key is found
-        """
-        entity_guid = entity.entity_guids_all[0] if entity.entity_guids_all else None
-
-        # If entity_guid is not present, try to extract it from request_dsl; otherwise, return None
-        if not entity_guid:
-            terms = deep_get(
-                entity.request_dsl, "query.function_score.query.bool.filter.bool.must"
-            )
-            if not terms:
-                return None
-
-            if isinstance(terms, list):
-                for term in terms:
-                    if isinstance(term, dict) and term.get("term", {}).get("__guid"):
-                        entity_guid = term["term"]["__guid"]
-                        break
-            elif isinstance(terms, dict):
-                entity_guid = terms.get("term", {}).get("__guid")
-
-        return (
-            f"{entity_guid}:{entity.timestamp}"
-            if entity_guid and entity_guid != "undefined"
-            else None
-        )
-
     def next_page(self, start=None, size=None) -> bool:
         """
         Indicates whether there is a next page of results.
@@ -446,23 +412,8 @@ class SearchLogResults(Iterable):
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
         if size:
             self._size = size
-
-        if is_bulk_search:
-            # Used in the "timestamp-based" paging approach
-            # to check if search log with the unique key "_get_sl_unique_key()"
-            # has already been processed in a previous page of results.
-            # If it has, then exclude it from the current results;
-            # otherwise, we may encounter duplicate search log records.
-            self._processed_log_entries.update(
-                key
-                for entity in self._log_entries
-                if (key := self._get_sl_unique_key(entity))
-            )
         return self._get_next_page() if self._log_entries else False
 
     def _get_next_page(self):
@@ -501,8 +452,8 @@ class SearchLogResults(Iterable):
             return None
         try:
             self._log_entries = parse_obj_as(List[SearchLogEntry], raw_json["logs"])
+            self._processed_log_entries_count += len(self._log_entries)
             if is_bulk_search:
-                self._filter_processed_entities()
                 self._update_first_last_record_creation_times()
             return raw_json
         except ValidationError as err:
@@ -514,6 +465,7 @@ class SearchLogResults(Iterable):
         """
         Adjusts the query to include timestamp filters for search log bulk extraction.
         """
+        self._criteria.dsl.from_ = 0
         rewritten_filters = []
         if isinstance(query, Bool):
             for filter_ in query.filter:
@@ -522,6 +474,9 @@ class SearchLogResults(Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
+            # If the first and last record creation times are different,
+            # reset _duplicate_timestamp_page_count to its initial value
+            self._duplicate_timestamp_page_count = 0
             rewritten_filters.append(
                 self._get_paging_timestamp_query(self._last_record_creation_time)
             )
@@ -539,46 +494,30 @@ class SearchLogResults(Iterable):
                 # in the DSL, append it to the Bool `filter`.
                 rewritten_filters.append(query)
                 rewritten_query = Bool(filter=rewritten_filters)
-            self._criteria.dsl.from_ = 0
             self._criteria.dsl.query = rewritten_query
         else:
-            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
-            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
-            # Instead, ensure the search runs with only SortItem(field='__timestamp', order=<SortOrder.ASCENDING>).
-            # Failing to do so can lead to incomplete results (less than the approximate count) when running the search
-            # with a small page size.
-            if isinstance(query, Bool):
-                for filter_ in query.filter:
-                    if self._is_paging_timestamp_query(filter_):
-                        query.filter.remove(filter_)
-
-            # Always ensure that the offset is set to the length of the processed assets
-            # instead of the default (start + size), as the default may skip some assets
-            # and result in incomplete results (less than the approximate count)
-            self._criteria.dsl.from_ = len(self._processed_log_entries)
+            # If the first and last record creation times are the same,
+            # we need to switch to offset-based pagination instead of timestamp-based pagination
+            # to ensure we get the next set of results without duplicates.
+            # We use a page multiplier to skip already-processed records when encountering
+            # consecutive pages with identical timestamps, preventing duplicate results.
+            self._criteria.dsl.from_ = self._size * (
+                self._duplicate_timestamp_page_count + 1
+            )
+            self._criteria.dsl.size = self._size
+            self._duplicate_timestamp_page_count += 1
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:
-        return Range(field="createdAt", gte=last_timestamp)
+        return Range(field="createdAt", gt=last_timestamp)
 
     @staticmethod
     def _is_paging_timestamp_query(filter_: Query) -> bool:
         return (
             isinstance(filter_, Range)
             and filter_.field == "createdAt"
-            and filter_.gte is not None
+            and filter_.gt is not None
         )
-
-    def _filter_processed_entities(self):
-        """
-        Remove log entries that have already been processed to avoid duplicates.
-        """
-        self._log_entries = [
-            entity
-            for entity in self._log_entries
-            if entity is not None
-            and self._get_sl_unique_key(entity) not in self._processed_log_entries
-        ]
 
     def _update_first_last_record_creation_times(self):
         self._first_record_creation_time = self._last_record_creation_time = -2
