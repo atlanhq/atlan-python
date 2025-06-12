@@ -1,3 +1,121 @@
+## 7.0.0 (June 12, 2025)
+
+### New Features
+
+- Added `long` as a new primitive type in the `AtlanCustomAttributePrimitiveType` enum.
+- Support for `Unmodeled` Asset types: Introduced `IndistinctAsset` as a fallback model to handle asset types that are not explicitly modeled in the SDK. Previously, such assets would return `None` (e.g: for newly introduced typedefs). With this release, the SDK will now return an `IndistinctAsset` instance containing basic fields such as `guid`, `qualifiedName`, and `typeName`.
+
+### Bug Fixes
+
+- Fixed timestamp-based pagination in search log results when `from + size` exceeds the Elasticsearch window size (10,000 records) due to identical creation times for the first and last records in a retrieved page.
+
+### Breaking Changes
+
+This release includes a **major refactor** that eliminates all usage of `AtlanClient.get_current_client()` and `set_current_client()` (previously implemented using [ContextVar](https://docs.python.org/3/library/contextvars.html) / [thread-local storage](https://docs.python.org/3/library/threading.html#thread-local-data) a.k.a TLS). Although the earlier design was thread-safe, it still required users to explicitly use `PyAtlanThreadPoolExecutor` in multi-threaded environments, resulting in unintuitive patterns and frequent client initialization errors.
+
+The new design simplifies usage by requiring the `client` to be passed explicitly to SDK operations that interact with the Atlan platform.
+
+> [!IMPORTANT]
+> ### Affected Areas
+> All the following methods or constructors now require a `client` argument due to the removal of `AtlanClient.get_current_client()`:
+
+##### `pyatlan.model.assets`:
+
+- `Referenceable.flush_custom_metadata(client)`
+- `Referenceable.get_custom_metadata(client, name)`
+- `Referenceable.set_custom_metadata(client, custom_metadata)`
+- `CustomMetadataProxy` is no longer initialized in `Referenceable.__init__()` (as it now requires a `client`).
+- `Purpose.create_metadata_policy()`
+- `Purpose.create_data_policy()`
+- `DataProduct.get_assets()`
+- `Badge.creator()`
+- `Connection.creator()`
+
+> [!NOTE]
+> `user_cache.validate_names`, `role_cache.validate_idstrs`, and `group_cache.validate_aliases` are now invoked inside `Connection.creator()` instead of field validators.
+
+##### `pyatlan.model.custom_metadata`:
+
+- `CustomMetadataDict(client, name)`
+- `CustomMetadataProxy(client, business_attributes)`
+
+##### `pyatlan.model.structs`:
+
+- `SourceTagAttachment.by_name()`
+- `SourceTagAttachment.by_qualified_name()`
+- `SourceTagName()` (constructor)
+
+##### `pyatlan.model.suggestions`:
+
+- `Suggestions.get()`
+- `Suggestions.apply()`
+
+##### `pyatlan.model.fluent_search`
+
+- `FluentSearch.tagged()`
+- `FluentSearch.tagged_with_value()`
+
+##### `pyatlan.client.typedef`
+
+- `EnumDef.update()`
+- `AttributeDef.create()`
+
+##### `pyatlan.model.search`
+
+- `Exists.with_custom_metadata()`
+- `Term.with_custom_metadata()`
+
+##### `pyatlan.client.atlan`
+
+- `client_connection()`
+
+##### `pyatlan.model.open_lineage`
+
+- `OpenLineageEvent.emit()`
+
+##### `pyatlan.model.fields.atlan_fields`
+
+- `CustomMetadataField()` (constructor)
+
+##### `pyatlan.model.packages`
+
+- All crawler class constructors
+
+### Serialization & Deserialization
+
+#### API Serialization:
+
+- Now handled via the `AtlanRequest` wrapper, which takes a Pydantic model instance and a client.
+- It automatically performs translation (e.g: converting human-readable Atlan tag names into hashed IDs using `AtlanTagRetranslator`).
+
+#### API Response Deserialization:
+
+- Responses are processed using the `AtlanResponse` wrapper.
+- It translates raw JSON into readable formats via registered translators like `AtlanTagTranslator` (e.g: converting hashed tag IDs into human-readable names).
+
+### AtlanTag / AtlanTagName Changes
+
+- **Human-readable tag names** are now only available when deserializing through `AtlanResponse` (which requires a valid `client`). If skipped, tag names remain in **hashed ID format** or as plain strings.
+- Deleted tags (e.g `AtlanTagName('(DELETED)')`) will only appear when using `AtlanResponse`, as the lookup requires a client to determine tag validity.
+- The `.id` attribute on `AtlanTagName` has been **deprecated**. Use `AtlanTag.tag_id` to access the hashed ID instead.
+- Fixed typo in `AtlanTag.source_tag_attachments` field name.
+
+### Other Changes
+
+- `AtlanClient._401_has_retried` is now marked as a `PrivateAttr`.
+- `IndexSearchRequest.Metadata` has been moved to a separate class: `IndexSearchRequestMetadata`.
+- Removed deprecated methods:
+
+  - `AtlanClient.get_current_client()`
+  - `AtlanClient.set_current_client()`
+  - `PyAtlanThreadPoolExecutor` (SDK is now fully thread-safe without it)
+- Updated `AssetClient.find_domain_by_name()` and `AssetClient.find_product_by_name()` to return only active `Domain` and `Product` assets. Previously, these methods returned both `active` and `archived` assets, which caused issues when assets with the same `name` existed in both states - the first match (possibly `archived`) was returned.
+
+### QOL Improvements
+
+- Regenerated latest typedef models.
+- Refactored integration and unit tests to eliminate reliance on `AtlanClient.get_current_client()` / `set_current_client()`.
+
 ## 6.2.1 (May 30, 2025)
 
 ### Bug Fixes
