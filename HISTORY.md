@@ -1,3 +1,9 @@
+## 7.0.1 (June 16, 2025)
+
+### Bug Fixes
+
+- Fixed `FluentSearch` criteria used for `get_by_qualified_name/guid` method to include asset `type_name`.
+
 ## 7.0.0 (June 12, 2025)
 
 ### New Features
