@@ -439,7 +439,10 @@ class AssetClient:
             related_attributes and len(related_attributes)
         ):
             search = (
-                FluentSearch().select().where(Asset.QUALIFIED_NAME.eq(qualified_name))
+                FluentSearch()
+                .select()
+                .where(Asset.QUALIFIED_NAME.eq(qualified_name))
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
             )
             for attribute in attributes:
                 search = search.include_on_results(attribute)
@@ -509,7 +512,12 @@ class AssetClient:
         if (attributes and len(attributes)) or (
             related_attributes and len(related_attributes)
         ):
-            search = FluentSearch().select().where(Asset.GUID.eq(guid))
+            search = (
+                FluentSearch()
+                .select()
+                .where(Asset.GUID.eq(guid))
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
+            )
             for attribute in attributes:
                 search = search.include_on_results(attribute)
             for relation_attribute in related_attributes:
