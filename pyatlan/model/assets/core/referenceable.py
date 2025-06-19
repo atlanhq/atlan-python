@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, root_validator
 
+from pyatlan.model.assets.relations import RelationshipAttributes
 from pyatlan.model.core import AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import EntityStatus, SaveSemantic
@@ -186,6 +187,11 @@ class Referenceable(AtlanObject):
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
+        relationship_attributes: Optional[RelationshipAttributes] = Field(
+            default=None,
+            description="Map of relationships for the entity. The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema.",
+        )
 
         def validate_required(self):
             pass
@@ -303,7 +309,7 @@ class Referenceable(AtlanObject):
     labels: Optional[List[str]] = Field(
         default=None, description="Arbitrary textual labels for the asset."
     )
-    relationship_attributes: Optional[Dict[str, Any]] = Field(
+    relationship_attributes: Optional[RelationshipAttributes] = Field(
         default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
         "so are described in the sub-types of this schema.",
