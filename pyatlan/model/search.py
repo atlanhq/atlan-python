@@ -2024,6 +2024,16 @@ class IndexSearchRequest(SearchRequest):
         default=None,
         description="Qualified name of the purpose eg: default/zL6uqsrZGuf1hz9XFYnw9x",
     )
+    include_relationship_attributes: Optional[bool] = Field(
+        default=False,
+        alias="includeRelationshipAttributes",
+        description=(
+            "Whether to include relationship-level attributes "
+            "for any relationships to each asset (True) or not (False). "
+            "By default, this is `False` and therefore "
+            "relationship-level attributes are not included."
+        ),
+    )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
             # Set this to `False` to prevent the frequent

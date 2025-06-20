@@ -381,6 +381,7 @@ class FluentSearch(CompoundQuery):
         _page_size: Optional[int] = None,
         _includes_on_results: Optional[List[str]] = None,
         _includes_on_relations: Optional[List[str]] = None,
+        _include_relationship_attributes: Optional[bool] = False,
     ):
         super().__init__(wheres, where_nots, where_somes, _min_somes)
         self.sorts = sorts
@@ -388,6 +389,7 @@ class FluentSearch(CompoundQuery):
         self._page_size = _page_size
         self._includes_on_results = _includes_on_results
         self._includes_on_relations = _includes_on_relations
+        self._include_relationship_attributes = _include_relationship_attributes
 
     def _clone(self) -> "FluentSearch":
         """
@@ -468,6 +470,22 @@ class FluentSearch(CompoundQuery):
             clone._includes_on_relations.append(field)
         return clone
 
+    def include_relationship_attributes(self, include: bool) -> "FluentSearch":
+        """
+        Add an attribute to include relationship attributes on each relationship in the results.
+
+        :param include: include relationship attributes on each relationship in the results
+        :returns: the fluent search with this parameter added
+        """
+        clone = self._clone()
+        # When enabling `include_relationship_attributes`
+        # it's mandatory to include the "name" field
+        # to ensure relationship names are included in the response.
+        # Omitting "name" will result in a 500 error from the metastore.
+        clone = self.include_on_relations("name")
+        clone._include_relationship_attributes = include
+        return clone
+
     def _dsl(self) -> DSL:
         """
         Translate the Atlan fluent search into an Atlan search DSL.
@@ -495,6 +513,10 @@ class FluentSearch(CompoundQuery):
             request.attributes = self._includes_on_results
         if self._includes_on_relations:
             request.relation_attributes = self._includes_on_relations
+        if self._include_relationship_attributes:
+            request.include_relationship_attributes = (
+                self._include_relationship_attributes
+            )
         return request
 
     def count(self, client: AtlanClient) -> int:

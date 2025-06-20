@@ -24,12 +24,10 @@ class UserDefRelationship(RelationshipAttributes):
     class Attributes(AtlanObject):
         from_type_label: Optional[str] = Field(
             default=None,
-            alias="fromTypeLabel",
             description="Name for the relationship when referring from endDef2 asset to endDef1 asset.",
         )
         to_type_label: Optional[str] = Field(
             default=None,
-            alias="toTypeLabel",
             description="Name for the relationship when referring from endDef1 asset to endDef2 asset.",
         )
 
@@ -46,7 +44,6 @@ class UserDefRelationship(RelationshipAttributes):
         )
         relationship_type: str = Field(
             default="UserDefRelationship",
-            const=True,
             description="Fixed typeName for UserDefRelationship.",
         )
         relationship_attributes: UserDefRelationship = Field(
