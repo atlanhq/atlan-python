@@ -104,7 +104,7 @@ class UserDefRelationship(RelationshipAttributes):
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> UserDefRelationship.UserDefRelationshipFrom:
         if related.guid:
-            return UserDefRelationship.UserDefRelationshipfrom._create_ref(
+            return UserDefRelationship.UserDefRelationshipFrom._create_ref(
                 type_name=related.type_name,
                 guid=related.guid,
                 semantic=semantic,
@@ -112,7 +112,7 @@ class UserDefRelationship(RelationshipAttributes):
             )
 
         # If the related asset does not have a GUID, we use qualifiedName
-        return UserDefRelationship.UserDefRelationshipfrom._create_ref(
+        return UserDefRelationship.UserDefRelationshipFrom._create_ref(
             type_name=related.type_name,
             unique_attributes={"qualifiedName": related.qualified_name},
             semantic=semantic,

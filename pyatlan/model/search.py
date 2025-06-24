@@ -2026,7 +2026,6 @@ class IndexSearchRequest(SearchRequest):
     )
     include_relationship_attributes: Optional[bool] = Field(
         default=False,
-        alias="includeRelationshipAttributes",
         description=(
             "Whether to include relationship-level attributes "
             "for any relationships to each asset (True) or not (False). "
