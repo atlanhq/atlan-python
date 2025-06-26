@@ -1,3 +1,5 @@
+import json
+import os
 from unittest.mock import patch
 
 import pytest
@@ -11,6 +13,16 @@ def mock_asset_guid():
     with patch("pyatlan.utils.random") as mock_random:
         mock_random.random.return_value = 123456789
         yield mock_random
+
+
+def _load_test_data(filename):
+    """Load test data from JSON file."""
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(current_dir, "data", "custom_relationships")
+    file_path = os.path.join(data_dir, filename)
+
+    with open(file_path, "r") as f:
+        return json.load(f)
 
 
 def _assert_relationship(relationship):
@@ -29,81 +41,7 @@ def _assert_relationship(relationship):
 
 
 def test_user_def_relationship_deserialization():
-    raw_json = {
-        "typeName": "AtlasGlossaryTerm",
-        "attributes": {
-            "userDefRelationshipTo": [
-                {
-                    "guid": "90a43be2-f700-4f78-8512-4a38f129a901",
-                    "typeName": "AtlasGlossaryTerm",
-                    "attributes": {
-                        "relationshipAttributes": {
-                            "typeName": "UserDefRelationship",
-                            "attributes": {
-                                "fromTypeLabel": "test0-from-label",
-                                "toTypeLabel": "test0-to-label",
-                            },
-                        },
-                        "name": "test-term0",
-                    },
-                    "uniqueAttributes": {
-                        "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
-                    },
-                },
-            ],
-            "qualifiedName": "i9QXU6yl19Grdk8d6yVYT@KhgDjmb3kdRvft9TEzv9W",
-            "userDefRelationshipFrom": [
-                {
-                    "guid": "90a43be2-f700-4f78-8512-4a38f121a901",
-                    "typeName": "AtlasGlossaryTerm",
-                    "attributes": {
-                        "relationshipAttributes": {
-                            "typeName": "UserDefRelationship",
-                            "attributes": {
-                                "fromTypeLabel": "test1-from-label",
-                                "toTypeLabel": "test1-to-label",
-                            },
-                        },
-                        "name": "test-term1",
-                    },
-                    "uniqueAttributes": {
-                        "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
-                    },
-                },
-                {
-                    "guid": "90a43be2-f700-4f78-8512-4a38f121a911",
-                    "typeName": "AtlasGlossaryTerm",
-                    "attributes": {
-                        "relationshipAttributes": {
-                            "typeName": "UserDefRelationship",
-                            "attributes": {
-                                "fromTypeLabel": "test3-from-label",
-                                "toTypeLabel": "test3-to-label",
-                            },
-                        },
-                        "name": "test-term3",
-                    },
-                    "uniqueAttributes": {
-                        "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
-                    },
-                },
-            ],
-            "name": "test-term2",
-        },
-        "guid": "977b55f9-084c-460f-bf3b-cea5fa740e20",
-        "status": "ACTIVE",
-        "displayText": "test-term2",
-        "classificationNames": [],
-        "classifications": [],
-        "meaningNames": [],
-        "meanings": [],
-        "isIncomplete": False,
-        "labels": [],
-        "createdBy": "test-user",
-        "updatedBy": "service-account-apikey",
-        "createTime": 1750078015371,
-        "updateTime": 1750156224299,
-    }
+    raw_json = _load_test_data("user_def_relationship_deserialization.json")
     term = AtlasGlossaryTerm(**raw_json)
     assert term.name and term.guid and term.qualified_name
     to_relation1 = term.user_def_relationship_to[0]
@@ -115,59 +53,7 @@ def test_user_def_relationship_deserialization():
 
 
 def test_user_def_relationship_serialization(mock_asset_guid):
-    expected_json = {
-        "typeName": "AtlasGlossaryTerm",
-        "attributes": {
-            "qualifiedName": "test-term-qn",
-            "userDefRelationshipTo": [
-                {
-                    "typeName": "AtlasGlossaryTerm",
-                    "guid": "test-term2-guid",
-                    "relationshipAttributes": {
-                        "typeName": "UserDefRelationship",
-                        "attributes": {
-                            "fromTypeLabel": "test1-from-label",
-                            "toTypeLabel": "test1-to-label",
-                        },
-                    },
-                    "relationshipType": "UserDefRelationship",
-                },
-                {
-                    "typeName": "AtlasGlossaryTerm",
-                    "guid": "test-term3-guid",
-                    "relationshipAttributes": {
-                        "typeName": "UserDefRelationship",
-                        "attributes": {
-                            "fromTypeLabel": "test2-from-label",
-                            "toTypeLabel": "test2-to-label",
-                        },
-                    },
-                    "relationshipType": "UserDefRelationship",
-                },
-            ],
-            "userDefRelationshipFrom": [
-                {
-                    "typeName": "AtlasGlossaryTerm",
-                    "guid": "test-term0-guid",
-                    "relationshipAttributes": {
-                        "typeName": "UserDefRelationship",
-                        "attributes": {
-                            "fromTypeLabel": "test0-from-label",
-                            "toTypeLabel": "test0-to-label",
-                        },
-                    },
-                    "relationshipType": "UserDefRelationship",
-                }
-            ],
-            "name": "test-term",
-            "anchor": {
-                "typeName": "AtlasGlossary",
-                "attributes": {"qualifiedName": "test-glossary-guid"},
-                "guid": "test-glossary-guid",
-            },
-        },
-        "guid": "-1234567890000000000000000",
-    }
+    expected_json = _load_test_data("user_def_relationship_serialization.json")
 
     term1 = AtlasGlossaryTerm.updater(
         qualified_name="test-term-qn",

@@ -1,0 +1,43 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "meanings": [
+            {
+                "guid": "customer-table-guid",
+                "typeName": "Table",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossarySemanticAssignment",
+                        "attributes": {
+                            "description": "Customer data is assigned this business term",
+                            "expression": "manual assignment",
+                            "status": "ACTIVE",
+                            "confidence": 95,
+                            "createdBy": "data-analyst",
+                            "steward": "business-analyst",
+                            "source": "business-glossary"
+                        }
+                    },
+                    "name": "customer_table"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer_table@data-warehouse"
+                }
+            }
+        ],
+        "qualifiedName": "customer@business-glossary",
+        "name": "customer"
+    },
+    "guid": "customer-term-guid",
+    "status": "ACTIVE",
+    "displayText": "customer",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "business-analyst",
+    "updatedBy": "business-analyst",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

@@ -1,0 +1,44 @@
+{
+    "typeName": "CustomEntity",
+    "guid": "-1234567890000000000000000",
+    "attributes": {
+        "qualifiedName": "main-entity@default",
+        "name": "Main Entity",
+        "customRelatedToEntities": [
+            {
+                "typeName": "CustomEntity",
+                "guid": "target-entity-guid",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "custom_related_from_entities_custom_related_to_entities",
+                        "attributes": {
+                            "customEntityToLabel": "relates to",
+                            "customEntityFromLabel": "relates from"
+                        }
+                }},
+                "relationshipType": "custom_related_from_entities_custom_related_to_entities",
+                "uniqueAttributes": {
+                    "qualifiedName": "target-entity@default"
+                }
+            }
+        ],
+        "customRelatedFromEntities": [
+            {
+                "typeName": "CustomEntity",
+                "guid": "source-entity-guid",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "custom_related_from_entities_custom_related_to_entities",
+                        "attributes": {
+                            "customEntityToLabel": "relates to",
+                            "customEntityFromLabel": "relates from"
+                        }
+                }},
+                "relationshipType": "custom_related_from_entities_custom_related_to_entities",
+                "uniqueAttributes": {
+                    "qualifiedName": "source-entity@default"
+                }
+            }
+        ]
+    }
+}

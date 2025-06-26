@@ -1,0 +1,64 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "replacementTerms": [
+            {
+                "guid": "new-customer-term-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryReplacementTerm",
+                        "attributes": {
+                            "description": "Customer record replaces the deprecated client record",
+                            "expression": "system migration",
+                            "status": "ACTIVE",
+                            "steward": "data-architect",
+                            "source": "system-modernization"
+                        }
+                    },
+                    "name": "customer-record"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer-record@new-glossary"
+                }
+            }
+        ],
+        "replacedBy": [
+            {
+                "guid": "replacement-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryReplacementTerm",
+                        "attributes": {
+                            "description": "This term is replaced by customer-record",
+                            "expression": "deprecation notice",
+                            "status": "ACTIVE",
+                            "steward": "data-architect",
+                            "source": "system-modernization"
+                        }
+                    },
+                    "name": "customer-record"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer-record@new-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "client-record@legacy-glossary",
+        "name": "client-record"
+    },
+    "guid": "legacy-client-guid",
+    "status": "ACTIVE",
+    "displayText": "client-record",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "data-architect",
+    "updatedBy": "data-architect",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

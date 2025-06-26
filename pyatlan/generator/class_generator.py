@@ -18,8 +18,8 @@ from typing import Any, Dict, List, NamedTuple, Optional, Set
 import networkx as nx
 from jinja2 import Environment, PackageLoader
 
-from pyatlan.model.typedef import EntityDef, EnumDef, TypeDefResponse
-from pyatlan.model.utils import to_snake_case
+from pyatlan.model.typedef import EntityDef, EnumDef, RelationshipDef, TypeDefResponse
+from pyatlan.model.utils import to_python_class_name, to_snake_case
 
 REFERENCEABLE = "Referenceable"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
@@ -80,6 +80,7 @@ ADDITIONAL_IMPORTS = {
 # across Python versions (e.g: 3.8 and 3.9).
 PARENT = Path(__file__).resolve().parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
+ASSETS_RELATIONS_DIR = PARENT.parent / "model" / "assets" / "relations"
 CORE_ASSETS_DIR = PARENT.parent / "model" / "assets" / "core"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"
@@ -450,6 +451,29 @@ class AssetInfo:
                             cls._CORE_ASSETS.add(related_asset.super_class)
 
 
+class RelationshipDefInfo:
+    module_name: str
+    relationship_def_infos: List["RelationshipDefInfo"] = []
+
+    def __init__(self, name: str, relationship_def: RelationshipDef):
+        self.module_name = to_snake_case(name)
+        self.relationship_def = relationship_def
+
+    @classmethod
+    def create(cls, relationship_defs: List[RelationshipDef]):
+        for rel_def in relationship_defs:
+            # Only pick `atlas_core` enums, not user-created ones.
+            if rel_def.attribute_defs:
+                cls.relationship_def_infos.append(
+                    RelationshipDefInfo(
+                        name=to_snake_case(rel_def.name), relationship_def=rel_def
+                    )
+                )
+                # if rel_def.name == "UserDefRelationship":
+                #     import ipdb; ipdb.set_trace()
+                # print(to_python_class_name(rel_def.name))
+
+
 class AttributeType(Enum):
     PRIMITIVE = "PRIMITIVE"
     ENUM = "ENUM"
@@ -664,6 +688,7 @@ class Generator:
         )
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
+        self.environment.filters["to_cls_name"] = to_python_class_name
         self.environment.filters["get_search_type"] = get_search_type
         self.environment.filters["get_mapped_type"] = get_mapped_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
@@ -719,6 +744,21 @@ class Generator:
         with (ASSETS_DIR / f"{asset_info.module_name}.py").open("w") as script:
             script.write(content)
 
+    def render_custom_relationship_module(
+        self, relationship_def_info: RelationshipDefInfo
+    ):
+        template = self.environment.get_template("custom_relationship.jinja2")
+        content = template.render(
+            {
+                "relationship_info": relationship_info.relationship_def,
+                "templates_path": TEMPLATES_DIR.absolute().as_posix(),
+            }
+        )
+        with (ASSETS_RELATIONS_DIR / f"{relationship_def_info.module_name}.py").open(
+            "w"
+        ) as script:
+            script.write(content)
+
     def render_core_module(self, asset_info: AssetInfo, enum_defs: List["EnumDefInfo"]):
         template = self.environment.get_template("module.jinja2")
         content = template.render(
@@ -766,6 +806,22 @@ class Generator:
         content = template.render({"assets": assets})
 
         init_path = ASSETS_DIR / "__init__.pyi"
+        with init_path.open("w") as script:
+            script.write(content)
+
+    def render_relations_init(self, relation_def_infos: List[RelationshipDefInfo]):
+        template = self.environment.get_template("relations_init.jinja2")
+        content = template.render({"relation_def_infos": relation_def_infos})
+
+        init_path = ASSETS_RELATIONS_DIR / "__init__.py"
+        with init_path.open("w") as script:
+            script.write(content)
+
+    def render_relations_mypy_init(self, relation_def_infos: List[RelationshipDefInfo]):
+        template = self.environment.get_template("relations_mypy_init.jinja2")
+        content = template.render({"relation_def_infos": relation_def_infos})
+
+        init_path = ASSETS_RELATIONS_DIR / "__init__.pyi"
         with init_path.open("w") as script:
             script.write(content)
 
@@ -933,8 +989,10 @@ if __name__ == "__main__":
     filter_attributes_of_custom_entity_type()
     AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
     AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)
+    RelationshipDefInfo.create(type_defs.relationship_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
+
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
     for file in (CORE_ASSETS_DIR).glob("*.py"):
@@ -944,14 +1002,28 @@ if __name__ == "__main__":
         file.unlink()
     generator = Generator()
     EnumDefInfo.create(type_defs.enum_defs)
+
     for asset_info in ModuleInfo.assets.values():
         if asset_info.is_core_asset or asset_info.name in asset_info._CORE_ASSETS:
             generator.render_core_module(asset_info, EnumDefInfo.enum_def_info)
         else:
             generator.render_module(asset_info, EnumDefInfo.enum_def_info)
+
+    for file in (ASSETS_RELATIONS_DIR).glob("*.py"):
+        # Remove all files in the core assets
+        # directory except `relationship_attributes.py`
+        if file.name == "relationship_attributes.py":
+            continue
+        file.unlink()
+
+    for relationship_info in RelationshipDefInfo.relationship_def_infos:
+        generator.render_custom_relationship_module(relationship_info)
+
     generator.render_init(ModuleInfo.assets.values())  # type: ignore
     generator.render_core_init(ModuleInfo.assets.values())  # type: ignore
     generator.render_mypy_init(ModuleInfo.assets.values())  # type: ignore
+    generator.render_relations_init(RelationshipDefInfo.relationship_def_infos)  # type: ignore
+    generator.render_relations_mypy_init(RelationshipDefInfo.relationship_def_infos)  # type: ignore
     generator.render_structs(type_defs.struct_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
     generator.render_docs_struct_snippets(type_defs.struct_defs)

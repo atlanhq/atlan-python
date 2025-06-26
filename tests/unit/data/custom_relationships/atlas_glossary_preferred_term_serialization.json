@@ -1,0 +1,32 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "business-entity@business-glossary",
+        "preferredTerms": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "customer-preferred-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryPreferredTerm",
+                    "attributes": {
+                        "description": "Customer is the preferred term",
+                        "expression": "governance decision",
+                        "status": "ACTIVE",
+                        "steward": "business-analyst",
+                        "source": "manual"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryPreferredTerm"
+            }
+        ],
+        "name": "business-entity",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "business-glossary-guid"
+            },
+            "guid": "business-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

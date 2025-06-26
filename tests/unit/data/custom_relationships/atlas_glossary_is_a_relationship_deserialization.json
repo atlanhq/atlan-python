@@ -1,0 +1,64 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "classifies": [
+            {
+                "guid": "general-term-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryIsARelationship",
+                        "attributes": {
+                            "description": "Animal is a more general concept",
+                            "expression": "taxonomic classification",
+                            "status": "ACTIVE",
+                            "steward": "taxonomy-expert",
+                            "source": "domain-expert"
+                        }
+                    },
+                    "name": "animal"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "animal@taxonomy-glossary"
+                }
+            }
+        ],
+        "isA": [
+            {
+                "guid": "specific-term-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryIsARelationship",
+                        "attributes": {
+                            "description": "Cat is a specific type of animal",
+                            "expression": "taxonomic classification",
+                            "status": "ACTIVE",
+                            "steward": "taxonomy-expert",
+                            "source": "domain-expert"
+                        }
+                    },
+                    "name": "cat"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "cat@taxonomy-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "mammal@taxonomy-glossary",
+        "name": "mammal"
+    },
+    "guid": "mammal-term-guid",
+    "status": "ACTIVE",
+    "displayText": "mammal",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "taxonomy-expert",
+    "updatedBy": "taxonomy-expert",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

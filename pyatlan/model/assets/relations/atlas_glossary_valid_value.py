@@ -7,28 +7,40 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.assets import Asset
 from pyatlan.model.assets.relations import RelationshipAttributes
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import SaveSemantic
+from pyatlan.model.enums import AtlasGlossaryTermRelationshipStatus, SaveSemantic
 
 
-class UserDefRelationship(RelationshipAttributes):
+class AtlasGlossaryValidValue(RelationshipAttributes):
     type_name: str = Field(
         allow_mutation=False,
-        default="UserDefRelationship",
-        description="A generic relationship to hold relationship between any type of asset",
+        default="AtlasGlossaryValidValue",
+        description="Terms that represent valid values for another, for example: 'red', 'blue', 'green' could all be valid values for a term 'color'.",
     )
-    attributes: UserDefRelationship.Attributes = Field(
-        default_factory=lambda: UserDefRelationship.Attributes(),
+    attributes: AtlasGlossaryValidValue.Attributes = Field(
+        default_factory=lambda: AtlasGlossaryValidValue.Attributes(),
         description="Map of attributes in the instance and their values",
     )
 
     class Attributes(AtlanObject):
-        to_type_label: Optional[str] = Field(
+        description: Optional[str] = Field(
             default=None,
-            description="Name for the relationship when referring from endDef1 asset to endDef2 asset",
+            description="Details about the relationship.",
         )
-        from_type_label: Optional[str] = Field(
+        expression: Optional[str] = Field(
             default=None,
-            description="Name for the relationship when referring from endDef2 asset to endDef1 asset",
+            description="Expression used to set the relationship.",
+        )
+        status: Optional[AtlasGlossaryTermRelationshipStatus] = Field(
+            default=None,
+            description="Status of the relationship, typically used by discovery engines.",
+        )
+        steward: Optional[str] = Field(
+            default=None,
+            description="User responsible for assessing the relationship and deciding if it should be approved or not.",
+        )
+        source: Optional[str] = Field(
+            default=None,
+            description="Source of the relationship.",
         )
 
     def __init__(__pydantic_self__, **data: Any) -> None:
@@ -37,18 +49,18 @@ class UserDefRelationship(RelationshipAttributes):
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
 
-    class UserDefRelationshipTo(Asset):
+    class ValidValuesFor(Asset):
         type_name: str = Field(
-            default="UserDefRelationship",
-            description="Name of the relationship type that defines the relationship.",
+            default="AtlasGlossaryValidValue",
+            description="Term for which this is a valid value.",
         )
         relationship_type: str = Field(
-            default="UserDefRelationship",
-            description="Fixed typeName for UserDefRelationship.",
+            default="AtlasGlossaryValidValue",
+            description="Fixed typeName for AtlasGlossaryValidValue.",
         )
-        relationship_attributes: UserDefRelationship = Field(
+        relationship_attributes: AtlasGlossaryValidValue = Field(
             default=None,
-            description="Attributes of the UserDefRelationship.",
+            description="Attributes of the AtlasGlossaryValidValue.",
         )
 
         @validator("type_name")
@@ -59,18 +71,18 @@ class UserDefRelationship(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
-    class UserDefRelationshipFrom(Asset):
+    class ValidValues(Asset):
         type_name: str = Field(
-            default="UserDefRelationship",
-            description="Name of the relationship type that defines the relationship.",
+            default="AtlasGlossaryValidValue",
+            description="Valid values for this term.",
         )
         relationship_type: str = Field(
-            default="UserDefRelationship",
-            description="Fixed typeName for UserDefRelationship.",
+            default="AtlasGlossaryValidValue",
+            description="Fixed typeName for AtlasGlossaryValidValue.",
         )
-        relationship_attributes: UserDefRelationship = Field(
+        relationship_attributes: AtlasGlossaryValidValue = Field(
             default=None,
-            description="Attributes of the UserDefRelationship.",
+            description="Attributes of the AtlasGlossaryValidValue.",
         )
 
         @validator("type_name")
@@ -81,11 +93,11 @@ class UserDefRelationship(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
-    def user_def_relationship_to(
+    def valid_values_for(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-    ) -> UserDefRelationship.UserDefRelationshipTo:
+    ) -> AtlasGlossaryValidValue.ValidValuesFor:
         if related.guid:
-            return UserDefRelationship.UserDefRelationshipTo._create_ref(
+            return AtlasGlossaryValidValue.ValidValuesFor._create_ref(
                 type_name=related.type_name,
                 guid=related.guid,
                 semantic=semantic,
@@ -93,18 +105,18 @@ class UserDefRelationship(RelationshipAttributes):
             )
 
         # If the related asset does not have a GUID, we use qualifiedName
-        return UserDefRelationship.UserDefRelationshipTo._create_ref(
+        return AtlasGlossaryValidValue.ValidValuesFor._create_ref(
             type_name=related.type_name,
             unique_attributes={"qualifiedName": related.qualified_name},
             semantic=semantic,
             relationship_attributes=self,
         )
 
-    def user_def_relationship_from(
+    def valid_values(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-    ) -> UserDefRelationship.UserDefRelationshipFrom:
+    ) -> AtlasGlossaryValidValue.ValidValues:
         if related.guid:
-            return UserDefRelationship.UserDefRelationshipFrom._create_ref(
+            return AtlasGlossaryValidValue.ValidValues._create_ref(
                 type_name=related.type_name,
                 guid=related.guid,
                 semantic=semantic,
@@ -112,7 +124,7 @@ class UserDefRelationship(RelationshipAttributes):
             )
 
         # If the related asset does not have a GUID, we use qualifiedName
-        return UserDefRelationship.UserDefRelationshipFrom._create_ref(
+        return AtlasGlossaryValidValue.ValidValues._create_ref(
             type_name=related.type_name,
             unique_attributes={"qualifiedName": related.qualified_name},
             semantic=semantic,
@@ -120,6 +132,6 @@ class UserDefRelationship(RelationshipAttributes):
         )
 
 
-UserDefRelationship.UserDefRelationshipTo.update_forward_refs()
-UserDefRelationship.UserDefRelationshipFrom.update_forward_refs()
-UserDefRelationship.update_forward_refs()
+AtlasGlossaryValidValue.ValidValuesFor.update_forward_refs()
+AtlasGlossaryValidValue.ValidValues.update_forward_refs()
+AtlasGlossaryValidValue.update_forward_refs()

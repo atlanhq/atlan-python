@@ -1,0 +1,66 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "assignedEntities": [
+            {
+                "guid": "database-table-guid",
+                "typeName": "Table",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossarySemanticAssignment",
+                        "attributes": {
+                            "description": "Customer table semantically represents customer concept",
+                            "expression": "business metadata mapping",
+                            "status": "ACTIVE",
+                            "confidence": 95,
+                            "createdBy": "data-analyst",
+                            "steward": "data-governance-team",
+                            "source": "automated-discovery"
+                        }
+                    },
+                    "name": "customer_table"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer_table@data-warehouse"
+                }
+            },
+            {
+                "guid": "column-guid",
+                "typeName": "Column",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossarySemanticAssignment",
+                        "attributes": {
+                            "description": "Customer ID column represents customer identifier",
+                            "expression": "column-to-term mapping",
+                            "status": "ACTIVE",
+                            "confidence": 98,
+                            "createdBy": "data-analyst",
+                            "steward": "data-governance-team",
+                            "source": "manual-assignment"
+                        }
+                    },
+                    "name": "customer_id"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer_id@customer_table@data-warehouse"
+                }
+            }
+        ],
+        "qualifiedName": "customer@business-glossary",
+        "name": "customer"
+    },
+    "guid": "customer-term-guid",
+    "status": "ACTIVE",
+    "displayText": "customer",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "data-analyst",
+    "updatedBy": "data-analyst",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

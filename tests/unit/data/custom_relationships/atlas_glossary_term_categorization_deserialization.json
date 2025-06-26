@@ -1,0 +1,92 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "categories": [
+            {
+                "guid": "business-category-guid",
+                "typeName": "AtlasGlossaryCategory",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryTermCategorization",
+                        "attributes": {
+                            "description": "Customer term is categorized under business concepts",
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "name": "business-concepts"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "business-concepts@business-glossary"
+                }
+            },
+            {
+                "guid": "entity-category-guid",
+                "typeName": "AtlasGlossaryCategory",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryTermCategorization",
+                        "attributes": {
+                            "description": "Customer term is also categorized under entity concepts",
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "name": "entity-concepts",
+                    "terms": [
+                        {
+                            "guid": "customer-term-guid",
+                            "typeName": "AtlasGlossaryTerm",
+                            "attributes": {
+                                "relationshipAttributes": {
+                                    "typeName": "AtlasGlossaryTermCategorization",
+                                    "attributes": {
+                                        "description": "Terms organized within this category",
+                                        "status": "ACTIVE"
+                                    }
+                                },
+                                "name": "customer"
+                            },
+                            "uniqueAttributes": {
+                                "qualifiedName": "customer@business-glossary"
+                            }
+                        },
+                        {
+                            "guid": "product-term-guid",
+                            "typeName": "AtlasGlossaryTerm",
+                            "attributes": {
+                                "relationshipAttributes": {
+                                    "typeName": "AtlasGlossaryTermCategorization",
+                                    "attributes": {
+                                        "description": "Terms organized within this category",
+                                        "status": "ACTIVE"
+                                    }
+                                },
+                                "name": "product"
+                            },
+                            "uniqueAttributes": {
+                                "qualifiedName": "product@business-glossary"
+                            }
+                        }
+                    ]
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "entity-concepts@business-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "customer@business-glossary",
+        "name": "customer"
+    },
+    "guid": "customer-term-guid",
+    "status": "ACTIVE",
+    "displayText": "customer",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "business-analyst",
+    "updatedBy": "business-analyst",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

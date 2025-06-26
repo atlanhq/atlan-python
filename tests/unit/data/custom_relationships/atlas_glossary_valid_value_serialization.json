@@ -1,0 +1,32 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "color@business-glossary",
+        "validValues": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "red-value-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryValidValue",
+                    "attributes": {
+                        "description": "Red color value",
+                        "expression": "manual assignment",
+                        "status": "ACTIVE",
+                        "steward": "data-modeler",
+                        "source": "business-analysis"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryValidValue"
+            }
+        ],
+        "name": "color",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "business-glossary-guid"
+            },
+            "guid": "business-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

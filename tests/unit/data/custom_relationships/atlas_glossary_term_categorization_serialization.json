@@ -1,0 +1,29 @@
+{
+    "typeName": "AtlasGlossaryCategory",
+    "attributes": {
+        "qualifiedName": "business-category@business-glossary",
+        "terms": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "term-guid-1",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryTermCategorization",
+                    "attributes": {
+                        "description": "Customer related terms",
+                        "status": "ACTIVE"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryTermCategorization"
+            }
+        ],
+        "name": "business-category",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "business-glossary-guid"
+            },
+            "guid": "business-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

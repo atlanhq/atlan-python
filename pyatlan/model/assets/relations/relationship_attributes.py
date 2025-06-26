@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.utils import to_python_class_name
 
 
 class RelationshipAttributes(AtlanObject):
@@ -31,7 +32,7 @@ class RelationshipAttributes(AtlanObject):
         )
         relationship_attribute_cls = getattr(
             importlib.import_module("pyatlan.model.assets.relations"),
-            type_name,
+            to_python_class_name(type_name),
             RelationshipAttributes,
         )
         return relationship_attribute_cls(**data)

@@ -1,0 +1,84 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "translatedTerms": [
+            {
+                "guid": "cliente-spanish-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryTranslation",
+                        "attributes": {
+                            "description": "Spanish translation of customer",
+                            "expression": "language localization",
+                            "status": "ACTIVE",
+                            "steward": "translation-team",
+                            "source": "professional-translation"
+                        }
+                    },
+                    "name": "cliente"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "cliente@spanish-glossary"
+                }
+            },
+            {
+                "guid": "client-french-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryTranslation",
+                        "attributes": {
+                            "description": "French translation of customer",
+                            "expression": "language localization",
+                            "status": "ACTIVE",
+                            "steward": "translation-team",
+                            "source": "professional-translation"
+                        }
+                    },
+                    "name": "client"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "client@french-glossary"
+                }
+            }
+        ],
+        "translationTerms": [
+            {
+                "guid": "customer-english-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryTranslation",
+                        "attributes": {
+                            "description": "English original of translated term",
+                            "expression": "base language",
+                            "status": "ACTIVE",
+                            "steward": "translation-team",
+                            "source": "original-definition"
+                        }
+                    },
+                    "name": "customer"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer@english-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "customer@english-glossary",
+        "name": "customer"
+    },
+    "guid": "customer-term-guid",
+    "status": "ACTIVE",
+    "displayText": "customer",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "translation-team",
+    "updatedBy": "translation-team",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

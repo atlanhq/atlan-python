@@ -81,13 +81,6 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
-
-
 class Action(AtlanObject):
     """Description"""
 
@@ -95,6 +88,13 @@ class Action(AtlanObject):
     task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
     task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
     task_action_display_text: Optional[str] = Field(default=None, description="")
+
+
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class ColumnValueFrequencyMap(AtlanObject):
@@ -450,9 +450,9 @@ DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Histogram.update_forward_refs()
-
 Action.update_forward_refs()
+
+Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 

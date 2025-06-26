@@ -396,6 +396,18 @@ class Asset(Referenceable):
     """
     Subtype of this asset.
     """
+    USER_DEFINED_ASSET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "userDefinedAssetType", "userDefinedAssetType"
+    )
+    """
+    User-defined type of this asset.
+    """
+    ASSET_USER_DEFINED_TYPE: ClassVar[KeywordField] = KeywordField(
+        "assetUserDefinedType", "assetUserDefinedType"
+    )
+    """
+    User-defined type of this asset.
+    """
     VIEW_SCORE: ClassVar[NumericRankField] = NumericRankField(
         "viewScore", "viewScore", "viewScore.rank_feature"
     )
@@ -1035,6 +1047,66 @@ class Asset(Referenceable):
     """
 
     """
+    ASSET_EXTERNAL_DQ_SYSTEM_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQSystemName", "assetExternalDQSystemName"
+    )
+    """
+    Name of the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_SOURCE_LOGO: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQSourceLogo", "assetExternalDQSourceLogo"
+    )
+    """
+    Logo URL for the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_TEST_ENTITY_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQTestEntityName", "assetExternalDQTestEntityName"
+    )
+    """
+    Entity name used for Tests in the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_SCAN_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQScanLastRunStatus", "assetExternalDQScanLastRunStatus"
+    )
+    """
+    DQ status based on the last assessment for the asset on the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_SCAN_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetExternalDQScanLastRunAt", "assetExternalDQScanLastRunAt"
+    )
+    """
+    Timestamp of the last assessment for the asset on the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetExternalDQLastSyncRunAt", "assetExternalDQLastSyncRunAt"
+    )
+    """
+    Timestamp of the last metadata sync with the external DQ tool.
+    """
+    ASSET_EXTERNAL_DQ_TEST_COUNT: ClassVar[NumericField] = NumericField(
+        "assetExternalDQTestCount", "assetExternalDQTestCount"
+    )
+    """
+    Total number of DQ tests defined on the external DQ tool for this asset.
+    """
+    ASSET_EXTERNAL_DQ_TEST_STATUSES: ClassVar[TextField] = TextField(
+        "assetExternalDQTestStatuses", "assetExternalDQTestStatuses"
+    )
+    """
+    Status info associated with the DQ tests defined on the external DQ tool for this asset.
+    """
+    ASSET_EXTERNAL_DQ_ADDITIONAL_METADATA: ClassVar[TextField] = TextField(
+        "assetExternalDQAdditionalMetadata", "assetExternalDQAdditionalMetadata"
+    )
+    """
+    Additional metadata associated with the DQ scans run on the external DQ tool for this asset.
+    """
+    ASSET_EXTERNAL_DQ_SOURCE_URL: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQSourceURL", "assetExternalDQSourceURL"
+    )
+    """
+    URL on the external DQ tool with reference to this asset.
+    """
     ASSET_ICON: ClassVar[TextField] = TextField("assetIcon", "assetIcon")
     """
     Name of the icon to use for this asset. (Only applies to glossaries, currently.)
@@ -1229,6 +1301,8 @@ class Asset(Referenceable):
         "is_discoverable",
         "is_editable",
         "sub_type",
+        "user_defined_asset_type",
+        "asset_user_defined_type",
         "view_score",
         "popularity_score",
         "source_owners",
@@ -1334,6 +1408,16 @@ class Asset(Referenceable):
         "asset_soda_last_scan_at",
         "asset_soda_check_statuses",
         "asset_soda_source_url",
+        "asset_external_d_q_system_name",
+        "asset_external_d_q_source_logo",
+        "asset_external_d_q_test_entity_name",
+        "asset_external_d_q_scan_last_run_status",
+        "asset_external_d_q_scan_last_run_at",
+        "asset_external_d_q_last_sync_run_at",
+        "asset_external_d_q_test_count",
+        "asset_external_d_q_test_statuses",
+        "asset_external_d_q_additional_metadata",
+        "asset_external_d_q_source_url",
         "asset_icon",
         "is_partial",
         "is_a_i_generated",
@@ -1655,6 +1739,30 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sub_type = sub_type
+
+    @property
+    def user_defined_asset_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.user_defined_asset_type
+        )
+
+    @user_defined_asset_type.setter
+    def user_defined_asset_type(self, user_defined_asset_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.user_defined_asset_type = user_defined_asset_type
+
+    @property
+    def asset_user_defined_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_user_defined_type
+        )
+
+    @asset_user_defined_type.setter
+    def asset_user_defined_type(self, asset_user_defined_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_user_defined_type = asset_user_defined_type
 
     @property
     def view_score(self) -> Optional[float]:
@@ -3150,6 +3258,178 @@ class Asset(Referenceable):
         self.attributes.asset_soda_source_url = asset_soda_source_url
 
     @property
+    def asset_external_d_q_system_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_system_name
+        )
+
+    @asset_external_d_q_system_name.setter
+    def asset_external_d_q_system_name(
+        self, asset_external_d_q_system_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_system_name = asset_external_d_q_system_name
+
+    @property
+    def asset_external_d_q_source_logo(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_source_logo
+        )
+
+    @asset_external_d_q_source_logo.setter
+    def asset_external_d_q_source_logo(
+        self, asset_external_d_q_source_logo: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_source_logo = asset_external_d_q_source_logo
+
+    @property
+    def asset_external_d_q_test_entity_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_entity_name
+        )
+
+    @asset_external_d_q_test_entity_name.setter
+    def asset_external_d_q_test_entity_name(
+        self, asset_external_d_q_test_entity_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_entity_name = (
+            asset_external_d_q_test_entity_name
+        )
+
+    @property
+    def asset_external_d_q_scan_last_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_scan_last_run_status
+        )
+
+    @asset_external_d_q_scan_last_run_status.setter
+    def asset_external_d_q_scan_last_run_status(
+        self, asset_external_d_q_scan_last_run_status: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_scan_last_run_status = (
+            asset_external_d_q_scan_last_run_status
+        )
+
+    @property
+    def asset_external_d_q_scan_last_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_scan_last_run_at
+        )
+
+    @asset_external_d_q_scan_last_run_at.setter
+    def asset_external_d_q_scan_last_run_at(
+        self, asset_external_d_q_scan_last_run_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_scan_last_run_at = (
+            asset_external_d_q_scan_last_run_at
+        )
+
+    @property
+    def asset_external_d_q_last_sync_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_last_sync_run_at
+        )
+
+    @asset_external_d_q_last_sync_run_at.setter
+    def asset_external_d_q_last_sync_run_at(
+        self, asset_external_d_q_last_sync_run_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_last_sync_run_at = (
+            asset_external_d_q_last_sync_run_at
+        )
+
+    @property
+    def asset_external_d_q_test_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_count
+        )
+
+    @asset_external_d_q_test_count.setter
+    def asset_external_d_q_test_count(
+        self, asset_external_d_q_test_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_count = asset_external_d_q_test_count
+
+    @property
+    def asset_external_d_q_test_statuses(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_statuses
+        )
+
+    @asset_external_d_q_test_statuses.setter
+    def asset_external_d_q_test_statuses(
+        self, asset_external_d_q_test_statuses: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_statuses = (
+            asset_external_d_q_test_statuses
+        )
+
+    @property
+    def asset_external_d_q_additional_metadata(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_additional_metadata
+        )
+
+    @asset_external_d_q_additional_metadata.setter
+    def asset_external_d_q_additional_metadata(
+        self, asset_external_d_q_additional_metadata: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_additional_metadata = (
+            asset_external_d_q_additional_metadata
+        )
+
+    @property
+    def asset_external_d_q_source_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_source_url
+        )
+
+    @asset_external_d_q_source_url.setter
+    def asset_external_d_q_source_url(
+        self, asset_external_d_q_source_url: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_source_url = asset_external_d_q_source_url
+
+    @property
     def asset_icon(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.asset_icon
 
@@ -3587,6 +3867,8 @@ class Asset(Referenceable):
         is_discoverable: Optional[bool] = Field(default=None, description="")
         is_editable: Optional[bool] = Field(default=None, description="")
         sub_type: Optional[str] = Field(default=None, description="")
+        user_defined_asset_type: Optional[str] = Field(default=None, description="")
+        asset_user_defined_type: Optional[str] = Field(default=None, description="")
         view_score: Optional[float] = Field(default=None, description="")
         popularity_score: Optional[float] = Field(default=None, description="")
         source_owners: Optional[str] = Field(default=None, description="")
@@ -3804,6 +4086,36 @@ class Asset(Referenceable):
         )
         asset_soda_check_statuses: Optional[str] = Field(default=None, description="")
         asset_soda_source_url: Optional[str] = Field(default=None, description="")
+        asset_external_d_q_system_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_source_logo: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_entity_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_scan_last_run_status: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_scan_last_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_last_sync_run_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_statuses: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_additional_metadata: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_source_url: Optional[str] = Field(
+            default=None, description=""
+        )
         asset_icon: Optional[str] = Field(default=None, description="")
         is_partial: Optional[bool] = Field(default=None, description="")
         is_a_i_generated: Optional[bool] = Field(default=None, description="")
