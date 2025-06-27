@@ -462,7 +462,6 @@ class RelationshipDefInfo:
     @classmethod
     def create(cls, relationship_defs: List[RelationshipDef]):
         for rel_def in relationship_defs:
-            # Only pick `atlas_core` enums, not user-created ones.
             if rel_def.attribute_defs:
                 cls.relationship_def_infos.append(
                     RelationshipDefInfo(
