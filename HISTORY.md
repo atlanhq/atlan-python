@@ -1,3 +1,54 @@
+## 7.1.0 (June 27, 2025)
+
+###  New Features
+
+- Added support for managing asset-to-asset relationships that include attributes. Atlan now allows setting attributes on specific relationship types, providing richer metadata and contextual information for how assets are connected.
+
+- These relationships can now carry attributes, similar to how assets themselves have attributes. The SDK has been enhanced to deserialize, access, and serialize these relationship-level attributes correctly.
+
+**Supported relationship types:**
+
+1. `AtlasGlossaryAntonym`
+2. `AtlasGlossarySynonym`
+3. `AtlasGlossaryReplacementTerm`
+4. `AtlasGlossarySemanticAssignment`
+5. `AtlasGlossaryPreferredTerm`
+6. `AtlasGlossaryRelatedTerm`
+7. `AtlasGlossaryTermCategorization`
+8. `AtlasGlossaryTranslation`
+9. `AtlasGlossaryValidValue`
+10. `AtlasGlossaryIsARelationship`
+11. `CustomParentEntityCustomChildEntities`
+12. `CustomRelatedFromEntitiesCustomRelatedToEntities`
+13. `UserDefRelationship`
+
+
+### Breaking Changes
+
+`Referenceable.relationship_attributes` field type updated:
+
+This field now supports:
+
+  ```python
+  Optional[Union[RelationshipAttributes, Dict[str, Any]]]
+  ```
+
+- If `typeName` is present in the relationship attributes, the SDK will attempt to deserialize using the correct subclass of `RelationshipAttributes`.
+- If `typeName` is absent, it will fall back to a raw `Dict[str, Any]`.
+
+  **Before:**
+
+  ```python
+  Optional[Dict[str, Any]]
+  ```
+
+- This change improves structure and typing for known relationship models while maintaining backward compatibility via fallback.
+
+### Bug Fixes
+
+- Fixed automatic `401` token refresh by using `ContextVar` for `AtlanClient._401_has_retried` (bool flag) to avoid race conditions when executing SDK code in multithreading environments.
+
+
 ## 7.0.1 (June 16, 2025)
 
 ### Bug Fixes
