@@ -7,7 +7,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.assets import Asset
 from pyatlan.model.assets.relations import RelationshipAttributes
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import AtlasGlossaryTermRelationshipStatus
+from pyatlan.model.enums import AtlasGlossaryTermRelationshipStatus, SaveSemantic
 
 
 class AtlasGlossaryAntonym(RelationshipAttributes):
@@ -71,68 +71,25 @@ class AtlasGlossaryAntonym(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
+    def antonyms(
+        self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
+    ) -> AtlasGlossaryAntonym.Antonyms:
+        if related.guid:
+            return AtlasGlossaryAntonym.Antonyms._create_ref(
+                type_name=related.type_name,
+                guid=related.guid,
+                semantic=semantic,
+                relationship_attributes=self,
+            )
 
-#     class Antonyms(Asset):
-#         type_name: str = Field(
-#             default="AtlasGlossaryAntonym",
-#             description="Terms that have the opposite (or near opposite) meaning, in the same language.",
-#         )
-#         relationship_type: str = Field(
-#             default="AtlasGlossaryAntonym",
-#             description="Fixed typeName for AtlasGlossaryAntonym.",
-#         )
-#         relationship_attributes: AtlasGlossaryAntonym = Field(
-#             default=None,
-#             description="Attributes of the AtlasGlossaryAntonym.",
-#         )
-
-#         @validator("type_name")
-#         def validate_type_name(cls, v):
-#             return v
-
-#         def __init__(__pydantic_self__, **data: Any) -> None:
-#             super().__init__(**data)
-#             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
-
-#     def antonyms(
-#         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-#     ) -> AtlasGlossaryAntonym.Antonyms:
-#         if related.guid:
-#             return AtlasGlossaryAntonym.Antonyms._create_ref(
-#                 type_name=related.type_name,
-#                 guid=related.guid,
-#                 semantic=semantic,
-#                 relationship_attributes=self,
-#             )
-
-#         # If the related asset does not have a GUID, we use qualifiedName
-#         return AtlasGlossaryAntonym.Antonyms._create_ref(
-#             type_name=related.type_name,
-#             unique_attributes={"qualifiedName": related.qualified_name},
-#             semantic=semantic,
-#             relationship_attributes=self,
-#         )
-
-#     def antonyms(
-#         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-#     ) -> AtlasGlossaryAntonym.Antonyms:
-#         if related.guid:
-#             return AtlasGlossaryAntonym.Antonyms._create_ref(
-#                 type_name=related.type_name,
-#                 guid=related.guid,
-#                 semantic=semantic,
-#                 relationship_attributes=self,
-#             )
-
-#         # If the related asset does not have a GUID, we use qualifiedName
-#         return AtlasGlossaryAntonym.Antonyms._create_ref(
-#             type_name=related.type_name,
-#             unique_attributes={"qualifiedName": related.qualified_name},
-#             semantic=semantic,
-#             relationship_attributes=self,
-#         )
+        # If the related asset does not have a GUID, we use qualifiedName
+        return AtlasGlossaryAntonym.Antonyms._create_ref(
+            type_name=related.type_name,
+            unique_attributes={"qualifiedName": related.qualified_name},
+            semantic=semantic,
+            relationship_attributes=self,
+        )
 
 
-# AtlasGlossaryAntonym.Antonyms.update_forward_refs()
 AtlasGlossaryAntonym.Antonyms.update_forward_refs()
 AtlasGlossaryAntonym.update_forward_refs()

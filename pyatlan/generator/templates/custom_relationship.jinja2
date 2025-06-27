@@ -57,6 +57,7 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
+    {% if relationship_info.end_def1 != relationship_info.end_def2 %}
     class {{ relationship_info.end_def2["name"] | to_cls_name }}(Asset):
         type_name: str = Field(
             default="{{ relationship_info.name }}",
@@ -78,6 +79,7 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
         def __init__(__pydantic_self__, **data: Any) -> None:
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
+    {% endif %}
 
     def {{ relationship_info.end_def1["name"] | to_snake_case }}(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
@@ -98,6 +100,7 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
             relationship_attributes=self,
         )
 
+    {% if relationship_info.end_def1 != relationship_info.end_def2 %}
     def {{ relationship_info.end_def2["name"] | to_snake_case }}(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def2["name"] | to_cls_name }}:
@@ -116,8 +119,11 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
             semantic=semantic,
             relationship_attributes=self,
         )
+    {% endif %}
 
 
 {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def1["name"] | to_cls_name }}.update_forward_refs()
+{% if relationship_info.end_def1 != relationship_info.end_def2 -%}
 {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def2["name"] | to_cls_name }}.update_forward_refs()
+{% endif -%}
 {{ relationship_info.name | to_cls_name }}.update_forward_refs()

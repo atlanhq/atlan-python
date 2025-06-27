@@ -71,28 +71,6 @@ class AtlasGlossarySynonym(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
-    # class Synonyms(Asset):
-    #     type_name: str = Field(
-    #         default="AtlasGlossarySynonym",
-    #         description="Terms that have the same (or a very similar) meaning, in the same language.",
-    #     )
-    #     relationship_type: str = Field(
-    #         default="AtlasGlossarySynonym",
-    #         description="Fixed typeName for AtlasGlossarySynonym.",
-    #     )
-    #     relationship_attributes: AtlasGlossarySynonym = Field(
-    #         default=None,
-    #         description="Attributes of the AtlasGlossarySynonym.",
-    #     )
-
-    #     @validator("type_name")
-    #     def validate_type_name(cls, v):
-    #         return v
-
-    #     def __init__(__pydantic_self__, **data: Any) -> None:
-    #         super().__init__(**data)
-    #         __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
-
     def synonyms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossarySynonym.Synonyms:
@@ -112,26 +90,6 @@ class AtlasGlossarySynonym(RelationshipAttributes):
             relationship_attributes=self,
         )
 
-    # def synonyms(
-    #     self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-    # ) -> AtlasGlossarySynonym.Synonyms:
-    #     if related.guid:
-    #         return AtlasGlossarySynonym.Synonyms._create_ref(
-    #             type_name=related.type_name,
-    #             guid=related.guid,
-    #             semantic=semantic,
-    #             relationship_attributes=self,
-    #         )
-
-    #     # If the related asset does not have a GUID, we use qualifiedName
-    #     return AtlasGlossarySynonym.Synonyms._create_ref(
-    #         type_name=related.type_name,
-    #         unique_attributes={"qualifiedName": related.qualified_name},
-    #         semantic=semantic,
-    #         relationship_attributes=self,
-    #     )
-
 
 AtlasGlossarySynonym.Synonyms.update_forward_refs()
-# AtlasGlossarySynonym.Synonyms.update_forward_refs()
 AtlasGlossarySynonym.update_forward_refs()

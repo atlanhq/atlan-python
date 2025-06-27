@@ -71,28 +71,6 @@ class AtlasGlossaryRelatedTerm(RelationshipAttributes):
             super().__init__(**data)
             __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
 
-    # class SeeAlso(Asset):
-    #     type_name: str = Field(
-    #         default="AtlasGlossaryRelatedTerm",
-    #         description="Linked terms that may also be of interest.",
-    #     )
-    #     relationship_type: str = Field(
-    #         default="AtlasGlossaryRelatedTerm",
-    #         description="Fixed typeName for AtlasGlossaryRelatedTerm.",
-    #     )
-    #     relationship_attributes: AtlasGlossaryRelatedTerm = Field(
-    #         default=None,
-    #         description="Attributes of the AtlasGlossaryRelatedTerm.",
-    #     )
-
-    #     @validator("type_name")
-    #     def validate_type_name(cls, v):
-    #         return v
-
-    #     def __init__(__pydantic_self__, **data: Any) -> None:
-    #         super().__init__(**data)
-    #         __pydantic_self__.__fields_set__.update(["type_name", "relationship_type"])
-
     def see_also(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryRelatedTerm.SeeAlso:
@@ -112,26 +90,6 @@ class AtlasGlossaryRelatedTerm(RelationshipAttributes):
             relationship_attributes=self,
         )
 
-    # def see_also(
-    #     self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
-    # ) -> AtlasGlossaryRelatedTerm.SeeAlso:
-    #     if related.guid:
-    #         return AtlasGlossaryRelatedTerm.SeeAlso._create_ref(
-    #             type_name=related.type_name,
-    #             guid=related.guid,
-    #             semantic=semantic,
-    #             relationship_attributes=self,
-    #         )
-
-    #     # If the related asset does not have a GUID, we use qualifiedName
-    #     return AtlasGlossaryRelatedTerm.SeeAlso._create_ref(
-    #         type_name=related.type_name,
-    #         unique_attributes={"qualifiedName": related.qualified_name},
-    #         semantic=semantic,
-    #         relationship_attributes=self,
-    #     )
-
 
 AtlasGlossaryRelatedTerm.SeeAlso.update_forward_refs()
-# AtlasGlossaryRelatedTerm.SeeAlso.update_forward_refs()
 AtlasGlossaryRelatedTerm.update_forward_refs()
