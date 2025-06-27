@@ -1010,9 +1010,8 @@ if __name__ == "__main__":
             generator.render_module(asset_info, EnumDefInfo.enum_def_info)
 
     for file in (ASSETS_RELATIONS_DIR).glob("*.py"):
-        # Remove all files in the core assets
-        # directory except `relationship_attributes.py`
-        if file.name == "relationship_attributes.py":
+        # Ignore non-generator files
+        if file.name in ("relationship_attributes.py", "indistinct_relationship.py"):
             continue
         file.unlink()
 

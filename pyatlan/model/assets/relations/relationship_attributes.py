@@ -33,6 +33,13 @@ class RelationshipAttributes(AtlanObject):
         relationship_attribute_cls = getattr(
             importlib.import_module("pyatlan.model.assets.relations"),
             to_python_class_name(type_name),
-            RelationshipAttributes,
+            None,
         )
+
+        # If relationship is not modeled in the SDK
+        # use IndistinctRelationship model for deserialization
+        if not relationship_attribute_cls:
+            from .indistinct_relationship import IndistinctRelationship
+
+            relationship_attribute_cls = IndistinctRelationship
         return relationship_attribute_cls(**data)

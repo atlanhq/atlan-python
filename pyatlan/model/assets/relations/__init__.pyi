@@ -2,6 +2,7 @@
 
 __all__ = [
     "RelationshipAttributes",
+    "IndistinctRelationship",
     "CustomParentEntityCustomChildEntities",
     "AtlasGlossaryAntonym",
     "AtlasGlossarySynonym",
@@ -33,5 +34,6 @@ from .custom_parent_entity_custom_child_entities import (
 from .custom_related_from_entities_custom_related_to_entities import (
     CustomRelatedFromEntitiesCustomRelatedToEntities,
 )
+from .indistinct_relationship import IndistinctRelationship
 from .relationship_attributes import RelationshipAttributes
 from .user_def_relationship import UserDefRelationship

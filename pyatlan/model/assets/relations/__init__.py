@@ -4,6 +4,7 @@ import lazy_loader as lazy
 
 __PYATLAN_ASSET_RELATIONS__ = {
     "relationship_attributes": ["RelationshipAttributes"],
+    "indistinct_relationship": ["IndistinctRelationship"],
     "custom_parent_entity_custom_child_entities": [
         "CustomParentEntityCustomChildEntities"
     ],
