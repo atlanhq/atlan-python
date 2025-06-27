@@ -16,7 +16,7 @@ class AtlasGlossaryRelatedTerm(RelationshipAttributes):
         default="AtlasGlossaryRelatedTerm",
         description="Links terms that may also be of interest. It is like a 'see also' link in a dictionary.",
     )
-    attributes: AtlasGlossaryRelatedTerm.Attributes = Field(
+    attributes: AtlasGlossaryRelatedTerm.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryRelatedTerm.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -74,6 +74,14 @@ class AtlasGlossaryRelatedTerm(RelationshipAttributes):
     def see_also(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryRelatedTerm.SeeAlso:
+        """
+        Build the AtlasGlossaryRelatedTerm relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryRelatedTerm.SeeAlso._create_ref(
                 type_name=related.type_name,

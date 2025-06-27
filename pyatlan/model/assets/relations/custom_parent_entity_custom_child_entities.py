@@ -16,7 +16,7 @@ class CustomParentEntityCustomChildEntities(RelationshipAttributes):
         default="custom_parent_entity_custom_child_entities",
         description="Containment relationship between two custom entities.",
     )
-    attributes: CustomParentEntityCustomChildEntities.Attributes = Field(
+    attributes: CustomParentEntityCustomChildEntities.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: CustomParentEntityCustomChildEntities.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -84,6 +84,14 @@ class CustomParentEntityCustomChildEntities(RelationshipAttributes):
     def custom_child_entities(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> CustomParentEntityCustomChildEntities.CustomChildEntities:
+        """
+        Build the CustomParentEntityCustomChildEntities relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return (
                 CustomParentEntityCustomChildEntities.CustomChildEntities._create_ref(
@@ -105,6 +113,14 @@ class CustomParentEntityCustomChildEntities(RelationshipAttributes):
     def custom_parent_entity(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> CustomParentEntityCustomChildEntities.CustomParentEntity:
+        """
+        Build the CustomParentEntityCustomChildEntities relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return CustomParentEntityCustomChildEntities.CustomParentEntity._create_ref(
                 type_name=related.type_name,

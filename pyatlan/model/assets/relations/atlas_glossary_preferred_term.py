@@ -16,7 +16,7 @@ class AtlasGlossaryPreferredTerm(RelationshipAttributes):
         default="AtlasGlossaryPreferredTerm",
         description="Indicates term(s) should be used in place of another. This relationship can be used to encourage adoption of newer vocabularies. This is a weaker version of ReplacementTerm.",
     )
-    attributes: AtlasGlossaryPreferredTerm.Attributes = Field(
+    attributes: AtlasGlossaryPreferredTerm.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryPreferredTerm.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -96,6 +96,14 @@ class AtlasGlossaryPreferredTerm(RelationshipAttributes):
     def preferred_terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryPreferredTerm.PreferredTerms:
+        """
+        Build the AtlasGlossaryPreferredTerm relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryPreferredTerm.PreferredTerms._create_ref(
                 type_name=related.type_name,
@@ -115,6 +123,14 @@ class AtlasGlossaryPreferredTerm(RelationshipAttributes):
     def preferred_to_terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryPreferredTerm.PreferredToTerms:
+        """
+        Build the AtlasGlossaryPreferredTerm relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryPreferredTerm.PreferredToTerms._create_ref(
                 type_name=related.type_name,

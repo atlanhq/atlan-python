@@ -16,7 +16,7 @@ class AtlasGlossaryIsARelationship(RelationshipAttributes):
         default="AtlasGlossaryIsARelationship",
         description="Relationship between a more abstract and more concrete concept. For example, this relationship would be use to say that 'Cat' ISA 'Animal'.",
     )
-    attributes: AtlasGlossaryIsARelationship.Attributes = Field(
+    attributes: AtlasGlossaryIsARelationship.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryIsARelationship.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -96,6 +96,14 @@ class AtlasGlossaryIsARelationship(RelationshipAttributes):
     def classifies(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryIsARelationship.Classifies:
+        """
+        Build the AtlasGlossaryIsARelationship relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryIsARelationship.Classifies._create_ref(
                 type_name=related.type_name,
@@ -115,6 +123,14 @@ class AtlasGlossaryIsARelationship(RelationshipAttributes):
     def is_a(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryIsARelationship.IsA:
+        """
+        Build the AtlasGlossaryIsARelationship relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryIsARelationship.IsA._create_ref(
                 type_name=related.type_name,

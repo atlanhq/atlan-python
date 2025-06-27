@@ -16,7 +16,7 @@ class UserDefRelationship(RelationshipAttributes):
         default="UserDefRelationship",
         description="A generic relationship to hold relationship between any type of asset",
     )
-    attributes: UserDefRelationship.Attributes = Field(
+    attributes: UserDefRelationship.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: UserDefRelationship.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -84,6 +84,14 @@ class UserDefRelationship(RelationshipAttributes):
     def user_def_relationship_to(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> UserDefRelationship.UserDefRelationshipTo:
+        """
+        Build the UserDefRelationship relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return UserDefRelationship.UserDefRelationshipTo._create_ref(
                 type_name=related.type_name,
@@ -103,6 +111,14 @@ class UserDefRelationship(RelationshipAttributes):
     def user_def_relationship_from(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> UserDefRelationship.UserDefRelationshipFrom:
+        """
+        Build the UserDefRelationship relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return UserDefRelationship.UserDefRelationshipFrom._create_ref(
                 type_name=related.type_name,

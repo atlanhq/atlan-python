@@ -16,7 +16,7 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
         default="{{ relationship_info.name }}",
         description="{{ relationship_info.description }}",
     )
-    attributes: {{ relationship_info.name | to_cls_name }}.Attributes = Field(
+    attributes: {{ relationship_info.name | to_cls_name }}.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: {{ relationship_info.name | to_cls_name }}.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -84,6 +84,14 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
     def {{ relationship_info.end_def1["name"] | to_snake_case }}(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def1["name"] | to_cls_name }}:
+        """
+        Build the {{ relationship_info.name | to_cls_name }} relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def1["name"] | to_cls_name }}._create_ref(
                 type_name=related.type_name,
@@ -104,6 +112,14 @@ class {{ relationship_info.name | to_cls_name }}(RelationshipAttributes):
     def {{ relationship_info.end_def2["name"] | to_snake_case }}(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def2["name"] | to_cls_name }}:
+        """
+        Build the {{ relationship_info.name | to_cls_name }} relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return {{ relationship_info.name | to_cls_name }}.{{ relationship_info.end_def2["name"] | to_cls_name }}._create_ref(
                 type_name=related.type_name,

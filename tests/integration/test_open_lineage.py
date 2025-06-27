@@ -99,6 +99,7 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
     assert job_asset.detail.name == job.name
     assert job_asset.detail.qualified_name == job_qualified_name
 
+    assert isinstance(job_asset.detail.relationship_attributes, dict)
     inputs = job_asset.detail.relationship_attributes.get("inputs")
     outputs = job_asset.detail.relationship_attributes.get("outputs")
     process = job_asset.detail.relationship_attributes.get("process")

@@ -16,7 +16,7 @@ class AtlasGlossarySynonym(RelationshipAttributes):
         default="AtlasGlossarySynonym",
         description="Terms that have the same (or a very similar) meaning, in the same language.",
     )
-    attributes: AtlasGlossarySynonym.Attributes = Field(
+    attributes: AtlasGlossarySynonym.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossarySynonym.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -74,6 +74,14 @@ class AtlasGlossarySynonym(RelationshipAttributes):
     def synonyms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossarySynonym.Synonyms:
+        """
+        Build the AtlasGlossarySynonym relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossarySynonym.Synonyms._create_ref(
                 type_name=related.type_name,

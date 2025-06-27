@@ -16,7 +16,7 @@ class AtlasGlossaryTermCategorization(RelationshipAttributes):
         default="AtlasGlossaryTermCategorization",
         description="Organizes terms into categories. A term may be linked with many categories and a category may have many terms linked to it. This relationship may connect terms and categories both in the same glossary or in different glossaries.",
     )
-    attributes: AtlasGlossaryTermCategorization.Attributes = Field(
+    attributes: AtlasGlossaryTermCategorization.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryTermCategorization.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -84,6 +84,14 @@ class AtlasGlossaryTermCategorization(RelationshipAttributes):
     def terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryTermCategorization.Terms:
+        """
+        Build the AtlasGlossaryTermCategorization relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryTermCategorization.Terms._create_ref(
                 type_name=related.type_name,
@@ -103,6 +111,14 @@ class AtlasGlossaryTermCategorization(RelationshipAttributes):
     def categories(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryTermCategorization.Categories:
+        """
+        Build the AtlasGlossaryTermCategorization relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryTermCategorization.Categories._create_ref(
                 type_name=related.type_name,

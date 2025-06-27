@@ -16,7 +16,7 @@ class AtlasGlossaryAntonym(RelationshipAttributes):
         default="AtlasGlossaryAntonym",
         description="Terms that have the opposite (or near opposite) meaning, in the same language.",
     )
-    attributes: AtlasGlossaryAntonym.Attributes = Field(
+    attributes: AtlasGlossaryAntonym.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryAntonym.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -74,6 +74,14 @@ class AtlasGlossaryAntonym(RelationshipAttributes):
     def antonyms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryAntonym.Antonyms:
+        """
+        Build the AtlasGlossaryAntonym relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryAntonym.Antonyms._create_ref(
                 type_name=related.type_name,

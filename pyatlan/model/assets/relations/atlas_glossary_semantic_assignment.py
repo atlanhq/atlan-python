@@ -16,7 +16,7 @@ class AtlasGlossarySemanticAssignment(RelationshipAttributes):
         default="AtlasGlossarySemanticAssignment",
         description="Assigns meaning to an asset by linking the term that describes the meaning of the asset. The semantic assignment needs to be a controlled relationship when glossary definitions are used to provide classifications for the data assets and hence define how the data is to be governed.",
     )
-    attributes: AtlasGlossarySemanticAssignment.Attributes = Field(
+    attributes: AtlasGlossarySemanticAssignment.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossarySemanticAssignment.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -104,6 +104,14 @@ class AtlasGlossarySemanticAssignment(RelationshipAttributes):
     def assigned_entities(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossarySemanticAssignment.AssignedEntities:
+        """
+        Build the AtlasGlossarySemanticAssignment relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossarySemanticAssignment.AssignedEntities._create_ref(
                 type_name=related.type_name,
@@ -123,6 +131,14 @@ class AtlasGlossarySemanticAssignment(RelationshipAttributes):
     def meanings(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossarySemanticAssignment.Meanings:
+        """
+        Build the AtlasGlossarySemanticAssignment relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossarySemanticAssignment.Meanings._create_ref(
                 type_name=related.type_name,

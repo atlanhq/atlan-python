@@ -16,7 +16,7 @@ class AtlasGlossaryValidValue(RelationshipAttributes):
         default="AtlasGlossaryValidValue",
         description="Terms that represent valid values for another, for example: 'red', 'blue', 'green' could all be valid values for a term 'color'.",
     )
-    attributes: AtlasGlossaryValidValue.Attributes = Field(
+    attributes: AtlasGlossaryValidValue.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryValidValue.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -96,6 +96,14 @@ class AtlasGlossaryValidValue(RelationshipAttributes):
     def valid_values_for(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryValidValue.ValidValuesFor:
+        """
+        Build the AtlasGlossaryValidValue relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryValidValue.ValidValuesFor._create_ref(
                 type_name=related.type_name,
@@ -115,6 +123,14 @@ class AtlasGlossaryValidValue(RelationshipAttributes):
     def valid_values(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryValidValue.ValidValues:
+        """
+        Build the AtlasGlossaryValidValue relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryValidValue.ValidValues._create_ref(
                 type_name=related.type_name,

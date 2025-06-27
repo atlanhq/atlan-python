@@ -16,7 +16,7 @@ class AtlasGlossaryTranslation(RelationshipAttributes):
         default="AtlasGlossaryTranslation",
         description="Related terms that represent the same meaning, but each written in a different language. Hence one is a translation of the other. The language of each term is defined in the Glossary object that anchors the term.",
     )
-    attributes: AtlasGlossaryTranslation.Attributes = Field(
+    attributes: AtlasGlossaryTranslation.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryTranslation.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -96,6 +96,14 @@ class AtlasGlossaryTranslation(RelationshipAttributes):
     def translated_terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryTranslation.TranslatedTerms:
+        """
+        Build the AtlasGlossaryTranslation relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryTranslation.TranslatedTerms._create_ref(
                 type_name=related.type_name,
@@ -115,6 +123,14 @@ class AtlasGlossaryTranslation(RelationshipAttributes):
     def translation_terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryTranslation.TranslationTerms:
+        """
+        Build the AtlasGlossaryTranslation relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryTranslation.TranslationTerms._create_ref(
                 type_name=related.type_name,

@@ -16,7 +16,7 @@ class AtlasGlossaryReplacementTerm(RelationshipAttributes):
         default="AtlasGlossaryReplacementTerm",
         description="Indicates term(s) must be used instead of another. This is stronger version of the PreferredTerm.",
     )
-    attributes: AtlasGlossaryReplacementTerm.Attributes = Field(
+    attributes: AtlasGlossaryReplacementTerm.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: AtlasGlossaryReplacementTerm.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -96,6 +96,14 @@ class AtlasGlossaryReplacementTerm(RelationshipAttributes):
     def replaced_by(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryReplacementTerm.ReplacedBy:
+        """
+        Build the AtlasGlossaryReplacementTerm relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryReplacementTerm.ReplacedBy._create_ref(
                 type_name=related.type_name,
@@ -115,6 +123,14 @@ class AtlasGlossaryReplacementTerm(RelationshipAttributes):
     def replacement_terms(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> AtlasGlossaryReplacementTerm.ReplacementTerms:
+        """
+        Build the AtlasGlossaryReplacementTerm relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return AtlasGlossaryReplacementTerm.ReplacementTerms._create_ref(
                 type_name=related.type_name,

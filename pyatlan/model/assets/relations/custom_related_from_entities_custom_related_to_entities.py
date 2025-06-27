@@ -16,7 +16,7 @@ class CustomRelatedFromEntitiesCustomRelatedToEntities(RelationshipAttributes):
         default="custom_related_from_entities_custom_related_to_entities",
         description="Inter-relationship between two custom assets.",
     )
-    attributes: CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes = Field(
+    attributes: CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes = Field(  # type: ignore[name-defined]
         default_factory=lambda: CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes(),
         description="Map of attributes in the instance and their values",
     )
@@ -84,6 +84,14 @@ class CustomRelatedFromEntitiesCustomRelatedToEntities(RelationshipAttributes):
     def custom_related_to_entities(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> CustomRelatedFromEntitiesCustomRelatedToEntities.CustomRelatedToEntities:
+        """
+        Build the CustomRelatedFromEntitiesCustomRelatedToEntities relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return CustomRelatedFromEntitiesCustomRelatedToEntities.CustomRelatedToEntities._create_ref(
                 type_name=related.type_name,
@@ -103,6 +111,14 @@ class CustomRelatedFromEntitiesCustomRelatedToEntities(RelationshipAttributes):
     def custom_related_from_entities(
         self, related: Asset, semantic: SaveSemantic = SaveSemantic.REPLACE
     ) -> CustomRelatedFromEntitiesCustomRelatedToEntities.CustomRelatedFromEntities:
+        """
+        Build the CustomRelatedFromEntitiesCustomRelatedToEntities relationship (with attributes) into a related object.
+
+        :param: related asset to which to build the detailed relationship
+        :param: semantic to use for saving the relationship
+        :returns: a detailed Atlan relationship that conforms
+        to the necessary interface for a related asset
+        """
         if related.guid:
             return CustomRelatedFromEntitiesCustomRelatedToEntities.CustomRelatedFromEntities._create_ref(
                 type_name=related.type_name,
