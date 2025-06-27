@@ -1,5 +1,5 @@
 mypy~=1.9.0
-ruff~=0.9.9
+ruff~=0.12.1
 # [PINNED] for Python 3.8 compatibility
 # higher versions require urllib3>=2.0
 types-requests~=2.31.0.6
