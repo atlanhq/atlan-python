@@ -469,9 +469,6 @@ class RelationshipDefInfo:
                         name=to_snake_case(rel_def.name), relationship_def=rel_def
                     )
                 )
-                # if rel_def.name == "UserDefRelationship":
-                #     import ipdb; ipdb.set_trace()
-                # print(to_python_class_name(rel_def.name))
 
 
 class AttributeType(Enum):
