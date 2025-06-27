@@ -97,7 +97,8 @@
         "objectStorageUploadThreshold",
         "outputPortDataProducts"
       ],
-      "suppressLogs": true
+      "suppressLogs": true,
+      "includeRelationshipAttributes": false
     },
     "filterScrubbed": true
 }

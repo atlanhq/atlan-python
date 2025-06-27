@@ -878,3 +878,37 @@ def test_indistinct_relationship_deserialization(mock_asset_guid):
     assert reverse_attrs["description"] == "test description 21"
     assert reverse_attrs["alias"] == "test alias 21"
     assert reverse_attrs["status"] == "ACTIVE"
+
+
+def test_relationship_attrs_no_typename_fallback_dict_deserialization(mock_asset_guid):
+    """Test deserialization of Relationship attributes when typeName is absent."""
+    raw_json = _load_test_data("relationship_attributes_dict_when_no_typename.json")
+
+    term = AtlasGlossaryTerm(**raw_json)
+
+    # Fallback to dict when typeName is absent (cannot determine specific Relationship model type)
+    assert term.relationship_attributes
+    assert isinstance(term.relationship_attributes, dict)
+    assert term.relationship_attributes["attributes"]["description"]
+
+    assert term.attributes.relationship_attributes
+    assert isinstance(term.attributes.relationship_attributes, dict)
+    assert term.relationship_attributes["attributes"]["description"]
+
+    assert term.name and term.guid and term.qualified_name
+    assert len(term.valid_values) == 2
+    assert len(term.valid_values_for) == 1
+
+    valid_value_relation = term.valid_values[0]
+    assert valid_value_relation.attributes
+    assert valid_value_relation.attributes.relationship_attributes
+    assert valid_value_relation.attributes.relationship_attributes["attributes"][
+        "description"
+    ]
+
+    valid_value_for_relation = term.valid_values_for[0]
+    assert valid_value_for_relation.attributes
+    assert valid_value_for_relation.attributes.relationship_attributes
+    assert valid_value_for_relation.attributes.relationship_attributes["attributes"][
+        "description"
+    ]

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional, Union
 
 from pydantic.v1 import Field, PrivateAttr, root_validator
 
@@ -187,7 +187,9 @@ class Referenceable(AtlanObject):
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
-        relationship_attributes: Optional[RelationshipAttributes] = Field(
+        relationship_attributes: Optional[
+            Union[RelationshipAttributes, Dict[str, Any]]
+        ] = Field(
             default=None,
             description="Map of relationships for the entity. The specific keys of this map will vary by type, "
             "so are described in the sub-types of this schema.",
@@ -309,10 +311,12 @@ class Referenceable(AtlanObject):
     labels: Optional[List[str]] = Field(
         default=None, description="Arbitrary textual labels for the asset."
     )
-    relationship_attributes: Optional[RelationshipAttributes] = Field(
-        default=None,
-        description="Map of relationships for the entity. The specific keys of this map will vary by type, "
-        "so are described in the sub-types of this schema.",
+    relationship_attributes: Optional[Union[RelationshipAttributes, Dict[str, Any]]] = (
+        Field(
+            default=None,
+            description="Map of relationships for the entity. The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema.",
+        )
     )
     status: Optional[EntityStatus] = Field(
         default=None, description="Status of the entity", example=EntityStatus.ACTIVE

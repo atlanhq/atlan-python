@@ -9,7 +9,7 @@
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}default=None,{% endif %} description='') # relationship
         {%- endfor %}
-        relationship_attributes: Optional[RelationshipAttributes] = Field(
+        relationship_attributes: Optional[Union[RelationshipAttributes, Dict[str, Any]]] = Field(
             default=None,
             description="Map of relationships for the entity. The specific keys of this map will vary by type, "
             "so are described in the sub-types of this schema.",
@@ -127,7 +127,7 @@
     )
     is_incomplete: Optional[bool] = Field(default=None, description="", example=True)
     labels: Optional[List[str]] = Field(default=None, description='Arbitrary textual labels for the asset.')
-    relationship_attributes: Optional[RelationshipAttributes] = Field(
+    relationship_attributes: Optional[Union[RelationshipAttributes, Dict[str, Any]]] = Field(
         default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
         "so are described in the sub-types of this schema.",

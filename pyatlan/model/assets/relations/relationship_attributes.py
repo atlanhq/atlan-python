@@ -30,6 +30,13 @@ class RelationshipAttributes(AtlanObject):
         type_name = (
             data.get("type_name") if "type_name" in data else data.get("typeName")
         )
+
+        # If no typeName in data, return stored
+        # relationship attributes as Dict[str, Any]
+        # (backward compatible with pyatlan versions < 7.1.0)
+        if not type_name:
+            return data
+
         relationship_attribute_cls = getattr(
             importlib.import_module("pyatlan.model.assets.relations"),
             to_python_class_name(type_name),
