@@ -1,0 +1,32 @@
+{
+  "typeName": "AtlasGlossaryTerm",
+  "attributes": {
+    "qualifiedName": "main-term@default",
+    "name": "Main Term",
+    "seeAlso": [
+      {
+        "typeName": "AtlasGlossaryTerm",
+        "guid": "related-term-guid",
+        "relationshipAttributes": {
+          "typeName": "AtlasGlossaryRelatedTerm",
+          "attributes": {
+            "description": "Related term for reference",
+            "expression": "see-also-expression",
+            "status": "ACTIVE",
+            "steward": "data-steward",
+            "source": "manual"
+          }
+        },
+        "relationshipType": "AtlasGlossaryRelatedTerm"
+      }
+    ],
+    "anchor": {
+      "typeName": "AtlasGlossary",
+      "attributes": {
+        "qualifiedName": "business-glossary-guid"
+      },
+      "guid": "business-glossary-guid"
+    }
+  },
+  "guid": "-1234567890000000000000000"
+}

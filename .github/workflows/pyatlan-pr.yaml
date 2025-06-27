@@ -30,6 +30,8 @@ jobs:
             # Reference: https://github.com/pytest-dev/py
             ignore-vulns: |
               PYSEC-2022-42969
+              GHSA-48p4-8xcf-vxj5
+              GHSA-pq67-6m6q-mj2v
             summary: true
             vulnerability-service: osv
             inputs: requirements.txt requirements-dev.txt

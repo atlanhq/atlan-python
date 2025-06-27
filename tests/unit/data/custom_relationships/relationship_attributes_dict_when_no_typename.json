@@ -1,0 +1,85 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+     "relationshipAttributes": {
+        "attributes": {
+            "description": "test description 0"
+        }
+    },
+    "attributes": {
+        "relationshipAttributes": {
+            "attributes": {
+                "description": "test description 1"
+            }
+        },
+        "validValues": [
+            {
+                "guid": "color-red-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "attributes": {
+                            "description": "test description 11",
+                            "expression": "test expression 11",
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "name": "red"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "red@color-values"
+                }
+            },
+            {
+                "guid": "color-blue-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "attributes": {
+                            "description": "test description 12",
+                            "expression": "test expression 12",
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "name": "blue"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "blue@color-values"
+                }
+            }
+        ],
+        "validValuesFor": [
+            {
+                "guid": "parent-concept-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "attributes": {
+                            "description": "test description 21",
+                            "alias": "test alias 21",
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "name": "visual-attributes"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "visual-attributes@business-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "color@business-glossary",
+        "name": "color"
+    },
+    "guid": "color-term-guid",
+    "status": "ACTIVE",
+    "displayText": "color",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "data-modeler",
+    "updatedBy": "data-modeler",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

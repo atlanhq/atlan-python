@@ -1,0 +1,84 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "validValues": [
+            {
+                "guid": "color-red-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryValidValue",
+                        "attributes": {
+                            "description": "Red is a valid color value",
+                            "expression": "enumeration value",
+                            "status": "ACTIVE",
+                            "steward": "data-modeler",
+                            "source": "business-rules"
+                        }
+                    },
+                    "name": "red"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "red@color-values"
+                }
+            },
+            {
+                "guid": "color-blue-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryValidValue",
+                        "attributes": {
+                            "description": "Blue is a valid color value",
+                            "expression": "enumeration value",
+                            "status": "ACTIVE",
+                            "steward": "data-modeler",
+                            "source": "business-rules"
+                        }
+                    },
+                    "name": "blue"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "blue@color-values"
+                }
+            }
+        ],
+        "validValuesFor": [
+            {
+                "guid": "parent-concept-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryValidValue",
+                        "attributes": {
+                            "description": "Color is a valid value for parent concept",
+                            "expression": "enumeration constraint",
+                            "status": "ACTIVE",
+                            "steward": "data-modeler",
+                            "source": "domain-rules"
+                        }
+                    },
+                    "name": "visual-attributes"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "visual-attributes@business-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "color@business-glossary",
+        "name": "color"
+    },
+    "guid": "color-term-guid",
+    "status": "ACTIVE",
+    "displayText": "color",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "data-modeler",
+    "updatedBy": "data-modeler",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

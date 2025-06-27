@@ -1,0 +1,55 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "test-term-qn",
+        "userDefRelationshipTo": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "test-term2-guid",
+                "relationshipAttributes": {
+                    "typeName": "UserDefRelationship",
+                    "attributes": {
+                        "fromTypeLabel": "test1-from-label",
+                        "toTypeLabel": "test1-to-label"
+                    }
+                },
+                "relationshipType": "UserDefRelationship"
+            },
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "test-term3-guid",
+                "relationshipAttributes": {
+                    "typeName": "UserDefRelationship",
+                    "attributes": {
+                        "fromTypeLabel": "test2-from-label",
+                        "toTypeLabel": "test2-to-label"
+                    }
+                },
+                "relationshipType": "UserDefRelationship"
+            }
+        ],
+        "userDefRelationshipFrom": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "test-term0-guid",
+                "relationshipAttributes": {
+                    "typeName": "UserDefRelationship",
+                    "attributes": {
+                        "fromTypeLabel": "test0-from-label",
+                        "toTypeLabel": "test0-to-label"
+                    }
+                },
+                "relationshipType": "UserDefRelationship"
+            }
+        ],
+        "name": "test-term",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "test-glossary-guid"
+            },
+            "guid": "test-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

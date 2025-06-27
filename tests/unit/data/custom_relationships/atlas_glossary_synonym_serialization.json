@@ -1,0 +1,32 @@
+{
+  "typeName": "AtlasGlossaryTerm",
+  "attributes": {
+    "qualifiedName": "main-term@default",
+    "name": "Main Term",
+    "synonyms": [
+      {
+        "typeName": "AtlasGlossaryTerm",
+        "guid": "synonym-term-guid",
+        "relationshipAttributes": {
+          "typeName": "AtlasGlossarySynonym",
+          "attributes": {
+            "description": "Synonym relationship",
+            "expression": "synonym-expression",
+            "status": "ACTIVE",
+            "steward": "data-steward",
+            "source": "manual"
+          }
+        },
+        "relationshipType": "AtlasGlossarySynonym"
+      }
+    ],
+    "anchor": {
+      "typeName": "AtlasGlossary",
+      "attributes": {
+        "qualifiedName": "business-glossary-guid"
+      },
+      "guid": "business-glossary-guid"
+    }
+  },
+  "guid": "-1234567890000000000000000"
+}

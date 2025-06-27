@@ -1,0 +1,32 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "legacy-term@old-glossary",
+        "replacementTerms": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "new-term-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryReplacementTerm",
+                    "attributes": {
+                        "description": "New term replaces legacy term",
+                        "expression": "system upgrade",
+                        "status": "ACTIVE",
+                        "steward": "data-architect",
+                        "source": "manual"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryReplacementTerm"
+            }
+        ],
+        "name": "legacy-term",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "old-glossary-guid"
+            },
+            "guid": "old-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

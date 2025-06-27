@@ -12,6 +12,7 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fi
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
+from pyatlan.model.assets.relations import UserDefRelationship
 from pyatlan.model.enums import SaveSemantic
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
@@ -293,6 +294,15 @@ def leaf2ba_category(
     )
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def term_user_def_relationship() -> UserDefRelationship:
+    test_id = MODULE_NAME.lower()
+    return UserDefRelationship(
+        from_type_label=f"Testing from label ({test_id})",
+        to_type_label=f"Testing to label ({test_id})",
+    )
 
 
 def test_category(
@@ -1061,3 +1071,88 @@ def test_move_sub_category_to_category(
     assert top1_category.qualified_name in root_category_qns_updated
     assert top2_category.qualified_name in root_category_qns_updated
     assert mid1a_category.qualified_name in root_category_qns_updated
+
+
+def test_user_def_relationship_on_terms(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+    term_user_def_relationship: UserDefRelationship,
+):
+    term1_to_update = AtlasGlossaryTerm.updater(
+        qualified_name=term1.qualified_name,
+        name=term1.name,
+        glossary_guid=glossary.guid,
+    )
+    term2 = AtlasGlossaryTerm.ref_by_guid(term2.guid)
+    term1_to_update.user_def_relationship_to = [
+        term_user_def_relationship.user_def_relationship_to(term2)
+    ]
+
+    response = client.asset.save(term1_to_update)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE is None
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 2
+    assets = response.assets_updated(asset_type=AtlasGlossaryTerm)
+    assert len(assets) == 2
+
+
+def _assert_relationship(relationship, expected_type_name, udr):
+    assert relationship
+    assert relationship.guid
+    assert relationship.type_name
+    assert relationship.attributes
+    assert relationship.attributes.relationship_attributes
+    assert relationship.attributes.relationship_attributes.attributes
+    assert (
+        relationship.attributes.relationship_attributes.type_name == expected_type_name
+    )
+    assert relationship.attributes.relationship_attributes == udr
+
+
+@pytest.mark.order(after="test_user_def_relationship_on_terms")
+def test_search_user_def_relationship_on_terms(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+    term_user_def_relationship: UserDefRelationship,
+):
+    # Wait for assets to be indexed
+    sleep(5)
+    assert term1 and term1.guid
+    assert term2 and term2.guid
+    results = (
+        FluentSearch()
+        .select()
+        .where_some(AtlasGlossaryTerm.GUID.eq(term1.guid))
+        .where_some(AtlasGlossaryTerm.GUID.eq(term2.guid))
+        .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_TO)
+        .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_FROM)
+        .include_relationship_attributes(True)
+        .execute(client=client)
+    )
+    assert results and results.count == 2
+    for asset in results:
+        assert asset and asset.guid
+        if asset.guid == term1.guid:
+            assert (
+                asset.user_def_relationship_to
+                and len(asset.user_def_relationship_to) == 1
+            )
+            _assert_relationship(
+                asset.user_def_relationship_to[0],
+                UserDefRelationship.__name__,
+                term_user_def_relationship,
+            )
+        else:
+            assert (
+                asset.user_def_relationship_from
+                and len(asset.user_def_relationship_from) == 1
+            )
+            _assert_relationship(
+                asset.user_def_relationship_from[0],
+                UserDefRelationship.__name__,
+                term_user_def_relationship,
+            )

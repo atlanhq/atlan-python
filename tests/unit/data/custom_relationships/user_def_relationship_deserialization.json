@@ -1,0 +1,75 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "userDefRelationshipTo": [
+            {
+                "guid": "90a43be2-f700-4f78-8512-4a38f129a901",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "UserDefRelationship",
+                        "attributes": {
+                            "fromTypeLabel": "test0-from-label",
+                            "toTypeLabel": "test0-to-label"
+                        }
+                    },
+                    "name": "test-term0"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
+                }
+            }
+        ],
+        "qualifiedName": "i9QXU6yl19Grdk8d6yVYT@KhgDjmb3kdRvft9TEzv9W",
+        "userDefRelationshipFrom": [
+            {
+                "guid": "90a43be2-f700-4f78-8512-4a38f121a901",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "UserDefRelationship",
+                        "attributes": {
+                            "fromTypeLabel": "test1-from-label",
+                            "toTypeLabel": "test1-to-label"
+                        }
+                    },
+                    "name": "test-term1"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
+                }
+            },
+            {
+                "guid": "90a43be2-f700-4f78-8512-4a38f121a911",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "UserDefRelationship",
+                        "attributes": {
+                            "fromTypeLabel": "test3-from-label",
+                            "toTypeLabel": "test3-to-label"
+                        }
+                    },
+                    "name": "test-term3"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "Orpt6s3r9CNLFXftuvVpZ@KhgDjmb3kdRvft9TEzv5W"
+                }
+            }
+        ],
+        "name": "test-term2"
+    },
+    "guid": "977b55f9-084c-460f-bf3b-cea5fa740e20",
+    "status": "ACTIVE",
+    "displayText": "test-term2",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "test-user",
+    "updatedBy": "service-account-apikey",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}

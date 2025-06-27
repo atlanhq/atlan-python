@@ -1,0 +1,15 @@
+# Copyright 2025 Atlan Pte. Ltd.
+
+__all__ = [
+    "RelationshipAttributes",
+    "IndistinctRelationship",
+    {% for relation in relation_def_infos -%}
+    "{{ relation.relationship_def.name | to_cls_name}}",
+    {% endfor %}
+]
+
+from .relationship_attributes import RelationshipAttributes
+from .indistinct_relationship import IndistinctRelationship
+{% for relation in relation_def_infos -%}
+from .{{ relation.relationship_def.name | to_snake_case }} import {{ relation.relationship_def.name | to_cls_name }}
+{% endfor %}

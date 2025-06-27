@@ -292,7 +292,7 @@ def test_index_search_request():
         ' "dsl": {"from": 0, "size": 300, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
-        '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], '
+        '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": [], "includeRelationshipAttributes": false, '
         '"requestMetadata": {"saveSearchLog": false, "utmTags": ["project_sdk_python"]}}'
     )
 

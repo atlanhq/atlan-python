@@ -1,0 +1,14 @@
+# Copyright 2025 Atlan Pte. Ltd.
+# isort: skip_file
+import lazy_loader as lazy
+
+__PYATLAN_ASSET_RELATIONS__ = {
+    "relationship_attributes": ["RelationshipAttributes"],
+    "indistinct_relationship": ["IndistinctRelationship"],
+    {% for relation in relation_def_infos -%}
+    "{{ relation.relationship_def.name | to_snake_case }}": ["{{ relation.relationship_def.name | to_cls_name}}"],
+    {% endfor %}
+}
+
+lazy_loader = lazy.attach(__name__, submod_attrs=__PYATLAN_ASSET_RELATIONS__)
+__getattr__, __dir__, __all__ = lazy_loader

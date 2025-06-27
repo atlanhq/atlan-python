@@ -1,0 +1,32 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "customer@english-glossary",
+        "translatedTerms": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "cliente-spanish-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryTranslation",
+                    "attributes": {
+                        "description": "Spanish translation",
+                        "expression": "localization",
+                        "status": "ACTIVE",
+                        "steward": "translation-team",
+                        "source": "manual"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryTranslation"
+            }
+        ],
+        "name": "customer",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "english-glossary-guid"
+            },
+            "guid": "english-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

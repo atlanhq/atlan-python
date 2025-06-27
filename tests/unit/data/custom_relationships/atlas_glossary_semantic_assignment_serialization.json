@@ -1,0 +1,34 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "customer@business-glossary",
+        "name": "Customer",
+        "assignedEntities": [
+            {
+                "typeName": "Table",
+                "guid": "customer-table-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossarySemanticAssignment",
+                    "attributes": {
+                        "description": "Customer term semantically represents customer data",
+                        "expression": "business metadata mapping",
+                        "status": "ACTIVE",
+                        "confidence": 95,
+                        "createdBy": "data-analyst",
+                        "steward": "data-governance-team",
+                        "source": "automated-discovery"
+                    }
+                },
+                "relationshipType": "AtlasGlossarySemanticAssignment"
+            }
+        ],
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "business-glossary-guid"
+            },
+            "guid": "business-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

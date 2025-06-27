@@ -1,0 +1,32 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "qualifiedName": "mammal@taxonomy-glossary",
+        "classifies": [
+            {
+                "typeName": "AtlasGlossaryTerm",
+                "guid": "general-term-guid",
+                "relationshipAttributes": {
+                    "typeName": "AtlasGlossaryIsARelationship",
+                    "attributes": {
+                        "description": "Animal is a more general concept",
+                        "expression": "taxonomic classification",
+                        "status": "ACTIVE",
+                        "steward": "taxonomy-expert",
+                        "source": "domain-expert"
+                    }
+                },
+                "relationshipType": "AtlasGlossaryIsARelationship"
+            }
+        ],
+        "name": "mammal",
+        "anchor": {
+            "typeName": "AtlasGlossary",
+            "attributes": {
+                "qualifiedName": "taxonomy-glossary-guid"
+            },
+            "guid": "taxonomy-glossary-guid"
+        }
+    },
+    "guid": "-1234567890000000000000000"
+}

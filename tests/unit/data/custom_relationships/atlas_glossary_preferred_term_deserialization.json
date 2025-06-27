@@ -1,0 +1,64 @@
+{
+    "typeName": "AtlasGlossaryTerm",
+    "attributes": {
+        "preferredTerms": [
+            {
+                "guid": "customer-preferred-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryPreferredTerm",
+                        "attributes": {
+                            "description": "Customer is the preferred term over client",
+                            "expression": "business standardization",
+                            "status": "ACTIVE",
+                            "steward": "business-analyst",
+                            "source": "governance-committee"
+                        }
+                    },
+                    "name": "customer"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "customer@business-glossary"
+                }
+            }
+        ],
+        "preferredToTerms": [
+            {
+                "guid": "client-alternative-guid",
+                "typeName": "AtlasGlossaryTerm",
+                "attributes": {
+                    "relationshipAttributes": {
+                        "typeName": "AtlasGlossaryPreferredTerm",
+                        "attributes": {
+                            "description": "Client is an alternative to customer",
+                            "expression": "business standardization",
+                            "status": "ACTIVE",
+                            "steward": "business-analyst",
+                            "source": "governance-committee"
+                        }
+                    },
+                    "name": "client"
+                },
+                "uniqueAttributes": {
+                    "qualifiedName": "client@business-glossary"
+                }
+            }
+        ],
+        "qualifiedName": "business-entity@business-glossary",
+        "name": "business-entity"
+    },
+    "guid": "business-entity-guid",
+    "status": "ACTIVE",
+    "displayText": "business-entity",
+    "classificationNames": [],
+    "classifications": [],
+    "meaningNames": [],
+    "meanings": [],
+    "isIncomplete": false,
+    "labels": [],
+    "createdBy": "business-analyst",
+    "updatedBy": "business-analyst",
+    "createTime": 1750078015371,
+    "updateTime": 1750156224299
+}
