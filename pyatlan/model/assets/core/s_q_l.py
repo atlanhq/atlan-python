@@ -149,6 +149,10 @@ class SQL(Catalog):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "query_count",
@@ -172,6 +176,7 @@ class SQL(Catalog):
         "dbt_tests",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
     ]
 
     @property
@@ -400,6 +405,16 @@ class SQL(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
+    @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
     class Attributes(Catalog.Attributes):
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
@@ -434,6 +449,9 @@ class SQL(Catalog):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SQL.Attributes = Field(
         default_factory=lambda: SQL.Attributes(),
@@ -446,5 +464,6 @@ class SQL(Catalog):
 
 
 from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401

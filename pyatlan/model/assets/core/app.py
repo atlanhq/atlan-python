@@ -31,7 +31,7 @@ class App(Catalog):
 
     APP_ID: ClassVar[KeywordField] = KeywordField("appId", "appId")
     """
-    Unique identifier for the App asset from the source system.
+    Unique identifier for the application asset from the source system.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

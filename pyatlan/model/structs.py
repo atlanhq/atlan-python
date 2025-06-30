@@ -45,19 +45,6 @@ class AtlanObject(BaseModel):
         return values
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -72,6 +59,19 @@ class DbtJobRun(AtlanObject):
     dbt_model_run_status: Optional[str] = Field(default=None, description="")
     dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
+
+
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
 class AwsCloudWatchMetric(AtlanObject):
@@ -104,6 +104,13 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(default=None, description="")
 
 
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
 class BadgeCondition(AtlanObject):
     """Description"""
 
@@ -134,13 +141,6 @@ class BadgeCondition(AtlanObject):
     badge_condition_operator: Optional[str] = Field(default=None, description="")
     badge_condition_value: Optional[str] = Field(default=None, description="")
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class StarredDetails(AtlanObject):
@@ -444,9 +444,9 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-MCRuleSchedule.update_forward_refs()
-
 DbtJobRun.update_forward_refs()
+
+MCRuleSchedule.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
@@ -456,9 +456,9 @@ Action.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
+
+BadgeCondition.update_forward_refs()
 
 StarredDetails.update_forward_refs()
 

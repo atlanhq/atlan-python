@@ -1041,7 +1041,7 @@ class Asset(Referenceable):
     """
     IS_PARTIAL: ClassVar[BooleanField] = BooleanField("isPartial", "isPartial")
     """
-    TBC
+    Indicates this asset is not fully-known, if true.
     """
     IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
         "isAIGenerated", "isAIGenerated"
@@ -1053,7 +1053,7 @@ class Asset(Referenceable):
         "assetCoverImage", "assetCoverImage"
     )
     """
-    TBC
+    Cover image to use for this asset in the UI (applicable to only a few asset types).
     """
     ASSET_THEME_HEX: ClassVar[TextField] = TextField("assetThemeHex", "assetThemeHex")
     """
@@ -1118,6 +1118,12 @@ class Asset(Referenceable):
     )
     """
     Qualified name of the ApplicationField that contains this asset.
+    """
+    ASSET_USER_DEFINED_TYPE: ClassVar[KeywordField] = KeywordField(
+        "assetUserDefinedType", "assetUserDefinedType"
+    )
+    """
+    Name to use for this type of asset, as a subtype of the actual typeName.
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1350,6 +1356,7 @@ class Asset(Referenceable):
         "output_product_g_u_i_ds",
         "application_qualified_name",
         "application_field_qualified_name",
+        "asset_user_defined_type",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -3340,6 +3347,18 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_user_defined_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_user_defined_type
+        )
+
+    @asset_user_defined_type.setter
+    def asset_user_defined_type(self, asset_user_defined_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_user_defined_type = asset_user_defined_type
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -3828,6 +3847,7 @@ class Asset(Referenceable):
         application_field_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        asset_user_defined_type: Optional[str] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

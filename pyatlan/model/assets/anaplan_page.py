@@ -79,7 +79,7 @@ class AnaplanPage(Anaplan):
         "anaplanPageCategoryName", "anaplanPageCategoryName"
     )
     """
-    Category Name of the AnaplanPage from the source system.
+    Category name of the AnaplanPage from the source system.
     """
     ANAPLAN_PAGE_TYPE: ClassVar[KeywordField] = KeywordField(
         "anaplanPageType", "anaplanPageType"

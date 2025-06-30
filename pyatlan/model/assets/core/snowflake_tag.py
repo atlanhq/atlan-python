@@ -176,6 +176,10 @@ class SnowflakeTag(Tag):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "tag_id",
@@ -204,6 +208,7 @@ class SnowflakeTag(Tag):
         "atlan_schema",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
     ]
 
     @property
@@ -484,6 +489,16 @@ class SnowflakeTag(Tag):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
+    @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
     class Attributes(Tag.Attributes):
         tag_id: Optional[str] = Field(default=None, description="")
         tag_attributes: Optional[List[SourceTagAttribute]] = Field(
@@ -527,6 +542,9 @@ class SnowflakeTag(Tag):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: SnowflakeTag.Attributes = Field(
         default_factory=lambda: SnowflakeTag.Attributes(),
@@ -539,6 +557,7 @@ class SnowflakeTag(Tag):
 
 
 from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

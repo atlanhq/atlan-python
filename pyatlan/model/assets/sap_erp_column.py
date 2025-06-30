@@ -277,6 +277,10 @@ class SapErpColumn(SAP):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
     SAP_ERP_CDS_VIEW: ClassVar[RelationField] = RelationField("sapErpCdsView")
     """
     TBC
@@ -329,6 +333,7 @@ class SapErpColumn(SAP):
         "dbt_tests",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
         "sap_erp_cds_view",
         "sap_erp_view",
     ]
@@ -816,6 +821,16 @@ class SapErpColumn(SAP):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
+    @property
     def sap_erp_cds_view(self) -> Optional[SapErpCdsView]:
         return None if self.attributes is None else self.attributes.sap_erp_cds_view
 
@@ -900,6 +915,9 @@ class SapErpColumn(SAP):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
         sap_erp_cds_view: Optional[SapErpCdsView] = Field(
             default=None, description=""
         )  # relationship
@@ -918,6 +936,7 @@ class SapErpColumn(SAP):
 
 
 from .core.dbt_model import DbtModel  # noqa: E402, F401
+from .core.dbt_seed import DbtSeed  # noqa: E402, F401
 from .core.dbt_source import DbtSource  # noqa: E402, F401
 from .core.dbt_test import DbtTest  # noqa: E402, F401
 from .sap_erp_cds_view import SapErpCdsView  # noqa: E402, F401

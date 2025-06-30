@@ -190,6 +190,10 @@ class BigqueryTag(Tag):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "bigquery_tag_type",
@@ -220,6 +224,7 @@ class BigqueryTag(Tag):
         "dbt_tests",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
     ]
 
     @property
@@ -532,6 +537,16 @@ class BigqueryTag(Tag):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
+    @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
     class Attributes(Tag.Attributes):
         bigquery_tag_type: Optional[str] = Field(default=None, description="")
         bigquery_tag_hierarchy: Optional[List[Dict[str, str]]] = Field(
@@ -579,6 +594,9 @@ class BigqueryTag(Tag):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: BigqueryTag.Attributes = Field(
         default_factory=lambda: BigqueryTag.Attributes(),
@@ -591,6 +609,7 @@ class BigqueryTag(Tag):
 
 
 from .core.dbt_model import DbtModel  # noqa: E402, F401
+from .core.dbt_seed import DbtSeed  # noqa: E402, F401
 from .core.dbt_source import DbtSource  # noqa: E402, F401
 from .core.dbt_test import DbtTest  # noqa: E402, F401
 
