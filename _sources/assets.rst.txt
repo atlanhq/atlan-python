@@ -128,6 +128,7 @@ You can interact with all of the following different kinds of assets:
     asset/dbtmodel
     asset/dbtmodelcolumn
     asset/dbtprocess
+    asset/dbtseed
     asset/dbtsource
     asset/dbttag
     asset/dbttest
@@ -148,6 +149,15 @@ You can interact with all of the following different kinds of assets:
     asset/file
     asset/fivetran
     asset/fivetranconnector
+    asset/flow
+    asset/flowcontroloperation
+    asset/flowdataset
+    asset/flowdatasetoperation
+    asset/flowfield
+    asset/flowfieldoperation
+    asset/flowfolder
+    asset/flowproject
+    asset/flowreusableunit
     asset/folder
     asset/form
     asset/function
