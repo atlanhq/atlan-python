@@ -236,6 +236,7 @@ class AssetInfo:
         "StakeholderTitle",
         "NoSQL",
         "DocumentDBCollection",
+        "FlowDataset",
     }
 
     def __init__(self, name: str, entity_def: EntityDef):

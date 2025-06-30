@@ -42,59 +42,59 @@ class DbtProcess(Dbt):
         "dbtProcessJobStatus", "dbtProcessJobStatus"
     )
     """
-
+    Status of the dbt process job.
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    Alias of this asset in dbt.
     """
     DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
     """
-
+    Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object.
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    Unique identifier of this asset in dbt.
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    Name of the account in which this asset exists in dbt.
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    Name of the project in which this asset exists in dbt.
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    Name of the package in which this asset exists in dbt.
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    Name of the job that materialized this asset in dbt.
     """
     DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    Schedule of the job that materialized this asset in dbt.
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    Status of the job that materialized this asset in dbt.
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -102,19 +102,19 @@ class DbtProcess(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    Human-readable cron schedule of the job that materialized this asset in dbt.
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds.
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -122,13 +122,13 @@ class DbtProcess(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    Human-readable time at which the job that materialized this asset in dbt will next run.
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    Name of the environment in which this asset exists in dbt.
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -136,27 +136,27 @@ class DbtProcess(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    Version of dbt used in the environment.
     """
     DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
     """
-
+    List of tags attached to this asset in dbt.
     """
     DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    Connection context for this asset in dbt.
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    URL of the semantic layer proxy for this asset in dbt.
     """
     DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
     """
-    List of latest DBT job runs across all environments
+    List of latest dbt job runs across all environments.
     """
     CODE: ClassVar[TextField] = TextField("code", "code")
     """
@@ -189,6 +189,10 @@ class DbtProcess(Dbt):
     Dataset type for AI Model - dataset process.
     """
 
+    FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
+    """
+    TBC
+    """
     ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
     """
     TBC
@@ -247,6 +251,7 @@ class DbtProcess(Dbt):
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
+        "flow_orchestrated_by",
         "adf_activity",
         "spark_jobs",
         "matillion_component",
@@ -571,6 +576,18 @@ class DbtProcess(Dbt):
         self.attributes.ai_dataset_type = ai_dataset_type
 
     @property
+    def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
+        return None if self.attributes is None else self.attributes.flow_orchestrated_by
+
+    @flow_orchestrated_by.setter
+    def flow_orchestrated_by(
+        self, flow_orchestrated_by: Optional[FlowControlOperation]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_orchestrated_by = flow_orchestrated_by
+
+    @property
     def adf_activity(self) -> Optional[AdfActivity]:
         return None if self.attributes is None else self.attributes.adf_activity
 
@@ -675,6 +692,9 @@ class DbtProcess(Dbt):
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
+        flow_orchestrated_by: Optional[FlowControlOperation] = Field(
+            default=None, description=""
+        )  # relationship
         adf_activity: Optional[AdfActivity] = Field(
             default=None, description=""
         )  # relationship
@@ -712,6 +732,7 @@ from .core.airflow_task import AirflowTask  # noqa: E402, F401
 from .core.catalog import Catalog  # noqa: E402, F401
 from .core.column_process import ColumnProcess  # noqa: E402, F401
 from .core.fivetran_connector import FivetranConnector  # noqa: E402, F401
+from .core.flow_control_operation import FlowControlOperation  # noqa: E402, F401
 from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401

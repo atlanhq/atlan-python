@@ -217,7 +217,7 @@ class Column(SQL):
         "rawDataTypeDefinition", "rawDataTypeDefinition"
     )
     """
-
+    Raw data type definition of this column.
     """
     ORDER: ClassVar[NumericField] = NumericField("order", "order")
     """
@@ -489,16 +489,36 @@ class Column(SQL):
         "columnMeasureType", "columnMeasureType"
     )
     """
-    The type of measure/calculated column this is, eg: base, calcaluted, derived.
+    The type of measure/calculated column this is, eg: base, calculated, derived.
     """
 
-    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
-        "snowflakeDynamicTable"
+    VIEW: ClassVar[RelationField] = RelationField("view")
+    """
+    TBC
+    """
+    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
+        "columnDbtModelColumns"
     )
     """
     TBC
     """
-    VIEW: ClassVar[RelationField] = RelationField("view")
+    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
+        "cosmosMongoDBCollection"
+    )
+    """
+    TBC
+    """
+    FOREIGN_KEY_FROM: ClassVar[RelationField] = RelationField("foreignKeyFrom")
+    """
+    TBC
+    """
+    DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
+    """
+    TBC
+    """
+    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTable"
+    )
     """
     TBC
     """
@@ -517,12 +537,6 @@ class Column(SQL):
     TBC
     """
     TABLE: ClassVar[RelationField] = RelationField("table")
-    """
-    TBC
-    """
-    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
-        "columnDbtModelColumns"
-    )
     """
     TBC
     """
@@ -547,20 +561,6 @@ class Column(SQL):
     TBC
     """
     FOREIGN_KEY_TO: ClassVar[RelationField] = RelationField("foreignKeyTo")
-    """
-    TBC
-    """
-    COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
-        "cosmosMongoDBCollection"
-    )
-    """
-    TBC
-    """
-    FOREIGN_KEY_FROM: ClassVar[RelationField] = RelationField("foreignKeyFrom")
-    """
-    TBC
-    """
-    DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
     """
     TBC
     """
@@ -628,22 +628,22 @@ class Column(SQL):
         "nosql_collection_qualified_name",
         "column_is_measure",
         "column_measure_type",
-        "snowflake_dynamic_table",
         "view",
+        "column_dbt_model_columns",
+        "cosmos_mongo_d_b_collection",
+        "foreign_key_from",
+        "dbt_metrics",
+        "snowflake_dynamic_table",
         "nested_columns",
         "data_quality_metric_dimensions",
         "dbt_model_columns",
         "table",
-        "column_dbt_model_columns",
         "materialised_view",
         "calculation_view",
         "parent_column",
         "queries",
         "metric_timestamps",
         "foreign_key_to",
-        "cosmos_mongo_d_b_collection",
-        "foreign_key_from",
-        "dbt_metrics",
         "table_partition",
     ]
 
@@ -1326,6 +1326,68 @@ class Column(SQL):
         self.attributes.column_measure_type = column_measure_type
 
     @property
+    def view(self) -> Optional[View]:
+        return None if self.attributes is None else self.attributes.view
+
+    @view.setter
+    def view(self, view: Optional[View]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view = view
+
+    @property
+    def column_dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_dbt_model_columns
+        )
+
+    @column_dbt_model_columns.setter
+    def column_dbt_model_columns(
+        self, column_dbt_model_columns: Optional[List[DbtModelColumn]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_dbt_model_columns = column_dbt_model_columns
+
+    @property
+    def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cosmos_mongo_d_b_collection
+        )
+
+    @cosmos_mongo_d_b_collection.setter
+    def cosmos_mongo_d_b_collection(
+        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
+
+    @property
+    def foreign_key_from(self) -> Optional[Column]:
+        return None if self.attributes is None else self.attributes.foreign_key_from
+
+    @foreign_key_from.setter
+    def foreign_key_from(self, foreign_key_from: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.foreign_key_from = foreign_key_from
+
+    @property
+    def dbt_metrics(self) -> Optional[List[DbtMetric]]:
+        return None if self.attributes is None else self.attributes.dbt_metrics
+
+    @dbt_metrics.setter
+    def dbt_metrics(self, dbt_metrics: Optional[List[DbtMetric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_metrics = dbt_metrics
+
+    @property
     def snowflake_dynamic_table(self) -> Optional[SnowflakeDynamicTable]:
         return (
             None if self.attributes is None else self.attributes.snowflake_dynamic_table
@@ -1338,16 +1400,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_table = snowflake_dynamic_table
-
-    @property
-    def view(self) -> Optional[View]:
-        return None if self.attributes is None else self.attributes.view
-
-    @view.setter
-    def view(self, view: Optional[View]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view = view
 
     @property
     def nested_columns(self) -> Optional[List[Column]]:
@@ -1394,22 +1446,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.table = table
-
-    @property
-    def column_dbt_model_columns(self) -> Optional[List[DbtModelColumn]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_dbt_model_columns
-        )
-
-    @column_dbt_model_columns.setter
-    def column_dbt_model_columns(
-        self, column_dbt_model_columns: Optional[List[DbtModelColumn]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_dbt_model_columns = column_dbt_model_columns
 
     @property
     def materialised_view(self) -> Optional[MaterialisedView]:
@@ -1470,42 +1506,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.foreign_key_to = foreign_key_to
-
-    @property
-    def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.cosmos_mongo_d_b_collection
-        )
-
-    @cosmos_mongo_d_b_collection.setter
-    def cosmos_mongo_d_b_collection(
-        self, cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.cosmos_mongo_d_b_collection = cosmos_mongo_d_b_collection
-
-    @property
-    def foreign_key_from(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.foreign_key_from
-
-    @foreign_key_from.setter
-    def foreign_key_from(self, foreign_key_from: Optional[Column]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.foreign_key_from = foreign_key_from
-
-    @property
-    def dbt_metrics(self) -> Optional[List[DbtMetric]]:
-        return None if self.attributes is None else self.attributes.dbt_metrics
-
-    @dbt_metrics.setter
-    def dbt_metrics(self, dbt_metrics: Optional[List[DbtMetric]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metrics = dbt_metrics
 
     @property
     def table_partition(self) -> Optional[TablePartition]:
@@ -1604,10 +1604,22 @@ class Column(SQL):
         )
         column_is_measure: Optional[bool] = Field(default=None, description="")
         column_measure_type: Optional[str] = Field(default=None, description="")
+        view: Optional[View] = Field(default=None, description="")  # relationship
+        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
+            default=None, description=""
+        )  # relationship
+        cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
+            default=None, description=""
+        )  # relationship
+        foreign_key_from: Optional[Column] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_metrics: Optional[List[DbtMetric]] = Field(
+            default=None, description=""
+        )  # relationship
         snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(
             default=None, description=""
         )  # relationship
-        view: Optional[View] = Field(default=None, description="")  # relationship
         nested_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
@@ -1618,9 +1630,6 @@ class Column(SQL):
             default=None, description=""
         )  # relationship
         table: Optional[Table] = Field(default=None, description="")  # relationship
-        column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
-            default=None, description=""
-        )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             default=None, description=""
         )  # relationship
@@ -1637,15 +1646,6 @@ class Column(SQL):
             default=None, description=""
         )  # relationship
         foreign_key_to: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
-            default=None, description=""
-        )  # relationship
-        foreign_key_from: Optional[Column] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_metrics: Optional[List[DbtMetric]] = Field(
             default=None, description=""
         )  # relationship
         table_partition: Optional[TablePartition] = Field(

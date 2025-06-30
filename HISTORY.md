@@ -1,3 +1,9 @@
+## 7.1.1 (June 30, 2025)
+
+### QOL Improvements
+
+- Regenerated latest typedef models.
+
 ## 7.1.0 (June 27, 2025)
 
 ###  New Features
@@ -47,7 +53,6 @@ This field now supports:
 ### Bug Fixes
 
 - Fixed automatic `401` token refresh by using `ContextVar` for `AtlanClient._401_has_retried` (bool flag) to avoid race conditions when executing SDK code in multithreading environments.
-
 
 ## 7.0.1 (June 16, 2025)
 

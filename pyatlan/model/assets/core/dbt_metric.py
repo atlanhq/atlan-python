@@ -42,59 +42,59 @@ class DbtMetric(Dbt):
         "dbtMetricFilters", "dbtMetricFilters"
     )
     """
-
+    Filters applied to the dbt metric.
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
     """
-
+    Alias of this asset in dbt.
     """
     DBT_META: ClassVar[TextField] = TextField("dbtMeta", "dbtMeta")
     """
-
+    Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object.
     """
     DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
     )
     """
-
+    Unique identifier of this asset in dbt.
     """
     DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
     )
     """
-
+    Name of the account in which this asset exists in dbt.
     """
     DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
     )
     """
-
+    Name of the project in which this asset exists in dbt.
     """
     DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
     )
     """
-
+    Name of the package in which this asset exists in dbt.
     """
     DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobName", "dbtJobName.keyword", "dbtJobName"
     )
     """
-
+    Name of the job that materialized this asset in dbt.
     """
     DBT_JOB_SCHEDULE: ClassVar[TextField] = TextField(
         "dbtJobSchedule", "dbtJobSchedule"
     )
     """
-
+    Schedule of the job that materialized this asset in dbt.
     """
     DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dbtJobStatus", "dbtJobStatus"
     )
     """
-
+    Status of the job that materialized this asset in dbt.
     """
     DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobScheduleCronHumanized",
@@ -102,19 +102,19 @@ class DbtMetric(Dbt):
         "dbtJobScheduleCronHumanized",
     )
     """
-
+    Human-readable cron schedule of the job that materialized this asset in dbt.
     """
     DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobLastRun", "dbtJobLastRun"
     )
     """
-
+    Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds.
     """
     DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
         "dbtJobNextRun", "dbtJobNextRun"
     )
     """
-
+    Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds.
     """
     DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtJobNextRunHumanized",
@@ -122,13 +122,13 @@ class DbtMetric(Dbt):
         "dbtJobNextRunHumanized",
     )
     """
-
+    Human-readable time at which the job that materialized this asset in dbt will next run.
     """
     DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
     )
     """
-
+    Name of the environment in which this asset exists in dbt.
     """
     DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtEnvironmentDbtVersion",
@@ -136,27 +136,27 @@ class DbtMetric(Dbt):
         "dbtEnvironmentDbtVersion",
     )
     """
-
+    Version of dbt used in the environment.
     """
     DBT_TAGS: ClassVar[TextField] = TextField("dbtTags", "dbtTags")
     """
-
+    List of tags attached to this asset in dbt.
     """
     DBT_CONNECTION_CONTEXT: ClassVar[TextField] = TextField(
         "dbtConnectionContext", "dbtConnectionContext"
     )
     """
-
+    Connection context for this asset in dbt.
     """
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
         "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
     )
     """
-
+    URL of the semantic layer proxy for this asset in dbt.
     """
     DBT_JOB_RUNS: ClassVar[KeywordField] = KeywordField("dbtJobRuns", "dbtJobRuns")
     """
-    List of latest DBT job runs across all environments
+    List of latest dbt job runs across all environments.
     """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """

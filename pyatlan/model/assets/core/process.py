@@ -115,6 +115,10 @@ class Process(Asset, type_name="Process"):
     Dataset type for AI Model - dataset process.
     """
 
+    FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
+    """
+    TBC
+    """
     ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
     """
     TBC
@@ -153,6 +157,7 @@ class Process(Asset, type_name="Process"):
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
+        "flow_orchestrated_by",
         "adf_activity",
         "spark_jobs",
         "matillion_component",
@@ -253,6 +258,18 @@ class Process(Asset, type_name="Process"):
         self.attributes.ai_dataset_type = ai_dataset_type
 
     @property
+    def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
+        return None if self.attributes is None else self.attributes.flow_orchestrated_by
+
+    @flow_orchestrated_by.setter
+    def flow_orchestrated_by(
+        self, flow_orchestrated_by: Optional[FlowControlOperation]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_orchestrated_by = flow_orchestrated_by
+
+    @property
     def adf_activity(self) -> Optional[AdfActivity]:
         return None if self.attributes is None else self.attributes.adf_activity
 
@@ -333,6 +350,9 @@ class Process(Asset, type_name="Process"):
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
+        flow_orchestrated_by: Optional[FlowControlOperation] = Field(
+            default=None, description=""
+        )  # relationship
         adf_activity: Optional[AdfActivity] = Field(
             default=None, description=""
         )  # relationship
@@ -435,6 +455,7 @@ from .airflow_task import AirflowTask  # noqa: E402, F401
 from .catalog import Catalog  # noqa: E402, F401
 from .column_process import ColumnProcess  # noqa: E402, F401
 from .fivetran_connector import FivetranConnector  # noqa: E402, F401
+from .flow_control_operation import FlowControlOperation  # noqa: E402, F401
 from .matillion_component import MatillionComponent  # noqa: E402, F401
 from .power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .spark_job import SparkJob  # noqa: E402, F401

@@ -43,6 +43,7 @@ from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
 from .dbt_model_column import DbtModelColumn
+from .dbt_seed import DbtSeed
 from .dbt_source import DbtSource
 from .dbt_test import DbtTest
 from .document_d_b import DocumentDB
@@ -52,6 +53,13 @@ from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .file import File
 from .fivetran import Fivetran
 from .fivetran_connector import FivetranConnector
+from .flow import Flow
+from .flow_control_operation import FlowControlOperation
+from .flow_dataset import FlowDataset
+from .flow_dataset_operation import FlowDatasetOperation
+from .flow_field import FlowField
+from .flow_field_operation import FlowFieldOperation
+from .flow_reusable_unit import FlowReusableUnit
 from .folder import Folder
 from .function import Function
 from .indistinct_asset import IndistinctAsset  # noqa: F401
@@ -128,8 +136,10 @@ AuthPolicy.Attributes.update_forward_refs(**localns)
 StakeholderTitle.Attributes.update_forward_refs(**localns)
 Catalog.Attributes.update_forward_refs(**localns)
 Namespace.Attributes.update_forward_refs(**localns)
+Flow.Attributes.update_forward_refs(**localns)
 AtlasGlossary.Attributes.update_forward_refs(**localns)
 AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
+FlowDatasetOperation.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
 Persona.Attributes.update_forward_refs(**localns)
@@ -137,12 +147,14 @@ App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
+FlowDataset.Attributes.update_forward_refs(**localns)
 NoSQL.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
+FlowField.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
 Matillion.Attributes.update_forward_refs(**localns)
@@ -151,6 +163,9 @@ Spark.Attributes.update_forward_refs(**localns)
 Tag.Attributes.update_forward_refs(**localns)
 SchemaRegistry.Attributes.update_forward_refs(**localns)
 Folder.Attributes.update_forward_refs(**localns)
+FlowReusableUnit.Attributes.update_forward_refs(**localns)
+FlowFieldOperation.Attributes.update_forward_refs(**localns)
+FlowControlOperation.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 ApplicationField.Attributes.update_forward_refs(**localns)
 Application.Attributes.update_forward_refs(**localns)
@@ -169,6 +184,7 @@ DbtTest.Attributes.update_forward_refs(**localns)
 DbtModel.Attributes.update_forward_refs(**localns)
 DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
+DbtSeed.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
@@ -191,8 +207,8 @@ Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)

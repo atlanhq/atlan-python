@@ -37,73 +37,73 @@ class DbtModel(Dbt):
 
     DBT_STATUS: ClassVar[KeywordField] = KeywordField("dbtStatus", "dbtStatus")
     """
-
+    Status of the dbt model.
     """
     DBT_ERROR: ClassVar[TextField] = TextField("dbtError", "dbtError")
     """
-
+    Error message if any for the dbt model.
     """
     DBT_RAW_SQL: ClassVar[TextField] = TextField("dbtRawSQL", "dbtRawSQL")
     """
-
+    Raw SQL of the dbt model.
     """
     DBT_COMPILED_SQL: ClassVar[TextField] = TextField(
         "dbtCompiledSQL", "dbtCompiledSQL"
     )
     """
-
+    Compiled SQL of the dbt model.
     """
     DBT_STATS: ClassVar[TextField] = TextField("dbtStats", "dbtStats")
     """
-
+    Statistics of the dbt model.
     """
     DBT_MATERIALIZATION_TYPE: ClassVar[TextField] = TextField(
         "dbtMaterializationType", "dbtMaterializationType"
     )
     """
-
+    Type of materialization used for the dbt model.
     """
     DBT_MODEL_COMPILE_STARTED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelCompileStartedAt", "dbtModelCompileStartedAt"
     )
     """
-
+    Timestamp when the dbt model compilation started.
     """
     DBT_MODEL_COMPILE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelCompileCompletedAt", "dbtModelCompileCompletedAt"
     )
     """
-
+    Timestamp when the dbt model compilation completed.
     """
     DBT_MODEL_EXECUTE_STARTED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelExecuteStartedAt", "dbtModelExecuteStartedAt"
     )
     """
-
+    Timestamp when the dbt model execution started.
     """
     DBT_MODEL_EXECUTE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelExecuteCompletedAt", "dbtModelExecuteCompletedAt"
     )
     """
-
+    Timestamp when the dbt model execution completed.
     """
     DBT_MODEL_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
         "dbtModelExecutionTime", "dbtModelExecutionTime"
     )
     """
-
+    Execution time of the dbt model.
     """
     DBT_MODEL_RUN_GENERATED_AT: ClassVar[NumericField] = NumericField(
         "dbtModelRunGeneratedAt", "dbtModelRunGeneratedAt"
     )
     """
-
+    Timestamp when the dbt model run was generated.
     """
     DBT_MODEL_RUN_ELAPSED_TIME: ClassVar[NumericField] = NumericField(
         "dbtModelRunElapsedTime", "dbtModelRunElapsedTime"
     )
     """
-
+    Elapsed time of the dbt model run.
     """
 
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")

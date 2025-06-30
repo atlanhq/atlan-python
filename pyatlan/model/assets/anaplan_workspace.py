@@ -46,13 +46,13 @@ class AnaplanWorkspace(Anaplan):
         "anaplanWorkspaceCurrentSize", "anaplanWorkspaceCurrentSize"
     )
     """
-    Current Size of the AnaplanWorkspace from the source system, estimated in MB.
+    Current size of the AnaplanWorkspace from the source system, estimated in MB.
     """
     ANAPLAN_WORKSPACE_ALLOWANCE_SIZE: ClassVar[NumericField] = NumericField(
         "anaplanWorkspaceAllowanceSize", "anaplanWorkspaceAllowanceSize"
     )
     """
-    Alloted Size quota for the AnaplanWorkspace from the source system, estimated in MB.
+    Alloted size quota for the AnaplanWorkspace from the source system, estimated in MB.
     """
 
     ANAPLAN_MODELS: ClassVar[RelationField] = RelationField("anaplanModels")

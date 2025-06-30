@@ -24,11 +24,11 @@ class UserDefRelationship(RelationshipAttributes):
     class Attributes(AtlanObject):
         to_type_label: Optional[str] = Field(
             default=None,
-            description="Name for the relationship when referring from endDef1 asset to endDef2 asset",
+            description="Name for the relationship when referring from endDef1 asset to endDef2 asset.",
         )
         from_type_label: Optional[str] = Field(
             default=None,
-            description="Name for the relationship when referring from endDef2 asset to endDef1 asset",
+            description="Name for the relationship when referring from endDef2 asset to endDef1 asset.",
         )
 
     def __init__(__pydantic_self__, **data: Any) -> None:

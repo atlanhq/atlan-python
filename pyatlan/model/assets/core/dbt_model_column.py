@@ -38,19 +38,19 @@ class DbtModelColumn(Dbt):
         "dbtModelQualifiedName", "dbtModelQualifiedName", "dbtModelQualifiedName.text"
     )
     """
-
+    Qualified name of the dbt model this column belongs to.
     """
     DBT_MODEL_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
         "dbtModelColumnDataType", "dbtModelColumnDataType"
     )
     """
-
+    Data type of the dbt model column.
     """
     DBT_MODEL_COLUMN_ORDER: ClassVar[NumericField] = NumericField(
         "dbtModelColumnOrder", "dbtModelColumnOrder"
     )
     """
-
+    Order of the column in the dbt model.
     """
 
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
@@ -71,6 +71,10 @@ class DbtModelColumn(Dbt):
     """
     TBC
     """
+    DBT_SEED: ClassVar[RelationField] = RelationField("dbtSeed")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "dbt_model_qualified_name",
@@ -80,6 +84,7 @@ class DbtModelColumn(Dbt):
         "sql_column",
         "dbt_model",
         "dbt_model_column_sql_columns",
+        "dbt_seed",
     ]
 
     @property
@@ -168,6 +173,16 @@ class DbtModelColumn(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
 
+    @property
+    def dbt_seed(self) -> Optional[DbtSeed]:
+        return None if self.attributes is None else self.attributes.dbt_seed
+
+    @dbt_seed.setter
+    def dbt_seed(self, dbt_seed: Optional[DbtSeed]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed = dbt_seed
+
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(default=None, description="")
         dbt_model_column_data_type: Optional[str] = Field(default=None, description="")
@@ -184,6 +199,9 @@ class DbtModelColumn(Dbt):
         dbt_model_column_sql_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed: Optional[DbtSeed] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: DbtModelColumn.Attributes = Field(
         default_factory=lambda: DbtModelColumn.Attributes(),
@@ -197,4 +215,5 @@ class DbtModelColumn(Dbt):
 
 from .column import Column  # noqa: E402, F401
 from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401

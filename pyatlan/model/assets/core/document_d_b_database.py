@@ -187,6 +187,10 @@ class DocumentDBDatabase(DocumentDB):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
     SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
     """
     TBC
@@ -218,6 +222,7 @@ class DocumentDBDatabase(DocumentDB):
         "document_d_b_collections",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
         "schemas",
     ]
 
@@ -506,6 +511,16 @@ class DocumentDBDatabase(DocumentDB):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
+    @property
     def schemas(self) -> Optional[List[Schema]]:
         return None if self.attributes is None else self.attributes.schemas
 
@@ -557,6 +572,9 @@ class DocumentDBDatabase(DocumentDB):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
         schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
@@ -589,6 +607,7 @@ class DocumentDBDatabase(DocumentDB):
 
 
 from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401
 from .document_d_b_collection import DocumentDBCollection  # noqa: E402, F401

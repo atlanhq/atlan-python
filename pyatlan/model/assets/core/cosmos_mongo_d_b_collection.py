@@ -413,6 +413,10 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
+    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    """
+    TBC
+    """
     MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
     """
     TBC
@@ -491,6 +495,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "queries",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_seed_assets",
         "mongo_d_b_database",
         "dimensions",
     ]
@@ -1332,6 +1337,16 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
+        return None if self.attributes is None else self.attributes.dbt_seed_assets
+
+    @dbt_seed_assets.setter
+    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_seed_assets = dbt_seed_assets
+
+    @property
     def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
         return None if self.attributes is None else self.attributes.mongo_d_b_database
 
@@ -1476,6 +1491,9 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
+        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+            default=None, description=""
+        )  # relationship
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
         )  # relationship
@@ -1496,6 +1514,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
 from .column import Column  # noqa: E402, F401
 from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase  # noqa: E402, F401
 from .dbt_model import DbtModel  # noqa: E402, F401
+from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401
 from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401

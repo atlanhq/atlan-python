@@ -31,13 +31,13 @@ class DbtSource(Dbt):
 
     DBT_STATE: ClassVar[KeywordField] = KeywordField("dbtState", "dbtState")
     """
-
+    State of the dbt source.
     """
     DBT_FRESHNESS_CRITERIA: ClassVar[TextField] = TextField(
         "dbtFreshnessCriteria", "dbtFreshnessCriteria"
     )
     """
-
+    Freshness criteria for the dbt source.
     """
 
     SQL_ASSETS: ClassVar[RelationField] = RelationField("sqlAssets")

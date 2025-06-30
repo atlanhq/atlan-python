@@ -33,37 +33,37 @@ class Anaplan(BI):
         "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
     )
     """
-    Unique name of the AnaplanWorkspace asset that contains this asset(AnaplanModel and everthing under it's hierarchy).
-    """
+    Unique name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy).
+    """  # noqa: E501
     ANAPLAN_WORKSPACE_NAME: ClassVar[KeywordField] = KeywordField(
         "anaplanWorkspaceName", "anaplanWorkspaceName"
     )
     """
-    Simple name of the AnaplanWorkspace asset that contains this asset(AnaplanModel and everthing under it's hierarchy).
-    """
+    Simple name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy).
+    """  # noqa: E501
     ANAPLAN_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "anaplanModelQualifiedName", "anaplanModelQualifiedName"
     )
     """
-    Unique name of the AnaplanModel asset that contains this asset(AnaplanModule and everthing under it's hierarchy).
+    Unique name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy).
     """
     ANAPLAN_MODEL_NAME: ClassVar[KeywordField] = KeywordField(
         "anaplanModelName", "anaplanModelName"
     )
     """
-    Simple name of the AnaplanModel asset that contains this asset(AnaplanModule and everthing under it's hierarchy).
+    Simple name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy).
     """
     ANAPLAN_MODULE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
     )
     """
-    Unique name of the AnaplanModule asset that contains this asset(AnaplanLineItem, AnaplanList, AnaplanView and everthing under their hierarchy).
+    Unique name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy).
     """  # noqa: E501
     ANAPLAN_MODULE_NAME: ClassVar[KeywordField] = KeywordField(
         "anaplanModuleName", "anaplanModuleName"
     )
     """
-    Simple name of the AnaplanModule asset that contains this asset(AnaplanLineItem, AnaplanList, AnaplanView and everthing under their hierarchy).
+    Simple name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy).
     """  # noqa: E501
     ANAPLAN_SOURCE_ID: ClassVar[KeywordField] = KeywordField(
         "anaplanSourceId", "anaplanSourceId"
