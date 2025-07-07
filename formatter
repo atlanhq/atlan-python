@@ -8,5 +8,10 @@ untracked_files=$(git ls-files --others --exclude-standard)
 all_files="${changed_files}
 ${untracked_files}"
 
-# Pass the filenames to pre-commit run --files
-echo "$all_files" | tr '\n' '\0' | xargs -0 pre-commit run --files
+# Pass the filenames to pre-commit run --files (qa-checks excluded via manual stage)
+if [ -n "$all_files" ]; then
+    file_args=$(echo "$all_files" | tr '\n' ' ')
+    uv run pre-commit run --files $file_args
+else
+    echo "No files to format."
+fi

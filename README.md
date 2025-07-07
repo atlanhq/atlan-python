@@ -49,7 +49,7 @@ To get started developing the SDK:
 Before committing code, ensure it adheres to the repository's formatting guidelines. You can apply the required formatting using the below command:
 
 ```bash
-./pyatlan-formatter
+uv run ./formatter
 ```
 
 ### Environment Setup
@@ -115,23 +115,22 @@ If you've pushed new typedefs to Atlan and want to generate SDK asset models to 
 > [!NOTE]
 > Before running any generator scripts, make sure you have [configured your environment variables](https://developer.atlan.com/sdks/python/#configure-the-sdk) specifically `ATLAN_BASE_URL` and `ATLAN_API_KEY`.
 
-1. Retrieve the typedefs from your Atlan instance and save them to a JSON file by running:
+1. Run the combined generator script that handles all steps automatically:
 
    ```shell
-   python3 pyatlan/generator/create_typedefs_file.py
+   # Use default location (/tmp/typedefs.json)
+   uv run ./generator
+
+   # Or specify a custom typedefs file location
+   uv run ./generator ./my-typedefs.json
    ```
 
-2. Generate the asset `models`, `enums`, and `struct` modules in the SDK based on the typedefs by running:
-
-   ```shell
-   python3 pyatlan/generator/class_generator.py
-   ```
-
-3. The generated files will be unformatted. To format them properly, run the formatter:
-
-   ```shell
-   ./pyatlan-formatter
-   ```
+   This script will:
+   - Check if typedefs file exists and is current (skip if already created today)
+   - Retrieve typedefs from your Atlan instance if needed
+   - Generate the asset `models`, `enums`, and `struct` modules
+   - Format the generated code automatically
+   - Support custom typedefs file paths for flexibility
 
 ## Attribution
 

@@ -6,23 +6,46 @@ use this file to produce code for assets, structs and enums for atlan. The ATLAN
 environment variables should be set before running this script.
 """
 
+import argparse
+import os
+from pathlib import Path
+
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.generator.class_generator import TYPE_DEF_FILE
 
 
 class ServerError(Exception):
     pass
 
 
-def create_typedef_file():
+def create_typedef_file(typedefs_file_path=None):
+    # Use provided path or default to tmp directory
+    if typedefs_file_path:
+        typedef_file = Path(typedefs_file_path)
+    else:
+        typedef_file = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
+
     client = AtlanClient()
     type_defs = client.typedef.get_all()
     if len(type_defs.entity_defs) == 0:
         raise ServerError("No entity definitions were returned from the server.")
-    with TYPE_DEF_FILE.open("w") as output_file:
+
+    # Create directory if it doesn't exist
+    typedef_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with typedef_file.open("w") as output_file:
         output_file.write(type_defs.json())
-    print(f"{TYPE_DEF_FILE} has been created.")
+    print(f"{typedef_file} has been created.")
 
 
 if __name__ == "__main__":
-    create_typedef_file()
+    parser = argparse.ArgumentParser(
+        description="Create typedefs file from Atlan instance"
+    )
+    parser.add_argument(
+        "--typedefs-file",
+        type=str,
+        help="Path to the typedefs file (default: /tmp/typedefs.json or $TMPDIR/typedefs.json)",
+    )
+    args = parser.parse_args()
+
+    create_typedef_file(args.typedefs_file)
