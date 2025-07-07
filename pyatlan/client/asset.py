@@ -440,7 +440,6 @@ class AssetClient:
         ):
             search = (
                 FluentSearch()
-                .select()
                 .where(Asset.QUALIFIED_NAME.eq(qualified_name))
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
             )
@@ -514,7 +513,6 @@ class AssetClient:
         ):
             search = (
                 FluentSearch()
-                .select()
                 .where(Asset.GUID.eq(guid))
                 .where(Asset.TYPE_NAME.eq(asset_type.__name__))
             )
