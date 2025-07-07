@@ -401,8 +401,10 @@ def test_delete_api_object(
 def test_read_deleted_api_object(
     client: AtlanClient, connection: Connection, api_object_overload: APIObject
 ):
-    deleted = client.asset.get_by_guid(
-        api_object_overload.guid, asset_type=APIObject, ignore_relationships=False
+    # Running get_by_qualified_name with attributes to use FluentSearch behind the scenes
+    assert api_object_overload.qualified_name
+    deleted = client.asset.get_by_qualified_name(
+        api_object_overload.qualified_name, asset_type=APIObject, attributes=["name"]
     )
     assert deleted
     assert deleted.guid == api_object_overload.guid
@@ -639,8 +641,9 @@ def test_delete_api_query(
 def test_read_deleted_api_query(
     client: AtlanClient, connection: Connection, api_query_overload_3: APIQuery
 ):
+    # Running get_by_guid with attributes to use FluentSearch behind the scenes
     deleted = client.asset.get_by_guid(
-        api_query_overload_3.guid, asset_type=APIQuery, ignore_relationships=False
+        api_query_overload_3.guid, asset_type=APIQuery, attributes=["name"]
     )
     assert deleted
     assert deleted.guid == api_query_overload_3.guid
