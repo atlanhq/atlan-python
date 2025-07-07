@@ -2,6 +2,7 @@ from time import sleep
 from typing import Callable, Generator
 
 import pytest
+from pydantic import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
@@ -16,7 +17,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.core import AtlanTag, AtlanTagName
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, AtlanDeleteType
 from pyatlan.model.group import AtlanGroup
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.suggestions import Suggestions
@@ -45,6 +46,23 @@ ATLAN_TAG_NAME2 = PREFIX + "tag2"
 
 TERM_NAME1 = PREFIX + "term1"
 TERM_NAME2 = PREFIX + "term2"
+
+
+def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
+    g = AtlasGlossary.create(name=StrictStr(name))
+    r = client.asset.save(g)
+    return r.assets_created(AtlasGlossary)[0]
+
+
+@pytest.fixture(scope="module")
+def glossary(
+    client: AtlanClient,
+) -> Generator[AtlasGlossary, None, None]:
+    g = create_glossary(client, PREFIX)
+    yield g
+    delete_asset(
+        client, guid=g.guid, asset_type=AtlasGlossary, delete_type=AtlanDeleteType.HARD
+    )
 
 
 @pytest.fixture(scope="module")
@@ -383,7 +401,12 @@ def term1(
         qualified_name=t1c1.qualified_name,
         terms=[AtlasGlossaryTerm.ref_by_guid(t.guid)],
     )
-    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+    delete_asset(
+        client,
+        guid=t.guid,
+        asset_type=AtlasGlossaryTerm,
+        delete_type=AtlanDeleteType.HARD,
+    )
 
 
 @pytest.fixture(scope="module")
@@ -427,7 +450,12 @@ def term2(
         qualified_name=v1c1.qualified_name,
         terms=[AtlasGlossaryTerm.ref_by_guid(t.guid)],
     )
-    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+    delete_asset(
+        client,
+        guid=t.guid,
+        asset_type=AtlasGlossaryTerm,
+        delete_type=AtlanDeleteType.HARD,
+    )
 
 
 @pytest.fixture(scope="module")
@@ -485,7 +513,9 @@ def table3(
     assert (tables := response.assets_created(asset_type=Table))
     assert len(tables) == 1
     yield tables[0]
-    # delete_asset(client, guid=tables[0].guid, asset_type=Table)
+    delete_asset(
+        client, guid=tables[0].guid, asset_type=Table, delete_type=AtlanDeleteType.HARD
+    )
 
 
 def test_tables(

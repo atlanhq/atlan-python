@@ -786,21 +786,32 @@ class AssetClient:
         )
 
     @validate_arguments
-    def purge_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
+    def purge_by_guid(
+        self,
+        guid: Union[str, List[str]],
+        delete_type: AtlanDeleteType = AtlanDeleteType.PURGE,
+    ) -> AssetMutationResponse:
         """
-        Hard-deletes (purges) one or more assets by their unique identifier (GUID).
-        This operation is irreversible.
+        Deletes one or more assets by their unique identifier (GUID) using the specified delete type.
 
-        :param guid: unique identifier(s) (GUIDs) of one or more assets to hard-delete
-        :returns: details of the hard-deleted asset(s)
+        :param guid: unique identifier(s) (GUIDs) of one or more assets to delete
+        :param delete_type: type of deletion to perform:
+
+            - PURGE: completely removes entity and all audit/history traces (default, irreversible)
+            - HARD: physically removes entity but keeps audit history (irreversible)
+
+        :returns: details of the deleted asset(s)
         :raises AtlanError: on any API communication issue
+
+        .. warning::
+            PURGE and HARD deletions are irreversible operations. Use with caution.
         """
         guids: List[str] = []
         if isinstance(guid, list):
             guids.extend(guid)
         else:
             guids.append(guid)
-        query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": guids}
+        query_params = {"deleteType": delete_type.value, "guid": guids}
         raw_json = self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
         )

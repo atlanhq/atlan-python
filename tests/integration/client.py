@@ -6,6 +6,7 @@ from typing import Generator, Type
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.model.response import A
 
 LOGGER = logging.getLogger(__name__)
@@ -31,9 +32,14 @@ def client() -> Generator[AtlanClient, None, None]:
     yield client
 
 
-def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:
+def delete_asset(
+    client: AtlanClient,
+    asset_type: Type[A],
+    guid: str,
+    delete_type: AtlanDeleteType = AtlanDeleteType.PURGE,
+) -> None:
     # These assertions check the cleanup actually worked
-    r = client.asset.purge_by_guid(guid)
+    r = client.asset.purge_by_guid(guid, delete_type)
     s = r is not None
     s = s and len(r.assets_deleted(asset_type)) == 1
     s = s and r.assets_deleted(asset_type)[0].guid == guid
