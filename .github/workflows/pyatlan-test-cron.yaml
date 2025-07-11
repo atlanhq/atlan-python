@@ -20,15 +20,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
 
-      - name: QA checks (black, flake8, mypy)
-        run: |
-          ./qa-checks
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: QA checks (ruff-format, ruff-lint, mypy)
+        run: uv run ./qa-checks
 
       - name: Test with pytest
         env: # Or as an environment variable
@@ -37,5 +36,5 @@ jobs:
         # Run the integration test suite using the `pytest-timer` plugin
         # to display only the durations of the 25 slowest tests with `pytest-sugar`
         run: |
-          pytest tests/unit
-          pytest tests/integration  -p name_of_plugin --timer-top-n 25
+          uv run pytest tests/unit
+          uv run pytest tests/integration  -p name_of_plugin --timer-top-n 25

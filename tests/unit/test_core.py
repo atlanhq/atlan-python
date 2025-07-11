@@ -152,3 +152,33 @@ class TestAtlanObjectExtraFields:
         assert response.attributes.old_attr == "oldValueAttr"
         assert response.__atlan_extra__ == {"new": "newValue"}
         assert response.attributes.__atlan_extra__ == {"newAttr": "newValueAttr"}
+
+
+class TestPyatlanVersion:
+    def test_pyatlan_has_version_attribute(self):
+        """Test that pyatlan module has __version__ attribute"""
+        import pyatlan
+
+        assert hasattr(pyatlan, "__version__")
+        assert pyatlan.__version__ is not None
+        assert isinstance(pyatlan.__version__, str)
+        assert pyatlan.__version__ != "unknown"
+
+    def test_pyatlan_version_format(self):
+        """Test that the version follows semantic versioning format"""
+        import re
+
+        import pyatlan
+
+        # Check if version matches semantic versioning pattern (x.y.z)
+        version_pattern = r"^\d+\.\d+\.\d+.*$"
+        assert re.match(version_pattern, pyatlan.__version__)
+
+    def test_pyatlan_version_accessibility(self):
+        """Test that version can be accessed after import"""
+        import pyatlan
+
+        # Version should be accessible immediately after import
+        version = pyatlan.__version__
+        assert version is not None
+        assert len(version) > 0

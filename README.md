@@ -39,10 +39,8 @@ To get started developing the SDK:
 
 4. Install the required dependencies:
    ```bash
-   # Upgrade pip before installing dependencies
-   python -m pip install --upgrade pip
-   # Install required dependencies for development
-   pip install -e . && pip install -r requirements-dev.txt
+   # Install dependencies using uv
+   uv sync --extra dev
    ```
 
 ### Code Formatting
@@ -86,14 +84,14 @@ For running integration tests, you'll need to configure your environment:
 You can run all the QA checks using the following command:
 
 ```bash
-./qa-checks
+uv run ./qa-checks
 ```
 
 ### Running Unit Tests
 You can run the SDK's unit tests **without needing access to an Atlan environment**:
 
 ```bash
-pytest tests/unit
+uv run pytest tests/unit
 ```
 
 ### Running Integration Tests
@@ -101,12 +99,57 @@ Once the environment is set up, you can run integration tests:
 
 - All integration tests:
   ```bash
-  pytest tests/integration
+  uv run pytest tests/integration
   ```
 - Specific integration tests:
   ```bash
-  pytest tests/integration/<test_specific_feature>.py
+  uv run pytest tests/integration/<test_specific_feature>.py
   ```
+
+## Docker
+
+### Using Published Images
+
+Pre-built Docker images are available from GitHub Container Registry:
+
+```bash
+# Latest version
+docker pull ghcr.io/atlanhq/atlan-python:latest
+
+# Specific version
+docker pull ghcr.io/atlanhq/atlan-python:7.1.1
+```
+
+**Usage:**
+```bash
+# Interactive Python session
+docker run -it --rm ghcr.io/atlanhq/atlan-python:latest
+
+# Run a Python script
+docker run -it --rm -v $(pwd):/app ghcr.io/atlanhq/atlan-python:latest python your_script.py
+
+# With environment variables
+docker run -it --rm \
+  -e ATLAN_API_KEY=your_api_key \
+  -e ATLAN_BASE_URL=https://your-tenant.atlan.com \
+  ghcr.io/atlanhq/atlan-python:latest
+```
+
+### Building Locally
+
+You can build the Docker image locally:
+
+```bash
+# Build the image
+docker build -t pyatlan --build-arg VERSION=7.1.1 .
+
+# Test the image
+docker run -it --rm pyatlan python -c "import pyatlan; print('PyAtlan loaded successfully!')"
+```
+
+**Available images:**
+- **Latest**: `ghcr.io/atlanhq/atlan-python:latest`
+- **Versioned**: `ghcr.io/atlanhq/atlan-python:x.y.z`
 
 ### Running the SDK Model Generator
 

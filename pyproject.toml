@@ -40,6 +40,12 @@ dependencies = [
     "PyYAML~=6.0.2",
 ]
 
+[project.urls]
+Homepage = "https://github.com/atlanhq/atlan-python"
+Repository = "https://github.com/atlanhq/atlan-python"
+Documentation = "https://github.com/atlanhq/atlan-python"
+Issues = "https://github.com/atlanhq/atlan-python/issues"
+
 [project.optional-dependencies]
 dev = [
     "mypy~=1.9.0",
@@ -61,12 +67,6 @@ dev = [
     "networkx~=3.1.0",
     "networkx-stubs~=0.0.1",
 ]
-
-[project.urls]
-Homepage = "https://github.com/atlanhq/atlan-python"
-Repository = "https://github.com/atlanhq/atlan-python"
-Documentation = "https://github.com/atlanhq/atlan-python"
-Issues = "https://github.com/atlanhq/atlan-python/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
