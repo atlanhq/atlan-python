@@ -29,14 +29,29 @@ class CognosExploration(Cognos):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    COGNOS_COLUMNS: ClassVar[RelationField] = RelationField("cognosColumns")
+    """
+    TBC
+    """
     COGNOS_FOLDER: ClassVar[RelationField] = RelationField("cognosFolder")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "cognos_columns",
         "cognos_folder",
     ]
+
+    @property
+    def cognos_columns(self) -> Optional[List[CognosColumn]]:
+        return None if self.attributes is None else self.attributes.cognos_columns
+
+    @cognos_columns.setter
+    def cognos_columns(self, cognos_columns: Optional[List[CognosColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cognos_columns = cognos_columns
 
     @property
     def cognos_folder(self) -> Optional[CognosFolder]:
@@ -49,6 +64,9 @@ class CognosExploration(Cognos):
         self.attributes.cognos_folder = cognos_folder
 
     class Attributes(Cognos.Attributes):
+        cognos_columns: Optional[List[CognosColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         cognos_folder: Optional[CognosFolder] = Field(
             default=None, description=""
         )  # relationship
@@ -63,6 +81,7 @@ class CognosExploration(Cognos):
     )
 
 
+from .cognos_column import CognosColumn  # noqa: E402, F401
 from .cognos_folder import CognosFolder  # noqa: E402, F401
 
 CognosExploration.Attributes.update_forward_refs()

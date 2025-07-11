@@ -114,6 +114,12 @@ class Schema(SQL):
     """
     TBC
     """
+    DATABRICKS_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
+        "databricksAIModelContexts"
+    )
+    """
+    TBC
+    """
     FUNCTIONS: ClassVar[RelationField] = RelationField("functions")
     """
     TBC
@@ -148,6 +154,12 @@ class Schema(SQL):
     """
     TBC
     """
+    SNOWFLAKE_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
+        "snowflakeAIModelContexts"
+    )
+    """
+    TBC
+    """
     SNOWFLAKE_PIPES: ClassVar[RelationField] = RelationField("snowflakePipes")
     """
     TBC
@@ -167,6 +179,7 @@ class Schema(SQL):
         "views_count",
         "linked_schema_qualified_name",
         "snowflake_tags",
+        "databricks_a_i_model_contexts",
         "functions",
         "snowflake_stages",
         "tables",
@@ -175,6 +188,7 @@ class Schema(SQL):
         "views",
         "materialised_views",
         "snowflake_dynamic_tables",
+        "snowflake_a_i_model_contexts",
         "snowflake_pipes",
         "snowflake_streams",
         "calculation_views",
@@ -237,6 +251,22 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_tags = snowflake_tags
+
+    @property
+    def databricks_a_i_model_contexts(self) -> Optional[List[DatabricksAIModelContext]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.databricks_a_i_model_contexts
+        )
+
+    @databricks_a_i_model_contexts.setter
+    def databricks_a_i_model_contexts(
+        self, databricks_a_i_model_contexts: Optional[List[DatabricksAIModelContext]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.databricks_a_i_model_contexts = databricks_a_i_model_contexts
 
     @property
     def functions(self) -> Optional[List[Function]]:
@@ -325,6 +355,22 @@ class Schema(SQL):
         self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
 
     @property
+    def snowflake_a_i_model_contexts(self) -> Optional[List[SnowflakeAIModelContext]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_a_i_model_contexts
+        )
+
+    @snowflake_a_i_model_contexts.setter
+    def snowflake_a_i_model_contexts(
+        self, snowflake_a_i_model_contexts: Optional[List[SnowflakeAIModelContext]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_a_i_model_contexts = snowflake_a_i_model_contexts
+
+    @property
     def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
         return None if self.attributes is None else self.attributes.snowflake_pipes
 
@@ -364,6 +410,9 @@ class Schema(SQL):
         snowflake_tags: Optional[List[SnowflakeTag]] = Field(
             default=None, description=""
         )  # relationship
+        databricks_a_i_model_contexts: Optional[List[DatabricksAIModelContext]] = Field(
+            default=None, description=""
+        )  # relationship
         functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
@@ -386,6 +435,9 @@ class Schema(SQL):
             default=None, description=""
         )  # relationship
         snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_a_i_model_contexts: Optional[List[SnowflakeAIModelContext]] = Field(
             default=None, description=""
         )  # relationship
         snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
@@ -448,9 +500,11 @@ class Schema(SQL):
 
 from .calculation_view import CalculationView  # noqa: E402, F401
 from .database import Database  # noqa: E402, F401
+from .databricks_a_i_model_context import DatabricksAIModelContext  # noqa: E402, F401
 from .function import Function  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
+from .snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
 from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
 from .snowflake_stage import SnowflakeStage  # noqa: E402, F401

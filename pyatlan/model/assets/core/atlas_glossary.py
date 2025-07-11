@@ -100,7 +100,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """
     GLOSSARY_TYPE: ClassVar[KeywordField] = KeywordField("glossaryType", "glossaryType")
     """
-    TBC
+
     """
 
     TERMS: ClassVar[RelationField] = RelationField("terms")

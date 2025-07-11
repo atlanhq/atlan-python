@@ -49,6 +49,10 @@ class AIModel(AI):
     Version of the AI model
     """
 
+    AI_MODEL_VERSIONS: ClassVar[RelationField] = RelationField("aiModelVersions")
+    """
+    TBC
+    """
     APPLICATIONS: ClassVar[RelationField] = RelationField("applications")
     """
     TBC
@@ -58,6 +62,7 @@ class AIModel(AI):
         "ai_model_datasets_d_s_l",
         "ai_model_status",
         "ai_model_version",
+        "ai_model_versions",
         "applications",
     ]
 
@@ -94,6 +99,16 @@ class AIModel(AI):
         self.attributes.ai_model_version = ai_model_version
 
     @property
+    def ai_model_versions(self) -> Optional[List[AIModelVersion]]:
+        return None if self.attributes is None else self.attributes.ai_model_versions
+
+    @ai_model_versions.setter
+    def ai_model_versions(self, ai_model_versions: Optional[List[AIModelVersion]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_versions = ai_model_versions
+
+    @property
     def applications(self) -> Optional[List[AIApplication]]:
         return None if self.attributes is None else self.attributes.applications
 
@@ -107,6 +122,9 @@ class AIModel(AI):
         ai_model_datasets_d_s_l: Optional[str] = Field(default=None, description="")
         ai_model_status: Optional[AIModelStatus] = Field(default=None, description="")
         ai_model_version: Optional[str] = Field(default=None, description="")
+        ai_model_versions: Optional[List[AIModelVersion]] = Field(
+            default=None, description=""
+        )  # relationship
         applications: Optional[List[AIApplication]] = Field(
             default=None, description=""
         )  # relationship
@@ -122,5 +140,4 @@ class AIModel(AI):
 
 
 from .a_i_application import AIApplication  # noqa: E402, F401
-
-AIModel.Attributes.update_forward_refs()
+from .a_i_model_version import AIModelVersion  # noqa: E402, F401

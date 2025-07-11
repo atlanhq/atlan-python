@@ -243,6 +243,7 @@ class AssetInfo:
         "NoSQL",
         "DocumentDBCollection",
         "FlowDataset",
+        "DatabricksAIModelVersion",
     }
 
     def __init__(self, name: str, entity_def: EntityDef):

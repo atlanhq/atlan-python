@@ -27,6 +27,7 @@ __all__ = [
     "Fivetran",
     "DataContract",
     "DataQuality",
+    "AI",
     "Resource",
     "FlowField",
     "DataMesh",
@@ -64,6 +65,9 @@ __all__ = [
     "MonteCarlo",
     "Metric",
     "Soda",
+    "AIApplication",
+    "AIModelVersion",
+    "AIModel",
     "Readme",
     "File",
     "Link",
@@ -79,8 +83,8 @@ __all__ = [
     "TablePartition",
     "Column",
     "SnowflakeStage",
-    "SnowflakeStream",
     "DatabricksUnityCatalogTag",
+    "SnowflakeStream",
     "Database",
     "CalculationView",
     "Procedure",
@@ -122,6 +126,10 @@ __all__ = [
     "MCIncident",
     "MCMonitor",
     "SodaCheck",
+    "DatabricksAIModelVersion",
+    "SnowflakeAIModelVersion",
+    "SnowflakeAIModelContext",
+    "DatabricksAIModelContext",
     "SnowflakeDynamicTable",
     "Task",
     "Form",
@@ -149,7 +157,6 @@ __all__ = [
     "Insight",
     "ObjectStore",
     "SaaS",
-    "AI",
     "MultiDimensionalDataset",
     "Custom",
     "API",
@@ -198,8 +205,6 @@ __all__ = [
     "Dataverse",
     "Cognite",
     "Salesforce",
-    "AIApplication",
-    "AIModel",
     "ReadmeTemplate",
     "Cube",
     "CubeHierarchy",
@@ -207,6 +212,8 @@ __all__ = [
     "CubeField",
     "CustomEntity",
     "BigqueryTag",
+    "Snowflake",
+    "Databricks",
     "APISpec",
     "APIQuery",
     "APIObject",
@@ -299,7 +306,9 @@ __all__ = [
     "MicroStrategyDocument",
     "MicroStrategyAttribute",
     "MicroStrategyVisualization",
+    "CognosColumn",
     "CognosExploration",
+    "CognosDataset",
     "CognosDashboard",
     "CognosReport",
     "CognosModule",
@@ -358,9 +367,6 @@ from .a_d_l_s import ADLS
 from .a_d_l_s_account import ADLSAccount
 from .a_d_l_s_container import ADLSContainer
 from .a_d_l_s_object import ADLSObject
-from .a_i import AI
-from .a_i_application import AIApplication
-from .a_i_model import AIModel
 from .a_p_i import API
 from .a_p_i_field import APIField
 from .a_p_i_object import APIObject
@@ -408,7 +414,9 @@ from .cognite_file import CogniteFile
 from .cognite_sequence import CogniteSequence
 from .cognite_time_series import CogniteTimeSeries
 from .cognos import Cognos
+from .cognos_column import CognosColumn
 from .cognos_dashboard import CognosDashboard
+from .cognos_dataset import CognosDataset
 from .cognos_datasource import CognosDatasource
 from .cognos_exploration import CognosExploration
 from .cognos_file import CognosFile
@@ -420,6 +428,10 @@ from .collection import Collection
 from .connection import Connection
 from .connection_process import ConnectionProcess
 from .core.a_d_f import ADF
+from .core.a_i import AI
+from .core.a_i_application import AIApplication
+from .core.a_i_model import AIModel
+from .core.a_i_model_version import AIModelVersion
 from .core.access_control import AccessControl
 from .core.adf_activity import AdfActivity
 from .core.adf_dataflow import AdfDataflow
@@ -455,6 +467,8 @@ from .core.data_mesh import DataMesh
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.database import Database
+from .core.databricks_a_i_model_context import DatabricksAIModelContext
+from .core.databricks_a_i_model_version import DatabricksAIModelVersion
 from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.dbt import Dbt
 from .core.dbt_metric import DbtMetric
@@ -527,6 +541,8 @@ from .core.s_q_l import SQL
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
+from .core.snowflake_a_i_model_context import SnowflakeAIModelContext
+from .core.snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable
 from .core.snowflake_pipe import SnowflakePipe
 from .core.snowflake_stage import SnowflakeStage
@@ -551,6 +567,7 @@ from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
+from .databricks import Databricks
 from .dataverse import Dataverse
 from .dataverse_attribute import DataverseAttribute
 from .dataverse_entity import DataverseEntity
@@ -674,6 +691,7 @@ from .sisense_datamodel import SisenseDatamodel
 from .sisense_datamodel_table import SisenseDatamodelTable
 from .sisense_folder import SisenseFolder
 from .sisense_widget import SisenseWidget
+from .snowflake import Snowflake
 from .source_tag import SourceTag
 from .superset import Superset
 from .superset_chart import SupersetChart

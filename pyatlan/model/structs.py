@@ -45,6 +45,19 @@ class AtlanObject(BaseModel):
         return values
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -59,19 +72,6 @@ class DbtJobRun(AtlanObject):
     dbt_model_run_status: Optional[str] = Field(default=None, description="")
     dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
-
-
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
 class AwsCloudWatchMetric(AtlanObject):
@@ -220,6 +220,23 @@ class KafkaTopicConsumption(AtlanObject):
     topic_partition: Optional[str] = Field(default=None, description="")
     topic_lag: Optional[int] = Field(default=None, description="")
     topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
+class DatabricksAIModelVersionMetric(AtlanObject):
+    """Description"""
+
+    databricks_a_i_model_version_metric_key: Optional[str] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_value: Optional[float] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_timestamp: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_step: Optional[int] = Field(
+        default=None, description=""
+    )
 
 
 class SourceTagAttachment(AtlanObject):
@@ -444,9 +461,9 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-DbtJobRun.update_forward_refs()
-
 MCRuleSchedule.update_forward_refs()
+
+DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
@@ -473,6 +490,8 @@ ResponseValue.update_forward_refs()
 FormField.update_forward_refs()
 
 KafkaTopicConsumption.update_forward_refs()
+
+DatabricksAIModelVersionMetric.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 

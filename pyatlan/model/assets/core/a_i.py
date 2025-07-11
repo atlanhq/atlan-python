@@ -19,7 +19,7 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .core.catalog import Catalog
+from .catalog import Catalog
 
 
 class AI(Catalog):
@@ -262,6 +262,3 @@ class AI(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-AI.Attributes.update_forward_refs()

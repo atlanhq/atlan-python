@@ -3,6 +3,10 @@
 from .referenceable import Referenceable  # isort: skip
 
 from .a_d_f import ADF
+from .a_i import AI
+from .a_i_application import AIApplication
+from .a_i_model import AIModel
+from .a_i_model_version import AIModelVersion
 from .access_control import AccessControl
 from .adf_activity import AdfActivity
 from .adf_dataflow import AdfDataflow
@@ -38,6 +42,8 @@ from .data_mesh import DataMesh
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .database import Database
+from .databricks_a_i_model_context import DatabricksAIModelContext
+from .databricks_a_i_model_version import DatabricksAIModelVersion
 from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
@@ -109,6 +115,8 @@ from .s_q_l import SQL
 from .schema import Schema
 from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
+from .snowflake_a_i_model_context import SnowflakeAIModelContext
+from .snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .snowflake_dynamic_table import SnowflakeDynamicTable
 from .snowflake_pipe import SnowflakePipe
 from .snowflake_stage import SnowflakeStage
@@ -153,6 +161,7 @@ Dbt.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
+AI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 FlowField.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
@@ -190,6 +199,9 @@ Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
+AIApplication.Attributes.update_forward_refs(**localns)
+AIModelVersion.Attributes.update_forward_refs(**localns)
+AIModel.Attributes.update_forward_refs(**localns)
 Readme.Attributes.update_forward_refs(**localns)
 File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
@@ -205,8 +217,8 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
-SnowflakeStream.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
+SnowflakeStream.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
@@ -248,4 +260,8 @@ AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)
 MCMonitor.Attributes.update_forward_refs(**localns)
 SodaCheck.Attributes.update_forward_refs(**localns)
+DatabricksAIModelVersion.Attributes.update_forward_refs(**localns)
+SnowflakeAIModelVersion.Attributes.update_forward_refs(**localns)
+SnowflakeAIModelContext.Attributes.update_forward_refs(**localns)
+DatabricksAIModelContext.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)

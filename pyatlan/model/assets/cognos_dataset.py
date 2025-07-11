@@ -13,19 +13,19 @@ from pyatlan.model.fields.atlan_fields import RelationField
 from .cognos import Cognos
 
 
-class CognosDashboard(Cognos):
+class CognosDataset(Cognos):
     """Description"""
 
-    type_name: str = Field(default="CognosDashboard", allow_mutation=False)
+    type_name: str = Field(default="CognosDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "CognosDashboard":
-            raise ValueError("must be CognosDashboard")
+        if v != "CognosDataset":
+            raise ValueError("must be CognosDataset")
         return v
 
     def __setattr__(self, name, value):
-        if name in CognosDashboard._convenience_properties:
+        if name in CognosDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -71,8 +71,8 @@ class CognosDashboard(Cognos):
             default=None, description=""
         )  # relationship
 
-    attributes: CognosDashboard.Attributes = Field(
-        default_factory=lambda: CognosDashboard.Attributes(),
+    attributes: CognosDataset.Attributes = Field(
+        default_factory=lambda: CognosDataset.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -84,4 +84,4 @@ class CognosDashboard(Cognos):
 from .cognos_column import CognosColumn  # noqa: E402, F401
 from .cognos_folder import CognosFolder  # noqa: E402, F401
 
-CognosDashboard.Attributes.update_forward_refs()
+CognosDataset.Attributes.update_forward_refs()

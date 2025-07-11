@@ -62,6 +62,10 @@ class CognosFolder(Cognos):
     """
     TBC
     """
+    COGNOS_DATASETS: ClassVar[RelationField] = RelationField("cognosDatasets")
+    """
+    TBC
+    """
     COGNOS_MODULES: ClassVar[RelationField] = RelationField("cognosModules")
     """
     TBC
@@ -83,6 +87,7 @@ class CognosFolder(Cognos):
         "cognos_dashboards",
         "cognos_sub_folders",
         "cognos_folder",
+        "cognos_datasets",
         "cognos_modules",
         "cognos_files",
         "cognos_explorations",
@@ -173,6 +178,16 @@ class CognosFolder(Cognos):
         self.attributes.cognos_folder = cognos_folder
 
     @property
+    def cognos_datasets(self) -> Optional[List[CognosDataset]]:
+        return None if self.attributes is None else self.attributes.cognos_datasets
+
+    @cognos_datasets.setter
+    def cognos_datasets(self, cognos_datasets: Optional[List[CognosDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cognos_datasets = cognos_datasets
+
+    @property
     def cognos_modules(self) -> Optional[List[CognosModule]]:
         return None if self.attributes is None else self.attributes.cognos_modules
 
@@ -226,6 +241,9 @@ class CognosFolder(Cognos):
         cognos_folder: Optional[CognosFolder] = Field(
             default=None, description=""
         )  # relationship
+        cognos_datasets: Optional[List[CognosDataset]] = Field(
+            default=None, description=""
+        )  # relationship
         cognos_modules: Optional[List[CognosModule]] = Field(
             default=None, description=""
         )  # relationship
@@ -247,6 +265,7 @@ class CognosFolder(Cognos):
 
 
 from .cognos_dashboard import CognosDashboard  # noqa: E402, F401
+from .cognos_dataset import CognosDataset  # noqa: E402, F401
 from .cognos_exploration import CognosExploration  # noqa: E402, F401
 from .cognos_file import CognosFile  # noqa: E402, F401
 from .cognos_module import CognosModule  # noqa: E402, F401
