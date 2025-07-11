@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -209,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/ai.html">AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aiapplication.html">AIApplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/aimodelversion.html">AIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apifield.html">APIField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apiobject.html">APIObject</a></li>
@@ -279,7 +280,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognoscolumn.html">CognosColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognosdataset.html">CognosDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdatasource.html">CognosDatasource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosexploration.html">CognosExploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosfile.html">CognosFile</a></li>
@@ -311,6 +314,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudioasset.html">DataStudioAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverseattribute.html">DataverseAttribute</a></li>
@@ -505,6 +511,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensefolder.html">SisenseFolder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakestage.html">SnowflakeStage</a></li>
@@ -624,7 +633,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -632,6 +641,60 @@
         <article role="main" id="furo-main-content">
           <section id="custom-metadata">
 <span id="id1"></span><h1>Custom metadata<a class="headerlink" href="#custom-metadata" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.custom_metadata.</span></span><span class="sig-name descname"><span class="pre">CustomMetadataDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict" title="Link to this definition">¶</a></dt>
+<dd><p>This class allows the manipulation of a set of custom metadata attributes using the human-readable names.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.business_attributes">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">business_attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.business_attributes" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dict containing the metadata set with the human-readable set name and property names resolved
+to their internal values</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.clear_all">
+<span class="sig-name descname"><span class="pre">clear_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataDict.clear_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.clear_all" title="Link to this definition">¶</a></dt>
+<dd><p>This method will set all the properties available explicitly to None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.clear_unset">
+<span class="sig-name descname"><span class="pre">clear_unset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataDict.clear_unset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.clear_unset" title="Link to this definition">¶</a></dt>
+<dd><p>This method will set all properties that haven’t been set to None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.get_deleted_sentinel">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_deleted_sentinel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict" title="pyatlan.model.custom_metadata.CustomMetadataDict"><span class="pre">CustomMetadataDict</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataDict.get_deleted_sentinel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.get_deleted_sentinel" title="Link to this definition">¶</a></dt>
+<dd><p>Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.is_set">
+<span class="sig-name descname"><span class="pre">is_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataDict.is_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.is_set" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a boolean indicating whether the given property has been set in the metadata set. The key
+will be validated to ensure that it’s a valid property name for this metadata set</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataDict.modified">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataDict.modified" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a boolean indicating whether the set has been modified from its initial values</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataProxy">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.custom_metadata.</span></span><span class="sig-name descname"><span class="pre">CustomMetadataProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../client.html#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">business_attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataProxy" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.custom_metadata.CustomMetadataRequest">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.custom_metadata.</span></span><span class="sig-name descname"><span class="pre">CustomMetadataRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">__root__</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/custom_metadata.html#CustomMetadataRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.custom_metadata.CustomMetadataRequest" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 
         </article>
@@ -677,8 +740,37 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Custom metadata</a><ul>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.business_attributes"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.business_attributes</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.clear_all"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.clear_all()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.clear_unset"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.clear_unset()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.get_deleted_sentinel"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.get_deleted_sentinel()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.is_set"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.is_set()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataDict.modified"><code class="docutils literal notranslate"><span class="pre">CustomMetadataDict.modified</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataProxy"><code class="docutils literal notranslate"><span class="pre">CustomMetadataProxy</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.custom_metadata.CustomMetadataRequest"><code class="docutils literal notranslate"><span class="pre">CustomMetadataRequest</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -209,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/ai.html">AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aiapplication.html">AIApplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/aimodelversion.html">AIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apifield.html">APIField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apiobject.html">APIObject</a></li>
@@ -279,7 +280,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognoscolumn.html">CognosColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognosdataset.html">CognosDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdatasource.html">CognosDatasource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosexploration.html">CognosExploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosfile.html">CognosFile</a></li>
@@ -311,6 +314,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudioasset.html">DataStudioAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverseattribute.html">DataverseAttribute</a></li>
@@ -505,6 +511,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensefolder.html">SisenseFolder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakestage.html">SnowflakeStage</a></li>
@@ -624,7 +633,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -632,6 +641,185 @@
         <article role="main" id="furo-main-content">
           <section id="numericfield">
 <span id="numeric-field"></span><h1>NumericField<a class="headerlink" href="#numericfield" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.fields.atlan_fields.</span></span><span class="sig-name descname"><span class="pre">NumericField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atlan_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numeric_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField" title="Link to this definition">¶</a></dt>
+<dd><p>Represents any field in Atlan that can be searched using only numeric search operations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.avg">
+<span class="sig-name descname"><span class="pre">avg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.avg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.avg" title="Link to this definition">¶</a></dt>
+<dd><p>Returns criteria to calculate the average value of the provided field across all results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.between">
+<span class="sig-name descname"><span class="pre">between</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.between"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.between" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value between the minimum and
+maximum specified values, inclusive.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.bucket_by">
+<span class="sig-name descname"><span class="pre">bucket_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_source_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Aggregation</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SortOrder</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.bucket_by" title="Link to this definition">¶</a></dt>
+<dd><p>Return criteria to bucket results based on the provided field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – the number of buckets to include results across, defaults to <cite>10</cite>.</p></li>
+<li><p><strong>include_source_value</strong> – whether to include the source value (<cite>True</cite>) or not (<cite>False</cite>)</p></li>
+<li><p><strong>nested</strong> – (optional) nested aggregations to include.</p></li>
+<li><p><strong>order</strong> – (optional) the order for the buckets.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>criteria to bucket results by the provided field,</p>
+</dd>
+</dl>
+<p>across a maximum number of buckets defined by the provided size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.eq">
+<span class="sig-name descname"><span class="pre">eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.eq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.eq" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that exactly
+matches the provided numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>value the numeric value to exactly match</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is exactly the numeric value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.gt">
+<span class="sig-name descname"><span class="pre">gt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.gt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.gt" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that is strictly
+greater than the provided numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – the numeric value to compare against</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is strictly greater than the numeric
+value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.gte">
+<span class="sig-name descname"><span class="pre">gte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.gte"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.gte" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that is greater
+than or equal to the provided numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – the numeric value to compare against</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is greater than or equal to the numeric
+value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.has_any_value">
+<span class="sig-name descname"><span class="pre">has_any_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.has_any_value" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will only match assets that have some non-null, non-empty value
+(no matter what actual value) for the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a query that will only match assets that have some non-null, non-empty value for the field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.in_lineage">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_lineage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">LineageFilterFieldNumeric</span></em><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.in_lineage" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a proxy which can be used a lineage filter with the appropriate subset of conditions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.lt">
+<span class="sig-name descname"><span class="pre">lt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.lt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.lt" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that is strictly
+less than the provided numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – the numeric value to compare against</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a value that will only match assets whose value for the field is strictly less than the numeric
+value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.lte">
+<span class="sig-name descname"><span class="pre">lte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictInt</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StrictFloat</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.lte"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.lte" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that is less
+than or equal to the provided numeric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – the numeric value to compare against</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is less than or equal to the numeric
+value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.max">
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.max" title="Link to this definition">¶</a></dt>
+<dd><p>Returns criteria to calculate the maximum value of the provided field across all results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.min">
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.min" title="Link to this definition">¶</a></dt>
+<dd><p>Returns criteria to calculate the minimum value of the provided field across all results.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.numeric_field_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">numeric_field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.numeric_field_name" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the name of the numeric field index for this attribute in Elastic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the field name for the numeric index on this attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.order">
+<span class="sig-name descname"><span class="pre">order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SortOrder</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SortOrder.ASCENDING</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SortItem</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.order" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a condition to sort results by the field, in the specified order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – in which to sort the results</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sort condition for the field, in the specified order</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.NumericField.sum">
+<span class="sig-name descname"><span class="pre">sum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#NumericField.sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.NumericField.sum" title="Link to this definition">¶</a></dt>
+<dd><p>Returns criteria to calculate the sum value of the provided field across all results.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -677,8 +865,44 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">NumericField</a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField"><code class="docutils literal notranslate"><span class="pre">NumericField</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.avg"><code class="docutils literal notranslate"><span class="pre">NumericField.avg()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.between"><code class="docutils literal notranslate"><span class="pre">NumericField.between()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.bucket_by"><code class="docutils literal notranslate"><span class="pre">NumericField.bucket_by()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.eq"><code class="docutils literal notranslate"><span class="pre">NumericField.eq()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.gt"><code class="docutils literal notranslate"><span class="pre">NumericField.gt()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.gte"><code class="docutils literal notranslate"><span class="pre">NumericField.gte()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.has_any_value"><code class="docutils literal notranslate"><span class="pre">NumericField.has_any_value()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.in_lineage"><code class="docutils literal notranslate"><span class="pre">NumericField.in_lineage</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.lt"><code class="docutils literal notranslate"><span class="pre">NumericField.lt()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.lte"><code class="docutils literal notranslate"><span class="pre">NumericField.lte()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.max"><code class="docutils literal notranslate"><span class="pre">NumericField.max()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.min"><code class="docutils literal notranslate"><span class="pre">NumericField.min()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.numeric_field_name"><code class="docutils literal notranslate"><span class="pre">NumericField.numeric_field_name</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.order"><code class="docutils literal notranslate"><span class="pre">NumericField.order()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.NumericField.sum"><code class="docutils literal notranslate"><span class="pre">NumericField.sum()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

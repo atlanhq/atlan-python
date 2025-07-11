@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -209,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/ai.html">AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aiapplication.html">AIApplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/aimodelversion.html">AIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apifield.html">APIField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apiobject.html">APIObject</a></li>
@@ -279,7 +280,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognoscolumn.html">CognosColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognosdataset.html">CognosDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdatasource.html">CognosDatasource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosexploration.html">CognosExploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosfile.html">CognosFile</a></li>
@@ -311,6 +314,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudioasset.html">DataStudioAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverseattribute.html">DataverseAttribute</a></li>
@@ -505,6 +511,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensefolder.html">SisenseFolder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakestage.html">SnowflakeStage</a></li>
@@ -624,7 +633,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -632,6 +641,35 @@
         <article role="main" id="furo-main-content">
           <section id="enumcache">
 <span id="enum-cache"></span><h1>EnumCache<a class="headerlink" href="#enumcache" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.cache.enum_cache.EnumCache">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.cache.enum_cache.</span></span><span class="sig-name descname"><span class="pre">EnumCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../client.html#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/cache/enum_cache.html#EnumCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.enum_cache.EnumCache" title="Link to this definition">¶</a></dt>
+<dd><p>Lazily-loaded cache for accessing details of an enumeration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.enum_cache.EnumCache.get_by_name">
+<span class="sig-name descname"><span class="pre">get_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../other_model/typedef.html#pyatlan.model.typedef.EnumDef" title="pyatlan.model.typedef.EnumDef"><span class="pre">EnumDef</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/enum_cache.html#EnumCache.get_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.enum_cache.EnumCache.get_by_name" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve the enumeration definition by its name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – human-readable name of the enumeration.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the enumeration with the given name does not exist.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>enumeration definition</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.enum_cache.EnumCache.refresh_cache">
+<span class="sig-name descname"><span class="pre">refresh_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/enum_cache.html#EnumCache.refresh_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.enum_cache.EnumCache.refresh_cache" title="Link to this definition">¶</a></dt>
+<dd><p>Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -677,8 +715,31 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">EnumCache</a><ul>
+<li><a class="reference internal" href="#pyatlan.cache.enum_cache.EnumCache"><code class="docutils literal notranslate"><span class="pre">EnumCache</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.cache.enum_cache.EnumCache.get_by_name"><code class="docutils literal notranslate"><span class="pre">EnumCache.get_by_name()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.cache.enum_cache.EnumCache.refresh_cache"><code class="docutils literal notranslate"><span class="pre">EnumCache.refresh_cache()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

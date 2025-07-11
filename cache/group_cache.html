@@ -209,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/ai.html">AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aiapplication.html">AIApplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/aimodelversion.html">AIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apifield.html">APIField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apiobject.html">APIObject</a></li>
@@ -279,7 +280,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognoscolumn.html">CognosColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognosdataset.html">CognosDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdatasource.html">CognosDatasource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosexploration.html">CognosExploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosfile.html">CognosFile</a></li>
@@ -311,6 +314,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudioasset.html">DataStudioAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverseattribute.html">DataverseAttribute</a></li>
@@ -505,6 +511,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensefolder.html">SisenseFolder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakestage.html">SnowflakeStage</a></li>
@@ -634,7 +643,7 @@
 <span id="group-cache"></span><h1>GroupCache<a class="headerlink" href="#groupcache" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyatlan.cache.group_cache.GroupCache">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.cache.group_cache.</span></span><span class="sig-name descname"><span class="pre">GroupCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtlanClient</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/cache/group_cache.html#GroupCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.group_cache.GroupCache" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.cache.group_cache.</span></span><span class="sig-name descname"><span class="pre">GroupCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../client.html#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/cache/group_cache.html#GroupCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.group_cache.GroupCache" title="Link to this definition">¶</a></dt>
 <dd><p>Lazily-loaded cache for translating Atlan-internal groups into their various IDs.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.cache.group_cache.GroupCache.get_id_for_alias">

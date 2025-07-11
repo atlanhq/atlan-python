@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -209,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/ai.html">AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aiapplication.html">AIApplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/aimodelversion.html">AIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/api.html">API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apifield.html">APIField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/apiobject.html">APIObject</a></li>
@@ -279,7 +280,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitesequence.html">CogniteSequence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognitetimeseries.html">CogniteTimeSeries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognoscolumn.html">CognosColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/cognosdataset.html">CognosDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosdatasource.html">CognosDatasource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosexploration.html">CognosExploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/cognosfile.html">CognosFile</a></li>
@@ -311,6 +314,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/datastudioasset.html">DataStudioAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/dataverseattribute.html">DataverseAttribute</a></li>
@@ -505,6 +511,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensefolder.html">SisenseFolder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asset/snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakepipe.html">SnowflakePipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../asset/snowflakestage.html">SnowflakeStage</a></li>
@@ -624,7 +633,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -632,6 +641,62 @@
         <article role="main" id="furo-main-content">
           <section id="atlantagcache">
 <span id="atlan-tag-cache"></span><h1>AtlanTagCache<a class="headerlink" href="#atlantagcache" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.cache.atlan_tag_cache.</span></span><span class="sig-name descname"><span class="pre">AtlanTagCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../client.html#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache" title="Link to this definition">¶</a></dt>
+<dd><p>Lazily-loaded cache for translating between Atlan-internal ID strings and human-readable names
+for Atlan tags.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_id_for_name">
+<span class="sig-name descname"><span class="pre">get_id_for_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.get_id_for_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_id_for_name" title="Link to this definition">¶</a></dt>
+<dd><p>Translate the provided human-readable Atlan tag name to its Atlan-internal ID string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – human-readable name of the Atlan tag</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Atlan-internal ID string of the Atlan tag</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_name_for_id">
+<span class="sig-name descname"><span class="pre">get_name_for_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idstr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.get_name_for_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_name_for_id" title="Link to this definition">¶</a></dt>
+<dd><p>Translate the provided Atlan-internal classification ID string to the human-readable Atlan tag name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>idstr</strong> – Atlan-internal ID string of the Atlan tag</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>human-readable name of the Atlan tag</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id">
+<span class="sig-name descname"><span class="pre">get_source_tags_attr_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.get_source_tags_attr_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id" title="Link to this definition">¶</a></dt>
+<dd><p>Translate the provided Atlan-internal Atlan tag ID string to the Atlan-internal name of the attribute that
+captures tag attachment details (for source-synced tags).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> – Atlan-internal ID string of the Atlan tag</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Atlan-internal ID string of the attribute containing source-synced tag attachment details</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache">
+<span class="sig-name descname"><span class="pre">refresh_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/cache/atlan_tag_cache.html#AtlanTagCache.refresh_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache" title="Link to this definition">¶</a></dt>
+<dd><p>Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -677,8 +742,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">AtlanTagCache</a><ul>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_id_for_name"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_id_for_name()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_name_for_id"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_name_for_id()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.get_source_tags_attr_id"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.get_source_tags_attr_id()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.cache.atlan_tag_cache.AtlanTagCache.refresh_cache"><code class="docutils literal notranslate"><span class="pre">AtlanTagCache.refresh_cache()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
