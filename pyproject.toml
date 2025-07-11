@@ -48,7 +48,7 @@ Issues = "https://github.com/atlanhq/atlan-python/issues"
 
 [project.optional-dependencies]
 dev = [
-    "mypy~=1.9.0",
+    "mypy>=1.9,<1.17",
     "ruff~=0.9.9",
     "types-requests~=2.31.0.6",
     "types-setuptools~=75.8.0.20250110",
