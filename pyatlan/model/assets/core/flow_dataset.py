@@ -45,6 +45,16 @@ class FlowDataset(Catalog):
     """
     Type of the ephemeral piece of data.
     """
+    FLOW_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "flowExpression", "flowExpression"
+    )
+    """
+    Logic that is applied, injected or otherwise used as part of producing this ephemeral piece of data.
+    """
+    FLOW_QUERY: ClassVar[KeywordField] = KeywordField("flowQuery", "flowQuery")
+    """
+    Query (e.g. SQL) that was run to produce this ephemeral piece of data.
+    """
     FLOW_STARTED_AT: ClassVar[NumericField] = NumericField(
         "flowStartedAt", "flowStartedAt"
     )
@@ -132,6 +142,8 @@ class FlowDataset(Catalog):
     _convenience_properties: ClassVar[List[str]] = [
         "flow_field_count",
         "flow_type",
+        "flow_expression",
+        "flow_query",
         "flow_started_at",
         "flow_finished_at",
         "flow_status",
@@ -169,6 +181,26 @@ class FlowDataset(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flow_type = flow_type
+
+    @property
+    def flow_expression(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.flow_expression
+
+    @flow_expression.setter
+    def flow_expression(self, flow_expression: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_expression = flow_expression
+
+    @property
+    def flow_query(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.flow_query
+
+    @flow_query.setter
+    def flow_query(self, flow_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_query = flow_query
 
     @property
     def flow_started_at(self) -> Optional[datetime]:
@@ -351,6 +383,8 @@ class FlowDataset(Catalog):
     class Attributes(Catalog.Attributes):
         flow_field_count: Optional[int] = Field(default=None, description="")
         flow_type: Optional[str] = Field(default=None, description="")
+        flow_expression: Optional[str] = Field(default=None, description="")
+        flow_query: Optional[str] = Field(default=None, description="")
         flow_started_at: Optional[datetime] = Field(default=None, description="")
         flow_finished_at: Optional[datetime] = Field(default=None, description="")
         flow_status: Optional[str] = Field(default=None, description="")

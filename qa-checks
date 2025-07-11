@@ -17,17 +17,17 @@ perform_check() {
 
 # Formatter
 ruff-formatter-check() {
-    perform_check "ruff format 🧹" "ruff format --check ." "ruff format ."
+    perform_check "ruff format 🧹" "uv run ruff format --check ." "uv run ruff format ."
 }
 
 # Linter
 ruff-linter-check() {
-    perform_check "ruff check 🕵️ " "ruff check --no-fix ." " ruff check  ."
+    perform_check "ruff check 🕵️ " "uv run ruff check --no-fix ." "uv run ruff check ."
 }
 
 # Static type checker
 mypy-check() {
-    perform_check "mypy 🐍" "mypy pyatlan tests" "mypy pyatlan tests"
+    perform_check "mypy 🐍" "uv run mypy pyatlan tests" "uv run mypy pyatlan tests"
 }
 
 ruff-formatter-check

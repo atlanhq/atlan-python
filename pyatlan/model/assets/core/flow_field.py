@@ -53,6 +53,12 @@ class FlowField(Catalog):
     """
     Type of the data captured in this field.
     """
+    FLOW_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "flowExpression", "flowExpression"
+    )
+    """
+    Logic that is applied, injected or otherwise used as part of producing this ephemeral field of data.
+    """
     FLOW_STARTED_AT: ClassVar[NumericField] = NumericField(
         "flowStartedAt", "flowStartedAt"
     )
@@ -133,6 +139,7 @@ class FlowField(Catalog):
         "flow_dataset_name",
         "flow_dataset_qualified_name",
         "flow_data_type",
+        "flow_expression",
         "flow_started_at",
         "flow_finished_at",
         "flow_status",
@@ -182,6 +189,16 @@ class FlowField(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flow_data_type = flow_data_type
+
+    @property
+    def flow_expression(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.flow_expression
+
+    @flow_expression.setter
+    def flow_expression(self, flow_expression: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_expression = flow_expression
 
     @property
     def flow_started_at(self) -> Optional[datetime]:
@@ -345,6 +362,7 @@ class FlowField(Catalog):
         flow_dataset_name: Optional[str] = Field(default=None, description="")
         flow_dataset_qualified_name: Optional[str] = Field(default=None, description="")
         flow_data_type: Optional[str] = Field(default=None, description="")
+        flow_expression: Optional[str] = Field(default=None, description="")
         flow_started_at: Optional[datetime] = Field(default=None, description="")
         flow_finished_at: Optional[datetime] = Field(default=None, description="")
         flow_status: Optional[str] = Field(default=None, description="")

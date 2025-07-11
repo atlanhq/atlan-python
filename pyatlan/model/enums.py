@@ -2721,6 +2721,9 @@ class FileType(str, Enum):
     JSON = "json"
     XML = "xml"
     ZIP = "zip"
+    YXDB = "yxdb"
+    XLSM = "xlsm"
+    HYPER = "hyper"
 
 
 class FivetranConnectorStatus(str, Enum):

@@ -95,17 +95,23 @@ def get_type(type_: str):
     return ret_value
 
 
-def get_type_defs() -> TypeDefResponse:
+def get_type_defs(typedefs_file_path=None) -> TypeDefResponse:
+    # Use provided path or default to tmp directory
+    if typedefs_file_path:
+        typedef_file = Path(typedefs_file_path)
+    else:
+        typedef_file = TYPE_DEF_FILE
+
     if (
-        not TYPE_DEF_FILE.exists()
-        or datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE))
+        not typedef_file.exists()
+        or datetime.date.fromtimestamp(os.path.getmtime(typedef_file))
         < datetime.date.today()
     ):
         raise ClassGenerationError(
             "File containing typedefs does not exist or is not current."
-            f" Please run create_typedefs_file to create {TYPE_DEF_FILE}."
+            f" Please run create_typedefs_file to create {typedef_file}."
         )
-    with TYPE_DEF_FILE.open() as input_file:
+    with typedef_file.open() as input_file:
         return TypeDefResponse(**json.load(input_file))
 
 
@@ -237,6 +243,7 @@ class AssetInfo:
         "NoSQL",
         "DocumentDBCollection",
         "FlowDataset",
+        "DatabricksAIModelVersion",
     }
 
     def __init__(self, name: str, entity_def: EntityDef):
@@ -982,7 +989,19 @@ def filter_attributes_of_custom_entity_type():
 
 
 if __name__ == "__main__":
-    type_defs = get_type_defs()
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Generate Atlan SDK classes from typedefs"
+    )
+    parser.add_argument(
+        "--typedefs-file",
+        type=str,
+        help="Path to the typedefs file (default: /tmp/typedefs.json or $TMPDIR/typedefs.json)",
+    )
+    args = parser.parse_args()
+
+    type_defs = get_type_defs(args.typedefs_file)
     filter_attributes_of_custom_entity_type()
     AssetInfo.sub_type_names_to_ignore = type_defs.custom_entity_def_names
     AssetInfo.set_entity_defs(type_defs.reserved_entity_defs)

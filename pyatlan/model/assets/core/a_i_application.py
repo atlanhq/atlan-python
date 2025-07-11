@@ -116,5 +116,3 @@ class AIApplication(AI):
 
 
 from .a_i_model import AIModel  # noqa: E402, F401
-
-AIApplication.Attributes.update_forward_refs()

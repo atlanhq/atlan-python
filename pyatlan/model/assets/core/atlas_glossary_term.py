@@ -187,7 +187,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """
     TERM_TYPE: ClassVar[KeywordField] = KeywordField("termType", "termType")
     """
-    TBC
+
     """
 
     VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")

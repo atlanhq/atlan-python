@@ -16,6 +16,7 @@ You can interact with all of the following different kinds of assets:
     asset/ai
     asset/aiapplication
     asset/aimodel
+    asset/aimodelversion
     asset/api
     asset/apifield
     asset/apiobject
@@ -86,7 +87,9 @@ You can interact with all of the following different kinds of assets:
     asset/cognitesequence
     asset/cognitetimeseries
     asset/cognos
+    asset/cognoscolumn
     asset/cognosdashboard
+    asset/cognosdataset
     asset/cognosdatasource
     asset/cognosexploration
     asset/cognosfile
@@ -118,6 +121,9 @@ You can interact with all of the following different kinds of assets:
     asset/datastudio
     asset/datastudioasset
     asset/database
+    asset/databricks
+    asset/databricksaimodelcontext
+    asset/databricksaimodelversion
     asset/databricksunitycatalogtag
     asset/dataverse
     asset/dataverseattribute
@@ -312,6 +318,9 @@ You can interact with all of the following different kinds of assets:
     asset/sisensedatamodeltable
     asset/sisensefolder
     asset/sisensewidget
+    asset/snowflake
+    asset/snowflakeaimodelcontext
+    asset/snowflakeaimodelversion
     asset/snowflakedynamictable
     asset/snowflakepipe
     asset/snowflakestage

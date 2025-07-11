@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Combined generator script for Atlan Python SDK
+# This script runs both create_typedefs_file.py and class_generator.py
+# It intelligently skips creating typedefs if they already exist and are current
+
+# Usage: ./generator [typedefs_file_path]
+# If typedefs_file_path is not provided, defaults to /tmp/typedefs.json
+
+echo "🚀 Starting Atlan Python SDK code generation..."
+
+# Check if ATLAN_BASE_URL and ATLAN_API_KEY are set
+if [ -z "$ATLAN_BASE_URL" ] || [ -z "$ATLAN_API_KEY" ]; then
+    echo "❌ Error: ATLAN_BASE_URL and ATLAN_API_KEY environment variables must be set."
+    echo "Please set these variables before running the generator:"
+    echo "  export ATLAN_BASE_URL='https://your-atlan-instance.com'"
+    echo "  export ATLAN_API_KEY='your-api-key'"
+    exit 1
+fi
+
+# Get the typedefs file path from command line argument or use default
+if [ -n "$1" ]; then
+    TYPE_DEF_FILE="$1"
+    echo "📁 Using custom typedefs file: $TYPE_DEF_FILE"
+else
+    TMPDIR=${TMPDIR:-/tmp}
+    TYPE_DEF_FILE="$TMPDIR/typedefs.json"
+    echo "📁 Using default typedefs file: $TYPE_DEF_FILE"
+fi
+
+# Check if typedefs file exists and is current (created today)
+SHOULD_CREATE_TYPEDEFS=true
+if [ -f "$TYPE_DEF_FILE" ]; then
+    # Check if file was created today
+    if [ "$(date -r "$TYPE_DEF_FILE" +%Y-%m-%d)" = "$(date +%Y-%m-%d)" ]; then
+        echo "✅ Typedefs file already exists and is current: $TYPE_DEF_FILE"
+        SHOULD_CREATE_TYPEDEFS=false
+    else
+        echo "⏰ Typedefs file exists but is not current, will recreate it"
+    fi
+else
+    echo "📄 Typedefs file does not exist, will create it"
+fi
+
+# Step 1: Create typedefs file if needed
+if [ "$SHOULD_CREATE_TYPEDEFS" = true ]; then
+    echo "🔄 Running create_typedefs_file.py..."
+    if uv run python pyatlan/generator/create_typedefs_file.py --typedefs-file "$TYPE_DEF_FILE"; then
+        echo "✅ Typedefs file created successfully"
+    else
+        echo "❌ Failed to create typedefs file"
+        exit 1
+    fi
+else
+    echo "⏭️  Skipping typedefs creation (file is current)"
+fi
+
+# Step 2: Run class generator
+echo "🔄 Running class_generator.py..."
+if uv run python pyatlan/generator/class_generator.py --typedefs-file "$TYPE_DEF_FILE"; then
+    echo "✅ Class generation completed successfully"
+else
+    echo "❌ Class generation failed"
+    exit 1
+fi
+
+# Step 3: Format the generated code
+echo "🎨 Formatting generated code..."
+if uv run ./formatter; then
+    echo "✅ Code formatting completed"
+else
+    echo "⚠️  Code formatting had issues, but generation completed"
+fi
+
+echo "🎉 SDK code generation completed successfully!"
+echo "📁 Generated files are in: pyatlan/model/assets/"

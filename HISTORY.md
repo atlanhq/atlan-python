@@ -1,3 +1,14 @@
+## 7.1.2 (July 11, 2025)
+
+### QOL Improvements
+
+- Fixed `suggestions_test` integration test.
+- Generated latest typedefs models.
+- Updated Dockerfile to use `python:3.11-slim`.
+- Migrated SDK to use [`uv`](https://docs.astral.sh/uv) for development, building, and publishing the SDK.
+- Added `delete_type:HARD` optional parameter to `AssetClient.purge_by_guid()` method.
+- Made `FluentSearch` usage in `get_by_*()` methods consistent with `GET` API (return `active` and `archived` assets).
+
 ## 7.1.1 (June 30, 2025)
 
 ### QOL Improvements
