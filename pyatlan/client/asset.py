@@ -858,7 +858,7 @@ class AssetClient:
             asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
             if asset.status == EntityStatus.DELETED:
                 return
-        except httpx.RetryError as err:
+        except httpx.TransportError as err:
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
 
     @validate_arguments
