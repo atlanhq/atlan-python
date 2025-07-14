@@ -1848,7 +1848,7 @@ class AtlanClient(BaseSettings):
         finally:
             # Restore original transport
             self._session._transport = current_transport
-            LOGGER.debug("max_retries restored %s", self._session._transport.retry)
+            LOGGER.debug("max_retries restored %s", self._session._transport.retry)  # type: ignore[attr-defined]
 
 
 @contextlib.contextmanager
