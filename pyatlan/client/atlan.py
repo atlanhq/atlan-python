@@ -17,7 +17,8 @@ from typing import Any, Dict, Generator, List, Literal, Optional, Set, Type, Uni
 from urllib.parse import urljoin
 from warnings import warn
 
-import requests
+import httpx
+from httpx_retries import Retry, RetryTransport
 from pydantic.v1 import (
     BaseSettings,
     HttpUrl,
@@ -26,8 +27,6 @@ from pydantic.v1 import (
     constr,
     validate_arguments,
 )
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache
@@ -40,7 +39,7 @@ from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
-from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
+from pyatlan.client.common import CONNECTION_RETRY
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.contract import ContractClient
 from pyatlan.client.credential import CredentialClient
@@ -108,7 +107,6 @@ DEFAULT_RETRY = Retry(
     backoff_factor=1,
     status_forcelist=[403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
-    raise_on_status=False,
     # When response.status is in `status_forcelist`
     # and the "Retry-After" header is present, the retry mechanism
     # will use the header's value to delay the next API call.
@@ -123,20 +121,6 @@ def log_response(response, *args, **kwargs):
     LOGGER.debug("URL: %s", response.request.url)
 
 
-def get_session():
-    session = requests.session()
-    session.headers.update(
-        {
-            "x-atlan-agent": "sdk",
-            "x-atlan-agent-id": "python",
-            "x-atlan-client-origin": "product_sdk",
-            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-        }
-    )
-    session.hooks["response"].append(log_response)
-    return session
-
-
 class AtlanClient(BaseSettings):
     base_url: Union[Literal["INTERNAL"], HttpUrl]
     api_key: str
@@ -144,7 +128,7 @@ class AtlanClient(BaseSettings):
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
     _401_has_retried: ContextVar[bool] = ContextVar("_401_has_retried", default=False)
-    _session: requests.Session = PrivateAttr(default_factory=get_session)
+    _session: httpx.Client = PrivateAttr(default_factory=lambda: httpx.Client())
     _request_params: dict = PrivateAttr()
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
@@ -184,10 +168,17 @@ class AtlanClient(BaseSettings):
                 "authorization": f"Bearer {self.api_key}",
             }
         }
-        session = self._session
-        adapter = HTTPAdapter(max_retries=self.retry)
-        session.mount(HTTPS_PREFIX, adapter)
-        session.mount(HTTP_PREFIX, adapter)
+        # Configure httpx client with retry transport
+        self._session = httpx.Client(
+            transport=RetryTransport(retry=self.retry),
+            headers={
+                "x-atlan-agent": "sdk",
+                "x-atlan-agent-id": "python",
+                "x-atlan-client-origin": "product_sdk",
+                "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+            },
+            event_hooks={"response": [log_response]},
+        )
         self._401_has_retried.set(False)
 
     @property
@@ -371,13 +362,16 @@ class AtlanClient(BaseSettings):
         token = request_id_var.set(str(uuid.uuid4()))
         try:
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
+            timeout = httpx.Timeout(
+                None, connect=self.connect_timeout, read=self.read_timeout
+            )
             if binary_data:
                 response = self._session.request(
                     api.method.value,
                     path,
                     data=binary_data,
                     **params,
-                    timeout=(self.connect_timeout, self.read_timeout),
+                    timeout=timeout,
                 )
             elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                 response = self._session.request(
@@ -385,7 +379,7 @@ class AtlanClient(BaseSettings):
                     path,
                     **params,
                     stream=True,
-                    timeout=(self.connect_timeout, self.read_timeout),
+                    timeout=timeout,
                 )
                 if download_file_path:
                     return self._handle_file_download(response.raw, download_file_path)
@@ -394,7 +388,7 @@ class AtlanClient(BaseSettings):
                     api.method.value,
                     path,
                     **params,
-                    timeout=(self.connect_timeout, self.read_timeout),
+                    timeout=timeout,
                 )
             if response is not None:
                 LOGGER.debug("HTTP Status: %s", response.status_code)
@@ -460,10 +454,7 @@ class AtlanClient(BaseSettings):
                         )
                     LOGGER.debug("response: %s", response_)
                     return response_
-                except (
-                    requests.exceptions.JSONDecodeError,
-                    json.decoder.JSONDecodeError,
-                ) as e:
+                except (json.decoder.JSONDecodeError,) as e:
                     raise ErrorCode.JSON_ERROR.exception_with_parameters(
                         response.text, response.status_code, str(e)
                     ) from e
@@ -1760,12 +1751,11 @@ class AtlanClient(BaseSettings):
     ) -> Generator[None, None, None]:
         """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
         The original Retry information will be restored when the context is exited."""
-        if self.base_url == "INTERNAL":
-            adapter = self._session.adapters[HTTP_PREFIX]
-        else:
-            adapter = self._session.adapters[HTTPS_PREFIX]
-        current_max = adapter.max_retries  # type: ignore[attr-defined]
-        adapter.max_retries = max_retries  # type: ignore[attr-defined]
+        # Store current transport and create new one with updated retries
+        current_transport = self._session._transport
+        new_transport = RetryTransport(retry=max_retries)
+        self._session._transport = new_transport
+
         LOGGER.debug(
             "max_retries set to total: %s force_list: %s",
             max_retries.total,
@@ -1775,16 +1765,13 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Entering max_retries")
             yield None
             LOGGER.debug("Exiting max_retries")
-        except requests.exceptions.RetryError as err:
+        except httpx.TransportError as err:
             LOGGER.exception("Exception in max retries")
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
-            adapter.max_retries = current_max  # type: ignore[attr-defined]
-            LOGGER.debug(
-                "max_retries restored to total: %s force_list: %s",
-                adapter.max_retries.total,  # type: ignore[attr-defined]
-                adapter.max_retries.status_forcelist,  # type: ignore[attr-defined]
-            )
+            # Restore original transport
+            self._session._transport = current_transport
+            LOGGER.debug("max_retries restored %s", self._session._transport.retry)
 
 
 @contextlib.contextmanager

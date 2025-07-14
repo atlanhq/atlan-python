@@ -7,9 +7,9 @@ from time import sleep, time
 from typing import Generator, Set
 from unittest.mock import patch
 
+import httpx
 import pytest
-import requests.exceptions
-from urllib3 import Retry
+from httpx_retries import Retry
 
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
@@ -847,8 +847,8 @@ def test_read_timeout(client: AtlanClient):
         client=client, read_timeout=0.1, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
-            requests.exceptions.ReadTimeout,
-            match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
+            httpx.ReadTimeout,
+            match="The read operation timed out",
         ):
             timed_client.asset.search(criteria=request)
 
@@ -859,7 +859,7 @@ def test_connect_timeout(client: AtlanClient):
         client=client, connect_timeout=0.0001, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
-            requests.exceptions.ConnectionError,
-            match=".(timed out\. \(connect timeout=0\.0001\))|(Failed to establish a new connection.)",  # noqa W605
+            httpx.ConnectTimeout,
+            match="timed out",
         ):
             timed_client.asset.search(criteria=request)

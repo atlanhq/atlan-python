@@ -25,7 +25,7 @@ from typing import (
 )
 from warnings import warn
 
-import requests
+import httpx
 from pydantic.v1 import (
     StrictStr,
     ValidationError,
@@ -858,7 +858,7 @@ class AssetClient:
             asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
             if asset.status == EntityStatus.DELETED:
                 return
-        except requests.exceptions.RetryError as err:
+        except httpx.RetryError as err:
             raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
 
     @validate_arguments
