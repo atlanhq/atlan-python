@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Generator, Protocol, runtime_checkable
 
-from urllib3.util.retry import Retry
+from httpx_retries import Retry
 
 HTTPS_PREFIX = "https://"
 HTTP_PREFIX = "http://"
