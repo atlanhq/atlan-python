@@ -37,7 +37,7 @@ jobs:
               GHSA-pq67-6m6q-mj2v
             summary: true
             vulnerability-service: osv
-            inputs: requirements.txt requirements-dev.txt
+            inputs: .
 
   qa-checks-and-unit-tests:
     needs: [vulnerability-scan]
