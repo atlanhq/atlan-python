@@ -341,9 +341,9 @@ class AtlanClient(BaseSettings):
 
     def _handle_file_download(self, raw_response: Any, file_path: str) -> str:
         try:
-            download_file = open(file_path, "wb")
-            for chunk in raw_response:
-                download_file.write(chunk)
+            with open(file_path, "wb") as download_file:
+                for chunk in raw_response:
+                    download_file.write(chunk)
         except Exception as err:
             raise ErrorCode.UNABLE_TO_DOWNLOAD_FILE.exception_with_parameters(
                 str((hasattr(err, "strerror") and err.strerror) or err), file_path
