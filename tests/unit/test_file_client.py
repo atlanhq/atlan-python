@@ -79,7 +79,22 @@ def mock_session():
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.raw = open(UPLOAD_FILE_PATH, "rb")
-        mock_session.request.return_value = mock_response
+        mock_response.headers = {}
+
+        # Mock the methods our streaming code expects
+        mock_response.read.return_value = b"test content"
+
+        def mock_iter_raw(chunk_size=None):
+            # Use the actual expected content from upload.txt
+            content = b"test data 12345.\n"
+            yield content
+
+        mock_response.iter_raw = mock_iter_raw
+
+        # Use Mock's context manager support
+        mock_session.stream.return_value.__enter__.return_value = mock_response
+        mock_session.stream.return_value.__exit__.return_value = None
+
         yield mock_session
     assert os.path.exists(DOWNLOAD_FILE_PATH)
     os.remove(DOWNLOAD_FILE_PATH)
@@ -91,10 +106,34 @@ def mock_session_invalid():
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.raw = "not a bytes-like object"
-        mock_session.request.return_value = mock_response
+        mock_response.headers = {}
+
+        # Mock the methods our streaming code expects
+        mock_response.read.return_value = b"test content"
+
+        def mock_iter_raw(chunk_size=None):
+            # Return a generator that will fail during iteration
+            # This simulates a case where the response object is invalid
+            class BadIterator:
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    # Simulate the error that would happen in real scenario
+                    raise AttributeError("'str' object has no attribute 'read'")
+
+            return BadIterator()
+
+        mock_response.iter_raw = mock_iter_raw
+
+        # Use Mock's context manager support
+        mock_session.stream.return_value.__enter__.return_value = mock_response
+        mock_session.stream.return_value.__exit__.return_value = None
+
         yield mock_session
-    assert os.path.exists(DOWNLOAD_FILE_PATH)
-    os.remove(DOWNLOAD_FILE_PATH)
+    # Don't assert file exists for invalid case since error should prevent creation
+    if os.path.exists(DOWNLOAD_FILE_PATH):
+        os.remove(DOWNLOAD_FILE_PATH)
 
 
 @pytest.mark.parametrize("method, params", TEST_FILE_CLIENT_METHODS.items())
@@ -200,7 +239,7 @@ def test_file_client_download_file(client, s3_presigned_url, mock_session):
         presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
     )
     assert response == DOWNLOAD_FILE_PATH
-    assert mock_session.request.call_count == 1
+    assert mock_session.stream.call_count == 1
     # The file should exist after calling the method
     assert os.path.exists(DOWNLOAD_FILE_PATH)
     assert open(DOWNLOAD_FILE_PATH, "r").read() == "test data 12345.\n"
