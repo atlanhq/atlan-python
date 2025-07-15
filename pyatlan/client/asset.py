@@ -25,7 +25,6 @@ from typing import (
 )
 from warnings import warn
 
-import httpx
 from pydantic.v1 import (
     StrictStr,
     ValidationError,
@@ -33,7 +32,13 @@ from pydantic.v1 import (
     parse_obj_as,
     validate_arguments,
 )
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
+from tenacity import (
+    RetryError,
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_fixed,
+)
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
@@ -844,7 +849,10 @@ class AssetClient:
         )
         response = AssetMutationResponse(**raw_json)
         for asset in response.assets_deleted(asset_type=Asset):
-            self._wait_till_deleted(asset)
+            try:
+                self._wait_till_deleted(asset)
+            except RetryError as err:
+                raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         return response
 
     @retry(
@@ -854,12 +862,9 @@ class AssetClient:
         wait=wait_fixed(1),
     )
     def _wait_till_deleted(self, asset: Asset):
-        try:
-            asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
-            if asset.status == EntityStatus.DELETED:
-                return
-        except httpx.TransportError as err:
-            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
+        asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
+        if asset.status == EntityStatus.DELETED:
+            return
 
     @validate_arguments
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
