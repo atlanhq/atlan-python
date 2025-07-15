@@ -10,6 +10,7 @@ from unittest.mock import patch
 import httpx
 import pytest
 from httpx_retries import Retry
+from pydantic.v1 import HttpUrl
 
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
@@ -854,12 +855,15 @@ def test_read_timeout(client: AtlanClient):
 
 
 def test_connect_timeout(client: AtlanClient):
-    request = (FluentSearch().select()).to_request()
+    request = FluentSearch().select().to_request()
+
+    # Use a non-routable IP that will definitely timeout
+    # 192.0.2.1 is reserved for documentation/testing
     with client_connection(
-        client=client, connect_timeout=0.0001, retry=Retry(total=0)
+        client=client,
+        base_url=HttpUrl("http://192.0.2.1:80", scheme="http"),  # Non-routable test IP
+        connect_timeout=0.001,
+        retry=Retry(total=1),
     ) as timed_client:
-        with pytest.raises(
-            httpx.ConnectTimeout,
-            match="timed out",
-        ):
+        with pytest.raises(httpx.ConnectTimeout):
             timed_client.asset.search(criteria=request)

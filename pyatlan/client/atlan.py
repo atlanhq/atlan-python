@@ -7,8 +7,6 @@ import contextlib
 import copy
 import json
 import logging
-import os
-import shutil
 import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
@@ -130,7 +128,7 @@ class AtlanClient(BaseSettings):
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
     _401_has_retried: ContextVar[bool] = ContextVar("_401_has_retried", default=False)
-    _session: httpx.Client = PrivateAttr(default_factory=lambda: httpx.Client())
+    _session: httpx.Client = PrivateAttr()
     _request_params: dict = PrivateAttr()
     _user_id: Optional[str] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
@@ -173,7 +171,7 @@ class AtlanClient(BaseSettings):
                 "authorization": f"Bearer {self.api_key}",
             }
         }
-        # Configure httpx client with retry transport
+        # Configure httpx client with the provided retry settings
         self._session = httpx.Client(
             transport=RetryTransport(retry=self.retry),
             headers={
@@ -419,8 +417,9 @@ class AtlanClient(BaseSettings):
 
     def _handle_file_download(self, raw_response: Any, file_path: str) -> str:
         try:
-            download_file = open(file_path, "wb")
-            shutil.copyfileobj(raw_response, download_file)
+            with open(file_path, "wb") as download_file:
+                for chunk in raw_response:
+                    download_file.write(chunk)
         except Exception as err:
             raise ErrorCode.UNABLE_TO_DOWNLOAD_FILE.exception_with_parameters(
                 str((hasattr(err, "strerror") and err.strerror) or err), file_path
@@ -451,15 +450,49 @@ class AtlanClient(BaseSettings):
                     timeout=timeout,
                 )
             elif api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
-                response = self._session.request(
+                with self._session.stream(
                     api.method.value,
                     path,
                     **params,
-                    stream=True,
                     timeout=timeout,
-                )
-                if download_file_path:
-                    return self._handle_file_download(response.raw, download_file_path)
+                ) as stream_response:
+                    if download_file_path:
+                        return self._handle_file_download(
+                            stream_response.iter_raw(), download_file_path
+                        )
+
+                    # For event streams, we need to read the content while the stream is open
+                    # Store the response data and create a mock response object for common processing
+                    content = stream_response.read()
+                    text = content.decode("utf-8") if content else ""
+                    lines = []
+
+                    # Only process lines for successful responses to avoid errors on error responses
+                    if stream_response.status_code == api.expected_status:
+                        # Reset stream position and get lines
+                        lines = text.splitlines() if text else []
+
+                    response_data = {
+                        "status_code": stream_response.status_code,
+                        "headers": stream_response.headers,
+                        "text": text,
+                        "content": content,
+                        "lines": lines,
+                    }
+
+                    # Create a simple namespace object to mimic the response interface
+                    response = SimpleNamespace(
+                        status_code=response_data["status_code"],
+                        headers=response_data["headers"],
+                        text=response_data["text"],
+                        content=response_data["content"],
+                        _stream_lines=response_data[
+                            "lines"
+                        ],  # Store lines for event processing
+                        json=lambda: json.loads(response_data["text"])
+                        if response_data["text"]
+                        else {},
+                    )
             else:
                 response = self._session.request(
                     api.method.value,
@@ -506,14 +539,16 @@ class AtlanClient(BaseSettings):
                             response,
                         )
                     if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
-                        for line in response.iter_lines(decode_unicode=True):
-                            if not line:
-                                continue
-                            if not line.startswith("data: "):
-                                raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
-                                    line
-                                )
-                            events.append(json.loads(line.split("data: ")[1]))
+                        # Process event stream using stored lines from the streaming response
+                        if hasattr(response, "_stream_lines"):
+                            for line in response._stream_lines:
+                                if not line:
+                                    continue
+                                if not line.startswith("data: "):
+                                    raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
+                                        line
+                                    )
+                                events.append(json.loads(line.split("data: ")[1]))
                     if text_response:
                         response_ = response.text
                     else:
