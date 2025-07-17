@@ -504,7 +504,7 @@ class AttributeDef(AtlanObject):
 
         def __setattr__(self, name, value):
             super().__setattr__(name, value)
-            if self._attr_def and name == "multi_value_select":
+            if self._attr_def and name == "multi_value_select" and value is True:
                 self._attr_def.cardinality = Cardinality.SET
                 if self._attr_def.type_name and "array<" not in str(
                     self._attr_def.type_name

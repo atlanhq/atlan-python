@@ -16,6 +16,7 @@ from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCate
 from pyatlan.model.typedef import (
     AtlanTagDef,
     AttributeDef,
+    Cardinality,
     CustomMetadataDef,
     EntityDef,
     EnumDef,
@@ -442,4 +443,34 @@ class TestAttributeDef:
             ) == applicable_kwargs.get(attribute)
             assert getattr(options, attribute) == json.dumps(
                 list(applicable_kwargs.get(attribute))  # type: ignore[arg-type]
+            )
+
+    def test_multi_value_select_setter_condition(self, client: AtlanClient):
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Test Attribute",
+                attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            )
+
+            assert attr_def.options is not None
+            assert attr_def.options.multi_value_select is False
+            assert attr_def.cardinality == Cardinality.SINGLE
+            assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+
+            # Test 1: Setting multi_value_select to False should NOT trigger __setattr__ logic
+            attr_def.options.multi_value_select = False
+
+            assert attr_def.cardinality == Cardinality.SINGLE
+            assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+
+            # Test 2: Setting multi_value_select to True should trigger __setattr__ logic
+            attr_def.options.multi_value_select = True
+
+            assert attr_def.cardinality == Cardinality.SET
+            assert (
+                attr_def.type_name
+                == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
             )
