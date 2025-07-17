@@ -11,7 +11,7 @@ jobs:
       matrix:
         # Specify version as a string
         # https://github.com/actions/setup-python/issues/160"
-        python-version: ["3.8", "3.12", "3.13"]
+        python-version: ["3.9", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -37,7 +37,7 @@ jobs:
               GHSA-pq67-6m6q-mj2v
             summary: true
             vulnerability-service: osv
-            inputs: requirements.txt requirements-dev.txt
+            inputs: .
 
   qa-checks-and-unit-tests:
     needs: [vulnerability-scan]
@@ -48,7 +48,7 @@ jobs:
       matrix:
         # Specify version as a string
         # https://github.com/actions/setup-python/issues/160"
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
