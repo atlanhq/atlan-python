@@ -1,193 +1,210 @@
-<!-- SPDX-License-Identifier: CC-BY-4.0 -->
-<!-- Copyright 2022 Atlan Pte. Ltd. -->
+<div align="center">
 
-[![SphinxDocs](https://img.shields.io/badge/sphinx--docs-passing-success)](https://atlanhq.github.io/atlan-python/)
+<img src="https://github.com/user-attachments/assets/38243809-d723-4464-8f1c-4869795ea0c8" alt="pyatlan Logo" width="300">
 
-# Atlan Python SDK
+**The official Python SDK for the Atlan 💙**
 
-This repository houses the code for a Python SDK to interact with [Atlan](https://atlan.com).
+[![PyPI version](https://img.shields.io/pypi/v/pyatlan.svg)](https://pypi.org/project/pyatlan/)
+[![Python versions](https://img.shields.io/pypi/pyversions/pyatlan.svg)](https://pypi.org/project/pyatlan/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Downloads](https://img.shields.io/pypi/dm/pyatlan.svg)](https://pypi.org/project/pyatlan/)
+[![Build Status](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-pr.yaml/badge.svg)](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-pr.yaml)
+[![Documentation](https://img.shields.io/badge/docs-developer.atlan.com-blue.svg)](https://developer.atlan.com/getting-started/python-sdk/)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fatlanhq%2Fatlan--python-blue.svg)](https://github.com/atlanhq/atlan-python/pkgs/container/atlan-python)
 
-## [Documentation](https://developer.atlan.com/getting-started/python-sdk/)
+---
 
-[https://developer.atlan.com/getting-started/python-sdk/](https://developer.atlan.com/getting-started/python-sdk/)
+[**📖 Documentation**](https://developer.atlan.com/getting-started/python-sdk/) •
+[**🐳 Docker**](#-docker) •
+[**🤝 Contributing**](#-contributing)
 
-## Installing for Development
+</div>
 
-### Initial Setup
-To get started developing the SDK:
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
+## 📊 Project Stats
 
-2. Ensure you have Python 3.8 or later installed. You can verify your Python version with:
-   ```bash
-   python --version
-   ```
-   or
-   ```bash
-   python3 --version
-   ```
+- 🐍 **Python Versions**: 3.8, 3.9, 3.10, 3.11, 3.12, 3.13
+- 📦 **Package Size**: Optimized for fast installation
+- 🚀 **Performance**: Built with modern async/await support
+- 🔧 **Dependencies**: Minimal, modern stack
+- 📈 **Stability**: Production-ready
 
-3. Set up a virtual environment for development:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On macOS/Linux
-   venv\Scripts\activate     # On Windows
-   ```
+## 📦 Installation
 
-4. Install the required dependencies:
-   ```bash
-   # Install dependencies using uv
-   uv sync --extra dev
-   ```
-
-### Code Formatting
-Before committing code, ensure it adheres to the repository's formatting guidelines. You can apply the required formatting using the below command:
+### Production Use
 
 ```bash
-uv run ./formatter
+# Latest stable version
+pip install pyatlan
+
+# Specific version
+pip install pyatlan==7.1.3
+
+# With uv (faster) - install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh
+uv add pyatlan
 ```
 
-### Environment Setup
-For running integration tests, you'll need to configure your environment:
-
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
-2. Update the `.env` file with your Atlan API key and base URL.
-3. Load the environment variables:
-    - For macOS/Linux:
-      ```bash
-      export $(cat .env | xargs)
-      ```
-    - For Windows (PowerShell): Load environment variables
-      ```powershell
-      # Run this in PowerShell (not Command Prompt)
-      Get-Content .env | ForEach-Object {
-       if ($_ -match '^(.*?)=(.*)$') {
-        $env:($matches[1]) = $matches[2]
-       }
-      }
-      ```
-    - For macOS/Linux: Load environment variables from .env file
-      ```bash
-      export $(cat .env | xargs)
-      ```
-
-
-## Testing the SDK
-
-### Run all the QA checks
-You can run all the QA checks using the following command:
+### Development Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/atlanhq/atlan-python.git
+cd atlan-python
+
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install with development dependencies
+uv sync --extra dev
+
+# Run quality checks
 uv run ./qa-checks
-```
 
-### Running Unit Tests
-You can run the SDK's unit tests **without needing access to an Atlan environment**:
-
-```bash
+# Run tests
 uv run pytest tests/unit
 ```
 
-### Running Integration Tests
-Once the environment is set up, you can run integration tests:
+## 🐳 Docker
 
-- All integration tests:
-  ```bash
-  uv run pytest tests/integration
-  ```
-- Specific integration tests:
-  ```bash
-  uv run pytest tests/integration/<test_specific_feature>.py
-  ```
+### Pre-built Images
 
-## Docker
-
-### Using Published Images
-
-Pre-built Docker images are available from GitHub Container Registry:
 
 ```bash
 # Latest version
 docker pull ghcr.io/atlanhq/atlan-python:latest
 
 # Specific version
-docker pull ghcr.io/atlanhq/atlan-python:7.1.1
+docker pull ghcr.io/atlanhq/atlan-python:7.1.3
 ```
 
-**Usage:**
+### Usage
+
 ```bash
 # Interactive Python session
 docker run -it --rm ghcr.io/atlanhq/atlan-python:latest
 
-# Run a Python script
-docker run -it --rm -v $(pwd):/app ghcr.io/atlanhq/atlan-python:latest python your_script.py
-
-# With environment variables
+# Run a script
 docker run -it --rm \
-  -e ATLAN_API_KEY=your_api_key \
+  -v $(pwd):/app \
+  -e ATLAN_API_KEY=your_key \
   -e ATLAN_BASE_URL=https://your-tenant.atlan.com \
-  ghcr.io/atlanhq/atlan-python:latest
+  ghcr.io/atlanhq/atlan-python:latest \
+  python your_script.py
 ```
 
-### Building Locally
+## 🧪 Testing
 
-You can build the Docker image locally:
+### Unit Tests
+```bash
+# Run all unit tests
+uv run pytest tests/unit
+
+# Run with coverage
+uv run pytest tests/unit --cov=pyatlan --cov-report=html
+```
+
+### Integration Tests
+```bash
+# Set up environment
+cp .env.example .env
+# Edit .env with your Atlan credentials
+
+# Run integration tests
+uv run pytest tests/integration
+```
+
+### Quality Assurance
+```bash
+# Run all QA checks (formatting, linting, type checking)
+uv run ./qa-checks
+
+# Individual checks
+uv run ruff format .          # Code formatting
+uv run ruff check .           # Linting
+uv run mypy .                 # Type checking
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+### Development Setup
 
 ```bash
-# Build the image
-docker build -t pyatlan --build-arg VERSION=7.1.1 .
+# Fork and clone the repository
+git clone https://github.com/your-username/atlan-python.git
+cd atlan-python
 
-# Test the image
-docker run -it --rm pyatlan python -c "import pyatlan; print('PyAtlan loaded successfully!')"
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install development dependencies
+uv sync --extra dev
+
+# Install pre-commit hooks
+uv run pre-commit install
 ```
 
-**Available images:**
-- **Latest**: `ghcr.io/atlanhq/atlan-python:latest`
-- **Versioned**: `ghcr.io/atlanhq/atlan-python:x.y.z`
+### Making Changes
 
-### Running the SDK Model Generator
+```bash
+# Create a feature branch
+git checkout -b feature/amazing-feature
 
-If you've pushed new typedefs to Atlan and want to generate SDK asset models to manage them via the SDK, this section covers how to run the SDK generator.
+# Make your changes and test
+uv run ./formatter
+uv run ./qa-checks
+uv run pytest tests/unit
 
-> [!NOTE]
-> Before running any generator scripts, make sure you have [configured your environment variables](https://developer.atlan.com/sdks/python/#configure-the-sdk) specifically `ATLAN_BASE_URL` and `ATLAN_API_KEY`.
+# Commit with conventional commits
+git commit -m "feat: add amazing feature"
 
-1. Run the combined generator script that handles all steps automatically:
-
-   ```shell
-   # Use default location (/tmp/typedefs.json)
-   uv run ./generator
-
-   # Or specify a custom typedefs file location
-   uv run ./generator ./my-typedefs.json
-   ```
-
-   This script will:
-   - Check if typedefs file exists and is current (skip if already created today)
-   - Retrieve typedefs from your Atlan instance if needed
-   - Generate the asset `models`, `enums`, and `struct` modules
-   - Format the generated code automatically
-   - Support custom typedefs file paths for flexibility
-
-## Attribution
-
-Portions of the SDK are based on original work from https://github.com/apache/atlas. Those classes that derive from this original work have an extra heading comment as follows:
-
-```python
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+# Push and create a pull request
+git push origin feature/amazing-feature
 ```
 
-Portions of the SDK are based on original work from https://github.com/elastic/elasticsearch-dsl-py. Those classes that derive from this original work have an extra heading comment as follows:
+### Guidelines
 
-```python
-# Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
+- ✅ Follow [conventional commits](https://www.conventionalcommits.org/)
+- ✅ Add tests for new features
+- ✅ Update documentation as needed
+- ✅ Ensure all QA checks pass
+
+## 🛠️ SDK Generator
+
+Generate asset models from your Atlan instance:
+
+```bash
+# Generate models automatically
+uv run ./generator
+
+# Use custom typedefs file
+uv run ./generator ./my-typedefs.json
 ```
-----
-License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/),
-Copyright 2022 Atlan Pte. Ltd.
+
+This will:
+- 📥 Retrieve typedefs from your Atlan instance
+- 🏗️ Generate asset models, enums, and structures
+- 🎨 Format code automatically
+- ⚡ Support incremental updates
+
+## 📄 License
+
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Attribution
+
+Portions of this SDK are based on original work from:
+- **[Apache Atlas](https://github.com/apache/atlas)** (Apache-2.0 license)
+- **[Elasticsearch DSL](https://github.com/elastic/elasticsearch-dsl-py)** (Apache-2.0 license)
+
+<div align="center">
+
+**Built with 💙 by [Atlan](https://atlan.com)**
+
+[Website](https://atlan.com) • [Documentation](https://developer.atlan.com) • [Support](mailto:support@atlan.com)
+
+</div>
+
+![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)

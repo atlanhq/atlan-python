@@ -1,3 +1,9 @@
+## 7.1.3 (July 21, 2025)
+
+### Bug Fixes
+
+- Fixed multi-value select bug in the CM attribute setter.
+
 ## 7.1.2 (July 11, 2025)
 
 ### QOL Improvements

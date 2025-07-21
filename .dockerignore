@@ -59,7 +59,6 @@ dist/
 # Development
 .env
 .env.*
-requirements-dev.txt
 
 # Temporary files
 tmp/
