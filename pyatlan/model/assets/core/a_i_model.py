@@ -8,9 +8,14 @@ from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIModelStatus
+from pyatlan.model.enums import AIDatasetType, AIModelStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
-from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
+from pyatlan.utils import (
+    get_epoch_timestamp,
+    init_guid,
+    to_camel_case,
+    validate_required_fields,
+)
 
 from .a_i import AI
 
@@ -62,6 +67,43 @@ class AIModel(AI):
             ai_model_version=ai_model_version,
         )
         return cls(attributes=attributes)
+
+    @classmethod
+    def process_creator(
+        cls, client, a_i_model_guid: str, database_dict: dict[AIDatasetType, list]
+    ) -> AIModel:
+        from pyatlan.model.assets import Process
+
+        process_list = []
+        output_asset = client.asset.get_by_guid(guid=a_i_model_guid, asset_type=AIModel)
+        for key, value_list in database_dict.items():
+            for value in value_list:
+                input_asset = client.asset.get_by_guid(guid=value.guid)
+                if key == AIDatasetType.OUTPUT:
+                    process_name = f"{output_asset.name} -> {input_asset.name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
+                        outputs=[value],
+                        process_id=str(get_epoch_timestamp()),
+                    )
+                    process_created.ai_dataset_type = key
+                else:
+                    process_name = f"{input_asset.name} -> {output_asset.name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[value],
+                        outputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
+                        process_id=str(get_epoch_timestamp()),
+                    )
+                    process_created.ai_dataset_type = key
+                process_list.append(process_created)
+
+        response = client.asset.save(process_list)
+
+        return response
 
     type_name: str = Field(default="AIModel", allow_mutation=False)
 
