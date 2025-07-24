@@ -4,18 +4,67 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIApplicationDevelopmentStage
+from pyatlan.model.enums import AIApplicationDevelopmentStage, AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.utils import init_guid, validate_required_fields, to_camel_case
 
 from .a_i import AI
 
 
 class AIApplication(AI):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+    ) -> AIApplication: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+        owner_groups: set[str],
+        owner_users: set[str],
+        models: list[AIModel],
+    ) -> AIApplication: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+        owner_groups: Optional[set[str]] = set(),
+        owner_users: Optional[set[str]] = set(),
+        models: Optional[list[AIModel]] = [],
+    ) -> AIApplication:
+        validate_required_fields(
+            ["name", "ai_application_version", "ai_application_development_stage"], [name, ai_application_version, ai_application_development_stage]
+        )
+        attributes = AIApplication.Attributes.creator(
+            name=name,
+            ai_application_version=ai_application_version,
+            ai_application_development_stage=ai_application_development_stage,
+            owner_groups=owner_groups,
+            owner_users=owner_users,
+            models=models,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="AIApplication", allow_mutation=False)
 
@@ -104,6 +153,35 @@ class AIApplication(AI):
         models: Optional[List[AIModel]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            ai_application_version: str,
+            ai_application_development_stage: AIApplicationDevelopmentStage,
+            owner_groups: Optional[set[str]] = set(),
+            owner_users: Optional[set[str]] = set(),
+            models: Optional[list[AIModel]] = [],
+        ) -> AIApplication.Attributes:
+            validate_required_fields(
+                ["name", "ai_application_version", "ai_application_development_stage"], [name, ai_application_version, ai_application_development_stage]
+            )
+            name_camel_case = to_camel_case(name)
+            return AIApplication.Attributes(
+                name=name,
+                qualified_name=f"default/ai/aiapplication/{name_camel_case}",
+                connector_name="ai",
+                ai_application_version=ai_application_version,
+                ai_application_development_stage=ai_application_development_stage,
+                owner_groups=owner_groups,
+                owner_users=owner_users,
+                models=models,
+                certificate_status="DRAFT",
+                asset_cover_image="/assets/default-product-cover-DeQonY47.webp",
+            )
 
     attributes: AIApplication.Attributes = Field(
         default_factory=lambda: AIApplication.Attributes(),
