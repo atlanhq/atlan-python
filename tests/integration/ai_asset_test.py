@@ -5,8 +5,13 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AIApplication, AIModel
-from pyatlan.model.enums import AIApplicationDevelopmentStage, AIModelStatus
+from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection, Table
+from pyatlan.model.enums import (
+    AIApplicationDevelopmentStage,
+    AIDatasetType,
+    AIModelStatus,
+)
+from pyatlan.model.fluent_search import FluentSearch
 from tests.integration.client import TestId, delete_asset
 
 MODULE_NAME = TestId.make_unique("AI")
@@ -108,3 +113,125 @@ def test_update_ai_assets(
 ):
     _update_ai_application(client, ai_application)
     _update_ai_model(client, ai_model)
+
+
+def test_ai_model_processes_creator(
+    client: AtlanClient,
+    ai_model: AIModel,
+):
+    query = (
+        FluentSearch()
+        .where(Connection.NAME.eq("development"))
+        .where(Connection.CONNECTOR_NAME.eq("snowflake"))
+        .include_on_results("qualified_name")
+    ).to_request()
+    connection_response = client.asset.search(query).current_page()[0]
+    assert connection_response.qualified_name
+    query = (
+        FluentSearch()
+        .where(Asset.CONNECTION_QUALIFIED_NAME.eq(connection_response.qualified_name))
+        .where(Asset.TYPE_NAME.eq("Table"))
+        .include_on_results("guid")
+    ).to_request()
+    guids = [result.guid for result in client.asset.search(query)]
+    database_dict = {
+        AIDatasetType.TRAINING: [
+            Table.ref_by_guid(guid=guids[0]),
+            Table.ref_by_guid(guid=guids[1]),
+        ],
+        AIDatasetType.TESTING: [Table.ref_by_guid(guid=guids[1])],
+        AIDatasetType.INFERENCE: [Table.ref_by_guid(guid=guids[2])],
+        AIDatasetType.VALIDATION: [Table.ref_by_guid(guid=guids[3])],
+        AIDatasetType.OUTPUT: [Table.ref_by_guid(guid=guids[4])],
+    }
+    created_processes = AIModel.processes_creator(
+        client, a_i_model_guid=ai_model.guid, database_dict=database_dict
+    )
+
+    mutation_response = client.asset.save(created_processes)  # type: ignore
+    assert (
+        mutation_response.mutated_entities and mutation_response.mutated_entities.CREATE
+    )
+    assert mutation_response.mutated_entities.CREATE[0]
+    assert (
+        mutation_response.mutated_entities.CREATE[0].ai_dataset_type  # type: ignore
+        == AIDatasetType.TRAINING
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[0].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[0].inputs[0].guid == guids[0]  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[0].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[0].outputs[0].guid  # type: ignore
+        == ai_model.guid
+    )
+    assert mutation_response.mutated_entities.CREATE[1]
+    assert (
+        mutation_response.mutated_entities.CREATE[1].ai_dataset_type  # type: ignore
+        == AIDatasetType.TRAINING
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[1].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[1].inputs[0].guid == guids[1]  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[1].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[1].outputs[0].guid  # type: ignore
+        == ai_model.guid
+    )
+    assert mutation_response.mutated_entities.CREATE[2]
+    assert (
+        mutation_response.mutated_entities.CREATE[2].ai_dataset_type  # type: ignore
+        == AIDatasetType.TESTING
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[2].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[2].inputs[0].guid == guids[1]  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[2].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[2].outputs[0].guid  # type: ignore
+        == ai_model.guid
+    )
+    assert mutation_response.mutated_entities.CREATE[3]
+    assert (
+        mutation_response.mutated_entities.CREATE[3].ai_dataset_type  # type: ignore
+        == AIDatasetType.INFERENCE
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[3].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[3].inputs[0].guid == guids[2]  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[3].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[3].outputs[0].guid  # type: ignore
+        == ai_model.guid
+    )
+    assert mutation_response.mutated_entities.CREATE[4]
+    assert (
+        mutation_response.mutated_entities.CREATE[4].ai_dataset_type  # type: ignore
+        == AIDatasetType.VALIDATION
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[4].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[4].inputs[0].guid == guids[3]  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[4].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[4].outputs[0].guid  # type: ignore
+        == ai_model.guid
+    )
+    assert mutation_response.mutated_entities.CREATE[5]  # type: ignore
+    assert (
+        mutation_response.mutated_entities.CREATE[5].ai_dataset_type  # type: ignore
+        == AIDatasetType.OUTPUT
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[5].inputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[5].inputs[0].guid == ai_model.guid  # type: ignore
+    )
+    assert (
+        mutation_response.mutated_entities.CREATE[5].outputs  # type: ignore
+        and mutation_response.mutated_entities.CREATE[5].outputs[0].guid == guids[4]  # type: ignore
+    )

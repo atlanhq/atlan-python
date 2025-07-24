@@ -70,7 +70,7 @@ class AIModel(AI):
         return cls(attributes=attributes)
 
     @classmethod
-    def process_creator(
+    def processes_creator(
         cls, client, a_i_model_guid: str, database_dict: dict[AIDatasetType, list]
     ) -> List[Process]:
         process_list = []
