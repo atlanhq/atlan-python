@@ -18,6 +18,7 @@ from pyatlan.utils import (
 )
 
 from .a_i import AI
+from .process import Process
 
 
 class AIModel(AI):
@@ -71,9 +72,7 @@ class AIModel(AI):
     @classmethod
     def process_creator(
         cls, client, a_i_model_guid: str, database_dict: dict[AIDatasetType, list]
-    ) -> AIModel:
-        from pyatlan.model.assets import Process
-
+    ) -> List[Process]:
         process_list = []
         output_asset = client.asset.get_by_guid(guid=a_i_model_guid, asset_type=AIModel)
         for key, value_list in database_dict.items():
@@ -101,9 +100,7 @@ class AIModel(AI):
                     process_created.ai_dataset_type = key
                 process_list.append(process_created)
 
-        response = client.asset.save(process_list)
-
-        return response
+        return process_list
 
     type_name: str = Field(default="AIModel", allow_mutation=False)
 
