@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIApplicationDevelopmentStage, AtlanConnectorType
+from pyatlan.model.enums import AIApplicationDevelopmentStage, CertificateStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields, to_camel_case
 
@@ -54,7 +54,8 @@ class AIApplication(AI):
         models: Optional[list[AIModel]] = [],
     ) -> AIApplication:
         validate_required_fields(
-            ["name", "ai_application_version", "ai_application_development_stage"], [name, ai_application_version, ai_application_development_stage]
+            ["name", "ai_application_version", "ai_application_development_stage"],
+            [name, ai_application_version, ai_application_development_stage],
         )
         attributes = AIApplication.Attributes.creator(
             name=name,
@@ -167,7 +168,8 @@ class AIApplication(AI):
             models: Optional[list[AIModel]] = [],
         ) -> AIApplication.Attributes:
             validate_required_fields(
-                ["name", "ai_application_version", "ai_application_development_stage"], [name, ai_application_version, ai_application_development_stage]
+                ["name", "ai_application_version", "ai_application_development_stage"],
+                [name, ai_application_version, ai_application_development_stage],
             )
             name_camel_case = to_camel_case(name)
             return AIApplication.Attributes(
@@ -179,7 +181,7 @@ class AIApplication(AI):
                 owner_groups=owner_groups,
                 owner_users=owner_users,
                 models=models,
-                certificate_status="DRAFT",
+                certificate_status=CertificateStatus.DRAFT,
                 asset_cover_image="/assets/default-product-cover-DeQonY47.webp",
             )
 
