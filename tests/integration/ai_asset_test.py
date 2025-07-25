@@ -145,7 +145,9 @@ def test_ai_model_processes_creator(
         AIDatasetType.OUTPUT: [Table.ref_by_guid(guid=guids[4])],
     }
     created_processes = AIModel.processes_creator(
-        a_i_model_guid=ai_model.guid, ai_model_name=ai_model.name, database_dict=database_dict
+        a_i_model_guid=ai_model.guid,
+        ai_model_name=ai_model.name,
+        database_dict=database_dict,
     )
 
     mutation_response = client.asset.save(created_processes)  # type: ignore

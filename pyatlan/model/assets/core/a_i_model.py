@@ -107,6 +107,13 @@ class AIModel(AI):
 
         return process_list
 
+    def processes_batch_save(client, process_list):
+        batch_size = 20
+        total_processes = len(process_list)
+        for i in range(0, total_processes, batch_size):
+            batch = process_list[i : i + batch_size]
+            client.asset.save(batch)
+
     type_name: str = Field(default="AIModel", allow_mutation=False)
 
     @validator("type_name")
