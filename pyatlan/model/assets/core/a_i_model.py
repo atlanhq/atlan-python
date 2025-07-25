@@ -4,11 +4,11 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, overload
+from typing import ClassVar, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIDatasetType, AIModelStatus
+from pyatlan.model.enums import AIDatasetType, AIModelStatus, AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
 from pyatlan.utils import (
     get_epoch_timestamp,
@@ -40,8 +40,8 @@ class AIModel(AI):
         *,
         name: str,
         ai_model_status: AIModelStatus,
-        owner_groups: set[str],
-        owner_users: set[str],
+        owner_groups: Set[str],
+        owner_users: Set[str],
         ai_model_version: str,
     ) -> AIModel: ...
 
@@ -52,8 +52,8 @@ class AIModel(AI):
         *,
         name: str,
         ai_model_status: AIModelStatus,
-        owner_groups: Optional[set[str]] = set(),
-        owner_users: Optional[set[str]] = set(),
+        owner_groups: Optional[Set[str]] = set(),
+        owner_users: Optional[Set[str]] = set(),
         ai_model_version: Optional[str] = None,
     ) -> AIModel:
         validate_required_fields(
@@ -221,8 +221,8 @@ class AIModel(AI):
             *,
             name: str,
             ai_model_status: AIModelStatus,
-            owner_groups: Optional[set[str]] = set(),
-            owner_users: Optional[set[str]] = set(),
+            owner_groups: Optional[Set[str]] = set(),
+            owner_users: Optional[Set[str]] = set(),
             ai_model_version: Optional[str] = None,
         ) -> AIModel.Attributes:
             validate_required_fields(
@@ -233,7 +233,7 @@ class AIModel(AI):
             return AIModel.Attributes(
                 name=name,
                 qualified_name=f"default/ai/aiapplication/{name_camel_case}",
-                connector_name="ai",
+                connector_name=AtlanConnectorType.AI.value,
                 ai_model_status=ai_model_status,
                 ai_model_version=ai_model_version,
                 owner_groups=owner_groups,

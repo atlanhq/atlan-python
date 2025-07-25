@@ -4,13 +4,17 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, overload
+from typing import ClassVar, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIApplicationDevelopmentStage, CertificateStatus
+from pyatlan.model.enums import (
+    AIApplicationDevelopmentStage,
+    AtlanConnectorType,
+    CertificateStatus,
+)
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
-from pyatlan.utils import init_guid, validate_required_fields, to_camel_case
+from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
 
 from .a_i import AI
 
@@ -36,9 +40,9 @@ class AIApplication(AI):
         name: str,
         ai_application_version: str,
         ai_application_development_stage: AIApplicationDevelopmentStage,
-        owner_groups: set[str],
-        owner_users: set[str],
-        models: list[AIModel],
+        owner_groups: Set[str],
+        owner_users: Set[str],
+        models: List[AIModel],
     ) -> AIApplication: ...
 
     @classmethod
@@ -49,9 +53,9 @@ class AIApplication(AI):
         name: str,
         ai_application_version: str,
         ai_application_development_stage: AIApplicationDevelopmentStage,
-        owner_groups: Optional[set[str]] = set(),
-        owner_users: Optional[set[str]] = set(),
-        models: Optional[list[AIModel]] = [],
+        owner_groups: Optional[Set[str]] = set(),
+        owner_users: Optional[Set[str]] = set(),
+        models: Optional[List[AIModel]] = [],
     ) -> AIApplication:
         validate_required_fields(
             ["name", "ai_application_version", "ai_application_development_stage"],
@@ -163,9 +167,9 @@ class AIApplication(AI):
             name: str,
             ai_application_version: str,
             ai_application_development_stage: AIApplicationDevelopmentStage,
-            owner_groups: Optional[set[str]] = set(),
-            owner_users: Optional[set[str]] = set(),
-            models: Optional[list[AIModel]] = [],
+            owner_groups: Optional[Set[str]] = set(),
+            owner_users: Optional[Set[str]] = set(),
+            models: Optional[List[AIModel]] = [],
         ) -> AIApplication.Attributes:
             validate_required_fields(
                 ["name", "ai_application_version", "ai_application_development_stage"],
@@ -175,7 +179,7 @@ class AIApplication(AI):
             return AIApplication.Attributes(
                 name=name,
                 qualified_name=f"default/ai/aiapplication/{name_camel_case}",
-                connector_name="ai",
+                connector_name=AtlanConnectorType.AI.value,
                 ai_application_version=ai_application_version,
                 ai_application_development_stage=ai_application_development_stage,
                 owner_groups=owner_groups,
