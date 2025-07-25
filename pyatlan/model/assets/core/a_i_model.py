@@ -4,7 +4,8 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, Set, overload
+import sys
+from typing import ClassVar, Dict, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
@@ -71,29 +72,33 @@ class AIModel(AI):
 
     @classmethod
     def processes_creator(
-        cls, client, a_i_model_guid: str, database_dict: dict[AIDatasetType, list]
+        cls,
+        a_i_model_guid: str,
+        a_i_model_name: str,
+        database_dict: Dict[AIDatasetType, list],
     ) -> List[Process]:
         process_list = []
-        output_asset = client.asset.get_by_guid(guid=a_i_model_guid, asset_type=AIModel)
         for key, value_list in database_dict.items():
             for value in value_list:
-                input_asset = client.asset.get_by_guid(guid=value.guid)
+                asset_type = getattr(
+                    sys.modules.get("pyatlan.model.assets", {}), value.type_name, None
+                )
                 if key == AIDatasetType.OUTPUT:
-                    process_name = f"{output_asset.name} -> {input_asset.name}"
+                    process_name = f"{a_i_model_name} -> {value.name}"
                     process_created = Process.creator(
                         name=process_name,
                         connection_qualified_name="default/ai/dataset",
                         inputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
-                        outputs=[value],
+                        outputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
                         process_id=str(get_epoch_timestamp()),
                     )
                     process_created.ai_dataset_type = key
                 else:
-                    process_name = f"{input_asset.name} -> {output_asset.name}"
+                    process_name = f"{value.name} -> {a_i_model_name}"
                     process_created = Process.creator(
                         name=process_name,
                         connection_qualified_name="default/ai/dataset",
-                        inputs=[value],
+                        inputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
                         outputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
                         process_id=str(get_epoch_timestamp()),
                     )
