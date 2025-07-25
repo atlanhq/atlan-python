@@ -390,7 +390,9 @@ class AtlanClient(BaseSettings):
         # Step 3: Use Argo client to retrieve API token's credentials
         # Both endpoints require authentication, hence using the Argo token
         token_secret = temp_argo_client.impersonate.get_client_secret(client_guid=guid)
-        token_client_id = temp_argo_client.token.get_by_guid(guid=guid).client_id
+        token_client_id = temp_argo_client.token.get_by_guid(  # type: ignore[union-attr]
+            guid=guid
+        ).client_id
 
         # Step 4: Exchange API token credentials for access token
         token_credentials = {
