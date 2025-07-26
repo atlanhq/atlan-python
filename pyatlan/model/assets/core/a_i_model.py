@@ -107,12 +107,18 @@ class AIModel(AI):
 
         return process_list
 
-    def processes_batch_save(client, process_list):
+    @classmethod
+    def processes_batch_save(cls, client, process_list: List[Process]) -> List:
         batch_size = 20
         total_processes = len(process_list)
+        responses = []
+
         for i in range(0, total_processes, batch_size):
             batch = process_list[i : i + batch_size]
-            client.asset.save(batch)
+            response = client.asset.save(batch)
+            responses.append(response)
+
+        return responses
 
     type_name: str = Field(default="AIModel", allow_mutation=False)
 

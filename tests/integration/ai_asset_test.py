@@ -5,7 +5,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection, Table
+from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection
 from pyatlan.model.enums import (
     AIApplicationDevelopmentStage,
     AIDatasetType,
@@ -130,110 +130,159 @@ def test_ai_model_processes_creator(
     query = (
         FluentSearch()
         .where(Asset.CONNECTION_QUALIFIED_NAME.eq(connection_response.qualified_name))
-        .where(Asset.TYPE_NAME.eq("Table"))
-        .include_on_results("guid")
+        .where(Asset.TYPE_NAME.eq("View"))
+        .include_on_results(Asset.NAME)
+        .include_on_results(Asset.GUID)
+        .include_on_results(Asset.TYPE_NAME)
     ).to_request()
-    guids = [result.guid for result in client.asset.search(query)]
+
+    list_training = []
+    list_testing = []
+    list_inference = []
+    for results in client.asset.search(query):
+        list_training.append(results)
+        list_testing.append(results)
+        list_inference.append(results)
+
+    query = (
+        FluentSearch()
+        .where(Asset.CONNECTION_QUALIFIED_NAME.eq(connection_response.qualified_name))
+        .where(Asset.TYPE_NAME.eq("Database"))
+        .include_on_results(Asset.NAME)
+        .include_on_results(Asset.GUID)
+        .include_on_results(Asset.TYPE_NAME)
+    ).to_request()
+
+    list_validation = []
+    list_output = []
+    for results in client.asset.search(query):
+        list_validation.append(results)
+        list_output.append(results)
+
     database_dict = {
-        AIDatasetType.TRAINING: [
-            Table.ref_by_guid(guid=guids[0]),
-            Table.ref_by_guid(guid=guids[1]),
-        ],
-        AIDatasetType.TESTING: [Table.ref_by_guid(guid=guids[1])],
-        AIDatasetType.INFERENCE: [Table.ref_by_guid(guid=guids[2])],
-        AIDatasetType.VALIDATION: [Table.ref_by_guid(guid=guids[3])],
-        AIDatasetType.OUTPUT: [Table.ref_by_guid(guid=guids[4])],
+        AIDatasetType.TRAINING: list_training,
+        AIDatasetType.TESTING: list_testing,
+        AIDatasetType.INFERENCE: list_inference,
+        AIDatasetType.VALIDATION: list_validation,
+        AIDatasetType.OUTPUT: list_output,
     }
     created_processes = AIModel.processes_creator(
         a_i_model_guid=ai_model.guid,
-        ai_model_name=ai_model.name,
+        a_i_model_name=AI_MODEL_NAME,  # Add fallback for type safety
         database_dict=database_dict,
     )
+    response = AIModel.processes_batch_save(client, created_processes)
 
-    mutation_response = client.asset.save(created_processes)  # type: ignore
+    assert len(response) == 1
+    mutation_response = response[0]
     assert (
         mutation_response.mutated_entities and mutation_response.mutated_entities.CREATE
     )
-    assert mutation_response.mutated_entities.CREATE[0]
-    assert (
-        mutation_response.mutated_entities.CREATE[0].ai_dataset_type  # type: ignore
-        == AIDatasetType.TRAINING
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[0].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[0].inputs[0].guid == guids[0]  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[0].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[0].outputs[0].guid  # type: ignore
-        == ai_model.guid
-    )
-    assert mutation_response.mutated_entities.CREATE[1]
-    assert (
-        mutation_response.mutated_entities.CREATE[1].ai_dataset_type  # type: ignore
-        == AIDatasetType.TRAINING
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[1].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[1].inputs[0].guid == guids[1]  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[1].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[1].outputs[0].guid  # type: ignore
-        == ai_model.guid
-    )
-    assert mutation_response.mutated_entities.CREATE[2]
-    assert (
-        mutation_response.mutated_entities.CREATE[2].ai_dataset_type  # type: ignore
-        == AIDatasetType.TESTING
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[2].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[2].inputs[0].guid == guids[1]  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[2].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[2].outputs[0].guid  # type: ignore
-        == ai_model.guid
-    )
-    assert mutation_response.mutated_entities.CREATE[3]
-    assert (
-        mutation_response.mutated_entities.CREATE[3].ai_dataset_type  # type: ignore
-        == AIDatasetType.INFERENCE
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[3].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[3].inputs[0].guid == guids[2]  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[3].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[3].outputs[0].guid  # type: ignore
-        == ai_model.guid
-    )
-    assert mutation_response.mutated_entities.CREATE[4]
-    assert (
-        mutation_response.mutated_entities.CREATE[4].ai_dataset_type  # type: ignore
-        == AIDatasetType.VALIDATION
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[4].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[4].inputs[0].guid == guids[3]  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[4].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[4].outputs[0].guid  # type: ignore
-        == ai_model.guid
-    )
-    assert mutation_response.mutated_entities.CREATE[5]  # type: ignore
-    assert (
-        mutation_response.mutated_entities.CREATE[5].ai_dataset_type  # type: ignore
-        == AIDatasetType.OUTPUT
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[5].inputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[5].inputs[0].guid == ai_model.guid  # type: ignore
-    )
-    assert (
-        mutation_response.mutated_entities.CREATE[5].outputs  # type: ignore
-        and mutation_response.mutated_entities.CREATE[5].outputs[0].guid == guids[4]  # type: ignore
-    )
+    for i in range(len(list_training)):
+        assert mutation_response.mutated_entities.CREATE[i]
+        assert (
+            mutation_response.mutated_entities.CREATE[i].ai_dataset_type  # type: ignore
+            == AIDatasetType.TRAINING
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i].inputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i].inputs[0].guid
+            == list_training[i].guid  # type: ignore
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i].outputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i].outputs[0].guid  # type: ignore
+            == ai_model.guid
+        )
+    current_process_sum = len(list_training)
+    for i in range(len(list_testing)):
+        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
+        assert (
+            mutation_response.mutated_entities.CREATE[
+                i + current_process_sum
+            ].ai_dataset_type  # type: ignore
+            == AIDatasetType.TESTING
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .inputs[0]
+            .guid
+            == list_testing[i].guid  # type: ignore
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .outputs[0]
+            .guid  # type: ignore
+            == ai_model.guid
+        )
+    current_process_sum += len(list_testing)
+    for i in range(len(list_inference)):
+        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
+        assert (
+            mutation_response.mutated_entities.CREATE[
+                i + current_process_sum
+            ].ai_dataset_type  # type: ignore
+            == AIDatasetType.INFERENCE
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .inputs[0]
+            .guid
+            == list_inference[i].guid  # type: ignore
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .outputs[0]
+            .guid  # type: ignore
+            == ai_model.guid
+        )
+    current_process_sum += len(list_inference)
+    for i in range(len(list_validation)):
+        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
+        assert (
+            mutation_response.mutated_entities.CREATE[
+                i + current_process_sum
+            ].ai_dataset_type  # type: ignore
+            == AIDatasetType.VALIDATION
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .inputs[0]
+            .guid
+            == list_validation[i].guid  # type: ignore
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .outputs[0]
+            .guid  # type: ignore
+            == ai_model.guid
+        )
+    current_process_sum += len(list_validation)
+    for i in range(len(list_output)):
+        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
+        assert (
+            mutation_response.mutated_entities.CREATE[
+                i + current_process_sum
+            ].ai_dataset_type  # type: ignore
+            == AIDatasetType.OUTPUT
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .inputs[0]
+            .guid
+            == ai_model.guid  # type: ignore
+        )
+        assert (
+            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
+            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
+            .outputs[0]
+            .guid  # type: ignore
+            == list_output[i].guid
+        )
