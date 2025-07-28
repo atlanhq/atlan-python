@@ -71,6 +71,14 @@ class AIModel(AI):
         ai_model: AIModel,
         dataset_dict: Dict[AIDatasetType, list],
     ) -> List[Process]:
+        """
+        Creates a list of Process objects representing the relationships between an AI model and its datasets.
+
+        :param ai_model: the AI model for which to create processes
+        :param dataset_dict: dictionary mapping AI dataset types to lists of assets
+        :returns: list of Process objects representing the AI model's data lineage
+        :raises ValueError: when the AI model is missing required attributes (guid or name)
+        """
         if not ai_model.guid or not ai_model.name:
             raise ValueError("AI model must have both guid and name attributes")
         process_list = []
@@ -103,6 +111,14 @@ class AIModel(AI):
 
     @classmethod
     def processes_batch_save(cls, client, process_list: List[Process]) -> List:
+        """
+        Saves a list of Process objects to Atlan in batches to optimize performance.
+        We save the processes in batches of 20.
+
+        :param client: Atlan client instance for making API calls
+        :param process_list: list of Process objects to save
+        :returns: list of API responses from each batch save operation
+        """
         batch_size = 20
         total_processes = len(process_list)
         responses = []
