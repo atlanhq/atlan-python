@@ -21,6 +21,7 @@ from pydantic.v1 import Field, PrivateAttr
 from pyatlan.errors import ErrorCode
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.constants import (
+    AIAssetTypes,
     AssetTypes,
     DomainTypes,
     EntityTypes,
@@ -192,6 +193,7 @@ _all_domain_types: DomainTypes = {
     "DataProduct",
 }
 
+_all_ai_asset_types: AIAssetTypes = {"AIApplication", "AIModel"}
 _all_other_types: OtherAssetTypes = {"File"}
 
 
@@ -494,6 +496,12 @@ class AttributeDef(AtlanObject):
             "These cover asset types in data products and data domains. "
             "Only assets of one of these types will have this attribute available.",
         )
+        applicable_ai_asset_types: Optional[str] = Field(
+            default=None,
+            alias="aiAssetsTypeList",
+            description="AI asset type names to which this attribute is restricted. "
+            "Only AI assets of the specified types will have this attribute available.",
+        )
         applicable_other_asset_types: Optional[str] = Field(
             default=None,
             alias="otherAssetTypeList",
@@ -639,6 +647,7 @@ class AttributeDef(AtlanObject):
         "applicable_connections",
         "applicable_glossaries",
         "applicable_domains",
+        "applicable_ai_asset_types",
     ]
 
     @property
@@ -748,6 +757,30 @@ class AttributeDef(AtlanObject):
         self.options.applicable_domain_types = json.dumps(list(domain_types))
 
     @property
+    def applicable_ai_asset_types(self) -> AIAssetTypes:
+        """
+        AI asset type names to which this attribute is restricted.
+        Only AI assets of the specified types will have this attribute available.
+        """
+        if self.options and self.options.applicable_ai_asset_types:
+            return set(json.loads(self.options.applicable_ai_asset_types))
+        return set()
+
+    @applicable_ai_asset_types.setter
+    def applicable_ai_asset_types(self, ai_asset_types: AIAssetTypes):
+        if self.options is None:
+            raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
+        if not isinstance(ai_asset_types, set):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "applicable_ai_asset_types", AIAssetTypes
+            )
+        if not ai_asset_types.issubset(_all_ai_asset_types):
+            raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                ai_asset_types, "applicable_ai_asset_types", _all_ai_asset_types
+            )
+        self.options.applicable_ai_asset_types = json.dumps(list(ai_asset_types))
+
+    @property
     def applicable_other_asset_types(self) -> OtherAssetTypes:
         """
         Any other asset type names to which to restrict the attribute.
@@ -855,6 +888,7 @@ class AttributeDef(AtlanObject):
         applicable_other_asset_types: Optional[OtherAssetTypes] = None,
         applicable_domains: Optional[Set[str]] = None,
         applicable_domain_types: Optional[DomainTypes] = None,
+        applicable_ai_asset_types: Optional[AIAssetTypes] = None,
         description: Optional[str] = None,
     ) -> AttributeDef:
         from pyatlan.utils import validate_required_fields
@@ -918,6 +952,7 @@ class AttributeDef(AtlanObject):
             applicable_glossaries or _get_all_qualified_names(client, "AtlasGlossary")
         )
         attr_def.applicable_domains = applicable_domains or _all_domains
+        attr_def.applicable_ai_asset_types = applicable_ai_asset_types or set()
         return attr_def
 
     def is_archived(self) -> bool:
