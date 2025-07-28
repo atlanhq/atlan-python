@@ -31,6 +31,7 @@ class Process(Asset, type_name="Process"):
         outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = set(),
     ) -> Process:
         return Process(
             attributes=Process.Attributes.create(
@@ -40,6 +41,7 @@ class Process(Asset, type_name="Process"):
                 inputs=inputs,
                 outputs=outputs,
                 parent=parent,
+                extra_hash_params=extra_hash_params,
             )
         )
 
@@ -383,6 +385,7 @@ class Process(Asset, type_name="Process"):
             outputs: List["Catalog"],
             parent: Optional["Process"] = None,
             process_id: Optional[str] = None,
+            extra_hash_params: Optional[Set[str]] = set(),
         ) -> str:
             def append_relationship(output: StringIO, relationship: Asset):
                 if relationship.guid:
@@ -405,6 +408,11 @@ class Process(Asset, type_name="Process"):
                 append_relationship(buffer, parent)
             append_relationships(buffer, inputs)
             append_relationships(buffer, outputs)
+            # Handles edge case where identical name, connection, input, and output caused hash collisions,
+            # resulting in duplicate qualified names and backend skipping process creation.
+            if extra_hash_params:
+                for param in extra_hash_params:
+                    buffer.write(param)
             ret_value = hashlib.md5(  # noqa: S303, S324
                 buffer.getvalue().encode()
             ).hexdigest()
@@ -421,6 +429,7 @@ class Process(Asset, type_name="Process"):
             outputs: List["Catalog"],
             process_id: Optional[str] = None,
             parent: Optional[Process] = None,
+            extra_hash_params: Optional[Set[str]] = set(),
         ) -> Process.Attributes:
             qualified_name = Process.Attributes.generate_qualified_name(
                 name=name,
@@ -429,6 +438,7 @@ class Process(Asset, type_name="Process"):
                 inputs=inputs,
                 outputs=outputs,
                 parent=parent,
+                extra_hash_params=extra_hash_params,
             )
             connector_name = connection_qualified_name.split("/")[1]
             return Process.Attributes(

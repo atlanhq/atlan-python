@@ -4,21 +4,16 @@
 
 from __future__ import annotations
 
-import sys
 from typing import ClassVar, Dict, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AIDatasetType, AIModelStatus, AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
-from pyatlan.utils import (
-    get_epoch_timestamp,
-    init_guid,
-    to_camel_case,
-    validate_required_fields,
-)
+from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
 
 from .a_i import AI
+from .asset import Asset
 from .process import Process
 
 
@@ -73,34 +68,33 @@ class AIModel(AI):
     @classmethod
     def processes_creator(
         cls,
-        a_i_model_guid: str,
-        a_i_model_name: str,
-        database_dict: Dict[AIDatasetType, list],
+        ai_model: AIModel,
+        dataset_dict: Dict[AIDatasetType, list],
     ) -> List[Process]:
+        if not ai_model.guid or not ai_model.name:
+            raise ValueError("AI model must have both guid and name attributes")
         process_list = []
-        for key, value_list in database_dict.items():
+        for key, value_list in dataset_dict.items():
             for value in value_list:
-                asset_type = getattr(
-                    sys.modules.get("pyatlan.model.assets", {}), value.type_name, None
-                )
+                asset_type = Asset._convert_to_real_type_(value)
                 if key == AIDatasetType.OUTPUT:
-                    process_name = f"{a_i_model_name} -> {value.name}"
+                    process_name = f"{ai_model.name} -> {value.name}"
                     process_created = Process.creator(
                         name=process_name,
                         connection_qualified_name="default/ai/dataset",
-                        inputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
+                        inputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
                         outputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
-                        process_id=str(get_epoch_timestamp()),
+                        extra_hash_params={key.value},
                     )
                     process_created.ai_dataset_type = key
                 else:
-                    process_name = f"{value.name} -> {a_i_model_name}"
+                    process_name = f"{value.name} -> {ai_model.name}"
                     process_created = Process.creator(
                         name=process_name,
                         connection_qualified_name="default/ai/dataset",
                         inputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
-                        outputs=[AIModel.ref_by_guid(guid=a_i_model_guid)],
-                        process_id=str(get_epoch_timestamp()),
+                        outputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
+                        extra_hash_params={key.value},
                     )
                     process_created.ai_dataset_type = key
                 process_list.append(process_created)

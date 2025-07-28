@@ -115,6 +115,47 @@ def test_update_ai_assets(
     _update_ai_model(client, ai_model)
 
 
+def _assert_response_processes_creator(
+    mutation_response, asset_list, ai_dataset_type, process_sum, ai_model
+):
+    for i in range(len(asset_list)):
+        assert mutation_response.mutated_entities.CREATE[i + process_sum]
+        assert (
+            mutation_response.mutated_entities.CREATE[i + process_sum].ai_dataset_type  # type: ignore
+            == ai_dataset_type
+        )
+        if ai_dataset_type == AIDatasetType.OUTPUT:
+            assert (
+                mutation_response.mutated_entities.CREATE[i + process_sum].inputs  # type: ignore
+                and mutation_response.mutated_entities.CREATE[i + process_sum]
+                .inputs[0]
+                .guid
+                == ai_model.guid  # type: ignore
+            )
+            assert (
+                mutation_response.mutated_entities.CREATE[i + process_sum].outputs  # type: ignore
+                and mutation_response.mutated_entities.CREATE[i + process_sum]
+                .outputs[0]
+                .guid  # type: ignore
+                == asset_list[i].guid
+            )
+        else:
+            assert (
+                mutation_response.mutated_entities.CREATE[i + process_sum].inputs  # type: ignore
+                and mutation_response.mutated_entities.CREATE[i + process_sum]
+                .inputs[0]
+                .guid
+                == asset_list[i].guid  # type: ignore
+            )
+            assert (
+                mutation_response.mutated_entities.CREATE[i + process_sum].outputs  # type: ignore
+                and mutation_response.mutated_entities.CREATE[i + process_sum]
+                .outputs[0]
+                .guid  # type: ignore
+                == ai_model.guid
+            )
+
+
 def test_ai_model_processes_creator(
     client: AtlanClient,
     ai_model: AIModel,
@@ -159,7 +200,7 @@ def test_ai_model_processes_creator(
         list_validation.append(results)
         list_output.append(results)
 
-    database_dict = {
+    dataset_dict = {
         AIDatasetType.TRAINING: list_training,
         AIDatasetType.TESTING: list_testing,
         AIDatasetType.INFERENCE: list_inference,
@@ -167,9 +208,8 @@ def test_ai_model_processes_creator(
         AIDatasetType.OUTPUT: list_output,
     }
     created_processes = AIModel.processes_creator(
-        a_i_model_guid=ai_model.guid,
-        a_i_model_name=AI_MODEL_NAME,  # Add fallback for type safety
-        database_dict=database_dict,
+        ai_model=ai_model,
+        dataset_dict=dataset_dict,
     )
     response = AIModel.processes_batch_save(client, created_processes)
 
@@ -178,111 +218,42 @@ def test_ai_model_processes_creator(
     assert (
         mutation_response.mutated_entities and mutation_response.mutated_entities.CREATE
     )
-    for i in range(len(list_training)):
-        assert mutation_response.mutated_entities.CREATE[i]
-        assert (
-            mutation_response.mutated_entities.CREATE[i].ai_dataset_type  # type: ignore
-            == AIDatasetType.TRAINING
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i].inputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i].inputs[0].guid
-            == list_training[i].guid  # type: ignore
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i].outputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i].outputs[0].guid  # type: ignore
-            == ai_model.guid
-        )
-    current_process_sum = len(list_training)
-    for i in range(len(list_testing)):
-        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
-        assert (
-            mutation_response.mutated_entities.CREATE[
-                i + current_process_sum
-            ].ai_dataset_type  # type: ignore
-            == AIDatasetType.TESTING
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .inputs[0]
-            .guid
-            == list_testing[i].guid  # type: ignore
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .outputs[0]
-            .guid  # type: ignore
-            == ai_model.guid
-        )
-    current_process_sum += len(list_testing)
-    for i in range(len(list_inference)):
-        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
-        assert (
-            mutation_response.mutated_entities.CREATE[
-                i + current_process_sum
-            ].ai_dataset_type  # type: ignore
-            == AIDatasetType.INFERENCE
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .inputs[0]
-            .guid
-            == list_inference[i].guid  # type: ignore
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .outputs[0]
-            .guid  # type: ignore
-            == ai_model.guid
-        )
-    current_process_sum += len(list_inference)
-    for i in range(len(list_validation)):
-        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
-        assert (
-            mutation_response.mutated_entities.CREATE[
-                i + current_process_sum
-            ].ai_dataset_type  # type: ignore
-            == AIDatasetType.VALIDATION
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .inputs[0]
-            .guid
-            == list_validation[i].guid  # type: ignore
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .outputs[0]
-            .guid  # type: ignore
-            == ai_model.guid
-        )
-    current_process_sum += len(list_validation)
-    for i in range(len(list_output)):
-        assert mutation_response.mutated_entities.CREATE[i + current_process_sum]
-        assert (
-            mutation_response.mutated_entities.CREATE[
-                i + current_process_sum
-            ].ai_dataset_type  # type: ignore
-            == AIDatasetType.OUTPUT
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].inputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .inputs[0]
-            .guid
-            == ai_model.guid  # type: ignore
-        )
-        assert (
-            mutation_response.mutated_entities.CREATE[i + current_process_sum].outputs  # type: ignore
-            and mutation_response.mutated_entities.CREATE[i + current_process_sum]
-            .outputs[0]
-            .guid  # type: ignore
-            == list_output[i].guid
-        )
+    currnt_processes_sum = 0
+    _assert_response_processes_creator(
+        mutation_response, list_training, AIDatasetType.TRAINING, 0, ai_model
+    )
+    currnt_processes_sum += len(list_training)
+    _assert_response_processes_creator(
+        mutation_response,
+        list_testing,
+        AIDatasetType.TESTING,
+        currnt_processes_sum,
+        ai_model,
+    )
+    currnt_processes_sum += len(list_testing)
+    _assert_response_processes_creator(
+        mutation_response,
+        list_inference,
+        AIDatasetType.INFERENCE,
+        currnt_processes_sum,
+        ai_model,
+    )
+    currnt_processes_sum += len(list_inference)
+    _assert_response_processes_creator(
+        mutation_response,
+        list_validation,
+        AIDatasetType.VALIDATION,
+        currnt_processes_sum,
+        ai_model,
+    )
+    currnt_processes_sum += len(list_validation)
+    _assert_response_processes_creator(
+        mutation_response,
+        list_output,
+        AIDatasetType.OUTPUT,
+        currnt_processes_sum,
+        ai_model,
+    )
+    currnt_processes_sum += len(list_output)
+
+    assert currnt_processes_sum == len(created_processes)
