@@ -27,8 +27,8 @@
         *,
         name: str,
         ai_model_status: AIModelStatus,
-        owner_groups: Optional[Set[str]] = set(),
-        owner_users: Optional[Set[str]] = set(),
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
         ai_model_version: Optional[str] = None,
     ) -> AIModel:
         validate_required_fields(

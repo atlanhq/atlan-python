@@ -48,8 +48,8 @@ class AIModel(AI):
         *,
         name: str,
         ai_model_status: AIModelStatus,
-        owner_groups: Optional[Set[str]] = set(),
-        owner_users: Optional[Set[str]] = set(),
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
         ai_model_version: Optional[str] = None,
     ) -> AIModel:
         validate_required_fields(
@@ -249,14 +249,16 @@ class AIModel(AI):
             *,
             name: str,
             ai_model_status: AIModelStatus,
-            owner_groups: Optional[Set[str]] = set(),
-            owner_users: Optional[Set[str]] = set(),
+            owner_groups: Optional[Set[str]] = None,
+            owner_users: Optional[Set[str]] = None,
             ai_model_version: Optional[str] = None,
         ) -> AIModel.Attributes:
             validate_required_fields(
                 ["name", "ai_model_status"],
                 [name, ai_model_status],
             )
+            owner_groups = owner_groups or set()
+            owner_users = owner_users or set()
             name_camel_case = to_camel_case(name)
             return AIModel.Attributes(
                 name=name,

@@ -31,7 +31,7 @@ class Process(Asset, type_name="Process"):
         outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
-        extra_hash_params: Optional[Set[str]] = set(),
+        extra_hash_params: Optional[Set[str]] = None,
     ) -> Process:
         return Process(
             attributes=Process.Attributes.create(
@@ -55,6 +55,7 @@ class Process(Asset, type_name="Process"):
         outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = None,
     ) -> Process:
         warn(
             (
@@ -71,6 +72,7 @@ class Process(Asset, type_name="Process"):
             outputs=outputs,
             process_id=process_id,
             parent=parent,
+            extra_hash_params=extra_hash_params,
         )
 
     type_name: str = Field(default="Process", allow_mutation=False)
@@ -385,7 +387,7 @@ class Process(Asset, type_name="Process"):
             outputs: List["Catalog"],
             parent: Optional["Process"] = None,
             process_id: Optional[str] = None,
-            extra_hash_params: Optional[Set[str]] = set(),
+            extra_hash_params: Optional[Set[str]] = None,
         ) -> str:
             def append_relationship(output: StringIO, relationship: Asset):
                 if relationship.guid:
@@ -399,6 +401,7 @@ class Process(Asset, type_name="Process"):
                 ["name", "connection_qualified_name", "inputs", "outputs"],
                 [name, connection_qualified_name, inputs, outputs],
             )
+            extra_hash_params = extra_hash_params or set()
             if process_id and process_id.strip():
                 return f"{connection_qualified_name}/{process_id}"
             buffer = StringIO()
@@ -429,7 +432,7 @@ class Process(Asset, type_name="Process"):
             outputs: List["Catalog"],
             process_id: Optional[str] = None,
             parent: Optional[Process] = None,
-            extra_hash_params: Optional[Set[str]] = set(),
+            extra_hash_params: Optional[Set[str]] = None,
         ) -> Process.Attributes:
             qualified_name = Process.Attributes.generate_qualified_name(
                 name=name,

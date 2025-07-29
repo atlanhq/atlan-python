@@ -30,9 +30,9 @@
         name: str,
         ai_application_version: str,
         ai_application_development_stage: AIApplicationDevelopmentStage,
-        owner_groups: Optional[Set[str]] = set(),
-        owner_users: Optional[Set[str]] = set(),
-        models: Optional[List[AIModel]] = [],
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        models: Optional[List[AIModel]] = None,
     ) -> AIApplication:
         validate_required_fields(
             ["name", "ai_application_version", "ai_application_development_stage"],

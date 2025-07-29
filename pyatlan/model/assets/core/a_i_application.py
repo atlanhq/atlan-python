@@ -53,9 +53,9 @@ class AIApplication(AI):
         name: str,
         ai_application_version: str,
         ai_application_development_stage: AIApplicationDevelopmentStage,
-        owner_groups: Optional[Set[str]] = set(),
-        owner_users: Optional[Set[str]] = set(),
-        models: Optional[List[AIModel]] = [],
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        models: Optional[List[AIModel]] = None,
     ) -> AIApplication:
         validate_required_fields(
             ["name", "ai_application_version", "ai_application_development_stage"],
@@ -167,14 +167,17 @@ class AIApplication(AI):
             name: str,
             ai_application_version: str,
             ai_application_development_stage: AIApplicationDevelopmentStage,
-            owner_groups: Optional[Set[str]] = set(),
-            owner_users: Optional[Set[str]] = set(),
-            models: Optional[List[AIModel]] = [],
+            owner_groups: Optional[Set[str]] = None,
+            owner_users: Optional[Set[str]] = None,
+            models: Optional[List[AIModel]] = None,
         ) -> AIApplication.Attributes:
             validate_required_fields(
                 ["name", "ai_application_version", "ai_application_development_stage"],
                 [name, ai_application_version, ai_application_development_stage],
             )
+            owner_groups = owner_groups or set()
+            owner_users = owner_users or set()
+            models = models or []
             name_camel_case = to_camel_case(name)
             return AIApplication.Attributes(
                 name=name,
