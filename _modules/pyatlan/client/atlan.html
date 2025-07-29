@@ -642,6 +642,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
@@ -676,7 +677,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.asset</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">AssetClient</span><span class="p">,</span> <span class="n">IndexSearchResults</span><span class="p">,</span> <span class="n">LineageListResults</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.audit</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuditClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTP_PREFIX</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EVENT_STREAM</span><span class="p">,</span> <span class="n">PARSE_QUERY</span><span class="p">,</span> <span class="n">UPLOAD_IMAGE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EVENT_STREAM</span><span class="p">,</span> <span class="n">GET_TOKEN</span><span class="p">,</span> <span class="n">PARSE_QUERY</span><span class="p">,</span> <span class="n">UPLOAD_IMAGE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.contract</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContractClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.credential</span><span class="w"> </span><span class="kn">import</span> <span class="n">CredentialClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.file</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileClient</span>
@@ -710,7 +711,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.group</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtlanGroup</span><span class="p">,</span> <span class="n">CreateGroupResponse</span><span class="p">,</span> <span class="n">GroupResponse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageListRequest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.query</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParsedQuery</span><span class="p">,</span> <span class="n">QueryParserRequest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.response</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssetMutationResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.response</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccessTokenResponse</span><span class="p">,</span> <span class="n">AssetMutationResponse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.role</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoleResponse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.search</span><span class="w"> </span><span class="kn">import</span> <span class="n">IndexSearchRequest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.typedef</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
@@ -982,6 +983,75 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span> <span class="o">=</span> <span class="n">SourceTagCache</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span>
+
+<div class="viewcode-block" id="AtlanClient.from_token_guid">
+<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.from_token_guid">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_token_guid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanClient</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an AtlanClient instance using an API token GUID.</span>
+
+<span class="sd">        This method performs a multi-step authentication flow:</span>
+<span class="sd">        1. Obtains Atlan-Argo (superuser) access token</span>
+<span class="sd">        2. Uses Argo token to retrieve the API token&#39;s client credentials</span>
+<span class="sd">        3. Exchanges those credentials for an access token</span>
+<span class="sd">        4. Returns a new AtlanClient authenticated with the resolved token</span>
+
+<span class="sd">        :param guid: API token GUID to resolve</span>
+<span class="sd">        :returns: a new client instance authenticated with the resolved token</span>
+<span class="sd">        :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ATLAN_BASE_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Step 1: Initialize base client and get Atlan-Argo credentials</span>
+        <span class="c1"># Note: Using empty api_key as we&#39;re bootstrapping authentication</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">client_info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">impersonate</span><span class="o">.</span><span class="n">_get_client_info</span><span class="p">()</span>
+
+        <span class="c1"># Prepare credentials for Atlan-Argo token request</span>
+        <span class="n">argo_credentials</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">client_info</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="n">client_info</span><span class="o">.</span><span class="n">client_secret</span><span class="p">,</span>
+            <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Step 2: Obtain Atlan-Argo (superuser) access token</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">raw_json</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_TOKEN</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">argo_credentials</span><span class="p">)</span>
+            <span class="n">argo_token</span> <span class="o">=</span> <span class="n">AccessTokenResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
+            <span class="n">temp_argo_client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">argo_token</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">atlan_err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_ESCALATE_WITH_PARAM</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to obtain Atlan-Argo token&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">atlan_err</span>
+
+        <span class="c1"># Step 3: Use Argo client to retrieve API token&#39;s credentials</span>
+        <span class="c1"># Both endpoints require authentication, hence using the Argo token</span>
+        <span class="n">token_secret</span> <span class="o">=</span> <span class="n">temp_argo_client</span><span class="o">.</span><span class="n">impersonate</span><span class="o">.</span><span class="n">get_client_secret</span><span class="p">(</span><span class="n">client_guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span>
+        <span class="n">token_client_id</span> <span class="o">=</span> <span class="n">temp_argo_client</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_by_guid</span><span class="p">(</span>  <span class="c1"># type: ignore[union-attr]</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">guid</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">client_id</span>
+
+        <span class="c1"># Step 4: Exchange API token credentials for access token</span>
+        <span class="n">token_credentials</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">token_client_id</span><span class="p">,</span>
+            <span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="n">token_secret</span><span class="p">,</span>
+            <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">raw_json</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_TOKEN</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">token_credentials</span><span class="p">)</span>
+            <span class="n">token_api_key</span> <span class="o">=</span> <span class="n">AccessTokenResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
+
+            <span class="c1"># Step 5: Create and return the authenticated client</span>
+            <span class="k">return</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">token_api_key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">atlan_err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_ESCALATE_WITH_PARAM</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to obtain access token for API token&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">atlan_err</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">update_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>

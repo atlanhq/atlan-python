@@ -794,6 +794,28 @@ the new model: you should trust this data</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.from_token_guid">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_token_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.from_token_guid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.from_token_guid" title="Link to this definition">¶</a></dt>
+<dd><p>Create an AtlanClient instance using an API token GUID.</p>
+<p>This method performs a multi-step authentication flow:
+1. Obtains Atlan-Argo (superuser) access token
+2. Uses Argo token to retrieve the API token’s client credentials
+3. Exchanges those credentials for an access token
+4. Returns a new AtlanClient authenticated with the resolved token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>guid</strong> – API token GUID to resolve</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a new client instance authenticated with the resolved token</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_admin_events">
 <span class="sig-name descname"><span class="pre">get_admin_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">admin_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AdminEventRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AdminEventResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_admin_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_admin_events" title="Link to this definition">¶</a></dt>
 <dd><p>Deprecated - use admin.get_admin_events() instead.</p>
@@ -1245,6 +1267,7 @@ The original Retry information will be restored when the context is exited.</p>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.find_purposes_by_name"><code class="docutils literal notranslate"><span class="pre">AtlanClient.find_purposes_by_name()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.find_term_by_name"><code class="docutils literal notranslate"><span class="pre">AtlanClient.find_term_by_name()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.find_term_fast_by_name"><code class="docutils literal notranslate"><span class="pre">AtlanClient.find_term_fast_by_name()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.from_token_guid"><code class="docutils literal notranslate"><span class="pre">AtlanClient.from_token_guid()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.get_admin_events"><code class="docutils literal notranslate"><span class="pre">AtlanClient.get_admin_events()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.get_all_groups"><code class="docutils literal notranslate"><span class="pre">AtlanClient.get_all_groups()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.get_all_roles"><code class="docutils literal notranslate"><span class="pre">AtlanClient.get_all_roles()</span></code></a></li>
