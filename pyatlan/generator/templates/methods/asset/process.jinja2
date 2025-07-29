@@ -9,6 +9,7 @@
         outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = None,
     ) -> Process:
         return Process(
             attributes=Process.Attributes.create(
@@ -18,6 +19,7 @@
                 inputs=inputs,
                 outputs=outputs,
                 parent=parent,
+                extra_hash_params=extra_hash_params,
             )
         )
 
@@ -31,6 +33,7 @@
         outputs: List["Catalog"],
         process_id: Optional[str] = None,
         parent: Optional[Process] = None,
+        extra_hash_params: Optional[Set[str]] = None,
     ) -> Process:
         warn(
             (
@@ -47,4 +50,5 @@
             outputs=outputs,
             process_id=process_id,
             parent=parent,
+            extra_hash_params=extra_hash_params,
         )

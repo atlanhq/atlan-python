@@ -138,6 +138,7 @@ class AtlanConnectionCategory(str, Enum):
     SCHEMA_REGISTRY = "schema-registry"
     APP = "app"
     CUSTOM = "custom"
+    AI = "ai"
 
 
 class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
@@ -381,6 +382,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     CRATEDB = ("cratedb", AtlanConnectionCategory.DATABASE)
     KX = ("kx", AtlanConnectionCategory.DATABASE)
     DOCUMENTDB = ("documentdb", AtlanConnectionCategory.DATABASE)
+    AI = ("ai", AtlanConnectionCategory.AI)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
