@@ -24,6 +24,7 @@ from pyatlan.model.typedef import (
     StructDef,
     TypeDef,
     TypeDefResponse,
+    _all_ai_asset_types,
     _all_domain_types,
     _all_glossary_types,
     _all_other_types,
@@ -31,6 +32,7 @@ from pyatlan.model.typedef import (
 )
 from pyatlan.model.utils import to_camel_case, to_snake_case
 from tests.unit.constants import (
+    APPLICABLE_AI_ASSET_TYPES,
     APPLICABLE_ASSET_TYPES,
     APPLICABLE_CONNECTIONS,
     APPLICABLE_DOMAIN_TYPES,
@@ -363,6 +365,7 @@ class TestAttributeDef:
             (APPLICABLE_ASSET_TYPES, {"Table"}),
             (APPLICABLE_GLOSSARY_TYPES, {"AtlasGlossary"}),
             (APPLICABLE_DOMAIN_TYPES, {"DataDomain", "DataProduct"}),
+            (APPLICABLE_AI_ASSET_TYPES, {"AIApplication", "AIModel"}),
             (APPLICABLE_OTHER_ASSET_TYPES, {"File"}),
             (APPLICABLE_ENTITY_TYPES, {"Asset"}),
         ],
@@ -397,6 +400,7 @@ class TestAttributeDef:
             (APPLICABLE_ASSET_TYPES, {random.choice(list(_complete_type_list))}),
             (APPLICABLE_GLOSSARY_TYPES, {random.choice(list(_all_glossary_types))}),
             (APPLICABLE_DOMAIN_TYPES, {random.choice(list(_all_domain_types))}),
+            (APPLICABLE_AI_ASSET_TYPES, {random.choice(list(_all_ai_asset_types))}),
             (APPLICABLE_OTHER_ASSET_TYPES, {random.choice(list(_all_other_types))}),
             (APPLICABLE_ENTITY_TYPES, {"Asset"}),
             (APPLICABLE_CONNECTIONS, {"default/snowflake/1699268171"}),
@@ -424,6 +428,7 @@ class TestAttributeDef:
                 "default/snowflake/16992681799",
             },
             applicable_domains={"default/domain/uuBI8WSqeom1PXs7oo20L/super"},
+            applicable_ai_asset_types={"AIModel", "AIApplication"},
         )
         attribute_def_with_limited = AttributeDef.create(
             client=client,

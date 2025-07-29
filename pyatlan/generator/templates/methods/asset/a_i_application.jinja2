@@ -1,0 +1,49 @@
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+    ) -> AIApplication: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+        owner_groups: Set[str],
+        owner_users: Set[str],
+        models: List[AIModel],
+    ) -> AIApplication: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_application_version: str,
+        ai_application_development_stage: AIApplicationDevelopmentStage,
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        models: Optional[List[AIModel]] = None,
+    ) -> AIApplication:
+        validate_required_fields(
+            ["name", "ai_application_version", "ai_application_development_stage"],
+            [name, ai_application_version, ai_application_development_stage],
+        )
+        attributes = AIApplication.Attributes.creator(
+            name=name,
+            ai_application_version=ai_application_version,
+            ai_application_development_stage=ai_application_development_stage,
+            owner_groups=owner_groups,
+            owner_users=owner_users,
+            models=models,
+        )
+        return cls(attributes=attributes)

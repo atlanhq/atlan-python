@@ -1,5 +1,6 @@
 from pyatlan.model.assets import AtlasGlossary
 from pyatlan.model.constants import (
+    AIAssetTypes,
     AssetTypes,
     DomainTypes,
     EntityTypes,
@@ -599,6 +600,8 @@ APPLICABLE_GLOSSARY_TYPES = "applicable_glossary_types"
 
 APPLICABLE_DOMAIN_TYPES = "applicable_domain_types"
 
+APPLICABLE_AI_ASSET_TYPES = "applicable_ai_asset_types"
+
 APPLICABLE_ASSET_TYPES = "applicable_asset_types"
 
 TEST_ENUM_DEF = {
@@ -720,6 +723,16 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
         APPLICABLE_DOMAIN_TYPES,
         {"Bogus"},
         "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_domain_types'.",
+    ),
+    (
+        APPLICABLE_AI_ASSET_TYPES,
+        1,
+        f"ATLAN-PYTHON-400-048 Invalid parameter type for applicable_ai_asset_types should be {AIAssetTypes}",
+    ),
+    (
+        APPLICABLE_AI_ASSET_TYPES,
+        {"Bogus"},
+        "ATLAN-PYTHON-400-051 Invalid value(s) {'Bogus'} provided for 'applicable_ai_asset_types'.",
     ),
     (
         APPLICABLE_OTHER_ASSET_TYPES,

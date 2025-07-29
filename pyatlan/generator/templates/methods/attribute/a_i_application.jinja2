@@ -1,0 +1,33 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            ai_application_version: str,
+            ai_application_development_stage: AIApplicationDevelopmentStage,
+            owner_groups: Optional[Set[str]] = None,
+            owner_users: Optional[Set[str]] = None,
+            models: Optional[List[AIModel]] = None,
+        ) -> AIApplication.Attributes:
+            validate_required_fields(
+                ["name", "ai_application_version", "ai_application_development_stage"],
+                [name, ai_application_version, ai_application_development_stage],
+            )
+            owner_groups = owner_groups or set()
+            owner_users = owner_users or set()
+            models = models or []
+            name_camel_case = to_camel_case(name)
+            return AIApplication.Attributes(
+                name=name,
+                qualified_name=f"default/ai/aiapplication/{name_camel_case}",
+                connector_name=AtlanConnectorType.AI.value,
+                ai_application_version=ai_application_version,
+                ai_application_development_stage=ai_application_development_stage,
+                owner_groups=owner_groups,
+                owner_users=owner_users,
+                models=models,
+                certificate_status=CertificateStatus.DRAFT,
+                asset_cover_image="/assets/default-product-cover-DeQonY47.webp",
+            )

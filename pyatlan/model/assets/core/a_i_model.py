@@ -4,18 +4,131 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AIModelStatus
+from pyatlan.model.enums import AIDatasetType, AIModelStatus, AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+from pyatlan.utils import init_guid, to_camel_case, validate_required_fields
 
 from .a_i import AI
+from .asset import Asset
+from .process import Process
 
 
 class AIModel(AI):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_model_status: AIModelStatus,
+    ) -> AIModel: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_model_status: AIModelStatus,
+        owner_groups: Set[str],
+        owner_users: Set[str],
+        ai_model_version: str,
+    ) -> AIModel: ...
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        ai_model_status: AIModelStatus,
+        owner_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        ai_model_version: Optional[str] = None,
+    ) -> AIModel:
+        validate_required_fields(
+            ["name", "ai_model_status"],
+            [name, ai_model_status],
+        )
+        attributes = AIModel.Attributes.creator(
+            name=name,
+            ai_model_status=ai_model_status,
+            owner_groups=owner_groups,
+            owner_users=owner_users,
+            ai_model_version=ai_model_version,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    def processes_creator(
+        cls,
+        ai_model: AIModel,
+        dataset_dict: Dict[AIDatasetType, list],
+    ) -> List[Process]:
+        """
+        Creates a list of Process objects representing the relationships between an AI model and its datasets.
+
+        :param ai_model: the AI model for which to create processes
+        :param dataset_dict: dictionary mapping AI dataset types to lists of assets
+        :returns: list of Process objects representing the AI model's data lineage
+        :raises ValueError: when the AI model is missing required attributes (guid or name)
+        """
+        if not ai_model.guid or not ai_model.name:
+            raise ValueError("AI model must have both guid and name attributes")
+        process_list = []
+        for key, value_list in dataset_dict.items():
+            for value in value_list:
+                asset_type = Asset._convert_to_real_type_(value)
+                if key == AIDatasetType.OUTPUT:
+                    process_name = f"{ai_model.name} -> {value.name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
+                        outputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
+                        extra_hash_params={key.value},
+                    )
+                    process_created.ai_dataset_type = key
+                else:
+                    process_name = f"{value.name} -> {ai_model.name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[asset_type.ref_by_guid(guid=value.guid)],  # type: ignore
+                        outputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
+                        extra_hash_params={key.value},
+                    )
+                    process_created.ai_dataset_type = key
+                process_list.append(process_created)
+
+        return process_list
+
+    @classmethod
+    def processes_batch_save(cls, client, process_list: List[Process]) -> List:
+        """
+        Saves a list of Process objects to Atlan in batches to optimize performance.
+        We save the processes in batches of 20.
+
+        :param client: Atlan client instance for making API calls
+        :param process_list: list of Process objects to save
+        :returns: list of API responses from each batch save operation
+        """
+        batch_size = 20
+        total_processes = len(process_list)
+        responses = []
+
+        for i in range(0, total_processes, batch_size):
+            batch = process_list[i : i + batch_size]
+            response = client.asset.save(batch)
+            responses.append(response)
+
+        return responses
 
     type_name: str = Field(default="AIModel", allow_mutation=False)
 
@@ -128,6 +241,35 @@ class AIModel(AI):
         applications: Optional[List[AIApplication]] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            ai_model_status: AIModelStatus,
+            owner_groups: Optional[Set[str]] = None,
+            owner_users: Optional[Set[str]] = None,
+            ai_model_version: Optional[str] = None,
+        ) -> AIModel.Attributes:
+            validate_required_fields(
+                ["name", "ai_model_status"],
+                [name, ai_model_status],
+            )
+            owner_groups = owner_groups or set()
+            owner_users = owner_users or set()
+            name_camel_case = to_camel_case(name)
+            return AIModel.Attributes(
+                name=name,
+                qualified_name=f"default/ai/aiapplication/{name_camel_case}",
+                connector_name=AtlanConnectorType.AI.value,
+                ai_model_status=ai_model_status,
+                ai_model_version=ai_model_version,
+                owner_groups=owner_groups,
+                owner_users=owner_users,
+                asset_cover_image="/assets/default-product-cover-DeQonY47.webp",
+            )
 
     attributes: AIModel.Attributes = Field(
         default_factory=lambda: AIModel.Attributes(),

@@ -14,6 +14,7 @@ GlossaryTypes = Set[
         "AtlasGlossaryTerm",
     ]
 ]
+AIAssetTypes = Set[Literal["AIApplication", "AIModel"]]
 OtherAssetTypes = Set[Literal["File"]]
 AssetTypes = Set[
     Literal[
