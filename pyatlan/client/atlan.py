@@ -7,6 +7,7 @@ import contextlib
 import copy
 import json
 import logging
+import os
 import shutil
 import uuid
 from contextvars import ContextVar
@@ -41,7 +42,7 @@ from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTP_PREFIX, HTTPS_PREFIX
-from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.constants import EVENT_STREAM, GET_TOKEN, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.contract import ContractClient
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
@@ -75,7 +76,7 @@ from pyatlan.model.enums import AtlanConnectorType, AtlanTypeCategory, Certifica
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
 from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
-from pyatlan.model.response import AssetMutationResponse
+from pyatlan.model.response import AccessTokenResponse, AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
@@ -345,6 +346,72 @@ class AtlanClient(BaseSettings):
         if self._source_tag_cache is None:
             self._source_tag_cache = SourceTagCache(client=self)
         return self._source_tag_cache
+
+    @classmethod
+    def from_token_guid(cls, guid: str) -> AtlanClient:
+        """
+        Create an AtlanClient instance using an API token GUID.
+
+        This method performs a multi-step authentication flow:
+        1. Obtains Atlan-Argo (superuser) access token
+        2. Uses Argo token to retrieve the API token's client credentials
+        3. Exchanges those credentials for an access token
+        4. Returns a new AtlanClient authenticated with the resolved token
+
+        :param guid: API token GUID to resolve
+        :returns: a new client instance authenticated with the resolved token
+        :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
+        """
+        base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+
+        # Step 1: Initialize base client and get Atlan-Argo credentials
+        # Note: Using empty api_key as we're bootstrapping authentication
+        client = AtlanClient(base_url=base_url, api_key="")
+        client_info = client.impersonate._get_client_info()
+
+        # Prepare credentials for Atlan-Argo token request
+        argo_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": client_info.client_id,
+            "client_secret": client_info.client_secret,
+            "scope": "openid",
+        }
+
+        # Step 2: Obtain Atlan-Argo (superuser) access token
+        try:
+            raw_json = client._call_api(GET_TOKEN, request_obj=argo_credentials)
+            argo_token = AccessTokenResponse(**raw_json).access_token
+            temp_argo_client = AtlanClient(base_url=base_url, api_key=argo_token)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain Atlan-Argo token"
+            ) from atlan_err
+
+        # Step 3: Use Argo client to retrieve API token's credentials
+        # Both endpoints require authentication, hence using the Argo token
+        token_secret = temp_argo_client.impersonate.get_client_secret(client_guid=guid)
+        token_client_id = temp_argo_client.token.get_by_guid(  # type: ignore[union-attr]
+            guid=guid
+        ).client_id
+
+        # Step 4: Exchange API token credentials for access token
+        token_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": token_client_id,
+            "client_secret": token_secret,
+            "scope": "openid",
+        }
+
+        try:
+            raw_json = client._call_api(GET_TOKEN, request_obj=token_credentials)
+            token_api_key = AccessTokenResponse(**raw_json).access_token
+
+            # Step 5: Create and return the authenticated client
+            return AtlanClient(base_url=base_url, api_key=token_api_key)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain access token for API token"
+            ) from atlan_err
 
     def update_headers(self, header: Dict[str, str]):
         self._session.headers.update(header)

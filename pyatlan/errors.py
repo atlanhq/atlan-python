@@ -714,6 +714,13 @@ class ErrorCode(Enum):
         "Check the details of your configured privileged credentials and the user you requested to impersonate.",
         PermissionError,
     )
+    UNABLE_TO_ESCALATE_WITH_PARAM = (
+        403,
+        "ATLAN-PYTHON-403-003",
+        "Unable to escalate to a privileged user: {0}",
+        "Check the details of your configured privileged credentials.",
+        PermissionError,
+    )
     NOT_FOUND_PASSTHROUGH = (
         404,
         "ATLAN-PYTHON-404-000",

@@ -1618,6 +1618,37 @@ def test_client_401_token_refresh(
     assert results and results.count >= 1
 
 
+def test_client_init_from_token_guid(
+    client: AtlanClient, token: ApiToken, argo_fake_token: ApiToken, monkeypatch
+):
+    # In real-world scenarios, these values come from environment variables
+    # configured at the Argo template level. The SDK uses these values to
+    # create a temporary client, which allows us to find the `client_id` and `client_secret`
+    # for the provided API token GUID, later used to initialize a client with its actual access token (API key) <- AtlanClient.from_token_guid()
+    assert argo_fake_token and argo_fake_token.guid
+    argo_client_secret = client.impersonate.get_client_secret(
+        client_guid=argo_fake_token.guid
+    )
+    monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
+    monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
+
+    # Ensure it's a valid API token
+    assert token and token.username and token.guid
+    assert "service-account" in token.username
+    token_client = AtlanClient.from_token_guid(guid=token.guid)
+
+    # Should be able to perform all operations
+    # with this client as long as it has the necessary permissions
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=token_client)
+    )
+    assert results and results.count >= 1
+
+
 def test_process_assets_when_no_assets_found(client: AtlanClient):
     def should_never_be_called(_: Asset):
         pytest.fail("Should not be called")
