@@ -20,6 +20,11 @@ from pyatlan.model.enums import (
 from .asset import SelfAsset
 {% endif %}
 
+{% if asset_info.name == 'AIModel' %}
+from .asset import Asset
+from .process import Process
+{% endif %}
+
 {% set entity_def = asset_info.entity_def %}
 
 {% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
