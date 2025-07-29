@@ -639,20 +639,139 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIModelStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIDatasetType</span><span class="p">,</span> <span class="n">AIModelStatus</span><span class="p">,</span> <span class="n">AtlanConnectorType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.fields.atlan_fields</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">RelationField</span><span class="p">,</span> <span class="n">TextField</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">to_camel_case</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.a_i</span><span class="w"> </span><span class="kn">import</span> <span class="n">AI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.asset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Asset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.process</span><span class="w"> </span><span class="kn">import</span> <span class="n">Process</span>
 
 
 <div class="viewcode-block" id="AIModel">
 <a class="viewcode-back" href="../../../../../asset/aimodel.html#pyatlan.model.assets.AIModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AIModel</span><span class="p">(</span><span class="n">AI</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_model_status</span><span class="p">:</span> <span class="n">AIModelStatus</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIModel</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_model_status</span><span class="p">:</span> <span class="n">AIModelStatus</span><span class="p">,</span>
+        <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">owner_users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">ai_model_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIModel</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@init_guid</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_model_status</span><span class="p">:</span> <span class="n">AIModelStatus</span><span class="p">,</span>
+        <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">owner_users</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ai_model_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIModel</span><span class="p">:</span>
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_model_status&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">ai_model_status</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">AIModel</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">ai_model_status</span><span class="o">=</span><span class="n">ai_model_status</span><span class="p">,</span>
+            <span class="n">owner_groups</span><span class="o">=</span><span class="n">owner_groups</span><span class="p">,</span>
+            <span class="n">owner_users</span><span class="o">=</span><span class="n">owner_users</span><span class="p">,</span>
+            <span class="n">ai_model_version</span><span class="o">=</span><span class="n">ai_model_version</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AIModel.processes_creator">
+<a class="viewcode-back" href="../../../../../asset/aimodel.html#pyatlan.model.assets.AIModel.processes_creator">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processes_creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">ai_model</span><span class="p">:</span> <span class="n">AIModel</span><span class="p">,</span>
+        <span class="n">dataset_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">AIDatasetType</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Process</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a list of Process objects representing the relationships between an AI model and its datasets.</span>
+
+<span class="sd">        :param ai_model: the AI model for which to create processes</span>
+<span class="sd">        :param dataset_dict: dictionary mapping AI dataset types to lists of assets</span>
+<span class="sd">        :returns: list of Process objects representing the AI model&#39;s data lineage</span>
+<span class="sd">        :raises ValueError: when the AI model is missing required attributes (guid or name)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ai_model</span><span class="o">.</span><span class="n">guid</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ai_model</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AI model must have both guid and name attributes&quot;</span><span class="p">)</span>
+        <span class="n">process_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value_list</span> <span class="ow">in</span> <span class="n">dataset_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">value_list</span><span class="p">:</span>
+                <span class="n">asset_type</span> <span class="o">=</span> <span class="n">Asset</span><span class="o">.</span><span class="n">_convert_to_real_type_</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">AIDatasetType</span><span class="o">.</span><span class="n">OUTPUT</span><span class="p">:</span>
+                    <span class="n">process_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ai_model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">process_created</span> <span class="o">=</span> <span class="n">Process</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">process_name</span><span class="p">,</span>
+                        <span class="n">connection_qualified_name</span><span class="o">=</span><span class="s2">&quot;default/ai/dataset&quot;</span><span class="p">,</span>
+                        <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">AIModel</span><span class="o">.</span><span class="n">ref_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">ai_model</span><span class="o">.</span><span class="n">guid</span><span class="p">)],</span>
+                        <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">asset_type</span><span class="o">.</span><span class="n">ref_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">guid</span><span class="p">)],</span>  <span class="c1"># type: ignore</span>
+                        <span class="n">extra_hash_params</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="o">.</span><span class="n">value</span><span class="p">},</span>
+                    <span class="p">)</span>
+                    <span class="n">process_created</span><span class="o">.</span><span class="n">ai_dataset_type</span> <span class="o">=</span> <span class="n">key</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">process_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">ai_model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">process_created</span> <span class="o">=</span> <span class="n">Process</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">process_name</span><span class="p">,</span>
+                        <span class="n">connection_qualified_name</span><span class="o">=</span><span class="s2">&quot;default/ai/dataset&quot;</span><span class="p">,</span>
+                        <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">asset_type</span><span class="o">.</span><span class="n">ref_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">guid</span><span class="p">)],</span>  <span class="c1"># type: ignore</span>
+                        <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">AIModel</span><span class="o">.</span><span class="n">ref_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">ai_model</span><span class="o">.</span><span class="n">guid</span><span class="p">)],</span>
+                        <span class="n">extra_hash_params</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="o">.</span><span class="n">value</span><span class="p">},</span>
+                    <span class="p">)</span>
+                    <span class="n">process_created</span><span class="o">.</span><span class="n">ai_dataset_type</span> <span class="o">=</span> <span class="n">key</span>
+                <span class="n">process_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process_created</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">process_list</span></div>
+
+
+<div class="viewcode-block" id="AIModel.processes_batch_save">
+<a class="viewcode-back" href="../../../../../asset/aimodel.html#pyatlan.model.assets.AIModel.processes_batch_save">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processes_batch_save</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">process_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Process</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves a list of Process objects to Atlan in batches to optimize performance.</span>
+<span class="sd">        We save the processes in batches of 20.</span>
+
+<span class="sd">        :param client: Atlan client instance for making API calls</span>
+<span class="sd">        :param process_list: list of Process objects to save</span>
+<span class="sd">        :returns: list of API responses from each batch save operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">total_processes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">process_list</span><span class="p">)</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_processes</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">process_list</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+            <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">responses</span></div>
+
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;AIModel&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -765,6 +884,35 @@
         <span class="n">applications</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AIApplication</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="nd">@init_guid</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">ai_model_status</span><span class="p">:</span> <span class="n">AIModelStatus</span><span class="p">,</span>
+            <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">owner_users</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">ai_model_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIModel</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_model_status&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">ai_model_status</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">owner_groups</span> <span class="o">=</span> <span class="n">owner_groups</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">owner_users</span> <span class="o">=</span> <span class="n">owner_users</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">name_camel_case</span> <span class="o">=</span> <span class="n">to_camel_case</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">AIModel</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default/ai/aiapplication/</span><span class="si">{</span><span class="n">name_camel_case</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">AI</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">ai_model_status</span><span class="o">=</span><span class="n">ai_model_status</span><span class="p">,</span>
+                <span class="n">ai_model_version</span><span class="o">=</span><span class="n">ai_model_version</span><span class="p">,</span>
+                <span class="n">owner_groups</span><span class="o">=</span><span class="n">owner_groups</span><span class="p">,</span>
+                <span class="n">owner_users</span><span class="o">=</span><span class="n">owner_users</span><span class="p">,</span>
+                <span class="n">asset_cover_image</span><span class="o">=</span><span class="s2">&quot;/assets/default-product-cover-DeQonY47.webp&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="n">AIModel</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">AIModel</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>

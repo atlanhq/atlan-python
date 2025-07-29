@@ -639,12 +639,17 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIApplicationDevelopmentStage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.enums</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AIApplicationDevelopmentStage</span><span class="p">,</span>
+    <span class="n">AtlanConnectorType</span><span class="p">,</span>
+    <span class="n">CertificateStatus</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.fields.atlan_fields</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeywordField</span><span class="p">,</span> <span class="n">RelationField</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">to_camel_case</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.a_i</span><span class="w"> </span><span class="kn">import</span> <span class="n">AI</span>
 
@@ -653,6 +658,55 @@
 <a class="viewcode-back" href="../../../../../asset/aiapplication.html#pyatlan.model.assets.AIApplication">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AIApplication</span><span class="p">(</span><span class="n">AI</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_development_stage</span><span class="p">:</span> <span class="n">AIApplicationDevelopmentStage</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIApplication</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_development_stage</span><span class="p">:</span> <span class="n">AIApplicationDevelopmentStage</span><span class="p">,</span>
+        <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">owner_users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">models</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AIModel</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIApplication</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@init_guid</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_application_development_stage</span><span class="p">:</span> <span class="n">AIApplicationDevelopmentStage</span><span class="p">,</span>
+        <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">owner_users</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">models</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AIModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIApplication</span><span class="p">:</span>
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_application_version&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_application_development_stage&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">ai_application_version</span><span class="p">,</span> <span class="n">ai_application_development_stage</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">AIApplication</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">ai_application_version</span><span class="o">=</span><span class="n">ai_application_version</span><span class="p">,</span>
+            <span class="n">ai_application_development_stage</span><span class="o">=</span><span class="n">ai_application_development_stage</span><span class="p">,</span>
+            <span class="n">owner_groups</span><span class="o">=</span><span class="n">owner_groups</span><span class="p">,</span>
+            <span class="n">owner_users</span><span class="o">=</span><span class="n">owner_users</span><span class="p">,</span>
+            <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;AIApplication&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -741,6 +795,39 @@
         <span class="n">models</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AIModel</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="nd">@init_guid</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">ai_application_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">ai_application_development_stage</span><span class="p">:</span> <span class="n">AIApplicationDevelopmentStage</span><span class="p">,</span>
+            <span class="n">owner_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">owner_users</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">models</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AIModel</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIApplication</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_application_version&quot;</span><span class="p">,</span> <span class="s2">&quot;ai_application_development_stage&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">ai_application_version</span><span class="p">,</span> <span class="n">ai_application_development_stage</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">owner_groups</span> <span class="o">=</span> <span class="n">owner_groups</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">owner_users</span> <span class="o">=</span> <span class="n">owner_users</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">models</span> <span class="o">=</span> <span class="n">models</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="n">name_camel_case</span> <span class="o">=</span> <span class="n">to_camel_case</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">AIApplication</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default/ai/aiapplication/</span><span class="si">{</span><span class="n">name_camel_case</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">AtlanConnectorType</span><span class="o">.</span><span class="n">AI</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">ai_application_version</span><span class="o">=</span><span class="n">ai_application_version</span><span class="p">,</span>
+                <span class="n">ai_application_development_stage</span><span class="o">=</span><span class="n">ai_application_development_stage</span><span class="p">,</span>
+                <span class="n">owner_groups</span><span class="o">=</span><span class="n">owner_groups</span><span class="p">,</span>
+                <span class="n">owner_users</span><span class="o">=</span><span class="n">owner_users</span><span class="p">,</span>
+                <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+                <span class="n">certificate_status</span><span class="o">=</span><span class="n">CertificateStatus</span><span class="o">.</span><span class="n">DRAFT</span><span class="p">,</span>
+                <span class="n">asset_cover_image</span><span class="o">=</span><span class="s2">&quot;/assets/default-product-cover-DeQonY47.webp&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="n">AIApplication</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">AIApplication</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>

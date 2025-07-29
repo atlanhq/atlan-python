@@ -668,6 +668,7 @@
         <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Catalog&quot;</span><span class="p">],</span>
         <span class="n">process_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Process</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">extra_hash_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Process</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Process</span><span class="p">(</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -677,6 +678,7 @@
                 <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
                 <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
                 <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+                <span class="n">extra_hash_params</span><span class="o">=</span><span class="n">extra_hash_params</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -690,6 +692,7 @@
         <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Catalog&quot;</span><span class="p">],</span>
         <span class="n">process_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Process</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">extra_hash_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Process</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="p">(</span>
@@ -706,6 +709,7 @@
             <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
             <span class="n">process_id</span><span class="o">=</span><span class="n">process_id</span><span class="p">,</span>
             <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+            <span class="n">extra_hash_params</span><span class="o">=</span><span class="n">extra_hash_params</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;Process&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1020,6 +1024,7 @@
             <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Catalog&quot;</span><span class="p">],</span>
             <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Process&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">process_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">extra_hash_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">def</span><span class="w"> </span><span class="nf">append_relationship</span><span class="p">(</span><span class="n">output</span><span class="p">:</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">relationship</span><span class="p">:</span> <span class="n">Asset</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">relationship</span><span class="o">.</span><span class="n">guid</span><span class="p">:</span>
@@ -1033,6 +1038,7 @@
                 <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">,</span> <span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;outputs&quot;</span><span class="p">],</span>
                 <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">],</span>
             <span class="p">)</span>
+            <span class="n">extra_hash_params</span> <span class="o">=</span> <span class="n">extra_hash_params</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">process_id</span> <span class="ow">and</span> <span class="n">process_id</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">process_id</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">buffer</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
@@ -1042,6 +1048,11 @@
                 <span class="n">append_relationship</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
             <span class="n">append_relationships</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
             <span class="n">append_relationships</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+            <span class="c1"># Handles edge case where identical name, connection, input, and output caused hash collisions,</span>
+            <span class="c1"># resulting in duplicate qualified names and backend skipping process creation.</span>
+            <span class="k">if</span> <span class="n">extra_hash_params</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">extra_hash_params</span><span class="p">:</span>
+                    <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
             <span class="n">ret_value</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span>  <span class="c1"># noqa: S303, S324</span>
                 <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
             <span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
@@ -1058,6 +1069,7 @@
             <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Catalog&quot;</span><span class="p">],</span>
             <span class="n">process_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Process</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">extra_hash_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">generate_qualified_name</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
@@ -1066,6 +1078,7 @@
                 <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
                 <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
                 <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+                <span class="n">extra_hash_params</span><span class="o">=</span><span class="n">extra_hash_params</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">connector_name</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">Process</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>

@@ -675,6 +675,44 @@
 <dd><p>TBC</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.assets.AIModel.processes_batch_save">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processes_batch_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="process.html#pyatlan.model.assets.Process" title="pyatlan.model.assets.core.process.Process"><span class="pre">Process</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a></span></span><a class="reference internal" href="../_modules/pyatlan/model/assets/core/a_i_model.html#AIModel.processes_batch_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.assets.AIModel.processes_batch_save" title="Link to this definition">¶</a></dt>
+<dd><p>Saves a list of Process objects to Atlan in batches to optimize performance.
+We save the processes in batches of 20.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Atlan client instance for making API calls</p></li>
+<li><p><strong>process_list</strong> – list of Process objects to save</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of API responses from each batch save operation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.assets.AIModel.processes_creator">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processes_creator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ai_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyatlan.model.assets.AIModel" title="pyatlan.model.assets.core.a_i_model.AIModel"><span class="pre">AIModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">AIDatasetType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="process.html#pyatlan.model.assets.Process" title="pyatlan.model.assets.core.process.Process"><span class="pre">Process</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pyatlan/model/assets/core/a_i_model.html#AIModel.processes_creator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.assets.AIModel.processes_creator" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a list of Process objects representing the relationships between an AI model and its datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ai_model</strong> – the AI model for which to create processes</p></li>
+<li><p><strong>dataset_dict</strong> – dictionary mapping AI dataset types to lists of assets</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Process objects representing the AI model’s data lineage</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – when the AI model is missing required attributes (guid or name)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -741,6 +779,8 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.AIModel.AI_MODEL_VERSION"><code class="docutils literal notranslate"><span class="pre">AIModel.AI_MODEL_VERSION</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.AIModel.AI_MODEL_VERSIONS"><code class="docutils literal notranslate"><span class="pre">AIModel.AI_MODEL_VERSIONS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.AIModel.APPLICATIONS"><code class="docutils literal notranslate"><span class="pre">AIModel.APPLICATIONS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.AIModel.processes_batch_save"><code class="docutils literal notranslate"><span class="pre">AIModel.processes_batch_save()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.AIModel.processes_creator"><code class="docutils literal notranslate"><span class="pre">AIModel.processes_creator()</span></code></a></li>
 </ul>
 </li>
 </ul>
