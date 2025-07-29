@@ -61,13 +61,22 @@ def test_get_deleted_sentinel():
     assert id(sentinel) == id(AtlanTagName.get_deleted_sentinel())
 
 
-def _assert_asset_tags(asset):
+def _assert_asset_tags(asset, is_retranslated=False):
     assert asset and isinstance(asset, Purpose)
     # Verify that deleted tags are correctly set to `None`
-    assert asset.atlan_tags and len(asset.atlan_tags) == 3
+    assert asset.atlan_tags and len(asset.atlan_tags) == 5
     assert asset.atlan_tags[0].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.atlan_tags[1].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.atlan_tags[2].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
+    if not is_retranslated:
+        assert (
+            asset.atlan_tags[2].source_tag_attachments
+            and len(asset.atlan_tags[2].source_tag_attachments) == 1
+        )
+    assert asset.atlan_tags[3].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
+    if not is_retranslated:
+        assert asset.atlan_tags[3].source_tag_attachments == []
+    assert asset.atlan_tags[4].type_name.__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.purpose_atlan_tags and len(asset.purpose_atlan_tags) == 2
     assert asset.purpose_atlan_tags[0].__repr__() == f"AtlanTagName('{DELETED_}')"
     assert asset.purpose_atlan_tags[1].__repr__() == f"AtlanTagName('{DELETED_}')"
@@ -80,8 +89,14 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
     def get_id_for_name(_, __):
         return None
 
-    def get_source_tags_attr_id(_, __):
-        return None
+    def get_source_tags_attr_id(_, tag_id):
+        # Return different values based on tag_id to test different scenarios
+        source_tag_ids = {
+            "source-tag-with-attributes": "ZLVyaOlGWDrkLFZgmZCjLa",  # source tag with attributes
+            "source-tag-without-attributes": "BLVyaOlGWDrkLFZgmZCjLa",
+            "deleted-source-tag": None,  # deleted source tag with attributes
+        }
+        return source_tag_ids.get(tag_id, None)  # Return None for non-source tags
 
     monkeypatch.setattr(
         pyatlan.cache.atlan_tag_cache.AtlanTagCache,
@@ -132,22 +147,67 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
                 "restrictPropagationThroughLineage": True,
                 "restrictPropagationThroughHierarchy": False,
             },
-            # Source tags
+            # Source tags with attributes
             {
-                "typeName": "some-deleted-source-tag-1",
+                "typeName": "source-tag-with-attributes",
                 "attributes": {
-                    "XzEYmFzETBrS7nuxeImNie": [
+                    "ZLVyaOlGWDrkLFZgmZCjLa": [
                         {
-                            "sourceTagName": "CONFIDENTIAL",
-                            "sourceTagQualifiedName": "default/snowflake/1747816988/ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL",
-                            "sourceTagGuid": "2a9dab90-1b86-432d-a28a-9f3d9b61192b",
-                            "sourceTagConnectorName": "snowflake",
-                            "sourceTagValue": [
-                                {"tagAttachmentValue": "Not Restricted"}
-                            ],
+                            "typeName": "SourceTagAttachment",
+                            "attributes": {
+                                "sourceTagName": "CONFIDENTIAL",
+                                "sourceTagQualifiedName": "default/snowflake/1747816988/ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL",
+                                "sourceTagGuid": "2a9dab90-1b86-432d-a28a-9f3d9b61192b",
+                                "sourceTagConnectorName": "snowflake",
+                                "sourceTagValue": [
+                                    {"tagAttachmentValue": "Not Restricted"}
+                                ],
+                            },
                         }
                     ]
                 },
+                "entityGuid": "46be9b92-170b-4c74-bf28-f9dc99021a2a",
+                "entityStatus": "ACTIVE",
+                "propagate": True,
+                "removePropagationsOnEntityDelete": True,
+                "restrictPropagationThroughLineage": False,
+                "restrictPropagationThroughHierarchy": False,
+            },
+            # Source tags (without attributes)
+            {
+                "typeName": "source-tag-without-attributes",
+                "entityGuid": "46be9b92-170b-4c74-bf28-f9dc99021a2a",
+                "entityStatus": "ACTIVE",
+                "propagate": True,
+                "removePropagationsOnEntityDelete": True,
+                "restrictPropagationThroughLineage": False,
+                "restrictPropagationThroughHierarchy": False,
+            },
+            # Deleted source tags (with attributes)
+            {
+                "typeName": "deleted-source-tag",
+                "attributes": {
+                    "XzEYmFzETBrS7nuxeImNie": [
+                        {
+                            "typeName": "SourceTagAttachment",
+                            "attributes": {
+                                "sourceTagName": "CONFIDENTIAL",
+                                "sourceTagQualifiedName": "default/snowflake/1747816988/ANALYTICS/WIDE_WORLD_IMPORTERS/CONFIDENTIAL",
+                                "sourceTagGuid": "2a9dab90-1b86-432d-a28a-9f3d9b61192b",
+                                "sourceTagConnectorName": "snowflake",
+                                "sourceTagValue": [
+                                    {"tagAttachmentValue": "Not Restricted"}
+                                ],
+                            },
+                        }
+                    ]
+                },
+                "entityGuid": "46be9b92-170b-4c74-bf28-f9dc99021a2a",
+                "entityStatus": "DELETED",
+                "propagate": True,
+                "removePropagationsOnEntityDelete": True,
+                "restrictPropagationThroughLineage": False,
+                "restrictPropagationThroughHierarchy": False,
             },
         ],
     }
@@ -173,5 +233,7 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
     )
 
     _assert_asset_tags(purpose_with_translation)
-    _assert_asset_tags(purpose_with_translation_and_retranslation)
-    _assert_asset_tags(purpose_without_translation_and_retranslation)
+    _assert_asset_tags(purpose_with_translation_and_retranslation, is_retranslated=True)
+    _assert_asset_tags(
+        purpose_without_translation_and_retranslation, is_retranslated=True
+    )

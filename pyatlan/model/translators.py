@@ -98,13 +98,13 @@ class AtlanTagTranslator(BaseTranslator):
                             tag_id
                         )
                         if attr_id:
-                            classification[self._SOURCE_ATTACHMENTS] = [
-                                SourceTagAttachment(**source_tag["attributes"])
-                                for source_tag in classification.get("attributes").get(
-                                    attr_id
-                                )
-                                if isinstance(source_tag, dict)
-                                and source_tag.get("attributes")
-                            ]
+                            attributes = classification.get("attributes")
+                            if attributes and attributes.get(attr_id):
+                                classification[self._SOURCE_ATTACHMENTS] = [
+                                    SourceTagAttachment(**source_tag["attributes"])
+                                    for source_tag in attributes.get(attr_id)
+                                    if isinstance(source_tag, dict)
+                                    and source_tag.get("attributes")
+                                ]
 
         return raw_json
