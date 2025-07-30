@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set, overload
 
 from pydantic.v1 import Field, validator
 
@@ -15,6 +15,8 @@ from pyatlan.model.enums import (
     alpha_DQRuleAlertPriority,
     alpha_DQRuleStatus,
     alpha_DQSourceSyncStatus,
+    alpha_DQRuleThresholdCompareOperator,
+    alpha_DQRuleThresholdUnit,
 )
 from pyatlan.model.fields.atlan_fields import (
     KeywordField,
@@ -23,9 +25,15 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import alpha_DQRuleConfigArguments
+from pyatlan.model.structs import alpha_DQRuleConfigArguments, alpha_DQRuleThresholdObject
+from pyatlan.utils import init_guid, validate_required_fields
+# from pyatlan.client.atlan import AtlanClient
+import json
+import uuid
+import time
 
 from .data_quality import DataQuality
+# from fluent_search import FluentSearch
 
 if TYPE_CHECKING:
     from pyatlan.model.assets import Column
@@ -33,6 +41,109 @@ if TYPE_CHECKING:
 
 class alpha_DQRule(DataQuality):
     """Description"""
+    @classmethod
+    @init_guid
+    def custom_sql_creator(
+        cls,
+        *,
+        # client: AtlanClient,
+        rule_name: str,
+        asset: Asset,
+        custom_sql: str,
+        threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+        threshold_value: float,
+        alert_priority: alpha_DQRuleAlertPriority,
+        dimension: alpha_DQDimension,
+        description: Optional[str] = None,
+    ) -> alpha_DQRule:
+        validate_required_fields(
+            ["rule_name", "asset", "threshold_compare_operator", "threshold_value", "alert_priority", "dimension", "custom_sql"],
+            [rule_name, asset, threshold_compare_operator, threshold_value, alert_priority,dimension, custom_sql],
+        )
+        
+        attributes = alpha_DQRule.Attributes.create(
+            # client=client,
+            rule_name=rule_name,
+            rule_type="Custom SQL",
+            asset=asset,
+            threshold_compare_operator=threshold_compare_operator,
+            threshold_value=threshold_value,
+            alert_priority=alert_priority,
+            dimension=dimension,
+            custom_sql=custom_sql,
+            description=description,
+            column_qualified_name=None,
+            threshold_unit=None,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def table_level_rule_creator(
+        cls,
+        *,
+        # client:AtlanClient,
+        rule_type: str,
+        asset: Asset,
+        threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+        threshold_value: float,
+        alert_priority: alpha_DQRuleAlertPriority,
+    ) -> alpha_DQRule:
+        validate_required_fields(
+            ["rule_type", "asset", "threshold_compare_operator", "threshold_value", "alert_priority"],
+            [rule_type, asset, threshold_compare_operator, threshold_value, alert_priority],
+        )
+        
+        attributes = alpha_DQRule.Attributes.create(
+            client=client,
+            rule_type=rule_type,
+            asset=asset,
+            threshold_compare_operator=threshold_compare_operator,
+            threshold_value=threshold_value,
+            alert_priority=alert_priority,
+            rule_name=None,
+            column_qualified_name=None,
+            threshold_unit=None,
+            dimension=None,
+            custom_sql=None,
+            description=None
+        )
+        return cls(attributes=attributes)
+    
+    @classmethod
+    @init_guid
+    def column_level_rule_creator(
+        cls,
+        *,
+        # client:AtlanClient,
+        rule_type: str,
+        asset: Asset,
+        column_qualified_name: str,
+        threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+        threshold_value: float,
+        alert_priority: alpha_DQRuleAlertPriority,
+        threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
+    ) -> alpha_DQRule:
+        validate_required_fields(
+            ["rule_type", "asset", "column_qualified_name", "threshold_compare_operator", "threshold_value", "alert_priority"],
+            [rule_type, asset, column_qualified_name, threshold_compare_operator, threshold_value, alert_priority],
+        )
+        
+        attributes = alpha_DQRule.Attributes.create(
+            client=client,
+            rule_type=rule_type,
+            asset=asset,
+            column_qualified_name=column_qualified_name,
+            threshold_compare_operator=threshold_compare_operator,
+            threshold_value=threshold_value,
+            alert_priority=alert_priority,
+            threshold_unit=threshold_unit,
+            rule_name=None,
+            dimension=None,
+            custom_sql=None,
+            description=None
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="alpha_DQRule", allow_mutation=False)
 
@@ -700,6 +811,149 @@ class alpha_DQRule(DataQuality):
         alpha_dq_rule_reference_datasets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
+    
+        @staticmethod
+        def _generate_config_arguments_raw(
+            *,
+            is_alert_enabled: bool = True,
+            custom_sql: Optional[str] = None,
+            display_name: Optional[str] = None,
+            dimension: Optional[alpha_DQDimension] = None,
+            compare_operator: alpha_DQRuleThresholdCompareOperator,
+            threshold_value: float,
+            threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
+            column_qualified_name: Optional[str] = None,
+            dq_priority: alpha_DQRuleAlertPriority,
+            description: Optional[str] = None
+        ) -> str:
+
+            config = {
+                "isAlertEnabled": is_alert_enabled,
+                "alpha_dqRuleTemplateConfigThresholdObject": {
+                    "alpha_dqRuleTemplateConfigThresholdCompareOperator": compare_operator,
+                    "alpha_dqRuleTemplateConfigThresholdValue": threshold_value,
+                    "alpha_dqRuleTemplateConfigThresholdUnit": threshold_unit,
+                },
+                "alpha_dqRuleTemplateAdvancedSettings.dqPriority": dq_priority,
+            }
+            
+            if column_qualified_name is not None:
+                config["alpha_dqRuleTemplateConfigBaseColumnQualifiedName"] = column_qualified_name
+
+            if description is not None:
+                config["alpha_dqRuleTemplateConfigUserDescription"] = description
+            
+            if custom_sql is not None:
+                config["alpha_dqRuleTemplateConfigCustomSQL"] = custom_sql
+                
+            if display_name is not None:
+                config["alpha_dqRuleTemplateConfigDisplayName"] = display_name
+                        
+            if dimension is not None:
+                config["alpha_dqRuleTemplateConfigDimension"] = dimension
+
+            return json.dumps(config)
+
+        @staticmethod
+        def _generate_uuid():
+            d = int(time.time() * 1000)
+            random_bytes = uuid.uuid4().bytes
+            rand_index = 0
+
+            def replace_char(c):
+                nonlocal d, rand_index
+                r = (d + random_bytes[rand_index % 16]) % 16
+                rand_index += 1
+                d = d // 16
+                if c == 'x':
+                    return hex(r)[2:]
+                elif c == 'y':
+                    return hex((r & 0x3) | 0x8)[2:]  # y -> 8 to b
+                else:
+                    return c
+
+            template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+            uuid_str = ''.join(replace_char(c) if c in 'xy' else c for c in template)
+            return uuid_str
+
+        @classmethod
+        @init_guid
+        def create(
+            cls,
+            *,
+            # client: AtlanClient,
+            rule_name:str,
+            rule_type: str,
+            asset: Asset,
+            threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+            threshold_value: float,
+            alert_priority: alpha_DQRuleAlertPriority,
+            column_qualified_name: Optional[str] = None,
+            threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
+            dimension: Optional[alpha_DQDimension] = None,
+            custom_sql: Optional[str] = None,
+            description: Optional[str] = None,
+        ) -> alpha_DQRule.Attributes:
+            # request = (
+            #         FluentSearch()
+            #         .where(Asset.TYPE_NAME.eq("alpha_DQRuleTemplate"))
+            #         .include_on_results(Asset.NAME)
+            #         .include_on_results(Asset.DISPLAY_NAME)
+            #         .include_on_results(Asset.QUALIFIED_NAME)
+            # ).to_request()  # 
+            # for result in client.asset.search(request):
+            #     if result.display_name == rule_type:
+            #         template_rule_name = result.name
+            #         template_qualified_name = result.qualified_name
+            #         if dimension is None:
+            #             dimension = result.alpha_dq_rule_dimension
+                
+            config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
+                is_alert_enabled=True,
+                custom_sql=custom_sql,
+                display_name=rule_name,
+                dimension=dimension,
+                compare_operator=threshold_compare_operator,
+                threshold_value=threshold_value,
+                threshold_unit=threshold_unit,
+                column_qualified_name = column_qualified_name,
+                dq_priority=alert_priority,
+                description=description,
+            )
+
+
+            attr_dq = alpha_DQRule.Attributes(
+                name="",
+                alpha_dq_rule_config_arguments=alpha_DQRuleConfigArguments(
+                    alpha_dq_rule_threshold_object=alpha_DQRuleThresholdObject(
+                        alpha_dq_rule_threshold_compare_operator=threshold_compare_operator,
+                        alpha_dq_rule_threshold_value=threshold_value,
+                        alpha_dq_rule_threshold_unit=threshold_unit
+                    ),
+                    alpha_dq_rule_config_arguments_raw=config_arguments_raw,
+                ),
+                alpha_dq_rule_base_dataset_qualified_name=asset.qualified_name,
+                alpha_dq_rule_alert_priority=alert_priority,
+                alpha_dq_rule_source_sync_status= alpha_DQSourceSyncStatus.IN_PROGRESS,
+                alpha_dq_rule_status=alpha_DQRuleStatus.ACTIVE,
+                alpha_dq_rule_base_dataset= asset,
+                qualified_name=f"{asset.qualified_name}/rule/{str(cls._generate_uuid())}",
+                alpha_dq_rule_dimension=dimension,
+                # alpha_dq_rule_template_name=template_rule_name,
+                # alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(qualified_name=template_qualified_name),
+            )
+
+            if column_qualified_name is not None:
+                attr_dq.alpha_dq_rule_base_column_qualified_name=column_qualified_name
+                attr_dq.alpha_dq_rule_base_column=Column.ref_by_qualified_name(qualified_name=column_qualified_name)
+
+            if rule_type == "Custom SQL":
+                attr_dq.alpha_dq_rule_custom_s_q_l = custom_sql
+                attr_dq.display_name = rule_name
+                if description is not None:
+                    attr_dq.user_description = description
+
+            return attr_dq
 
     attributes: alpha_DQRule.Attributes = Field(
         default_factory=lambda: alpha_DQRule.Attributes(),
@@ -713,3 +967,4 @@ class alpha_DQRule(DataQuality):
 
 from .alpha__d_q_rule_template import alpha_DQRuleTemplate  # noqa: E402, F401
 from .asset import Asset  # noqa: E402, F401
+# from .column import co

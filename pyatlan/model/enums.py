@@ -2974,3 +2974,8 @@ class alpha_DQSourceSyncStatus(str, Enum):
     FAILURE = "FAILURE"
     IN_PROGRESS = "IN_PROGRESS"
     WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
+
+class alpha_DQRuleThresholdCompareOperator(str, Enum):
+    EQUAL = "EQ"
+    GREATER_THAN_EQUAL = "GTE"
+    LESS_THAN_EQUAL = "LTE"
