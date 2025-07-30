@@ -7,6 +7,11 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar, List, Optional, Set, overload
 
+from pyatlan.utils import init_guid, validate_required_fields,ErrorCode
+import json
+import uuid
+import time
+
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import (
@@ -25,18 +30,15 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+
 from pyatlan.model.structs import alpha_DQRuleConfigArguments, alpha_DQRuleThresholdObject
-from pyatlan.utils import init_guid, validate_required_fields
-# from pyatlan.client.atlan import AtlanClient
-import json
-import uuid
-import time
 
 from .data_quality import DataQuality
-# from fluent_search import FluentSearch
 
 if TYPE_CHECKING:
     from pyatlan.model.assets import Column
+    from pyatlan.client.atlan import AtlanClient
+
 
 
 class alpha_DQRule(DataQuality):
@@ -46,7 +48,7 @@ class alpha_DQRule(DataQuality):
     def custom_sql_creator(
         cls,
         *,
-        # client: AtlanClient,
+        client: AtlanClient,
         rule_name: str,
         asset: Asset,
         custom_sql: str,
@@ -61,8 +63,8 @@ class alpha_DQRule(DataQuality):
             [rule_name, asset, threshold_compare_operator, threshold_value, alert_priority,dimension, custom_sql],
         )
         
-        attributes = alpha_DQRule.Attributes.create(
-            # client=client,
+        attributes = alpha_DQRule.Attributes.creator(
+            client=client,
             rule_name=rule_name,
             rule_type="Custom SQL",
             asset=asset,
@@ -82,7 +84,7 @@ class alpha_DQRule(DataQuality):
     def table_level_rule_creator(
         cls,
         *,
-        # client:AtlanClient,
+        client:AtlanClient,
         rule_type: str,
         asset: Asset,
         threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
@@ -94,7 +96,7 @@ class alpha_DQRule(DataQuality):
             [rule_type, asset, threshold_compare_operator, threshold_value, alert_priority],
         )
         
-        attributes = alpha_DQRule.Attributes.create(
+        attributes = alpha_DQRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
@@ -115,7 +117,7 @@ class alpha_DQRule(DataQuality):
     def column_level_rule_creator(
         cls,
         *,
-        # client:AtlanClient,
+        client:AtlanClient,
         rule_type: str,
         asset: Asset,
         column_qualified_name: str,
@@ -129,7 +131,7 @@ class alpha_DQRule(DataQuality):
             [rule_type, asset, column_qualified_name, threshold_compare_operator, threshold_value, alert_priority],
         )
         
-        attributes = alpha_DQRule.Attributes.create(
+        attributes = alpha_DQRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
@@ -878,10 +880,10 @@ class alpha_DQRule(DataQuality):
 
         @classmethod
         @init_guid
-        def create(
+        def creator(
             cls,
             *,
-            # client: AtlanClient,
+            client: AtlanClient,
             rule_name:str,
             rule_type: str,
             asset: Asset,
@@ -894,19 +896,34 @@ class alpha_DQRule(DataQuality):
             custom_sql: Optional[str] = None,
             description: Optional[str] = None,
         ) -> alpha_DQRule.Attributes:
-            # request = (
-            #         FluentSearch()
-            #         .where(Asset.TYPE_NAME.eq("alpha_DQRuleTemplate"))
-            #         .include_on_results(Asset.NAME)
-            #         .include_on_results(Asset.DISPLAY_NAME)
-            #         .include_on_results(Asset.QUALIFIED_NAME)
-            # ).to_request()  # 
-            # for result in client.asset.search(request):
-            #     if result.display_name == rule_type:
-            #         template_rule_name = result.name
-            #         template_qualified_name = result.qualified_name
-            #         if dimension is None:
-            #             dimension = result.alpha_dq_rule_dimension
+            from pyatlan.model.fluent_search import FluentSearch
+
+            request = (
+                FluentSearch()
+                .where(Asset.TYPE_NAME.eq(alpha_DQRuleTemplate.__name__))
+                .include_on_results(alpha_DQRuleTemplate.NAME)
+                .include_on_results(alpha_DQRuleTemplate.QUALIFIED_NAME)
+                .include_on_results(alpha_DQRuleTemplate.DISPLAY_NAME)
+                .include_on_results(alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_DIMENSION)
+                .include_on_results(alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_CONFIG)
+            ).to_request()
+            for result in client.asset.search(request):
+                if result.display_name == rule_type:
+                    template_rule_name = result.name
+                    template_qualified_name = result.qualified_name
+                    
+                    if dimension is None:
+                        dimension = result.alpha_dq_rule_template_dimension
+
+                    if threshold_unit is None:
+                        threashold_object = result.alpha_dq_rule_template_config.alpha_dq_rule_template_config_threshold_object
+                        threashold_object_json = json.loads(threashold_object)
+                        properties = threashold_object_json.get('properties', {})
+                        threshold_unit_field = properties.get('alpha_dqRuleTemplateConfigThresholdUnit', {})
+                        default_value = threshold_unit_field.get('default')
+                        threshold_unit = default_value
+                # else:
+                #     raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(result.display_name)
                 
             config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
                 is_alert_enabled=True,
@@ -939,8 +956,8 @@ class alpha_DQRule(DataQuality):
                 alpha_dq_rule_base_dataset= asset,
                 qualified_name=f"{asset.qualified_name}/rule/{str(cls._generate_uuid())}",
                 alpha_dq_rule_dimension=dimension,
-                # alpha_dq_rule_template_name=template_rule_name,
-                # alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(qualified_name=template_qualified_name),
+                alpha_dq_rule_template_name=template_rule_name,
+                alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(qualified_name=template_qualified_name),
             )
 
             if column_qualified_name is not None:
