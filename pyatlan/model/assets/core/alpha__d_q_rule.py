@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
@@ -26,6 +26,9 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.structs import alpha_DQRuleConfigArguments
 
 from .data_quality import DataQuality
+
+if TYPE_CHECKING:
+    from pyatlan.model.assets import Column
 
 
 class alpha_DQRule(DataQuality):
@@ -710,4 +713,3 @@ class alpha_DQRule(DataQuality):
 
 from .alpha__d_q_rule_template import alpha_DQRuleTemplate  # noqa: E402, F401
 from .asset import Asset  # noqa: E402, F401
-from .column import Column  # noqa: E402, F401
