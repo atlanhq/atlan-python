@@ -36,51 +36,51 @@ class Cognos(BI):
 
     COGNOS_ID: ClassVar[KeywordField] = KeywordField("cognosId", "cognosId")
     """
-    ID of the asset in Cognos
+    ID of the asset in Cognos.
     """
     COGNOS_PATH: ClassVar[KeywordField] = KeywordField("cognosPath", "cognosPath")
     """
-    Path of the asset in Cognos. E.g. /content/folder[@name='Folder Name']
+    Path of the asset in Cognos (e.g. /content/folder[@name='Folder Name']).
     """
     COGNOS_PARENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "cognosParentName", "cognosParentName.keyword", "cognosParentName"
     )
     """
-    Name of the parent asset in Cognos
+    Name of the parent of the asset in Cognos.
     """
     COGNOS_PARENT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "cognosParentQualifiedName", "cognosParentQualifiedName"
     )
     """
-    Qualified name of the parent asset in Cognos
+    Qualified name of the parent asset in Cognos.
     """
     COGNOS_VERSION: ClassVar[KeywordField] = KeywordField(
         "cognosVersion", "cognosVersion"
     )
     """
-    Version of the Cognos asset
+    Version of the Cognos asset.
     """
     COGNOS_TYPE: ClassVar[KeywordField] = KeywordField("cognosType", "cognosType")
     """
-    Cognos type of the Cognos asset. E.g. report, dashboard, package, etc.
+    Type of the Cognos asset (e.g. report, dashboard, package, etc).
     """
     COGNOS_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
         "cognosIsHidden", "cognosIsHidden"
     )
     """
-    Whether the Cognos asset is hidden from the ui
+    Whether the Cognos asset is hidden from the UI.
     """
     COGNOS_IS_DISABLED: ClassVar[BooleanField] = BooleanField(
         "cognosIsDisabled", "cognosIsDisabled"
     )
     """
-    Whether the Cognos asset is diabled
+    Whether the Cognos asset is disabled.
     """
     COGNOS_DEFAULT_SCREEN_TIP: ClassVar[TextField] = TextField(
         "cognosDefaultScreenTip", "cognosDefaultScreenTip"
     )
     """
-    Tooltip text present for the Cognos asset
+    Tooltip text present for the Cognos asset.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

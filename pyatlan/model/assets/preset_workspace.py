@@ -77,6 +77,12 @@ class PresetWorkspace(Preset):
     """
 
     """
+    PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
+    )
+    """
+
+    """
     PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
         "presetWorkspaceHostname",
         "presetWorkspaceHostname",
@@ -103,12 +109,6 @@ class PresetWorkspace(Preset):
     """
 
     """
-    PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
-    )
-    """
-
-    """
     PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
         "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
     )
@@ -130,11 +130,11 @@ class PresetWorkspace(Preset):
     _convenience_properties: ClassVar[List[str]] = [
         "preset_workspace_public_dashboards_allowed",
         "preset_workspace_cluster_id",
+        "preset_workspace_deployment_id",
         "preset_workspace_hostname",
         "preset_workspace_is_in_maintenance_mode",
         "preset_workspace_region",
         "preset_workspace_status",
-        "preset_workspace_deployment_id",
         "preset_workspace_dashboard_count",
         "preset_workspace_dataset_count",
         "preset_dashboards",
@@ -171,6 +171,22 @@ class PresetWorkspace(Preset):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
+
+    @property
+    def preset_workspace_deployment_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_deployment_id
+        )
+
+    @preset_workspace_deployment_id.setter
+    def preset_workspace_deployment_id(
+        self, preset_workspace_deployment_id: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
 
     @property
     def preset_workspace_hostname(self) -> Optional[str]:
@@ -229,22 +245,6 @@ class PresetWorkspace(Preset):
         self.attributes.preset_workspace_status = preset_workspace_status
 
     @property
-    def preset_workspace_deployment_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_deployment_id
-        )
-
-    @preset_workspace_deployment_id.setter
-    def preset_workspace_deployment_id(
-        self, preset_workspace_deployment_id: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
-
-    @property
     def preset_workspace_dashboard_count(self) -> Optional[int]:
         return (
             None
@@ -293,15 +293,15 @@ class PresetWorkspace(Preset):
             default=None, description=""
         )
         preset_workspace_cluster_id: Optional[int] = Field(default=None, description="")
+        preset_workspace_deployment_id: Optional[int] = Field(
+            default=None, description=""
+        )
         preset_workspace_hostname: Optional[str] = Field(default=None, description="")
         preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
             default=None, description=""
         )
         preset_workspace_region: Optional[str] = Field(default=None, description="")
         preset_workspace_status: Optional[str] = Field(default=None, description="")
-        preset_workspace_deployment_id: Optional[int] = Field(
-            default=None, description=""
-        )
         preset_workspace_dashboard_count: Optional[int] = Field(
             default=None, description=""
         )

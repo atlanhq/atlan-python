@@ -366,3 +366,5 @@ You can interact with all of the following different kinds of assets:
     asset/view
     asset/workflow
     asset/workflowrun
+    asset/alpha_dqrule
+    asset/alpha_dqruletemplate

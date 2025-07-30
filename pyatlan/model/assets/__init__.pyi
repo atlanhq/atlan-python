@@ -62,8 +62,10 @@ __all__ = [
     "DbtSeed",
     "FivetranConnector",
     "Anomalo",
+    "alpha_DQRuleTemplate",
     "MonteCarlo",
     "Metric",
+    "alpha_DQRule",
     "Soda",
     "AIApplication",
     "AIModelVersion",
@@ -85,8 +87,8 @@ __all__ = [
     "SnowflakeStage",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
     "Database",
+    "CalculationView",
     "Procedure",
     "SnowflakeTag",
     "MatillionGroup",
@@ -441,6 +443,8 @@ from .core.adf_pipeline import AdfPipeline
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
+from .core.alpha__d_q_rule import alpha_DQRule
+from .core.alpha__d_q_rule_template import alpha_DQRuleTemplate
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App

@@ -492,6 +492,12 @@ class Column(SQL):
     The type of measure/calculated column this is, eg: base, calculated, derived.
     """
 
+    ALPHADQ_BASE_COLUMN_RULES: ClassVar[RelationField] = RelationField(
+        "alpha_dqBaseColumnRules"
+    )
+    """
+    TBC
+    """
     VIEW: ClassVar[RelationField] = RelationField("view")
     """
     TBC
@@ -509,6 +515,12 @@ class Column(SQL):
     TBC
     """
     FOREIGN_KEY_FROM: ClassVar[RelationField] = RelationField("foreignKeyFrom")
+    """
+    TBC
+    """
+    ALPHADQ_REFERENCE_COLUMN_RULES: ClassVar[RelationField] = RelationField(
+        "alpha_dqReferenceColumnRules"
+    )
     """
     TBC
     """
@@ -628,10 +640,12 @@ class Column(SQL):
         "nosql_collection_qualified_name",
         "column_is_measure",
         "column_measure_type",
+        "alpha_dq_base_column_rules",
         "view",
         "column_dbt_model_columns",
         "cosmos_mongo_d_b_collection",
         "foreign_key_from",
+        "alpha_dq_reference_column_rules",
         "dbt_metrics",
         "snowflake_dynamic_table",
         "nested_columns",
@@ -1326,6 +1340,22 @@ class Column(SQL):
         self.attributes.column_measure_type = column_measure_type
 
     @property
+    def alpha_dq_base_column_rules(self) -> Optional[List[alpha_DQRule]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_base_column_rules
+        )
+
+    @alpha_dq_base_column_rules.setter
+    def alpha_dq_base_column_rules(
+        self, alpha_dq_base_column_rules: Optional[List[alpha_DQRule]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_base_column_rules = alpha_dq_base_column_rules
+
+    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -1376,6 +1406,24 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.foreign_key_from = foreign_key_from
+
+    @property
+    def alpha_dq_reference_column_rules(self) -> Optional[List[alpha_DQRule]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_reference_column_rules
+        )
+
+    @alpha_dq_reference_column_rules.setter
+    def alpha_dq_reference_column_rules(
+        self, alpha_dq_reference_column_rules: Optional[List[alpha_DQRule]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_reference_column_rules = (
+            alpha_dq_reference_column_rules
+        )
 
     @property
     def dbt_metrics(self) -> Optional[List[DbtMetric]]:
@@ -1604,6 +1652,9 @@ class Column(SQL):
         )
         column_is_measure: Optional[bool] = Field(default=None, description="")
         column_measure_type: Optional[str] = Field(default=None, description="")
+        alpha_dq_base_column_rules: Optional[List[alpha_DQRule]] = Field(
+            default=None, description=""
+        )  # relationship
         view: Optional[View] = Field(default=None, description="")  # relationship
         column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
@@ -1612,6 +1663,9 @@ class Column(SQL):
             default=None, description=""
         )  # relationship
         foreign_key_from: Optional[Column] = Field(
+            default=None, description=""
+        )  # relationship
+        alpha_dq_reference_column_rules: Optional[List[alpha_DQRule]] = Field(
             default=None, description=""
         )  # relationship
         dbt_metrics: Optional[List[DbtMetric]] = Field(
@@ -1773,6 +1827,7 @@ class Column(SQL):
     )
 
 
+from .alpha__d_q_rule import alpha_DQRule  # noqa: E402, F401
 from .calculation_view import CalculationView  # noqa: E402, F401
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa: E402, F401
 from .dbt_metric import DbtMetric  # noqa: E402, F401

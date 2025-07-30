@@ -10,7 +10,11 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    QueryUsernameStrategy,
+    alpha_DQEnvironmentSetupStatus,
+)
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -188,6 +192,43 @@ class Connection(Asset, type_name="Connection"):
     """
     Unique identifier (GUID) for the default credentials to use for this connection.
     """
+    ALPHADQ_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
+        "alpha_dqCredentialGuid", "alpha_dqCredentialGuid"
+    )
+    """
+    Unique identifier (GUID) for the data quality credentials to use for this connection.
+    """
+    ALPHAIS_DQ_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "alpha_isDQEnabled", "alpha_isDQEnabled"
+    )
+    """
+    Whether data quality is enabled for this connection (true) or not (false).
+    """
+    ALPHADQ_ENVIRONMENT_SETUP_STATUS: ClassVar[KeywordField] = KeywordField(
+        "alpha_dqEnvironmentSetupStatus", "alpha_dqEnvironmentSetupStatus"
+    )
+    """
+    Status of the data quality environment setup for this connection.
+    """
+    ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE: ClassVar[TextField] = TextField(
+        "alpha_dqEnvironmentSetupErrorMessage", "alpha_dqEnvironmentSetupErrorMessage"
+    )
+    """
+    Error message if data quality environment setup failed for this connection.
+    """
+    ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "alpha_dqEnvironmentSetupStatusUpdatedAt",
+        "alpha_dqEnvironmentSetupStatusUpdatedAt",
+    )
+    """
+    Timestamp when the data quality environment setup status was last updated.
+    """
+    ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME: ClassVar[KeywordField] = KeywordField(
+        "alpha_dqEnvironmentSourceDatabaseName", "alpha_dqEnvironmentSourceDatabaseName"
+    )
+    """
+    Name of the database in the source environment for data quality.
+    """
     CONNECTOR_ICON: ClassVar[TextField] = TextField("connectorIcon", "connectorIcon")
     """
     Unused. Only the value of connectorType impacts icons.
@@ -285,6 +326,12 @@ class Connection(Asset, type_name="Connection"):
         "row_limit",
         "query_timeout",
         "default_credential_guid",
+        "alpha_dq_credential_guid",
+        "alpha_is_d_q_enabled",
+        "alpha_dq_environment_setup_status",
+        "alpha_dq_environment_setup_error_message",
+        "alpha_dq_environment_setup_status_updated_at",
+        "alpha_dq_environment_source_database_name",
         "connector_icon",
         "connector_image",
         "source_logo",
@@ -478,6 +525,105 @@ class Connection(Asset, type_name="Connection"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.default_credential_guid = default_credential_guid
+
+    @property
+    def alpha_dq_credential_guid(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_credential_guid
+        )
+
+    @alpha_dq_credential_guid.setter
+    def alpha_dq_credential_guid(self, alpha_dq_credential_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_credential_guid = alpha_dq_credential_guid
+
+    @property
+    def alpha_is_d_q_enabled(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.alpha_is_d_q_enabled
+
+    @alpha_is_d_q_enabled.setter
+    def alpha_is_d_q_enabled(self, alpha_is_d_q_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_is_d_q_enabled = alpha_is_d_q_enabled
+
+    @property
+    def alpha_dq_environment_setup_status(
+        self,
+    ) -> Optional[alpha_DQEnvironmentSetupStatus]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_environment_setup_status
+        )
+
+    @alpha_dq_environment_setup_status.setter
+    def alpha_dq_environment_setup_status(
+        self,
+        alpha_dq_environment_setup_status: Optional[alpha_DQEnvironmentSetupStatus],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_environment_setup_status = (
+            alpha_dq_environment_setup_status
+        )
+
+    @property
+    def alpha_dq_environment_setup_error_message(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_environment_setup_error_message
+        )
+
+    @alpha_dq_environment_setup_error_message.setter
+    def alpha_dq_environment_setup_error_message(
+        self, alpha_dq_environment_setup_error_message: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_environment_setup_error_message = (
+            alpha_dq_environment_setup_error_message
+        )
+
+    @property
+    def alpha_dq_environment_setup_status_updated_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_environment_setup_status_updated_at
+        )
+
+    @alpha_dq_environment_setup_status_updated_at.setter
+    def alpha_dq_environment_setup_status_updated_at(
+        self, alpha_dq_environment_setup_status_updated_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_environment_setup_status_updated_at = (
+            alpha_dq_environment_setup_status_updated_at
+        )
+
+    @property
+    def alpha_dq_environment_source_database_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_dq_environment_source_database_name
+        )
+
+    @alpha_dq_environment_source_database_name.setter
+    def alpha_dq_environment_source_database_name(
+        self, alpha_dq_environment_source_database_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_dq_environment_source_database_name = (
+            alpha_dq_environment_source_database_name
+        )
 
     @property
     def connector_icon(self) -> Optional[str]:
@@ -702,6 +848,20 @@ class Connection(Asset, type_name="Connection"):
         row_limit: Optional[int] = Field(default=None, description="")
         query_timeout: Optional[int] = Field(default=None, description="")
         default_credential_guid: Optional[str] = Field(default=None, description="")
+        alpha_dq_credential_guid: Optional[str] = Field(default=None, description="")
+        alpha_is_d_q_enabled: Optional[bool] = Field(default=None, description="")
+        alpha_dq_environment_setup_status: Optional[alpha_DQEnvironmentSetupStatus] = (
+            Field(default=None, description="")
+        )
+        alpha_dq_environment_setup_error_message: Optional[str] = Field(
+            default=None, description=""
+        )
+        alpha_dq_environment_setup_status_updated_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        alpha_dq_environment_source_database_name: Optional[str] = Field(
+            default=None, description=""
+        )
         connector_icon: Optional[str] = Field(default=None, description="")
         connector_image: Optional[str] = Field(default=None, description="")
         source_logo: Optional[str] = Field(default=None, description="")

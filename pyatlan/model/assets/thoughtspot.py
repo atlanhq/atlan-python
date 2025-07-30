@@ -51,7 +51,7 @@ class Thoughtspot(BI):
         "thoughtspotColumnCount", "thoughtspotColumnCount"
     )
     """
-    Number of Columns.
+    Number of columns.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

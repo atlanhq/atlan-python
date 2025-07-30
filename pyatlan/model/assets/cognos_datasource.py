@@ -33,7 +33,7 @@ class CognosDatasource(Cognos):
         "cognosDatasourceConnectionString", "cognosDatasourceConnectionString"
     )
     """
-    Connection string of a cognos datasource
+    Connection string of a Cognos datasource.
     """
 
     _convenience_properties: ClassVar[List[str]] = [
