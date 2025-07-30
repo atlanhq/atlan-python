@@ -1,3 +1,22 @@
+## 7.1.4 (July 29, 2025)
+
+### New Features
+- Added new connector types: `AI`, `SAP_ECC`.
+- Added new connector categories: `AI`, `ERP`.
+- Added `creator()` methods for AI-based assets.
+- Added support for `applicable_ai_asset_types` to custom metadata `AttributeDef.Options`.
+
+### Experimental
+- Added support for `AtlanClient` initialization via API token `guid`.
+
+### Bug Fixes
+- Fixed handling of `source_tag` when no `attributes` present.
+
+### QOL Improvements
+- Generated latest typedef models.
+- Updated Dockerfile to use `python:3.13.5-slim-bookworm`.
+- Removed unused `requirements` files (now using `pyproject.toml`).
+
 ## 7.1.3 (July 21, 2025)
 
 ### Bug Fixes

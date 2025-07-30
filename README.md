@@ -8,7 +8,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/pyatlan.svg)](https://pypi.org/project/pyatlan/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Downloads](https://img.shields.io/pypi/dm/pyatlan.svg)](https://pypi.org/project/pyatlan/)
-[![Build Status](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-pr.yaml/badge.svg)](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-pr.yaml)
+[![Build Status](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-publish.yaml/badge.svg)](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-publish.yaml)
 [![Documentation](https://img.shields.io/badge/docs-developer.atlan.com-blue.svg)](https://developer.atlan.com/getting-started/python-sdk/)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fatlanhq%2Fatlan--python-blue.svg)](https://github.com/atlanhq/atlan-python/pkgs/container/atlan-python)
 

@@ -48,7 +48,7 @@ from pyatlan.model.search import (
 from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
-from tests.integration.requests_test import delete_token
+from tests.integration.requests_test import create_token, delete_token
 
 CLASSIFICATION_NAME = "Issue"
 CLASSIFICATION_NAME2 = "Confidential"
@@ -63,6 +63,16 @@ MODULE_NAME = TestId.make_unique("Client")
 TEST_USER_DESCRIPTION = "Automated testing of the Python SDK. (USER)"
 TEST_SYSTEM_DESCRIPTION = "Automated testing of the Python SDK. (SYSTEM)"
 call_count = 0
+
+
+@pytest.fixture(scope="module")
+def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+    token = None
+    try:
+        token = create_token(client, MODULE_NAME)
+        yield token
+    finally:
+        delete_token(client, token)
 
 
 @pytest.fixture(scope="module")
