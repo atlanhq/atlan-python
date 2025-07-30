@@ -2979,3 +2979,6 @@ class alpha_DQRuleThresholdCompareOperator(str, Enum):
     EQUAL = "EQ"
     GREATER_THAN_EQUAL = "GTE"
     LESS_THAN_EQUAL = "LTE"
+    BETWEEN = "BETWEEN"
+    GREATER_THAN = "GT"
+    LESS_THAN = "LT"

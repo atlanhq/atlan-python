@@ -74,7 +74,7 @@ class alpha_DQRule(DataQuality):
             dimension=dimension,
             custom_sql=custom_sql,
             description=description,
-            column_qualified_name=None,
+            column=None,
             threshold_unit=None,
         )
         return cls(attributes=attributes)
@@ -104,7 +104,7 @@ class alpha_DQRule(DataQuality):
             threshold_value=threshold_value,
             alert_priority=alert_priority,
             rule_name=None,
-            column_qualified_name=None,
+            column=None,
             threshold_unit=None,
             dimension=None,
             custom_sql=None,
@@ -120,22 +120,22 @@ class alpha_DQRule(DataQuality):
         client:AtlanClient,
         rule_type: str,
         asset: Asset,
-        column_qualified_name: str,
+        column: Asset,
         threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
         threshold_value: float,
         alert_priority: alpha_DQRuleAlertPriority,
         threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
     ) -> alpha_DQRule:
         validate_required_fields(
-            ["rule_type", "asset", "column_qualified_name", "threshold_compare_operator", "threshold_value", "alert_priority"],
-            [rule_type, asset, column_qualified_name, threshold_compare_operator, threshold_value, alert_priority],
+            ["rule_type", "asset", "column", "threshold_compare_operator", "threshold_value", "alert_priority"],
+            [rule_type, asset, column, threshold_compare_operator, threshold_value, alert_priority],
         )
         
         attributes = alpha_DQRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
-            column_qualified_name=column_qualified_name,
+            column=column,
             threshold_compare_operator=threshold_compare_operator,
             threshold_value=threshold_value,
             alert_priority=alert_priority,
@@ -824,7 +824,7 @@ class alpha_DQRule(DataQuality):
             compare_operator: alpha_DQRuleThresholdCompareOperator,
             threshold_value: float,
             threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
-            column_qualified_name: Optional[str] = None,
+            column: Optional[Asset] = None,
             dq_priority: alpha_DQRuleAlertPriority,
             description: Optional[str] = None
         ) -> str:
@@ -839,8 +839,8 @@ class alpha_DQRule(DataQuality):
                 "alpha_dqRuleTemplateAdvancedSettings.dqPriority": dq_priority,
             }
             
-            if column_qualified_name is not None:
-                config["alpha_dqRuleTemplateConfigBaseColumnQualifiedName"] = column_qualified_name
+            if column is not None:
+                config["alpha_dqRuleTemplateConfigBaseColumnQualifiedName"] = column.qualified_name
 
             if description is not None:
                 config["alpha_dqRuleTemplateConfigUserDescription"] = description
@@ -890,7 +890,7 @@ class alpha_DQRule(DataQuality):
             threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
             threshold_value: float,
             alert_priority: alpha_DQRuleAlertPriority,
-            column_qualified_name: Optional[str] = None,
+            column: Optional[Asset] = None,
             threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
             dimension: Optional[alpha_DQDimension] = None,
             custom_sql: Optional[str] = None,
@@ -907,8 +907,10 @@ class alpha_DQRule(DataQuality):
                 .include_on_results(alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_DIMENSION)
                 .include_on_results(alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_CONFIG)
             ).to_request()
+            present = False
             for result in client.asset.search(request):
                 if result.display_name == rule_type:
+                    present = True
                     template_rule_name = result.name
                     template_qualified_name = result.qualified_name
                     
@@ -922,8 +924,9 @@ class alpha_DQRule(DataQuality):
                         threshold_unit_field = properties.get('alpha_dqRuleTemplateConfigThresholdUnit', {})
                         default_value = threshold_unit_field.get('default')
                         threshold_unit = default_value
-                # else:
-                #     raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(result.display_name)
+
+            if present == False:
+                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(rule_type)    
                 
             config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
                 is_alert_enabled=True,
@@ -933,7 +936,7 @@ class alpha_DQRule(DataQuality):
                 compare_operator=threshold_compare_operator,
                 threshold_value=threshold_value,
                 threshold_unit=threshold_unit,
-                column_qualified_name = column_qualified_name,
+                column = column,
                 dq_priority=alert_priority,
                 description=description,
             )
@@ -960,9 +963,9 @@ class alpha_DQRule(DataQuality):
                 alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(qualified_name=template_qualified_name),
             )
 
-            if column_qualified_name is not None:
-                attr_dq.alpha_dq_rule_base_column_qualified_name=column_qualified_name
-                attr_dq.alpha_dq_rule_base_column=Column.ref_by_qualified_name(qualified_name=column_qualified_name)
+            if column is not None:
+                attr_dq.alpha_dq_rule_base_column_qualified_name=column.qualified_name
+                attr_dq.alpha_dq_rule_base_column=column
 
             if rule_type == "Custom SQL":
                 attr_dq.alpha_dq_rule_custom_s_q_l = custom_sql
