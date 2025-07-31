@@ -25,12 +25,13 @@ def encoders():
     }
 
 
-def convert_with_fixed_prefix(input_str, fixed_prefix='alpha_dq'):
+def convert_with_fixed_prefix(input_str, fixed_prefix="alpha_dq"):
     prefix = fixed_prefix
-    remaining = input_str[len(prefix)+1:]
-    parts = remaining.split('_')
-    camel_part = ''.join(word.capitalize() for word in parts)
+    remaining = input_str[len(prefix) + 1 :]
+    parts = remaining.split("_")
+    camel_part = "".join(word.capitalize() for word in parts)
     return prefix + camel_part
+
 
 def to_camel_case(value: str) -> str:
     if not isinstance(value, str):
