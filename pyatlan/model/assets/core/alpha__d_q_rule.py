@@ -276,10 +276,8 @@ class alpha_DQRule(DataQuality):
             ),
             alpha_dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
             alpha_dq_rule_alert_priority=alert_priority or retrieved_alert_priority,
-            alpha_dq_rule_source_sync_status=alpha_DQSourceSyncStatus.IN_PROGRESS,
-            alpha_dq_rule_status=alpha_DQRuleStatus.ACTIVE,
             alpha_dq_rule_base_dataset=retrieved_asset,
-            qualified_name=retrieved_asset.qualified_name,
+            qualified_name=qualified_name,
             alpha_dq_rule_dimension=dimension or retrieved_dimension,
             alpha_dq_rule_template_name=retrieved_template_rule_name,
             alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(
