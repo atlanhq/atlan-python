@@ -61,6 +61,7 @@ class alpha_DQRule(DataQuality):
     ) -> alpha_DQRule:
         validate_required_fields(
             [
+                "client",
                 "rule_name",
                 "asset",
                 "threshold_compare_operator",
@@ -70,6 +71,7 @@ class alpha_DQRule(DataQuality):
                 "custom_sql",
             ],
             [
+                client,
                 rule_name,
                 asset,
                 threshold_compare_operator,
@@ -110,6 +112,7 @@ class alpha_DQRule(DataQuality):
     ) -> alpha_DQRule:
         validate_required_fields(
             [
+                "client",
                 "rule_type",
                 "asset",
                 "threshold_compare_operator",
@@ -117,6 +120,7 @@ class alpha_DQRule(DataQuality):
                 "alert_priority",
             ],
             [
+                client,
                 rule_type,
                 asset,
                 threshold_compare_operator,
@@ -159,6 +163,7 @@ class alpha_DQRule(DataQuality):
     ) -> alpha_DQRule:
         validate_required_fields(
             [
+                "client",
                 "rule_type",
                 "asset",
                 "column",
@@ -167,6 +172,7 @@ class alpha_DQRule(DataQuality):
                 "alert_priority",
             ],
             [
+                client,
                 rule_type,
                 asset,
                 column,
@@ -212,8 +218,8 @@ class alpha_DQRule(DataQuality):
         from pyatlan.model.fluent_search import FluentSearch
 
         validate_required_fields(
-            ["qualified_name"],
-            [qualified_name],
+            ["client", "qualified_name"],
+            [client, qualified_name],
         )
         request = (
             FluentSearch()
@@ -235,6 +241,11 @@ class alpha_DQRule(DataQuality):
 
         results = client.asset.search(request)
 
+        if results.count != 1:
+            raise ValueError(
+                f"Expected exactly 1 asset for qualified_name: {qualified_name}, "
+                f"but found: {results.count}"
+            )
         search_result = results.current_page()[0]
 
         retrieved_custom_sql = search_result.alpha_dq_rule_custom_s_q_l  # type: ignore[attr-defined]
@@ -246,9 +257,27 @@ class alpha_DQRule(DataQuality):
         retrieved_asset = search_result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
         retrieved_template_rule_name = search_result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
         retrieved_template = search_result.alpha_dq_rule_template  # type: ignore[attr-defined]
-        retrieved_threshold_compare_operator = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
-        retrieved_threshold_value = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_value  # type: ignore[attr-defined]
-        retrieved_threshold_unit = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_unit  # type: ignore[attr-defined]
+        retrieved_threshold_compare_operator = (
+            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
+            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            is not None
+            else None
+        )
+        retrieved_threshold_value = (
+            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_value  # type: ignore[attr-defined]
+            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            is not None
+            else None
+        )  # type: ignore[attr-defined]
+        retrieved_threshold_unit = (
+            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_unit  # type: ignore[attr-defined]
+            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            is not None
+            else None
+        )  # type: ignore[attr-defined]
 
         config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
             is_alert_enabled=True,
@@ -1053,30 +1082,32 @@ class alpha_DQRule(DataQuality):
             custom_sql: Optional[str] = None,
             description: Optional[str] = None,
         ) -> alpha_DQRule.Attributes:
-            template_config = client.template_config_cache.get_template_config(
+            template_config = client.dq_template_config_cache.get_template_config(
                 rule_type
             )
 
             if template_config is None:
                 raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(rule_type)
 
-            template_rule_name = template_config["name"]
-            template_qualified_name = template_config["qualified_name"]
+            template_rule_name = template_config.get("name")
+            template_qualified_name = template_config.get("qualified_name")
 
             if dimension is None:
-                dimension = template_config["dimension"]
+                dimension = template_config.get("dimension")
 
             if threshold_unit is None:
-                threashold_object = template_config[
-                    "config"
-                ].alpha_dq_rule_template_config_threshold_object
-                threashold_object_json = json.loads(threashold_object)
-                properties = threashold_object_json.get("properties", {})
-                threshold_unit_field = properties.get(
-                    "alpha_dqRuleTemplateConfigThresholdUnit", {}
-                )
-                default_value = threshold_unit_field.get("default")
-                threshold_unit = default_value
+                config = template_config.get("config")
+                if config is not None:
+                    threashold_object = (
+                        config.alpha_dq_rule_template_config_threshold_object
+                    )
+                    threashold_object_json = json.loads(threashold_object)
+                    properties = threashold_object_json.get("properties", {})
+                    threshold_unit_field = properties.get(
+                        "alpha_dqRuleTemplateConfigThresholdUnit", {}
+                    )
+                    default_value = threshold_unit_field.get("default")
+                    threshold_unit = default_value
 
             config_arguments_raw = (
                 alpha_DQRule.Attributes._generate_config_arguments_raw(
@@ -1112,7 +1143,7 @@ class alpha_DQRule(DataQuality):
                 alpha_dq_rule_dimension=dimension,
                 alpha_dq_rule_template_name=template_rule_name,
                 alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(
-                    qualified_name=template_qualified_name
+                    qualified_name=template_qualified_name  # type: ignore
                 ),
             )
 

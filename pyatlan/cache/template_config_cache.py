@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 
-class TemplateConfigCache:
+class DQTemplateConfigCache:
     """
     Lazily-loaded cache for DQ rule template configurations to avoid multiple API calls.
     """
@@ -60,7 +60,8 @@ class TemplateConfigCache:
                     )
                 ).to_request()
 
-                for result in self.client.asset.search(request):
+                results = self.client.asset.search(request)
+                for result in results:
                     template_config = {
                         "name": result.name,
                         "qualified_name": result.qualified_name,

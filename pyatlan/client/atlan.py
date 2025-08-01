@@ -37,7 +37,7 @@ from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.cache.group_cache import GroupCache
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.cache.source_tag_cache import SourceTagCache
-from pyatlan.cache.template_config_cache import TemplateConfigCache
+from pyatlan.cache.template_config_cache import DQTemplateConfigCache
 from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
@@ -175,7 +175,9 @@ class AtlanClient(BaseSettings):
     _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
     _connection_cache: Optional[ConnectionCache] = PrivateAttr(default=None)
     _source_tag_cache: Optional[SourceTagCache] = PrivateAttr(default=None)
-    _template_config_cache: Optional[TemplateConfigCache] = PrivateAttr(default=None)
+    _dq_template_config_cache: Optional[DQTemplateConfigCache] = PrivateAttr(
+        default=None
+    )
 
     class Config:
         env_prefix = "atlan_"
@@ -350,10 +352,10 @@ class AtlanClient(BaseSettings):
         return self._source_tag_cache
 
     @property
-    def template_config_cache(self) -> TemplateConfigCache:
-        if self._template_config_cache is None:
-            self._template_config_cache = TemplateConfigCache(client=self)
-        return self._template_config_cache
+    def dq_template_config_cache(self) -> DQTemplateConfigCache:
+        if self._dq_template_config_cache is None:
+            self._dq_template_config_cache = DQTemplateConfigCache(client=self)
+        return self._dq_template_config_cache
 
     @classmethod
     def from_token_guid(cls, guid: str) -> AtlanClient:

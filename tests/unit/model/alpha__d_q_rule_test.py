@@ -26,7 +26,7 @@ from tests.unit.model.constants import (
 @pytest.fixture
 def mock_client():
     client = Mock()
-    client.template_config_cache = Mock()
+    client.dq_template_config_cache = Mock()
 
     # Create a proper config object with a JSON string for threshold_object
     config = Mock()
@@ -40,7 +40,7 @@ def mock_client():
         }
     )
 
-    client.template_config_cache.get_template_config.return_value = {
+    client.dq_template_config_cache.get_template_config.return_value = {
         "name": "Test Template",
         "qualified_name": "test/template/123",
         "dimension": alpha_DQDimension.COMPLETENESS,
