@@ -233,19 +233,22 @@ class alpha_DQRule(DataQuality):
             .include_on_results(alpha_DQRule.ALPHADQ_RULE_STATUS)
         ).to_request()
 
-        for result in client.asset.search(request):
-            retrieved_custom_sql = result.alpha_dq_rule_custom_s_q_l  # type: ignore[attr-defined]
-            retrieved_rule_name = result.display_name
-            retrieved_dimension = result.alpha_dq_rule_dimension  # type: ignore[attr-defined]
-            retrieved_column = result.alpha_dq_rule_base_column  # type: ignore[attr-defined]
-            retrieved_alert_priority = result.alpha_dq_rule_alert_priority  # type: ignore[attr-defined]
-            retrieved_description = result.user_description
-            retrieved_asset = result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
-            retrieved_template_rule_name = result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
-            retrieved_template = result.alpha_dq_rule_template  # type: ignore[attr-defined]
-            retrieved_threshold_compare_operator = result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
-            retrieved_threshold_value = result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_value  # type: ignore[attr-defined]
-            retrieved_threshold_unit = result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_unit  # type: ignore[attr-defined]
+        results = client.asset.search(request)
+
+        search_result = results.current_page()[0]
+
+        retrieved_custom_sql = search_result.alpha_dq_rule_custom_s_q_l  # type: ignore[attr-defined]
+        retrieved_rule_name = search_result.display_name
+        retrieved_dimension = search_result.alpha_dq_rule_dimension  # type: ignore[attr-defined]
+        retrieved_column = search_result.alpha_dq_rule_base_column  # type: ignore[attr-defined]
+        retrieved_alert_priority = search_result.alpha_dq_rule_alert_priority  # type: ignore[attr-defined]
+        retrieved_description = search_result.user_description
+        retrieved_asset = search_result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
+        retrieved_template_rule_name = search_result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
+        retrieved_template = search_result.alpha_dq_rule_template  # type: ignore[attr-defined]
+        retrieved_threshold_compare_operator = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
+        retrieved_threshold_value = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_value  # type: ignore[attr-defined]
+        retrieved_threshold_unit = search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_unit  # type: ignore[attr-defined]
 
         config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
             is_alert_enabled=True,
