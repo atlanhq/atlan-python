@@ -1,3 +1,11 @@
+## 7.1.5 (August 1, 2025)
+
+### Experimental
+- Added `creator()` and `updater()` methods for `alpha_DQRule` (data quality rule) asset.
+
+### QOL Improvements
+- Generated latest typedef models.
+
 ## 7.1.4 (July 29, 2025)
 
 ### New Features
