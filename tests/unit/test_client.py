@@ -10,7 +10,6 @@ import pytest
 from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import (
-    LOGGER,
     AssetClient,
     Batch,
     CustomMetadataHandling,
@@ -20,6 +19,8 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
+from pyatlan.client.shared import Search
+from pyatlan.client.shared.asset import LOGGER as SHARED_LOGGER
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.errors import (
@@ -1568,8 +1569,7 @@ def test_index_search_with_no_aggregation_results(
 def test_type_name_in_asset_search_bool_filter(mock_api_caller):
     # When the type name is not present in the request
     request = (FluentSearch().where(CompoundQuery.active_assets())).to_request()
-    client = AssetClient(mock_api_caller)
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1586,7 +1586,7 @@ def test_type_name_in_asset_search_bool_filter(mock_api_caller):
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
     ).to_request()
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1603,7 +1603,7 @@ def test_type_name_in_asset_search_bool_filter(mock_api_caller):
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_types([AtlasGlossary, AtlasGlossaryTerm]))
     ).to_request()
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1619,9 +1619,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
     # When the type name is not present in the request
     query = Bool(must=[Term.with_state("ACTIVE")])
     request = IndexSearchRequest(dsl=DSL(query=query))
-
-    client = AssetClient(mock_api_caller)
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1635,7 +1633,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
     # When the type name is present in the request (no need to add super type filter)
     query = Bool(must=[Term.with_state("ACTIVE"), Term.with_type_name("AtlasGlossary")])
     request = IndexSearchRequest(dsl=DSL(query=query))
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1655,7 +1653,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
         ]
     )
     request = IndexSearchRequest(dsl=DSL(query=query))
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1679,9 +1677,9 @@ def _assert_search_results(results, response_json, sorts, bulk=False):
     assert results._criteria.dsl.sort == sorts
 
 
-@patch.object(LOGGER, "debug")
+@patch.object(SHARED_LOGGER, "debug")
 def test_index_search_pagination(
-    mock_logger, mock_api_caller, index_search_paging_json
+    mock_shared_logger, mock_api_caller, index_search_paging_json
 ):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
@@ -1717,9 +1715,11 @@ def test_index_search_pagination(
 
     _assert_search_results(results, index_search_paging_json, expected_sorts, True)
     assert mock_api_caller._call_api.call_count == 2
-    assert mock_logger.call_count == 1
-    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
-    mock_logger.reset_mock()
+    assert mock_shared_logger.call_count == 1
+    assert (
+        "Bulk search option is enabled." in mock_shared_logger.call_args_list[0][0][0]
+    )
+    mock_shared_logger.reset_mock()
     mock_api_caller.reset_mock()
 
     # Test search(): when the number of results exceeds the predefined threshold
@@ -1746,12 +1746,12 @@ def test_index_search_pagination(
         ]
         _assert_search_results(results, index_search_paging_json, expected_sorts)
         assert mock_api_caller._call_api.call_count == 3
-        assert mock_logger.call_count == 1
+        assert mock_shared_logger.call_count == 1
         assert (
             "Result size (%s) exceeds threshold (%s)"
-            in mock_logger.call_args_list[0][0][0]
+            in mock_shared_logger.call_args_list[0][0][0]
         )
-    mock_logger.reset_mock()
+    mock_shared_logger.reset_mock()
     mock_api_caller.reset_mock()
 
     # Test search(bulk=False): Raise an exception when the number of results exceeds
