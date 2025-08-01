@@ -40,6 +40,9 @@ from .process import Process
 {% if asset_info.name in asset_info._ASSETS_REQUIRE_CLIENT %}
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
+    {% if asset_info.name == 'alpha_DQRule' %}
+    from pyatlan.model.assets import Column
+    {% endif %}
 {% endif %}
 
 {% if asset_info.name == 'Asset' %}

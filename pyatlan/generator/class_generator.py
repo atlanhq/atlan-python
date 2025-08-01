@@ -227,6 +227,7 @@ class AssetInfo:
         "DataProduct",
         "Referenceable",
         "Purpose",
+        "alpha_DQRule",
     }
     _CORE_ASSETS = {
         "Referenceable",

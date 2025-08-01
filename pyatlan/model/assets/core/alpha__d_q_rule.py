@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     alpha_DQDimension,
     alpha_DQResult,
@@ -32,8 +33,9 @@ from pyatlan.model.structs import (
     alpha_DQRuleConfigArguments,
     alpha_DQRuleThresholdObject,
 )
-from pyatlan.utils import ErrorCode, init_guid, validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
+from .asset import SelfAsset
 from .data_quality import DataQuality
 
 if TYPE_CHECKING:
@@ -1170,5 +1172,5 @@ class alpha_DQRule(DataQuality):
 
 
 from .alpha__d_q_rule_template import alpha_DQRuleTemplate  # noqa: E402, F401
-from .asset import Asset, SelfAsset  # noqa: E402, F401
+from .asset import Asset  # noqa: E402, F401
 # from .column import co
