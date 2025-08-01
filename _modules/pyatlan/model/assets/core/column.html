@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -1132,6 +1134,12 @@
 <span class="sd">    The type of measure/calculated column this is, eg: base, calculated, derived.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">ALPHADQ_BASE_COLUMN_RULES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_dqBaseColumnRules&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VIEW</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;view&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -1149,6 +1157,12 @@
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">FOREIGN_KEY_FROM</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;foreignKeyFrom&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHADQ_REFERENCE_COLUMN_RULES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_dqReferenceColumnRules&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1268,10 +1282,12 @@
         <span class="s2">&quot;nosql_collection_qualified_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;column_is_measure&quot;</span><span class="p">,</span>
         <span class="s2">&quot;column_measure_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_dq_base_column_rules&quot;</span><span class="p">,</span>
         <span class="s2">&quot;view&quot;</span><span class="p">,</span>
         <span class="s2">&quot;column_dbt_model_columns&quot;</span><span class="p">,</span>
         <span class="s2">&quot;cosmos_mongo_d_b_collection&quot;</span><span class="p">,</span>
         <span class="s2">&quot;foreign_key_from&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_dq_reference_column_rules&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dbt_metrics&quot;</span><span class="p">,</span>
         <span class="s2">&quot;snowflake_dynamic_table&quot;</span><span class="p">,</span>
         <span class="s2">&quot;nested_columns&quot;</span><span class="p">,</span>
@@ -1966,6 +1982,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">column_measure_type</span> <span class="o">=</span> <span class="n">column_measure_type</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_base_column_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_base_column_rules</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_dq_base_column_rules</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_base_column_rules</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_dq_base_column_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_base_column_rules</span> <span class="o">=</span> <span class="n">alpha_dq_base_column_rules</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">View</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">view</span>
 
@@ -2016,6 +2048,24 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">foreign_key_from</span> <span class="o">=</span> <span class="n">foreign_key_from</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_reference_column_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_reference_column_rules</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_dq_reference_column_rules</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_reference_column_rules</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_dq_reference_column_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_reference_column_rules</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_dq_reference_column_rules</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dbt_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DbtMetric</span><span class="p">]]:</span>
@@ -2244,6 +2294,9 @@
         <span class="p">)</span>
         <span class="n">column_is_measure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">column_measure_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">alpha_dq_base_column_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">view</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">View</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">column_dbt_model_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DbtModelColumn</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
@@ -2252,6 +2305,9 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">foreign_key_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Column</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">alpha_dq_reference_column_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">dbt_metrics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DbtMetric</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -2414,6 +2470,7 @@
 
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.alpha__d_q_rule</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_DQRule</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.calculation_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalculationView</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.cosmos_mongo_d_b_collection</span><span class="w"> </span><span class="kn">import</span> <span class="n">CosmosMongoDBCollection</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dbt_metric</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtMetric</span>  <span class="c1"># noqa: E402, F401</span>

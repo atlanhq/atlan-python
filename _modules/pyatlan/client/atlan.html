@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -668,6 +670,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.atlan_tag_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtlanTagCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.connection_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConnectionCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.custom_metadata_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomMetadataCache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.dq_template_config_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">DQTemplateConfigCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.enum_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">EnumCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.group_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.role_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoleCache</span>
@@ -811,6 +814,9 @@
     <span class="n">_custom_metadata_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CustomMetadataCache</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_connection_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectionCache</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_source_tag_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SourceTagCache</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_dq_template_config_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DQTemplateConfigCache</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span>
 
     <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;atlan_&quot;</span>
@@ -983,6 +989,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span> <span class="o">=</span> <span class="n">SourceTagCache</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_tag_cache</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_template_config_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DQTemplateConfigCache</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dq_template_config_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dq_template_config_cache</span> <span class="o">=</span> <span class="n">DQTemplateConfigCache</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dq_template_config_cache</span>
 
 <div class="viewcode-block" id="AtlanClient.from_token_guid">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.from_token_guid">[docs]</a>

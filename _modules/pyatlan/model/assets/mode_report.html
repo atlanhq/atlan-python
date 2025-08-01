@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -677,49 +679,49 @@
         <span class="s2">&quot;modeCollectionToken&quot;</span><span class="p">,</span> <span class="s2">&quot;modeCollectionToken&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Token for the Mode collection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_REPORT_PUBLISHED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;modeReportPublishedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;modeReportPublishedAt&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Date and time when the report was published.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_QUERY_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;modeQueryCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeQueryCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Number of queries in this report.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_CHART_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;modeChartCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeChartCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Number of charts in this report.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_QUERY_PREVIEW</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;modeQueryPreview&quot;</span><span class="p">,</span> <span class="s2">&quot;modeQueryPreview&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Preview of the query for the Mode asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_IS_PUBLIC</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;modeIsPublic&quot;</span><span class="p">,</span> <span class="s2">&quot;modeIsPublic&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Whether the report is public.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_IS_SHARED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;modeIsShared&quot;</span><span class="p">,</span> <span class="s2">&quot;modeIsShared&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Whether the report is shared.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_IS_ARCHIVED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;modeIsArchived&quot;</span><span class="p">,</span> <span class="s2">&quot;modeIsArchived&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether the report is archived (true) or unarchived (false)</span>
+<span class="sd">    Whether the report is archived.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MODE_QUERIES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeQueries&quot;</span><span class="p">)</span>

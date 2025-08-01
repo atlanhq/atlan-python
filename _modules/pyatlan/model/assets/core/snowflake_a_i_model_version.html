@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -849,6 +851,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Time (epoch) at which this asset was last profiled, in milliseconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;sqlAIModelContextQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;sqlAIModelContextQualifiedName&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="n">DBT_SOURCES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;dbtSources&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -910,6 +918,7 @@
         <span class="s2">&quot;calculation_view_qualified_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;is_profiled&quot;</span><span class="p">,</span>
         <span class="s2">&quot;last_profiled_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sql_a_i_model_context_qualified_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dbt_sources&quot;</span><span class="p">,</span>
         <span class="s2">&quot;sql_dbt_models&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dbt_tests&quot;</span><span class="p">,</span>
@@ -1323,6 +1332,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">last_profiled_at</span> <span class="o">=</span> <span class="n">last_profiled_at</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sql_a_i_model_context_qualified_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sql_a_i_model_context_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@sql_a_i_model_context_qualified_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sql_a_i_model_context_qualified_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sql_a_i_model_context_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sql_a_i_model_context_qualified_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sql_a_i_model_context_qualified_name</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dbt_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DbtSource</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dbt_sources</span>
 
@@ -1453,6 +1480,9 @@
         <span class="p">)</span>
         <span class="n">is_profiled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">last_profiled_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">sql_a_i_model_context_qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">dbt_sources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DbtSource</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>

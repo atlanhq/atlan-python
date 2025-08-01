@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -1595,6 +1597,13 @@
         <span class="s2">&quot;ATLAN-PYTHON-404-028&quot;</span><span class="p">,</span>
         <span class="s2">&quot;API token with name </span><span class="si">{0}</span><span class="s2"> does not exist.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Verify the API token provided is a valid username for that token.&quot;</span><span class="p">,</span>
+        <span class="n">NotFoundError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">DQ_RULE_NOT_FOUND</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">404</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-404-029&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DQ rule with type </span><span class="si">{0}</span><span class="s2"> was not found.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Verify you have provided a valid DQ rule type.&quot;</span><span class="p">,</span>
         <span class="n">NotFoundError</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">CONFLICT_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>

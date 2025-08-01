@@ -559,6 +559,8 @@
 <li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -654,13 +656,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DatabricksAIModelContext.AI_MODEL_STATUS">
 <span class="sig-name descname"><span class="pre">AI_MODEL_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DatabricksAIModelContext.AI_MODEL_STATUS" title="Link to this definition">¶</a></dt>
-<dd><p>Status of the AI model</p>
+<dd><p>Status of the AI model.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DatabricksAIModelContext.AI_MODEL_VERSION">
 <span class="sig-name descname"><span class="pre">AI_MODEL_VERSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DatabricksAIModelContext.AI_MODEL_VERSION" title="Link to this definition">¶</a></dt>
-<dd><p>Version of the AI model</p>
+<dd><p>Version of the AI model.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -820,6 +822,12 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME">
+<span class="sig-name descname"><span class="pre">SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.DatabricksAIModelContext.SQL_DBT_MODELS">
 <span class="sig-name descname"><span class="pre">SQL_DBT_MODELS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.DatabricksAIModelContext.SQL_DBT_MODELS" title="Link to this definition">¶</a></dt>
 <dd><p>TBC</p>
@@ -945,6 +953,7 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.QUERY_USER_MAP"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.QUERY_USER_MAP</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.SCHEMA_NAME"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.SCHEMA_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.SCHEMA_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.SCHEMA_QUALIFIED_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.SQL_DBT_MODELS"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.SQL_DBT_MODELS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.SQL_DBT_SOURCES"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.SQL_DBT_SOURCES</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.DatabricksAIModelContext.TABLE_NAME"><code class="docutils literal notranslate"><span class="pre">DatabricksAIModelContext.TABLE_NAME</span></code></a></li>

@@ -559,6 +559,8 @@
 <li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -655,6 +657,42 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALLOW_QUERY_PREVIEW">
 <span class="sig-name descname"><span class="pre">ALLOW_QUERY_PREVIEW</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALLOW_QUERY_PREVIEW" title="Link to this definition">¶</a></dt>
 <dd><p>Whether using this connection to run preview queries on the source is allowed (true) or not (false).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHADQ_CREDENTIAL_GUID">
+<span class="sig-name descname"><span class="pre">ALPHADQ_CREDENTIAL_GUID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHADQ_CREDENTIAL_GUID" title="Link to this definition">¶</a></dt>
+<dd><p>Unique identifier (GUID) for the data quality credentials to use for this connection.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE">
+<span class="sig-name descname"><span class="pre">ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/text_field.html#pyatlan.model.fields.atlan_fields.TextField" title="pyatlan.model.fields.atlan_fields.TextField"><span class="pre">TextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.TextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE" title="Link to this definition">¶</a></dt>
+<dd><p>Error message if data quality environment setup failed for this connection.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS">
+<span class="sig-name descname"><span class="pre">ALPHADQ_ENVIRONMENT_SETUP_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS" title="Link to this definition">¶</a></dt>
+<dd><p>Status of the data quality environment setup for this connection.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT">
+<span class="sig-name descname"><span class="pre">ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT" title="Link to this definition">¶</a></dt>
+<dd><p>Timestamp when the data quality environment setup status was last updated.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME">
+<span class="sig-name descname"><span class="pre">ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the database in the source environment for data quality.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.ALPHAIS_DQ_ENABLED">
+<span class="sig-name descname"><span class="pre">ALPHAIS_DQ_ENABLED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.ALPHAIS_DQ_ENABLED" title="Link to this definition">¶</a></dt>
+<dd><p>Whether data quality is enabled for this connection (true) or not (false).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -885,6 +923,12 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection"><code class="docutils literal notranslate"><span class="pre">Connection</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALLOW_QUERY"><code class="docutils literal notranslate"><span class="pre">Connection.ALLOW_QUERY</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALLOW_QUERY_PREVIEW"><code class="docutils literal notranslate"><span class="pre">Connection.ALLOW_QUERY_PREVIEW</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHADQ_CREDENTIAL_GUID"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHADQ_CREDENTIAL_GUID</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHADQ_ENVIRONMENT_SETUP_ERROR_MESSAGE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHADQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHADQ_ENVIRONMENT_SOURCE_DATABASE_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.ALPHAIS_DQ_ENABLED"><code class="docutils literal notranslate"><span class="pre">Connection.ALPHAIS_DQ_ENABLED</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.CATEGORY"><code class="docutils literal notranslate"><span class="pre">Connection.CATEGORY</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.CONNECTION_DBT_ENVIRONMENTS"><code class="docutils literal notranslate"><span class="pre">Connection.CONNECTION_DBT_ENVIRONMENTS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.CONNECTION_SSO_CREDENTIAL_GUID"><code class="docutils literal notranslate"><span class="pre">Connection.CONNECTION_SSO_CREDENTIAL_GUID</span></code></a></li>

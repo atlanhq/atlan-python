@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -653,6 +655,10 @@
     <span class="n">CertificateStatus</span><span class="p">,</span>
     <span class="n">SaveSemantic</span><span class="p">,</span>
     <span class="n">SourceCostUnitType</span><span class="p">,</span>
+    <span class="n">alpha_DQDimension</span><span class="p">,</span>
+    <span class="n">alpha_DQResult</span><span class="p">,</span>
+    <span class="n">alpha_DQScheduleType</span><span class="p">,</span>
+    <span class="n">alpha_DQSourceSyncStatus</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.fields.atlan_fields</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
@@ -910,6 +916,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">ASSET_SOURCE_README</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
+        <span class="s2">&quot;assetSourceReadme&quot;</span><span class="p">,</span> <span class="s2">&quot;assetSourceReadme.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;assetSourceReadme&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Readme of this asset, as extracted from source. If present, this will be used for the readme in user interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">USER_DESCRIPTION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;userDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;userDescription.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;userDescription&quot;</span>
     <span class="p">)</span>
@@ -1765,6 +1777,135 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Name to use for this type of asset, as a subtype of the actual typeName.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ASSET_INTERNAL_POPULARITY_SCORE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericRankField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericRankField</span><span class="p">(</span>
+        <span class="s2">&quot;assetInternalPopularityScore&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;assetInternalPopularityScore&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;assetInternalPopularityScore.rank_feature&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal Popularity score for this asset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleType&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQScheduleType&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type of schedule of the DQ rule that will run at datasource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_CRONTAB</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleCrontab&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQScheduleCrontab&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crontab of the DQ rule that will run at datasource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_TIME_ZONE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleTimeZone&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQScheduleTimeZone&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Timezone of the DQ rule schedule that will run at datasource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleSourceSyncStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQScheduleSourceSyncStatus&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Latest sync status of the schedule to the source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleSourceSyncedAt&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQScheduleSourceSyncedAt&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) at which the schedule synced to the source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQScheduleSourceSyncErrorMessage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_assetDQScheduleSourceSyncErrorMessage&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Error message in the case of sync state being &quot;error&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleAttachedDimensions&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleAttachedDimensions&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the dimensions of attached rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleFailedDimensions&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleFailedDimensions&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the dimensions of failed rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRulePassedDimensions&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRulePassedDimensions&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the dimensions for which all the rules passed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleAttachedRuleTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleAttachedRuleTypes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the types of attached rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleFailedRuleTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleFailedRuleTypes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the types of failed rules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRulePassedRuleTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRulePassedRuleTypes&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all the types of rules for which all the rules passed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_RESULT_TAGS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleResultTags&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleResultTags&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tag for the result of the DQ rules. eg. rule_pass:completeness:null_count</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_LAST_RUN_AT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleLastRunAt&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleLastRunAt&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time (epoch) at which the last dq rule ran.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_TOTAL_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleTotalCount&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleTotalCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count of DQ rules attached to this asset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_FAILED_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRuleFailedCount&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRuleFailedCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count of failed DQ rules attached to this asset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RULE_PASSED_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQRulePassedCount&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQRulePassedCount&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count of passed DQ rules attached to this asset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_RESULT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQResult&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQResult&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overall result of all the dq rules. (If any one rule failed, then fail else pass)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_FRESHNESS_VALUE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQFreshnessValue&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQFreshnessValue&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Value of data freshness from Source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHAASSET_DQ_FRESHNESS_EXPECTATION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_assetDQFreshnessExpectation&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_assetDQFreshnessExpectation&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expectation of data freshness from Source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SCHEMA_REGISTRY_SUBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
         <span class="s2">&quot;schemaRegistrySubjects&quot;</span>
@@ -1800,6 +1941,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHADQ_BASE_DATASET_RULES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_dqBaseDatasetRules&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">README</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;readme&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -1809,6 +1956,12 @@
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">DATA_CONTRACT_LATEST</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;dataContractLatest&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ALPHADQ_REFERENCE_DATASET_RULES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
+        <span class="s2">&quot;alpha_dqReferenceDatasetRules&quot;</span>
+    <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1851,6 +2004,7 @@
         <span class="s2">&quot;name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;display_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;asset_source_readme&quot;</span><span class="p">,</span>
         <span class="s2">&quot;user_description&quot;</span><span class="p">,</span>
         <span class="s2">&quot;tenant_id&quot;</span><span class="p">,</span>
         <span class="s2">&quot;certificate_status&quot;</span><span class="p">,</span>
@@ -1997,16 +2151,39 @@
         <span class="s2">&quot;application_qualified_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;application_field_qualified_name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;asset_user_defined_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;asset_internal_popularity_score&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_crontab&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_time_zone&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_source_sync_status&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_source_synced_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_schedule_source_sync_error_message&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_attached_dimensions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_failed_dimensions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_passed_dimensions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_attached_rule_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_failed_rule_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_passed_rule_types&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_result_tags&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_last_run_at&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_total_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_failed_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_rule_passed_count&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_result&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_freshness_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_asset_d_q_freshness_expectation&quot;</span><span class="p">,</span>
         <span class="s2">&quot;schema_registry_subjects&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_contract_latest_certified&quot;</span><span class="p">,</span>
         <span class="s2">&quot;anomalo_checks&quot;</span><span class="p">,</span>
         <span class="s2">&quot;user_def_relationship_to&quot;</span><span class="p">,</span>
         <span class="s2">&quot;output_port_data_products&quot;</span><span class="p">,</span>
         <span class="s2">&quot;user_def_relationship_from&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_dq_base_dataset_rules&quot;</span><span class="p">,</span>
         <span class="s2">&quot;readme&quot;</span><span class="p">,</span>
         <span class="s2">&quot;application_field&quot;</span><span class="p">,</span>
         <span class="s2">&quot;data_contract_latest&quot;</span><span class="p">,</span>
         <span class="s2">&quot;assigned_terms&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_dq_reference_dataset_rules&quot;</span><span class="p">,</span>
         <span class="s2">&quot;mc_monitors&quot;</span><span class="p">,</span>
         <span class="s2">&quot;application&quot;</span><span class="p">,</span>
         <span class="s2">&quot;files&quot;</span><span class="p">,</span>
@@ -2046,6 +2223,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">asset_source_readme</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_source_readme</span>
+
+    <span class="nd">@asset_source_readme</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">asset_source_readme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_source_readme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_source_readme</span> <span class="o">=</span> <span class="n">asset_source_readme</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">user_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -3999,6 +4186,386 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_user_defined_type</span> <span class="o">=</span> <span class="n">asset_user_defined_type</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">asset_internal_popularity_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_internal_popularity_score</span>
+        <span class="p">)</span>
+
+    <span class="nd">@asset_internal_popularity_score</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">asset_internal_popularity_score</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">asset_internal_popularity_score</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_internal_popularity_score</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">asset_internal_popularity_score</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQScheduleType</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_type</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_schedule_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQScheduleType</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_type</span> <span class="o">=</span> <span class="n">alpha_asset_d_q_schedule_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_crontab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_crontab</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_crontab</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_crontab</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_schedule_crontab</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_crontab</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_schedule_crontab</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_time_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_time_zone</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_time_zone</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_time_zone</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_schedule_time_zone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_time_zone</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_schedule_time_zone</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_sync_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQSourceSyncStatus</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_sync_status</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_source_sync_status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_sync_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alpha_asset_d_q_schedule_source_sync_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQSourceSyncStatus</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_sync_status</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_schedule_source_sync_status</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_synced_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_synced_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_source_synced_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_synced_at</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_schedule_source_synced_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_synced_at</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_schedule_source_synced_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_sync_error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_sync_error_message</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_schedule_source_sync_error_message</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_schedule_source_sync_error_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_schedule_source_sync_error_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_schedule_source_sync_error_message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_schedule_source_sync_error_message</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_attached_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_attached_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_attached_dimensions</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_attached_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alpha_asset_d_q_rule_attached_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]],</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_attached_dimensions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_attached_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_failed_dimensions</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_failed_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_dimensions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_failed_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_passed_dimensions</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_passed_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_dimensions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_passed_dimensions</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_attached_rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_attached_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_attached_rule_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_attached_rule_types</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_attached_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_attached_rule_types</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_attached_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_failed_rule_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_rule_types</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_failed_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_rule_types</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_failed_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_passed_rule_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_rule_types</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_passed_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_rule_types</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_passed_rule_types</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_result_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_result_tags</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_result_tags</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_result_tags</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_result_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_result_tags</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_result_tags</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_last_run_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_last_run_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_last_run_at</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_last_run_at</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_last_run_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_last_run_at</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_last_run_at</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_total_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_total_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_total_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_total_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_total_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_total_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_total_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_failed_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_failed_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_failed_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_failed_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_failed_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_rule_passed_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_rule_passed_count</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_rule_passed_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_rule_passed_count</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_rule_passed_count</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQResult</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_result</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_result</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQResult</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_result</span> <span class="o">=</span> <span class="n">alpha_asset_d_q_result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_freshness_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_freshness_value</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_freshness_value</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_freshness_value</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_freshness_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_freshness_value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_freshness_value</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_freshness_expectation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_freshness_expectation</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_asset_d_q_freshness_expectation</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_asset_d_q_freshness_expectation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_asset_d_q_freshness_expectation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_asset_d_q_freshness_expectation</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_asset_d_q_freshness_expectation</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">schema_registry_subjects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
@@ -4089,6 +4656,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">user_def_relationship_from</span> <span class="o">=</span> <span class="n">user_def_relationship_from</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_base_dataset_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_base_dataset_rules</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_dq_base_dataset_rules</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_base_dataset_rules</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_dq_base_dataset_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_base_dataset_rules</span> <span class="o">=</span> <span class="n">alpha_dq_base_dataset_rules</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">readme</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Readme</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">readme</span>
 
@@ -4127,6 +4710,24 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">meanings</span> <span class="o">=</span> <span class="n">assigned_terms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_reference_dataset_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_reference_dataset_rules</span>
+        <span class="p">)</span>
+
+    <span class="nd">@alpha_dq_reference_dataset_rules</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_dq_reference_dataset_rules</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alpha_dq_reference_dataset_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">alpha_dq_reference_dataset_rules</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alpha_dq_reference_dataset_rules</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">mc_monitors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MCMonitor</span><span class="p">]]:</span>
@@ -4218,6 +4819,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">display_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">asset_source_readme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">user_description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">tenant_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">certificate_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CertificateStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -4488,6 +5090,69 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>
         <span class="n">asset_user_defined_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">asset_internal_popularity_score</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQScheduleType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_crontab</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_time_zone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_source_sync_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">alpha_DQSourceSyncStatus</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_source_synced_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_schedule_source_sync_error_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_attached_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_failed_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_passed_dimensions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQDimension</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_attached_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_failed_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_passed_rule_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_result_tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_last_run_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_total_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_failed_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_rule_passed_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">alpha_DQResult</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_freshness_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">alpha_asset_d_q_freshness_expectation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">schema_registry_subjects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
@@ -4506,6 +5171,9 @@
         <span class="n">user_def_relationship_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Referenceable</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">alpha_dq_base_dataset_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">readme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Readme</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">application_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ApplicationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
@@ -4514,6 +5182,9 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">meanings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">alpha_dq_reference_dataset_rules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">alpha_DQRule</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
         <span class="n">mc_monitors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MCMonitor</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -4571,6 +5242,7 @@
 
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.alpha__d_q_rule</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_DQRule</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.anomalo_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnomaloCheck</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.application</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.application_field</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApplicationField</span>  <span class="c1"># noqa: E402, F401</span>

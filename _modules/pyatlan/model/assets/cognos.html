@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -673,51 +675,51 @@
 
     <span class="n">COGNOS_ID</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;cognosId&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosId&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ID of the asset in Cognos</span>
+<span class="sd">    ID of the asset in Cognos.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_PATH</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;cognosPath&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosPath&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Path of the asset in Cognos. E.g. /content/folder[@name=&#39;Folder Name&#39;]</span>
+<span class="sd">    Path of the asset in Cognos (e.g. /content/folder[@name=&#39;Folder Name&#39;]).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_PARENT_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordTextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span>
         <span class="s2">&quot;cognosParentName&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosParentName.keyword&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosParentName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Name of the parent asset in Cognos</span>
+<span class="sd">    Name of the parent of the asset in Cognos.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_PARENT_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;cognosParentQualifiedName&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosParentQualifiedName&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Qualified name of the parent asset in Cognos</span>
+<span class="sd">    Qualified name of the parent asset in Cognos.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;cognosVersion&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosVersion&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Version of the Cognos asset</span>
+<span class="sd">    Version of the Cognos asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;cognosType&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosType&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Cognos type of the Cognos asset. E.g. report, dashboard, package, etc.</span>
+<span class="sd">    Type of the Cognos asset (e.g. report, dashboard, package, etc).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_IS_HIDDEN</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;cognosIsHidden&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosIsHidden&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether the Cognos asset is hidden from the ui</span>
+<span class="sd">    Whether the Cognos asset is hidden from the UI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_IS_DISABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
         <span class="s2">&quot;cognosIsDisabled&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosIsDisabled&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Whether the Cognos asset is diabled</span>
+<span class="sd">    Whether the Cognos asset is disabled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">COGNOS_DEFAULT_SCREEN_TIP</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span>
         <span class="s2">&quot;cognosDefaultScreenTip&quot;</span><span class="p">,</span> <span class="s2">&quot;cognosDefaultScreenTip&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Tooltip text present for the Cognos asset</span>
+<span class="sd">    Tooltip text present for the Cognos asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>

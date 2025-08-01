@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -668,13 +670,13 @@
 
     <span class="n">MODE_RAW_QUERY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">TextField</span><span class="p">]</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s2">&quot;modeRawQuery&quot;</span><span class="p">,</span> <span class="s2">&quot;modeRawQuery&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Raw query for the Mode asset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">MODE_REPORT_IMPORT_COUNT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
         <span class="s2">&quot;modeReportImportCount&quot;</span><span class="p">,</span> <span class="s2">&quot;modeReportImportCount&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Number of reports imported into this query.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">MODE_REPORT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;modeReport&quot;</span><span class="p">)</span>

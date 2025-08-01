@@ -559,6 +559,8 @@
 <li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -661,6 +663,138 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ADMIN_USERS">
 <span class="sig-name descname"><span class="pre">ADMIN_USERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ADMIN_USERS" title="Link to this definition">¶</a></dt>
 <dd><p>List of users who administer this asset. (This is only used for certain asset types.)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_EXPECTATION">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_FRESHNESS_EXPECTATION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_EXPECTATION" title="Link to this definition">¶</a></dt>
+<dd><p>Expectation of data freshness from Source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_VALUE">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_FRESHNESS_VALUE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_VALUE" title="Link to this definition">¶</a></dt>
+<dd><p>Value of data freshness from Source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RESULT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RESULT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RESULT" title="Link to this definition">¶</a></dt>
+<dd><p>Overall result of all the dq rules. (If any one rule failed, then fail else pass)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the dimensions of attached rules.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the types of attached rules.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_COUNT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_FAILED_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_COUNT" title="Link to this definition">¶</a></dt>
+<dd><p>Count of failed DQ rules attached to this asset</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the dimensions of failed rules.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the types of failed rules.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_LAST_RUN_AT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_LAST_RUN_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_LAST_RUN_AT" title="Link to this definition">¶</a></dt>
+<dd><p>Time (epoch) at which the last dq rule ran.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_COUNT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_PASSED_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_COUNT" title="Link to this definition">¶</a></dt>
+<dd><p>Count of passed DQ rules attached to this asset</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the dimensions for which all the rules passed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES" title="Link to this definition">¶</a></dt>
+<dd><p>List of all the types of rules for which all the rules passed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_RESULT_TAGS">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_RESULT_TAGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_RESULT_TAGS" title="Link to this definition">¶</a></dt>
+<dd><p>Tag for the result of the DQ rules. eg. rule_pass:completeness:null_count</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_TOTAL_COUNT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_RULE_TOTAL_COUNT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_TOTAL_COUNT" title="Link to this definition">¶</a></dt>
+<dd><p>Count of DQ rules attached to this asset</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_CRONTAB">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_CRONTAB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_CRONTAB" title="Link to this definition">¶</a></dt>
+<dd><p>Crontab of the DQ rule that will run at datasource</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT" title="Link to this definition">¶</a></dt>
+<dd><p>Time (epoch) at which the schedule synced to the source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/text_field.html#pyatlan.model.fields.atlan_fields.TextField" title="pyatlan.model.fields.atlan_fields.TextField"><span class="pre">TextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.TextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE" title="Link to this definition">¶</a></dt>
+<dd><p>Error message in the case of sync state being “error”.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS" title="Link to this definition">¶</a></dt>
+<dd><p>Latest sync status of the schedule to the source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TIME_ZONE">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_TIME_ZONE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TIME_ZONE" title="Link to this definition">¶</a></dt>
+<dd><p>Timezone of the DQ rule schedule that will run at datasource</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TYPE">
+<span class="sig-name descname"><span class="pre">ALPHAASSET_DQ_SCHEDULE_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TYPE" title="Link to this definition">¶</a></dt>
+<dd><p>Type of schedule of the DQ rule that will run at datasource</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHADQ_BASE_DATASET_RULES">
+<span class="sig-name descname"><span class="pre">ALPHADQ_BASE_DATASET_RULES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHADQ_BASE_DATASET_RULES" title="Link to this definition">¶</a></dt>
+<dd><p>TBC</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ALPHADQ_REFERENCE_DATASET_RULES">
+<span class="sig-name descname"><span class="pre">ALPHADQ_REFERENCE_DATASET_RULES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/relation_field.html#pyatlan.model.fields.atlan_fields.RelationField" title="pyatlan.model.fields.atlan_fields.RelationField"><span class="pre">RelationField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.RelationField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ALPHADQ_REFERENCE_DATASET_RULES" title="Link to this definition">¶</a></dt>
+<dd><p>TBC</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1030,6 +1164,12 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_INTERNAL_POPULARITY_SCORE">
+<span class="sig-name descname"><span class="pre">ASSET_INTERNAL_POPULARITY_SCORE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_rank_field.html#pyatlan.model.fields.atlan_fields.NumericRankField" title="pyatlan.model.fields.atlan_fields.NumericRankField"><span class="pre">NumericRankField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericRankField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_INTERNAL_POPULARITY_SCORE" title="Link to this definition">¶</a></dt>
+<dd><p>Internal Popularity score for this asset.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_MC_ALERT_QUALIFIED_NAMES">
 <span class="sig-name descname"><span class="pre">ASSET_MC_ALERT_QUALIFIED_NAMES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_MC_ALERT_QUALIFIED_NAMES" title="Link to this definition">¶</a></dt>
 <dd><p>List of unique Monte Carlo alert names attached to this asset.</p>
@@ -1169,6 +1309,12 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL">
 <span class="sig-name descname"><span class="pre">ASSET_SODA_SOURCE_URL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_SOURCE_README">
+<span class="sig-name descname"><span class="pre">ASSET_SOURCE_README</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_text_field.html#pyatlan.model.fields.atlan_fields.KeywordTextField" title="pyatlan.model.fields.atlan_fields.KeywordTextField"><span class="pre">KeywordTextField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordTextField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Asset.ASSET_SOURCE_README" title="Link to this definition">¶</a></dt>
+<dd><p>Readme of this asset, as extracted from source. If present, this will be used for the readme in user interface.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Asset.ASSET_TAGS">
@@ -1722,6 +1868,28 @@ downstream chain a .direction() call</p>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ADMIN_GROUPS"><code class="docutils literal notranslate"><span class="pre">Asset.ADMIN_GROUPS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ADMIN_ROLES"><code class="docutils literal notranslate"><span class="pre">Asset.ADMIN_ROLES</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ADMIN_USERS"><code class="docutils literal notranslate"><span class="pre">Asset.ADMIN_USERS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_EXPECTATION"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_FRESHNESS_EXPECTATION</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_FRESHNESS_VALUE"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_FRESHNESS_VALUE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RESULT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RESULT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_COUNT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_FAILED_COUNT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_LAST_RUN_AT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_LAST_RUN_AT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_COUNT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_PASSED_COUNT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_RESULT_TAGS"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_RESULT_TAGS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_RULE_TOTAL_COUNT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_RULE_TOTAL_COUNT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_CRONTAB"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_CRONTAB</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TIME_ZONE"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_TIME_ZONE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHAASSET_DQ_SCHEDULE_TYPE"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHAASSET_DQ_SCHEDULE_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHADQ_BASE_DATASET_RULES"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHADQ_BASE_DATASET_RULES</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ALPHADQ_REFERENCE_DATASET_RULES"><code class="docutils literal notranslate"><span class="pre">Asset.ALPHADQ_REFERENCE_DATASET_RULES</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_MESSAGE"><code class="docutils literal notranslate"><span class="pre">Asset.ANNOUNCEMENT_MESSAGE</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_TITLE"><code class="docutils literal notranslate"><span class="pre">Asset.ANNOUNCEMENT_TITLE</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ANNOUNCEMENT_TYPE"><code class="docutils literal notranslate"><span class="pre">Asset.ANNOUNCEMENT_TYPE</span></code></a></li>
@@ -1783,6 +1951,7 @@ downstream chain a .direction() call</p>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_DBT_UNIQUE_ID"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_DBT_UNIQUE_ID</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_DBT_WORKFLOW_LAST_UPDATED"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_DBT_WORKFLOW_LAST_UPDATED</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_ICON"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_ICON</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_INTERNAL_POPULARITY_SCORE"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_INTERNAL_POPULARITY_SCORE</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_MC_ALERT_QUALIFIED_NAMES"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_MC_ALERT_QUALIFIED_NAMES</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_NAMES"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_MC_INCIDENT_NAMES</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_MC_INCIDENT_PRIORITIES"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_MC_INCIDENT_PRIORITIES</span></code></a></li>
@@ -1807,6 +1976,7 @@ downstream chain a .direction() call</p>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_SODA_LAST_SCAN_AT"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_SODA_LAST_SCAN_AT</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_SODA_LAST_SYNC_RUN_AT"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_SODA_LAST_SYNC_RUN_AT</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_SODA_SOURCE_URL"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_SODA_SOURCE_URL</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_SOURCE_README"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_SOURCE_README</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_TAGS"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_TAGS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_THEME_HEX"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_THEME_HEX</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Asset.ASSET_USER_DEFINED_TYPE"><code class="docutils literal notranslate"><span class="pre">Asset.ASSET_USER_DEFINED_TYPE</span></code></a></li>

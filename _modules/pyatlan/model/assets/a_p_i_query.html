@@ -558,6 +558,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflowrun.html">WorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
@@ -769,13 +771,13 @@
         <span class="s2">&quot;apiQueryOutputType&quot;</span><span class="p">,</span> <span class="s2">&quot;apiQueryOutputType&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type of APIQueryOutput. E.g. STRING, NUMBER etc. It is free text.</span>
+<span class="sd">    Type of APIQueryOutput, as free text (e.g. STRING, NUMBER etc).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">API_QUERY_OUTPUT_TYPE_SECONDARY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
         <span class="s2">&quot;apiQueryOutputTypeSecondary&quot;</span><span class="p">,</span> <span class="s2">&quot;apiQueryOutputTypeSecondary&quot;</span>
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Secondary Type of APIQueryOutput. E.g. LIST/STRING then LIST would be the secondary type.</span>
+<span class="sd">    Secondary Type of APIQueryOutput (e.g. LIST/STRING then LIST would be the secondary type).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">API_FIELDS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;apiFields&quot;</span><span class="p">)</span>
