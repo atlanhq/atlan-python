@@ -1,5 +1,5 @@
+import httpx
 import pytest
-import requests
 
 from pyatlan.test_utils.base_vcr import BaseVCR
 
@@ -28,7 +28,7 @@ class TestBaseVCRJSON(BaseVCR):
         Test a simple GET request to httpbin.
         """
         url = f"{self.BASE_URL}/get"
-        response = requests.get(url, params={"test": "value"})
+        response = httpx.get(url, params={"test": "value"})
         assert response.status_code == 200
         assert response.json()["args"]["test"] == "value"
 
@@ -39,7 +39,7 @@ class TestBaseVCRJSON(BaseVCR):
         """
         url = f"{self.BASE_URL}/post"
         payload = {"name": "atlan", "type": "integration-test"}
-        response = requests.post(url, json=payload)
+        response = httpx.post(url, json=payload)
         assert response.status_code == 200
         assert response.json()["json"] == payload
 
@@ -50,7 +50,7 @@ class TestBaseVCRJSON(BaseVCR):
         """
         url = f"{self.BASE_URL}/put"
         payload = {"update": "value"}
-        response = requests.put(url, json=payload)
+        response = httpx.put(url, json=payload)
         assert response.status_code == 200
         assert response.json()["json"] == payload
 
@@ -60,6 +60,6 @@ class TestBaseVCRJSON(BaseVCR):
         Test a simple DELETE request to httpbin.
         """
         url = f"{self.BASE_URL}/delete"
-        response = requests.delete(url)
+        response = httpx.delete(url)
         assert response.status_code == 200
         assert response.json()["args"] == {}
