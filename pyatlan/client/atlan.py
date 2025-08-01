@@ -33,11 +33,11 @@ from urllib3.util.retry import Retry
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.cache.dq_template_config_cache import DQTemplateConfigCache
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.cache.group_cache import GroupCache
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.cache.source_tag_cache import SourceTagCache
-from pyatlan.cache.template_config_cache import DQTemplateConfigCache
 from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
