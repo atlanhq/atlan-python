@@ -33,6 +33,7 @@ from urllib3.util.retry import Retry
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.cache.dq_template_config_cache import DQTemplateConfigCache
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.cache.group_cache import GroupCache
 from pyatlan.cache.role_cache import RoleCache
@@ -174,6 +175,9 @@ class AtlanClient(BaseSettings):
     _custom_metadata_cache: Optional[CustomMetadataCache] = PrivateAttr(default=None)
     _connection_cache: Optional[ConnectionCache] = PrivateAttr(default=None)
     _source_tag_cache: Optional[SourceTagCache] = PrivateAttr(default=None)
+    _dq_template_config_cache: Optional[DQTemplateConfigCache] = PrivateAttr(
+        default=None
+    )
 
     class Config:
         env_prefix = "atlan_"
@@ -346,6 +350,12 @@ class AtlanClient(BaseSettings):
         if self._source_tag_cache is None:
             self._source_tag_cache = SourceTagCache(client=self)
         return self._source_tag_cache
+
+    @property
+    def dq_template_config_cache(self) -> DQTemplateConfigCache:
+        if self._dq_template_config_cache is None:
+            self._dq_template_config_cache = DQTemplateConfigCache(client=self)
+        return self._dq_template_config_cache
 
     @classmethod
     def from_token_guid(cls, guid: str) -> AtlanClient:

@@ -40,49 +40,49 @@ class ModeReport(Mode):
         "modeCollectionToken", "modeCollectionToken"
     )
     """
-
+    Token for the Mode collection.
     """
     MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
         "modeReportPublishedAt", "modeReportPublishedAt"
     )
     """
-
+    Date and time when the report was published.
     """
     MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
         "modeQueryCount", "modeQueryCount"
     )
     """
-
+    Number of queries in this report.
     """
     MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
         "modeChartCount", "modeChartCount"
     )
     """
-
+    Number of charts in this report.
     """
     MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
         "modeQueryPreview", "modeQueryPreview"
     )
     """
-
+    Preview of the query for the Mode asset.
     """
     MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
         "modeIsPublic", "modeIsPublic"
     )
     """
-
+    Whether the report is public.
     """
     MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
         "modeIsShared", "modeIsShared"
     )
     """
-
+    Whether the report is shared.
     """
     MODE_IS_ARCHIVED: ClassVar[BooleanField] = BooleanField(
         "modeIsArchived", "modeIsArchived"
     )
     """
-    Whether the report is archived (true) or unarchived (false)
+    Whether the report is archived.
     """
 
     MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")

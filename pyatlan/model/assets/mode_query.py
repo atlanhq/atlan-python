@@ -31,13 +31,13 @@ class ModeQuery(Mode):
 
     MODE_RAW_QUERY: ClassVar[TextField] = TextField("modeRawQuery", "modeRawQuery")
     """
-
+    Raw query for the Mode asset.
     """
     MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
         "modeReportImportCount", "modeReportImportCount"
     )
     """
-
+    Number of reports imported into this query.
     """
 
     MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")

@@ -153,13 +153,13 @@ class AIModel(AI):
         "aiModelStatus", "aiModelStatus"
     )
     """
-    Status of the AI model
+    Status of the AI model.
     """
     AI_MODEL_VERSION: ClassVar[KeywordField] = KeywordField(
         "aiModelVersion", "aiModelVersion"
     )
     """
-    Version of the AI model
+    Version of the AI model.
     """
 
     AI_MODEL_VERSIONS: ClassVar[RelationField] = RelationField("aiModelVersions")

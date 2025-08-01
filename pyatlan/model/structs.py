@@ -15,6 +15,7 @@ from pyatlan.model.enums import (
     FormFieldDimension,
     FormFieldType,
     SourceCostUnitType,
+    alpha_DQRuleThresholdUnit,
 )
 from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
@@ -45,6 +46,19 @@ class AtlanObject(BaseModel):
         return values
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -59,19 +73,6 @@ class DbtJobRun(AtlanObject):
     dbt_model_run_status: Optional[str] = Field(default=None, description="")
     dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
-
-
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
 
 
 class AwsCloudWatchMetric(AtlanObject):
@@ -141,6 +142,41 @@ class SourceTagAttachmentValue(AtlanObject):
 
     tag_attachment_key: Optional[str] = Field(default=None, description="")
     tag_attachment_value: Optional[str] = Field(default=None, description="")
+
+
+class alpha_DQRuleTemplateConfig(AtlanObject):
+    """Description"""
+
+    alpha_dq_rule_template_config_base_dataset_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_base_column_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_reference_dataset_qualified_names: Optional[str] = (
+        Field(default=None, description="")
+    )
+    alpha_dq_rule_template_config_reference_column_qualified_names: Optional[str] = (
+        Field(default=None, description="")
+    )
+    alpha_dq_rule_template_config_threshold_object: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_display_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_custom_s_q_l: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_dimension: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_config_user_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_template_advanced_settings: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class StarredDetails(AtlanObject):
@@ -213,15 +249,6 @@ class FormField(AtlanObject):
     form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
 
 
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
-
-
 class DatabricksAIModelVersionMetric(AtlanObject):
     """Description"""
 
@@ -237,6 +264,15 @@ class DatabricksAIModelVersionMetric(AtlanObject):
     databricks_a_i_model_version_metric_step: Optional[int] = Field(
         default=None, description=""
     )
+
+
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class SourceTagAttachment(AtlanObject):
@@ -395,6 +431,29 @@ class AuthPolicyCondition(AtlanObject):
     policy_condition_values: Set[str] = Field(description="")
 
 
+class alpha_DQRuleConfigArguments(AtlanObject):
+    """Description"""
+
+    alpha_dq_rule_threshold_object: Optional[alpha_DQRuleThresholdObject] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_config_arguments_raw: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
+class alpha_DQRuleRangeForTesting(AtlanObject):
+    """Description"""
+
+    alpha_dq_rule_range_operator: Optional[str] = Field(default=None, description="")
+    alpha_dq_rule_lower_bound_for_testing: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_upper_bound_for_testing: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -434,6 +493,18 @@ class GoogleLabel(AtlanObject):
     google_label_value: str = Field(description="")
 
 
+class alpha_DQRuleThresholdObject(AtlanObject):
+    """Description"""
+
+    alpha_dq_rule_threshold_compare_operator: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_threshold_value: Optional[float] = Field(default=None, description="")
+    alpha_dq_rule_threshold_unit: Optional[alpha_DQRuleThresholdUnit] = Field(
+        default=None, description=""
+    )
+
+
 class PopularityInsights(AtlanObject):
     """Description"""
 
@@ -461,9 +532,9 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-DbtJobRun.update_forward_refs()
-
 MCRuleSchedule.update_forward_refs()
+
+DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
@@ -477,6 +548,8 @@ BadgeCondition.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 
+alpha_DQRuleTemplateConfig.update_forward_refs()
+
 StarredDetails.update_forward_refs()
 
 AwsTag.update_forward_refs()
@@ -489,15 +562,19 @@ ResponseValue.update_forward_refs()
 
 FormField.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
-
 DatabricksAIModelVersionMetric.update_forward_refs()
+
+KafkaTopicConsumption.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 
 AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
+
+alpha_DQRuleConfigArguments.update_forward_refs()
+
+alpha_DQRuleRangeForTesting.update_forward_refs()
 
 DbtMetricFilter.update_forward_refs()
 
@@ -506,6 +583,8 @@ AuthPolicyValiditySchedule.update_forward_refs()
 MCRuleComparison.update_forward_refs()
 
 GoogleLabel.update_forward_refs()
+
+alpha_DQRuleThresholdObject.update_forward_refs()
 
 PopularityInsights.update_forward_refs()
 

@@ -285,6 +285,12 @@ class DynamoDBSecondaryIndex(Table):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+    )
+    """
+    Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
+    """  # noqa: E501
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -367,6 +373,7 @@ class DynamoDBSecondaryIndex(Table):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "sql_a_i_model_context_qualified_name",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
@@ -879,6 +886,24 @@ class DynamoDBSecondaryIndex(Table):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def sql_a_i_model_context_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_a_i_model_context_qualified_name
+        )
+
+    @sql_a_i_model_context_qualified_name.setter
+    def sql_a_i_model_context_qualified_name(
+        self, sql_a_i_model_context_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_a_i_model_context_qualified_name = (
+            sql_a_i_model_context_qualified_name
+        )
+
+    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -1015,6 +1040,9 @@ class DynamoDBSecondaryIndex(Table):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        sql_a_i_model_context_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )

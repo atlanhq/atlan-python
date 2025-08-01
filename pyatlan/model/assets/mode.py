@@ -31,25 +31,25 @@ class Mode(BI):
 
     MODE_ID: ClassVar[KeywordField] = KeywordField("modeId", "modeId")
     """
-
+    Unique identifier for the Mode asset.
     """
     MODE_TOKEN: ClassVar[KeywordTextField] = KeywordTextField(
         "modeToken", "modeToken", "modeToken.text"
     )
     """
-
+    Token for the Mode asset.
     """
     MODE_WORKSPACE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceName", "modeWorkspaceName.keyword", "modeWorkspaceName"
     )
     """
-
+    Simple name of the workspace for the Mode asset.
     """
     MODE_WORKSPACE_USERNAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
     )
     """
-
+    Username of the workspace for the Mode asset.
     """
     MODE_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeWorkspaceQualifiedName",
@@ -57,13 +57,13 @@ class Mode(BI):
         "modeWorkspaceQualifiedName.text",
     )
     """
-
+    Unique name of the workspace for the Mode asset.
     """
     MODE_REPORT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeReportName", "modeReportName.keyword", "modeReportName"
     )
     """
-
+    Simple name of the report for the Mode asset.
     """
     MODE_REPORT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeReportQualifiedName",
@@ -71,13 +71,13 @@ class Mode(BI):
         "modeReportQualifiedName.text",
     )
     """
-
+    Unique name of the report for the Mode asset.
     """
     MODE_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeQueryName", "modeQueryName.keyword", "modeQueryName"
     )
     """
-
+    Simple name of the query for the Mode asset.
     """
     MODE_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "modeQueryQualifiedName",
@@ -85,7 +85,7 @@ class Mode(BI):
         "modeQueryQualifiedName.text",
     )
     """
-
+    Unique name of the query for the Mode asset.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

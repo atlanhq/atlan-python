@@ -86,7 +86,7 @@ class SalesforceField(Salesforce):
     """
     PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
     """
-    Total number of digits allowed
+    Total number of digits allowed.
     """
     NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
     """

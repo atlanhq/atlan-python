@@ -33,19 +33,19 @@ class QuickSight(BI):
         "quickSightId", "quickSightId"
     )
     """
-
+    Unique identifier for the QuickSight asset.
     """
     QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
         "quickSightSheetId", "quickSightSheetId"
     )
     """
-
+    Unique identifier for the QuickSight sheet.
     """
     QUICK_SIGHT_SHEET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "quickSightSheetName", "quickSightSheetName.keyword", "quickSightSheetName"
     )
     """
-
+    Name of the QuickSight sheet.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

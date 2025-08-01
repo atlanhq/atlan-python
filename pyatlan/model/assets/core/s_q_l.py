@@ -128,6 +128,12 @@ class SQL(Catalog):
     """
     Time (epoch) at which this asset was last profiled, in milliseconds.
     """
+    SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+    )
+    """
+    Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
+    """  # noqa: E501
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -171,6 +177,7 @@ class SQL(Catalog):
         "calculation_view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "sql_a_i_model_context_qualified_name",
         "dbt_sources",
         "sql_dbt_models",
         "dbt_tests",
@@ -356,6 +363,24 @@ class SQL(Catalog):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
+    def sql_a_i_model_context_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_a_i_model_context_qualified_name
+        )
+
+    @sql_a_i_model_context_qualified_name.setter
+    def sql_a_i_model_context_qualified_name(
+        self, sql_a_i_model_context_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_a_i_model_context_qualified_name = (
+            sql_a_i_model_context_qualified_name
+        )
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -434,6 +459,9 @@ class SQL(Catalog):
         )
         is_profiled: Optional[bool] = Field(default=None, description="")
         last_profiled_at: Optional[datetime] = Field(default=None, description="")
+        sql_a_i_model_context_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship

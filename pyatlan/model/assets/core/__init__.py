@@ -16,6 +16,8 @@ from .adf_pipeline import AdfPipeline
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
+from .alpha__d_q_rule import alpha_DQRule
+from .alpha__d_q_rule_template import alpha_DQRuleTemplate
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .app import App
@@ -196,8 +198,10 @@ DbtSource.Attributes.update_forward_refs(**localns)
 DbtSeed.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
+alpha_DQRuleTemplate.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
+alpha_DQRule.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
 AIApplication.Attributes.update_forward_refs(**localns)
 AIModelVersion.Attributes.update_forward_refs(**localns)
@@ -219,8 +223,8 @@ Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)

@@ -932,6 +932,13 @@ class ErrorCode(Enum):
         "Verify the API token provided is a valid username for that token.",
         NotFoundError,
     )
+    DQ_RULE_NOT_FOUND = (
+        404,
+        "ATLAN-PYTHON-404-029",
+        "DQ rule with type {0} was not found.",
+        "Verify you have provided a valid DQ rule type.",
+        NotFoundError,
+    )
     CONFLICT_PASSTHROUGH = (
         409,
         "ATLAN-PYTHON-409-000",

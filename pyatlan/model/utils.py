@@ -25,11 +25,21 @@ def encoders():
     }
 
 
+def convert_with_fixed_prefix(input_str, fixed_prefix="alpha_dq"):
+    prefix = fixed_prefix
+    remaining = input_str[len(prefix) + 1 :]
+    parts = remaining.split("_")
+    camel_part = "".join(word.capitalize() for word in parts)
+    return prefix + camel_part
+
+
 def to_camel_case(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("Value must be a string")
     if value == "__root__":
         return value
+    if value.startswith("alpha_dq"):
+        return convert_with_fixed_prefix(value)
     if value in CAMEL_CASE_OVERRIDES:
         return CAMEL_CASE_OVERRIDES[value]
     value = "".join(word.capitalize() for word in value.split("_"))

@@ -132,13 +132,13 @@ class APIQuery(API):
         "apiQueryOutputType", "apiQueryOutputType"
     )
     """
-    Type of APIQueryOutput. E.g. STRING, NUMBER etc. It is free text.
+    Type of APIQueryOutput, as free text (e.g. STRING, NUMBER etc).
     """
     API_QUERY_OUTPUT_TYPE_SECONDARY: ClassVar[KeywordField] = KeywordField(
         "apiQueryOutputTypeSecondary", "apiQueryOutputTypeSecondary"
     )
     """
-    Secondary Type of APIQueryOutput. E.g. LIST/STRING then LIST would be the secondary type.
+    Secondary Type of APIQueryOutput (e.g. LIST/STRING then LIST would be the secondary type).
     """
 
     API_FIELDS: ClassVar[RelationField] = RelationField("apiFields")
