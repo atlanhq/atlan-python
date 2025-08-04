@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Unio
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
-from pyatlan.client.atlan import IndexSearchResults
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     GET_ENTITY_BY_GUID,
@@ -68,8 +67,13 @@ A = TypeVar("A", bound=Asset)
 
 
 class Search:
+    """Shared search logic for asset operations."""
+
     @staticmethod
     def _prepare_sorts_for_bulk_search(sorts: List[SortItem]):
+        # Local import to avoid circular dependency
+        from pyatlan.client.asset import IndexSearchResults
+
         if not IndexSearchResults.presorted_by_timestamp(sorts):
             # Pre-sort by creation time (ascending) for mass-sequential iteration,
             # if not already sorted by creation time first
@@ -134,6 +138,9 @@ class Search:
 
     @classmethod
     def _check_for_bulk_search(cls, criteria, count, bulk=False):
+        # Local import to avoid circular dependency
+        from pyatlan.client.asset import IndexSearchResults
+
         if (
             count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
             and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)

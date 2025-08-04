@@ -16,11 +16,10 @@ from pyatlan.client.asset import (
     IndexSearchResults,
 )
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.common import ApiCaller, Search
+from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
-from pyatlan.client.shared import Search
-from pyatlan.client.shared.asset import LOGGER as SHARED_LOGGER
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.errors import (
@@ -148,7 +147,7 @@ def mock_atlan_client():
     return Mock(AtlanClient)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def mock_api_caller():
     return Mock(spec=ApiCaller)
 
@@ -1372,17 +1371,16 @@ def test_find_product_by_name(mock_search_for_asset_with_name):
     assert mock_search_for_asset_with_name.call_count == 1
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_most_recent_viewers_json
+def test_search_log_most_recent_viewers(mock_api_caller, sl_most_recent_viewers_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_most_recent_viewers_json
     recent_viewers_aggs = sl_most_recent_viewers_json["aggregations"]
     recent_viewers_aggs_buckets = recent_viewers_aggs[UNIQUE_USERS]["buckets"]
     request = SearchLogRequest.most_recent_viewers(
         guid="test-guid-123", exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     viewers = response.user_views
     assert len(viewers) == 3
     assert response.asset_views is None
@@ -1394,19 +1392,19 @@ def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers
     assert viewers[1].username == recent_viewers_aggs_buckets[1]["key"]
     assert viewers[1].view_count == recent_viewers_aggs_buckets[1]["doc_count"]
     assert viewers[1].most_recent_view
+    mock_api_caller.reset_mock()
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_most_viewed_assets_json
+def test_search_log_most_viewed_assets(mock_api_caller, sl_most_viewed_assets_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_most_viewed_assets_json
     viewed_assets_aggs = sl_most_viewed_assets_json["aggregations"]
     viewed_assets_aggs_buckets = viewed_assets_aggs[UNIQUE_ASSETS]["buckets"][0]
     request = SearchLogRequest.most_viewed_assets(
         max_assets=10, exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     detail = response.asset_views
     assert len(detail) == 8
     assert response.user_views is None
@@ -1415,18 +1413,18 @@ def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_j
     assert detail[0].guid == viewed_assets_aggs_buckets["key"]
     assert detail[0].total_views == viewed_assets_aggs_buckets["doc_count"]
     assert detail[0].distinct_users == viewed_assets_aggs_buckets[UNIQUE_USERS]["value"]
+    mock_api_caller.reset_mock()
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_detailed_log_entries_json
+def test_search_log_views_by_guid(mock_api_caller, sl_detailed_log_entries_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_detailed_log_entries_json
     sl_detailed_log_entries = sl_detailed_log_entries_json["logs"]
     request = SearchLogRequest.views_by_guid(
         guid="test-guid-123", size=10, exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     log_entries = response.current_page()
     assert request_dsl_json == sl_detailed_log_entries_json[SEARCH_PARAMS]["dsl"]
     assert len(response.current_page()) == sl_detailed_log_entries_json[SEARCH_COUNT]
@@ -1451,6 +1449,7 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes
+    mock_api_caller.reset_mock()
 
 
 def test_asset_get_lineage_list_response_with_custom_metadata(
@@ -1863,6 +1862,7 @@ def test_user_create(
 def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json):
     test_role_id = "role-guid-123"
     client = UserClient(mock_api_caller)
+    client._client.role_cache = mock_role_cache
     mock_api_caller._call_api.side_effect = [
         None,
         {

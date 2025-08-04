@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 from typing import Any, Dict, Generator, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanWorkflowPhase, SortOrder
@@ -220,7 +222,7 @@ class WorkflowSearchResponse(AtlanObject):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
-    _client: ApiCaller = PrivateAttr()
+    _client: "ApiCaller" = PrivateAttr()
     _criteria: WorkflowSearchRequest = PrivateAttr()
     took: Optional[int] = Field(default=None)
     hits: Optional[WorkflowSearchHits] = Field(default=None)

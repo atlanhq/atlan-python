@@ -1,15 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import (
-    PRESIGNED_URL,
-    PRESIGNED_URL_DOWNLOAD,
-    PRESIGNED_URL_UPLOAD_AZURE_BLOB,
-    PRESIGNED_URL_UPLOAD_GCS,
-    PRESIGNED_URL_UPLOAD_S3,
-)
+from pyatlan.client.common import ApiCaller, FileDownload, FilePresignedUrl, FileUpload
 from pyatlan.errors import ErrorCode
-from pyatlan.model.file import CloudStorageIdentifier, PresignedURLRequest
+from pyatlan.model.file import PresignedURLRequest
 
 
 class FileClient:
@@ -34,8 +29,14 @@ class FileClient:
         :raises AtlanError: on any error during API invocation.
         :returns: a response object containing a presigned URL with its cloud provider.
         """
-        raw_json = self._client._call_api(PRESIGNED_URL, request_obj=request)
-        return raw_json and raw_json.get("url", "")
+        # Prepare request using shared logic
+        endpoint, request_obj = FilePresignedUrl.prepare_request(request)
+
+        # Make API call
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+
+        # Process response using shared logic
+        return FilePresignedUrl.process_response(raw_json)
 
     @validate_arguments
     def upload_file(self, presigned_url: str, file_path: str) -> None:
@@ -48,35 +49,28 @@ class FileClient:
         :raises InvalidRequestException: if the upload file path is invalid,
         or when the presigned URL cloud provider is unsupported.
         """
-        try:
-            upload_file = open(file_path, "rb")
-        except FileNotFoundError as err:
-            raise ErrorCode.INVALID_UPLOAD_FILE_PATH.exception_with_parameters(
-                str(err.strerror), file_path
-            )
-        if CloudStorageIdentifier.S3 in presigned_url:
+        # Validate and open file using shared logic
+        upload_file = FileUpload.validate_file_path(file_path)
+
+        # Identify cloud provider using shared logic
+        provider = FileUpload.identify_cloud_provider(presigned_url)
+
+        # Prepare request based on provider using shared logic
+        if provider == "s3":
+            endpoint = FileUpload.prepare_s3_request(presigned_url)
             return self._client._s3_presigned_url_file_upload(
-                upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_S3.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                upload_file=upload_file, api=endpoint
             )
-        elif CloudStorageIdentifier.AZURE_BLOB in presigned_url:
+        elif provider == "azure_blob":
+            endpoint = FileUpload.prepare_azure_request(presigned_url)
             return self._client._azure_blob_presigned_url_file_upload(
-                upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_AZURE_BLOB.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                upload_file=upload_file, api=endpoint
             )
-        elif CloudStorageIdentifier.GCS in presigned_url:
+        elif provider == "gcs":
+            endpoint = FileUpload.prepare_gcs_request(presigned_url)
             return self._client._gcs_presigned_url_file_upload(
-                upload_file=upload_file,
-                api=PRESIGNED_URL_UPLOAD_GCS.format_path(
-                    {"presigned_url_put": presigned_url}
-                ),
+                upload_file=upload_file, api=endpoint
             )
-        else:
-            raise ErrorCode.UNSUPPORTED_PRESIGNED_URL.exception_with_parameters()
 
     @validate_arguments
     def download_file(
@@ -93,9 +87,10 @@ class FileClient:
         :raises AtlanError: on any error during API invocation.
         :returns: full path to the downloaded file.
         """
+        # Prepare request using shared logic
+        endpoint = FileDownload.prepare_request(presigned_url)
+
+        # Make API call and return result
         return self._client._presigned_url_file_download(
-            file_path=file_path,
-            api=PRESIGNED_URL_DOWNLOAD.format_path(
-                {"presigned_url_get": presigned_url}
-            ),
+            file_path=file_path, api=endpoint
         )

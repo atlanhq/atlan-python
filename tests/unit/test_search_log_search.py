@@ -6,7 +6,8 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.search_log import LOGGER, SearchLogClient
+from pyatlan.client.common.search_log import LOGGER
+from pyatlan.client.search_log import SearchLogClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.search import SortItem

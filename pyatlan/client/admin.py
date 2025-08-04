@@ -1,18 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
-from typing import List
+from pydantic.v1 import validate_arguments
 
-from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
-
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import ADMIN_EVENTS, KEYCLOAK_EVENTS
+from pyatlan.client.common import AdminGetAdminEvents, AdminGetKeycloakEvents, ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.keycloak_events import (
-    AdminEvent,
     AdminEventRequest,
     AdminEventResponse,
-    KeycloakEvent,
     KeycloakEventRequest,
     KeycloakEventResponse,
 )
@@ -42,26 +37,19 @@ class AdminClient:
         :returns: the events that match the supplied filters
         :raises AtlanError: on any API communication issue
         """
-        if raw_json := self._client._call_api(
-            KEYCLOAK_EVENTS,
-            query_params=keycloak_request.query_params,
-            exclude_unset=True,
-        ):
-            try:
-                events = parse_obj_as(List[KeycloakEvent], raw_json)
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            events = []
-        return KeycloakEventResponse(
-            client=self._client,
-            criteria=keycloak_request,
-            start=keycloak_request.offset or 0,
-            size=keycloak_request.size or 100,
-            events=events,
+        endpoint, query_params = AdminGetKeycloakEvents.prepare_request(
+            keycloak_request
         )
+        raw_json = self._client._call_api(
+            endpoint,
+            query_params=query_params,
+            exclude_unset=True,
+        )
+        response_data = AdminGetKeycloakEvents.process_response(
+            raw_json, keycloak_request
+        )
+
+        return KeycloakEventResponse(client=self._client, **response_data)
 
     @validate_arguments
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
@@ -72,21 +60,10 @@ class AdminClient:
         :returns: the admin events that match the supplied filters
         :raises AtlanError: on any API communication issue
         """
-        if raw_json := self._client._call_api(
-            ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
-        ):
-            try:
-                events = parse_obj_as(List[AdminEvent], raw_json)
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            events = []
-        return AdminEventResponse(
-            client=self._client,
-            criteria=admin_request,
-            start=admin_request.offset or 0,
-            size=admin_request.size or 100,
-            events=events,
+        endpoint, query_params = AdminGetAdminEvents.prepare_request(admin_request)
+        raw_json = self._client._call_api(
+            endpoint, query_params=query_params, exclude_unset=True
         )
+        response_data = AdminGetAdminEvents.process_response(raw_json, admin_request)
+
+        return AdminEventResponse(client=self._client, **response_data)

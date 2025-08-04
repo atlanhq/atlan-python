@@ -7,9 +7,9 @@ import pytest
 from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
-from pyatlan.client.audit import LOGGER as AUDIT_LOGGER
-from pyatlan.client.search_log import LOGGER as SEARCH_LOG_LOGGER
-from pyatlan.client.search_log import (
+from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
+from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
+from pyatlan.client.common.search_log import (
     AssetViews,
     SearchLogRequest,
     SearchLogResults,

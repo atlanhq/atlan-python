@@ -13,9 +13,17 @@ from httpx_retries import Retry
 from pydantic.v1 import HttpUrl
 
 from pyatlan.cache.source_tag_cache import SourceTagName
-from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient, client_connection
-from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
+from pyatlan.client.common.asset import LOGGER
+from pyatlan.model.assets import (
+    Asset,
+    AtlasGlossaryTerm,
+    Column,
+    Persona,
+    Purpose,
+    Table,
+)
 from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fields.atlan_fields import SearchableField

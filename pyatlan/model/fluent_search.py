@@ -25,8 +25,8 @@ from pyatlan.model.search import (
 
 if TYPE_CHECKING:
     from pyatlan.client.aio import AsyncAtlanClient
-    from pyatlan.client.aio.results import AsyncIndexSearchResults
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan.model.aio.asset import AsyncIndexSearchResults
 
 LOGGER = logging.getLogger(__name__)
 

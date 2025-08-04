@@ -1,14 +1,14 @@
-from http import HTTPStatus
 from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan import utils
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import OPEN_LINEAGE_SEND_EVENT_API
+from pyatlan.client.common import (
+    ApiCaller,
+    OpenLineageCreateConnection,
+    OpenLineageCreateCredential,
+    OpenLineageSend,
+)
 from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan.model.assets import Connection
-from pyatlan.model.credential import Credential
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.response import AssetMutationResponse
@@ -45,33 +45,24 @@ class OpenLineageClient:
         :param admin_groups:list of admin groups to associate with this connection
         :return: details of the connection created
         """
-        create_credential = Credential()
-        create_credential.auth_type = "atlan_api_key"
-        create_credential.name = (
-            f"default-{connector_type.value}-{int(utils.get_epoch_timestamp())}-0"
-        )
-        create_credential.connector = str(connector_type.value)
-        create_credential.connector_config_name = (
-            f"atlan-connectors-{connector_type.value}"
-        )
-        create_credential.connector_type = "event"
-        create_credential.extras = {
-            "events.enable-partial-assets": True,
-            "events.enabled": True,
-            "events.topic": f"openlineage_{connector_type.value}",
-            "events.urlPath": f"/events/openlineage/{connector_type.value}/api/v1/lineage",
-        }
-        response = self._client.credentials.creator(credential=create_credential)  # type: ignore[attr-defined]
-        connection = Connection.creator(
+        # Step 1: Create credential using shared logic
+        create_credential = OpenLineageCreateCredential.prepare_request(connector_type)
+        credential_response = self._client.credentials.creator(
+            credential=create_credential
+        )  # type: ignore[attr-defined]
+
+        # Step 2: Create connection using shared logic
+        connection = OpenLineageCreateConnection.prepare_request(
             client=self._client,
             name=name,
             connector_type=connector_type,
+            credential_id=credential_response.id,
             admin_users=admin_users,
-            admin_groups=admin_groups,
             admin_roles=admin_roles,
+            admin_groups=admin_groups,
         )
 
-        connection.default_credential_guid = response.id
+        # Save connection and return response directly
         return self._client.asset.save(connection)  # type: ignore[attr-defined]
 
     @validate_arguments
@@ -85,23 +76,16 @@ class OpenLineageClient:
         :param connector_type: of the connection that should receive the OpenLineage event
         :raises AtlanError: when OpenLineage is not configured OR on any issues with API communication
         """
-
         try:
+            # Prepare request using shared logic
+            api_endpoint, request_obj, api_options = OpenLineageSend.prepare_request(
+                request, connector_type
+            )
+
+            # Make API call
             self._client._call_api(
-                request_obj=request,
-                api=OPEN_LINEAGE_SEND_EVENT_API.format_path(
-                    {"connector_type": connector_type.value}
-                ),
-                text_response=True,
+                request_obj=request_obj, api=api_endpoint, **api_options
             )
         except AtlanError as e:
-            if (
-                e.error_code.http_error_code == HTTPStatus.UNAUTHORIZED
-                and e.error_code.error_message.startswith(
-                    "Unauthorized: url path not configured to receive data, urlPath:"
-                )
-            ):
-                raise ErrorCode.OPENLINEAGE_NOT_CONFIGURED.exception_with_parameters(
-                    connector_type.value
-                ) from e
-            raise e
+            # Validate and handle OpenLineage-specific errors using shared logic
+            OpenLineageSend.validate_response(e, connector_type)

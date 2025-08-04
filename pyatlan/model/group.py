@@ -6,7 +6,7 @@ from typing import Any, Dict, Generator, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.utils import API
@@ -120,7 +120,7 @@ class GroupResponse(AtlanObject):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
-    _client: ApiCaller = PrivateAttr()
+    _client: "ApiCaller" = PrivateAttr()
     _criteria: GroupRequest = PrivateAttr()
     total_record: Optional[int] = Field(description="Total number of groups.")
     filter_record: Optional[int] = Field(

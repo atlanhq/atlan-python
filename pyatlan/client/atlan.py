@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import contextlib
 import copy
 import json
 import logging
+import os
 import uuid
 from contextvars import ContextVar
 from http import HTTPStatus
@@ -40,7 +40,7 @@ from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY
-from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
+from pyatlan.client.constants import EVENT_STREAM, GET_TOKEN, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.contract import ContractClient
 from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
@@ -361,12 +361,15 @@ class AtlanClient(BaseSettings):
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
+        from pyatlan.client.common import ImpersonateUser
+
         base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
-        client = AtlanClient(base_url=base_url, api_key="")
-        client_info = client.impersonate._get_client_info()
+        client = AtlanClient(base_url=base_url)
+        client.api_key = ""
+        client_info = ImpersonateUser.get_client_info()
 
         # Prepare credentials for Atlan-Argo token request
         argo_credentials = {

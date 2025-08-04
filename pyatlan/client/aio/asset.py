@@ -14,6 +14,43 @@ from typing import (
 
 from pydantic.v1 import StrictStr, constr
 
+from pyatlan.client.common import (
+    DeleteByGuid,
+    FindCategoryFastByName,
+    FindConnectionsByName,
+    FindDomainByName,
+    FindGlossaryByName,
+    FindPersonasByName,
+    FindProductByName,
+    FindPurposesByName,
+    FindTermFastByName,
+    GetByGuid,
+    GetByQualifiedName,
+    GetHierarchy,
+    GetLineageList,
+    ManageCustomMetadata,
+    ManageTerms,
+    ModifyAtlanTags,
+    PurgeByGuid,
+    RemoveAnnouncement,
+    RemoveCertificate,
+    RemoveCustomMetadata,
+    ReplaceCustomMetadata,
+    RestoreAsset,
+    Save,
+    Search,
+    SearchForAssetWithName,
+    UpdateAnnouncement,
+    UpdateAsset,
+    UpdateAssetByAttribute,
+    UpdateCertificate,
+    UpdateCustomMetadataAttributes,
+)
+from pyatlan.model.aio import (
+    AsyncIndexSearchResults,
+    AsyncLineageListResults,
+    SimpleConcurrentAsyncIndexSearchResults,
+)
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -36,12 +73,6 @@ from pyatlan.model.enums import (
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import IndexSearchRequest, Query
-
-from .results import (
-    AsyncIndexSearchResults,
-    AsyncLineageListResults,
-    SimpleConcurrentAsyncIndexSearchResults,
-)
 
 A = TypeVar("A", bound=Asset)
 LOGGER = logging.getLogger(__name__)
@@ -89,13 +120,11 @@ class AsyncAssetClient:
         :param prefetch_pages: number of pages to prefetch in background (only used with concurrent_pages=True)
         :returns: AsyncIndexSearchResults or ConcurrentAsyncIndexSearchResults
         """
-        from pyatlan.client.shared import Search
-
         INDEX_SEARCH, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = await self._async_client._call_api(
             INDEX_SEARCH, request_obj=request_obj
         )
-        response = Search.process_response(raw_json, criteria)
+        response = Search.process_response(raw_json, criteria, bulk, self._async_client)
         if Search._check_for_bulk_search(criteria, response["count"], bulk):
             return await self.search(
                 criteria,
@@ -132,8 +161,6 @@ class AsyncAssetClient:
         :raises InvalidRequestError: if the requested lineage direction is 'BOTH' (unsupported for this operation)
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import GetLineageList
-
         api_endpoint, request_obj = GetLineageList.prepare_request(lineage_request)
         raw_json = await self._async_client._call_api(
             api_endpoint, None, request_obj=request_obj
@@ -162,8 +189,6 @@ class AsyncAssetClient:
         :returns: all personas with that name, if found
         :raises NotFoundError: if no persona with the provided name exists
         """
-        from pyatlan.client.shared import FindPersonasByName
-
         search_request = FindPersonasByName.prepare_request(name, attributes)
         search_results = await self.search(search_request)
         return FindPersonasByName.process_response(
@@ -183,8 +208,6 @@ class AsyncAssetClient:
         :returns: all purposes with that name, if found
         :raises NotFoundError: if no purpose with the provided name exists
         """
-        from pyatlan.client.shared import FindPurposesByName
-
         search_request = FindPurposesByName.prepare_request(name, attributes)
         search_results = await self.search(search_request)
         return FindPurposesByName.process_response(
@@ -213,7 +236,6 @@ class AsyncAssetClient:
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import GetByQualifiedName
 
         # Normalize field inputs
         normalized_attributes = GetByQualifiedName.normalize_search_fields(attributes)
@@ -267,7 +289,6 @@ class AsyncAssetClient:
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import GetByGuid, GetByQualifiedName
 
         # Normalize field inputs
         normalized_attributes = GetByQualifiedName.normalize_search_fields(attributes)
@@ -333,7 +354,6 @@ class AsyncAssetClient:
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
         from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan.client.shared import Save
         from pyatlan.model.assets import Connection
 
         query_params, request = Save.prepare_request(
@@ -356,7 +376,6 @@ class AsyncAssetClient:
         """Async version of connection waiting logic."""
         import asyncio
 
-        from pyatlan.client.shared import Save
         from pyatlan.model.assets import Connection
 
         guids = Save.get_connection_guids_to_wait_for(connections_created)
@@ -409,7 +428,6 @@ class AsyncAssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-        from pyatlan.client.shared import UpdateAsset
 
         # Create async wrapper for validate_asset_exists
         await UpdateAsset.validate_asset_exists(
@@ -438,7 +456,6 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
         from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan.client.shared import Save
 
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
@@ -465,8 +482,6 @@ class AsyncAssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-        from pyatlan.client.shared import UpdateAsset
-
         await UpdateAsset.validate_asset_exists(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
@@ -490,7 +505,6 @@ class AsyncAssetClient:
         :param related_attributes: attributes to retrieve for each related asset in the hierarchy
         :returns: a traversable category hierarchy
         """
-        from pyatlan.client.shared import GetHierarchy
 
         # Validate glossary using shared logic
         GetHierarchy.validate_glossary(glossary)
@@ -563,7 +577,6 @@ class AsyncAssetClient:
             PURGE and HARD deletions are irreversible operations. Use with caution.
         """
         from pyatlan.client.constants import DELETE_ENTITIES_BY_GUIDS
-        from pyatlan.client.shared import PurgeByGuid
 
         query_params = PurgeByGuid.prepare_request(guid, delete_type)
         raw_json = await self._async_client._call_api(
@@ -585,7 +598,6 @@ class AsyncAssetClient:
         :raises InvalidRequestError: if an asset does not support archiving
         """
         from pyatlan.client.constants import DELETE_ENTITIES_BY_GUIDS
-        from pyatlan.client.shared import DeleteByGuid
 
         guids = DeleteByGuid.prepare_request(guid)
 
@@ -612,8 +624,6 @@ class AsyncAssetClient:
     async def _wait_till_deleted_async(self, asset: Asset):
         """Async version of _wait_till_deleted with retry logic."""
         import asyncio
-
-        from pyatlan.client.shared import DeleteByGuid
 
         max_attempts = 20
         for attempt in range(max_attempts):
@@ -652,8 +662,6 @@ class AsyncAssetClient:
         """Async version of _restore with retry logic."""
         import asyncio
 
-        from pyatlan.client.shared import RestoreAsset
-
         if not RestoreAsset.can_asset_type_be_archived(asset_type):
             return False
 
@@ -682,7 +690,6 @@ class AsyncAssetClient:
     async def _restore_asset_async(self, asset: Asset) -> AssetMutationResponse:
         """Async version of _restore_asset."""
         from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan.client.shared import RestoreAsset
 
         query_params, request = RestoreAsset.prepare_restore_request(asset)
         # Flush custom metadata for the restored asset
@@ -719,8 +726,6 @@ class AsyncAssetClient:
         :param save_parameters: parameters for the save operation
         :returns: the updated asset
         """
-        from pyatlan.client.shared import ModifyAtlanTags
-
         if save_parameters is None:
             save_parameters = {}
 
@@ -784,7 +789,6 @@ class AsyncAssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the added Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-
         return await self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
@@ -826,7 +830,6 @@ class AsyncAssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the updated Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-
         return await self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
@@ -905,7 +908,6 @@ class AsyncAssetClient:
         :param qualified_name: qualified name of the asset
         :returns: updated asset or None if update failed
         """
-        from pyatlan.client.shared import UpdateAssetByAttribute
 
         # Prepare request parameters using shared logic
         query_params = UpdateAssetByAttribute.prepare_request_params(qualified_name)
@@ -949,7 +951,6 @@ class AsyncAssetClient:
         :returns: the result of the update, or None if the update failed
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import UpdateCertificate
 
         # Prepare asset with certificate using shared logic
         asset = UpdateCertificate.prepare_asset_with_certificate(
@@ -981,7 +982,6 @@ class AsyncAssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the removal, or None if the removal failed
         """
-        from pyatlan.client.shared import RemoveCertificate
 
         # Prepare asset for certificate removal using shared logic
         asset = RemoveCertificate.prepare_asset_for_certificate_removal(
@@ -1013,7 +1013,6 @@ class AsyncAssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the update, or None if the update failed
         """
-        from pyatlan.client.shared import UpdateAnnouncement
 
         # Prepare asset with announcement using shared logic
         asset = UpdateAnnouncement.prepare_asset_with_announcement(
@@ -1043,7 +1042,6 @@ class AsyncAssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the removal, or None if the removal failed
         """
-        from pyatlan.client.shared import RemoveAnnouncement
 
         # Prepare asset for announcement removal using shared logic
         asset = RemoveAnnouncement.prepare_asset_for_announcement_removal(
@@ -1060,16 +1058,16 @@ class AsyncAssetClient:
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
         """
+            ManageCustomMetadata,
+            UpdateCustomMetadataAttributes,
+        )
+
         Async update only the provided custom metadata attributes on the asset.
 
         :param guid: unique identifier (GUID) of the asset
         :param custom_metadata: custom metadata to update, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import (
-            ManageCustomMetadata,
-            UpdateCustomMetadataAttributes,
-        )
 
         # Prepare request using shared logic
         custom_metadata_request = UpdateCustomMetadataAttributes.prepare_request(
@@ -1094,7 +1092,6 @@ class AsyncAssetClient:
         :param custom_metadata: custom metadata to replace, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import ManageCustomMetadata, ReplaceCustomMetadata
 
         # Prepare request using shared logic (includes clear_unset())
         custom_metadata_request = ReplaceCustomMetadata.prepare_request(custom_metadata)
@@ -1115,7 +1112,6 @@ class AsyncAssetClient:
         :param cm_name: human-readable name of the custom metadata to remove
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.shared import ManageCustomMetadata, RemoveCustomMetadata
 
         # Prepare request using shared logic (includes clear_all())
         custom_metadata_request = RemoveCustomMetadata.prepare_request(
@@ -1148,7 +1144,6 @@ class AsyncAssetClient:
         :param qualified_name: qualified name of the asset
         :returns: the updated asset
         """
-        from pyatlan.client.shared import ManageTerms
 
         # Validate input parameters using shared logic
         ManageTerms.validate_guid_and_qualified_name(guid, qualified_name)
@@ -1271,7 +1266,6 @@ class AsyncAssetClient:
         :param allow_multiple: whether multiple results are allowed
         :returns: list of found assets
         """
-        from pyatlan.client.shared import SearchForAssetWithName
 
         # Build search request using shared logic
         search_request = SearchForAssetWithName.build_search_request(query, attributes)
@@ -1299,8 +1293,6 @@ class AsyncAssetClient:
         :returns: all connections with that name and type, if found
         :raises NotFoundError: if the connection does not exist
         """
-        from pyatlan.client.shared import FindConnectionsByName
-
         if attributes is None:
             attributes = []
 
@@ -1329,8 +1321,6 @@ class AsyncAssetClient:
         :returns: the glossary, if found
         :raises NotFoundError: if no glossary with the provided name exists
         """
-        from pyatlan.client.shared import FindGlossaryByName
-
         if attributes is None:
             attributes = []
 
@@ -1360,8 +1350,6 @@ class AsyncAssetClient:
         :returns: the category, if found
         :raises NotFoundError: if no category with the provided name exists in the glossary
         """
-        from pyatlan.client.shared import FindCategoryFastByName
-
         if attributes is None:
             attributes = []
 
@@ -1419,8 +1407,6 @@ class AsyncAssetClient:
         :returns: the term, if found
         :raises NotFoundError: if no term with the provided name exists in the glossary
         """
-        from pyatlan.client.shared import FindTermFastByName
-
         if attributes is None:
             attributes = []
 
@@ -1471,8 +1457,6 @@ class AsyncAssetClient:
         :returns: the domain, if found
         :raises NotFoundError: if no domain with the provided name exists
         """
-        from pyatlan.client.shared import FindDomainByName
-
         attributes = attributes or []
 
         # Build query using shared logic
@@ -1497,8 +1481,6 @@ class AsyncAssetClient:
         :returns: the product, if found
         :raises NotFoundError: if no product with the provided name exists
         """
-        from pyatlan.client.shared import FindProductByName
-
         attributes = attributes or []
 
         # Build query using shared logic

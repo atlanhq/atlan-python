@@ -1,18 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
-import logging
-from typing import List
+# Copyright 2025 Atlan Pte. Ltd.
 
-from pydantic.v1 import ValidationError, parse_obj_as, validate_arguments
+from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import AUDIT_SEARCH
+from pyatlan.client.common import ApiCaller, AuditSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults, EntityAudit
-from pyatlan.model.search import SortItem
-
-ENTITY_AUDITS = "entityAudits"
-LOGGER = logging.getLogger(__name__)
+from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
 
 
 class AuditClient:
@@ -27,27 +20,6 @@ class AuditClient:
                 "client", "ApiCaller"
             )
         self._client = client
-
-    @staticmethod
-    def _prepare_sorts_for_audit_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
-        """
-        Ensures that sorting by creation timestamp is prioritized for Audit bulk searches.
-        :param sorts: List of existing sorting options.
-        :returns: A modified list of sorting options with creation timestamp as the top priority.
-        """
-        if not AuditSearchResults.presorted_by_timestamp(sorts):
-            return AuditSearchResults.sort_by_timestamp_first(sorts)
-        return sorts
-
-    def _get_audit_bulk_search_log_message(self, bulk):
-        return (
-            (
-                "Audit bulk search option is enabled. "
-                if bulk
-                else "Result size (%s) exceeds threshold (%s). "
-            )
-            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
-        )
 
     @validate_arguments
     def search(self, criteria: AuditSearchRequest, bulk=False) -> AuditSearchResults:
@@ -71,55 +43,30 @@ class AuditClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
-        if bulk:
-            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
-                criteria.dsl.sort
-            )
-            LOGGER.debug(self._get_audit_bulk_search_log_message(bulk))
+        # Prepare request using shared logic
+        endpoint, request_obj = AuditSearch.prepare_request(criteria, bulk)
 
-        raw_json = self._client._call_api(
-            AUDIT_SEARCH,
-            request_obj=criteria,
-        )
-        if ENTITY_AUDITS in raw_json:
-            try:
-                entity_audits = parse_obj_as(List[EntityAudit], raw_json[ENTITY_AUDITS])
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            entity_audits = []
+        # Execute API call
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
 
-        count = raw_json["totalCount"] if "totalCount" in raw_json else 0
+        # Process response using shared logic
+        response = AuditSearch.process_response(raw_json, criteria, bulk, self._client)
 
-        if (
-            count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
-            and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
-        ):
-            # If there is any user-specified sorting present in the search request
-            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
-            # Re-fetch the first page results with updated timestamp sorting
-            # for bulk search if count > _MASS_EXTRACT_THRESHOLD (10,000 assets)
-            criteria.dsl.sort = self._prepare_sorts_for_audit_bulk_search(
-                criteria.dsl.sort
-            )
-            LOGGER.debug(
-                self._get_audit_bulk_search_log_message(bulk),
-                count,
-                AuditSearchResults._MASS_EXTRACT_THRESHOLD,
-            )
+        # Check if we need to convert to bulk search using shared logic
+        if AuditSearch.check_for_bulk_search(response["count"], criteria, bulk):
+            # Recursive call with updated criteria
             return self.search(criteria)
+
+        # Create and return search results
+        from pyatlan.model.audit import AuditSearchResults
+
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,
             start=criteria.dsl.from_,
             size=criteria.dsl.size,
-            count=count,
-            entity_audits=entity_audits,
+            count=response["count"],
+            entity_audits=response["entity_audits"],
             bulk=bulk,
-            aggregations=raw_json.get("aggregations"),
+            aggregations=response["aggregations"],
         )
