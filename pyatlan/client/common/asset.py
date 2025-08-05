@@ -739,6 +739,7 @@ class Save:
     def prepare_request_replacing_cm(
         entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
+        client=None,
     ) -> tuple[Dict[str, Any], BulkRequest[Asset]]:
         """
         Prepare the request for saving assets with replacing custom metadata.
@@ -746,6 +747,7 @@ class Save:
 
         :param entity: one or more assets to save
         :param replace_atlan_tags: whether to replace AtlanTags during an update
+        :param client: the Atlan client instance for flushing custom metadata
         :returns: tuple of (query_params, bulk_request)
         """
         query_params = {
@@ -759,6 +761,12 @@ class Save:
             entities.extend(entity)
         else:
             entities.append(entity)
+
+        # Validate and flush entities BEFORE creating the BulkRequest
+        if client:
+            for asset in entities:
+                asset.validate_required()
+                asset.flush_custom_metadata(client=client)
 
         return query_params, BulkRequest[Asset](entities=entities)
 

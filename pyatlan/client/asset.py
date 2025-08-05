@@ -551,8 +551,8 @@ class AssetClient:
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
+            client=self._client,
         )
-        Save.validate_and_flush_entities(request.entities, self._client)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return Save.process_response_replacing_cm(raw_json)
 

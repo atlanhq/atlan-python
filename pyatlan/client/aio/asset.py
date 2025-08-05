@@ -10,6 +10,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    overload,
 )
 
 from pydantic.v1 import StrictStr, constr
@@ -460,8 +461,8 @@ class AsyncAssetClient:
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
+            client=self._async_client,
         )
-        Save.validate_and_flush_entities(request.entities, self._async_client)
         raw_json = await self._async_client._call_api(
             BULK_UPDATE, query_params, request
         )
@@ -929,6 +930,39 @@ class AsyncAssetClient:
         # Process response using shared logic
         return UpdateAssetByAttribute.process_response(raw_json, asset_type)
 
+    @overload
+    async def update_certificate(
+        self,
+        asset_type: Type[AtlasGlossaryTerm],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        glossary_guid: str,
+        message: Optional[str] = None,
+    ) -> Optional[AtlasGlossaryTerm]: ...
+
+    @overload
+    async def update_certificate(
+        self,
+        asset_type: Type[AtlasGlossaryCategory],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        glossary_guid: str,
+        message: Optional[str] = None,
+    ) -> Optional[AtlasGlossaryCategory]: ...
+
+    @overload
+    async def update_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        glossary_guid: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> Optional[A]: ...
+
     async def update_certificate(
         self,
         asset_type: Type[A],
@@ -965,6 +999,33 @@ class AsyncAssetClient:
         # Execute update using shared logic
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
+    @overload
+    async def remove_certificate(
+        self,
+        asset_type: Type[AtlasGlossaryTerm],
+        qualified_name: str,
+        name: str,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryTerm]: ...
+
+    @overload
+    async def remove_certificate(
+        self,
+        asset_type: Type[AtlasGlossaryCategory],
+        qualified_name: str,
+        name: str,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryCategory]: ...
+
+    @overload
+    async def remove_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]: ...
+
     async def remove_certificate(
         self,
         asset_type: Type[A],
@@ -993,6 +1054,36 @@ class AsyncAssetClient:
 
         # Execute update using shared logic
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    @overload
+    async def update_announcement(
+        self,
+        asset_type: Type[AtlasGlossaryTerm],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryTerm]: ...
+
+    @overload
+    async def update_announcement(
+        self,
+        asset_type: Type[AtlasGlossaryCategory],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryCategory]: ...
+
+    @overload
+    async def update_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]: ...
 
     async def update_announcement(
         self,
@@ -1025,6 +1116,33 @@ class AsyncAssetClient:
 
         # Execute update using shared logic
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    @overload
+    async def remove_announcement(
+        self,
+        asset_type: Type[AtlasGlossaryTerm],
+        qualified_name: str,
+        name: str,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryTerm]: ...
+
+    @overload
+    async def remove_announcement(
+        self,
+        asset_type: Type[AtlasGlossaryCategory],
+        qualified_name: str,
+        name: str,
+        glossary_guid: str,
+    ) -> Optional[AtlasGlossaryCategory]: ...
+
+    @overload
+    async def remove_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        glossary_guid: Optional[str] = None,
+    ) -> Optional[A]: ...
 
     async def remove_announcement(
         self,
