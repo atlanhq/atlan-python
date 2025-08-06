@@ -2,6 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
+import json
 from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
@@ -21,10 +22,12 @@ from pyatlan.client.common import (
     UserUpdate,
 )
 from pyatlan.errors import ErrorCode
+from pyatlan.model.assets import Asset
 from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest, GroupResponse
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
+from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest, UserResponse
 
 
 class UserClient:
@@ -136,7 +139,6 @@ class UserClient:
         raw_json = self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
 
         request = UserRequest(
             post_filter=post_filter,
@@ -192,7 +194,6 @@ class UserClient:
         raw_json = self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
 
         request = UserRequest(
             post_filter='{"email":{"$ilike":"%' + email + '%"}}',
@@ -224,11 +225,8 @@ class UserClient:
         raw_json = self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from json import dumps
 
-        from pyatlan.model.user import UserRequest
-
-        email_filter = '{"email":{"$in":' + dumps(emails or [""]) + "}}"
+        email_filter = '{"email":{"$in":' + json.dumps(emails or [""]) + "}}"
         request = UserRequest(
             post_filter=email_filter,
             limit=limit,
@@ -253,7 +251,6 @@ class UserClient:
         raw_json = self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
 
         request = UserRequest(
             post_filter='{"username":"' + username + '"}',
@@ -285,11 +282,8 @@ class UserClient:
         raw_json = self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from json import dumps
 
-        from pyatlan.model.user import UserRequest
-
-        username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
+        username_filter = '{"username":{"$in":' + json.dumps(usernames or [""]) + "}}"
         request = UserRequest(
             post_filter=username_filter,
             limit=limit,
@@ -354,7 +348,6 @@ class UserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
         """
-        from pyatlan.model.assets import Asset
 
         return self._add_as(
             asset_guid=asset_guid,
@@ -377,7 +370,6 @@ class UserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
-        from pyatlan.model.assets import Asset
 
         return self._add_as(
             asset_guid=asset_guid,
@@ -399,8 +391,6 @@ class UserClient:
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.client.atlan import client_connection
-        from pyatlan.model.assets import Asset
-        from pyatlan.model.fluent_search import FluentSearch
 
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:
             raise ValueError(

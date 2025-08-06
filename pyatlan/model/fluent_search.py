@@ -558,7 +558,7 @@ class FluentSearch(CompoundQuery):
         return client.asset.search(criteria=self.to_request(), bulk=bulk)
 
     async def aexecute(
-        self, client: "AsyncAtlanClient", bulk: bool = False
+        self, client: AsyncAtlanClient, bulk: bool = False
     ) -> "AsyncIndexSearchResults":
         """
         Run the fluent search asynchronously to retrieve assets that match the supplied criteria.

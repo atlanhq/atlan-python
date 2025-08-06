@@ -5,6 +5,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, AsyncGenerator, Dict, List
 
+from pydantic.v1 import ValidationError, parse_obj_as
+
+from pyatlan.client.common import API
+from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.task import AtlanTask, TaskSearchRequest
 
@@ -18,8 +22,8 @@ class AsyncTaskSearchResponse:
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
-        endpoint: "API",
+        client: AsyncAtlanClient,
+        endpoint: API,
         criteria: TaskSearchRequest,
         start: int,
         size: int,
@@ -77,12 +81,6 @@ class AsyncTaskSearchResponse:
 
         :returns: JSON for the next page of results, as-is
         """
-        from typing import List
-
-        from pydantic.v1 import ValidationError, parse_obj_as
-
-        from pyatlan.errors import ErrorCode
-
         raw_json = await self._client._call_api(
             self._endpoint,
             request_obj=self._criteria,

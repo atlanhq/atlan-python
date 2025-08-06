@@ -13,6 +13,16 @@ from typing import Optional
 import httpx
 from pydantic.v1 import PrivateAttr
 
+from pyatlan.cache.aio import (
+    AsyncAtlanTagCache,
+    AsyncConnectionCache,
+    AsyncCustomMetadataCache,
+    AsyncEnumCache,
+    AsyncGroupCache,
+    AsyncRoleCache,
+    AsyncSourceTagCache,
+    AsyncUserCache,
+)
 from pyatlan.client.aio.admin import AsyncAdminClient
 from pyatlan.client.aio.asset import AsyncAssetClient
 from pyatlan.client.aio.audit import AsyncAuditClient
@@ -78,6 +88,18 @@ class AsyncAtlanClient(AtlanClient):
     _async_typedef_client: Optional[AsyncTypeDefClient] = PrivateAttr(default=None)
     _async_user_client: Optional[AsyncUserClient] = PrivateAttr(default=None)
     _async_workflow_client: Optional[AsyncWorkflowClient] = PrivateAttr(default=None)
+
+    # Async cache instances
+    _async_atlan_tag_cache: Optional[AsyncAtlanTagCache] = PrivateAttr(default=None)
+    _async_connection_cache: Optional[AsyncConnectionCache] = PrivateAttr(default=None)
+    _async_custom_metadata_cache: Optional[AsyncCustomMetadataCache] = PrivateAttr(
+        default=None
+    )
+    _async_enum_cache: Optional[AsyncEnumCache] = PrivateAttr(default=None)
+    _async_group_cache: Optional[AsyncGroupCache] = PrivateAttr(default=None)
+    _async_role_cache: Optional[AsyncRoleCache] = PrivateAttr(default=None)
+    _async_source_tag_cache: Optional[AsyncSourceTagCache] = PrivateAttr(default=None)
+    _async_user_cache: Optional[AsyncUserCache] = PrivateAttr(default=None)
 
     def __init__(self, **kwargs):
         # Initialize sync client (handles all validation, env vars, etc.)
@@ -209,6 +231,62 @@ class AsyncAtlanClient(AtlanClient):
             self._async_workflow_client = AsyncWorkflowClient(self)
         return self._async_workflow_client
 
+    @property
+    def atlan_tag_cache(self) -> AsyncAtlanTagCache:
+        """Get async Atlan tag cache with same API as sync"""
+        if self._async_atlan_tag_cache is None:
+            self._async_atlan_tag_cache = AsyncAtlanTagCache(client=self)
+        return self._async_atlan_tag_cache
+
+    @property
+    def connection_cache(self) -> AsyncConnectionCache:
+        """Get async connection cache with same API as sync"""
+        if self._async_connection_cache is None:
+            self._async_connection_cache = AsyncConnectionCache(client=self)
+        return self._async_connection_cache
+
+    @property
+    def custom_metadata_cache(self) -> AsyncCustomMetadataCache:
+        """Get async custom metadata cache with same API as sync"""
+        if self._async_custom_metadata_cache is None:
+            self._async_custom_metadata_cache = AsyncCustomMetadataCache(client=self)
+        return self._async_custom_metadata_cache
+
+    @property
+    def enum_cache(self) -> AsyncEnumCache:
+        """Get async enum cache with same API as sync"""
+        if self._async_enum_cache is None:
+            self._async_enum_cache = AsyncEnumCache(client=self)
+        return self._async_enum_cache
+
+    @property
+    def group_cache(self) -> AsyncGroupCache:
+        """Get async group cache with same API as sync"""
+        if self._async_group_cache is None:
+            self._async_group_cache = AsyncGroupCache(client=self)
+        return self._async_group_cache
+
+    @property
+    def role_cache(self) -> AsyncRoleCache:
+        """Get async role cache with same API as sync"""
+        if self._async_role_cache is None:
+            self._async_role_cache = AsyncRoleCache(client=self)
+        return self._async_role_cache
+
+    @property
+    def source_tag_cache(self) -> AsyncSourceTagCache:
+        """Get async source tag cache with same API as sync"""
+        if self._async_source_tag_cache is None:
+            self._async_source_tag_cache = AsyncSourceTagCache(client=self)
+        return self._async_source_tag_cache
+
+    @property
+    def user_cache(self) -> AsyncUserCache:
+        """Get async user cache with same API as sync"""
+        if self._async_user_cache is None:
+            self._async_user_cache = AsyncUserCache(client=self)
+        return self._async_user_cache
+
     def _get_async_session(self) -> httpx.AsyncClient:
         """Get or create async HTTP session"""
         if self._async_session is None:
@@ -331,8 +409,6 @@ class AsyncAtlanClient(AtlanClient):
 
     async def _presigned_url_file_download(self, api, file_path: str):
         """Async version of presigned URL file download"""
-        from pyatlan.errors import ErrorCode
-
         # For presigned URLs, we make direct HTTP calls (not through Atlan)
         async with httpx.AsyncClient() as client:
             response = await client.get(

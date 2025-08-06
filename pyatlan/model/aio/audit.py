@@ -31,7 +31,7 @@ class AsyncAuditSearchResults:
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
+        client: AsyncAtlanClient,
         criteria: AuditSearchRequest,
         start: int,
         size: int,

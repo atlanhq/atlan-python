@@ -120,7 +120,7 @@ class GroupResponse(AtlanObject):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
-    _client: "ApiCaller" = PrivateAttr()
+    _client: ApiCaller = PrivateAttr()
     _criteria: GroupRequest = PrivateAttr()
     total_record: Optional[int] = Field(description="Total number of groups.")
     filter_record: Optional[int] = Field(

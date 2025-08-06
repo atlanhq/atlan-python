@@ -4,8 +4,6 @@
 from __future__ import annotations
 
 import abc
-import asyncio
-import copy
 from typing import TYPE_CHECKING, AsyncGenerator, List, Optional, Set
 
 from pydantic.v1 import ValidationError, parse_obj_as
@@ -37,7 +35,7 @@ class AsyncSearchResults(abc.ABC):
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
+        client: AsyncAtlanClient,
         endpoint: API,
         criteria: SearchRequest,
         start: int,
@@ -159,7 +157,7 @@ class AsyncIndexSearchResults(AsyncSearchResults):
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
+        client: AsyncAtlanClient,
         criteria: IndexSearchRequest,
         start: int,
         size: int,
@@ -332,143 +330,3 @@ class AsyncIndexSearchResults(AsyncSearchResults):
     @staticmethod
     def get_paging_timestamp_query(last_timestamp: int) -> Query:
         return Asset.CREATE_TIME.gte(last_timestamp)
-
-
-class SimpleConcurrentAsyncIndexSearchResults(AsyncIndexSearchResults):
-    """
-    Simple concurrent async search results.
-
-    This uses a much simpler approach: just prefetch the next page
-    while processing the current page. No complex queues or multiple tasks.
-    """
-
-    def __init__(
-        self,
-        client: "AsyncAtlanClient",
-        criteria: IndexSearchRequest,
-        start: int,
-        size: int,
-        count: int,
-        assets: List[Asset],
-        aggregations: Optional[Aggregations],
-        bulk: bool = False,
-        prefetch_pages: int = 1,
-    ):
-        super().__init__(
-            client, criteria, start, size, count, assets, aggregations, bulk
-        )
-
-        # Simple state tracking
-        self._next_page_task: Optional[asyncio.Task] = None
-        self._next_page_data: Optional[List[Asset]] = None
-        self._current_page_start = start
-
-        # Check if this should use bulk search strategies
-        self._is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
-
-    async def _fetch_simple_next_page(self, page_offset: int) -> Optional[List[Asset]]:
-        """
-        Simple method to fetch the next page using offset-based pagination.
-        """
-        try:
-            # Don't fetch beyond the expected end
-            if page_offset >= self._count:
-                return None
-
-            # Create a copy of criteria for this specific page request
-            page_criteria = copy.deepcopy(self._criteria)
-            page_criteria.dsl.from_ = page_offset
-            page_criteria.dsl.size = self._size
-
-            raw_json = await self._client._call_api(
-                INDEX_SEARCH,
-                request_obj=page_criteria,
-            )
-
-            if "entities" not in raw_json or not raw_json["entities"]:
-                return None
-
-            # Process entities
-            entities = raw_json["entities"]
-            for entity in entities:
-                unflatten_custom_metadata_for_entity(
-                    entity=entity, attributes=page_criteria.attributes
-                )
-            assets = parse_obj_as(List[Asset], entities)
-
-            # Filter out any None assets
-            assets = [asset for asset in assets if asset is not None]
-
-            return assets if assets else None
-
-        except Exception as e:
-            print(f"   ❌ Error fetching page at offset {page_offset}: {e}")
-            return None
-
-    async def __aiter__(self) -> AsyncGenerator[Asset, None]:
-        """
-        Simple async iterator with basic prefetching.
-
-        For bulk searches: Falls back to sequential pagination.
-        For small searches: Prefetches next page while processing current page.
-        """
-
-        # For bulk searches, use the proven sequential pagination from parent class
-        if self._is_bulk_search:
-            print("🔄 Using sequential pagination for bulk search (>100k assets)")
-            async for asset in super().__aiter__():
-                yield asset
-            return
-
-        print("⚡ Using simple concurrent pagination")
-        current_assets = self._assets
-        current_offset = self._current_page_start
-
-        while current_assets:
-            # Start fetching next page in background
-            next_offset = current_offset + self._size
-            if next_offset < self._count and not self._next_page_task:
-                print(f"🔄 Starting prefetch for offset {next_offset}")
-                self._next_page_task = asyncio.create_task(
-                    self._fetch_simple_next_page(next_offset)
-                )
-
-            # Yield all assets from current page
-            for asset in current_assets:
-                yield asset
-
-            # Get the next page (either from prefetch or fetch now)
-            if self._next_page_task:
-                try:
-                    print("📥 Waiting for prefetched page...")
-                    next_assets = await self._next_page_task
-                    self._next_page_task = None
-                except Exception as e:
-                    print(f"❌ Prefetch failed: {e}")
-                    next_assets = None
-            else:
-                # No prefetch task, fetch now
-                next_offset = current_offset + self._size
-                if next_offset < self._count:
-                    print(f"🔄 Fetching next page at offset {next_offset}")
-                    next_assets = await self._fetch_simple_next_page(next_offset)
-                else:
-                    next_assets = None
-
-            if not next_assets:
-                print("🔚 No more pages available")
-                break
-
-            print(f"📄 Got next page with {len(next_assets)} assets")
-            current_assets = next_assets
-            current_offset = next_offset
-
-        # Clean up any remaining task
-        if self._next_page_task and not self._next_page_task.done():
-            self._next_page_task.cancel()
-            try:
-                await self._next_page_task
-            except asyncio.CancelledError:
-                pass

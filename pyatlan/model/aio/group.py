@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
+from pyatlan.client.common import API
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.group import AtlanGroup, GroupRequest
@@ -21,8 +22,8 @@ class AsyncGroupResponse(AtlanObject):
 
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
-    _endpoint: "API" = PrivateAttr()
-    _client: "AsyncAtlanClient" = PrivateAttr()
+    _endpoint: API = PrivateAttr()
+    _client: AsyncAtlanClient = PrivateAttr()
     _criteria: GroupRequest = PrivateAttr()
     total_record: Optional[int] = Field(description="Total number of groups.")
     filter_record: Optional[int] = Field(

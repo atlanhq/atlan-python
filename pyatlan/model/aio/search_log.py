@@ -31,7 +31,7 @@ class AsyncSearchLogResults:
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
+        client: AsyncAtlanClient,
         criteria: SearchLogRequest,
         start: int,
         size: int,

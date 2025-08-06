@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING, List, Optional
 
 from pydantic.v1 import validate_arguments
 
+from pyatlan.client.aio.atlan import client_connection
 from pyatlan.client.common import (
     UserAddToGroups,
     UserChangeRole,
@@ -23,10 +25,12 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.group import AsyncGroupResponse
 from pyatlan.model.aio.user import AsyncUserResponse
+from pyatlan.model.assets import Asset
 from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.user import AtlanUser, UserMinimalResponse
+from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest
 
 if TYPE_CHECKING:
     from .client import AsyncAtlanClient
@@ -37,7 +41,7 @@ class AsyncUserClient:
     Async client for operating on users.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         if not hasattr(client, "_call_api"):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "client", "AsyncAtlanClient"
@@ -144,7 +148,6 @@ class AsyncUserClient:
         raw_json = await self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
 
         request = UserRequest(
             post_filter=post_filter,
@@ -201,9 +204,6 @@ class AsyncUserClient:
         endpoint, query_params = UserGetByEmail.prepare_request(email, limit, offset)
         raw_json = await self._client._call_api(api=endpoint, query_params=query_params)
 
-        # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
-
         request = UserRequest(
             post_filter='{"email":{"$ilike":"%' + email + '%"}}',
             limit=limit,
@@ -234,11 +234,7 @@ class AsyncUserClient:
         raw_json = await self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from json import dumps
-
-        from pyatlan.model.user import UserRequest
-
-        email_filter = '{"email":{"$in":' + dumps(emails or [""]) + "}}"
+        email_filter = '{"email":{"$in":' + json.dumps(emails or [""]) + "}}"
         request = UserRequest(
             post_filter=email_filter,
             limit=limit,
@@ -261,9 +257,6 @@ class AsyncUserClient:
         """
         endpoint, query_params = UserGetByUsername.prepare_request(username)
         raw_json = await self._client._call_api(api=endpoint, query_params=query_params)
-
-        # Build the request object for response processing
-        from pyatlan.model.user import UserRequest
 
         request = UserRequest(
             post_filter='{"username":"' + username + '"}',
@@ -295,11 +288,7 @@ class AsyncUserClient:
         raw_json = await self._client._call_api(api=endpoint, query_params=query_params)
 
         # Build the request object for response processing
-        from json import dumps
-
-        from pyatlan.model.user import UserRequest
-
-        username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
+        username_filter = '{"username":{"$in":' + json.dumps(usernames or [""]) + "}}"
         request = UserRequest(
             post_filter=username_filter,
             limit=limit,
@@ -366,8 +355,6 @@ class AsyncUserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
         """
-        from pyatlan.model.assets import Asset
-
         return await self._add_as(
             asset_guid=asset_guid,
             impersonation_token=impersonation_token,
@@ -389,8 +376,6 @@ class AsyncUserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
-        from pyatlan.model.assets import Asset
-
         return await self._add_as(
             asset_guid=asset_guid,
             impersonation_token=impersonation_token,
@@ -410,10 +395,6 @@ class AsyncUserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
-        from pyatlan.client.aio.atlan import client_connection
-        from pyatlan.model.assets import Asset
-        from pyatlan.model.fluent_search import FluentSearch
-
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:
             raise ValueError(
                 f"keyword_field should be {Asset.VIEWER_USERS} or {Asset.ADMIN_USERS}"

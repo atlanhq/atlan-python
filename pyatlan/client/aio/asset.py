@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -47,11 +48,9 @@ from pyatlan.client.common import (
     UpdateCertificate,
     UpdateCustomMetadataAttributes,
 )
-from pyatlan.model.aio import (
-    AsyncIndexSearchResults,
-    AsyncLineageListResults,
-    SimpleConcurrentAsyncIndexSearchResults,
-)
+from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
+from pyatlan.errors import ErrorCode
+from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -133,24 +132,15 @@ class AsyncAssetClient:
                 prefetch_pages=prefetch_pages,
             )
 
-        if concurrent_pages:
-            return SimpleConcurrentAsyncIndexSearchResults(
-                self._async_client,
-                INDEX_SEARCH,
-                criteria,
-                response["count"],
-                response["assets"],
-                concurrent_pages,
-                prefetch_pages,
-            )
-
         return AsyncIndexSearchResults(
             self._async_client,
-            INDEX_SEARCH,
             criteria,
             0,
             len(response["assets"]),
+            response["count"],
             response["assets"],
+            response.get("aggregations"),
+            bulk,
         )
 
     async def get_lineage_list(self, lineage_request) -> AsyncLineageListResults:
@@ -354,8 +344,6 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
-        from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan.model.assets import Connection
 
         query_params, request = Save.prepare_request(
             entity=entity,
@@ -375,9 +363,6 @@ class AsyncAssetClient:
 
     async def _wait_for_connections_to_be_created(self, connections_created):
         """Async version of connection waiting logic."""
-        import asyncio
-
-        from pyatlan.model.assets import Connection
 
         guids = Save.get_connection_guids_to_wait_for(connections_created)
 
@@ -456,7 +441,6 @@ class AsyncAssetClient:
         :returns: details of the created or updated assets
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.client.constants import BULK_UPDATE
 
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
@@ -577,7 +561,6 @@ class AsyncAssetClient:
         .. warning::
             PURGE and HARD deletions are irreversible operations. Use with caution.
         """
-        from pyatlan.client.constants import DELETE_ENTITIES_BY_GUIDS
 
         query_params = PurgeByGuid.prepare_request(guid, delete_type)
         raw_json = await self._async_client._call_api(
@@ -598,7 +581,6 @@ class AsyncAssetClient:
         :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted
         :raises InvalidRequestError: if an asset does not support archiving
         """
-        from pyatlan.client.constants import DELETE_ENTITIES_BY_GUIDS
 
         guids = DeleteByGuid.prepare_request(guid)
 
@@ -624,7 +606,6 @@ class AsyncAssetClient:
 
     async def _wait_till_deleted_async(self, asset: Asset):
         """Async version of _wait_till_deleted with retry logic."""
-        import asyncio
 
         max_attempts = 20
         for attempt in range(max_attempts):
@@ -636,14 +617,10 @@ class AsyncAssetClient:
                     return
             except Exception as e:
                 if attempt == max_attempts - 1:
-                    from pyatlan.errors import ErrorCode
-
                     raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from e
             await asyncio.sleep(1)  # Wait before retry
 
         # If we reach here, we've exhausted retries
-        from pyatlan.errors import ErrorCode
-
         raise ErrorCode.RETRY_OVERRUN.exception_with_parameters()
 
     async def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
@@ -661,7 +638,6 @@ class AsyncAssetClient:
         self, asset_type: Type[A], qualified_name: str, retries: int
     ) -> bool:
         """Async version of _restore with retry logic."""
-        import asyncio
 
         if not RestoreAsset.can_asset_type_be_archived(asset_type):
             return False
@@ -690,7 +666,6 @@ class AsyncAssetClient:
 
     async def _restore_asset_async(self, asset: Asset) -> AssetMutationResponse:
         """Async version of _restore_asset."""
-        from pyatlan.client.constants import BULK_UPDATE
 
         query_params, request = RestoreAsset.prepare_restore_request(asset)
         # Flush custom metadata for the restored asset

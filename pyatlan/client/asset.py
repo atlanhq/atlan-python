@@ -2290,12 +2290,11 @@ class Batch:
         return self.flush() if len(self._batch) == self._max_size else None
 
     def flush(self) -> Optional[AssetMutationResponse]:
-        from pyatlan.model.fluent_search import FluentSearch
-
         """Flush any remaining assets in the batch.
 
         :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed
         """
+        from pyatlan.model.fluent_search import FluentSearch
         revised: list = []
         response: Optional[AssetMutationResponse] = None
         if self._batch:

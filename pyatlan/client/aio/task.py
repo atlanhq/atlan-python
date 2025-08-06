@@ -20,7 +20,7 @@ class AsyncTaskClient:
     Async client for operating on tasks.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         if not hasattr(client, "_call_api"):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "client", "AsyncAtlanClient"

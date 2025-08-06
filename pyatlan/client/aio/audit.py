@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -21,7 +23,7 @@ class AsyncAuditClient:
     This class does not need to be instantiated directly but can be obtained through the audit property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         self._client = client
 
     @validate_arguments
@@ -63,8 +65,6 @@ class AsyncAuditClient:
             return await self.search(criteria)
 
         # Create and return async search results
-        from pyatlan.model.aio.audit import AsyncAuditSearchResults
-
         return AsyncAuditSearchResults(
             client=self._client,
             criteria=criteria,

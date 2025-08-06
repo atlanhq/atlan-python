@@ -222,7 +222,7 @@ class WorkflowSearchResponse(AtlanObject):
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
     _endpoint: API = PrivateAttr()
-    _client: "ApiCaller" = PrivateAttr()
+    _client: ApiCaller = PrivateAttr()
     _criteria: WorkflowSearchRequest = PrivateAttr()
     took: Optional[int] = Field(default=None)
     hits: Optional[WorkflowSearchHits] = Field(default=None)

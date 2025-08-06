@@ -33,21 +33,21 @@ class AsyncTypeDefClient:
     Async client for operating on type definitions.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         if not hasattr(client, "_call_api"):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "client", "AsyncAtlanClient"
             )
         self._client = client
 
-    def _refresh_caches(self, typedef: TypeDef) -> None:
+    async def _refresh_caches(self, typedef: TypeDef) -> None:
         """Refresh appropriate caches after creating or updating a type definition."""
         if isinstance(typedef, AtlanTagDef):
-            self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]
+            await self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]
         if isinstance(typedef, CustomMetadataDef):
-            self._client.custom_metadata_cache.refresh_cache()  # type: ignore[attr-defined]
+            await self._client.custom_metadata_cache.refresh_cache()  # type: ignore[attr-defined]
         if isinstance(typedef, EnumDef):
-            self._client.enum_cache.refresh_cache()  # type: ignore[attr-defined]
+            await self._client.enum_cache.refresh_cache()  # type: ignore[attr-defined]
 
     async def get_all(self) -> TypeDefResponse:
         """
@@ -108,7 +108,7 @@ class AsyncTypeDefClient:
         raw_json = await self._client._call_api(
             endpoint, request_obj=request_obj, exclude_unset=True
         )
-        self._refresh_caches(typedef)
+        await self._refresh_caches(typedef)
         return TypeDefCreate.process_response(raw_json)
 
     @validate_arguments
@@ -129,7 +129,7 @@ class AsyncTypeDefClient:
         raw_json = await self._client._call_api(
             endpoint, request_obj=request_obj, exclude_unset=True
         )
-        self._refresh_caches(typedef)
+        await self._refresh_caches(typedef)
         return TypeDefUpdate.process_response(raw_json)
 
     @validate_arguments

@@ -19,7 +19,7 @@ class AsyncRoleClient:
     Async client for retrieving information about roles.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         self._client = client
 
     @validate_arguments

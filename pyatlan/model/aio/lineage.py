@@ -22,7 +22,7 @@ class AsyncLineageListResults:
 
     def __init__(
         self,
-        client: "AsyncAtlanClient",
+        client: AsyncAtlanClient,
         criteria: LineageListRequest,
         start: int,
         size: int,

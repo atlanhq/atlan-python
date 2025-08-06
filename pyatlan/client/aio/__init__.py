@@ -23,7 +23,6 @@ from pyatlan.model.aio import (
     AsyncIndexSearchResults,
     AsyncLineageListResults,
     AsyncSearchResults,
-    SimpleConcurrentAsyncIndexSearchResults,
 )
 
 from .admin import AsyncAdminClient
@@ -75,5 +74,4 @@ __all__ = [
     "AsyncUserResponse",
     "AsyncWorkflowClient",
     "AsyncWorkflowSearchResponse",
-    "SimpleConcurrentAsyncIndexSearchResults",
 ]

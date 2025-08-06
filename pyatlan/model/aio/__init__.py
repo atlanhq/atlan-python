@@ -9,11 +9,7 @@ These models follow the same API as their sync counterparts but use async/await
 for all operations that involve API calls or iteration.
 """
 
-from .asset import (
-    AsyncIndexSearchResults,
-    AsyncSearchResults,
-    SimpleConcurrentAsyncIndexSearchResults,
-)
+from .asset import AsyncIndexSearchResults, AsyncSearchResults
 from .audit import AsyncAuditSearchResults
 from .group import AsyncGroupResponse
 from .keycloak_events import AsyncAdminEventResponse, AsyncKeycloakEventResponse
@@ -27,7 +23,6 @@ __all__ = [
     # Asset search results
     "AsyncSearchResults",
     "AsyncIndexSearchResults",
-    "SimpleConcurrentAsyncIndexSearchResults",
     # Audit search results
     "AsyncAuditSearchResults",
     # Admin event results

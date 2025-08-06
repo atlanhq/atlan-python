@@ -27,7 +27,7 @@ class AsyncSSOClient:
     Async client for operating on Atlan's single sign-on (SSO).
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         self._client = client
 
     async def _check_existing_group_mappings(

@@ -31,6 +31,7 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.workflow import AsyncWorkflowSearchResponse
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
+from pyatlan.model.search import Bool, Exists, NestedQuery, Range, Term, Terms
 from pyatlan.model.workflow import (
     ScheduleQueriesSearchRequest,
     Workflow,
@@ -106,7 +107,6 @@ class AsyncWorkflowClient:
         :returns: the workflow run with the provided ID, or None if none is found
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.model.search import Bool, Term
 
         query = Bool(
             filter=[
@@ -141,7 +141,6 @@ class AsyncWorkflowClient:
         :raises AtlanError: on any API communication issue
         """
         # Use the original implementation since this has a complex custom query
-        from pyatlan.model.search import Bool, Exists, NestedQuery, Range, Terms
 
         time_filters = []
         if started_at:
@@ -493,7 +492,6 @@ class AsyncWorkflowClient:
         :raises AtlanError: on any API communication issue.
         """
         # Note: this method uses a custom query, so we'll keep the existing implementation
-        from pyatlan.model.search import Bool, NestedQuery, Term
 
         query = Bool(
             must=[

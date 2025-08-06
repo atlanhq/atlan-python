@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr
 
+from pyatlan.client.common import API
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.workflow import (
     WorkflowSearchHits,
@@ -24,8 +25,8 @@ class AsyncWorkflowSearchResponse(AtlanObject):
 
     _size: int = PrivateAttr()
     _start: int = PrivateAttr()
-    _endpoint: "API" = PrivateAttr()
-    _client: "AsyncAtlanClient" = PrivateAttr()
+    _endpoint: API = PrivateAttr()
+    _client: AsyncAtlanClient = PrivateAttr()
     _criteria: WorkflowSearchRequest = PrivateAttr()
     took: Optional[int] = Field(default=None)
     hits: Optional[WorkflowSearchHits] = Field(default=None)

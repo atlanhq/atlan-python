@@ -58,8 +58,6 @@ class AuditClient:
             return self.search(criteria)
 
         # Create and return search results
-        from pyatlan.model.audit import AuditSearchResults
-
         return AuditSearchResults(
             client=self._client,
             criteria=criteria,

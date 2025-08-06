@@ -39,7 +39,7 @@ from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
-from pyatlan.client.common import CONNECTION_RETRY
+from pyatlan.client.common import CONNECTION_RETRY, ImpersonateUser
 from pyatlan.client.constants import EVENT_STREAM, GET_TOKEN, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.contract import ContractClient
 from pyatlan.client.credential import CredentialClient
@@ -361,8 +361,6 @@ class AtlanClient(BaseSettings):
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
-        from pyatlan.client.common import ImpersonateUser
-
         base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
 
         # Step 1: Initialize base client and get Atlan-Argo credentials

@@ -23,7 +23,7 @@ class AsyncSearchLogClient:
     Async client for configuring and running searches against Atlan's search log.
     """
 
-    def __init__(self, client: "AsyncAtlanClient"):
+    def __init__(self, client: AsyncAtlanClient):
         self._client = client
 
     @validate_arguments
