@@ -48,6 +48,7 @@ from pyatlan.model.enums import (
     LineageDirection,
     SaveSemantic,
     SortOrder,
+    alpha_DQScheduleType,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.group import GroupRequest
@@ -2716,3 +2717,50 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
             )
 
         mock_execute.assert_called_once()
+
+
+def test_add_dq_rule_schedule(mock_api_caller):
+    asset_client = AssetClient(mock_api_caller)
+    asset_type = Table
+    asset_name = "Test Table"
+    asset_qualified_name = "test/qualified/name"
+    schedule_cron_string = "0 0 * * *"
+    schedule_time_zone = "UTC"
+
+    updated_table = Table()
+    updated_table.guid = "test-guid-123"
+    updated_table.alpha_asset_d_q_schedule_time_zone = schedule_time_zone
+    updated_table.alpha_asset_d_q_schedule_crontab = schedule_cron_string
+    updated_table.alpha_asset_d_q_schedule_type = alpha_DQScheduleType.CRON
+
+    mock_response = Mock(spec=AssetMutationResponse)
+
+    with patch.object(
+        asset_type, "updater", return_value=updated_table
+    ) as mock_updater:
+        with patch.object(
+            asset_client, "save", return_value=mock_response
+        ) as mock_save:
+            result = asset_client.add_dq_rule_schedule(
+                asset_type=asset_type,
+                asset_name=asset_name,
+                asset_qualified_name=asset_qualified_name,
+                schedule_crontab=schedule_cron_string,
+                schedule_time_zone=schedule_time_zone,
+            )
+
+            mock_updater.assert_called_once_with(
+                qualified_name=asset_qualified_name,
+                name=asset_name,
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_time_zone == schedule_time_zone
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_crontab == schedule_cron_string
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_type == alpha_DQScheduleType.CRON
+            )
+            mock_save.assert_called_once_with(updated_table)
+            assert result == mock_response

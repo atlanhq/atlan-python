@@ -25,7 +25,7 @@ def encoders():
     }
 
 
-def convert_with_fixed_prefix(input_str, fixed_prefix="alpha_dq"):
+def convert_with_fixed_prefix(input_str, fixed_prefix):
     prefix = fixed_prefix
     remaining = input_str[len(prefix) + 1 :]
     parts = remaining.split("_")
@@ -39,7 +39,9 @@ def to_camel_case(value: str) -> str:
     if value == "__root__":
         return value
     if value.startswith("alpha_dq"):
-        return convert_with_fixed_prefix(value)
+        return convert_with_fixed_prefix(input_str=value, fixed_prefix="alpha_dq")
+    if value.startswith("alpha_asset"):
+        return convert_with_fixed_prefix(input_str=value, fixed_prefix="alpha_asset")
     if value in CAMEL_CASE_OVERRIDES:
         return CAMEL_CASE_OVERRIDES[value]
     value = "".join(word.capitalize() for word in value.split("_"))
