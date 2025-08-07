@@ -108,29 +108,21 @@ class AsyncAssetClient:
         self,
         criteria: IndexSearchRequest,
         bulk=False,
-        concurrent_pages: bool = False,
-        prefetch_pages: int = 1,
     ) -> AsyncIndexSearchResults:
         """
         Async search that reuses shared business logic via Search.
 
         :param criteria: search criteria
         :param bulk: whether to use bulk search mode
-        :param concurrent_pages: whether to enable concurrent page fetching (experimental)
-        :param prefetch_pages: number of pages to prefetch in background (only used with concurrent_pages=True)
-        :returns: AsyncIndexSearchResults or ConcurrentAsyncIndexSearchResults
+        :returns: AsyncIndexSearchResults
         """
         INDEX_SEARCH, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = await self._async_client._call_api(
             INDEX_SEARCH, request_obj=request_obj
         )
-        response = Search.process_response(raw_json, criteria, bulk, self._async_client)
+        response = Search.process_response(raw_json, criteria)
         if Search._check_for_bulk_search(criteria, response["count"], bulk):
-            return await self.search(
-                criteria,
-                concurrent_pages=concurrent_pages,
-                prefetch_pages=prefetch_pages,
-            )
+            return await self.search(criteria, bulk)
 
         return AsyncIndexSearchResults(
             self._async_client,

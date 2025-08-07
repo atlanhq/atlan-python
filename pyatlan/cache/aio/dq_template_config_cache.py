@@ -2,33 +2,33 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-import threading
+import asyncio
 from typing import TYPE_CHECKING, Dict, Optional
 
 from pyatlan.cache.common.dq_template_config_cache import DQTemplateConfigCacheCommon
 
 if TYPE_CHECKING:
-    from pyatlan.client.atlan import AtlanClient
+    from pyatlan.client.aio.client import AsyncAtlanClient
 
 
-class DQTemplateConfigCache:
+class AsyncDQTemplateConfigCache:
     """
-    Lazily-loaded cache for DQ rule template configurations to avoid multiple API calls.
+    Lazily-loaded async cache for DQ rule template configurations to avoid multiple API calls.
     """
 
-    def __init__(self, client: AtlanClient):
-        self.client: AtlanClient = client
+    def __init__(self, client: AsyncAtlanClient):
+        self.client: AsyncAtlanClient = client
         self._cache: Dict[str, Dict] = {}
-        self._lock: threading.Lock = threading.Lock()
+        self._lock: asyncio.Lock = asyncio.Lock()
         self._initialized: bool = False
 
-    def refresh_cache(self) -> None:
+    async def refresh_cache(self) -> None:
         """
         Refreshes the cache of DQ template configurations by requesting the full set from Atlan.
         """
-        self._refresh_cache()
+        await self._refresh_cache()
 
-    def get_template_config(self, rule_type: str) -> Optional[Dict]:
+    async def get_template_config(self, rule_type: str) -> Optional[Dict]:
         """
         Get template configuration for a specific rule type.
 
@@ -36,20 +36,20 @@ class DQTemplateConfigCache:
         :returns: Template configuration dict or None if not found
         """
         if not self._initialized:
-            self._refresh_cache()
+            await self._refresh_cache()
 
         return self._cache.get(rule_type)
 
-    def _refresh_cache(self) -> None:
+    async def _refresh_cache(self) -> None:
         """Refresh the cache by fetching all template configurations."""
-        with self._lock:
+        async with self._lock:
             if self._initialized:
                 return
 
             try:
                 search_request = DQTemplateConfigCacheCommon.prepare_search_request()
                 request = search_request.to_request()
-                results = self.client.asset.search(request)
+                results = await self.client.asset.search(request)
 
                 success, error = DQTemplateConfigCacheCommon.process_search_results(
                     results, self._cache

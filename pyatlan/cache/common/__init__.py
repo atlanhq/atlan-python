@@ -15,6 +15,7 @@ from __future__ import annotations
 # Cache shared logic classes
 from .atlan_tag_cache import AtlanTagCacheCommon
 from .custom_metadata_cache import CustomMetadataCacheCommon
+from .dq_template_config_cache import DQTemplateConfigCacheCommon
 from .enum_cache import EnumCacheCommon
 from .group_cache import GroupCacheCommon
 from .role_cache import RoleCacheCommon
@@ -24,6 +25,7 @@ __all__ = [
     # Cache shared logic classes
     "AtlanTagCacheCommon",
     "CustomMetadataCacheCommon",
+    "DQTemplateConfigCacheCommon",
     "EnumCacheCommon",
     "GroupCacheCommon",
     "RoleCacheCommon",

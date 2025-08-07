@@ -50,7 +50,7 @@ class AuditClient:
         raw_json = self._client._call_api(endpoint, request_obj=request_obj)
 
         # Process response using shared logic
-        response = AuditSearch.process_response(raw_json, criteria, bulk, self._client)
+        response = AuditSearch.process_response(raw_json)
 
         # Check if we need to convert to bulk search using shared logic
         if AuditSearch.check_for_bulk_search(response["count"], criteria, bulk):

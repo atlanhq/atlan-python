@@ -13,6 +13,7 @@ to ensure identical behavior with sync cache implementations.
 from .atlan_tag_cache import AsyncAtlanTagCache
 from .connection_cache import AsyncConnectionCache
 from .custom_metadata_cache import AsyncCustomMetadataCache
+from .dq_template_config_cache import AsyncDQTemplateConfigCache
 from .enum_cache import AsyncEnumCache
 from .group_cache import AsyncGroupCache
 from .role_cache import AsyncRoleCache
@@ -23,6 +24,7 @@ __all__ = [
     "AsyncAtlanTagCache",
     "AsyncConnectionCache",
     "AsyncCustomMetadataCache",
+    "AsyncDQTemplateConfigCache",
     "AsyncEnumCache",
     "AsyncGroupCache",
     "AsyncRoleCache",

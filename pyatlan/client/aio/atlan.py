@@ -1,14 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+from __future__ import annotations
 
 import contextlib
-from typing import AsyncGenerator, Optional
+from typing import TYPE_CHECKING, AsyncGenerator, Optional
 
 from httpx_retries import Retry
 from pydantic.v1 import HttpUrl
 
-from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.client.atlan import DEFAULT_RETRY
+
+if TYPE_CHECKING:
+    from pyatlan.client.aio.client import AsyncAtlanClient
 
 
 @contextlib.asynccontextmanager

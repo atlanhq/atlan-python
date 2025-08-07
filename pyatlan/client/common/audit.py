@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 import logging
-from typing import Any, List
+from typing import List
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
@@ -48,17 +48,11 @@ class AuditSearch:
     @staticmethod
     def process_response(
         raw_json: dict,
-        criteria: AuditSearchRequest,
-        bulk: bool = False,
-        client: Any = None,
     ) -> dict:
         """
         Process the raw API response into a response dictionary.
 
         :param raw_json: raw API response
-        :param criteria: original search criteria
-        :param bulk: whether this was a bulk search
-        :param client: client instance (not used for audit, kept for consistency)
         :returns: dictionary with parsed data for search results creation
         """
         # Parse entity audits

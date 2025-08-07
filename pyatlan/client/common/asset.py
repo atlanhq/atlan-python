@@ -173,12 +173,6 @@ class Search:
 
     @classmethod
     def process_response(cls, raw_json, criteria) -> Dict[str, Any]:
-        from typing import List
-
-        from pydantic.v1 import ValidationError
-
-        from pyatlan.errors import ErrorCode
-
         if "entities" in raw_json:
             try:
                 for entity in raw_json["entities"]:

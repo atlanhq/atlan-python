@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr
 
-from pyatlan.client.common import API
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.workflow import (
     WorkflowSearchHits,
     WorkflowSearchRequest,
     WorkflowSearchResult,
 )
+from pyatlan.utils import API
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient

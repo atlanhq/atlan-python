@@ -7,10 +7,10 @@ from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Optional
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
-from pyatlan.client.common import API
 from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.group import AtlanGroup, GroupRequest
+from pyatlan.utils import API
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient

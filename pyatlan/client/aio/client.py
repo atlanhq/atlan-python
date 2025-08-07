@@ -17,6 +17,7 @@ from pyatlan.cache.aio import (
     AsyncAtlanTagCache,
     AsyncConnectionCache,
     AsyncCustomMetadataCache,
+    AsyncDQTemplateConfigCache,
     AsyncEnumCache,
     AsyncGroupCache,
     AsyncRoleCache,
@@ -93,6 +94,9 @@ class AsyncAtlanClient(AtlanClient):
     _async_atlan_tag_cache: Optional[AsyncAtlanTagCache] = PrivateAttr(default=None)
     _async_connection_cache: Optional[AsyncConnectionCache] = PrivateAttr(default=None)
     _async_custom_metadata_cache: Optional[AsyncCustomMetadataCache] = PrivateAttr(
+        default=None
+    )
+    _async_dq_template_config_cache: Optional[AsyncDQTemplateConfigCache] = PrivateAttr(
         default=None
     )
     _async_enum_cache: Optional[AsyncEnumCache] = PrivateAttr(default=None)
@@ -251,6 +255,15 @@ class AsyncAtlanClient(AtlanClient):
         if self._async_custom_metadata_cache is None:
             self._async_custom_metadata_cache = AsyncCustomMetadataCache(client=self)
         return self._async_custom_metadata_cache
+
+    @property
+    def dq_template_config_cache(self) -> AsyncDQTemplateConfigCache:
+        """Get async DQ template config cache with same API as sync"""
+        if self._async_dq_template_config_cache is None:
+            self._async_dq_template_config_cache = AsyncDQTemplateConfigCache(
+                client=self
+            )
+        return self._async_dq_template_config_cache
 
     @property
     def enum_cache(self) -> AsyncEnumCache:

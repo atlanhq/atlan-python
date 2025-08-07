@@ -33,7 +33,7 @@ from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest
 
 if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
+    from pyatlan.client.aio.client import AsyncAtlanClient
 
 
 class AsyncUserClient:
