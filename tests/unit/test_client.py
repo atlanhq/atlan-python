@@ -2719,7 +2719,7 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
         mock_execute.assert_called_once()
 
 
-def test_add_dq_rules_schedule(mock_api_caller):
+def test_add_or_update_dq_rules_schedule(mock_api_caller):
     asset_client = AssetClient(mock_api_caller)
     guid = "test-guid-123"
     schedule_cron_string = "0 0 * * *"
@@ -2750,7 +2750,7 @@ def test_add_dq_rules_schedule(mock_api_caller):
                 with patch.object(
                     asset_client, "save", return_value=mock_response
                 ) as mock_save:
-                    result = asset_client.add_dq_rules_schedule(
+                    result = asset_client.add_or_update_dq_rules_schedule(
                         guid=guid,
                         schedule_cron_string=schedule_cron_string,
                         schedule_time_zone=schedule_time_zone,

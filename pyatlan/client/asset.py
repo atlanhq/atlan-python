@@ -2030,9 +2030,19 @@ class AssetClient:
                     func(asset)
         return len(guids_processed)
 
-    def add_dq_rules_schedule(
+    @validate_arguments
+    def add_or_update_dq_rules_schedule(
         self, guid: str, schedule_cron_string: str, schedule_time_zone: str
     ) -> AssetMutationResponse:
+        """
+        Add/Update a data quality rules schedule to an asset.
+
+        :param guid: unique identifier (GUID) of the asset to which to add the DQ rules schedule
+        :param schedule_cron_string: cron expression string defining the schedule for the DQ rules
+        :param schedule_time_zone: timezone for the schedule
+        :returns: the result of the save
+        :raises AtlanError: on any API communication issue
+        """
         asset_retrieved = self.get_by_guid(guid=guid)  # type: ignore
         asset_type = Asset._convert_to_real_type_(asset_retrieved)
         updated_asset = asset_type.updater(
