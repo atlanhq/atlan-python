@@ -2040,7 +2040,7 @@ class AssetClient:
         schedule_time_zone: str,
     ) -> AssetMutationResponse:
         """
-        Add/Update a data quality rules schedule to an asset.
+        Add a data quality rule schedule to an asset.
 
         :param asset_type: the type of asset to update (e.g., Table)
         :param asset_name: the name of the asset to update
