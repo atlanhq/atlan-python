@@ -11,11 +11,14 @@ for all operations that involve API calls or iteration.
 
 from .asset import AsyncIndexSearchResults, AsyncSearchResults
 from .audit import AsyncAuditSearchResults
+from .core import AsyncAtlanRequest, AsyncAtlanResponse
 from .group import AsyncGroupResponse
 from .keycloak_events import AsyncAdminEventResponse, AsyncKeycloakEventResponse
 from .lineage import AsyncLineageListResults
+from .retranslators import AsyncAtlanTagRetranslator, AsyncBaseRetranslator
 from .search_log import AsyncSearchLogResults
 from .task import AsyncTaskSearchResponse
+from .translators import AsyncAtlanTagTranslator, AsyncBaseTranslator
 from .user import AsyncUserResponse
 from .workflow import AsyncWorkflowSearchResponse
 
@@ -28,6 +31,9 @@ __all__ = [
     # Admin event results
     "AsyncAdminEventResponse",
     "AsyncKeycloakEventResponse",
+    # Core async classes
+    "AsyncAtlanRequest",
+    "AsyncAtlanResponse",
     # Lineage results
     "AsyncLineageListResults",
     # Search log results
@@ -40,4 +46,10 @@ __all__ = [
     "AsyncWorkflowSearchResponse",
     # Task search response
     "AsyncTaskSearchResponse",
+    # Async translators
+    "AsyncBaseTranslator",
+    "AsyncAtlanTagTranslator",
+    # Async retranslators
+    "AsyncBaseRetranslator",
+    "AsyncAtlanTagRetranslator",
 ]

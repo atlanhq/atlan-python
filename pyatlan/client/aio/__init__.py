@@ -28,6 +28,7 @@ from pyatlan.model.aio import (
 from .admin import AsyncAdminClient
 from .asset import AsyncAssetClient
 from .audit import AsyncAuditClient
+from .batch import AsyncBatch
 from .client import AsyncAtlanClient
 from .contract import AsyncContractClient
 from .credential import AsyncCredentialClient
@@ -51,6 +52,7 @@ __all__ = [
     "AsyncAssetClient",
     "AsyncAuditClient",
     "AsyncAuditSearchResults",
+    "AsyncBatch",
     "AsyncContractClient",
     "AsyncCredentialClient",
     "AsyncFileClient",
