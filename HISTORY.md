@@ -1,3 +1,9 @@
+## 7.1.6 (August 7, 2025)
+
+### Experimental
+
+- Added support for adding DQ rules schedule to an asset (i.e: `AssetClient.add_dq_rule_schedule()`).
+
 ## 7.1.5 (August 1, 2025)
 
 ### Experimental
