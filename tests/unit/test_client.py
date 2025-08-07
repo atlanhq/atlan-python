@@ -2719,19 +2719,16 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
         mock_execute.assert_called_once()
 
 
-def test_add_or_update_dq_rules_schedule(mock_api_caller):
+def test_add_dq_rule_schedule(mock_api_caller):
     asset_client = AssetClient(mock_api_caller)
-    guid = "test-guid-123"
+    asset_type = Table
+    asset_name = "Test Table"
+    asset_qualified_name = "test/qualified/name"
     schedule_cron_string = "0 0 * * *"
     schedule_time_zone = "UTC"
 
-    table = Table()
-    table.guid = guid
-    table.qualified_name = "test/qualified/name"
-    table.name = "Test Table"
-
     updated_table = Table()
-    updated_table.guid = guid
+    updated_table.guid = "test-guid-123"
     updated_table.alpha_asset_d_q_schedule_time_zone = schedule_time_zone
     updated_table.alpha_asset_d_q_schedule_crontab = schedule_cron_string
     updated_table.alpha_asset_d_q_schedule_type = alpha_DQScheduleType.CRON
@@ -2739,40 +2736,31 @@ def test_add_or_update_dq_rules_schedule(mock_api_caller):
     mock_response = Mock(spec=AssetMutationResponse)
 
     with patch.object(
-        asset_client, "get_by_guid", return_value=table
-    ) as mock_get_by_guid:
+        asset_type, "updater", return_value=updated_table
+    ) as mock_updater:
         with patch.object(
-            Asset, "_convert_to_real_type_", return_value=Table
-        ) as mock_convert:
-            with patch.object(
-                Table, "updater", return_value=updated_table
-            ) as mock_updater:
-                with patch.object(
-                    asset_client, "save", return_value=mock_response
-                ) as mock_save:
-                    result = asset_client.add_or_update_dq_rules_schedule(
-                        guid=guid,
-                        schedule_cron_string=schedule_cron_string,
-                        schedule_time_zone=schedule_time_zone,
-                    )
+            asset_client, "save", return_value=mock_response
+        ) as mock_save:
+            result = asset_client.add_dq_rule_schedule(
+                asset_type=asset_type,
+                asset_name=asset_name,
+                asset_qualified_name=asset_qualified_name,
+                schedule_crontab=schedule_cron_string,
+                schedule_time_zone=schedule_time_zone,
+            )
 
-                    mock_get_by_guid.assert_called_once_with(guid=guid)
-                    mock_convert.assert_called_once_with(table)
-                    mock_updater.assert_called_once_with(
-                        qualified_name=table.qualified_name,
-                        name=table.name,
-                    )
-                    assert (
-                        updated_table.alpha_asset_d_q_schedule_time_zone
-                        == schedule_time_zone
-                    )
-                    assert (
-                        updated_table.alpha_asset_d_q_schedule_crontab
-                        == schedule_cron_string
-                    )
-                    assert (
-                        updated_table.alpha_asset_d_q_schedule_type
-                        == alpha_DQScheduleType.CRON
-                    )
-                    mock_save.assert_called_once_with(updated_table)
-                    assert result == mock_response
+            mock_updater.assert_called_once_with(
+                qualified_name=asset_qualified_name,
+                name=asset_name,
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_time_zone == schedule_time_zone
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_crontab == schedule_cron_string
+            )
+            assert (
+                updated_table.alpha_asset_d_q_schedule_type == alpha_DQScheduleType.CRON
+            )
+            mock_save.assert_called_once_with(updated_table)
+            assert result == mock_response

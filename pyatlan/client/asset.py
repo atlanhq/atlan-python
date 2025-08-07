@@ -2031,26 +2031,30 @@ class AssetClient:
         return len(guids_processed)
 
     @validate_arguments
-    def add_or_update_dq_rules_schedule(
-        self, guid: str, schedule_cron_string: str, schedule_time_zone: str
+    def add_dq_rule_schedule(
+        self,
+        asset_type: Type[A],
+        asset_name: str,
+        asset_qualified_name: str,
+        schedule_crontab: str,
+        schedule_time_zone: str,
     ) -> AssetMutationResponse:
         """
         Add/Update a data quality rules schedule to an asset.
 
-        :param guid: unique identifier (GUID) of the asset to which to add the DQ rules schedule
-        :param schedule_cron_string: cron expression string defining the schedule for the DQ rules
-        :param schedule_time_zone: timezone for the schedule
+        :param asset_type: the type of asset to update (e.g., Table)
+        :param asset_name: the name of the asset to update
+        :param asset_qualified_name: the qualified name of the asset to update
+        :param schedule_crontab: cron expression string defining the schedule for the DQ rules, e.g: `5 4 * * *`.
+        :param schedule_time_zone: timezone for the schedule, e.g: `Europe/Paris`.
         :returns: the result of the save
         :raises AtlanError: on any API communication issue
         """
-        asset_retrieved = self.get_by_guid(guid=guid)  # type: ignore
-        asset_type = Asset._convert_to_real_type_(asset_retrieved)
         updated_asset = asset_type.updater(
-            qualified_name=asset_retrieved.qualified_name, name=asset_retrieved.name
+            qualified_name=asset_qualified_name, name=asset_name
         )
-        updated_asset.guid = guid
         updated_asset.alpha_asset_d_q_schedule_time_zone = schedule_time_zone
-        updated_asset.alpha_asset_d_q_schedule_crontab = schedule_cron_string
+        updated_asset.alpha_asset_d_q_schedule_crontab = schedule_crontab
         updated_asset.alpha_asset_d_q_schedule_type = alpha_DQScheduleType.CRON
         response = self.save(updated_asset)
         return response
