@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 from typing import Any, Generator, Protocol, runtime_checkable
 
-from urllib3.util.retry import Retry
+from httpx_retries import Retry
 
 HTTPS_PREFIX = "https://"
 HTTP_PREFIX = "http://"

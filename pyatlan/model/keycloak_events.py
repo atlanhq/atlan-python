@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+from __future__ import annotations
+
 from typing import Any, Dict, Generator, List, Optional
 
 from pydantic.v1 import Field, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import ADMIN_EVENTS, KEYCLOAK_EVENTS
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AdminOperationType, AdminResourceType, KeycloakEventType
 

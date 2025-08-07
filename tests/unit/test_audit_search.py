@@ -5,8 +5,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.audit import LOGGER, AuditClient
+from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import ApiCaller
+from pyatlan.client.common.audit import LOGGER
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
 from pyatlan.model.enums import SortOrder

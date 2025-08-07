@@ -5,8 +5,8 @@ from typing import Any, Dict, Generator, Iterable, List, Optional
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import SEARCH_LOG
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Asset
