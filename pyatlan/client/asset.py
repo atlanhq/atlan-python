@@ -84,6 +84,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     SaveSemantic,
     SortOrder,
+    alpha_DQScheduleType,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.lineage import LineageDirection, LineageListRequest
@@ -2028,6 +2029,21 @@ class AssetClient:
                     has_assets_to_process = True
                     func(asset)
         return len(guids_processed)
+
+    def add_dq_rules_schedule(
+        self, guid: str, schedule_cron_string: str, schedule_time_zone: str
+    ) -> AssetMutationResponse:
+        asset_retrieved = self.get_by_guid(guid=guid)  # type: ignore
+        asset_type = Asset._convert_to_real_type_(asset_retrieved)
+        updated_asset = asset_type.updater(
+            qualified_name=asset_retrieved.qualified_name, name=asset_retrieved.name
+        )
+        updated_asset.guid = guid
+        updated_asset.alpha_asset_d_q_schedule_time_zone = schedule_time_zone
+        updated_asset.alpha_asset_d_q_schedule_crontab = schedule_cron_string
+        updated_asset.alpha_asset_d_q_schedule_type = alpha_DQScheduleType.CRON
+        response = self.save(updated_asset)
+        return response
 
 
 class SearchResults(ABC, Iterable):
