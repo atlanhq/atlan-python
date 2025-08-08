@@ -88,8 +88,6 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
         :raises NotFoundError: if the connection cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no name was provided for the connection to retrieve
         """
-        if isinstance(name, str):
-            name = ConnectionName(name)
         return await self._get_by_name(name, allow_refresh)
 
     async def lookup_by_guid(self, guid: str) -> None:

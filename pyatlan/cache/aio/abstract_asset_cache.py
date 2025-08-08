@@ -6,8 +6,10 @@ import asyncio
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict
 
+from pyatlan.cache.abstract_asset_cache import AbstractAssetName
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
+from pyatlan.model.enums import AtlanConnectorType
 
 if TYPE_CHECKING:
     from pyatlan.client.aio import AsyncAtlanClient
@@ -97,7 +99,7 @@ class AsyncAbstractAssetCache(ABC):
         :raises InvalidRequestError: if no UUID was provided for the object to retrieve
         """
         if not guid:
-            raise ErrorCode.MISSING_GUID.exception_with_parameters()
+            raise ErrorCode.MISSING_ID.exception_with_parameters()
         asset = self.guid_to_asset.get(guid)
         if not asset and allow_refresh:
             await self.lookup_by_guid(guid)
@@ -120,14 +122,17 @@ class AsyncAbstractAssetCache(ABC):
         :raises InvalidRequestError: if no qualified name was provided for the object to retrieve
         """
         if not qualified_name:
-            raise ErrorCode.MISSING_QUALIFIED_NAME.exception_with_parameters()
+            raise ErrorCode.MISSING_ID.exception_with_parameters()
         guid = self.qualified_name_to_guid.get(qualified_name)
         if not guid and allow_refresh:
             await self.lookup_by_qualified_name(qualified_name)
             guid = self.qualified_name_to_guid.get(qualified_name)
         if not guid:
             raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                qualified_name
+                qualified_name,
+                AtlanConnectorType._get_connector_type_from_qualified_name(
+                    qualified_name
+                ).value,
             )
 
         return await self._get_by_guid(guid=guid, allow_refresh=False)
@@ -143,8 +148,6 @@ class AsyncAbstractAssetCache(ABC):
         :raises NotFoundError: if the object cannot be found (does not exist) in Atlan
         :raises InvalidRequestError: if no name was provided for the object to retrieve
         """
-        from pyatlan.cache.abstract_asset_cache import AbstractAssetName
-
         if not isinstance(name, AbstractAssetName):
             raise ErrorCode.MISSING_NAME.exception_with_parameters()
         guid = self.name_to_guid.get(str(name))
