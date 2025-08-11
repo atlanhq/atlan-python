@@ -1800,6 +1800,17 @@ class AssetClient:
         attributes: Optional[List[StrictStr]],
         allow_multiple: bool = False,
     ) -> List[A]:
+        """
+        Search for assets by name.
+
+        :param query: the search query to execute
+        :param name: name of the asset being searched
+        :param asset_type: type of asset to find
+        :param attributes: attributes to retrieve
+        :param allow_multiple: whether to allow multiple results
+        :returns: list of found assets
+        :raises: ErrorCode.ASSET_NOT_FOUND_BY_NAME if no assets found
+        """
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
             dsl=dsl, attributes=attributes, relation_attributes=["name"]
