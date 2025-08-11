@@ -18,6 +18,10 @@ from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
 from tests.integration.client import TestId, delete_asset
+from tests.integration.utils import (
+    assert_fluent_search_count_with_retry,
+    assert_search_count_with_retry,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -484,9 +488,8 @@ def test_compound_queries(
         .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
-    response = client.asset.search(request)
-    assert response
-    assert response.count == 4
+    # Use centralized retry utility for eventual consistency
+    assert_search_count_with_retry(client, request, expected_count=4)
     assert glossary.qualified_name
     assert term2.name
 
@@ -499,9 +502,8 @@ def test_compound_queries(
         .where_not(AtlasGlossaryTerm.NAME.eq(term2.name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
-    response = client.asset.search(request)
-    assert response
-    assert response.count == 3
+    # Use centralized retry utility for eventual consistency
+    assert_search_count_with_retry(client, request, expected_count=3)
 
 
 def test_fluent_search(
@@ -524,7 +526,8 @@ def test_fluent_search(
         .include_on_relations(AtlasGlossary.NAME)
     )
 
-    assert terms.count(client) == 4
+    # Use centralized retry utility to handle search index eventual consistency
+    assert_fluent_search_count_with_retry(terms, client, expected_count=4)
 
     guids_chained = []
     g_sorted = []

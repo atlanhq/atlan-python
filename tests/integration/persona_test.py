@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import time
 from typing import Generator
 
 import pytest
@@ -18,6 +17,7 @@ from pyatlan.model.enums import (
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 from tests.integration.glossary_test import create_glossary
+from tests.integration.utils import find_personas_by_name_with_retry
 
 MODULE_NAME = TestId.make_unique("Persona")
 
@@ -107,13 +107,8 @@ def test_find_persona_by_name(
     connection: Connection,
     glossary: AtlasGlossary,
 ):
-    result = client.asset.find_personas_by_name(MODULE_NAME)
-    count = 0
-    # TODO: replace with exponential back-off and jitter
-    while not result and count < 10:
-        time.sleep(2)
-        result = client.asset.find_personas_by_name(MODULE_NAME)
-        count += 1
+    # Use centralized retry utility to handle search index consistency
+    result = find_personas_by_name_with_retry(client, MODULE_NAME)
     assert result
     assert len(result) == 1
     assert result[0].guid == persona.guid
