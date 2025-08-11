@@ -3,16 +3,13 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import AuditSearch
+from pyatlan.client.common import AsyncApiCaller, AuditSearch
+from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.audit import AsyncAuditSearchResults
 from pyatlan.model.audit import AuditSearchRequest
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +20,11 @@ class AsyncAuditClient:
     This class does not need to be instantiated directly but can be obtained through the audit property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments
@@ -60,7 +61,9 @@ class AsyncAuditClient:
         response = AuditSearch.process_response(raw_json)
 
         # Check if we need to convert to bulk search using shared logic
-        if AuditSearch.check_for_bulk_search(response["count"], criteria, bulk):
+        if AuditSearch.check_for_bulk_search(
+            response["count"], criteria, bulk, AsyncAuditSearchResults
+        ):
             # Recursive async call with updated criteria
             return await self.search(criteria)
 

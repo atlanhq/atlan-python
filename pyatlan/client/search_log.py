@@ -62,7 +62,9 @@ class SearchLogClient:
 
         # If it's SearchLogResults (not SearchLogViewResults), check for bulk search conversion
         if isinstance(results, SearchLogResults):
-            if SearchLogSearch.check_for_bulk_search(results.count, criteria, bulk):
+            if SearchLogSearch.check_for_bulk_search(
+                results.count, criteria, bulk, SearchLogResults
+            ):
                 # Recursive call with updated criteria
                 return self.search(criteria)
 

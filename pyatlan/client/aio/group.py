@@ -2,11 +2,12 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
+    AsyncApiCaller,
     GroupCreate,
     GroupGet,
     GroupGetMembers,
@@ -14,13 +15,11 @@ from pyatlan.client.common import (
     GroupRemoveUsers,
     GroupUpdate,
 )
+from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.group import AsyncGroupResponse
 from pyatlan.model.aio.user import AsyncUserResponse
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.user import UserRequest
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 
 class AsyncGroupClient:
@@ -29,7 +28,11 @@ class AsyncGroupClient:
     This class does not need to be instantiated directly but can be obtained through the group property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments

@@ -10,6 +10,7 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan.client.aio.atlan import client_connection
 from pyatlan.client.common import (
+    AsyncApiCaller,
     UserAddToGroups,
     UserChangeRole,
     UserCreate,
@@ -33,7 +34,7 @@ from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
+    pass
 
 
 class AsyncUserClient:
@@ -41,10 +42,10 @@ class AsyncUserClient:
     Async client for operating on users.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
-        if not hasattr(client, "_call_api"):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "AsyncAtlanClient"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 

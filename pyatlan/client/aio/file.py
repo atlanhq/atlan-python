@@ -2,15 +2,16 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import FileDownload, FilePresignedUrl, FileUpload
+from pyatlan.client.common import (
+    AsyncApiCaller,
+    FileDownload,
+    FilePresignedUrl,
+    FileUpload,
+)
+from pyatlan.errors import ErrorCode
 from pyatlan.model.file import PresignedURLRequest
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 
 class AsyncFileClient:
@@ -19,7 +20,11 @@ class AsyncFileClient:
     This class does not need to be instantiated directly but can be obtained through the files property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments

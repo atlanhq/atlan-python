@@ -6,7 +6,7 @@ from typing import List, Optional
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
-    ApiCaller,
+    AsyncApiCaller,
     OpenLineageCreateConnection,
     OpenLineageCreateCredential,
     OpenLineageSend,
@@ -22,10 +22,10 @@ class AsyncOpenLineageClient:
     Async version of OpenLineageClient for interacting with OpenLineage.
     """
 
-    def __init__(self, client: ApiCaller):
-        if not isinstance(client, ApiCaller):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 

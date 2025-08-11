@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
+    AsyncApiCaller,
     CredentialCreate,
     CredentialGet,
     CredentialGetAll,
@@ -15,6 +16,7 @@ from pyatlan.client.common import (
     CredentialTestAndUpdate,
 )
 from pyatlan.client.constants import TEST_CREDENTIAL
+from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
     Credential,
     CredentialListResponse,
@@ -23,7 +25,7 @@ from pyatlan.model.credential import (
 )
 
 if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
+    pass
 
 
 class AsyncCredentialClient:
@@ -32,7 +34,11 @@ class AsyncCredentialClient:
     This class does not need to be instantiated directly but can be obtained through the credentials property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments

@@ -119,7 +119,10 @@ class SearchLogSearch:
 
     @staticmethod
     def check_for_bulk_search(
-        count: int, criteria: SearchLogRequest, bulk: bool = False
+        count: int,
+        criteria: SearchLogRequest,
+        bulk: bool = False,
+        search_results_class=None,
     ) -> bool:
         """
         Check if the search should be converted to bulk search based on result count.
@@ -127,25 +130,33 @@ class SearchLogSearch:
         :param count: total number of results
         :param criteria: the search log criteria
         :param bulk: whether bulk search is already enabled
+        :param search_results_class: the search results class to use for thresholds
         :returns: True if conversion to bulk search is needed
         """
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Import here to avoid circular import
+            from pyatlan.model.search_log import SearchLogResults
+
+            search_results_class = SearchLogResults
+
         if bulk:
             return False
 
         if (
-            count > SearchLogResults._MASS_EXTRACT_THRESHOLD
-            and not SearchLogResults.presorted_by_timestamp(criteria.dsl.sort)
+            count > search_results_class._MASS_EXTRACT_THRESHOLD
+            and not search_results_class.presorted_by_timestamp(criteria.dsl.sort)
         ):
             if criteria.dsl.sort and len(criteria.dsl.sort) > 2:
                 raise ErrorCode.UNABLE_TO_RUN_SEARCH_LOG_BULK_WITH_SORTS.exception_with_parameters()
             # Update criteria for bulk search
             criteria.dsl.sort = SearchLogSearch.prepare_sorts_for_bulk_search(
-                criteria.dsl.sort
+                criteria.dsl.sort, search_results_class
             )
             LOGGER.debug(
                 SearchLogSearch.get_bulk_search_log_message(False),
                 count,
-                SearchLogResults._MASS_EXTRACT_THRESHOLD,
+                search_results_class._MASS_EXTRACT_THRESHOLD,
             )
             return True
         return False
@@ -231,15 +242,25 @@ class SearchLogSearch:
         )
 
     @staticmethod
-    def prepare_sorts_for_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
+    def prepare_sorts_for_bulk_search(
+        sorts: List[SortItem], search_results_class=None
+    ) -> List[SortItem]:
         """
         Ensures that sorting by creation timestamp is prioritized for search log bulk searches.
 
         :param sorts: list of existing sorting options.
+        :param search_results_class: the search results class to use for sorting logic
         :returns: a modified list of sorting options with creation timestamp as the top priority.
         """
-        if not SearchLogResults.presorted_by_timestamp(sorts):
-            return SearchLogResults.sort_by_timestamp_first(sorts)
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Import here to avoid circular import
+            from pyatlan.model.search_log import SearchLogResults
+
+            search_results_class = SearchLogResults
+
+        if not search_results_class.presorted_by_timestamp(sorts):
+            return search_results_class.sort_by_timestamp_first(sorts)
         return sorts
 
     @staticmethod

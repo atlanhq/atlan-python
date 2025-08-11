@@ -70,14 +70,21 @@ class Search:
     """Shared search logic for asset operations."""
 
     @staticmethod
-    def _prepare_sorts_for_bulk_search(sorts: List[SortItem]):
-        # Local import to avoid circular dependency
-        from pyatlan.client.asset import IndexSearchResults
+    def _prepare_sorts_for_bulk_search(
+        sorts: List[SortItem], search_results_class=None
+    ):
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Local import to avoid circular dependency
+            from pyatlan.client.asset import IndexSearchResults
 
-        if not IndexSearchResults.presorted_by_timestamp(sorts):
+            search_results_class = IndexSearchResults
+
+        if not search_results_class.presorted_by_timestamp(sorts):
             # Pre-sort by creation time (ascending) for mass-sequential iteration,
             # if not already sorted by creation time first
-            return IndexSearchResults.sort_by_timestamp_first(sorts)
+            return search_results_class.sort_by_timestamp_first(sorts)
+        return sorts
 
     @staticmethod
     def _get_bulk_search_log_message(bulk):
@@ -137,28 +144,36 @@ class Search:
         return aggregations
 
     @classmethod
-    def _check_for_bulk_search(cls, criteria, count, bulk=False):
-        # Local import to avoid circular dependency
-        from pyatlan.client.asset import IndexSearchResults
+    def _check_for_bulk_search(
+        cls, criteria, count, bulk=False, search_results_class=None
+    ):
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Local import to avoid circular dependency
+            from pyatlan.client.asset import IndexSearchResults
+
+            search_results_class = IndexSearchResults
 
         if (
-            count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
-            and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
+            count > search_results_class._MASS_EXTRACT_THRESHOLD
+            and not search_results_class.presorted_by_timestamp(criteria.dsl.sort)
         ):
             # If there is any user-specified sorting present in the search request
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
             # Re-fetch the first page results with updated timestamp sorting
             # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
-            criteria.dsl.sort = cls._prepare_sorts_for_bulk_search(criteria.dsl.sort)
+            criteria.dsl.sort = cls._prepare_sorts_for_bulk_search(
+                criteria.dsl.sort, search_results_class
+            )
             LOGGER.debug(
                 cls._get_bulk_search_log_message(bulk),
                 count,
-                IndexSearchResults._MASS_EXTRACT_THRESHOLD,
+                search_results_class._MASS_EXTRACT_THRESHOLD,
             )
             return True
         else:
-            False
+            return False
 
     @classmethod
     def prepare_request(cls, criteria, bulk=False):
@@ -524,6 +539,34 @@ class GetByQualifiedName:
             )
 
     @staticmethod
+    async def process_async_fluent_search_response(
+        search_results, qualified_name: str, asset_type: Type[A]
+    ) -> A:
+        """
+        Async version of process_fluent_search_response that handles async search results.
+
+        :param search_results: results from async FluentSearch
+        :param qualified_name: qualified name that was searched for
+        :param asset_type: expected asset type
+        :returns: the requested asset
+        :raises NotFoundError: if asset not found or wrong type
+        """
+        if search_results:
+            current_page = await search_results.current_page()
+            if current_page:
+                first_result = current_page[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                        asset_type.__name__, qualified_name
+                    )
+
+        raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
+            qualified_name, asset_type.__name__
+        )
+
+    @staticmethod
     def process_direct_api_response(
         raw_json: Dict[str, Any], qualified_name: str, asset_type: Type[A]
     ) -> A:
@@ -629,6 +672,32 @@ class GetByGuid:
                 )
         else:
             raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
+
+    @staticmethod
+    async def process_async_fluent_search_response(
+        search_results, guid: str, asset_type: Type[A]
+    ) -> A:
+        """
+        Async version of process_fluent_search_response that handles async search results.
+
+        :param search_results: results from async FluentSearch
+        :param guid: GUID that was searched for
+        :param asset_type: expected asset type
+        :returns: the requested asset
+        :raises NotFoundError: if asset not found or wrong type
+        """
+        if search_results:
+            current_page = await search_results.current_page()
+            if current_page:
+                first_result = current_page[0]
+                if isinstance(first_result, asset_type):
+                    return first_result
+                else:
+                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                        guid, asset_type.__name__
+                    )
+
+        raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
 
     @staticmethod
     def process_direct_api_response(
@@ -1548,6 +1617,54 @@ class SearchForAssetWithName:
                     name,
                 )
             return assets
+        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+            asset_type.__name__, name
+        )
+
+    @staticmethod
+    async def process_async_search_results(
+        results, name: str, asset_type: Type[A], allow_multiple: bool = False
+    ) -> List[A]:
+        """
+        Async version of process_search_results for handling async search results.
+
+        :param results: async search results
+        :param name: name that was searched for (for error messages)
+        :param asset_type: expected asset type
+        :param allow_multiple: whether multiple results are allowed
+        :returns: list of found assets
+        :raises NotFoundError: if no assets found or validation fails
+        """
+        import logging
+
+        LOGGER = logging.getLogger(__name__)
+
+        if results and results.count > 0:
+            # For async results, we need to handle iteration differently
+            current_page = (
+                results.current_page() if hasattr(results, "current_page") else None
+            )
+            if current_page:
+                # Use current page if available
+                assets = [
+                    asset for asset in current_page if isinstance(asset, asset_type)
+                ]
+            else:
+                # Otherwise, collect from async iterator
+                assets = []
+                async for asset in results:
+                    if isinstance(asset, asset_type):
+                        assets.append(asset)
+
+            if assets:
+                if not allow_multiple and len(assets) > 1:
+                    LOGGER.warning(
+                        "More than 1 %s found with the name '%s', returning only the first.",
+                        asset_type.__name__,
+                        name,
+                    )
+                return assets
+
         raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
             asset_type.__name__, name
         )

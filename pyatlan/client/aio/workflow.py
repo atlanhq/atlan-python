@@ -4,15 +4,17 @@ from __future__ import annotations
 
 import asyncio
 from logging import Logger
-from typing import TYPE_CHECKING, List, Optional, Union, overload
+from typing import List, Optional, Union, overload
 
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
-    ApiCaller,
+    AsyncApiCaller,
     WorkflowDelete,
     WorkflowFindById,
     WorkflowFindByType,
+    WorkflowFindCurrentRun,
+    WorkflowFindLatestRun,
     WorkflowFindRuns,
     WorkflowFindScheduleQuery,
     WorkflowFindScheduleQueryBetween,
@@ -26,7 +28,6 @@ from pyatlan.client.common import (
     WorkflowStop,
     WorkflowUpdate,
     WorkflowUpdateOwner,
-    WorkflowUtils,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.workflow import AsyncWorkflowSearchResponse
@@ -44,9 +45,6 @@ from pyatlan.model.workflow import (
 )
 from pyatlan.utils import validate_type
 
-if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
-
 MONITOR_SLEEP_SECONDS = 5
 
 
@@ -59,10 +57,10 @@ class AsyncWorkflowClient:
     _WORKFLOW_RUN_SCHEDULE = "orchestration.atlan.com/schedule"
     _WORKFLOW_RUN_TIMEZONE = "orchestration.atlan.com/timezone"
 
-    def __init__(self, client: AsyncAtlanClient):
-        if not isinstance(client, ApiCaller):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "AsyncAtlanClient"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 
@@ -180,10 +178,20 @@ class AsyncWorkflowClient:
         :returns: the singular result giving the latest run of the workflow
         :raises AtlanError: on any API communication issue
         """
-        endpoint, request_obj = WorkflowUtils.prepare_request(workflow_name)
+        endpoint, request_obj = WorkflowFindLatestRun.prepare_request(workflow_name)
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
-        response = WorkflowFindRuns.process_response(raw_json)
-        return response.hits.hits[0] if response.hits and response.hits.hits else None
+        response_data = WorkflowFindRuns.process_response(raw_json)
+
+        # Create response with minimal parameters needed for pagination
+        response = AsyncWorkflowSearchResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request_obj.query,
+            start=0,
+            size=1,
+            **response_data,
+        )
+        return WorkflowFindLatestRun.process_response(response)
 
     @validate_arguments
     async def _find_current_run(
@@ -197,17 +205,20 @@ class AsyncWorkflowClient:
         run of the workflow, or `None` if it is not currently running
         :raises AtlanError: on any API communication issue
         """
-        endpoint, request_obj = WorkflowUtils.prepare_request(workflow_name)
+        endpoint, request_obj = WorkflowFindCurrentRun.prepare_request(workflow_name)
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
-        response = WorkflowFindRuns.process_response(raw_json)
-        if results := response.hits and response.hits.hits:
-            for result in results:
-                if result.status in {
-                    AtlanWorkflowPhase.PENDING,
-                    AtlanWorkflowPhase.RUNNING,
-                }:
-                    return result
-        return None
+        response_data = WorkflowFindRuns.process_response(raw_json)
+
+        # Create response with minimal parameters needed for pagination
+        response = AsyncWorkflowSearchResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request_obj.query,
+            start=0,
+            size=50,
+            **response_data,
+        )
+        return WorkflowFindCurrentRun.process_response(response)
 
     async def _find_runs(
         self,
@@ -235,9 +246,7 @@ class AsyncWorkflowClient:
             criteria=request_obj,
             start=from_,
             size=size,
-            took=sync_response.took,
-            hits=sync_response.hits,
-            shards=sync_response.shards,
+            **sync_response,
         )
 
     def _add_schedule(

@@ -584,44 +584,18 @@ class WorkflowScheduleUtils:
             workflow.metadata.annotations.pop(cls._WORKFLOW_RUN_SCHEDULE, None)
 
 
-class WorkflowUtils:
-    """Utility functions for workflow operations."""
+class WorkflowFindLatestRun:
+    """Shared logic for finding the latest workflow run."""
 
     @staticmethod
-    def handle_workflow_types(workflow, client):
+    def prepare_request(workflow_name: str) -> tuple:
         """
-        Handle different workflow input types and return WorkflowSearchResultDetail.
-
-        :param workflow: workflow input (WorkflowPackage, WorkflowSearchResult, or WorkflowSearchResultDetail)
-        :param client: client instance for API calls
-        :returns: WorkflowSearchResultDetail
-        """
-        if isinstance(workflow, WorkflowPackage):
-            endpoint, request_obj = WorkflowFindByType.prepare_request(workflow)
-            raw_json = client._call_api(endpoint, request_obj=request_obj)
-            results = WorkflowFindByType.process_response(raw_json)
-            if results:
-                detail = results[0].source
-            else:
-                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow.value
-                )
-        elif isinstance(workflow, WorkflowSearchResult):
-            detail = workflow.source
-        else:
-            detail = workflow
-        return detail
-
-    @staticmethod
-    def find_latest_run(workflow_name: str, client) -> Optional[WorkflowSearchResult]:
-        """
-        Find the latest run of a given workflow.
+        Prepare request for finding the latest run of a workflow.
 
         :param workflow_name: name of the workflow
-        :param client: client instance for API calls
-        :returns: the latest run or None
+        :returns: tuple of (endpoint, request_obj)
         """
-        from pyatlan.model.search import Bool, NestedQuery, Term
+        from pyatlan.model.search import Bool, NestedQuery, Sort, SortOrder, Term
 
         query = Bool(
             filter=[
@@ -635,29 +609,35 @@ class WorkflowUtils:
             ]
         )
         endpoint, request_obj = WorkflowFindRuns.prepare_request(query, size=1)
-        raw_json = client._call_api(endpoint, request_obj=request_obj)
-        response_data = WorkflowFindRuns.process_response(raw_json)
-
-        # Create response with minimal parameters needed for pagination
-        response = WorkflowSearchResponse(
-            client=client,
-            endpoint=endpoint,
-            criteria=query,
-            start=0,
-            size=1,
-            **response_data,
-        )
-        results = response.hits and response.hits.hits
-        return results[0] if results else None
+        # Add sorting to get the latest run
+        request_obj.sort = [Sort(field="status.startedAt", order=SortOrder.DESCENDING)]
+        return endpoint, request_obj
 
     @staticmethod
-    def find_current_run(workflow_name: str, client) -> Optional[WorkflowSearchResult]:
+    def process_response(search_response) -> Optional:
         """
-        Find the most current, still-running run of a given workflow.
+        Process the search response to extract the latest run.
+
+        :param search_response: workflow search response object
+        :returns: latest workflow run or None
+        """
+        return (
+            search_response.hits.hits[0]
+            if search_response.hits and search_response.hits.hits
+            else None
+        )
+
+
+class WorkflowFindCurrentRun:
+    """Shared logic for finding the current running workflow."""
+
+    @staticmethod
+    def prepare_request(workflow_name: str) -> tuple:
+        """
+        Prepare request for finding the current running run of a workflow.
 
         :param workflow_name: name of the workflow
-        :param client: client instance for API calls
-        :returns: the current running workflow or None
+        :returns: tuple of (endpoint, request_obj)
         """
         from pyatlan.model.search import Bool, NestedQuery, Term
 
@@ -673,19 +653,19 @@ class WorkflowUtils:
             ]
         )
         endpoint, request_obj = WorkflowFindRuns.prepare_request(query, size=50)
-        raw_json = client._call_api(endpoint, request_obj=request_obj)
-        response_data = WorkflowFindRuns.process_response(raw_json)
+        return endpoint, request_obj
 
-        # Create response with minimal parameters needed for pagination
-        response = WorkflowSearchResponse(
-            client=client,
-            endpoint=endpoint,
-            criteria=query,
-            start=0,
-            size=50,
-            **response_data,
-        )
-        if results := response.hits and response.hits.hits:
+    @staticmethod
+    def process_response(search_response) -> Optional:
+        """
+        Process the search response to extract the current running workflow.
+
+        :param search_response: workflow search response object
+        :returns: current running workflow or None
+        """
+        from pyatlan.model.enums import AtlanWorkflowPhase
+
+        if results := search_response.hits and search_response.hits.hits:
             for result in results:
                 if result.status in {
                     AtlanWorkflowPhase.PENDING,

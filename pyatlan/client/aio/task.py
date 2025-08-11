@@ -3,16 +3,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import TaskSearch
+from pyatlan.client.common import AsyncApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.task import TaskSearchRequest, TaskSearchResponse
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 
 class AsyncTaskClient:
@@ -20,10 +15,10 @@ class AsyncTaskClient:
     Async client for operating on tasks.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
-        if not hasattr(client, "_call_api"):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "AsyncAtlanClient"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 

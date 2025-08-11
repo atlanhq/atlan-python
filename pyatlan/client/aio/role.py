@@ -3,15 +3,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import RoleGet, RoleGetAll
+from pyatlan.client.common import AsyncApiCaller, RoleGet, RoleGetAll
+from pyatlan.errors import ErrorCode
 from pyatlan.model.role import RoleResponse
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 
 class AsyncRoleClient:
@@ -19,7 +17,11 @@ class AsyncRoleClient:
     Async client for retrieving information about roles.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments

@@ -69,7 +69,10 @@ class AuditSearch:
 
     @staticmethod
     def check_for_bulk_search(
-        count: int, criteria: AuditSearchRequest, bulk: bool = False
+        count: int,
+        criteria: AuditSearchRequest,
+        bulk: bool = False,
+        search_results_class=None,
     ) -> bool:
         """
         Check if the search should be converted to bulk search based on result count.
@@ -77,17 +80,22 @@ class AuditSearch:
         :param count: total number of results
         :param criteria: the audit search criteria
         :param bulk: whether bulk search is already enabled
+        :param search_results_class: the search results class to use for thresholds
         :returns: True if conversion to bulk search is needed
         """
-        # Import here to avoid circular import
-        from pyatlan.model.audit import AuditSearchResults
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Import here to avoid circular import
+            from pyatlan.model.audit import AuditSearchResults
+
+            search_results_class = AuditSearchResults
 
         if bulk:
             return False
 
         if (
-            count > AuditSearchResults._MASS_EXTRACT_THRESHOLD
-            and not AuditSearchResults.presorted_by_timestamp(criteria.dsl.sort)
+            count > search_results_class._MASS_EXTRACT_THRESHOLD
+            and not search_results_class.presorted_by_timestamp(criteria.dsl.sort)
         ):
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()
@@ -98,24 +106,31 @@ class AuditSearch:
             LOGGER.debug(
                 AuditSearch.get_bulk_search_log_message(False),
                 count,
-                AuditSearchResults._MASS_EXTRACT_THRESHOLD,
+                search_results_class._MASS_EXTRACT_THRESHOLD,
             )
             return True
         return False
 
     @staticmethod
-    def prepare_sorts_for_bulk_search(sorts: List[SortItem]) -> List[SortItem]:
+    def prepare_sorts_for_bulk_search(
+        sorts: List[SortItem], search_results_class=None
+    ) -> List[SortItem]:
         """
         Ensures that sorting by creation timestamp is prioritized for Audit bulk searches.
 
         :param sorts: List of existing sorting options
+        :param search_results_class: the search results class to use for sorting logic
         :returns: A modified list of sorting options with creation timestamp as the top priority
         """
-        # Import here to avoid circular import
-        from pyatlan.model.audit import AuditSearchResults
+        # Use provided search results class or default to sync version
+        if search_results_class is None:
+            # Import here to avoid circular import
+            from pyatlan.model.audit import AuditSearchResults
 
-        if not AuditSearchResults.presorted_by_timestamp(sorts):
-            return AuditSearchResults.sort_by_timestamp_first(sorts)
+            search_results_class = AuditSearchResults
+
+        if not search_results_class.presorted_by_timestamp(sorts):
+            return search_results_class.sort_by_timestamp_first(sorts)
         return sorts
 
     @staticmethod

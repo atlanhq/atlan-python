@@ -18,6 +18,7 @@ from pyatlan.client.protocol import (
     HTTP_PREFIX,
     HTTPS_PREFIX,
     ApiCaller,
+    AsyncApiCaller,
 )
 
 # Admin shared logic classes
@@ -166,6 +167,8 @@ from .workflow import (
     WorkflowDelete,
     WorkflowFindById,
     WorkflowFindByType,
+    WorkflowFindCurrentRun,
+    WorkflowFindLatestRun,
     WorkflowFindRuns,
     WorkflowFindRunsByStatusAndTimeRange,
     WorkflowFindScheduleQuery,
@@ -180,12 +183,12 @@ from .workflow import (
     WorkflowStop,
     WorkflowUpdate,
     WorkflowUpdateOwner,
-    WorkflowUtils,
 )
 
 __all__ = [
     # Protocol and constants
     "ApiCaller",
+    "AsyncApiCaller",
     "HTTPS_PREFIX",
     "HTTP_PREFIX",
     "CONNECTION_RETRY",
@@ -303,6 +306,8 @@ __all__ = [
     "WorkflowDelete",
     "WorkflowFindById",
     "WorkflowFindByType",
+    "WorkflowFindCurrentRun",
+    "WorkflowFindLatestRun",
     "WorkflowFindRuns",
     "WorkflowFindRunsByStatusAndTimeRange",
     "WorkflowFindScheduleQuery",
@@ -317,5 +322,4 @@ __all__ = [
     "WorkflowStop",
     "WorkflowUpdate",
     "WorkflowUpdateOwner",
-    "WorkflowUtils",
 ]

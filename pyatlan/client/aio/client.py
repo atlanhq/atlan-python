@@ -673,52 +673,49 @@ class AsyncAtlanClient(AtlanClient):
 
             return events
 
+    def _create_path(self, api):
+        """Create URL path from API object (same as sync client)"""
+        from urllib.parse import urljoin
+
+        if self.base_url == "INTERNAL":
+            return urljoin(api.endpoint.service, api.path)
+        else:
+            return urljoin(urljoin(self.base_url, api.endpoint.prefix), api.path)
+
     async def _s3_presigned_url_file_upload(self, api, upload_file):
         """Async version of S3 presigned URL file upload"""
-        # For presigned URLs, we make direct HTTP calls (not through Atlan)
-        async with httpx.AsyncClient() as client:
-            response = await client.put(
-                api,  # api is the formatted presigned URL string
-                data=upload_file,
-                timeout=httpx.Timeout(self.read_timeout),
-            )
-            response.raise_for_status()
-            return response
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _azure_blob_presigned_url_file_upload(self, api, upload_file):
         """Async version of Azure Blob presigned URL file upload"""
-        # For presigned URLs, we make direct HTTP calls (not through Atlan)
-        headers = {"x-ms-blob-type": "BlockBlob"}
-        async with httpx.AsyncClient() as client:
-            response = await client.put(
-                api,  # api is the formatted presigned URL string
-                data=upload_file,
-                headers=headers,
-                timeout=httpx.Timeout(self.read_timeout),
-            )
-            response.raise_for_status()
-            return response
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        # Add mandatory headers for azure blob storage
+        params["headers"]["x-ms-blob-type"] = "BlockBlob"
+        return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _gcs_presigned_url_file_upload(self, api, upload_file):
         """Async version of GCS presigned URL file upload"""
-        # For presigned URLs, we make direct HTTP calls (not through Atlan)
-        async with httpx.AsyncClient() as client:
-            response = await client.put(
-                api,  # api is the formatted presigned URL string
-                data=upload_file,
-                timeout=httpx.Timeout(self.read_timeout),
-            )
-            response.raise_for_status()
-            return response
+        path = self._create_path(api)
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _presigned_url_file_download(self, api, file_path: str):
         """Async version of presigned URL file download"""
+        path = self._create_path(api)
+        session = self._get_async_session()
         # For presigned URLs, we make direct HTTP calls (not through Atlan)
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                api,  # api is the formatted presigned URL string
-                timeout=httpx.Timeout(self.read_timeout),
-            )
+        async with session.stream(
+            "GET", path, timeout=httpx.Timeout(self.read_timeout)
+        ) as response:
             response.raise_for_status()
 
             # Handle file download async

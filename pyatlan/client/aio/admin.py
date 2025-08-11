@@ -3,7 +3,11 @@
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import AdminGetAdminEvents, AdminGetKeycloakEvents, ApiCaller
+from pyatlan.client.common import (
+    AdminGetAdminEvents,
+    AdminGetKeycloakEvents,
+    AsyncApiCaller,
+)
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.keycloak_events import (
     AsyncAdminEventResponse,
@@ -18,10 +22,10 @@ class AsyncAdminClient:
     directly but can be obtained through the admin property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: ApiCaller):
-        if not isinstance(client, ApiCaller):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 

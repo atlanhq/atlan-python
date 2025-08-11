@@ -14,9 +14,10 @@ from typing import (
     overload,
 )
 
-from pydantic.v1 import StrictStr, constr
+from pydantic.v1 import StrictStr, constr, validate_arguments
 
 from pyatlan.client.common import (
+    AsyncApiCaller,
     DeleteByGuid,
     FindCategoryFastByName,
     FindConnectionsByName,
@@ -74,6 +75,10 @@ from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import IndexSearchRequest, Query
 
+if TYPE_CHECKING:
+    from pyatlan.model.search import IndexSearchRequest
+
+
 A = TypeVar("A", bound=Asset)
 LOGGER = logging.getLogger(__name__)
 
@@ -81,12 +86,6 @@ LOGGER = logging.getLogger(__name__)
 class IndexSearchRequestProvider(Protocol):
     def to_request(self) -> IndexSearchRequest:
         pass
-
-
-if TYPE_CHECKING:
-    from pyatlan.model.search import IndexSearchRequest
-
-    from .client import AsyncAtlanClient
 
 
 class AsyncAssetClient:
@@ -97,12 +96,12 @@ class AsyncAssetClient:
     identical behavior with the sync client while providing async support.
     """
 
-    def __init__(self, async_atlan_client: AsyncAtlanClient):
-        self._async_client = async_atlan_client
-        # Access the sync asset client for reusing methods
-        self._sync_asset_client = super(
-            type(async_atlan_client), async_atlan_client
-        ).asset
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
+        self._client = client
 
     async def search(
         self,
@@ -117,15 +116,18 @@ class AsyncAssetClient:
         :returns: AsyncIndexSearchResults
         """
         INDEX_SEARCH, request_obj = Search.prepare_request(criteria, bulk)
-        raw_json = await self._async_client._call_api(
-            INDEX_SEARCH, request_obj=request_obj
-        )
+        raw_json = await self._client._call_api(INDEX_SEARCH, request_obj=request_obj)
         response = Search.process_response(raw_json, criteria)
-        if Search._check_for_bulk_search(criteria, response["count"], bulk):
-            return await self.search(criteria, bulk)
+        # Import here to avoid circular dependency
+        from pyatlan.model.aio.asset import AsyncIndexSearchResults
+
+        if Search._check_for_bulk_search(
+            criteria, response["count"], bulk, AsyncIndexSearchResults
+        ):
+            return await self.search(criteria)
 
         return AsyncIndexSearchResults(
-            self._async_client,
+            self._client,
             criteria,
             0,
             len(response["assets"]),
@@ -145,13 +147,13 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
         api_endpoint, request_obj = GetLineageList.prepare_request(lineage_request)
-        raw_json = await self._async_client._call_api(
+        raw_json = await self._client._call_api(
             api_endpoint, None, request_obj=request_obj
         )
         response = GetLineageList.process_response(raw_json, lineage_request)
 
         return AsyncLineageListResults(
-            client=self._async_client,
+            client=self._client,
             criteria=lineage_request,
             start=lineage_request.offset or 0,
             size=lineage_request.size or 10,
@@ -159,6 +161,7 @@ class AsyncAssetClient:
             assets=response["assets"],
         )
 
+    @validate_arguments
     async def find_personas_by_name(
         self,
         name: str,
@@ -178,6 +181,7 @@ class AsyncAssetClient:
             search_results, name, allow_multiple=True
         )
 
+    @validate_arguments
     async def find_purposes_by_name(
         self,
         name: str,
@@ -197,6 +201,7 @@ class AsyncAssetClient:
             search_results, name, allow_multiple=True
         )
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def get_by_qualified_name(
         self,
         qualified_name: str,
@@ -236,8 +241,8 @@ class AsyncAssetClient:
                 normalized_attributes,
                 normalized_related_attributes,
             )
-            results = await search.aexecute(client=self._async_client)  # type: ignore[arg-type]
-            return GetByQualifiedName.process_fluent_search_response(
+            results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
+            return await GetByQualifiedName.process_async_fluent_search_response(
                 results, qualified_name, asset_type
             )
 
@@ -245,11 +250,12 @@ class AsyncAssetClient:
         endpoint_path, query_params = GetByQualifiedName.prepare_direct_api_request(
             qualified_name, asset_type, min_ext_info, ignore_relationships
         )
-        raw_json = await self._async_client._call_api(endpoint_path, query_params)
+        raw_json = await self._client._call_api(endpoint_path, query_params)
         return GetByQualifiedName.process_direct_api_response(
             raw_json, qualified_name, asset_type
         )
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def get_by_guid(
         self,
         guid: str,
@@ -286,16 +292,19 @@ class AsyncAssetClient:
             search = GetByGuid.prepare_fluent_search_request(
                 guid, asset_type, normalized_attributes, normalized_related_attributes
             )
-            results = await search.aexecute(client=self._async_client)  # type: ignore[arg-type]
-            return GetByGuid.process_fluent_search_response(results, guid, asset_type)
+            results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
+            return await GetByGuid.process_async_fluent_search_response(
+                results, guid, asset_type
+            )
 
         # Use direct API call for simple requests
         endpoint_path, query_params = GetByGuid.prepare_direct_api_request(
             guid, min_ext_info, ignore_relationships
         )
-        raw_json = await self._async_client._call_api(endpoint_path, query_params)
+        raw_json = await self._client._call_api(endpoint_path, query_params)
         return GetByGuid.process_direct_api_response(raw_json, guid, asset_type)
 
+    @validate_arguments
     async def retrieve_minimal(
         self,
         guid: str,
@@ -316,6 +325,7 @@ class AsyncAssetClient:
             ignore_relationships=True,
         )
 
+    @validate_arguments
     async def save(
         self,
         entity: Union[Asset, List[Asset]],
@@ -344,10 +354,8 @@ class AsyncAssetClient:
             overwrite_custom_metadata=overwrite_custom_metadata,
             append_atlan_tags=append_atlan_tags,
         )
-        Save.validate_and_flush_entities(request.entities, self._async_client)
-        raw_json = await self._async_client._call_api(
-            BULK_UPDATE, query_params, request
-        )
+        Save.validate_and_flush_entities(request.entities, self._client)
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
         response = Save.process_response(raw_json)
         if connections_created := response.assets_created(Connection):
             await self._wait_for_connections_to_be_created(connections_created)
@@ -372,6 +380,7 @@ class AsyncAssetClient:
 
         Save.log_connections_finished()
 
+    @validate_arguments
     async def save_merging_cm(
         self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -392,6 +401,7 @@ class AsyncAssetClient:
             overwrite_custom_metadata=False,
         )
 
+    @validate_arguments
     async def update_merging_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -417,6 +427,7 @@ class AsyncAssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
+    @validate_arguments
     async def save_replacing_cm(
         self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -437,13 +448,12 @@ class AsyncAssetClient:
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
-            client=self._async_client,
+            client=self._client,
         )
-        raw_json = await self._async_client._call_api(
-            BULK_UPDATE, query_params, request
-        )
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
         return Save.process_response_replacing_cm(raw_json)
 
+    @validate_arguments
     async def update_replacing_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
@@ -536,6 +546,7 @@ class AsyncAssetClient:
                     func(asset)
         return len(guids_processed)
 
+    @validate_arguments
     async def purge_by_guid(
         self,
         guid: Union[str, List[str]],
@@ -555,11 +566,12 @@ class AsyncAssetClient:
         """
 
         query_params = PurgeByGuid.prepare_request(guid, delete_type)
-        raw_json = await self._async_client._call_api(
+        raw_json = await self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
         )
         return PurgeByGuid.process_response(raw_json)
 
+    @validate_arguments
     async def delete_by_guid(
         self, guid: Union[str, List[str]]
     ) -> AssetMutationResponse:
@@ -585,7 +597,7 @@ class AsyncAssetClient:
 
         # Perform the deletion
         query_params = DeleteByGuid.prepare_delete_request(guids)
-        raw_json = await self._async_client._call_api(
+        raw_json = await self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
         )
         response = DeleteByGuid.process_response(raw_json)
@@ -615,6 +627,7 @@ class AsyncAssetClient:
         # If we reach here, we've exhausted retries
         raise ErrorCode.RETRY_OVERRUN.exception_with_parameters()
 
+    @validate_arguments
     async def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """
         Async restore an archived (soft-deleted) asset to active.
@@ -662,10 +675,8 @@ class AsyncAssetClient:
         query_params, request = RestoreAsset.prepare_restore_request(asset)
         # Flush custom metadata for the restored asset
         for restored_asset in request.entities:
-            restored_asset.flush_custom_metadata(self._async_client)  # type: ignore[arg-type]
-        raw_json = await self._async_client._call_api(
-            BULK_UPDATE, query_params, request
-        )
+            restored_asset.flush_custom_metadata(self._client)  # type: ignore[arg-type]
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
         return RestoreAsset.process_restore_response(raw_json)
 
     async def _modify_tags(
@@ -731,6 +742,7 @@ class AsyncAssetClient:
             response, asset_type, updated_asset
         )
 
+    @validate_arguments
     async def add_atlan_tags(
         self,
         asset_type: Type[A],
@@ -772,6 +784,7 @@ class AsyncAssetClient:
             },
         )
 
+    @validate_arguments
     async def update_atlan_tags(
         self,
         asset_type: Type[A],
@@ -813,6 +826,7 @@ class AsyncAssetClient:
             },
         )
 
+    @validate_arguments
     async def remove_atlan_tag(
         self,
         asset_type: Type[A],
@@ -839,6 +853,7 @@ class AsyncAssetClient:
             },
         )
 
+    @validate_arguments
     async def remove_atlan_tags(
         self,
         asset_type: Type[A],
@@ -881,7 +896,7 @@ class AsyncAssetClient:
         query_params = UpdateAssetByAttribute.prepare_request_params(qualified_name)
 
         # Flush custom metadata
-        asset.flush_custom_metadata(client=self._async_client)  # type: ignore[arg-type]
+        asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
 
         # Prepare request body using shared logic
         request_body = UpdateAssetByAttribute.prepare_request_body(asset)
@@ -890,9 +905,7 @@ class AsyncAssetClient:
         endpoint = UpdateAssetByAttribute.get_api_endpoint(asset_type)
 
         # Make async API call
-        raw_json = await self._async_client._call_api(
-            endpoint, query_params, request_body
-        )
+        raw_json = await self._client._call_api(endpoint, query_params, request_body)
 
         # Process response using shared logic
         return UpdateAssetByAttribute.process_response(raw_json, asset_type)
@@ -930,6 +943,7 @@ class AsyncAssetClient:
         message: Optional[str] = None,
     ) -> Optional[A]: ...
 
+    @validate_arguments
     async def update_certificate(
         self,
         asset_type: Type[A],
@@ -993,6 +1007,7 @@ class AsyncAssetClient:
         glossary_guid: Optional[str] = None,
     ) -> Optional[A]: ...
 
+    @validate_arguments
     async def remove_certificate(
         self,
         asset_type: Type[A],
@@ -1052,6 +1067,7 @@ class AsyncAssetClient:
         glossary_guid: Optional[str] = None,
     ) -> Optional[A]: ...
 
+    @validate_arguments
     async def update_announcement(
         self,
         asset_type: Type[A],
@@ -1111,6 +1127,7 @@ class AsyncAssetClient:
         glossary_guid: Optional[str] = None,
     ) -> Optional[A]: ...
 
+    @validate_arguments
     async def remove_announcement(
         self,
         asset_type: Type[A],
@@ -1139,6 +1156,7 @@ class AsyncAssetClient:
         # Execute update using shared logic
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def update_custom_metadata_attributes(
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
@@ -1165,8 +1183,9 @@ class AsyncAssetClient:
         )
 
         # Make async API call
-        await self._async_client._call_api(endpoint, None, custom_metadata_request)
+        await self._client._call_api(endpoint, None, custom_metadata_request)
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def replace_custom_metadata(
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
@@ -1187,8 +1206,9 @@ class AsyncAssetClient:
         )
 
         # Make async API call
-        await self._async_client._call_api(endpoint, None, custom_metadata_request)
+        await self._client._call_api(endpoint, None, custom_metadata_request)
 
+    @validate_arguments
     async def remove_custom_metadata(self, guid: str, cm_name: str):
         """
         Async remove specific custom metadata from an asset.
@@ -1200,7 +1220,7 @@ class AsyncAssetClient:
 
         # Prepare request using shared logic (includes clear_all())
         custom_metadata_request = RemoveCustomMetadata.prepare_request(
-            cm_name, self._async_client
+            cm_name, self._client
         )
 
         # Get API endpoint using shared logic
@@ -1209,7 +1229,7 @@ class AsyncAssetClient:
         )
 
         # Make async API call
-        await self._async_client._call_api(endpoint, None, custom_metadata_request)
+        await self._client._call_api(endpoint, None, custom_metadata_request)
 
     async def _manage_terms(
         self,
@@ -1241,7 +1261,7 @@ class AsyncAssetClient:
                 asset_type, qualified_name
             )
 
-        results = await search_query.aexecute(client=self._async_client)  # type: ignore[arg-type]
+        results = await search_query.aexecute(client=self._client)  # type: ignore[arg-type]
 
         # Validate search results using shared logic
         first_result = ManageTerms.validate_search_results(
@@ -1261,6 +1281,7 @@ class AsyncAssetClient:
         response = await self.save(entity=updated_asset)
         return ManageTerms.process_save_response(response, asset_type, updated_asset)
 
+    @validate_arguments
     async def append_terms(
         self,
         asset_type: Type[A],
@@ -1285,6 +1306,7 @@ class AsyncAssetClient:
             qualified_name=qualified_name,
         )
 
+    @validate_arguments
     async def replace_terms(
         self,
         asset_type: Type[A],
@@ -1309,6 +1331,7 @@ class AsyncAssetClient:
             qualified_name=qualified_name,
         )
 
+    @validate_arguments
     async def remove_terms(
         self,
         asset_type: Type[A],
@@ -1358,11 +1381,12 @@ class AsyncAssetClient:
         # Execute async search
         results = await self.search(search_request)
 
-        # Process results using shared logic
-        return SearchForAssetWithName.process_search_results(
+        # Process results using async shared logic
+        return await SearchForAssetWithName.process_async_search_results(
             results, name, asset_type, allow_multiple
         )
 
+    @validate_arguments
     async def find_connections_by_name(
         self,
         name: str,
@@ -1393,6 +1417,7 @@ class AsyncAssetClient:
             allow_multiple=True,
         )
 
+    @validate_arguments
     async def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1418,6 +1443,7 @@ class AsyncAssetClient:
         )
         return results[0]
 
+    @validate_arguments
     async def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1450,6 +1476,7 @@ class AsyncAssetClient:
             allow_multiple=True,
         )
 
+    @validate_arguments
     async def find_category_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1475,6 +1502,7 @@ class AsyncAssetClient:
             attributes=attributes,
         )
 
+    @validate_arguments
     async def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1504,6 +1532,7 @@ class AsyncAssetClient:
         )
         return results[0]
 
+    @validate_arguments
     async def find_term_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1529,6 +1558,7 @@ class AsyncAssetClient:
             attributes=attributes,
         )
 
+    @validate_arguments
     async def find_domain_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1553,6 +1583,7 @@ class AsyncAssetClient:
         )
         return results[0]
 
+    @validate_arguments
     async def find_product_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1576,3 +1607,37 @@ class AsyncAssetClient:
             query=query, name=name, asset_type=DataProduct, attributes=attributes
         )
         return results[0]
+
+    @validate_arguments
+    async def upsert(
+        self,
+        entity: Union[Asset, List[Asset]],
+        replace_atlan_tags: bool = False,
+        replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
+    ) -> AssetMutationResponse:
+        """Deprecated async upsert - use save() instead."""
+        return await self.save(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            replace_custom_metadata=replace_custom_metadata,
+            overwrite_custom_metadata=overwrite_custom_metadata,
+        )
+
+    @validate_arguments
+    async def upsert_merging_cm(
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """Deprecated async upsert_merging_cm - use save_merging_cm() instead."""
+        return await self.save_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
+
+    @validate_arguments
+    async def upsert_replacing_cm(
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """Deprecated async upsert_replacing_cm - use save_replacing_cm() instead."""
+        return await self.save_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )

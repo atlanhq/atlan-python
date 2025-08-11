@@ -53,7 +53,9 @@ class AuditClient:
         response = AuditSearch.process_response(raw_json)
 
         # Check if we need to convert to bulk search using shared logic
-        if AuditSearch.check_for_bulk_search(response["count"], criteria, bulk):
+        if AuditSearch.check_for_bulk_search(
+            response["count"], criteria, bulk, AuditSearchResults
+        ):
             # Recursive call with updated criteria
             return self.search(criteria)
 

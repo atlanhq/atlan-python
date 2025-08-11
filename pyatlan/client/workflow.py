@@ -11,6 +11,8 @@ from pyatlan.client.common import (
     WorkflowDelete,
     WorkflowFindById,
     WorkflowFindByType,
+    WorkflowFindCurrentRun,
+    WorkflowFindLatestRun,
     WorkflowFindRuns,
     WorkflowFindScheduleQuery,
     WorkflowFindScheduleQueryBetween,
@@ -24,7 +26,6 @@ from pyatlan.client.common import (
     WorkflowStop,
     WorkflowUpdate,
     WorkflowUpdateOwner,
-    WorkflowUtils,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
@@ -173,7 +174,20 @@ class WorkflowClient:
         :returns: the singular result giving the latest run of the workflow
         :raises AtlanError: on any API communication issue
         """
-        return WorkflowUtils.find_latest_run(workflow_name, self._client)
+        endpoint, request_obj = WorkflowFindLatestRun.prepare_request(workflow_name)
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        response_data = WorkflowFindRuns.process_response(raw_json)
+
+        # Create response with minimal parameters needed for pagination
+        response = WorkflowSearchResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request_obj.query,
+            start=0,
+            size=1,
+            **response_data,
+        )
+        return WorkflowFindLatestRun.process_response(response)
 
     @validate_arguments
     def _find_current_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
@@ -185,7 +199,20 @@ class WorkflowClient:
         run of the workflow, or `None` if it is not currently running
         :raises AtlanError: on any API communication issue
         """
-        return WorkflowUtils.find_current_run(workflow_name, self._client)
+        endpoint, request_obj = WorkflowFindCurrentRun.prepare_request(workflow_name)
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        response_data = WorkflowFindRuns.process_response(raw_json)
+
+        # Create response with minimal parameters needed for pagination
+        response = WorkflowSearchResponse(
+            client=self._client,
+            endpoint=endpoint,
+            criteria=request_obj.query,
+            start=0,
+            size=50,
+            **response_data,
+        )
+        return WorkflowFindCurrentRun.process_response(response)
 
     def _find_runs(
         self,

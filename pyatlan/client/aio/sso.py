@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
+    AsyncApiCaller,
     SSOCheckExistingMappings,
     SSOCreateGroupMapping,
     SSODeleteGroupMapping,
@@ -15,11 +16,12 @@ from pyatlan.client.common import (
     SSOGetGroupMapping,
     SSOUpdateGroupMapping,
 )
+from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup
 from pyatlan.model.sso import SSOMapper
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
+    pass
 
 
 class AsyncSSOClient:
@@ -27,7 +29,11 @@ class AsyncSSOClient:
     Async client for operating on Atlan's single sign-on (SSO).
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     async def _check_existing_group_mappings(

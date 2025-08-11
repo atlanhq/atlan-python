@@ -5,7 +5,7 @@ import logging
 from typing import Optional
 
 from pyatlan.client.common import (
-    ApiCaller,
+    AsyncApiCaller,
     ImpersonateEscalate,
     ImpersonateGetClientSecret,
     ImpersonateGetUserId,
@@ -22,10 +22,10 @@ class AsyncImpersonationClient:
     Note: this will only work when run as part of Atlan's packaged workflow ecosystem (running in the cluster back-end).
     """
 
-    def __init__(self, client: ApiCaller):
-        if not isinstance(client, ApiCaller):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                "client", "ApiCaller"
+                "client", "AsyncApiCaller"
             )
         self._client = client
 

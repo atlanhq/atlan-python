@@ -6,12 +6,13 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ContractInit
+from pyatlan.client.common import AsyncApiCaller, ContractInit
 from pyatlan.client.constants import CONTRACT_INIT_API
+from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 
 if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
+    pass
 
 
 class AsyncContractClient:
@@ -20,7 +21,11 @@ class AsyncContractClient:
     This class does not need to be instantiated directly but can be obtained through the contracts property of AsyncAtlanClient.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments

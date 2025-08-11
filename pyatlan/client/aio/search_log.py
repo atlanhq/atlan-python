@@ -3,19 +3,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import SearchLogSearch
+from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
+from pyatlan.errors import ErrorCode
 from pyatlan.model.search_log import (
     SearchLogRequest,
     SearchLogResults,
     SearchLogViewResults,
 )
-
-if TYPE_CHECKING:
-    from .client import AsyncAtlanClient
 
 
 class AsyncSearchLogClient:
@@ -23,7 +21,11 @@ class AsyncSearchLogClient:
     Async client for configuring and running searches against Atlan's search log.
     """
 
-    def __init__(self, client: AsyncAtlanClient):
+    def __init__(self, client: AsyncApiCaller):
+        if not isinstance(client, AsyncApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "AsyncApiCaller"
+            )
         self._client = client
 
     @validate_arguments
@@ -63,7 +65,9 @@ class AsyncSearchLogClient:
 
         # If it's SearchLogResults (not SearchLogViewResults), check for bulk search conversion
         if isinstance(results, SearchLogResults):
-            if SearchLogSearch.check_for_bulk_search(results.count, criteria, bulk):
+            if SearchLogSearch.check_for_bulk_search(
+                results.count, criteria, bulk, SearchLogResults
+            ):
                 # Recursive async call with updated criteria
                 return await self.search(criteria)
 
