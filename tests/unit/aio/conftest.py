@@ -4,10 +4,13 @@
 Async-specific test configuration and fixtures.
 """
 
+from unittest.mock import Mock
+
 import pytest
 import pytest_asyncio
 
 from pyatlan.client.aio.client import AsyncAtlanClient
+from pyatlan.client.common import AsyncApiCaller
 
 
 @pytest.fixture(autouse=True)
@@ -28,3 +31,8 @@ async def async_client():
 def mock_async_client():
     """Create a mock async client for testing."""
     return AsyncAtlanClient()
+
+
+@pytest.fixture(scope="function")
+def mock_async_api_caller():
+    return Mock(spec=AsyncApiCaller)
