@@ -4,11 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
-from pyatlan.model.assets import Asset
 from pyatlan.model.fluent_search import FluentSearch
 
-if TYPE_CHECKING:
-    pass
 
 
 class DQTemplateConfigCacheCommon:
@@ -24,6 +21,7 @@ class DQTemplateConfigCacheCommon:
 
         :returns: FluentSearch configured for DQ rule templates
         """
+        from pyatlan.model.assets import Asset
         try:
             from pyatlan.model.assets.core.alpha__d_q_rule_template import (
                 alpha_DQRuleTemplate,

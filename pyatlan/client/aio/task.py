@@ -7,7 +7,8 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import AsyncApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.model.task import TaskSearchRequest, TaskSearchResponse
+from pyatlan.model.aio.task import AsyncTaskSearchResponse
+from pyatlan.model.task import TaskSearchRequest
 
 
 class AsyncTaskClient:
@@ -23,7 +24,7 @@ class AsyncTaskClient:
         self._client = client
 
     @validate_arguments
-    async def search(self, request: TaskSearchRequest) -> TaskSearchResponse:
+    async def search(self, request: TaskSearchRequest) -> AsyncTaskSearchResponse:
         """
         Search for tasks using the provided criteria.
 
@@ -34,7 +35,7 @@ class AsyncTaskClient:
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
         response_data = TaskSearch.process_response(raw_json)
 
-        return TaskSearchResponse(
+        return AsyncTaskSearchResponse(
             client=self._client,
             endpoint=endpoint,
             criteria=request,

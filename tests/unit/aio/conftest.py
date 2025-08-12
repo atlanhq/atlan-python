@@ -4,7 +4,7 @@
 Async-specific test configuration and fixtures.
 """
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch, AsyncMock
 
 import pytest
 import pytest_asyncio
@@ -36,3 +36,9 @@ def mock_async_client():
 @pytest.fixture(scope="function")
 def mock_async_api_caller():
     return Mock(spec=AsyncApiCaller)
+
+
+@pytest.fixture()
+def mock_async_custom_metadata_cache():
+    with patch.object(AsyncAtlanClient, "custom_metadata_cache") as cache:
+        yield cache

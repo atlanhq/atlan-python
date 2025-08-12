@@ -9,11 +9,8 @@ from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.model.search_log import (
-    SearchLogRequest,
-    SearchLogResults,
-    SearchLogViewResults,
-)
+from pyatlan.model.aio.search_log import AsyncSearchLogResults
+from pyatlan.model.search_log import SearchLogRequest, SearchLogResults, SearchLogViewResults
 
 
 class AsyncSearchLogClient:
@@ -31,7 +28,7 @@ class AsyncSearchLogClient:
     @validate_arguments
     async def search(
         self, criteria: SearchLogRequest, bulk=False
-    ) -> Union[SearchLogViewResults, SearchLogResults]:
+    ) -> Union[SearchLogViewResults, AsyncSearchLogResults]:
         """
         Search for search logs using the provided criteria.
         `Note:` if the number of results exceeds the predefined threshold
@@ -63,10 +60,10 @@ class AsyncSearchLogClient:
             raw_json, criteria, bulk, self._client
         )
 
-        # If it's SearchLogResults (not SearchLogViewResults), check for bulk search conversion
-        if isinstance(results, SearchLogResults):
+        # If it's AsyncSearchLogResults (not SearchLogViewResults), check for bulk search conversion
+        if isinstance(results, AsyncSearchLogResults):
             if SearchLogSearch.check_for_bulk_search(
-                results.count, criteria, bulk, SearchLogResults
+                results.count, criteria, bulk, AsyncSearchLogResults
             ):
                 # Recursive async call with updated criteria
                 return await self.search(criteria)

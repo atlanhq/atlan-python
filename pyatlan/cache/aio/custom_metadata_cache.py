@@ -264,3 +264,75 @@ class AsyncCustomMetadataCache:
                             ret_map[cm_name].append(attr_def)
 
         return ret_map
+
+    async def get_attr_name_for_id(self, set_id: str, attr_id: str) -> str:
+        """
+        Translate the provided Atlan-internal ID strings to the human-readable name for the attribute.
+
+        :param set_id: Atlan-internal ID string of the custom metadata set
+        :param attr_id: Atlan-internal ID string of the attribute
+        :returns: human-readable name of the attribute
+        :raises InvalidRequestError: if no set_id or attr_id was provided
+        :raises NotFoundError: if the custom metadata set or attribute cannot be found
+        """
+        return await self._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
+
+    async def is_attr_archived(self, attr_id: str) -> bool:
+        """
+        Indicates whether the provided attribute has been archived (deleted) (true) or not (false).
+
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: true if the attribute has been archived, otherwise false
+        """
+        return await self._is_attr_archived(attr_id=attr_id)
+
+    async def get_attr_map_for_id(self, set_id: str) -> Dict[str, str]:
+        """
+        Get the attribute map for a custom metadata set ID.
+
+        :param set_id: Atlan-internal ID string of the custom metadata set
+        :returns: dict mapping attribute IDs to names
+        """
+        if not self.cache_by_id:
+            await self._refresh_cache()
+        return self.map_attr_id_to_name.get(set_id, {})
+
+    async def _get_attr_name_for_id(self, set_id: str, attr_id: str) -> str:
+        """
+        Translate the provided Atlan-internal ID strings to the human-readable name for the attribute.
+
+        :param set_id: Atlan-internal ID string of the custom metadata set
+        :param attr_id: Atlan-internal ID string of the attribute
+        :returns: human-readable name of the attribute
+        :raises InvalidRequestError: if no set_id or attr_id was provided
+        :raises NotFoundError: if the custom metadata set or attribute cannot be found
+        """
+        if not set_id or not set_id.strip():
+            raise ErrorCode.MISSING_CM_ID.exception_with_parameters()
+        if not attr_id or not attr_id.strip():
+            raise ErrorCode.MISSING_CM_ATTR_ID.exception_with_parameters()
+
+        if not self.cache_by_id:
+            await self._refresh_cache()
+
+        attr_name = self.map_attr_id_to_name.get(set_id, {}).get(attr_id)
+        if not attr_name:
+            await self._refresh_cache()
+            attr_name = self.map_attr_id_to_name.get(set_id, {}).get(attr_id)
+            if not attr_name:
+                raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(
+                    attr_id
+                )
+
+        return attr_name
+
+    async def _is_attr_archived(self, attr_id: str) -> bool:
+        """
+        Indicates whether the provided attribute has been archived (deleted) (true) or not (false).
+
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: true if the attribute has been archived, otherwise false
+        """
+        if not self.cache_by_id:
+            await self._refresh_cache()
+        return attr_id in self.archived_attr_ids

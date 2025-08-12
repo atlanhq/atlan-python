@@ -54,7 +54,7 @@ class AsyncSearchLogResults:
         self._processed_log_entries_count = processed_log_entries_count
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
-        self._processed_entry_keys: Set[str] = set()
+        self._duplicate_timestamp_page_count: int = 0
 
     @property
     def aggregations(self) -> Dict:
@@ -83,19 +83,8 @@ class AsyncSearchLogResults:
         :returns: True if there is a next page of results, otherwise False
         """
         self._start = start or self._start + self._size
-        is_bulk_search = (
-            self._bulk or self._approximate_count > self._MASS_EXTRACT_THRESHOLD
-        )
         if size:
             self._size = size
-
-        if is_bulk_search:
-            # Used in the "timestamp-based" paging approach
-            # to check if search log entry has already been processed
-            # in a previous page of results.
-            self._processed_entry_keys.update(
-                str(entry.id) for entry in self._log_entries if entry.id
-            )
         return await self._get_next_page() if self._log_entries else False
 
     async def _get_next_page(self):
@@ -136,7 +125,6 @@ class AsyncSearchLogResults:
         try:
             self._log_entries = parse_obj_as(List[SearchLogEntry], raw_json[LOGS])
             if is_bulk_search:
-                self._filter_processed_entries()
                 self._update_first_last_record_creation_times()
             return raw_json
         except ValidationError as err:
@@ -144,10 +132,13 @@ class AsyncSearchLogResults:
                 raw_json, 200, str(err)
             ) from err
 
+
+
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
         Adjusts the query to include timestamp filters for search log bulk extraction.
         """
+        self._criteria.dsl.from_ = 0
         rewritten_filters = []
         if isinstance(query, Bool):
             for filter_ in query.filter:
@@ -156,6 +147,9 @@ class AsyncSearchLogResults:
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
+            # If the first and last record creation times are different,
+            # reset _duplicate_timestamp_page_count to its initial value
+            self._duplicate_timestamp_page_count = 0
             rewritten_filters.append(
                 self._get_paging_timestamp_query(self._last_record_creation_time)
             )
@@ -173,53 +167,30 @@ class AsyncSearchLogResults:
                 # in the DSL, append it to the Bool `filter`.
                 rewritten_filters.append(query)
                 rewritten_query = Bool(filter=rewritten_filters)
-            self._criteria.dsl.from_ = 0
             self._criteria.dsl.query = rewritten_query
         else:
-            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
-            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
-            if isinstance(query, Bool):
-                for filter_ in query.filter:
-                    if self._is_paging_timestamp_query(filter_):
-                        query.filter.remove(filter_)
-
-            # Always ensure that the offset is set to the length of the processed entries
-            # instead of the default (start + size), as the default may skip some entries
-            self._criteria.dsl.from_ = len(self._processed_entry_keys)
+            # If the first and last record creation times are the same,
+            # we need to switch to offset-based pagination instead of timestamp-based pagination
+            # to ensure we get the next set of results without duplicates.
+            # We use a page multiplier to skip already-processed records when encountering
+            # consecutive pages with identical timestamps, preventing duplicate results.
+            self._criteria.dsl.from_ = self._size * (
+                self._duplicate_timestamp_page_count + 1
+            )
+            self._criteria.dsl.size = self._size
+            self._duplicate_timestamp_page_count += 1
 
     @staticmethod
     def _get_paging_timestamp_query(last_timestamp: int) -> Query:
-        """
-        Get timestamp query for paging based on the last record's timestamp.
-
-        :param last_timestamp: timestamp of the last record
-        :returns: Range query for timestamp filtering
-        """
-        return Range(field="created", gte=last_timestamp)
+        return Range(field="createdAt", gt=last_timestamp)
 
     @staticmethod
     def _is_paging_timestamp_query(filter_: Query) -> bool:
-        """
-        Check if a query is a timestamp paging query.
-
-        :param filter_: the query to check
-        :returns: True if this is a timestamp paging query
-        """
         return (
             isinstance(filter_, Range)
-            and filter_.field == "created"
-            and filter_.gte is not None
+            and filter_.field == "createdAt"
+            and filter_.gt is not None
         )
-
-    def _filter_processed_entries(self):
-        """
-        Filter out entries that have already been processed in previous pages.
-        """
-        self._log_entries = [
-            entry
-            for entry in self._log_entries
-            if entry is not None and str(entry.id) not in self._processed_entry_keys
-        ]
 
     def _update_first_last_record_creation_times(self):
         """
@@ -232,11 +203,11 @@ class AsyncSearchLogResults:
 
         first_entry, last_entry = self._log_entries[0], self._log_entries[-1]
 
-        if first_entry and hasattr(first_entry, "created"):
-            self._first_record_creation_time = first_entry.created
+        if first_entry:
+            self._first_record_creation_time = first_entry.created_at
 
-        if last_entry and hasattr(last_entry, "created"):
-            self._last_record_creation_time = last_entry.created
+        if last_entry:
+            self._last_record_creation_time = last_entry.created_at
 
     async def __aiter__(self) -> AsyncGenerator[SearchLogEntry, None]:
         """

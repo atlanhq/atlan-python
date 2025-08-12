@@ -21,6 +21,7 @@ from .task import AsyncTaskSearchResponse
 from .translators import AsyncAtlanTagTranslator, AsyncBaseTranslator
 from .user import AsyncUserResponse
 from .workflow import AsyncWorkflowSearchResponse
+from .custom_metadata import AsyncCustomMetadataDict, AsyncCustomMetadataProxy
 
 __all__ = [
     # Asset search results
@@ -52,4 +53,8 @@ __all__ = [
     # Async retranslators
     "AsyncBaseRetranslator",
     "AsyncAtlanTagRetranslator",
+    # Async custom metadata dict
+    "AsyncCustomMetadataDict",
+    # Async custom metadata proxy
+    "AsyncCustomMetadataProxy",
 ]
