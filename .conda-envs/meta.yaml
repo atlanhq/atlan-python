@@ -8,27 +8,24 @@ source:
 build:
   number: 0
   noarch: python
-  script: "{{ PYTHON }} -m pip install . -vv"
+  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
 
 requirements:
   host:
-    - conda-forge::jinja2 >=3.1.6,<3.2
-    - conda-forge::lazy_loader >=0.4,<0.5
     - pip
-    - conda-forge::pydantic >=2.11.7,<2.12
+    - setuptools
     - python
-    - conda-forge::requests >=2.32.4,<2.33
-    - conda-forge::tenacity >=9.1.2,<9.2
-    - conda-forge::urllib3 >=1.26.0,<3
   run:
-    - conda-forge::jinja2 >=3.1.6,<3.2
-    - conda-forge::lazy_loader >=0.4,<0.5
-    - conda-forge::pydantic >=2.11.7,<2.12
-    - python
-    - conda-forge::requests >=2.32.4,<2.33
-    - conda-forge::tenacity >=9.1.2,<9.2
-    - conda-forge::urllib3 >=1.26.0,<3
-
+    - python >=3.9,<3.13
+    - jinja2 ~=3.1.6
+    - lazy_loader ~=0.4
+    - pydantic ~=2.11.7
+    - python-dateutil ~=2.9.0.post0
+    - pytz ~=2025.2
+    - PyYAML ~=6.0.2
+    - requests ~=2.32.4
+    - tenacity ~=9.0.0
+    - urllib3 >=1.26.0,<3
 
 about:
   home: "https://github.com/atlanhq/atlan-python"
