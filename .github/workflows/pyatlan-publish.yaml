@@ -31,7 +31,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
       - name: Install dependencies
-        run: uv sync --extra dev
+        run: uv sync --group dev
       - name: check tag
         id: check-tag
         run: uv run python check_tag.py
