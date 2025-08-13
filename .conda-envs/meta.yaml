@@ -7,26 +7,27 @@ source:
 
 build:
   number: 0
+  noarch: python
   script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   host:
-    - jinja2 >=3.1.6,<3.2
-    - lazy_loader >=0.4,<0.5
+    - conda-forge::jinja2 >=3.1.6,<3.2
+    - conda-forge::lazy_loader >=0.4,<0.5
     - pip
-    - pydantic >=2.11.7,<2.12
+    - conda-forge::pydantic >=2.11.7,<2.12
     - python
-    - requests >=2.32.4,<2.33
-    - tenacity >=9.1.2,<9.2
-    - urllib3 >=1.26.0,<3
+    - conda-forge::requests >=2.32.4,<2.33
+    - conda-forge::tenacity >=9.1.2,<9.2
+    - conda-forge::urllib3 >=1.26.0,<3
   run:
-    - jinja2 >=3.1.6,<3.2
-    - lazy_loader >=0.4,<0.5
-    - pydantic >=2.11.7,<2.12
+    - conda-forge::jinja2 >=3.1.6,<3.2
+    - conda-forge::lazy_loader >=0.4,<0.5
+    - conda-forge::pydantic >=2.11.7,<2.12
     - python
-    - requests >=2.32.4,<2.33
-    - tenacity >=9.1.2,<9.2
-    - urllib3 >=1.26.0,<3
+    - conda-forge::requests >=2.32.4,<2.33
+    - conda-forge::tenacity >=9.1.2,<9.2
+    - conda-forge::urllib3 >=1.26.0,<3
 
 
 about:
