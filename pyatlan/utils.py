@@ -7,6 +7,7 @@ import json
 import logging
 import random
 import re
+import sys
 import time
 from contextvars import ContextVar
 from datetime import datetime
@@ -96,6 +97,19 @@ def select_optional_set_fields(params: Dict[str, Any]) -> Dict:
 
 def non_null(obj: Optional[object], def_value: object):
     return obj if obj is not None else def_value
+
+
+def get_python_version() -> str:
+    """
+    Get the current Python version as a string.
+
+    Returns:
+        str: Python version in format "major.minor.micro" or "unknown" if unavailable
+    """
+    try:
+        return f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    except Exception:
+        return "unknown"
 
 
 def type_coerce(obj, obj_type):
