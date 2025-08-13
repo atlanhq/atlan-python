@@ -1,3 +1,19 @@
+## 7.2.0 (August 13, 2025)
+
+### New Features
+
+- Added Python version info to SDK headers and API logger.
+
+### Breaking Changes
+
+- Dropped support for `Python 3.8`.
+
+### QOL Improvements
+
+- Bumped various `core` and `dev` dependencies to latest versions.
+- Fixed conda publish and pyatlan publish GitHub workflows.
+- Fixed integration test failures due to Elasticsearch eventual consistency using custom retries (`glossary_test`, `test_client`, `persona/purpose_test`)
+
 ## 7.1.6 (August 7, 2025)
 
 ### Experimental

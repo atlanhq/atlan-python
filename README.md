@@ -24,7 +24,7 @@
 
 ## 📊 Project Stats
 
-- 🐍 **Python Versions**: 3.8, 3.9, 3.10, 3.11, 3.12, 3.13
+- 🐍 **Python Versions**: 3.9, 3.10, 3.11, 3.12, 3.13
 - 📦 **Package Size**: Optimized for fast installation
 - 🚀 **Performance**: Built with modern async/await support
 - 🔧 **Dependencies**: Minimal, modern stack
@@ -56,13 +56,30 @@ cd atlan-python
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install with development dependencies
-uv sync --extra dev
+uv sync --group dev
 
 # Run quality checks
 uv run ./qa-checks
 
 # Run tests
 uv run pytest tests/unit
+```
+
+### Dependency Groups
+
+This project uses uv dependency groups for better dependency management:
+
+- **Core dependencies**: Always installed (`uv sync`)
+- **Development dependencies**: Testing, linting, formatting (`uv sync --group dev`)
+- **Documentation dependencies**: Sphinx docs (`uv sync --group docs`)
+
+You can install multiple groups:
+```bash
+# Install both dev and docs dependencies
+uv sync --group dev --group docs
+
+# Install all dependencies
+uv sync --all-groups
 ```
 
 ## 🐳 Docker
@@ -140,7 +157,7 @@ cd atlan-python
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install development dependencies
-uv sync --extra dev
+uv sync --group dev
 
 # Install pre-commit hooks
 uv run pre-commit install
