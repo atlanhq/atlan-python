@@ -25,27 +25,97 @@ jobs:
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
-      - name: Build conda package
+      
+      - name: Install conda-build and anaconda-client
         run: |
-          conda build .conda-envs --python ${{ matrix.python-version }} --output-folder /tmp/conda-builds
+          conda config --add channels conda-forge
+          conda install conda-build anaconda-client anaconda-auth -y
+      
+      - name: Set version environment variable
+        run: |
+          # Read version from version.txt file
+          VERSION=$(cat pyatlan/version.txt | tr -d ' \n')
+          echo "PYATLAN_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Building version: $VERSION"
+      
+      - name: Configure anaconda client
+        run: |
+          # Create config directory and file
+          mkdir -p /home/runner/.continuum/anaconda-client
+          cat > /home/runner/.continuum/anaconda-client/config.yaml << EOF
+          url: https://api.anaconda.org
+          EOF
+          
+          # Try to find anaconda command in various locations
+          ANACONDA_CMD=""
+          for cmd in anaconda "$CONDA/bin/anaconda" "$CONDA/condabin/anaconda" "$(which anaconda)"; do
+            if command -v "$cmd" >/dev/null 2>&1; then
+              ANACONDA_CMD="$cmd"
+              echo "Found anaconda command: $ANACONDA_CMD"
+              break
+            fi
+          done
+          
+          if [ -z "$ANACONDA_CMD" ]; then
+            echo "anaconda command not found. Trying to install via pip..."
+            pip install anaconda-client anaconda-auth
+            ANACONDA_CMD="anaconda"
+          fi
+          
+          echo "Using anaconda command: $ANACONDA_CMD"
+          
+          # Set up authentication token
+          echo "Setting up authentication..."
+          $ANACONDA_CMD config --set url https://api.anaconda.org
+          echo "Authentication will be handled during upload with --token parameter"
+      - name: Build conda package
+        env:
+          PYATLAN_VERSION: ${{ env.PYATLAN_VERSION }}
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing .conda-envs directory:"
+          ls -la .conda-envs/
+          echo "Creating output directory..."
+          mkdir -p /tmp/conda-builds
+          echo "Building conda package with version: $PYATLAN_VERSION"
+          conda build .conda-envs/meta.yaml --python ${{ matrix.python-version }} --output-folder /tmp/conda-builds --debug --package-format tar.bz2 || {
+            echo "Conda build failed. Checking for any output..."
+            ls -la /tmp/conda-builds/ || echo "No output directory"
+            exit 1
+          }
       
       - name: Convert to all platforms
         run: |
-          # Find the built package
+          echo "Checking build output directory:"
+          ls -la /tmp/conda-builds/ || echo "Directory does not exist"
+          echo "Finding built packages..."
+          find /tmp/conda-builds -name "*.tar.bz2" || echo "No .tar.bz2 files found"
+          find /tmp/conda-builds -name "*.conda" || echo "No .conda files found"
+          
+          # Find the built package (prioritize .tar.bz2 since we force that format)
           PACKAGE_PATH=$(find /tmp/conda-builds -name "*.tar.bz2" | head -1)
           if [ -z "$PACKAGE_PATH" ]; then
+            PACKAGE_PATH=$(find /tmp/conda-builds -name "*.conda" | head -1)
+          fi
+          if [ -z "$PACKAGE_PATH" ]; then
             echo "No package found to convert"
+            echo "Build may have failed. Check the build logs above."
             exit 1
           fi
+          echo "Found package: $PACKAGE_PATH"
           conda convert -p all "$PACKAGE_PATH" -o /tmp/conda-builds
       
       - name: Upload to Anaconda
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
         run: |
+          # Find anaconda command
+          ANACONDA_CMD=$(which anaconda || echo "$CONDA/bin/anaconda")
+          
           # Upload all platform packages
           for pkg in /tmp/conda-builds/*/*.tar.bz2; do
             if [ -f "$pkg" ]; then
-              anaconda upload --user atlanhq --label main "$pkg"
+              echo "Uploading $pkg..."
+              $ANACONDA_CMD upload --user atlanhq --label main "$pkg"
             fi
           done
-        env:
-          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}

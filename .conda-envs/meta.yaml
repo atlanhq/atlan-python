@@ -1,13 +1,13 @@
 package:
   name: "pyatlan"
-  version: "{{ environ['GIT_DESCRIBE_TAG'] }}"
+  version: "{{ environ['PYATLAN_VERSION'] }}"
 
 source:
   path: ../
 
 build:
   number: 0
-  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
   host:
