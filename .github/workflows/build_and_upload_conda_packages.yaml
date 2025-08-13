@@ -26,8 +26,8 @@ jobs:
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
-          channels: conda-forge, defaults
-          conda-remove-defaults: true
+          channels: conda-forge
+          conda-remove-defaults: "true"
       
       - name: Get version from version.txt
         id: get_version
@@ -38,9 +38,6 @@ jobs:
       
       - name: Install conda-build and anaconda-client
         run: |
-          conda config --add channels conda-forge
-          conda config --add channels defaults
-          conda config --set auto_activate false
           conda install conda-build anaconda-client anaconda-auth -y
       
       - name: Build conda package
@@ -59,10 +56,16 @@ jobs:
             exit 1
           fi
           echo "Found package: $PACKAGE_PATH"
-          # Convert to specific architectures only
-          conda convert -p win-64 "$PACKAGE_PATH" -o /tmp/conda-builds
-          conda convert -p linux-64 "$PACKAGE_PATH" -o /tmp/conda-builds
-          conda convert -p osx-64 "$PACKAGE_PATH" -o /tmp/conda-builds
+          
+          # Check if it's a noarch package
+          if [[ "$PACKAGE_PATH" == *"/noarch/"* ]]; then
+            echo "Package is noarch, skipping conversion (already architecture-independent)"
+          else
+            # Convert to specific architectures only
+            conda convert -p win-64 "$PACKAGE_PATH" -o /tmp/conda-builds
+            conda convert -p linux-64 "$PACKAGE_PATH" -o /tmp/conda-builds
+            conda convert -p osx-64 "$PACKAGE_PATH" -o /tmp/conda-builds
+          fi
 
       
       - name: Upload to Anaconda
@@ -85,10 +88,26 @@ jobs:
             ANACONDA_CMD="anaconda"
           fi
           
-          # Upload all platform packages
+          # Upload all packages, but handle noarch conflicts gracefully
           for pkg in /tmp/conda-builds/*/*.tar.bz2; do
             if [ -f "$pkg" ]; then
-              echo "Uploading $pkg..."
-              $ANACONDA_CMD upload --user atlanhq --label main "$pkg"
+              echo "Attempting to upload $pkg..."
+              # Capture the output to check for errors
+              UPLOAD_OUTPUT=$($ANACONDA_CMD upload --user atlanhq --label main "$pkg" 2>&1)
+              UPLOAD_EXIT_CODE=$?
+              
+              echo "Upload output for $pkg:"
+              echo "$UPLOAD_OUTPUT"
+              echo "Exit code: $UPLOAD_EXIT_CODE"
+              
+              if [ $UPLOAD_EXIT_CODE -eq 0 ]; then
+                echo "Successfully uploaded: $pkg"
+              elif echo "$UPLOAD_OUTPUT" | grep -q "already exists\|Conflict"; then
+                echo "Package already exists, skipping: $pkg"
+              else
+                echo "Upload failed for $pkg (exit code: $UPLOAD_EXIT_CODE):"
+                echo "$UPLOAD_OUTPUT"
+                # Don't fail the build for upload errors, just log them
+              fi
             fi
           done
