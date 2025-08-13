@@ -26,23 +26,65 @@ jobs:
           auto-update-conda: false
           auto-activate-base: false
           show-channel-urls: true
+          channels: conda-forge, defaults
+          conda-remove-defaults: true
       
       - name: Get version from version.txt
         id: get_version
         run: |
           PYATLAN_VERSION=$(cat pyatlan/version.txt | tr -d ' \n')
-          echo "version=$PYATLAN_VERSION" >> $GITHUB_OUTPUT
           echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
           echo "Building version: $PYATLAN_VERSION"
       
-      - name: Build and upload the conda packages
-        uses: uibcdf/action-build-and-upload-conda-packages@v1.4.0
-        with:
-          meta_yaml_dir: .conda-envs
-          python-version: ${{ matrix.python-version }}
-          platform_all: true
-          user: atlanhq
-          label: main
-          token: ${{ secrets.ANACONDA_API_TOKEN }}
-          upload: true
-          version: ${{ steps.get_version.outputs.version }}
+      - name: Install conda-build and anaconda-client
+        run: |
+          conda config --add channels conda-forge
+          conda config --add channels defaults
+          conda config --set auto_activate false
+          conda install conda-build anaconda-client anaconda-auth -y
+      
+      - name: Build conda package
+        env:
+          PYATLAN_VERSION: ${{ env.PYATLAN_VERSION }}
+        run: |
+          echo "Building conda package with version: $PYATLAN_VERSION"
+          conda build .conda-envs/meta.yaml --python ${{ matrix.python-version }} --output-folder /tmp/conda-builds --package-format tar.bz2
+      
+      - name: Convert to all platforms
+        run: |
+          # Find the built package
+          PACKAGE_PATH=$(find /tmp/conda-builds -name "*.tar.bz2" | head -1)
+          if [ -z "$PACKAGE_PATH" ]; then
+            echo "No package found to convert"
+            exit 1
+          fi
+          echo "Found package: $PACKAGE_PATH"
+          conda convert -p all "$PACKAGE_PATH" -o /tmp/conda-builds
+      
+      - name: Upload to Anaconda
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
+        run: |
+          # Find anaconda command
+          ANACONDA_CMD=""
+          for cmd in anaconda "$CONDA/bin/anaconda" "$CONDA/condabin/anaconda" "$(which anaconda)"; do
+            if command -v "$cmd" >/dev/null 2>&1; then
+              ANACONDA_CMD="$cmd"
+              echo "Found anaconda command: $ANACONDA_CMD"
+              break
+            fi
+          done
+          
+          if [ -z "$ANACONDA_CMD" ]; then
+            echo "anaconda command not found. Installing anaconda-client..."
+            conda install anaconda-client anaconda-auth -y
+            ANACONDA_CMD="anaconda"
+          fi
+          
+          # Upload all platform packages
+          for pkg in /tmp/conda-builds/*/*.tar.bz2; do
+            if [ -f "$pkg" ]; then
+              echo "Uploading $pkg..."
+              $ANACONDA_CMD upload --user atlanhq --label main "$pkg"
+            fi
+          done
