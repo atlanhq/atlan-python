@@ -67,6 +67,22 @@ jobs:
         run: |
           TAG=$(cat pyatlan/version.txt)
           echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+      
+      - name: Wait for PyPI propagation
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 10
+          timeout_minutes: 5
+          command: |
+            echo "Checking if pyatlan==${{ env.IMAGE_TAG }} is available on PyPI..."
+            if pip index versions pyatlan | grep -q "${{ env.IMAGE_TAG }}"; then
+              echo "Package is available on PyPI!"
+              exit 0
+            else
+              echo "Package not available yet. Retrying..."
+              exit 1
+            fi
+      
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
