@@ -377,6 +377,9 @@ class AtlanClient(BaseSettings):
         4. Returns a new AtlanClient authenticated with the resolved token
 
         :param guid: API token GUID to resolve
+        :param base_url: Optional base URL for the Atlan service(overrides ATLAN_BASE_URL environment variable)
+        :param client_id: Optional client ID for authentication (overrides CLIENT_ID environment variable)
+        :param client_secret: Optional client secret for authentication (overrides CLIENT_SECRET environment variable)
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
