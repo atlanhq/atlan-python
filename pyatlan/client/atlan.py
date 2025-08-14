@@ -360,7 +360,13 @@ class AtlanClient(BaseSettings):
         return self._dq_template_config_cache
 
     @classmethod
-    def from_token_guid(cls, guid: str) -> AtlanClient:
+    def from_token_guid(
+        cls,
+        guid: str,
+        base_url: Optional[str] = None,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
+    ) -> AtlanClient:
         """
         Create an AtlanClient instance using an API token GUID.
 
@@ -371,15 +377,20 @@ class AtlanClient(BaseSettings):
         4. Returns a new AtlanClient authenticated with the resolved token
 
         :param guid: API token GUID to resolve
+        :param base_url: Optional base URL for the Atlan service(overrides ATLAN_BASE_URL environment variable)
+        :param client_id: Optional client ID for authentication (overrides CLIENT_ID environment variable)
+        :param client_secret: Optional client secret for authentication (overrides CLIENT_SECRET environment variable)
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
-        base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+        final_base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
-        client = AtlanClient(base_url=base_url, api_key="")
-        client_info = client.impersonate._get_client_info()
+        client = AtlanClient(base_url=final_base_url, api_key="")
+        client_info = client.impersonate._get_client_info(
+            client_id=client_id, client_secret=client_secret
+        )
 
         # Prepare credentials for Atlan-Argo token request
         argo_credentials = {
@@ -393,7 +404,7 @@ class AtlanClient(BaseSettings):
         try:
             raw_json = client._call_api(GET_TOKEN, request_obj=argo_credentials)
             argo_token = AccessTokenResponse(**raw_json).access_token
-            temp_argo_client = AtlanClient(base_url=base_url, api_key=argo_token)
+            temp_argo_client = AtlanClient(base_url=final_base_url, api_key=argo_token)
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
                 "Failed to obtain Atlan-Argo token"
@@ -419,7 +430,7 @@ class AtlanClient(BaseSettings):
             token_api_key = AccessTokenResponse(**raw_json).access_token
 
             # Step 5: Create and return the authenticated client
-            return AtlanClient(base_url=base_url, api_key=token_api_key)
+            return AtlanClient(base_url=final_base_url, api_key=token_api_key)
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
                 "Failed to obtain access token for API token"

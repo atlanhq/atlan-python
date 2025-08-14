@@ -66,12 +66,16 @@ class ImpersonationClient:
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_IMPERSONATE.exception_with_parameters() from atlan_err
 
-    def _get_client_info(self) -> ClientInfo:
-        client_id = os.getenv("CLIENT_ID")
-        client_secret = os.getenv("CLIENT_SECRET")
-        if not client_id or not client_secret:
+    def _get_client_info(
+        self, client_id: Optional[str] = None, client_secret: Optional[str] = None
+    ) -> ClientInfo:
+        final_client_id = client_id or os.getenv("CLIENT_ID")
+        final_client_secret = client_secret or os.getenv("CLIENT_SECRET")
+        if not final_client_id or not final_client_secret:
             raise ErrorCode.MISSING_CREDENTIALS.exception_with_parameters()
-        client_info = ClientInfo(client_id=client_id, client_secret=client_secret)
+        client_info = ClientInfo(
+            client_id=final_client_id, client_secret=final_client_secret
+        )
         return client_info
 
     def escalate(self) -> str:
