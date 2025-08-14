@@ -2877,7 +2877,10 @@ async def test_get_by_guid_asset_not_found_fluent_search(mock_async_api_caller):
     asset_type = Table
 
     with patch("pyatlan.model.fluent_search.FluentSearch.aexecute") as mock_aexecute:
-        mock_aexecute.return_value.current_page.return_value = []
+        # Mock the async search results - current_page() should return list directly, not coroutine
+        mock_results = AsyncMock()
+        mock_results.current_page = Mock(return_value=[])
+        mock_aexecute.return_value = mock_results
 
         client = AsyncAssetClient(client=mock_async_api_caller)
         with pytest.raises(
@@ -2900,7 +2903,10 @@ async def test_get_by_guid_type_mismatch_fluent_search(mock_async_api_caller):
     returned_asset_type = View
 
     with patch("pyatlan.model.fluent_search.FluentSearch.aexecute") as mock_aexecute:
-        mock_aexecute.return_value.current_page.return_value = [returned_asset_type()]
+        # Mock the async search results - current_page() should return list directly, not coroutine
+        mock_results = AsyncMock()
+        mock_results.current_page = Mock(return_value=[returned_asset_type()])
+        mock_aexecute.return_value = mock_results
 
         client = AsyncAssetClient(client=mock_async_api_caller)
 
@@ -2929,9 +2935,9 @@ async def test_get_by_qualified_name_type_mismatch(
     returned_asset_type = View
 
     with patch("pyatlan.model.fluent_search.FluentSearch.aexecute") as mock_aexecute:
-        # Mock the async search results
+        # Mock the async search results - current_page() should return list directly, not coroutine
         mock_results = AsyncMock()
-        mock_results.current_page = AsyncMock(return_value=[returned_asset_type()])
+        mock_results.current_page = Mock(return_value=[returned_asset_type()])
         mock_aexecute.return_value = mock_results
 
         async_client = AsyncAtlanClient()
@@ -2957,7 +2963,10 @@ async def test_get_by_qualified_name_asset_not_found(mock_async_api_caller):
     asset_type = Table
 
     with patch("pyatlan.model.fluent_search.FluentSearch.aexecute") as mock_aexecute:
-        mock_aexecute.return_value.current_page.return_value = []
+        # Mock the async search results - current_page() should return list directly, not coroutine
+        mock_results = AsyncMock()
+        mock_results.current_page = Mock(return_value=[])
+        mock_aexecute.return_value = mock_results
 
         client = AsyncAssetClient(client=mock_async_api_caller)
 

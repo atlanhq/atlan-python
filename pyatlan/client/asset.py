@@ -37,6 +37,7 @@ from tenacity import (
     retry,
     retry_if_exception_type,
     stop_after_attempt,
+    wait_exponential,
     wait_fixed,
 )
 
@@ -79,7 +80,7 @@ from pyatlan.client.constants import (
     GET_LINEAGE_LIST,
     INDEX_SEARCH,
 )
-from pyatlan.errors import AtlanError, ErrorCode
+from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
 from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.assets import (
     Asset,
@@ -728,11 +729,21 @@ class AssetClient:
             save_parameters = {}
 
         # Retrieve the asset with necessary attributes
-        retrieved_asset = self.get_by_qualified_name(
-            qualified_name=qualified_name,
-            asset_type=asset_type,
-            attributes=ModifyAtlanTags.get_retrieve_attributes(),
+        # Add retry mechanism to handle search index eventual consistency
+        @retry(
+            reraise=True,
+            retry=retry_if_exception_type(NotFoundError),
+            stop=stop_after_attempt(10),
+            wait=wait_exponential(multiplier=1, min=1, max=5),
         )
+        def _get_asset_with_retry():
+            return self.get_by_qualified_name(
+                qualified_name=qualified_name,
+                asset_type=asset_type,
+                attributes=ModifyAtlanTags.get_retrieve_attributes(),
+            )
+
+        retrieved_asset = _get_asset_with_retry()
 
         # Prepare the asset updater using shared logic
         updated_asset = ModifyAtlanTags.prepare_asset_updater(
@@ -2295,6 +2306,7 @@ class Batch:
         :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed
         """
         from pyatlan.model.fluent_search import FluentSearch
+
         revised: list = []
         response: Optional[AssetMutationResponse] = None
         if self._batch:

@@ -4,7 +4,7 @@
 Async-specific test configuration and fixtures.
 """
 
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import Mock, patch
 
 import pytest
 import pytest_asyncio

@@ -539,34 +539,6 @@ class GetByQualifiedName:
             )
 
     @staticmethod
-    async def process_async_fluent_search_response(
-        search_results, qualified_name: str, asset_type: Type[A]
-    ) -> A:
-        """
-        Async version of process_fluent_search_response that handles async search results.
-
-        :param search_results: results from async FluentSearch
-        :param qualified_name: qualified name that was searched for
-        :param asset_type: expected asset type
-        :returns: the requested asset
-        :raises NotFoundError: if asset not found or wrong type
-        """
-        if search_results:
-            current_page = await search_results.current_page()
-            if current_page:
-                first_result = current_page[0]
-                if isinstance(first_result, asset_type):
-                    return first_result
-                else:
-                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        asset_type.__name__, qualified_name
-                    )
-
-        raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-            qualified_name, asset_type.__name__
-        )
-
-    @staticmethod
     def process_direct_api_response(
         raw_json: Dict[str, Any], qualified_name: str, asset_type: Type[A]
     ) -> A:
@@ -672,32 +644,6 @@ class GetByGuid:
                 )
         else:
             raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-
-    @staticmethod
-    async def process_async_fluent_search_response(
-        search_results, guid: str, asset_type: Type[A]
-    ) -> A:
-        """
-        Async version of process_fluent_search_response that handles async search results.
-
-        :param search_results: results from async FluentSearch
-        :param guid: GUID that was searched for
-        :param asset_type: expected asset type
-        :returns: the requested asset
-        :raises NotFoundError: if asset not found or wrong type
-        """
-        if search_results:
-            current_page = await search_results.current_page()
-            if current_page:
-                first_result = current_page[0]
-                if isinstance(first_result, asset_type):
-                    return first_result
-                else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
-
-        raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
 
     @staticmethod
     def process_direct_api_response(

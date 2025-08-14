@@ -313,9 +313,13 @@ class AsyncAtlanClient(AtlanClient):
         return self._async_user_cache
 
     def _get_async_session(self) -> httpx.AsyncClient:
-        """Get or create async HTTP session"""
+        """Get or create async HTTP session - exactly like sync version but with AsyncClient"""
         if self._async_session is None:
+            # Import here to avoid circular imports
+            from httpx_retries import RetryTransport as AsyncRetryTransport
+
             self._async_session = httpx.AsyncClient(
+                transport=AsyncRetryTransport(retry=self.retry),
                 timeout=httpx.Timeout(30.0),
                 headers={
                     "authorization": f"Bearer {self.api_key}",

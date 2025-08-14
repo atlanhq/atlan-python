@@ -15,6 +15,12 @@ from typing import (
 )
 
 from pydantic.v1 import StrictStr, constr, validate_arguments
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from pyatlan.client.common import (
     AsyncApiCaller,
@@ -50,7 +56,7 @@ from pyatlan.client.common import (
     UpdateCustomMetadataAttributes,
 )
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
 from pyatlan.model.assets import (
     Asset,
@@ -242,7 +248,7 @@ class AsyncAssetClient:
                 normalized_related_attributes,
             )
             results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
-            return await GetByQualifiedName.process_async_fluent_search_response(
+            return GetByQualifiedName.process_fluent_search_response(
                 results, qualified_name, asset_type
             )
 
@@ -293,9 +299,7 @@ class AsyncAssetClient:
                 guid, asset_type, normalized_attributes, normalized_related_attributes
             )
             results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
-            return await GetByGuid.process_async_fluent_search_response(
-                results, guid, asset_type
-            )
+            return GetByGuid.process_fluent_search_response(results, guid, asset_type)
 
         # Use direct API call for simple requests
         endpoint_path, query_params = GetByGuid.prepare_direct_api_request(
@@ -362,21 +366,12 @@ class AsyncAssetClient:
         return response
 
     async def _wait_for_connections_to_be_created(self, connections_created):
-        """Async version of connection waiting logic."""
-
         guids = Save.get_connection_guids_to_wait_for(connections_created)
-
-        for guid in guids:
-            # Retry logic for connection retrieval
-            max_attempts = 5
-            for attempt in range(max_attempts):
-                try:
-                    await self.retrieve_minimal(guid=guid, asset_type=Connection)
-                    break
-                except Exception:
-                    if attempt == max_attempts - 1:
-                        raise
-                    await asyncio.sleep(1)  # Wait before retry
+        # Use the same max_retries pattern as sync version
+        # Since AsyncAtlanClient inherits from AtlanClient, it has max_retries() method
+        with self._client.max_retries():
+            for guid in guids:
+                await self.retrieve_minimal(guid=guid, asset_type=Connection)
 
         Save.log_connections_finished()
 
@@ -539,7 +534,7 @@ class AsyncAssetClient:
             LOGGER.debug(
                 "Iteration %d found %d assets.", iteration_count, response.count
             )
-            for asset in response:
+            async for asset in response:
                 if asset.guid not in guids_processed:
                     guids_processed.add(asset.guid)
                     has_assets_to_process = True
@@ -709,11 +704,21 @@ class AsyncAssetClient:
             save_parameters = {}
 
         # Retrieve the asset with necessary attributes
-        retrieved_asset = await self.get_by_qualified_name(
-            qualified_name=qualified_name,
-            asset_type=asset_type,
-            attributes=ModifyAtlanTags.get_retrieve_attributes(),
+        # Add retry mechanism to handle search index eventual consistency
+        @retry(
+            reraise=True,
+            retry=retry_if_exception_type(NotFoundError),
+            stop=stop_after_attempt(10),
+            wait=wait_exponential(multiplier=1, min=1, max=5),
         )
+        async def _get_asset_with_retry():
+            return await self.get_by_qualified_name(
+                qualified_name=qualified_name,
+                asset_type=asset_type,
+                attributes=ModifyAtlanTags.get_retrieve_attributes(),
+            )
+
+        retrieved_asset = await _get_asset_with_retry()
 
         # Prepare the asset updater using shared logic
         updated_asset = ModifyAtlanTags.prepare_asset_updater(
