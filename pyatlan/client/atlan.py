@@ -360,7 +360,13 @@ class AtlanClient(BaseSettings):
         return self._dq_template_config_cache
 
     @classmethod
-    def from_token_guid(cls, guid: str) -> AtlanClient:
+    def from_token_guid(
+        cls,
+        guid: str,
+        base_url: Optional[str] = None,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
+    ) -> AtlanClient:
         """
         Create an AtlanClient instance using an API token GUID.
 
@@ -374,12 +380,14 @@ class AtlanClient(BaseSettings):
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
-        base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+        base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
         client = AtlanClient(base_url=base_url, api_key="")
-        client_info = client.impersonate._get_client_info()
+        client_info = client.impersonate._get_client_info(
+            client_id=client_id, client_secret=client_secret
+        )
 
         # Prepare credentials for Atlan-Argo token request
         argo_credentials = {
