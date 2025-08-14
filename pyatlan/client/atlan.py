@@ -380,11 +380,11 @@ class AtlanClient(BaseSettings):
         :returns: a new client instance authenticated with the resolved token
         :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
         """
-        base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+        final_base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
-        client = AtlanClient(base_url=base_url, api_key="")
+        client = AtlanClient(base_url=final_base_url, api_key="")
         client_info = client.impersonate._get_client_info(
             client_id=client_id, client_secret=client_secret
         )
@@ -401,7 +401,7 @@ class AtlanClient(BaseSettings):
         try:
             raw_json = client._call_api(GET_TOKEN, request_obj=argo_credentials)
             argo_token = AccessTokenResponse(**raw_json).access_token
-            temp_argo_client = AtlanClient(base_url=base_url, api_key=argo_token)
+            temp_argo_client = AtlanClient(base_url=final_base_url, api_key=argo_token)
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
                 "Failed to obtain Atlan-Argo token"
@@ -427,7 +427,7 @@ class AtlanClient(BaseSettings):
             token_api_key = AccessTokenResponse(**raw_json).access_token
 
             # Step 5: Create and return the authenticated client
-            return AtlanClient(base_url=base_url, api_key=token_api_key)
+            return AtlanClient(base_url=final_base_url, api_key=token_api_key)
         except AtlanError as atlan_err:
             raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
                 "Failed to obtain access token for API token"
