@@ -1,0 +1,87 @@
+name: Publish Pyatlan Package to Anaconda
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  conda_deployment:
+    name: Build and upload noarch (all platforms) package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Conda environment creation and activation
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: "3.9"
+          environment-file: .conda-envs/build-env.yaml
+          auto-update-conda: false
+          auto-activate-base: false
+          show-channel-urls: true
+          channels: conda-forge
+          conda-remove-defaults: "true"
+      
+      - name: Get version from version.txt
+        id: get_version
+        run: |
+          PYATLAN_VERSION=$(cat pyatlan/version.txt | tr -d ' \n')
+          echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
+          echo "Building version: $PYATLAN_VERSION"
+      
+      - name: Install conda-build and anaconda-client
+        run: |
+          conda install conda-build anaconda-client anaconda-auth -y
+      
+      - name: Build noarch conda package
+        env:
+          PYATLAN_VERSION: ${{ env.PYATLAN_VERSION }}
+        run: |
+          echo "Building noarch conda package with version: $PYATLAN_VERSION"
+          conda build .conda-envs/meta.yaml --output-folder /tmp/conda-builds --package-format tar.bz2
+      
+      - name: Upload to Anaconda
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
+        run: |
+          # Find anaconda command
+          ANACONDA_CMD=""
+          for cmd in anaconda "$CONDA/bin/anaconda" "$CONDA/condabin/anaconda" "$(which anaconda)"; do
+            if command -v "$cmd" >/dev/null 2>&1; then
+              ANACONDA_CMD="$cmd"
+              echo "Found anaconda command: $ANACONDA_CMD"
+              break
+            fi
+          done
+          
+          if [ -z "$ANACONDA_CMD" ]; then
+            echo "anaconda command not found. Installing anaconda-client..."
+            conda install anaconda-client anaconda-auth -y
+            ANACONDA_CMD="anaconda"
+          fi
+          
+          # Upload the noarch package
+          for pkg in /tmp/conda-builds/*/*.tar.bz2; do
+            if [ -f "$pkg" ]; then
+              echo "Uploading noarch package: $pkg"
+              UPLOAD_OUTPUT=$($ANACONDA_CMD upload --user atlanhq --label main "$pkg" 2>&1)
+              UPLOAD_EXIT_CODE=$?
+              
+              echo "Upload output for $pkg:"
+              echo "$UPLOAD_OUTPUT"
+              echo "Exit code: $UPLOAD_EXIT_CODE"
+              
+              if [ $UPLOAD_EXIT_CODE -eq 0 ]; then
+                echo "Successfully uploaded: $pkg"
+              elif echo "$UPLOAD_OUTPUT" | grep -q "already exists\|Conflict"; then
+                echo "Package already exists, skipping: $pkg"
+              else
+                echo "Upload failed for $pkg (exit code: $UPLOAD_EXIT_CODE):"
+                echo "$UPLOAD_OUTPUT"
+                exit 1
+              fi
+            fi
+          done

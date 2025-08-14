@@ -85,6 +85,7 @@ from pyatlan.utils import (
     APPLICATION_ENCODED_FORM,
     AuthorizationFilter,
     RequestIdAdapter,
+    get_python_version,
 )
 
 request_id_var = ContextVar("request_id", default=None)
@@ -178,6 +179,7 @@ class AtlanClient(BaseSettings):
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
                 "x-atlan-client-origin": "product_sdk",
+                "x-atlan-python-version": get_python_version(),
                 "User-Agent": f"Atlan-PythonSDK/{VERSION}",
             },
             event_hooks={"response": [log_response]},
@@ -665,6 +667,7 @@ class AtlanClient(BaseSettings):
         LOGGER.debug("Call         : %s %s", api.method, path)
         LOGGER.debug("Content-type_ : %s", api.consumes)
         LOGGER.debug("Accept       : %s", api.produces)
+        LOGGER.debug("Python-Version: %s", get_python_version())
         LOGGER.debug("User-Agent   : %s", f"Atlan-PythonSDK/{VERSION}")
 
     def _call_api(

@@ -18,6 +18,7 @@ from pyatlan.client.asset import (
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller, Search
 from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
+from pyatlan.utils import get_python_version
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.typedef import TypeDefClient
@@ -2552,6 +2553,7 @@ def test_atlan_client_headers(client: AtlanClient):
         "x-atlan-agent": "sdk",
         "x-atlan-agent-id": "python",
         "x-atlan-client-origin": "product_sdk",
+        "x-atlan-python-version": get_python_version(),
     }
     assert expected == client._session.headers
 

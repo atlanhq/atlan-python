@@ -1,13 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import contextlib
 import time
 from typing import Generator
 
 import pytest
 
 from pyatlan.client.atlan import AtlanClient, client_connection
-from pyatlan.errors import NotFoundError
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import AuthPolicy, Column, Purpose
 from pyatlan.model.constants import SERVICE_ACCOUNT_
@@ -25,6 +23,7 @@ from pyatlan.model.enums import (
 from pyatlan.model.query import QueryRequest
 from tests.integration.client import TestId, delete_asset
 from tests.integration.requests_test import delete_token
+from tests.integration.utils import find_purposes_by_name_with_retry
 
 MODULE_NAME = TestId.make_unique("Purpose")
 PERSONA_NAME = "Data Assets"
@@ -173,17 +172,10 @@ def test_find_purpose_by_name(
     client: AtlanClient,
     purpose: Purpose,
 ):
-    result = None
-    with contextlib.suppress(NotFoundError):
-        result = client.asset.find_purposes_by_name(
-            MODULE_NAME, attributes=["purposeClassifications"]
-        )
-        count = 0
-        # TODO: replace with exponential back-off and jitter
-        while not result and count < 10:
-            time.sleep(5)
-            result = client.asset.find_purposes_by_name(MODULE_NAME)
-            count += 1
+    # Use centralized retry utility to handle search index consistency
+    result = find_purposes_by_name_with_retry(
+        client, MODULE_NAME, attributes=["purposeClassifications"]
+    )
     assert result
     assert len(result) == 1
     assert result[0].guid == purpose.guid
