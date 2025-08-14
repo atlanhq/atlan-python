@@ -180,6 +180,7 @@ class AtlanClient(BaseSettings):
                 "x-atlan-agent-id": "python",
                 "x-atlan-client-origin": "product_sdk",
                 "x-atlan-python-version": get_python_version(),
+                "x-atlan-client-type": "sync",
                 "User-Agent": f"Atlan-PythonSDK/{VERSION}",
             },
             event_hooks={"response": [log_response]},

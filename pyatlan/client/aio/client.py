@@ -48,7 +48,7 @@ from pyatlan.client.aio.token import AsyncTokenClient
 from pyatlan.client.aio.typedef import AsyncTypeDefClient
 from pyatlan.client.aio.user import AsyncUserClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
-from pyatlan.client.atlan import VERSION, AtlanClient
+from pyatlan.client.atlan import VERSION, AtlanClient, get_python_version
 from pyatlan.client.constants import EVENT_STREAM
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
@@ -317,7 +317,15 @@ class AsyncAtlanClient(AtlanClient):
         if self._async_session is None:
             self._async_session = httpx.AsyncClient(
                 timeout=httpx.Timeout(30.0),
-                headers={"authorization": f"Bearer {self.api_key}"},
+                headers={
+                    "authorization": f"Bearer {self.api_key}",
+                    "x-atlan-agent": "sdk",
+                    "x-atlan-agent-id": "python",
+                    "x-atlan-client-origin": "product_sdk",
+                    "x-atlan-python-version": get_python_version(),
+                    "x-atlan-client-type": "async",
+                    "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+                },
                 base_url=str(self.base_url),
             )
         return self._async_session

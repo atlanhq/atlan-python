@@ -7,6 +7,7 @@ from re import escape
 from unittest.mock import AsyncMock, Mock, call, patch
 
 import pytest
+from httpx import Headers
 from pydantic.v1 import ValidationError
 
 from pyatlan.client.aio.asset import AsyncAssetClient
@@ -2778,17 +2779,21 @@ class TestBulkRequest:
 @pytest.mark.asyncio
 async def test_atlan_client_headers(client: AsyncAtlanClient):
     VERSION = read_text("pyatlan", "version.txt").strip()
-    expected = {
-        "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept": "*/*",
-        "Connection": "keep-alive",
-        "x-atlan-agent": "sdk",
-        "x-atlan-agent-id": "python",
-        "x-atlan-python-version": get_python_version(),
-        "x-atlan-client-origin": "product_sdk",
-    }
-    assert expected == client._session.headers
+    expected = Headers(
+        {
+            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "authorization": f"Bearer {client.api_key}",
+            "x-atlan-agent": "sdk",
+            "x-atlan-agent-id": "python",
+            "x-atlan-python-version": get_python_version(),
+            "x-atlan-client-origin": "product_sdk",
+            "x-atlan-client-type": "async",
+        }
+    )
+    assert expected == client._get_async_session().headers
 
 
 @pytest.mark.asyncio

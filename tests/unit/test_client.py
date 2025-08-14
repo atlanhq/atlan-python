@@ -18,7 +18,6 @@ from pyatlan.client.asset import (
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller, Search
 from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
-from pyatlan.utils import get_python_version
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.typedef import TypeDefClient
@@ -59,6 +58,7 @@ from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttrib
 from pyatlan.model.search_log import SearchLogRequest
 from pyatlan.model.typedef import EnumDef
 from pyatlan.model.user import AtlanUser, UserRequest
+from pyatlan.utils import get_python_version
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -2554,6 +2554,7 @@ def test_atlan_client_headers(client: AtlanClient):
         "x-atlan-agent-id": "python",
         "x-atlan-client-origin": "product_sdk",
         "x-atlan-python-version": get_python_version(),
+        "x-atlan-client-type": "sync",
     }
     assert expected == client._session.headers
 
