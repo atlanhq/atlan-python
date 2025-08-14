@@ -56,6 +56,7 @@ from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttrib
 from pyatlan.model.search_log import SearchLogRequest
 from pyatlan.model.typedef import EnumDef
 from pyatlan.model.user import AtlanUser, UserRequest
+from pyatlan.utils import get_python_version
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -2784,6 +2785,7 @@ async def test_atlan_client_headers(client: AsyncAtlanClient):
         "Connection": "keep-alive",
         "x-atlan-agent": "sdk",
         "x-atlan-agent-id": "python",
+        "x-atlan-python-version": get_python_version(),
         "x-atlan-client-origin": "product_sdk",
     }
     assert expected == client._session.headers
