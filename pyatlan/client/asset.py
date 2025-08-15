@@ -80,7 +80,7 @@ from pyatlan.client.constants import (
     GET_LINEAGE_LIST,
     INDEX_SEARCH,
 )
-from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
+from pyatlan.errors import AtlanError, ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.assets import (
     Asset,
@@ -457,9 +457,21 @@ class AssetClient:
 
     def _wait_for_connections_to_be_created(self, connections_created):
         guids = Save.get_connection_guids_to_wait_for(connections_created)
-        with self._client.max_retries():
-            for guid in guids:
-                self.retrieve_minimal(guid=guid, asset_type=Connection)
+
+        @retry(
+            retry=retry_if_exception_type(PermissionError),
+            wait=wait_exponential(multiplier=1, min=1, max=8),
+            stop=stop_after_attempt(10),
+            reraise=True,
+        )
+        def _retrieve_connection_with_retry(guid):
+            """Retry connection retrieval on permission errors."""
+            self.retrieve_minimal(guid=guid, asset_type=Connection)
+
+        # Wait for each connection to be fully created and accessible
+        for guid in guids:
+            _retrieve_connection_with_retry(guid)
+
         Save.log_connections_finished()
 
     @validate_arguments

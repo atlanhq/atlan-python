@@ -56,7 +56,7 @@ from pyatlan.client.common import (
     UpdateCustomMetadataAttributes,
 )
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
-from pyatlan.errors import ErrorCode, NotFoundError
+from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
 from pyatlan.model.assets import (
     Asset,
@@ -367,11 +367,20 @@ class AsyncAssetClient:
 
     async def _wait_for_connections_to_be_created(self, connections_created):
         guids = Save.get_connection_guids_to_wait_for(connections_created)
-        # Use the same max_retries pattern as sync version
-        # Since AsyncAtlanClient inherits from AtlanClient, it has max_retries() method
-        with self._client.max_retries():
-            for guid in guids:
-                await self.retrieve_minimal(guid=guid, asset_type=Connection)
+
+        @retry(
+            retry=retry_if_exception_type(PermissionError),
+            wait=wait_exponential(multiplier=1, min=1, max=8),
+            stop=stop_after_attempt(10),
+            reraise=True,
+        )
+        async def _retrieve_connection_with_retry(guid):
+            """Retry connection retrieval on permission errors."""
+            await self.retrieve_minimal(guid=guid, asset_type=Connection)
+
+        # Wait for each connection to be fully created and accessible
+        for guid in guids:
+            await _retrieve_connection_with_retry(guid)
 
         Save.log_connections_finished()
 
