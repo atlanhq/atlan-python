@@ -44,10 +44,23 @@ def mock_session():
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.content = "test-content"
+        mock_response.headers = {}
+
         with open(QUERY_RESPONSES, "r", encoding="utf-8") as file:
             lines_from_file = [line.strip() for line in file.readlines()]
         mock_response.iter_lines.return_value = lines_from_file
+
+        # Mock the methods our streaming code expects
+        file_content = "\n".join(lines_from_file)
+        mock_response.read.return_value = file_content.encode("utf-8")
+        mock_response.text = file_content
+
+        # Support both old request-style and new stream-style
         mock_session.request.return_value = mock_response
+
+        # Use Mock's context manager support for streaming
+        mock_session.stream.return_value.__enter__.return_value = mock_response
+        mock_session.stream.return_value.__exit__.return_value = None
         yield mock_session
 
 
@@ -90,8 +103,21 @@ def test_stream_get_raises_error(
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.content = "test-content"
+    mock_response.headers = {}
     mock_response.iter_lines.return_value = test_response
+
+    # Mock the methods our streaming code expects
+    file_content = "\n".join(test_response)
+    mock_response.read.return_value = file_content.encode("utf-8")
+    mock_response.text = file_content
+
+    # Support both old request-style and new stream-style
     mock_session.request.return_value = mock_response
+
+    # Use Mock's context manager support for streaming
+    mock_session.stream.return_value.__enter__.return_value = mock_response
+    mock_session.stream.return_value.__exit__.return_value = None
+
     with pytest.raises(test_error) as err:
         client.queries.stream(request=query_request)
     assert error_msg in str(err.value)

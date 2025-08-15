@@ -7,14 +7,23 @@ from time import sleep, time
 from typing import Generator, Set
 from unittest.mock import patch
 
+import httpx
 import pytest
-import requests.exceptions
-from urllib3 import Retry
+from httpx_retries import Retry
+from pydantic.v1 import HttpUrl
 
 from pyatlan.cache.source_tag_cache import SourceTagName
-from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.client.atlan import AtlanClient, client_connection
-from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
+from pyatlan.client.common.asset import LOGGER
+from pyatlan.model.assets import (
+    Asset,
+    AtlasGlossaryTerm,
+    Column,
+    Persona,
+    Purpose,
+    Table,
+)
 from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fields.atlan_fields import SearchableField
@@ -847,19 +856,22 @@ def test_read_timeout(client: AtlanClient):
         client=client, read_timeout=0.1, retry=Retry(total=0)
     ) as timed_client:
         with pytest.raises(
-            requests.exceptions.ReadTimeout,
-            match=".Read timed out\. \(read timeout=0\.1\)",  # noqa W605
+            httpx.ReadTimeout,
+            match="The read operation timed out",
         ):
             timed_client.asset.search(criteria=request)
 
 
 def test_connect_timeout(client: AtlanClient):
-    request = (FluentSearch().select()).to_request()
+    request = FluentSearch().select().to_request()
+
+    # Use a non-routable IP that will definitely timeout
+    # 192.0.2.1 is reserved for documentation/testing
     with client_connection(
-        client=client, connect_timeout=0.0001, retry=Retry(total=0)
+        client=client,
+        base_url=HttpUrl("http://192.0.2.1:80", scheme="http"),  # Non-routable test IP
+        connect_timeout=0.001,
+        retry=Retry(total=1),
     ) as timed_client:
-        with pytest.raises(
-            requests.exceptions.ConnectionError,
-            match=".(timed out\. \(connect timeout=0\.0001\))|(Failed to establish a new connection.)",  # noqa W605
-        ):
+        with pytest.raises(httpx.ConnectTimeout):
             timed_client.asset.search(criteria=request)

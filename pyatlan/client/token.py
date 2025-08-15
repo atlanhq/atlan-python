@@ -2,15 +2,22 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Dict, Optional, Set
+from typing import Optional, Set
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import DELETE_API_TOKEN, GET_API_TOKENS, UPSERT_API_TOKEN
+from pyatlan.client.common import (
+    ApiCaller,
+    TokenCreate,
+    TokenGet,
+    TokenGetByGuid,
+    TokenGetById,
+    TokenGetByName,
+    TokenPurge,
+    TokenUpdate,
+)
 from pyatlan.errors import ErrorCode
-from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
-from pyatlan.model.constants import SERVICE_ACCOUNT_
+from pyatlan.model.api_tokens import ApiToken, ApiTokenResponse
 
 
 class TokenClient:
@@ -46,20 +53,11 @@ class TokenClient:
         :returns: an ApiTokenResponse which contains a list of API tokens that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: Dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._client._call_api(
-            GET_API_TOKENS.format_path_with_params(), query_params
+        endpoint, query_params = TokenGet.prepare_request(
+            limit, post_filter, sort, count, offset
         )
-        return ApiTokenResponse(**raw_json)
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TokenGet.process_response(raw_json)
 
     @validate_arguments
     def get_by_name(self, display_name: str) -> Optional[ApiToken]:
@@ -69,14 +67,9 @@ class TokenClient:
         :param display_name: name (as it appears in the UI) by which to retrieve the API token
         :returns: the API token whose name (in the UI) matches the provided string, or None if there is none
         """
-        if response := self.get(
-            offset=0,
-            limit=5,
-            post_filter='{"displayName":"' + display_name + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        endpoint, query_params = TokenGetByName.prepare_request(display_name)
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TokenGetByName.process_response(raw_json)
 
     @validate_arguments
     def get_by_id(self, client_id: str) -> Optional[ApiToken]:
@@ -86,16 +79,9 @@ class TokenClient:
         :param client_id: unique client identifier by which to retrieve the API token
         :returns: the API token whose clientId matches the provided string, or None if there is none
         """
-        if client_id and client_id.startswith(SERVICE_ACCOUNT_):
-            client_id = client_id[len(SERVICE_ACCOUNT_) :]  # noqa: E203
-        if response := self.get(
-            offset=0,
-            limit=5,
-            post_filter='{"clientId":"' + client_id + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        endpoint, query_params = TokenGetById.prepare_request(client_id)
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TokenGetById.process_response(raw_json)
 
     @validate_arguments
     def get_by_guid(self, guid: str) -> Optional[ApiToken]:
@@ -105,12 +91,9 @@ class TokenClient:
         :param guid: unique identifier by which to retrieve the API token
         :returns: the API token whose clientId matches the provided string, or None if there is none
         """
-        if response := self.get(
-            offset=0, limit=5, post_filter='{"id":"' + guid + '"}', sort="createdAt"
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        endpoint, query_params = TokenGetByGuid.prepare_request(guid)
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TokenGetByGuid.process_response(raw_json)
 
     @validate_arguments
     def create(
@@ -131,14 +114,11 @@ class TokenClient:
         :returns: the created API token
         :raises AtlanError: on any API communication issue
         """
-        request = ApiTokenRequest(
-            display_name=display_name,
-            description=description,
-            persona_qualified_names=personas or set(),
-            validity_seconds=validity_seconds,
+        endpoint, request_obj = TokenCreate.prepare_request(
+            display_name, description, personas, validity_seconds
         )
-        raw_json = self._client._call_api(UPSERT_API_TOKEN, request_obj=request)
-        return ApiToken(**raw_json)
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        return TokenCreate.process_response(raw_json)
 
     @validate_arguments
     def update(
@@ -160,15 +140,11 @@ class TokenClient:
         :returns: the created API token
         :raises AtlanError: on any API communication issue
         """
-        request = ApiTokenRequest(
-            display_name=display_name,
-            description=description,
-            persona_qualified_names=personas or set(),
+        endpoint, request_obj = TokenUpdate.prepare_request(
+            guid, display_name, description, personas
         )
-        raw_json = self._client._call_api(
-            UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
-        )
-        return ApiToken(**raw_json)
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        return TokenUpdate.process_response(raw_json)
 
     @validate_arguments
     def purge(self, guid: str) -> None:
@@ -178,4 +154,5 @@ class TokenClient:
         :param guid: unique identifier (GUID) of the API token to delete
         :raises AtlanError: on any API communication issue
         """
-        self._client._call_api(DELETE_API_TOKEN.format_path_with_params(guid))
+        endpoint, _ = TokenPurge.prepare_request(guid)
+        self._client._call_api(endpoint)

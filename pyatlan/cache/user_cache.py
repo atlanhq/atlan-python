@@ -5,6 +5,7 @@ from __future__ import annotations
 from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
+from pyatlan.cache.common import UserCacheCommon
 from pyatlan.errors import ErrorCode
 from pyatlan.model.constants import SERVICE_ACCOUNT_
 
@@ -66,16 +67,10 @@ class UserCache:
             users = self.client.user.get_all()
             if not users:
                 return
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            self.map_email_to_id = {}
-            for user in users:
-                user_id = str(user.id)
-                username = str(user.username)
-                user_email = str(user.email)
-                self.map_id_to_name[user_id] = username
-                self.map_name_to_id[username] = user_id
-                self.map_email_to_id[user_email] = user_id
+            # Process response using shared logic
+            (self.map_id_to_name, self.map_name_to_id, self.map_email_to_id) = (
+                UserCacheCommon.refresh_cache_data(users)
+            )
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """

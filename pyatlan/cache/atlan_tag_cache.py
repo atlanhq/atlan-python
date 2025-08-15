@@ -5,6 +5,7 @@ from __future__ import annotations
 from threading import Lock
 from typing import TYPE_CHECKING, Dict, Optional, Set
 
+from pyatlan.cache.common import AtlanTagCacheCommon
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AtlanTagDef
@@ -70,29 +71,24 @@ class AtlanTagCache:
         Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
         """
         with self.lock:
+            # Make API call directly
             response = self.client.typedef.get(
                 type_category=[
                     AtlanTypeCategory.CLASSIFICATION,
                     AtlanTypeCategory.STRUCT,
                 ]
             )
+
             if not response or not response.struct_defs:
                 raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
-            if response is not None:
-                self.cache_by_id = {}
-                self.map_id_to_name = {}
-                self.map_name_to_id = {}
-                for atlan_tag in response.atlan_tag_defs:
-                    atlan_tag_id = atlan_tag.name
-                    atlan_tag_name = atlan_tag.display_name
-                    self.cache_by_id[atlan_tag_id] = atlan_tag
-                    self.map_id_to_name[atlan_tag_id] = atlan_tag_name
-                    self.map_name_to_id[atlan_tag_name] = atlan_tag_id
-                    sourceTagsId = ""
-                    for attr_def in atlan_tag.attribute_defs or []:
-                        if attr_def.display_name == "sourceTagAttachment":
-                            sourceTagsId = attr_def.name or ""
-                    self.map_id_to_source_tags_attr_id[atlan_tag_id] = sourceTagsId
+
+            # Process response using shared logic
+            (
+                self.cache_by_id,
+                self.map_id_to_name,
+                self.map_name_to_id,
+                self.map_id_to_source_tags_attr_id,
+            ) = AtlanTagCacheCommon.refresh_cache_data(response)
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """
@@ -101,17 +97,17 @@ class AtlanTagCache:
         :param name: human-readable name of the Atlan tag
         :returns: Atlan-internal ID string of the Atlan tag
         """
-        cls_id = self.map_name_to_id.get(name)
-        if not cls_id and name not in self.deleted_names:
-            # If not found, refresh the cache and look again (could be stale)
+        if not self.cache_by_id:
             self._refresh_cache()
-            cls_id = self.map_name_to_id.get(name)
-            if not cls_id:
-                # If still not found after refresh, mark it as deleted (could be
-                # an entry in an audit log that refers to a classification that
-                # no longer exists)
-                self.deleted_names.add(name)
-        return cls_id
+        result, should_refresh = AtlanTagCacheCommon.get_id_for_name(
+            name, self.map_name_to_id, self.deleted_names
+        )
+        if should_refresh:
+            self._refresh_cache()
+            return AtlanTagCacheCommon.get_id_for_name_after_refresh(
+                name, self.map_name_to_id, self.deleted_names
+            )
+        return result
 
     def _get_name_for_id(self, idstr: str) -> Optional[str]:
         """
@@ -120,17 +116,17 @@ class AtlanTagCache:
         :param idstr: Atlan-internal ID string of the Atlan tag
         :returns: human-readable name of the Atlan tag
         """
-        cls_name = self.map_id_to_name.get(idstr)
-        if not cls_name and idstr not in self.deleted_ids:
-            # If not found, refresh the cache and look again (could be stale)
+        if not self.cache_by_id:
             self._refresh_cache()
-            cls_name = self.map_id_to_name.get(idstr)
-            if not cls_name:
-                # If still not found after refresh, mark it as deleted (could be
-                # an entry in an audit log that refers to a classification that
-                # no longer exists)
-                self.deleted_ids.add(idstr)
-        return cls_name
+        result, should_refresh = AtlanTagCacheCommon.get_name_for_id(
+            idstr, self.map_id_to_name, self.deleted_ids
+        )
+        if should_refresh:
+            self._refresh_cache()
+            return AtlanTagCacheCommon.get_name_for_id_after_refresh(
+                idstr, self.map_id_to_name, self.deleted_ids
+            )
+        return result
 
     def _get_source_tags_attr_id(self, id: str) -> Optional[str]:
         """
@@ -140,13 +136,14 @@ class AtlanTagCache:
         :param id: Atlan-internal ID string of the Atlan tag
         :returns: Atlan-internal ID string of the attribute containing source-synced tag attachment details
         """
-        if id and id.strip():
-            attr_id = self.map_id_to_source_tags_attr_id.get(id)
-            if attr_id is not None or id in self.deleted_ids:
-                return attr_id
-            self.refresh_cache()
-            if attr_id := self.map_id_to_source_tags_attr_id.get(id):
-                return attr_id
-            self.deleted_ids.add(id)
-            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_ID.exception_with_parameters(id)
-        raise ErrorCode.MISSING_ATLAN_TAG_ID.exception_with_parameters()
+        if not self.cache_by_id:
+            self._refresh_cache()
+        result, should_refresh = AtlanTagCacheCommon.get_source_tags_attr_id(
+            id, self.map_id_to_source_tags_attr_id, self.deleted_ids
+        )
+        if should_refresh:
+            self._refresh_cache()
+            return AtlanTagCacheCommon.get_source_tags_attr_id_after_refresh(
+                id, self.map_id_to_source_tags_attr_id, self.deleted_ids
+            )
+        return result

@@ -6,7 +6,11 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.sso import SSOClient
+from pyatlan.client.common.sso import (
+    GROUP_MAPPER_ATTRIBUTE,
+    GROUP_MAPPER_SYNC_MODE,
+    IDP_GROUP_MAPPER,
+)
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import AtlanSSO
 from pyatlan.model.group import AtlanGroup
@@ -64,7 +68,7 @@ def sso_mapping(
         if (
             group.id
             and group.id in str(mapping.name)
-            and mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER
+            and mapping.identity_provider_mapper == IDP_GROUP_MAPPER
         ):
             azure_group_mapping = mapping
             break
@@ -79,14 +83,14 @@ def _assert_sso_group_mapping(
     assert sso_mapping
     assert sso_mapping.id
     assert sso_mapping.identity_provider_alias == AtlanSSO.JUMPCLOUD
-    assert sso_mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER
+    assert sso_mapping.identity_provider_mapper == IDP_GROUP_MAPPER
     assert sso_mapping.config.attributes == "[]"
     assert sso_mapping.config.group_name == group.name
     assert sso_mapping.config.attribute_values_regex is None
     assert sso_mapping.config.attribute_friendly_name is None
 
-    assert sso_mapping.config.sync_mode == SSOClient.GROUP_MAPPER_SYNC_MODE
-    assert sso_mapping.config.attribute_name == SSOClient.GROUP_MAPPER_ATTRIBUTE
+    assert sso_mapping.config.sync_mode == GROUP_MAPPER_SYNC_MODE
+    assert sso_mapping.config.attribute_name == GROUP_MAPPER_ATTRIBUTE
     if is_updated:
         assert sso_mapping.name is None
         assert sso_mapping.config.attribute_value == SSO_GROUP_NAME_UPDATED
@@ -162,7 +166,7 @@ def test_sso_retrieve_all_group_mappings(
     for mapping in retrieved_mappings:
         if (
             group.id in str(mapping.name)
-            and mapping.identity_provider_mapper == SSOClient.IDP_GROUP_MAPPER
+            and mapping.identity_provider_mapper == IDP_GROUP_MAPPER
         ):
             mapping_found = True
             _assert_sso_group_mapping(group, mapping)

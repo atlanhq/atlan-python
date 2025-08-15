@@ -10,15 +10,14 @@ import pytest
 from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import (
-    LOGGER,
     AssetClient,
     Batch,
     CustomMetadataHandling,
     IndexSearchResults,
 )
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.common import ApiCaller
-from pyatlan.utils import get_python_version
+from pyatlan.client.common import ApiCaller, Search
+from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
 from pyatlan.client.group import GroupClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.typedef import TypeDefClient
@@ -59,6 +58,7 @@ from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttrib
 from pyatlan.model.search_log import SearchLogRequest
 from pyatlan.model.typedef import EnumDef
 from pyatlan.model.user import AtlanUser, UserRequest
+from pyatlan.utils import get_python_version
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -148,7 +148,7 @@ def mock_atlan_client():
     return Mock(AtlanClient)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def mock_api_caller():
     return Mock(spec=ApiCaller)
 
@@ -1372,17 +1372,16 @@ def test_find_product_by_name(mock_search_for_asset_with_name):
     assert mock_search_for_asset_with_name.call_count == 1
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_most_recent_viewers_json
+def test_search_log_most_recent_viewers(mock_api_caller, sl_most_recent_viewers_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_most_recent_viewers_json
     recent_viewers_aggs = sl_most_recent_viewers_json["aggregations"]
     recent_viewers_aggs_buckets = recent_viewers_aggs[UNIQUE_USERS]["buckets"]
     request = SearchLogRequest.most_recent_viewers(
         guid="test-guid-123", exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     viewers = response.user_views
     assert len(viewers) == 3
     assert response.asset_views is None
@@ -1394,19 +1393,19 @@ def test_search_log_most_recent_viewers(mock_sl_api_call, sl_most_recent_viewers
     assert viewers[1].username == recent_viewers_aggs_buckets[1]["key"]
     assert viewers[1].view_count == recent_viewers_aggs_buckets[1]["doc_count"]
     assert viewers[1].most_recent_view
+    mock_api_caller.reset_mock()
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_most_viewed_assets_json
+def test_search_log_most_viewed_assets(mock_api_caller, sl_most_viewed_assets_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_most_viewed_assets_json
     viewed_assets_aggs = sl_most_viewed_assets_json["aggregations"]
     viewed_assets_aggs_buckets = viewed_assets_aggs[UNIQUE_ASSETS]["buckets"][0]
     request = SearchLogRequest.most_viewed_assets(
         max_assets=10, exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     detail = response.asset_views
     assert len(detail) == 8
     assert response.user_views is None
@@ -1415,18 +1414,18 @@ def test_search_log_most_viewed_assets(mock_sl_api_call, sl_most_viewed_assets_j
     assert detail[0].guid == viewed_assets_aggs_buckets["key"]
     assert detail[0].total_views == viewed_assets_aggs_buckets["doc_count"]
     assert detail[0].distinct_users == viewed_assets_aggs_buckets[UNIQUE_USERS]["value"]
+    mock_api_caller.reset_mock()
 
 
-@patch.object(SearchLogClient, "_call_search_api")
-def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json):
-    client = AtlanClient()
-    mock_sl_api_call.return_value = sl_detailed_log_entries_json
+def test_search_log_views_by_guid(mock_api_caller, sl_detailed_log_entries_json):
+    client = SearchLogClient(mock_api_caller)
+    mock_api_caller._call_api.return_value = sl_detailed_log_entries_json
     sl_detailed_log_entries = sl_detailed_log_entries_json["logs"]
     request = SearchLogRequest.views_by_guid(
         guid="test-guid-123", size=10, exclude_users=["testuser"]
     )
     request_dsl_json = loads(request.dsl.json(by_alias=True, exclude_none=True))
-    response = client.search_log.search(request)
+    response = client.search(request)
     log_entries = response.current_page()
     assert request_dsl_json == sl_detailed_log_entries_json[SEARCH_PARAMS]["dsl"]
     assert len(response.current_page()) == sl_detailed_log_entries_json[SEARCH_COUNT]
@@ -1451,6 +1450,7 @@ def test_search_log_views_by_guid(mock_sl_api_call, sl_detailed_log_entries_json
     assert log_entries[0].request_dsl_text
     assert log_entries[0].request_attributes is None
     assert log_entries[0].request_relation_attributes
+    mock_api_caller.reset_mock()
 
 
 def test_asset_get_lineage_list_response_with_custom_metadata(
@@ -1569,8 +1569,7 @@ def test_index_search_with_no_aggregation_results(
 def test_type_name_in_asset_search_bool_filter(mock_api_caller):
     # When the type name is not present in the request
     request = (FluentSearch().where(CompoundQuery.active_assets())).to_request()
-    client = AssetClient(mock_api_caller)
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1587,7 +1586,7 @@ def test_type_name_in_asset_search_bool_filter(mock_api_caller):
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
     ).to_request()
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1604,7 +1603,7 @@ def test_type_name_in_asset_search_bool_filter(mock_api_caller):
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_types([AtlasGlossary, AtlasGlossaryTerm]))
     ).to_request()
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.filter
     assert isinstance(request.dsl.query.filter, list)
@@ -1620,9 +1619,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
     # When the type name is not present in the request
     query = Bool(must=[Term.with_state("ACTIVE")])
     request = IndexSearchRequest(dsl=DSL(query=query))
-
-    client = AssetClient(mock_api_caller)
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1636,7 +1633,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
     # When the type name is present in the request (no need to add super type filter)
     query = Bool(must=[Term.with_state("ACTIVE"), Term.with_type_name("AtlasGlossary")])
     request = IndexSearchRequest(dsl=DSL(query=query))
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1656,7 +1653,7 @@ def test_type_name_in_asset_search_bool_must(mock_api_caller):
         ]
     )
     request = IndexSearchRequest(dsl=DSL(query=query))
-    client._ensure_type_filter_present(request)
+    Search._ensure_type_filter_present(request)
 
     assert request.dsl.query and request.dsl.query.must
     assert isinstance(request.dsl.query.must, list)
@@ -1680,9 +1677,9 @@ def _assert_search_results(results, response_json, sorts, bulk=False):
     assert results._criteria.dsl.sort == sorts
 
 
-@patch.object(LOGGER, "debug")
+@patch.object(SHARED_LOGGER, "debug")
 def test_index_search_pagination(
-    mock_logger, mock_api_caller, index_search_paging_json
+    mock_shared_logger, mock_api_caller, index_search_paging_json
 ):
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
@@ -1718,9 +1715,11 @@ def test_index_search_pagination(
 
     _assert_search_results(results, index_search_paging_json, expected_sorts, True)
     assert mock_api_caller._call_api.call_count == 2
-    assert mock_logger.call_count == 1
-    assert "Bulk search option is enabled." in mock_logger.call_args_list[0][0][0]
-    mock_logger.reset_mock()
+    assert mock_shared_logger.call_count == 1
+    assert (
+        "Bulk search option is enabled." in mock_shared_logger.call_args_list[0][0][0]
+    )
+    mock_shared_logger.reset_mock()
     mock_api_caller.reset_mock()
 
     # Test search(): when the number of results exceeds the predefined threshold
@@ -1747,12 +1746,12 @@ def test_index_search_pagination(
         ]
         _assert_search_results(results, index_search_paging_json, expected_sorts)
         assert mock_api_caller._call_api.call_count == 3
-        assert mock_logger.call_count == 1
+        assert mock_shared_logger.call_count == 1
         assert (
             "Result size (%s) exceeds threshold (%s)"
-            in mock_logger.call_args_list[0][0][0]
+            in mock_shared_logger.call_args_list[0][0][0]
         )
-    mock_logger.reset_mock()
+    mock_shared_logger.reset_mock()
     mock_api_caller.reset_mock()
 
     # Test search(bulk=False): Raise an exception when the number of results exceeds
@@ -1864,6 +1863,7 @@ def test_user_create(
 def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json):
     test_role_id = "role-guid-123"
     client = UserClient(mock_api_caller)
+    client._client.role_cache = mock_role_cache
     mock_api_caller._call_api.side_effect = [
         None,
         {
@@ -2554,6 +2554,7 @@ def test_atlan_client_headers(client: AtlanClient):
         "x-atlan-agent-id": "python",
         "x-atlan-client-origin": "product_sdk",
         "x-atlan-python-version": get_python_version(),
+        "x-atlan-client-type": "sync",
     }
     assert expected == client._session.headers
 

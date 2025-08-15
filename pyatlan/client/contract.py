@@ -1,12 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
 from typing import Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.common import ApiCaller, ContractInit
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
-from pyatlan.model.contract import InitRequest
 
 
 class ContractClient:
@@ -35,10 +36,11 @@ class ContractClient:
         :raises AtlanError: if there is an issue interacting with the API
         :returns: YAML for the initial contract spec for the provided asset
         """
-        response = self._client._call_api(
-            CONTRACT_INIT_API,
-            request_obj=InitRequest(
-                asset_type=asset.type_name, asset_qualified_name=asset.qualified_name
-            ),
-        )
-        return response.get("contract")
+        # Prepare request using shared logic
+        request_obj = ContractInit.prepare_request(asset)
+
+        # Make API call
+        response = self._client._call_api(CONTRACT_INIT_API, request_obj=request_obj)
+
+        # Process response using shared logic
+        return ContractInit.process_response(response)

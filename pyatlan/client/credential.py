@@ -1,17 +1,19 @@
-from json import dumps
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
 from typing import Any, Dict, Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import (
-    CREATE_CREDENTIALS,
-    DELETE_CREDENTIALS_BY_GUID,
-    GET_ALL_CREDENTIALS,
-    GET_CREDENTIAL_BY_GUID,
-    TEST_CREDENTIAL,
-    UPDATE_CREDENTIAL_BY_GUID,
+from pyatlan.client.common import (
+    ApiCaller,
+    CredentialCreate,
+    CredentialGet,
+    CredentialGetAll,
+    CredentialPurge,
+    CredentialTest,
+    CredentialTestAndUpdate,
 )
+from pyatlan.client.constants import TEST_CREDENTIAL
 from pyatlan.errors import ErrorCode
 from pyatlan.model.credential import (
     Credential,
@@ -48,16 +50,21 @@ class CredentialClient:
         :raises ValidationError: If the provided `credential` is invalid.
         :raises InvalidRequestError: If `test` is `False` and the credential contains a `username` or `password`.
         """
+        # Validate request using shared logic
+        CredentialCreate.validate_request(credential, test)
 
-        if not test and any((credential.username, credential.password)):
-            raise ErrorCode.UNABLE_TO_CREATE_CREDENTIAL.exception_with_parameters()
+        # Prepare request using shared logic
+        endpoint, query_params = CredentialCreate.prepare_request(test)
 
+        # Make API call
         raw_json = self._client._call_api(
-            api=CREATE_CREDENTIALS.format_path_with_params(),
-            query_params={"testCredential": test},
+            api=endpoint,
+            query_params=query_params,
             request_obj=credential,
         )
-        return CredentialResponse(**raw_json)
+
+        # Process response using shared logic
+        return CredentialCreate.process_response(raw_json)
 
     @validate_arguments
     def get(self, guid: str) -> CredentialResponse:
@@ -70,12 +77,14 @@ class CredentialClient:
         :returns: A CredentialResponse instance.
         :raises: AtlanError on any error during API invocation.
         """
-        raw_json = self._client._call_api(
-            GET_CREDENTIAL_BY_GUID.format_path({"credential_guid": guid})
-        )
-        if not isinstance(raw_json, dict):
-            return raw_json
-        return CredentialResponse(**raw_json)
+        # Prepare request using shared logic
+        endpoint = CredentialGet.prepare_request(guid)
+
+        # Make API call
+        raw_json = self._client._call_api(endpoint)
+
+        # Process response using shared logic
+        return CredentialGet.process_response(raw_json)
 
     @validate_arguments
     def get_all(
@@ -95,36 +104,16 @@ class CredentialClient:
         :returns: CredentialListResponse instance.
         :raises: AtlanError on any error during API invocation.
         """
-        params: Dict[str, Any] = {}
-        if filter is not None:
-            params["filter"] = dumps(filter)
-        if limit is not None:
-            params["limit"] = limit
-        if offset is not None:
-            params["offset"] = offset
-
-        if workflow_name is not None:
-            if filter is None:
-                filter = {}
-
-            if workflow_name.startswith("atlan-"):
-                workflow_name = "default-" + workflow_name[len("atlan-") :]
-
-            filter["name"] = f"{workflow_name}-0"
-
-            params["filter"] = dumps(filter)
-
-        raw_json = self._client._call_api(
-            GET_ALL_CREDENTIALS.format_path_with_params(), query_params=params
+        # Prepare request using shared logic
+        endpoint, params = CredentialGetAll.prepare_request(
+            filter, limit, offset, workflow_name
         )
 
-        if not isinstance(raw_json, dict) or "records" not in raw_json:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                "No records found in response",
-                400,
-                "API response did not contain the expected 'records' key",
-            )
-        return CredentialListResponse(records=raw_json.get("records") or [])
+        # Make API call
+        raw_json = self._client._call_api(endpoint, query_params=params)
+
+        # Process response using shared logic
+        return CredentialGetAll.process_response(raw_json)
 
     @validate_arguments
     def purge_by_guid(self, guid: str) -> CredentialResponse:
@@ -136,9 +125,11 @@ class CredentialClient:
         :returns: details of the hard-deleted asset(s)
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(
-            DELETE_CREDENTIALS_BY_GUID.format_path({"credential_guid": guid})
-        )
+        # Prepare request using shared logic
+        endpoint = CredentialPurge.prepare_request(guid)
+
+        # Make API call
+        raw_json = self._client._call_api(endpoint)
 
         return raw_json
 
@@ -153,8 +144,11 @@ class CredentialClient:
         :raises ValidationError: If the provided credential is invalid type.
         :raises AtlanError: On any error during API invocation.
         """
+        # Make API call
         raw_json = self._client._call_api(TEST_CREDENTIAL, request_obj=credential)
-        return CredentialTestResponse(**raw_json)
+
+        # Process response using shared logic
+        return CredentialTest.process_response(raw_json)
 
     @validate_arguments
     def test_and_update(self, credential: Credential) -> CredentialResponse:
@@ -171,15 +165,17 @@ class CredentialClient:
         does not have an ID.
         :raises AtlanError: on any error during API invocation.
         """
+        # Test credential first
         test_response = self.test(credential=credential)
-        if not test_response.is_successful:
-            raise ErrorCode.INVALID_CREDENTIALS.exception_with_parameters(
-                test_response.message
-            )
-        if not credential.id:
-            raise ErrorCode.MISSING_TOKEN_ID.exception_with_parameters()
-        raw_json = self._client._call_api(
-            UPDATE_CREDENTIAL_BY_GUID.format_path({"credential_guid": credential.id}),
-            request_obj=credential,
-        )
-        return CredentialResponse(**raw_json)
+
+        # Validate test response using shared logic
+        CredentialTestAndUpdate.validate_test_response(test_response, credential)
+
+        # Prepare update request using shared logic
+        endpoint = CredentialTestAndUpdate.prepare_request(credential)
+
+        # Make API call
+        raw_json = self._client._call_api(endpoint, request_obj=credential)
+
+        # Process response using shared logic
+        return CredentialTestAndUpdate.process_response(raw_json)

@@ -5,6 +5,7 @@ from __future__ import annotations
 from threading import Lock
 from typing import TYPE_CHECKING, Dict, Optional
 
+from pyatlan.cache.common import EnumCacheCommon
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import EnumDef
@@ -42,25 +43,26 @@ class EnumCache:
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
         with self.lock:
+            # Make API call directly
             response = self.client.typedef.get(type_category=AtlanTypeCategory.ENUM)
             if not response or not response.enum_defs:
                 raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
-            self.cache_by_name = {}
-            if response is not None:
-                for enum in response.enum_defs:
-                    type_name = enum.name
-                    self.cache_by_name[type_name] = enum
+
+            # Process response using shared logic
+            self.cache_by_name = EnumCacheCommon.refresh_cache_data(response)
 
     def _get_by_name(self, name: str) -> Optional[EnumDef]:
         """
-        Retrieve the enumeration definition by its name.
+        Retrieve the enumeration definition by its name, with potential cache refresh.
 
         :param name: human-readable name of the enumeration
-        :returns: the enumeration definition
+        :returns: enumeration definition or None if not found
         """
-        if name:
-            if enum_def := self.cache_by_name.get(name):
-                return enum_def
+        if not self.cache_by_name:
             self.refresh_cache()
-            return self.cache_by_name.get(name)
-        return None
+
+        enum_def = self.cache_by_name.get(name)
+        if not enum_def:
+            self.refresh_cache()
+            enum_def = self.cache_by_name.get(name)
+        return enum_def
