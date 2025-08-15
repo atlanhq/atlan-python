@@ -34,6 +34,8 @@ async def client_connection(
     :param read_timeout: read timeout for the new client
     :param retry: retry configuration for the new client
     """
+    from pyatlan.client.aio.client import AsyncAtlanClient
+
     tmp_client = AsyncAtlanClient(
         base_url=base_url or client.base_url,
         api_key=api_key or client.api_key,

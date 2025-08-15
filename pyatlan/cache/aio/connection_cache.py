@@ -103,7 +103,7 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             if candidate and isinstance(candidate, Connection):
-                self.cache(candidate)
+                await self.cache(candidate)
 
     async def lookup_by_qualified_name(self, connection_qn: str) -> None:
         if not connection_qn:
@@ -118,7 +118,7 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             if candidate and isinstance(candidate, Connection):
-                self.cache(candidate)
+                await self.cache(candidate)
 
     async def lookup_by_name(self, name: ConnectionName) -> None:
         if not isinstance(name, ConnectionName):
@@ -138,7 +138,7 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
                     ),
                     name,
                 )
-            self.cache(results[0])
+            await self.cache(results[0])
 
     def get_name(self, asset: Asset):
         if not isinstance(asset, Connection):

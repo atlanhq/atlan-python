@@ -241,6 +241,99 @@ class CompoundQuery:
         )
 
     @staticmethod
+    async def tagged_with_value_async(
+        client: "AsyncAtlanClient",
+        atlan_tag_name: str,
+        value: str,
+        directly: bool = False,
+        source_tag_qualified_name: Optional[str] = None,
+    ) -> Query:
+        """
+        Async version of tagged_with_value that returns a query matching assets
+        with a specific value for the specified tag (for source-synced tags).
+
+        :param client: async connectivity to an Atlan tenant
+        :param atlan_tag_name: human-readable name of the Atlan tag
+        :param value: tag should have to match the query
+        :param directly: when `True`, the asset must have the tag and
+        value directly assigned (otherwise even propagated tags with the value will suffice)
+        :param source_tag_qualified_name: (optional) qualified name of
+        the source tag to match (when there are multiple)
+        :raises: AtlanError on any error communicating
+        with the API to refresh the Atlan tag cache
+        :returns: a query that will only match assets that have
+        a particular value assigned for the given Atlan tag
+        """
+        big_spans = []
+        little_spans = []
+        tag_id = await client.atlan_tag_cache.get_id_for_name(atlan_tag_name) or ""
+        synced_tags = [
+            tag
+            async for tag in (
+                await FluentSearch()
+                .select()
+                .where(Tag.MAPPED_CLASSIFICATION_NAME.eq(tag_id))
+                .aexecute(client=client)
+            )
+        ]
+        if len(synced_tags) > 1 and source_tag_qualified_name is None:
+            synced_tag_qn = synced_tags[0].qualified_name or ""
+            LOGGER.warning(
+                "Multiple mapped source-synced tags found for tag %s -- using only the first: %s. "
+                "You can specify the `source_tag_qualified_name` so we can match to the specific one.",
+                atlan_tag_name,
+                synced_tag_qn,
+            )
+        elif synced_tags:
+            synced_tag_qn = (
+                source_tag_qualified_name or synced_tags[0].qualified_name or ""
+            )
+        else:
+            synced_tag_qn = "NON_EXISTENT"
+
+        # Contruct little spans
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentValue")
+        )
+        for token in value.split(" "):
+            little_spans.append(
+                SpanTerm(field="__classificationsText.text", value=token)
+            )
+        little_spans.append(
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey")
+        )
+
+        # Contruct big spans
+        big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
+        big_spans.append(
+            SpanTerm(field="__classificationsText.text", value=synced_tag_qn)
+        )
+
+        # Contruct final span query
+        span = SpanWithin(
+            little=SpanNear(clauses=little_spans, slop=0, in_order=True),
+            big=SpanNear(clauses=big_spans, slop=10000000, in_order=True),
+        )
+
+        # Without atlan tag propagation
+        if directly:
+            return (
+                FluentSearch()
+                .where(Referenceable.ATLAN_TAGS.eq(tag_id))
+                .where(span)
+                .to_query()
+            )
+        # With atlan tag propagation
+        return (
+            FluentSearch()
+            .where_some(Referenceable.ATLAN_TAGS.eq(tag_id))
+            .where_some(Referenceable.PROPAGATED_ATLAN_TAGS.eq(tag_id))
+            .min_somes(1)
+            .where(span)
+            .to_query()
+        )
+
+    @staticmethod
     def assigned_term(qualified_names: Optional[List[str]] = None) -> Query:
         """
         Returns a query that will only match assets that have at least one term assigned.

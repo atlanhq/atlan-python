@@ -668,6 +668,7 @@ class AtlanClient(BaseSettings):
         LOGGER.debug("Call         : %s %s", api.method, path)
         LOGGER.debug("Content-type_ : %s", api.consumes)
         LOGGER.debug("Accept       : %s", api.produces)
+        LOGGER.debug("Client-Type  : %s", "SYNC")
         LOGGER.debug("Python-Version: %s", get_python_version())
         LOGGER.debug("User-Agent   : %s", f"Atlan-PythonSDK/{VERSION}")
 

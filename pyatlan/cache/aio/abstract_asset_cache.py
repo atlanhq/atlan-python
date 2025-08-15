@@ -74,13 +74,17 @@ class AsyncAbstractAssetCache(ABC):
         """
         return name in self.name_to_guid
 
-    def cache(self, asset: Asset):
+    async def cache(self, asset: Asset):
         """
         Add an entry to the cache.
 
         :param asset: to be cached
         """
-        name = asset and self.get_name(asset)
+        name_result = asset and self.get_name(asset)
+        if asyncio.iscoroutine(name_result):
+            name = await name_result
+        else:
+            name = name_result
         if not all([name, asset.guid, asset.qualified_name]):
             return
         self.name_to_guid[name] = asset.guid  # type: ignore[index]

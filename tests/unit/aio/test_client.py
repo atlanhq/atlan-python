@@ -2236,20 +2236,18 @@ async def test_async_user_client_methods_validation_error(client, method, params
         "With unescape curly braces -> {'{}'}",
     ],
 )
-@patch.object(AsyncAtlanClient, "_get_async_session")
+@patch.object(AsyncAtlanClient, "_async_session")
 @pytest.mark.asyncio
 async def test_atlan_call_api_server_error_messages(
-    mock_get_session,
+    mock_session,
     client: AsyncAtlanClient,
     test_error_msg,
 ):
     mock_response = Mock()
     mock_response.status_code = 500
     mock_response.text = test_error_msg
-    mock_session = Mock()
     mock_session.headers = {}  # Mock headers as empty dict
     mock_session.request = AsyncMock(return_value=mock_response)
-    mock_get_session.return_value = mock_session
     glossary = AtlasGlossary.creator(name="test-glossary")
 
     with pytest.raises(
@@ -2284,10 +2282,10 @@ async def test_atlan_call_api_server_error_messages(
     """
     ],
 )
-@patch.object(AsyncAtlanClient, "_get_async_session")
+@patch.object(AsyncAtlanClient, "_async_session")
 @pytest.mark.asyncio
 async def test_atlan_call_api_server_error_messages_with_causes(
-    mock_get_session,
+    mock_session,
     client: AsyncAtlanClient,
     test_error_msg,
 ):
@@ -2304,10 +2302,8 @@ async def test_atlan_call_api_server_error_messages_with_causes(
         mock_response = Mock()
         mock_response.status_code = code
         mock_response.text = test_error_msg
-        mock_session = Mock()
         mock_session.headers = {}  # Mock headers as empty dict
         mock_session.request = AsyncMock(return_value=mock_response)
-        mock_get_session.return_value = mock_session
         test_error = loads(test_error_msg)
         error_code = test_error.get("errorCode")
         error_message = test_error.get("errorMessage")
@@ -2793,7 +2789,7 @@ async def test_atlan_client_headers(client: AsyncAtlanClient):
             "x-atlan-client-type": "async",
         }
     )
-    assert expected == client._get_async_session().headers
+    assert expected == client._async_session.headers
 
 
 @pytest.mark.asyncio

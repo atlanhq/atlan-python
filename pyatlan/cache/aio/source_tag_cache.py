@@ -5,6 +5,9 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Union
 
+from pyatlan.cache.abstract_asset_cache import (
+    AbstractAssetName,  # Import base class for AsyncSourceTagName
+)
 from pyatlan.cache.aio.abstract_asset_cache import AsyncAbstractAssetCache
 from pyatlan.cache.connection_cache import ConnectionName  # Reuse sync ConnectionName
 from pyatlan.errors import AtlanError
@@ -83,7 +86,7 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
         :raises InvalidRequestError: if no name was provided for the source tag to retrieve
         """
         if isinstance(name, str):
-            name = AsyncSourceTagName(self.client, name)
+            name = await AsyncSourceTagName.creator(self.client, name)
         return await self._get_by_name(name, allow_refresh)
 
     async def lookup_by_guid(self, guid: str) -> None:
@@ -95,14 +98,14 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.GUID.eq(guid))
-                .execute(self.client)
+                .aexecute(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,
             # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
             # preventing Dbt tags from being excluded from caching:
             if candidate and isinstance(candidate, Asset):
-                self.cache(candidate)
+                await self.cache(candidate)
 
     async def lookup_by_qualified_name(self, source_tag_qn: str) -> None:
         if not source_tag_qn:
@@ -113,14 +116,14 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.QUALIFIED_NAME.eq(source_tag_qn))
-                .execute(self.client)
+                .aexecute(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,
             # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
             # preventing Dbt tags from being excluded from caching:
             if candidate and isinstance(candidate, Asset):
-                self.cache(candidate)
+                await self.cache(candidate)
 
     async def lookup_by_name(self, stn: AsyncSourceTagName) -> None:
         if not isinstance(stn, AsyncSourceTagName):
@@ -138,23 +141,25 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.QUALIFIED_NAME.eq(source_tag_qn))
-                .execute(self.client)
+                .aexecute(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,
             # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
             # preventing Dbt tags from being excluded from caching:
             if candidate and isinstance(candidate, Asset):
-                self.cache(candidate)
+                await self.cache(candidate)
 
-    def get_name(self, asset: Asset):
+    async def get_name(self, asset: Asset):
         # NOTE: Checking if the first result is an "Asset" since in pyatlan,
         # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
         # preventing Dbt tags from being excluded from caching:
         if not isinstance(asset, Asset):
             return
         try:
-            source_tag_name = str(AsyncSourceTagName(client=self.client, tag=asset))
+            source_tag_name = str(
+                await AsyncSourceTagName.creator(client=self.client, tag=asset)
+            )
         except AtlanError as e:
             LOGGER.error(
                 "Unable to construct a source tag name for: %s", asset.qualified_name
@@ -164,7 +169,7 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
         return source_tag_name
 
 
-class AsyncSourceTagName:
+class AsyncSourceTagName(AbstractAssetName):
     """
     Async unique identity for a source tag,
     in the form: {{connectorType}}/{{connectorName}}@@DB/SCHEMA/TAG_NAME
@@ -175,10 +180,26 @@ class AsyncSourceTagName:
     _TYPE_NAME = "SourceTagAttachment"
     _CONNECTION_DELIMITER = "@@"
 
-    def __init__(self, client: AsyncAtlanClient, tag: Union[str, Asset]):
+    def __init__(self):
+        """
+        Private constructor - use creator() class method for proper initialization.
+        """
         self.connection = None
         self.partial_tag_name = None
-        self.client = client
+
+    @classmethod
+    async def creator(
+        cls, client: AsyncAtlanClient, tag: Union[str, Asset]
+    ) -> "AsyncSourceTagName":
+        """
+        Async creator method for AsyncSourceTagName.
+        This is the exact async equivalent of the sync SourceTagName.__init__() logic.
+
+        :param client: async Atlan client
+        :param tag: either a string name or Asset object
+        :returns: properly initialized AsyncSourceTagName instance
+        """
+        instance = cls()
 
         # NOTE: Checking if the first result is an "Asset" since in pyatlan,
         # "DbtTag" extends "Dbt" (unlike other tags like "SnowflakeTag" that extend the "Tag" model),
@@ -187,29 +208,17 @@ class AsyncSourceTagName:
             source_tag_qn = tag.qualified_name or ""
             tokens = source_tag_qn.split("/")
             connection_qn = "/".join(tokens[:3]) if len(tokens) >= 3 else ""
-            # Note: This will need to be made async in actual usage
-            # For now, this is a simplified version - in practice you'd need to await the connection lookup
-            # conn = await client.connection_cache.get_by_qualified_name(connection_qn)
-            # For the constructor, we'll store the qualified name and resolve it lazily
-            self._connection_qn = connection_qn
-            self.partial_tag_name = (
-                source_tag_qn[len(connection_qn) + 1 :] if connection_qn else ""
-            )  # noqa
+            conn = await client.connection_cache.get_by_qualified_name(connection_qn)
+            instance.connection = ConnectionName(conn)
+            instance.partial_tag_name = source_tag_qn[len(connection_qn) + 1 :]  # noqa
 
         elif isinstance(tag, str):
-            tokens = tag.split(self._CONNECTION_DELIMITER)
+            tokens = tag.split(cls._CONNECTION_DELIMITER)
             if len(tokens) == 2:
-                self.connection = ConnectionName(tokens[0])
-                self.partial_tag_name = tokens[1]
+                instance.connection = ConnectionName(tokens[0])
+                instance.partial_tag_name = tokens[1]
 
-    async def get_connection(self):
-        """Async method to resolve connection when needed"""
-        if self.connection is None and hasattr(self, "_connection_qn"):
-            conn = await self.client.connection_cache.get_by_qualified_name(
-                self._connection_qn
-            )
-            self.connection = ConnectionName(conn)
-        return self.connection
+        return instance
 
     def __str__(self):
         return f"{self.connection}{self._CONNECTION_DELIMITER}{self.partial_tag_name}"

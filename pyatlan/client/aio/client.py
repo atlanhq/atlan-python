@@ -121,6 +121,23 @@ class AsyncAtlanClient(AtlanClient):
         # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
 
+        # Create async session immediately like sync client - no lazy loading
+        from httpx_retries import RetryTransport as AsyncRetryTransport
+
+        self._async_session = httpx.AsyncClient(
+            transport=AsyncRetryTransport(retry=self.retry),
+            headers={
+                "authorization": f"Bearer {self.api_key}",
+                "x-atlan-agent": "sdk",
+                "x-atlan-agent-id": "python",
+                "x-atlan-client-origin": "product_sdk",
+                "x-atlan-python-version": get_python_version(),
+                "x-atlan-client-type": "async",
+                "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+            },
+            base_url=str(self.base_url),
+        )
+
     @property
     def admin(self) -> AsyncAdminClient:
         """Get async admin client with same API as sync"""
@@ -312,34 +329,14 @@ class AsyncAtlanClient(AtlanClient):
             self._async_user_cache = AsyncUserCache(client=self)
         return self._async_user_cache
 
-    def _get_async_session(self) -> httpx.AsyncClient:
-        """Get or create async HTTP session - exactly like sync version but with AsyncClient"""
-        if self._async_session is None:
-            # Import here to avoid circular imports
-            from httpx_retries import RetryTransport as AsyncRetryTransport
-
-            self._async_session = httpx.AsyncClient(
-                transport=AsyncRetryTransport(retry=self.retry),
-                timeout=httpx.Timeout(30.0),
-                headers={
-                    "authorization": f"Bearer {self.api_key}",
-                    "x-atlan-agent": "sdk",
-                    "x-atlan-agent-id": "python",
-                    "x-atlan-client-origin": "product_sdk",
-                    "x-atlan-python-version": get_python_version(),
-                    "x-atlan-client-type": "async",
-                    "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-                },
-                base_url=str(self.base_url),
-            )
-        return self._async_session
-
     def _api_logger(self, api, path):
         """API logging helper - same as sync client."""
         LOGGER.debug("------------------------------------------------------")
         LOGGER.debug("Call         : %s %s", api.method, path)
         LOGGER.debug("Content-type_ : %s", api.consumes)
         LOGGER.debug("Accept       : %s", api.produces)
+        LOGGER.debug("Client-Type  : %s", "ASYNC")
+        LOGGER.debug("Python-Version: %s", get_python_version())
         LOGGER.debug("User-Agent   : %s", f"Atlan-PythonSDK/{VERSION}")
 
     async def _create_params(
@@ -397,7 +394,7 @@ class AsyncAtlanClient(AtlanClient):
         """
         Comprehensive async API call implementation matching sync client's error handling.
         """
-        session = self._get_async_session()
+        session = self._async_session
 
         # Make the async HTTP request
         response = await self._make_http_request(session, api, path, params)
@@ -439,13 +436,16 @@ class AsyncAtlanClient(AtlanClient):
             if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
                 return await self._call_event_stream_api(session, api, path, params)
             else:
-                # Standard API call
+                # Standard API call - create timeout per-request like sync client
+                timeout = httpx.Timeout(
+                    None, connect=self.connect_timeout, read=self.read_timeout
+                )
                 response = await session.request(
                     api.method.value,
                     path,
                     **{k: v for k, v in params.items() if k != "headers"},
                     headers={**session.headers, **params.get("headers", {})},
-                    timeout=httpx.Timeout(self.read_timeout),
+                    timeout=timeout,
                 )
                 LOGGER.debug("HTTP Status: %s", response.status_code)
                 return response
@@ -723,7 +723,7 @@ class AsyncAtlanClient(AtlanClient):
     async def _presigned_url_file_download(self, api, file_path: str):
         """Async version of presigned URL file download"""
         path = self._create_path(api)
-        session = self._get_async_session()
+        session = self._async_session
         # For presigned URLs, we make direct HTTP calls (not through Atlan)
         async with session.stream(
             "GET", path, timeout=httpx.Timeout(self.read_timeout)

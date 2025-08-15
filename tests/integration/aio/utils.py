@@ -4,14 +4,17 @@
 """Async utilities for integration tests."""
 
 import logging
+import math
 from typing import Optional, Type
+
+from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
 
 from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.model.aio import AsyncIndexSearchResults
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.assets import Asset, AtlasGlossary, Connection, Database
 from pyatlan.model.enums import AtlanConnectorType, AtlanDeleteType, CertificateStatus
-from pyatlan.model.search import IndexSearchRequest
+from pyatlan.model.search import DSL, IndexSearchRequest
 
 LOGGER = logging.getLogger(__name__)
 
@@ -266,7 +269,6 @@ async def async_search_with_retry(
     :param expected_count: expected count to reach
     :returns: AsyncIndexSearchResults with the expected count
     """
-    from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
 
     @retry(
         reraise=True,
@@ -280,3 +282,42 @@ async def async_search_with_retry(
         return await client.asset.search(criteria=request)
 
     return await _retry_search()
+
+
+async def get_optimized_page_size(
+    client: AsyncAtlanClient,
+    query,
+    post_filter=None,
+    target_api_calls: int = 10,
+    min_size: int = 2,
+    attributes=None,
+):
+    """
+    Utility to get optimized page size for search tests by calculating total count first.
+    This prevents slow tests by avoiding too many small API calls.
+
+    :param client: AsyncAtlanClient instance
+    :param query: Query to use for the search
+    :param post_filter: Optional post filter
+    :param target_api_calls: Target number of API calls (default 10)
+    :param min_size: Minimum page size (default 2)
+    :param attributes: Optional attributes for the request
+    :returns: tuple of (total_assets_count, optimized_page_size)
+    """
+    # Get total count
+    count_dsl = DSL(
+        query=query,
+        post_filter=post_filter,
+        size=0,  # get total count only
+    )
+    count_request = IndexSearchRequest(dsl=count_dsl)
+    if attributes:
+        count_request.attributes = attributes
+
+    count_results = await client.asset.search(criteria=count_request)
+    total_assets = count_results.count
+
+    # Calculate optimal page size
+    optimal_size = max(min_size, math.ceil(total_assets / target_api_calls))
+
+    return total_assets, optimal_size
