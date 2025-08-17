@@ -134,6 +134,15 @@ class AsyncGroupClient:
         response_data = GroupGet.process_response(
             raw_json, self._client, endpoint, request
         )
+
+        # Parse records into AtlanGroup objects if they exist
+        if response_data.get("records"):
+            from pydantic.v1 import parse_obj_as
+
+            response_data["records"] = parse_obj_as(
+                List[AtlanGroup], response_data["records"]
+            )
+
         return AsyncGroupResponse(**response_data)
 
     @validate_arguments

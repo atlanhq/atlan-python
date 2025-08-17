@@ -57,15 +57,33 @@ class CustomMetadataCacheCommon:
 
                         # Check for archived attributes
                         if hasattr(attr_def, "options") and attr_def.options:
-                            archived_id = attr_def.options.get("archivedAttributeId")
+                            # Handle both dictionary and Options object cases
+                            if hasattr(attr_def.options, "get"):
+                                # Dictionary case
+                                archived_id = attr_def.options.get(
+                                    "archivedAttributeId"
+                                )
+                            else:
+                                # Options object case
+                                archived_id = getattr(
+                                    attr_def.options, "archivedAttributeId", None
+                                )
                             if archived_id:
                                 archived_attr_ids[archived_id] = attr_id
 
                         # Process applicable types
                         if hasattr(attr_def, "options") and attr_def.options:
-                            applicable_types_str = attr_def.options.get(
-                                "applicableEntityTypes"
-                            )
+                            # Handle both dictionary and Options object cases
+                            if hasattr(attr_def.options, "get"):
+                                # Dictionary case
+                                applicable_types_str = attr_def.options.get(
+                                    "applicableEntityTypes"
+                                )
+                            else:
+                                # Options object case
+                                applicable_types_str = getattr(
+                                    attr_def.options, "applicableEntityTypes", None
+                                )
                             if applicable_types_str:
                                 try:
                                     import json

@@ -804,11 +804,32 @@ class UpdateAsset:
 
         :param qualified_name: the qualified name of the asset to check
         :param asset_type: the type of asset to check
-        :param get_by_qualified_name_func: function to call for retrieving asset (sync or async)
+        :param get_by_qualified_name_func: function to call for retrieving asset (sync only)
         :raises NotFoundError: if the asset does not exist
         """
         # This will raise NotFoundError if the asset doesn't exist
         get_by_qualified_name_func(
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            min_ext_info=True,
+            ignore_relationships=True,
+        )
+
+    @staticmethod
+    async def validate_asset_exists_async(
+        qualified_name: str, asset_type: Type[A], get_by_qualified_name_func
+    ) -> None:
+        """
+        Async version of validate_asset_exists.
+        This method will raise NotFoundError if the asset doesn't exist.
+
+        :param qualified_name: the qualified name of the asset to check
+        :param asset_type: the type of asset to check
+        :param get_by_qualified_name_func: async function to call for retrieving asset
+        :raises NotFoundError: if the asset does not exist
+        """
+        # This will raise NotFoundError if the asset doesn't exist
+        await get_by_qualified_name_func(
             qualified_name=qualified_name,
             asset_type=asset_type,
             min_ext_info=True,
@@ -1375,6 +1396,27 @@ class RemoveCustomMetadata:
         custom_metadata.clear_all()
         return ManageCustomMetadata.create_custom_metadata_request(custom_metadata)
 
+    @staticmethod
+    async def prepare_request_async(cm_name: str, client):
+        """
+        Async version - prepare request for removing custom metadata.
+
+        :param cm_name: human-readable name of the custom metadata to remove
+        :param client: AsyncAtlanClient instance
+        :returns: AsyncCustomMetadataRequest object
+        """
+        from pyatlan.model.aio.custom_metadata import (
+            AsyncCustomMetadataDict,
+            AsyncCustomMetadataRequest,
+        )
+
+        custom_metadata = await AsyncCustomMetadataDict.creator(
+            client=client, name=cm_name
+        )
+        # Invoke clear_all so all attributes are set to None and consequently removed
+        custom_metadata.clear_all()
+        return await AsyncCustomMetadataRequest.create(custom_metadata)
+
 
 class ManageTerms:
     """Shared business logic for terms management operations."""
@@ -1788,6 +1830,53 @@ class GetHierarchy:
         for category in filter(
             lambda a: isinstance(a, AtlasGlossaryCategory), response
         ):
+            guid = category.guid
+            category_dict[guid] = category
+            if category.parent_category is None:
+                top_categories.add(guid)
+
+        if not top_categories:
+            from pyatlan.errors import ErrorCode
+
+            raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
+                glossary.guid, glossary.qualified_name
+            )
+
+        # Import CategoryHierarchy locally to avoid circular imports
+        from pyatlan.client.asset import CategoryHierarchy
+
+        return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
+
+    @staticmethod
+    async def process_async_search_results(response, glossary):
+        """
+        Async version of process_search_results to handle AsyncIndexSearchResults.
+
+        :param response: async search response containing categories
+        :param glossary: AtlasGlossary for error messages
+        :returns: CategoryHierarchy object
+        """
+        from typing import Set
+
+        top_categories: Set[str] = set()
+        category_dict: Dict[str, AtlasGlossaryCategory] = {}
+
+        # Handle async iteration - check if we have current_page() or need async iteration
+        if hasattr(response, "current_page") and response.current_page():
+            # Use current page if available
+            categories = [
+                asset
+                for asset in response.current_page()
+                if isinstance(asset, AtlasGlossaryCategory)
+            ]
+        else:
+            # Collect from async iterator
+            categories = []
+            async for asset in response:
+                if isinstance(asset, AtlasGlossaryCategory):
+                    categories.append(asset)
+
+        for category in categories:
             guid = category.guid
             category_dict[guid] = category
             if category.parent_category is None:

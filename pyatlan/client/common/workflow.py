@@ -595,7 +595,7 @@ class WorkflowFindLatestRun:
         :param workflow_name: name of the workflow
         :returns: tuple of (endpoint, request_obj)
         """
-        from pyatlan.model.search import Bool, NestedQuery, Sort, SortOrder, Term
+        from pyatlan.model.search import Bool, NestedQuery, SortItem, SortOrder, Term
 
         query = Bool(
             filter=[
@@ -610,7 +610,9 @@ class WorkflowFindLatestRun:
         )
         endpoint, request_obj = WorkflowFindRuns.prepare_request(query, size=1)
         # Add sorting to get the latest run
-        request_obj.sort = [Sort(field="status.startedAt", order=SortOrder.DESCENDING)]
+        request_obj.sort = [
+            SortItem(field="status.startedAt", order=SortOrder.DESCENDING)
+        ]
         return endpoint, request_obj
 
     @staticmethod

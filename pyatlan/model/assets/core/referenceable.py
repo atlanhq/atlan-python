@@ -24,11 +24,11 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.lineage_ref import LineageRef
 
-
 if TYPE_CHECKING:
-    from pyatlan.client.atlan import AtlanClient
     from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.aio import AsyncCustomMetadataProxy
+
 
 class Referenceable(AtlanObject):
     """Description"""
@@ -90,16 +90,31 @@ class Referenceable(AtlanObject):
             )
         self.business_attributes = self._metadata_proxy.business_attributes
 
+    async def flush_custom_metadata_async(self, client):
+        """
+        Async version of flush_custom_metadata for use with AsyncAtlanClient.
+        This properly handles async metadata proxy and sets business_attributes.
+        """
+        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        if not self._async_metadata_proxy:
+            self._async_metadata_proxy = AsyncCustomMetadataProxy(
+                business_attributes=self.business_attributes, client=client
+            )
+        # Get the business attributes asynchronously and set them
+        business_attrs = await self._async_metadata_proxy.business_attributes()
+        self.business_attributes = business_attrs
+
     async def get_custom_metadata_async(self, client: AsyncAtlanClient, name: str):
         """
         Async version of get_custom_metadata.
-        
+
         :param client: async Atlan client to use for the request
         :param name: human-readable name of the custom metadata set to retrieve
         :returns: the requested custom metadata set, or an empty one if none exists
         """
         from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
-        
+
         if not self._async_metadata_proxy:
             self._async_metadata_proxy = AsyncCustomMetadataProxy(
                 business_attributes=self.business_attributes, client=client
@@ -111,31 +126,35 @@ class Referenceable(AtlanObject):
     ):
         """
         Async version of set_custom_metadata.
-        
+
         :param client: async Atlan client to use for the request
         :param custom_metadata: the custom metadata to set on this asset
         """
         from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
-        
+
         if not self._async_metadata_proxy:
             self._async_metadata_proxy = AsyncCustomMetadataProxy(
                 business_attributes=self.business_attributes, client=client
             )
-        return await self._async_metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
+        return await self._async_metadata_proxy.set_custom_metadata(
+            custom_metadata=custom_metadata
+        )
 
     async def flush_custom_metadata_async(self, client: AsyncAtlanClient):
         """
         Async version of flush_custom_metadata.
-        
+
         :param client: async Atlan client to use for the request
         """
         from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
-        
+
         if not self._async_metadata_proxy:
             self._async_metadata_proxy = AsyncCustomMetadataProxy(
                 business_attributes=self.business_attributes, client=client
             )
-        self.business_attributes = await self._async_metadata_proxy.business_attributes()
+        self.business_attributes = (
+            await self._async_metadata_proxy.business_attributes()
+        )
 
     @classmethod
     def __get_validators__(cls):

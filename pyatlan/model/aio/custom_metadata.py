@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class AsyncCustomMetadataDict(UserDict):
     """Async version of CustomMetadataDict for manipulating custom metadata attributes using human-readable names.
-    
+
     Recommended usage:
         # Use the factory method for consistency with sync CustomMetadataDict
         custom_metadata = await AsyncCustomMetadataDict.creator(client=client, name="metadata_set_name")
@@ -53,16 +53,20 @@ class AsyncCustomMetadataDict(UserDict):
         self._names = {
             value
             for key, value in attr_map.items()
-            if not await self._client.custom_metadata_cache.is_attr_archived(attr_id=key)
+            if not await self._client.custom_metadata_cache.is_attr_archived(
+                attr_id=key
+            )
         }
 
     @classmethod
-    async def creator(cls, client: AsyncAtlanClient, name: str) -> "AsyncCustomMetadataDict":
+    async def creator(
+        cls, client: AsyncAtlanClient, name: str
+    ) -> "AsyncCustomMetadataDict":
         """Create and initialize an AsyncCustomMetadataDict instance.
-        
+
         This is the recommended way to create an AsyncCustomMetadataDict as it mirrors
         the sync CustomMetadataDict(client, name) constructor pattern.
-        
+
         :param client: async Atlan client to use for the request
         :param name: human-readable name of the custom metadata set
         :returns: initialized AsyncCustomMetadataDict instance
@@ -142,16 +146,20 @@ class AsyncCustomMetadataProxy:
         """Initialize metadata from business_attributes if needed"""
         if self._business_attributes is None or self._metadata is not None:
             return
-            
+
         self._metadata = {}
         for cm_id, cm_attributes in self._business_attributes.items():
             try:
-                cm_name = await self._client.custom_metadata_cache.get_name_for_id(cm_id)
+                cm_name = await self._client.custom_metadata_cache.get_name_for_id(
+                    cm_id
+                )
                 attribs = AsyncCustomMetadataDict()
                 await attribs.__ainit__(name=cm_name, client=self._client)
                 for attr_id, properties in cm_attributes.items():
-                    attr_name = await self._client.custom_metadata_cache.get_attr_name_for_id(
-                        cm_id, attr_id
+                    attr_name = (
+                        await self._client.custom_metadata_cache.get_attr_name_for_id(
+                            cm_id, attr_id
+                        )
                     )
                     # Only set active custom metadata attributes
                     if not await self._client.custom_metadata_cache.is_attr_archived(
@@ -218,3 +226,63 @@ class AsyncCustomMetadataRequest(AtlanObject):
     @property
     def custom_metadata_set_id(self):
         return self._set_id
+
+
+class AsyncCustomMetadataField:
+    """
+    Async utility class to simplify searching for values on custom metadata attributes.
+    """
+
+    def __init__(self, client, set_name: str, attribute_name: str):
+        self.client = client
+        self.set_name = set_name
+        self.attribute_name = attribute_name
+        self._initialized = False
+        self.field_name = None
+        self.elastic_field_name = None
+        self.attribute_def = None
+
+    async def _ensure_initialized(self):
+        """Lazy initialization of field properties."""
+        if not self._initialized:
+            from pydantic.v1 import StrictStr
+
+            self.field_name = StrictStr(
+                await self.client.custom_metadata_cache.get_attribute_for_search_results(
+                    self.set_name, self.attribute_name
+                )
+            )
+            self.elastic_field_name = StrictStr(
+                await self.client.custom_metadata_cache.get_attr_id_for_name(
+                    set_name=self.set_name, attr_name=self.attribute_name
+                )
+            )
+            self.attribute_def = (
+                await self.client.custom_metadata_cache.get_attribute_def(
+                    self.elastic_field_name
+                )
+            )
+            self._initialized = True
+
+    async def eq(self, value, case_insensitive: bool = False):
+        """
+        Returns a query that will match all assets whose field has a value that exactly equals
+        the provided value.
+        """
+        await self._ensure_initialized()
+        from pyatlan.model.search import Term
+
+        return Term(
+            field=self.elastic_field_name,
+            value=value,
+            case_insensitive=case_insensitive,
+        )
+
+    async def has_any_value(self):
+        """
+        Returns a query that will match all assets that have some (non-null) value for the field.
+        """
+        await self._ensure_initialized()
+        from pyatlan.model.search import Exists
+
+        return Exists(field=self.elastic_field_name)

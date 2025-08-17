@@ -258,6 +258,57 @@ async def async_assert_search_count_with_retry(
     )
 
 
+async def async_fluent_search_count_with_retry(
+    fluent_search, client: AsyncAtlanClient, expected_count: int
+) -> int:
+    """
+    Count FluentSearch results with automatic retry for search index eventual consistency (async version).
+
+    :param fluent_search: FluentSearch instance to count
+    :param client: AsyncAtlanClient instance
+    :param expected_count: expected minimum count to wait for
+    :returns: actual count after retry logic
+    """
+    from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
+
+    @retry(
+        reraise=True,
+        retry=retry_if_result(lambda count: count < expected_count),
+        stop=stop_after_attempt(10),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+    )
+    async def _retry_count():
+        # Replicate the sync count() method logic for async
+        dsl = fluent_search._dsl()
+        dsl.size = 1
+        from pyatlan.model.search import IndexSearchRequest
+
+        request = IndexSearchRequest(dsl=dsl)
+        result = await client.asset.search(request)
+        return result.count
+
+    return await _retry_count()
+
+
+async def async_assert_fluent_search_count_with_retry(
+    fluent_search, client: AsyncAtlanClient, expected_count: int
+) -> None:
+    """
+    Assert FluentSearch count with retry - convenience method for async test assertions.
+
+    :param fluent_search: FluentSearch instance to count
+    :param client: AsyncAtlanClient instance
+    :param expected_count: expected count to assert
+    :raises AssertionError: if count doesn't match after retries
+    """
+    actual_count = await async_fluent_search_count_with_retry(
+        fluent_search, client, expected_count
+    )
+    assert actual_count == expected_count, (
+        f"Expected {expected_count} results, got {actual_count}"
+    )
+
+
 async def async_search_with_retry(
     client: AsyncAtlanClient, request: IndexSearchRequest, expected_count: int
 ) -> AsyncIndexSearchResults:

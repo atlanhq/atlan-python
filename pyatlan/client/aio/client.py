@@ -49,11 +49,13 @@ from pyatlan.client.aio.typedef import AsyncTypeDefClient
 from pyatlan.client.aio.user import AsyncUserClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
 from pyatlan.client.atlan import VERSION, AtlanClient, get_python_version
-from pyatlan.client.constants import EVENT_STREAM
+from pyatlan.client.constants import EVENT_STREAM, UPLOAD_IMAGE
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
+from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import APPLICATION_ENCODED_FORM
 
 LOGGER = logging.getLogger(__name__)
@@ -397,10 +399,16 @@ class AsyncAtlanClient(AtlanClient):
         session = self._async_session
 
         # Make the async HTTP request
-        response = await self._make_http_request(session, api, path, params)
+        response = await self._make_http_request(
+            session, api, path, params, download_file_path, binary_data
+        )
 
-        if response is None:
-            return None
+        if not response:
+            return
+
+        # If response is a string and file download was handled, return it directly
+        if isinstance(response, str) and download_file_path:
+            return response
 
         # Reset 401 retry flag if response is not 401 (matching sync logic)
         if (
@@ -429,29 +437,71 @@ class AsyncAtlanClient(AtlanClient):
                 text_response,
             )
 
-    async def _make_http_request(self, session, api, path, params):
-        """Make the actual HTTP request."""
+    async def _make_http_request(
+        self, session, api, path, params, download_file_path=None, binary_data=None
+    ):
+        """Make HTTP request - matches sync client structure exactly."""
         try:
-            # Handle EVENT_STREAM APIs differently
+            timeout = httpx.Timeout(
+                None, connect=self.connect_timeout, read=self.read_timeout
+            )
             if api.consumes == EVENT_STREAM and api.produces == EVENT_STREAM:
-                return await self._call_event_stream_api(session, api, path, params)
+                async with session.stream(
+                    api.method.value, path, **params, timeout=timeout
+                ) as stream_response:
+                    if download_file_path:
+                        return await self._handle_file_download(
+                            stream_response, download_file_path
+                        )
+                    return await self._create_stream_response(
+                        stream_response, api.expected_status
+                    )
             else:
-                # Standard API call - create timeout per-request like sync client
-                timeout = httpx.Timeout(
-                    None, connect=self.connect_timeout, read=self.read_timeout
-                )
-                response = await session.request(
-                    api.method.value,
-                    path,
+                # Prepare request kwargs - add data only if we have binary content
+                request_kwargs = {
+                    "method": api.method.value,
+                    "url": path,
                     **{k: v for k, v in params.items() if k != "headers"},
-                    headers={**session.headers, **params.get("headers", {})},
-                    timeout=timeout,
-                )
-                LOGGER.debug("HTTP Status: %s", response.status_code)
-                return response
+                    "headers": {**session.headers, **params.get("headers", {})},
+                    "timeout": timeout,
+                }
+
+                # Add binary data if present
+                if binary_data is not None:
+                    file_content = None
+                    # Read file content if it's a file object for async compatibility
+                    if hasattr(binary_data, "read"):
+                        file_content = binary_data.read()
+                        binary_data.close()
+                    request_kwargs["data"] = file_content
+
+                response = await session.request(**request_kwargs)
+
+            LOGGER.debug("HTTP Status: %s", response.status_code)
+            return response
+
         except Exception as e:
             LOGGER.error("HTTP request failed: %s", e)
             raise
+
+    async def _create_stream_response(self, stream_response, expected_status):
+        """Create mock response object for event streams."""
+        content = await stream_response.aread()
+        text = content.decode("utf-8") if content else ""
+        lines = (
+            text.splitlines()
+            if text and stream_response.status_code == expected_status
+            else []
+        )
+
+        return SimpleNamespace(
+            status_code=stream_response.status_code,
+            headers=stream_response.headers,
+            text=text,
+            content=content,
+            _stream_lines=lines,
+            json=lambda: json.loads(text) if text else {},
+        )
 
     async def _process_successful_response(self, response, api, text_response=False):
         """Process successful API responses."""
@@ -648,42 +698,18 @@ class AsyncAtlanClient(AtlanClient):
             text_response=text_response,
         )
 
-    async def _call_event_stream_api(self, session, api, path, params):
-        """
-        Handle EVENT_STREAM APIs with async streaming.
-
-        :param session: async HTTP session
-        :param api: API definition with EVENT_STREAM consumes/produces
-        :param path: API path
-        :param params: request parameters
-        :returns: list of parsed events from the stream
-        """
-        async with session.stream(
-            api.method.value,
-            path,
-            **{k: v for k, v in params.items() if k != "headers"},
-            headers={**session.headers, **params.get("headers", {})},
-            timeout=httpx.Timeout(self.read_timeout),
-        ) as response:
-            response.raise_for_status()
-
-            # Read stream content and parse event lines
-            content = await response.aread()
-            text = content.decode("utf-8") if content else ""
-            lines = text.splitlines() if text else []
-
-            # Process event stream lines (similar to sync client)
-            events = []
-            for line in lines:
-                if not line:
-                    continue
-                if not line.startswith("data: "):
-                    raise ErrorCode.UNABLE_TO_DESERIALIZE.exception_with_parameters(
-                        line
-                    )
-                events.append(json.loads(line.split("data: ")[1]))
-
-            return events
+    async def _handle_file_download(self, response, file_path: str) -> str:
+        """Handle file download from async streaming response (matches sync _handle_file_download)."""
+        try:
+            with open(file_path, "wb") as download_file:
+                async for chunk in response.aiter_bytes(chunk_size=8192):
+                    if chunk:
+                        download_file.write(chunk)
+        except Exception as err:
+            raise ErrorCode.UNABLE_TO_DOWNLOAD_FILE.exception_with_parameters(
+                str((hasattr(err, "strerror") and err.strerror) or err), file_path
+            )
+        return file_path
 
     def _create_path(self, api):
         """Create URL path from API object (same as sync client)"""
@@ -695,51 +721,70 @@ class AsyncAtlanClient(AtlanClient):
             return urljoin(urljoin(self.base_url, api.endpoint.prefix), api.path)
 
     async def _s3_presigned_url_file_upload(self, api, upload_file):
-        """Async version of S3 presigned URL file upload"""
+        """Async version of S3 presigned URL file upload (matches sync exactly)"""
         path = self._create_path(api)
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
+        self._async_session.headers.pop("authorization", None)
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _azure_blob_presigned_url_file_upload(self, api, upload_file):
-        """Async version of Azure Blob presigned URL file upload"""
+        """Async version of Azure Blob presigned URL file upload (matches sync exactly)"""
         path = self._create_path(api)
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
+        self._async_session.headers.pop("authorization", None)
         # Add mandatory headers for azure blob storage
         params["headers"]["x-ms-blob-type"] = "BlockBlob"
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _gcs_presigned_url_file_upload(self, api, upload_file):
-        """Async version of GCS presigned URL file upload"""
+        """Async version of GCS presigned URL file upload (matches sync exactly)"""
         path = self._create_path(api)
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
+        self._async_session.headers.pop("authorization", None)
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _presigned_url_file_download(self, api, file_path: str):
-        """Async version of presigned URL file download"""
+        """Async version of presigned URL file download (matches sync exactly)"""
         path = self._create_path(api)
-        session = self._async_session
-        # For presigned URLs, we make direct HTTP calls (not through Atlan)
-        async with session.stream(
-            "GET", path, timeout=httpx.Timeout(self.read_timeout)
-        ) as response:
-            response.raise_for_status()
+        params = copy.deepcopy(self._request_params)
+        # No need of Atlan's API token here
+        params["headers"].pop("authorization", None)
+        self._async_session.headers.pop("authorization", None)
+        return await self._call_api_internal(
+            api, path, params, download_file_path=file_path
+        )
 
-            # Handle file download async
-            try:
-                with open(file_path, "wb") as download_file:
-                    async for chunk in response.aiter_bytes():
-                        download_file.write(chunk)
-            except Exception as err:
-                raise ErrorCode.UNABLE_TO_DOWNLOAD_FILE.exception_with_parameters(
-                    str((hasattr(err, "strerror") and err.strerror) or err), file_path
-                )
-            return file_path
+    async def upload_image(self, file, filename):
+        """
+        Upload an image to Atlan (async version).
+
+        :param file: local file to upload
+        :param filename: name of the file to be uploaded
+        :returns: details of the uploaded image
+        :raises AtlanError: on any API communication issue
+        """
+        raw_json = await self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
+        return AtlanImage(**raw_json)
+
+    async def _upload_file(self, api, file=None, filename=None):
+        """Async version of _upload_file (matches sync exactly)"""
+        generator = MultipartDataGenerator()
+        generator.add_file(file=file, filename=filename)
+        post_data = generator.get_post_data()
+        api.produces = f"multipart/form-data; boundary={generator.boundary}"
+        path = self._create_path(api)
+        params = await self._create_params(
+            api, query_params=None, request_obj=None, exclude_unset=True
+        )
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            self._api_logger(api, path)
+        return await self._call_api_internal(api, path, params, binary_data=post_data)
 
     async def aclose(self):
         """Close async resources"""

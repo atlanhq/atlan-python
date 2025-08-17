@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Dict, List, Set
+from typing import TYPE_CHECKING, Dict, List, Optional, Set
 
 from pyatlan.cache.common import CustomMetadataCacheCommon
 from pyatlan.errors import ErrorCode
@@ -62,7 +62,7 @@ class AsyncCustomMetadataCache:
         """
         return await self._get_name_for_id(idstr=idstr)
 
-    async def get_attr_id_for_name(self, cm_name: str, attr_name: str) -> str:
+    async def get_attr_id_for_name(self, set_name: str, attr_name: str) -> str:
         """
         Translate the provided human-readable names to the Atlan-internal ID string for the attribute.
 
@@ -72,7 +72,7 @@ class AsyncCustomMetadataCache:
         :raises InvalidRequestError: if no name was provided for the custom metadata set or attribute
         :raises NotFoundError: if the custom metadata set or attribute cannot be found
         """
-        return await self._get_attr_id_for_name(cm_name=cm_name, attr_name=attr_name)
+        return await self._get_attr_id_for_name(cm_name=set_name, attr_name=attr_name)
 
     async def get_attribute_def(self, attr_id: str) -> AttributeDef:
         """
@@ -84,6 +84,17 @@ class AsyncCustomMetadataCache:
         :raises NotFoundError: if the attribute cannot be found
         """
         return await self._get_attribute_def(attr_id=attr_id)
+
+    async def get_custom_metadata_def(self, name: str) -> CustomMetadataDef:
+        """
+        Retrieve the full custom metadata structure definition.
+
+        :param name: human-readable name of the custom metadata set
+        :returns: the full custom metadata structure definition for that set
+        :raises InvalidRequestError: if no name was provided
+        :raises NotFoundError: if the custom metadata cannot be found
+        """
+        return await self._get_custom_metadata_def(name=name)
 
     async def get_all_custom_attributes(
         self, include_deleted: bool = False, force_refresh: bool = False
@@ -103,6 +114,83 @@ class AsyncCustomMetadataCache:
         return await self._get_all_custom_attributes(
             include_deleted=include_deleted, force_refresh=force_refresh
         )
+
+    async def get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
+        """
+        Retrieve the full set of custom attributes to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve attribute names
+        :returns: a list of the attribute names, strictly useful for inclusion in search results
+        """
+        return await self._get_attributes_for_search_results(set_name=set_name)
+
+    async def get_attribute_for_search_results(
+        self, set_name: str, attr_name: str
+    ) -> Optional[str]:
+        """
+        Retrieve a single custom attribute name to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve the custom metadata
+                         attribute name
+        :param attr_name: human-readable name of the attribute
+        :returns: the attribute name, strictly useful for inclusion in search results
+        """
+        return await self._get_attribute_for_search_results(set_name=set_name, attr_name=attr_name)
+
+    async def is_attr_archived(self, attr_id: str) -> bool:
+        """
+        Determine if an attribute is archived
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: True if the attribute has been archived
+        """
+        return await self._is_attr_archived(attr_id=attr_id)
+
+    async def _get_attributes_for_search_results_(self, set_id: str) -> Optional[List[str]]:
+        """Helper method to get attributes for search results by set ID."""
+        if sub_map := self.map_attr_name_to_id.get(set_id):
+            attr_ids = sub_map.values()
+            return [f"{set_id}.{idstr}" for idstr in attr_ids]
+        return None
+
+    async def _get_attribute_for_search_results_(
+        self, set_id: str, attr_name: str
+    ) -> Optional[str]:
+        """Helper method to get single attribute for search results by set ID and attribute name."""
+        if sub_map := self.map_attr_name_to_id.get(set_id):
+            return sub_map.get(attr_name, None)
+        return None
+
+    async def _get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
+        """
+        Retrieve the full set of custom attributes to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve attribute names
+        :returns: a list of the attribute names, strictly useful for inclusion in search results
+        """
+        if set_id := await self._get_id_for_name(set_name):
+            if dot_names := await self._get_attributes_for_search_results_(set_id):
+                return dot_names
+            await self._refresh_cache()
+            return await self._get_attributes_for_search_results_(set_id)
+        return None
+
+    async def _get_attribute_for_search_results(
+        self, set_name: str, attr_name: str
+    ) -> Optional[str]:
+        """
+        Retrieve a single custom attribute name to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve the custom metadata
+                         attribute name
+        :param attr_name: human-readable name of the attribute
+        :returns: the attribute name, strictly useful for inclusion in search results
+        """
+        if set_id := await self._get_id_for_name(set_name):
+            if attr_id := await self._get_attribute_for_search_results_(set_id, attr_name):
+                return attr_id
+            await self._refresh_cache()
+            return await self._get_attribute_for_search_results_(set_id, attr_name)
+        return None
 
     async def _refresh_cache(self) -> None:
         """
@@ -152,6 +240,21 @@ class AsyncCustomMetadataCache:
         if cm_id := self.map_name_to_id.get(name):
             return cm_id
         raise ErrorCode.CM_NOT_FOUND_BY_NAME.exception_with_parameters(name)
+
+    async def _get_custom_metadata_def(self, name: str) -> CustomMetadataDef:
+        """
+        Retrieve the full custom metadata structure definition.
+
+        :param name: human-readable name of the custom metadata set
+        :returns: the full custom metadata structure definition for that set
+        :raises InvalidRequestError: if no name was provided
+        :raises NotFoundError: if the custom metadata cannot be found
+        """
+        ba_id = await self._get_id_for_name(name)
+        if typedef := self.cache_by_id.get(ba_id):
+            return typedef
+        else:
+            raise ErrorCode.CM_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     async def _get_name_for_id(self, idstr: str) -> str:
         """
@@ -252,18 +355,26 @@ class AsyncCustomMetadataCache:
         if force_refresh or not self.cache_by_id:
             await self._refresh_cache()
 
-        ret_map: Dict[str, List[AttributeDef]] = {}
+        result = {}
         for cm_id, cm_def in self.cache_by_id.items():
-            cm_name = self.map_id_to_name.get(cm_id)
-            if cm_name:
-                ret_map[cm_name] = []
-                if cm_def.attribute_defs:
-                    for attr_def in cm_def.attribute_defs:
-                        attr_id = attr_def.name
-                        if include_deleted or attr_id not in self.archived_attr_ids:
-                            ret_map[cm_name].append(attr_def)
+            cm_name = await self._get_name_for_id(cm_id)
+            if not cm_name:
+                continue
+            attribute_defs = cm_def.attribute_defs
+            if include_deleted:
+                to_include = attribute_defs
+            else:
+                to_include = []
+                if attribute_defs:
+                    # Use exact same logic as sync: check attr.options and attr.options.is_archived
+                    to_include.extend(
+                        attr
+                        for attr in attribute_defs
+                        if not attr.options or not attr.options.is_archived
+                    )
+            result[cm_name] = to_include
 
-        return ret_map
+        return result
 
     async def get_attr_name_for_id(self, set_id: str, attr_id: str) -> str:
         """
@@ -336,3 +447,34 @@ class AsyncCustomMetadataCache:
         if not self.cache_by_id:
             await self._refresh_cache()
         return attr_id in self.archived_attr_ids
+
+    async def get_all_custom_attributes(self, include_deleted: bool = False) -> Dict[str, List[AttributeDef]]:
+        """
+        Retrieve all custom metadata and their attributes.
+
+        :param include_deleted: whether to include archived (deleted) attributes (true) or only active attributes (false)
+        :returns: map from custom metadata name to its list of attributes
+        """
+        if not self.cache_by_id:
+            await self._refresh_cache()
+
+        result = {}
+        for cm_id, cm_def in self.cache_by_id.items():
+            cm_name = await self._get_name_for_id(cm_id)
+            if not cm_name:
+                continue
+            attribute_defs = cm_def.attribute_defs
+            if include_deleted:
+                to_include = attribute_defs
+            else:
+                to_include = []
+                if attribute_defs:
+                    # Use exact same logic as sync: check attr.options and attr.options.is_archived
+                    to_include.extend(
+                        attr
+                        for attr in attribute_defs
+                        if not attr.options or not attr.options.is_archived
+                    )
+            result[cm_name] = to_include
+
+        return result

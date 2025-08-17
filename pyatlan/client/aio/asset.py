@@ -44,7 +44,6 @@ from pyatlan.client.common import (
     RemoveAnnouncement,
     RemoveCertificate,
     RemoveCustomMetadata,
-    ReplaceCustomMetadata,
     RestoreAsset,
     Save,
     Search,
@@ -53,11 +52,11 @@ from pyatlan.client.common import (
     UpdateAsset,
     UpdateAssetByAttribute,
     UpdateCertificate,
-    UpdateCustomMetadataAttributes,
 )
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
+from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataDict
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -69,8 +68,7 @@ from pyatlan.model.assets import (
     Persona,
     Purpose,
 )
-from pyatlan.model.core import Announcement
-from pyatlan.model.custom_metadata import CustomMetadataDict
+from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
     AtlanConnectorType,
     AtlanDeleteType,
@@ -421,8 +419,8 @@ class AsyncAssetClient:
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
 
-        # Create async wrapper for validate_asset_exists
-        await UpdateAsset.validate_asset_exists(
+        # Use async version of validate_asset_exists
+        await UpdateAsset.validate_asset_exists_async(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             get_by_qualified_name_func=self.get_by_qualified_name,
@@ -449,11 +447,25 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
 
-        query_params, request = Save.prepare_request_replacing_cm(
-            entity=entity,
-            replace_atlan_tags=replace_atlan_tags,
-            client=self._client,
-        )
+        # Handle entities as list for consistency
+        entities: List[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+
+        # Flush custom metadata asynchronously for each entity
+        for asset in entities:
+            await asset.flush_custom_metadata_async(self._client)
+            asset.validate_required()
+
+        # Prepare query params and request without calling sync flush again
+        query_params = {
+            "replaceClassifications": replace_atlan_tags,
+            "replaceBusinessAttributes": True,
+            "overwriteBusinessAttributes": True,
+        }
+        request = BulkRequest[Asset](entities=entities)
         raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
         return Save.process_response_replacing_cm(raw_json)
 
@@ -473,7 +485,7 @@ class AsyncAssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-        await UpdateAsset.validate_asset_exists(
+        await UpdateAsset.validate_asset_exists_async(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             get_by_qualified_name_func=self.get_by_qualified_name,
@@ -508,8 +520,8 @@ class AsyncAssetClient:
         # Execute async search
         response = await self.search(request)
 
-        # Process results using shared logic
-        return GetHierarchy.process_search_results(response, glossary)
+        # Process results using async shared logic
+        return await GetHierarchy.process_async_search_results(response, glossary)
 
     async def process_assets(
         self, search: IndexSearchRequestProvider, func: Callable[[Asset], None]
@@ -1172,7 +1184,7 @@ class AsyncAssetClient:
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def update_custom_metadata_attributes(
-        self, guid: str, custom_metadata: CustomMetadataDict
+        self, guid: str, custom_metadata: AsyncCustomMetadataDict
     ):
         """
             ManageCustomMetadata,
@@ -1186,8 +1198,10 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
 
-        # Prepare request using shared logic
-        custom_metadata_request = UpdateCustomMetadataAttributes.prepare_request(
+        # Prepare request using async version
+        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataRequest
+
+        custom_metadata_request = await AsyncCustomMetadataRequest.create(
             custom_metadata
         )
 
@@ -1201,7 +1215,7 @@ class AsyncAssetClient:
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def replace_custom_metadata(
-        self, guid: str, custom_metadata: CustomMetadataDict
+        self, guid: str, custom_metadata: AsyncCustomMetadataDict
     ):
         """
         Async replace specific custom metadata on the asset.
@@ -1211,8 +1225,13 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
 
-        # Prepare request using shared logic (includes clear_unset())
-        custom_metadata_request = ReplaceCustomMetadata.prepare_request(custom_metadata)
+        # Prepare request using async version (includes clear_unset())
+        custom_metadata.clear_unset()
+        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataRequest
+
+        custom_metadata_request = await AsyncCustomMetadataRequest.create(
+            custom_metadata
+        )
 
         # Get API endpoint using shared logic
         endpoint = ManageCustomMetadata.get_api_endpoint(
@@ -1232,8 +1251,8 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         """
 
-        # Prepare request using shared logic (includes clear_all())
-        custom_metadata_request = RemoveCustomMetadata.prepare_request(
+        # Prepare request using shared async logic (includes clear_all())
+        custom_metadata_request = await RemoveCustomMetadata.prepare_request_async(
             cm_name, self._client
         )
 

@@ -225,7 +225,7 @@ class AsyncBatch:
                     max(self._max_size * 2, DSL.__fields__.get("size").default)  # type: ignore[union-attr]
                 ).aexecute(client=self._client)  # type: ignore[arg-type]
 
-                for asset in results:
+                async for asset in results:
                     asset_id = AssetIdentity(
                         type_name=asset.type_name,
                         qualified_name=asset.qualified_name or "",

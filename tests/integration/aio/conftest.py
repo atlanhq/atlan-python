@@ -3,15 +3,22 @@
 
 """Conftest for async integration tests."""
 
-from typing import AsyncGenerator
+import logging
+from typing import AsyncGenerator, Callable, Optional
 
 import pytest_asyncio
 
 from pyatlan.client.aio import AsyncAtlanClient
+from pyatlan.errors import AtlanError
 from pyatlan.model.assets import Connection, Database, Schema, Table
-from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
-from tests.integration.aio.utils import create_connection_async, delete_asset_async
+from pyatlan.model.atlan_image import AtlanImage
+from pyatlan.model.enums import AtlanConnectorType, AtlanTagColor, CertificateStatus
+from pyatlan.model.typedef import AtlanTagDef
+from tests.integration.aio.test_connection import create_connection_async
+from tests.integration.aio.utils import delete_asset_async
 from tests.integration.client import TestId
+
+LOGGER = logging.getLogger(__name__)
 
 # Constants for lineage test fixtures
 MODULE_NAME = TestId.make_unique("aio-lineage")
@@ -89,3 +96,30 @@ async def table(
     tbl = result.assets_created(asset_type=Table)[0]
     yield tbl
     await delete_asset_async(client, guid=tbl.guid, asset_type=Table)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def make_atlan_tag_async(
+    client: AsyncAtlanClient,
+) -> AsyncGenerator[Callable[[str], AtlanTagDef], None]:
+    """Async make_atlan_tag fixture for creating and cleaning up Atlan tags."""
+    created_names = []
+
+    async def _make_atlan_tag_async(
+        name: str,
+        color: AtlanTagColor = AtlanTagColor.GREEN,
+        image: Optional[AtlanImage] = None,
+    ) -> AtlanTagDef:
+        atlan_tag_def = AtlanTagDef.create(name=name, color=color, image=image)
+        r = await client.typedef.create(atlan_tag_def)
+        c = r.atlan_tag_defs[0]
+        created_names.append(c.display_name)
+        return c
+
+    yield _make_atlan_tag_async
+
+    for n in created_names:
+        try:
+            await client.typedef.purge(name=n, typedef_type=AtlanTagDef)
+        except AtlanError as err:
+            LOGGER.error(err)
