@@ -115,7 +115,9 @@ class AsyncCustomMetadataCache:
             include_deleted=include_deleted, force_refresh=force_refresh
         )
 
-    async def get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
+    async def get_attributes_for_search_results(
+        self, set_name: str
+    ) -> Optional[List[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
 
@@ -135,7 +137,9 @@ class AsyncCustomMetadataCache:
         :param attr_name: human-readable name of the attribute
         :returns: the attribute name, strictly useful for inclusion in search results
         """
-        return await self._get_attribute_for_search_results(set_name=set_name, attr_name=attr_name)
+        return await self._get_attribute_for_search_results(
+            set_name=set_name, attr_name=attr_name
+        )
 
     async def is_attr_archived(self, attr_id: str) -> bool:
         """
@@ -145,7 +149,9 @@ class AsyncCustomMetadataCache:
         """
         return await self._is_attr_archived(attr_id=attr_id)
 
-    async def _get_attributes_for_search_results_(self, set_id: str) -> Optional[List[str]]:
+    async def _get_attributes_for_search_results_(
+        self, set_id: str
+    ) -> Optional[List[str]]:
         """Helper method to get attributes for search results by set ID."""
         if sub_map := self.map_attr_name_to_id.get(set_id):
             attr_ids = sub_map.values()
@@ -160,7 +166,9 @@ class AsyncCustomMetadataCache:
             return sub_map.get(attr_name, None)
         return None
 
-    async def _get_attributes_for_search_results(self, set_name: str) -> Optional[List[str]]:
+    async def _get_attributes_for_search_results(
+        self, set_name: str
+    ) -> Optional[List[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
 
@@ -186,7 +194,9 @@ class AsyncCustomMetadataCache:
         :returns: the attribute name, strictly useful for inclusion in search results
         """
         if set_id := await self._get_id_for_name(set_name):
-            if attr_id := await self._get_attribute_for_search_results_(set_id, attr_name):
+            if attr_id := await self._get_attribute_for_search_results_(
+                set_id, attr_name
+            ):
                 return attr_id
             await self._refresh_cache()
             return await self._get_attribute_for_search_results_(set_id, attr_name)
@@ -388,14 +398,7 @@ class AsyncCustomMetadataCache:
         """
         return await self._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
 
-    async def is_attr_archived(self, attr_id: str) -> bool:
-        """
-        Indicates whether the provided attribute has been archived (deleted) (true) or not (false).
 
-        :param attr_id: Atlan-internal ID string for the attribute
-        :returns: true if the attribute has been archived, otherwise false
-        """
-        return await self._is_attr_archived(attr_id=attr_id)
 
     async def get_attr_map_for_id(self, set_id: str) -> Dict[str, str]:
         """
@@ -447,34 +450,3 @@ class AsyncCustomMetadataCache:
         if not self.cache_by_id:
             await self._refresh_cache()
         return attr_id in self.archived_attr_ids
-
-    async def get_all_custom_attributes(self, include_deleted: bool = False) -> Dict[str, List[AttributeDef]]:
-        """
-        Retrieve all custom metadata and their attributes.
-
-        :param include_deleted: whether to include archived (deleted) attributes (true) or only active attributes (false)
-        :returns: map from custom metadata name to its list of attributes
-        """
-        if not self.cache_by_id:
-            await self._refresh_cache()
-
-        result = {}
-        for cm_id, cm_def in self.cache_by_id.items():
-            cm_name = await self._get_name_for_id(cm_id)
-            if not cm_name:
-                continue
-            attribute_defs = cm_def.attribute_defs
-            if include_deleted:
-                to_include = attribute_defs
-            else:
-                to_include = []
-                if attribute_defs:
-                    # Use exact same logic as sync: check attr.options and attr.options.is_archived
-                    to_include.extend(
-                        attr
-                        for attr in attribute_defs
-                        if not attr.options or not attr.options.is_archived
-                    )
-            result[cm_name] = to_include
-
-        return result

@@ -18,6 +18,7 @@ from .core.asset import Asset
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan.client.aio.client import AsyncAtlanClient
 
 
 class Badge(Asset, type_name="Badge"):
@@ -37,6 +38,28 @@ class Badge(Asset, type_name="Badge"):
         return cls(
             status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
+                client=client,
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            ),
+        )
+
+    @classmethod
+    @init_guid
+    async def creator_async(
+        cls,
+        *,
+        client: AsyncAtlanClient,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: List[BadgeCondition],
+    ) -> Badge:
+        return cls(
+            status=EntityStatus.ACTIVE,
+            attributes=await Badge.Attributes.create_async(
                 client=client,
                 name=name,
                 cm_name=cm_name,
@@ -150,6 +173,32 @@ class Badge(Asset, type_name="Badge"):
             )
             cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
             cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
+                set_name=cm_name, attr_name=cm_attribute
+            )
+            return Badge.Attributes(
+                name=name,
+                qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
+                badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
+                badge_conditions=badge_conditions,
+            )
+
+        @classmethod
+        @init_guid
+        async def create_async(
+            cls,
+            *,
+            client: AsyncAtlanClient,
+            name: StrictStr,
+            cm_name: str,
+            cm_attribute: str,
+            badge_conditions: List[BadgeCondition],
+        ) -> Badge.Attributes:
+            validate_required_fields(
+                ["client", "name", "cm_name", "cm_attribute", "badge_conditions"],
+                [client, name, cm_name, cm_attribute, badge_conditions],
+            )
+            cm_id = await client.custom_metadata_cache.get_id_for_name(cm_name)
+            cm_attr_id = await client.custom_metadata_cache.get_attr_id_for_name(
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(

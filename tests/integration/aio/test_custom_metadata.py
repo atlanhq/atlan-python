@@ -1447,7 +1447,7 @@ async def test_add_badge_cm_dq(
     client: AsyncAtlanClient,
     cm_dq: CustomMetadataDef,
 ):
-    badge = Badge.create(
+    badge = await Badge.creator_async(
         client=client,
         name=CM_ATTR_QUALITY_COUNT,
         cm_name=CM_QUALITY,

@@ -60,7 +60,7 @@ from pyatlan.model.user import AtlanUser, UserRequest
 from pyatlan.utils import get_python_version
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
-    TEST_ASSET_CLIENT_METHODS,
+    TEST_ASSET_CLIENT_METHODS_ASYNC,
     TEST_AUDIT_CLIENT_METHODS,
     TEST_GROUP_CLIENT_METHODS,
     TEST_ROLE_CLIENT_METHODS,
@@ -2136,7 +2136,7 @@ async def test_asset_client_missing_glossary_guid_raises_invalid_request_error(
             await asset_client_method(**test_kwargs, asset_type=asset_type)
 
 
-@pytest.mark.parametrize("method, params", TEST_ASSET_CLIENT_METHODS.items())
+@pytest.mark.parametrize("method, params", TEST_ASSET_CLIENT_METHODS_ASYNC.items())
 @pytest.mark.asyncio
 async def test_asset_client_methods_validation_error(client, method, params):
     client_method = getattr(client.asset, method)

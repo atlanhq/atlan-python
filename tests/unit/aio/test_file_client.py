@@ -104,7 +104,7 @@ def mock_session():
                     raise StopAsyncIteration
 
         # Set aiter_bytes directly to return the async iterator instance
-        def mock_aiter_bytes():
+        def mock_aiter_bytes(chunk_size=8192):
             return AsyncBytesIterator(b"test data 12345.\n")
 
         mock_response.aiter_bytes = mock_aiter_bytes
@@ -141,7 +141,7 @@ def mock_session_invalid():
                 # Simulate the error that would happen in real scenario
                 raise AttributeError("'str' object has no attribute 'read'")
 
-        def mock_bad_aiter_bytes():
+        def mock_bad_aiter_bytes(chunk_size=8192):
             return BadAsyncIterator()
 
         mock_response.aiter_bytes = mock_bad_aiter_bytes

@@ -143,8 +143,11 @@ class AsyncTypeDefClient:
         :raises NotFoundError: if the typedef you are trying to delete cannot be found
         :raises AtlanError: on any API communication issue
         """
-        endpoint, request_obj = TypeDefPurge.prepare_request(
+        # Use async variants from TypeDefPurge
+        endpoint, request_obj = await TypeDefPurge.prepare_request_async(
             name, typedef_type, self._client
         )
         await self._client._call_api(endpoint, request_obj)
-        TypeDefPurge.refresh_caches(typedef_type, self._client)
+        await TypeDefPurge.refresh_caches_async(typedef_type, self._client)
+
+

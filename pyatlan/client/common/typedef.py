@@ -276,3 +276,53 @@ class TypeDefPurge:
             client.enum_cache.refresh_cache()
         elif typedef_type == AtlanTagDef:
             client.atlan_tag_cache.refresh_cache()
+
+    @staticmethod
+    async def prepare_request_async(name: str, typedef_type: type, client) -> tuple:
+        """
+        Async version of prepare_request that properly awaits cache calls.
+        
+        :param name: internal hashed-string name of the type definition
+        :param typedef_type: type of the type definition that is being deleted
+        :param client: AsyncAtlanClient instance
+        :returns: tuple of (endpoint, request_obj)
+        :raises InvalidRequestError: if the typedef you are trying to delete is not one of the allowed types
+        :raises NotFoundError: if the typedef you are trying to delete cannot be found
+        """
+        from pyatlan.client.common.typedef import DELETE_TYPE_DEF_BY_NAME
+        from pyatlan.model.typedef import AtlanTagDef, CustomMetadataDef, EnumDef
+        from pyatlan.errors import ErrorCode
+
+        if typedef_type == CustomMetadataDef:
+            internal_name = await client.custom_metadata_cache.get_id_for_name(name)
+        elif typedef_type == EnumDef:
+            internal_name = name
+        elif typedef_type == AtlanTagDef:
+            internal_name = str(await client.atlan_tag_cache.get_id_for_name(name))
+        else:
+            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
+                typedef_type
+            )
+
+        if internal_name:
+            endpoint = DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
+            return endpoint, None
+        else:
+            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
+
+    @staticmethod
+    async def refresh_caches_async(typedef_type: type, client) -> None:
+        """
+        Async version of refresh_caches that properly awaits cache calls.
+        
+        :param typedef_type: type of the type definition that was deleted
+        :param client: AsyncAtlanClient instance
+        """
+        from pyatlan.model.typedef import AtlanTagDef, CustomMetadataDef, EnumDef
+
+        if typedef_type == CustomMetadataDef:
+            await client.custom_metadata_cache.refresh_cache()
+        elif typedef_type == EnumDef:
+            await client.enum_cache.refresh_cache()
+        elif typedef_type == AtlanTagDef:
+            await client.atlan_tag_cache.refresh_cache()
