@@ -18,13 +18,15 @@ class ImpersonateUser:
     """Shared logic for user impersonation operations."""
 
     @staticmethod
-    def get_client_info() -> ClientInfo:
-        """Get client info from environment variables."""
-        client_id = os.getenv("CLIENT_ID")
-        client_secret = os.getenv("CLIENT_SECRET")
-        if not client_id or not client_secret:
+    def get_client_info(
+        client_id: Optional[str] = None, client_secret: Optional[str] = None
+    ) -> ClientInfo:
+        """Get client info from user provided client_id and client_secret or environment variables."""
+        final_client_id = client_id or os.getenv("CLIENT_ID")
+        final_client_secret = client_secret or os.getenv("CLIENT_SECRET")
+        if not final_client_id or not final_client_secret:
             raise ErrorCode.MISSING_CREDENTIALS.exception_with_parameters()
-        return ClientInfo(client_id=client_id, client_secret=client_secret)
+        return ClientInfo(client_id=final_client_id, client_secret=final_client_secret)
 
     @staticmethod
     def prepare_request(client_info: ClientInfo) -> Tuple[str, Dict[str, str]]:

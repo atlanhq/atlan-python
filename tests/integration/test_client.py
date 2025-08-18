@@ -1645,7 +1645,12 @@ def test_client_init_from_token_guid(
     # Ensure it's a valid API token
     assert token and token.username and token.guid
     assert "service-account" in token.username
-    token_client = AtlanClient.from_token_guid(guid=token.guid)
+    token_client_from_env_vars = AtlanClient.from_token_guid(guid=token.guid)
+    token_client_custom = AtlanClient.from_token_guid(
+        guid=token.guid,
+        client_id=argo_fake_token.client_id,
+        client_secret=argo_client_secret,
+    )
 
     # Should be able to perform all operations
     # with this client as long as it has the necessary permissions
@@ -1654,7 +1659,16 @@ def test_client_init_from_token_guid(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .execute(client=token_client)
+        .execute(client=token_client_from_env_vars)
+    )
+    assert results and results.count >= 1
+
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=token_client_custom)
     )
     assert results and results.count >= 1
 
