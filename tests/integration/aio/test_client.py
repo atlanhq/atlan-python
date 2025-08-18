@@ -8,6 +8,7 @@ import pytest_asyncio
 from pydantic.v1 import StrictStr
 
 from pyatlan.client.aio.client import AsyncAtlanClient
+from pyatlan.client.atlan import DEFAULT_RETRY
 from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
 from pyatlan.client.common.search_log import (
@@ -15,7 +16,7 @@ from pyatlan.client.common.search_log import (
     SearchLogRequest,
     SearchLogViewResults,
 )
-from pyatlan.errors import NotFoundError
+from pyatlan.errors import AuthenticationError, InvalidRequestError, NotFoundError
 from pyatlan.model.aio.audit import AsyncAuditSearchResults
 from pyatlan.model.aio.search_log import AsyncSearchLogResults
 from pyatlan.model.api_tokens import ApiToken
@@ -31,7 +32,7 @@ from pyatlan.model.assets import (
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, SortOrder, UTMTags
-from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -1432,113 +1433,137 @@ async def test_search_log_default_sorting(
     assert sort_options[1].field == SL_SORT_BY_QUALIFIED_NAME.field
     assert sort_options[2].field == SL_SORT_BY_TIMESTAMP.field
 
-# TODO: Run these tests on new test environment
-# async def test_client_401_token_refresh(
-#     client: AsyncAtlanClient, expired_token: ApiToken, argo_fake_token: ApiToken, monkeypatch
-# ):
-#     # Use a smaller retry count to speed up test execution
-#     from pyatlan.client.atlan import DEFAULT_RETRY
-#     DEFAULT_RETRY.total = 1
 
-#     # Retrieve required client information before updating the client with invalid API tokens
-#     assert argo_fake_token and argo_fake_token.guid
-#     argo_client_secret = await client.impersonate.get_client_secret(
-#         client_guid=argo_fake_token.guid
-#     )
+async def test_client_401_token_refresh(
+    client: AsyncAtlanClient,
+    expired_token: ApiToken,
+    argo_fake_token: ApiToken,
+    monkeypatch,
+):
+    # Use a smaller retry count to speed up test execution
+    DEFAULT_RETRY.total = 1
 
-#     # Retrieve the user ID associated with the expired token's username
-#     # Since user credentials for API tokens cannot be retrieved directly, use the existing username
-#     expired_token_user_id = await client.impersonate.get_user_id(
-#         username=expired_token.username
-#     )
+    # Retrieve required client information before updating the client with invalid API tokens
+    assert argo_fake_token and argo_fake_token.guid
+    argo_client_secret = await client.impersonate.get_client_secret(
+        client_guid=argo_fake_token.guid
+    )
 
-#     # Initialize the client with an expired/invalid token (results in 401 Unauthorized errors)
-#     assert (
-#         expired_token
-#         and expired_token.attributes
-#         and expired_token.attributes.access_token
-#     )
-#     client = AsyncAtlanClient(
-#         api_key=expired_token.attributes.access_token, retry=DEFAULT_RETRY
-#     )
-#     expired_api_token = expired_token.attributes.access_token
+    # Retrieve the user ID associated with the expired token's username
+    # Since user credentials for API tokens cannot be retrieved directly, use the existing username
+    expired_token_user_id = await client.impersonate.get_user_id(
+        username=expired_token.username
+    )
 
-#     # Case 1: No user_id (default)
-#     # Verify that the client raises an authentication error when no user ID is provided
-#     assert client._user_client is None
-#     with pytest.raises(
-#         AuthenticationError,
-#         match="Server responded with an authentication error 401",
-#     ):
-#         await (FluentSearch().where(CompoundQuery.active_assets()).where(
-#             CompoundQuery.asset_type(AtlasGlossary)
-#         ).page_size(100).execute(client=client))
+    # Initialize the client with an expired/invalid token (results in 401 Unauthorized errors)
+    assert (
+        expired_token
+        and expired_token.attributes
+        and expired_token.attributes.access_token
+    )
+    client = AsyncAtlanClient(
+        api_key=expired_token.attributes.access_token, retry=DEFAULT_RETRY
+    )
+    expired_api_token = expired_token.attributes.access_token
 
-#     # Case 2: Invalid user_id
-#     # Test that providing an invalid user ID results in the same authentication error
-#     client._user_id = "invalid-user-id"
-#     with pytest.raises(
-#         InvalidRequestError,
-#         match="Missing privileged credentials to impersonate users",
-#     ):
-#         await (FluentSearch().where(CompoundQuery.active_assets()).where(
-#             CompoundQuery.asset_type(AtlasGlossary)
-#         ).page_size(100).execute(client=client))
+    # Case 1: No user_id (default)
+    # Verify that the client raises an authentication error when no user ID is provided
+    assert client._user_client is None
+    with pytest.raises(
+        AuthenticationError,
+        match="Server responded with an authentication error 401",
+    ):
+        await (
+            FluentSearch()
+            .where(CompoundQuery.active_assets())
+            .where(CompoundQuery.asset_type(AtlasGlossary))
+            .page_size(100)
+            .execute(client=client)
+        )
 
-#     # Case 3: Valid user_id associated with the expired token
-#     # This should trigger a retry, refresh the token
-#     # and use the new bearer token for subsequent requests
-#     # Set up a fake Argo client ID and client secret for impersonation
-#     monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
-#     monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
+    # Case 2: Invalid user_id
+    # Test that providing an invalid user ID results in the same authentication error
+    client._user_id = "invalid-user-id"
+    with pytest.raises(
+        InvalidRequestError,
+        match="Missing privileged credentials to impersonate users",
+    ):
+        await (
+            FluentSearch()
+            .where(CompoundQuery.active_assets())
+            .where(CompoundQuery.asset_type(AtlasGlossary))
+            .page_size(100)
+            .execute(client=client)
+        )
 
-#     # Configure the client with the user ID
-#     # of the expired token to ensure token refresh is possible
-#     client._user_id = expired_token_user_id
+    # Case 3: Valid user_id associated with the expired token
+    # This should trigger a retry, refresh the token
+    # and use the new bearer token for subsequent requests
+    # Set up a fake Argo client ID and client secret for impersonation
+    monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
+    monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
 
-#     # Verify that the API key is updated after the retry and the request succeeds
-#     results = await (
-#         FluentSearch()
-#         .where(CompoundQuery.active_assets())
-#         .where(CompoundQuery.asset_type(AtlasGlossary))
-#         .page_size(100)
-#         .execute(client=client)
-#     )
+    # Configure the client with the user ID
+    # of the expired token to ensure token refresh is possible
+    client._user_id = expired_token_user_id
 
-#     # Confirm the API key has been updated and results are returned
-#     assert client.api_key != expired_api_token
-#     assert results and results.count >= 1
+    # Verify that the API key is updated after the retry and the request succeeds
+    results = await (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=client)
+    )
+
+    # Confirm the API key has been updated and results are returned
+    assert client.api_key != expired_api_token
+    assert results and results.count >= 1
 
 
-# async def test_client_init_from_token_guid(
-#     client: AsyncAtlanClient, token: ApiToken, argo_fake_token: ApiToken, monkeypatch
-# ):
-#     # In real-world scenarios, these values come from environment variables
-#     # configured at the Argo template level. The SDK uses these values to
-#     # create a temporary client, which allows us to find the `client_id` and `client_secret`
-#     # for the provided API token GUID, later used to initialize a client with its actual access token (API key) <- AsyncAtlanClient.from_token_guid()
-#     assert argo_fake_token and argo_fake_token.guid
-#     argo_client_secret = await client.impersonate.get_client_secret(
-#         client_guid=argo_fake_token.guid
-#     )
-#     monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
-#     monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
+async def test_client_init_from_token_guid(
+    client: AsyncAtlanClient, token: ApiToken, argo_fake_token: ApiToken, monkeypatch
+):
+    # In real-world scenarios, these values come from environment variables
+    # configured at the Argo template level. The SDK uses these values to
+    # create a temporary client, which allows us to find the `client_id` and `client_secret`
+    # for the provided API token GUID, later used to initialize a client with its actual access token (API key) <- AsyncAtlanClient.from_token_guid()
+    assert argo_fake_token and argo_fake_token.guid
+    argo_client_secret = await client.impersonate.get_client_secret(
+        client_guid=argo_fake_token.guid
+    )
+    monkeypatch.setenv("CLIENT_ID", argo_fake_token.client_id)
+    monkeypatch.setenv("CLIENT_SECRET", argo_client_secret)
 
-#     # Ensure it's a valid API token
-#     assert token and token.username and token.guid
-#     assert "service-account" in token.username
-#     token_client = await AsyncAtlanClient.from_token_guid(guid=token.guid)
+    # Ensure it's a valid API token
+    assert token and token.username and token.guid
+    assert "service-account" in token.username
+    token_client_from_env_vars = await AsyncAtlanClient.from_token_guid(guid=token.guid)
+    token_client_custom = await AsyncAtlanClient.from_token_guid(
+        guid=token.guid,
+        client_id=argo_fake_token.client_id,
+        client_secret=argo_client_secret,
+    )
 
-#     # Should be able to perform all operations
-#     # with this client as long as it has the necessary permissions
-#     results = await (
-#         FluentSearch()
-#         .where(CompoundQuery.active_assets())
-#         .where(CompoundQuery.asset_type(AtlasGlossary))
-#         .page_size(100)
-#         .execute(client=token_client)
-#     )
-#     assert results and results.count >= 1
+    # Should be able to perform all operations
+    # with this client as long as it has the necessary permissions
+    results = await (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .aexecute(client=token_client_from_env_vars)
+    )
+    assert results and results.count >= 1
+
+    results = await (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .aexecute(client=token_client_custom)
+    )
+    assert results and results.count >= 1
 
 
 async def test_process_assets_when_no_assets_found(client: AsyncAtlanClient):

@@ -12,6 +12,7 @@ import contextlib
 import copy
 import json
 import logging
+import os
 from http import HTTPStatus
 from types import SimpleNamespace
 from typing import Optional
@@ -49,12 +50,14 @@ from pyatlan.client.aio.typedef import AsyncTypeDefClient
 from pyatlan.client.aio.user import AsyncUserClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
 from pyatlan.client.atlan import VERSION, AtlanClient, get_python_version
-from pyatlan.client.constants import EVENT_STREAM, UPLOAD_IMAGE
+from pyatlan.client.common import ImpersonateUser
+from pyatlan.client.constants import EVENT_STREAM, GET_TOKEN, UPLOAD_IMAGE
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.response import AccessTokenResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import APPLICATION_ENCODED_FORM
 
@@ -138,6 +141,88 @@ class AsyncAtlanClient(AtlanClient):
             },
             base_url=str(self.base_url),
         )
+
+    @classmethod
+    async def from_token_guid(
+        cls,
+        guid: str,
+        base_url: Optional[str] = None,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
+    ) -> AsyncAtlanClient:
+        """
+        Create an AsyncAtlanClient instance using an API token GUID.
+
+        This method performs a multi-step authentication flow:
+        1. Obtains Atlan-Argo (superuser) access token
+        2. Uses Argo token to retrieve the API token's client credentials
+        3. Exchanges those credentials for an access token
+        4. Returns a new AsyncAtlanClient authenticated with the resolved token
+
+        :param guid: API token GUID to resolve
+        :param base_url: Optional base URL for the Atlan service(overrides ATLAN_BASE_URL environment variable)
+        :param client_id: Optional client ID for authentication (overrides CLIENT_ID environment variable)
+        :param client_secret: Optional client secret for authentication (overrides CLIENT_SECRET environment variable)
+        :returns: a new async client instance authenticated with the resolved token
+        :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails
+        """
+        final_base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+
+        # Step 1: Initialize base client and get Atlan-Argo credentials
+        # Note: Using empty api_key as we're bootstrapping authentication
+        client = cls(base_url=final_base_url)
+        # Explicitly set api_key to empty string to avoid
+        # httpx.LocalProtocolError: Illegal header value b'Bearer '
+        client.api_key = ""
+        client_info = ImpersonateUser.get_client_info(
+            client_id=client_id, client_secret=client_secret
+        )
+
+        # Prepare credentials for Atlan-Argo token request
+        argo_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": client_info.client_id,
+            "client_secret": client_info.client_secret,
+            "scope": "openid",
+        }
+
+        # Step 2: Obtain Atlan-Argo (superuser) access token
+        try:
+            raw_json = await client._call_api(GET_TOKEN, request_obj=argo_credentials)
+            argo_token = AccessTokenResponse(**raw_json).access_token
+            temp_argo_client = cls(base_url=final_base_url, api_key=argo_token)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain Atlan-Argo token"
+            ) from atlan_err
+
+        # Step 3: Use Argo client to retrieve API token's credentials
+        # Both endpoints require authentication, hence using the Argo token
+        token_secret = await temp_argo_client.impersonate.get_client_secret(
+            client_guid=guid
+        )
+        token_client_id = (
+            await temp_argo_client.token.get_by_guid(guid=guid)
+        ).client_id  # type: ignore[union-attr]
+
+        # Step 4: Exchange API token credentials for access token
+        token_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": token_client_id,
+            "client_secret": token_secret,
+            "scope": "openid",
+        }
+
+        try:
+            raw_json = await client._call_api(GET_TOKEN, request_obj=token_credentials)
+            token_api_key = AccessTokenResponse(**raw_json).access_token
+
+            # Step 5: Create and return the authenticated client
+            return cls(base_url=final_base_url, api_key=token_api_key)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain access token for API token"
+            ) from atlan_err
 
     @property
     def admin(self) -> AsyncAdminClient:
