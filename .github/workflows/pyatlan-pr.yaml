@@ -1,5 +1,12 @@
 name: Pyatlan Pull Request Build
 
+# This workflow runs both sync and async integration tests intelligently:
+# - Sync integration tests: Always run on every PR
+# - Async integration tests: Only run when:
+#   1. Changes detected in pyatlan/*/aio/ or tests/*/aio/ paths
+#   2. PR has the "run-async-tests" label (manual trigger)
+# This prevents adding 12+ minutes to every PR while ensuring async tests run when needed.
+
 on:
   pull_request:
   workflow_dispatch:
@@ -39,11 +46,42 @@ jobs:
             vulnerability-service: osv
             inputs: .
 
+  check-aio-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      run-async-tests: ${{ steps.check-conditions.outputs.run-async-tests }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for AIO changes or manual trigger
+        id: check-conditions
+        run: |
+          # Check if PR has the run-async-tests label
+          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q "run-async-tests"; then
+            echo "run-async-tests=true" >> $GITHUB_OUTPUT
+            echo "🏷️ Manual trigger: Found 'run-async-tests' label"
+            exit 0
+          fi
+          
+          # Check for changes in AIO-related paths
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E "(pyatlan/.*aio/|tests/.*aio/)"; then
+            echo "run-async-tests=true" >> $GITHUB_OUTPUT
+            echo "🔍 Change detection: Found AIO-related changes:"
+            git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E "(pyatlan/.*aio/|tests/.*aio/)" | head -10
+          else
+            echo "run-async-tests=false" >> $GITHUB_OUTPUT
+            echo "⏭️ No AIO changes detected and no manual trigger label found"
+          fi
+
   qa-checks-and-unit-tests:
     needs: [vulnerability-scan]
     runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.distribute-integration-test-files.outputs.files }}
+      aio-files: ${{ steps.distribute-aio-test-files.outputs.aio-files }}
     strategy:
       matrix:
         # Specify version as a string
@@ -83,6 +121,22 @@ jobs:
           json_files=$(echo "${files[@]}" | jq -R -c 'split(" ")[:-1]')
           echo "files=$json_files" >> $GITHUB_OUTPUT
 
+      - name: Prepare async integration tests distribution
+        id: distribute-aio-test-files
+        run: |
+          # Check if AIO test directory exists and has test files
+          if [ -d "tests/integration/aio" ]; then
+            aio_files=$(find tests/integration/aio -name "test_*.py" -o -name "*_test.py" | tr '\n' ' ')
+            if [ -n "$aio_files" ]; then
+              json_aio_files=$(echo "${aio_files[@]}" | jq -R -c 'split(" ")[:-1]')
+              echo "aio-files=$json_aio_files" >> $GITHUB_OUTPUT
+            else
+              echo "aio-files=[]" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "aio-files=[]" >> $GITHUB_OUTPUT
+          fi
+
   integration-tests:
     needs: [vulnerability-scan, qa-checks-and-unit-tests]
     runs-on: ubuntu-latest
@@ -119,5 +173,47 @@ jobs:
           max_attempts: 3
           timeout_minutes: 10 # Maximum time per test job; otherwise, the job will fail
           # Run the integration test file using `pytest-timer` plugin
+          # to display only the durations of the 10 slowest tests with `pytest-sugar`
+          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
+
+
+  async-integration-tests:
+    needs: [vulnerability-scan, qa-checks-and-unit-tests, check-aio-changes]
+    runs-on: ubuntu-latest
+    # Only run if AIO changes detected or manual trigger
+    if: needs.check-aio-changes.outputs.run-async-tests == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        test_file: ${{fromJson(needs.qa-checks-and-unit-tests.outputs.aio-files)}}
+    concurrency:
+      group: async-${{ matrix.test_file }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          # Specify version as a string
+          # https://github.com/actions/setup-python/issues/160"
+          python-version: "3.9"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run async integration tests
+        env: # Test tenant environment variables
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 15 # Async tests may take longer, increased timeout
+          # Run the async integration test file using `pytest-timer` plugin
           # to display only the durations of the 10 slowest tests with `pytest-sugar`
           command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
