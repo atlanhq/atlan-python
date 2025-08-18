@@ -559,7 +559,7 @@ class AsyncAssetClient:
                 if asset.guid not in guids_processed:
                     guids_processed.add(asset.guid)
                     has_assets_to_process = True
-                    func(asset)
+                    await func(asset)
         return len(guids_processed)
 
     @validate_arguments

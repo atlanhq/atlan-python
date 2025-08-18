@@ -55,7 +55,7 @@ class AsyncOpenLineageClient:
         )  # type: ignore[attr-defined]
 
         # Step 2: Create connection using shared logic
-        connection = OpenLineageCreateConnection.prepare_request(
+        connection = await OpenLineageCreateConnection.prepare_request_async(
             client=self._client,
             name=name,
             connector_type=connector_type,

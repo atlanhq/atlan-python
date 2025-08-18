@@ -63,6 +63,28 @@ class OpenLineageCreateConnection:
         connection.default_credential_guid = credential_id
         return connection
 
+    @staticmethod
+    async def prepare_request_async(
+        client: Any,
+        name: str,
+        connector_type: AtlanConnectorType,
+        credential_id: str,
+        admin_users: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+    ) -> Connection:
+        """Prepare the async connection object for creation."""
+        connection = await Connection.creator_async(
+            client=client,
+            name=name,
+            connector_type=connector_type,
+            admin_users=admin_users,
+            admin_groups=admin_groups,
+            admin_roles=admin_roles,
+        )
+        connection.default_credential_guid = credential_id
+        return connection
+
 
 class OpenLineageSend:
     """Shared logic for sending OpenLineage events."""

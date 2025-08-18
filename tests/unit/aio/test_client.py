@@ -2781,7 +2781,6 @@ async def test_atlan_client_headers(client: AsyncAtlanClient):
             "Accept-Encoding": "gzip, deflate",
             "Accept": "*/*",
             "Connection": "keep-alive",
-            "authorization": f"Bearer {client.api_key}",
             "x-atlan-agent": "sdk",
             "x-atlan-agent-id": "python",
             "x-atlan-python-version": get_python_version(),

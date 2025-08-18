@@ -4,7 +4,7 @@ import pytest_asyncio
 
 from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.model.assets import Connection
-from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
+from pyatlan.model.enums import OpenLineageEventType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.open_lineage.job import OpenLineageJob
 from pyatlan.model.open_lineage.run import OpenLineageRun
@@ -17,18 +17,15 @@ MODULE_NAME = TestId.make_unique("AsyncOpenLineage")
 @pytest_asyncio.fixture(scope="module")
 async def connection(client: AsyncAtlanClient) -> AsyncGenerator[Connection, None]:
     admin_role_guid = str(await client.role_cache.get_id_for_name("$admin"))
-    c = await Connection.creator_async(
-        client=client,
-        name=MODULE_NAME,
-        connector_type=AtlanConnectorType.SNOWFLAKE,
-        admin_roles=[admin_role_guid],
+    assert admin_role_guid
+    response = await client.open_lineage.create_connection(
+        name=MODULE_NAME, admin_roles=[admin_role_guid]
     )
-    response = await client.asset.save(c)
-    connection_created = response.assets_created(asset_type=Connection)
-    assert connection_created
-    c = connection_created[0]
-    yield c
-    await delete_asset_async(client=client, guid=c.guid, asset_type=Connection)
+    result = response.assets_created(asset_type=Connection)[0]
+    yield await client.asset.get_by_guid(
+        result.guid, asset_type=Connection, ignore_relationships=False
+    )
+    await delete_asset_async(client=client, guid=result.guid, asset_type=Connection)
 
 
 async def test_open_lineage_integration(

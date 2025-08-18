@@ -552,12 +552,15 @@ class AsyncAtlanClient(AtlanClient):
 
                 # Add binary data if present
                 if binary_data is not None:
-                    file_content = None
-                    # Read file content if it's a file object for async compatibility
+                    # Handle both file objects and bytes data
                     if hasattr(binary_data, "read"):
+                        # It's a file object, read its content
                         file_content = binary_data.read()
                         binary_data.close()
-                    request_kwargs["data"] = file_content
+                        request_kwargs["data"] = file_content
+                    else:
+                        # It's already bytes data (e.g., from MultipartDataGenerator)
+                        request_kwargs["data"] = binary_data
 
                 response = await session.request(**request_kwargs)
 
