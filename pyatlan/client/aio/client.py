@@ -129,7 +129,6 @@ class AsyncAtlanClient(AtlanClient):
         self._async_session = httpx.AsyncClient(
             transport=AsyncRetryTransport(retry=self.retry),
             headers={
-                "authorization": f"Bearer {self.api_key}",
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
                 "x-atlan-client-origin": "product_sdk",
@@ -726,7 +725,6 @@ class AsyncAtlanClient(AtlanClient):
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
-        self._async_session.headers.pop("authorization", None)
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _azure_blob_presigned_url_file_upload(self, api, upload_file):
@@ -735,7 +733,6 @@ class AsyncAtlanClient(AtlanClient):
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
-        self._async_session.headers.pop("authorization", None)
         # Add mandatory headers for azure blob storage
         params["headers"]["x-ms-blob-type"] = "BlockBlob"
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
@@ -746,7 +743,6 @@ class AsyncAtlanClient(AtlanClient):
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
-        self._async_session.headers.pop("authorization", None)
         return await self._call_api_internal(api, path, params, binary_data=upload_file)
 
     async def _presigned_url_file_download(self, api, file_path: str):
@@ -755,7 +751,6 @@ class AsyncAtlanClient(AtlanClient):
         params = copy.deepcopy(self._request_params)
         # No need of Atlan's API token here
         params["headers"].pop("authorization", None)
-        self._async_session.headers.pop("authorization", None)
         return await self._call_api_internal(
             api, path, params, download_file_path=file_path
         )
