@@ -27,7 +27,7 @@ from pyatlan.utils import init_guid, validate_required_fields
 from .core.asset import Asset
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio import AsyncAtlanClient
+    from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
 
 

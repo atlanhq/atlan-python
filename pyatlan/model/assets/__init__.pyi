@@ -62,10 +62,8 @@ __all__ = [
     "DbtSeed",
     "FivetranConnector",
     "Anomalo",
-    "alpha_DQRuleTemplate",
     "MonteCarlo",
     "Metric",
-    "alpha_DQRule",
     "Soda",
     "AIApplication",
     "AIModelVersion",
@@ -156,8 +154,10 @@ __all__ = [
     "SAP",
     "EventStore",
     "NoSQL",
+    "AppWorkflowRun",
     "Insight",
     "ObjectStore",
+    "Notebook",
     "SaaS",
     "MultiDimensionalDataset",
     "Custom",
@@ -204,6 +204,7 @@ __all__ = [
     "S3",
     "ADLS",
     "GCS",
+    "DatabricksNotebook",
     "Dataverse",
     "Cognite",
     "Salesforce",
@@ -305,6 +306,7 @@ __all__ = [
     "MicroStrategyDossier",
     "MicroStrategyFact",
     "MicroStrategyCube",
+    "MicroStrategyColumn",
     "MicroStrategyDocument",
     "MicroStrategyAttribute",
     "MicroStrategyVisualization",
@@ -321,6 +323,7 @@ __all__ = [
     "SupersetDataset",
     "SupersetChart",
     "SupersetDashboard",
+    "QlikColumn",
     "QlikSpace",
     "QlikApp",
     "QlikChart",
@@ -387,6 +390,7 @@ from .anaplan_page import AnaplanPage
 from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace
+from .app_workflow_run import AppWorkflowRun
 from .auth_service import AuthService
 from .azure import Azure
 from .azure_event_hub import AzureEventHub
@@ -443,8 +447,6 @@ from .core.adf_pipeline import AdfPipeline
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
-from .core.alpha__d_q_rule import alpha_DQRule
-from .core.alpha__d_q_rule_template import alpha_DQRuleTemplate
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App
@@ -572,6 +574,7 @@ from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
 from .databricks import Databricks
+from .databricks_notebook import DatabricksNotebook
 from .dataverse import Dataverse
 from .dataverse_attribute import DataverseAttribute
 from .dataverse_entity import DataverseEntity
@@ -618,6 +621,7 @@ from .metabase_dashboard import MetabaseDashboard
 from .metabase_question import MetabaseQuestion
 from .micro_strategy import MicroStrategy
 from .micro_strategy_attribute import MicroStrategyAttribute
+from .micro_strategy_column import MicroStrategyColumn
 from .micro_strategy_cube import MicroStrategyCube
 from .micro_strategy_document import MicroStrategyDocument
 from .micro_strategy_dossier import MicroStrategyDossier
@@ -634,6 +638,7 @@ from .mode_report import ModeReport
 from .mode_workspace import ModeWorkspace
 from .mongo_d_b import MongoDB
 from .multi_dimensional_dataset import MultiDimensionalDataset
+from .notebook import Notebook
 from .object_store import ObjectStore
 from .preset import Preset
 from .preset_chart import PresetChart
@@ -645,6 +650,7 @@ from .purpose import Purpose
 from .qlik import Qlik
 from .qlik_app import QlikApp
 from .qlik_chart import QlikChart
+from .qlik_column import QlikColumn
 from .qlik_dataset import QlikDataset
 from .qlik_sheet import QlikSheet
 from .qlik_space import QlikSpace

@@ -2442,6 +2442,69 @@ class alpha_DQRuleThresholdCompareOperator(str, Enum):
     LESS_THAN = "LT"
 
 
+class alpha_DQDimension(str, Enum):
+    COMPLETENESS = "completeness"
+    TIMELINESS = "timeliness"
+    ACCURACY = "accuracy"
+    CONSISTENCY = "consistency"
+    UNIQUENESS = "uniqueness"
+    VALIDITY = "validity"
+    VOLUME = "volume"
+
+
+class alpha_DQEnvironmentSetupStatus(str, Enum):
+    NOT_STARTED = "NOT_STARTED"
+    IN_PROGRESS = "IN_PROGRESS"
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILED = "FAILED"
+
+
+class alpha_DQResult(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+
+
+class alpha_DQRuleAlertPriority(str, Enum):
+    URGENT = "URGENT"
+    NORMAL = "NORMAL"
+    LOW = "LOW"
+
+
+class alpha_DQRuleStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+
+
+class alpha_DQRuleTemplateMetricValueType(str, Enum):
+    ABSOLUTE = "ABSOLUTE"
+    PERCENTAGE = "PERCENTAGE"
+    TIME = "TIME"
+
+
+class alpha_DQRuleThresholdUnit(str, Enum):
+    PERCENTAGE = "PERCENTAGE"
+    SECONDS = "SECONDS"
+    MINUTES = "MINUTES"
+    HOURS = "HOURS"
+    DAYS = "DAYS"
+    WEEKS = "WEEKS"
+    MONTHS = "MONTHS"
+    YEARS = "YEARS"
+
+
+class alpha_DQScheduleType(str, Enum):
+    ON_DATA_CHANGE = "ON_DATA_CHANGE"
+    CRON = "CRON"
+    NOT_SCHEDULED = "NOT_SCHEDULED"
+
+
+class alpha_DQSourceSyncStatus(str, Enum):
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILURE = "FAILURE"
+    IN_PROGRESS = "IN_PROGRESS"
+    WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************
@@ -2527,6 +2590,7 @@ class AIDatasetType(str, Enum):
     INFERENCE = "INFERENCE"
     VALIDATION = "VALIDATION"
     OUTPUT = "OUTPUT"
+    INPUT = "INPUT"
 
 
 class AIModelStatus(str, Enum):
@@ -2542,6 +2606,16 @@ class APIQueryParamTypeEnum(str, Enum):
 class AdfActivityState(str, Enum):
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
+
+
+class AppWorkflowRunStatus(str, Enum):
+    SKIPPED = "Skipped"
+    PENDING = "Pending"
+    RUNNING = "Running"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    ERROR = "Error"
+    STOPPED = "Stopped"
 
 
 class AtlasGlossaryCategoryType(str, Enum):
@@ -2920,66 +2994,3 @@ class WorkflowType(str, Enum):
     PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
     IMPACT_ANALYSIS = "IMPACT_ANALYSIS"
     REVOKE_DATA_ACCESS = "REVOKE_DATA_ACCESS"
-
-
-class alpha_DQDimension(str, Enum):
-    COMPLETENESS = "completeness"
-    TIMELINESS = "timeliness"
-    ACCURACY = "accuracy"
-    CONSISTENCY = "consistency"
-    UNIQUENESS = "uniqueness"
-    VALIDITY = "validity"
-    VOLUME = "volume"
-
-
-class alpha_DQEnvironmentSetupStatus(str, Enum):
-    NOT_STARTED = "NOT_STARTED"
-    IN_PROGRESS = "IN_PROGRESS"
-    SUCCESSFUL = "SUCCESSFUL"
-    FAILED = "FAILED"
-
-
-class alpha_DQResult(str, Enum):
-    PASS = "PASS"
-    FAIL = "FAIL"
-
-
-class alpha_DQRuleAlertPriority(str, Enum):
-    URGENT = "URGENT"
-    NORMAL = "NORMAL"
-    LOW = "LOW"
-
-
-class alpha_DQRuleStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    SUSPENDED = "SUSPENDED"
-
-
-class alpha_DQRuleTemplateMetricValueType(str, Enum):
-    ABSOLUTE = "ABSOLUTE"
-    PERCENTAGE = "PERCENTAGE"
-    TIME = "TIME"
-
-
-class alpha_DQRuleThresholdUnit(str, Enum):
-    PERCENTAGE = "PERCENTAGE"
-    SECONDS = "SECONDS"
-    MINUTES = "MINUTES"
-    HOURS = "HOURS"
-    DAYS = "DAYS"
-    WEEKS = "WEEKS"
-    MONTHS = "MONTHS"
-    YEARS = "YEARS"
-
-
-class alpha_DQScheduleType(str, Enum):
-    ON_DATA_CHANGE = "ON_DATA_CHANGE"
-    CRON = "CRON"
-    NOT_SCHEDULED = "NOT_SCHEDULED"
-
-
-class alpha_DQSourceSyncStatus(str, Enum):
-    SUCCESSFUL = "SUCCESSFUL"
-    FAILURE = "FAILURE"
-    IN_PROGRESS = "IN_PROGRESS"
-    WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"

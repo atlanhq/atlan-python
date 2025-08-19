@@ -29,14 +29,46 @@ class FlowControlOperation(Flow):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    FLOW_SUCCESSORS: ClassVar[RelationField] = RelationField("flowSuccessors")
+    """
+    TBC
+    """
+    FLOW_PREDECESSORS: ClassVar[RelationField] = RelationField("flowPredecessors")
+    """
+    TBC
+    """
     FLOW_DATA_RESULTS: ClassVar[RelationField] = RelationField("flowDataResults")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "flow_successors",
+        "flow_predecessors",
         "flow_data_results",
     ]
+
+    @property
+    def flow_successors(self) -> Optional[List[FlowControlOperation]]:
+        return None if self.attributes is None else self.attributes.flow_successors
+
+    @flow_successors.setter
+    def flow_successors(self, flow_successors: Optional[List[FlowControlOperation]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_successors = flow_successors
+
+    @property
+    def flow_predecessors(self) -> Optional[List[FlowControlOperation]]:
+        return None if self.attributes is None else self.attributes.flow_predecessors
+
+    @flow_predecessors.setter
+    def flow_predecessors(
+        self, flow_predecessors: Optional[List[FlowControlOperation]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_predecessors = flow_predecessors
 
     @property
     def flow_data_results(self) -> Optional[List[Process]]:
@@ -49,6 +81,12 @@ class FlowControlOperation(Flow):
         self.attributes.flow_data_results = flow_data_results
 
     class Attributes(Flow.Attributes):
+        flow_successors: Optional[List[FlowControlOperation]] = Field(
+            default=None, description=""
+        )  # relationship
+        flow_predecessors: Optional[List[FlowControlOperation]] = Field(
+            default=None, description=""
+        )  # relationship
         flow_data_results: Optional[List[Process]] = Field(
             default=None, description=""
         )  # relationship

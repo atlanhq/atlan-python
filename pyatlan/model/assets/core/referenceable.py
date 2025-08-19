@@ -55,8 +55,14 @@ class Referenceable(AtlanObject):
         return values
 
     def json(self, *args, **kwargs) -> str:
+        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
         if not self._metadata_proxy and kwargs.get("client"):
             self._metadata_proxy = CustomMetadataProxy(
+                client=kwargs.get("client"),  # type: ignore[arg-type]
+                business_attributes=self.business_attributes,
+            )
+            self._async_metadata_proxy = AsyncCustomMetadataProxy(
                 client=kwargs.get("client"),  # type: ignore[arg-type]
                 business_attributes=self.business_attributes,
             )

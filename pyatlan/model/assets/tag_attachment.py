@@ -33,7 +33,7 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         "tagQualifiedName", "tagQualifiedName", "tagQualifiedName.text"
     )
     """
-    Represents associated source tag's qualified name
+    Represents associated source tag's qualified name.
     """
     TAG_ATTACHMENT_STRING_VALUE: ClassVar[KeywordTextField] = KeywordTextField(
         "tagAttachmentStringValue",
@@ -41,7 +41,7 @@ class TagAttachment(Asset, type_name="TagAttachment"):
         "tagAttachmentStringValue.text",
     )
     """
-    Represents associated tag value
+    Represents associated tag value.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

@@ -54,6 +54,10 @@ class QlikChart(Qlik):
     Subtype of this chart, for example: bar, graph, pie, etc.
     """
 
+    QLIK_COLUMNS: ClassVar[RelationField] = RelationField("qlikColumns")
+    """
+    TBC
+    """
     QLIK_SHEET: ClassVar[RelationField] = RelationField("qlikSheet")
     """
     TBC
@@ -64,6 +68,7 @@ class QlikChart(Qlik):
         "qlik_chart_footnote",
         "qlik_chart_orientation",
         "qlik_chart_type",
+        "qlik_columns",
         "qlik_sheet",
     ]
 
@@ -110,6 +115,16 @@ class QlikChart(Qlik):
         self.attributes.qlik_chart_type = qlik_chart_type
 
     @property
+    def qlik_columns(self) -> Optional[List[QlikColumn]]:
+        return None if self.attributes is None else self.attributes.qlik_columns
+
+    @qlik_columns.setter
+    def qlik_columns(self, qlik_columns: Optional[List[QlikColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_columns = qlik_columns
+
+    @property
     def qlik_sheet(self) -> Optional[QlikSheet]:
         return None if self.attributes is None else self.attributes.qlik_sheet
 
@@ -124,6 +139,9 @@ class QlikChart(Qlik):
         qlik_chart_footnote: Optional[str] = Field(default=None, description="")
         qlik_chart_orientation: Optional[str] = Field(default=None, description="")
         qlik_chart_type: Optional[str] = Field(default=None, description="")
+        qlik_columns: Optional[List[QlikColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         qlik_sheet: Optional[QlikSheet] = Field(
             default=None, description=""
         )  # relationship
@@ -138,6 +156,7 @@ class QlikChart(Qlik):
     )
 
 
+from .qlik_column import QlikColumn  # noqa: E402, F401
 from .qlik_sheet import QlikSheet  # noqa: E402, F401
 
 QlikChart.Attributes.update_forward_refs()

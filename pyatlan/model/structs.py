@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 from pydantic.v1 import BaseModel, Extra, Field, root_validator
 
 from pyatlan.model.enums import (
+    AppWorkflowRunStatus,
     AtlanConnectorType,
     BadgeComparisonOperator,
     BadgeConditionColor,
@@ -337,9 +338,9 @@ class SourceTagAttachment(AtlanObject):
     @classmethod
     async def by_name_async(
         cls,
-        client: "AsyncAtlanClient",
-        name: "SourceTagName",
-        source_tag_values: List["SourceTagAttachmentValue"],
+        client: AsyncAtlanClient,
+        name: SourceTagName,
+        source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,
         source_tag_sync_error: Optional[str] = None,
@@ -475,6 +476,28 @@ class AuthPolicyCondition(AtlanObject):
     policy_condition_values: Set[str] = Field(description="")
 
 
+class DbtMetricFilter(AtlanObject):
+    """Description"""
+
+    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+
+
+class AssetHistogram(AtlanObject):
+    """Description"""
+
+    asset_histogram_boundaries: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+    asset_histogram_frequencies: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+
+
 class alpha_DQRuleConfigArguments(AtlanObject):
     """Description"""
 
@@ -498,15 +521,22 @@ class alpha_DQRuleRangeForTesting(AtlanObject):
     )
 
 
-class DbtMetricFilter(AtlanObject):
+class AppWorkflowRunStep(AtlanObject):
     """Description"""
 
-    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+    app_workflow_run_label: Optional[str] = Field(default=None, description="")
+    app_workflow_run_status: Optional[AppWorkflowRunStatus] = Field(
         default=None, description=""
     )
-    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+    app_workflow_run_started_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    app_workflow_run_completed_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    app_workflow_run_outputs: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -615,6 +645,12 @@ SourceTagAttachment.update_forward_refs()
 AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
+
+DbtMetricFilter.update_forward_refs()
+
+AssetHistogram.update_forward_refs()
+
+AppWorkflowRunStep.update_forward_refs()
 
 alpha_DQRuleConfigArguments.update_forward_refs()
 

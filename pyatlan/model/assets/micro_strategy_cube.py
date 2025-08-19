@@ -48,6 +48,12 @@ class MicroStrategyCube(MicroStrategy):
     """
     TBC
     """
+    MICRO_STRATEGY_COLUMNS: ClassVar[RelationField] = RelationField(
+        "microStrategyColumns"
+    )
+    """
+    TBC
+    """
     MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
         "microStrategyProject"
     )
@@ -65,6 +71,7 @@ class MicroStrategyCube(MicroStrategy):
         "micro_strategy_cube_type",
         "micro_strategy_cube_query",
         "micro_strategy_metrics",
+        "micro_strategy_columns",
         "micro_strategy_project",
         "micro_strategy_attributes",
     ]
@@ -112,6 +119,20 @@ class MicroStrategyCube(MicroStrategy):
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
+    def micro_strategy_columns(self) -> Optional[List[MicroStrategyColumn]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_columns
+        )
+
+    @micro_strategy_columns.setter
+    def micro_strategy_columns(
+        self, micro_strategy_columns: Optional[List[MicroStrategyColumn]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_columns = micro_strategy_columns
+
+    @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
         return (
             None if self.attributes is None else self.attributes.micro_strategy_project
@@ -147,6 +168,9 @@ class MicroStrategyCube(MicroStrategy):
         micro_strategy_metrics: Optional[List[MicroStrategyMetric]] = Field(
             default=None, description=""
         )  # relationship
+        micro_strategy_columns: Optional[List[MicroStrategyColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
             default=None, description=""
         )  # relationship
@@ -165,6 +189,7 @@ class MicroStrategyCube(MicroStrategy):
 
 
 from .micro_strategy_attribute import MicroStrategyAttribute  # noqa: E402, F401
+from .micro_strategy_column import MicroStrategyColumn  # noqa: E402, F401
 from .micro_strategy_metric import MicroStrategyMetric  # noqa: E402, F401
 from .micro_strategy_project import MicroStrategyProject  # noqa: E402, F401
 

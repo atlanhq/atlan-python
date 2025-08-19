@@ -47,6 +47,7 @@ You can interact with all of the following different kinds of assets:
     asset/anomalo
     asset/anomalocheck
     asset/app
+    asset/appworkflowrun
     asset/application
     asset/applicationfield
     asset/asset
@@ -124,6 +125,7 @@ You can interact with all of the following different kinds of assets:
     asset/databricks
     asset/databricksaimodelcontext
     asset/databricksaimodelversion
+    asset/databricksnotebook
     asset/databricksunitycatalogtag
     asset/dataverse
     asset/dataverseattribute
@@ -204,6 +206,7 @@ You can interact with all of the following different kinds of assets:
     asset/metric
     asset/microstrategy
     asset/microstrategyattribute
+    asset/microstrategycolumn
     asset/microstrategycube
     asset/microstrategydocument
     asset/microstrategydossier
@@ -232,6 +235,7 @@ You can interact with all of the following different kinds of assets:
     asset/multidimensionaldataset
     asset/namespace
     asset/nosql
+    asset/notebook
     asset/objectstore
     asset/persona
     asset/powerbi
@@ -260,6 +264,7 @@ You can interact with all of the following different kinds of assets:
     asset/qlik
     asset/qlikapp
     asset/qlikchart
+    asset/qlikcolumn
     asset/qlikdataset
     asset/qliksheet
     asset/qlikspace
@@ -366,5 +371,3 @@ You can interact with all of the following different kinds of assets:
     asset/view
     asset/workflow
     asset/workflowrun
-    asset/alpha_dqrule
-    asset/alpha_dqruletemplate
