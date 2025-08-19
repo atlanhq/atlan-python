@@ -43,6 +43,10 @@ if TYPE_CHECKING:
     {% if asset_info.name == 'alpha_DQRule' %}
     from pyatlan.model.assets import Column
     {% endif %}
+    {% if asset_info.name in asset_info._ASSETS_REQUIRE_ASYNC_CLIENT %}
+    from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.model.aio import AsyncCustomMetadataProxy
+    {% endif %}
 {% endif %}
 
 {% if asset_info.name == 'Asset' %}
