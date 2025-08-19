@@ -281,7 +281,7 @@ class TypeDefPurge:
     async def prepare_request_async(name: str, typedef_type: type, client) -> tuple:
         """
         Async version of prepare_request that properly awaits cache calls.
-        
+
         :param name: internal hashed-string name of the type definition
         :param typedef_type: type of the type definition that is being deleted
         :param client: AsyncAtlanClient instance
@@ -290,8 +290,8 @@ class TypeDefPurge:
         :raises NotFoundError: if the typedef you are trying to delete cannot be found
         """
         from pyatlan.client.common.typedef import DELETE_TYPE_DEF_BY_NAME
-        from pyatlan.model.typedef import AtlanTagDef, CustomMetadataDef, EnumDef
         from pyatlan.errors import ErrorCode
+        from pyatlan.model.typedef import AtlanTagDef, CustomMetadataDef, EnumDef
 
         if typedef_type == CustomMetadataDef:
             internal_name = await client.custom_metadata_cache.get_id_for_name(name)
@@ -314,7 +314,7 @@ class TypeDefPurge:
     async def refresh_caches_async(typedef_type: type, client) -> None:
         """
         Async version of refresh_caches that properly awaits cache calls.
-        
+
         :param typedef_type: type of the type definition that was deleted
         :param client: AsyncAtlanClient instance
         """

@@ -19,7 +19,7 @@ from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventReques
 class AsyncAdminClient:
     """
     Async version of AdminClient for retrieving keycloak and admin events. This class does not need to be instantiated
-    directly but can be obtained through the admin property of AsyncAtlanClient.
+    directly but can be obtained through the admin property of the async Atlan client.
     """
 
     def __init__(self, client: AsyncApiCaller):

@@ -16,6 +16,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.enums import AssetCreationHandling
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.test_utils import get_random_connector
 from tests.integration.aio.utils import delete_asset_async
 from tests.integration.client import TestId
@@ -90,7 +91,7 @@ async def schema(
 @pytest_asyncio.fixture(scope="module")
 async def batch_table_create(
     client: AsyncAtlanClient, schema: Schema
-) -> AsyncGenerator[AsyncBatch, None]:
+) -> AsyncGenerator[AssetMutationResponse, None]:
     assert schema and schema.qualified_name
 
     batch = AsyncBatch(
@@ -123,10 +124,11 @@ async def batch_table_create(
 
     # Execute batch
     result = await batch.flush()
+    assert result is not None
     yield result
 
 
-async def test_batch_create(batch_table_create: AsyncBatch, schema: Schema):
+async def test_batch_create(batch_table_create: AssetMutationResponse, schema: Schema):
     response = batch_table_create
 
     # Ensure the response exists
@@ -150,7 +152,7 @@ async def test_batch_create(batch_table_create: AsyncBatch, schema: Schema):
 async def test_batch_update(
     wait_for_consistency,
     client: AsyncAtlanClient,
-    batch_table_create: AsyncBatch,
+    batch_table_create: AssetMutationResponse,
     schema: Schema,
 ):
     create_batch = batch_table_create

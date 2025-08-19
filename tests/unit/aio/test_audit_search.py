@@ -96,7 +96,9 @@ async def test_audit_search_pagination(
     assert audit_search_paging_json["aggregations"] == response.aggregations
     expected_sorts = [SortItem(field="entityId", order=SortOrder.ASCENDING)]
 
-    await _assert_audit_search_results(response, audit_search_paging_json, expected_sorts)
+    await _assert_audit_search_results(
+        response, audit_search_paging_json, expected_sorts
+    )
     assert mock_async_api_caller._call_api.call_count == 3
     assert mock_logger.call_count == 0
     mock_async_api_caller.reset_mock()

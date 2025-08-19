@@ -4,7 +4,7 @@ import contextlib
 import logging
 import os
 import urllib.request
-from typing import AsyncGenerator, Callable, Optional
+from typing import Any, AsyncGenerator, Callable, Coroutine, Optional
 
 import pytest_asyncio
 
@@ -44,7 +44,12 @@ async def wait_for_successful_tagdef_purge_async(name: str, client: AsyncAtlanCl
 @pytest_asyncio.fixture(scope="module")
 async def make_atlan_tag(
     client: AsyncAtlanClient,
-) -> AsyncGenerator[Callable[[str], AtlanTagDef], None]:
+) -> AsyncGenerator[
+    Callable[
+        [str, AtlanTagColor, Optional[AtlanImage]], Coroutine[Any, Any, AtlanTagDef]
+    ],
+    None,
+]:
     created_names = []
 
     async def _make_atlan_tag(

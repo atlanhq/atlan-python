@@ -216,6 +216,7 @@ async def database(client: AsyncAtlanClient) -> AsyncGenerator[Database, None]:
 async def schema_with_db_qn(
     client: AsyncAtlanClient, database: Database
 ) -> AsyncGenerator[Schema, None]:
+    assert database.qualified_name is not None
     s = Schema.creator(
         name=f"{MODULE_NAME}-schema", database_qualified_name=database.qualified_name
     )
@@ -675,6 +676,7 @@ async def test_upsert_when_no_changes(
 
 
 async def test_get_by_qualified_name(client: AsyncAtlanClient, glossary: AtlasGlossary):
+    assert glossary.qualified_name is not None
     glossary = await client.asset.get_by_qualified_name(
         glossary.qualified_name, AtlasGlossary, ignore_relationships=False
     )
@@ -684,6 +686,7 @@ async def test_get_by_qualified_name(client: AsyncAtlanClient, glossary: AtlasGl
 async def test_get_by_qualified_name_when_superclass_specified_raises_not_found_error(
     client: AsyncAtlanClient, glossary: AtlasGlossary
 ):
+    assert glossary.qualified_name is not None
     qualified_name = glossary.qualified_name
     with pytest.raises(
         NotFoundError,
@@ -695,6 +698,7 @@ async def test_get_by_qualified_name_when_superclass_specified_raises_not_found_
 
 
 async def test_add_classification(client: AsyncAtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name is not None
     await client.asset.add_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -750,6 +754,7 @@ async def test_include_atlan_tag_names(
 async def test_update_classification(
     client: AsyncAtlanClient, term1: AtlasGlossaryTerm
 ):
+    assert term1.qualified_name is not None
     await client.asset.update_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -773,6 +778,7 @@ async def test_update_classification(
 async def test_remove_classification(
     client: AsyncAtlanClient, term1: AtlasGlossaryTerm
 ):
+    assert term1.qualified_name is not None
     await client.asset.remove_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -783,6 +789,7 @@ async def test_remove_classification(
 async def test_multiple_add_classification(
     client: AsyncAtlanClient, term1: AtlasGlossaryTerm
 ):
+    assert term1.qualified_name is not None
     await client.asset.add_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -796,6 +803,7 @@ async def test_multiple_add_classification(
 async def test_multiple_update_classification(
     client: AsyncAtlanClient, term1: AtlasGlossaryTerm
 ):
+    assert term1.qualified_name is not None
     await client.asset.update_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -819,6 +827,7 @@ async def test_multiple_update_classification(
 async def test_multiple_remove_classification(
     client: AsyncAtlanClient, term1: AtlasGlossaryTerm
 ):
+    assert term1.qualified_name is not None
     await client.asset.remove_atlan_tags(
         asset_type=AtlasGlossaryTerm,
         qualified_name=term1.qualified_name,
@@ -1478,7 +1487,7 @@ async def test_client_401_token_refresh(
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossary))
             .page_size(100)
-            .execute(client=client)
+            .aexecute(client=client)
         )
 
     # Case 2: Invalid user_id
@@ -1493,7 +1502,7 @@ async def test_client_401_token_refresh(
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossary))
             .page_size(100)
-            .execute(client=client)
+            .aexecute(client=client)
         )
 
     # Case 3: Valid user_id associated with the expired token
@@ -1513,7 +1522,7 @@ async def test_client_401_token_refresh(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .execute(client=client)
+        .aexecute(client=client)
     )
 
     # Confirm the API key has been updated and results are returned

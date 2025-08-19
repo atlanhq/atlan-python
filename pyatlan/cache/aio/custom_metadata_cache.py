@@ -398,8 +398,6 @@ class AsyncCustomMetadataCache:
         """
         return await self._get_attr_name_for_id(set_id=set_id, attr_id=attr_id)
 
-
-
     async def get_attr_map_for_id(self, set_id: str) -> Dict[str, str]:
         """
         Get the attribute map for a custom metadata set ID.

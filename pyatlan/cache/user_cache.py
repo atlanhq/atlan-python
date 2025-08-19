@@ -67,9 +67,10 @@ class UserCache:
             users = self.client.user.get_all()
             if not users:
                 return
-            # Process response using shared logic
+            # Process response using shared logic - extract records from response
+            user_list = users.records or []
             (self.map_id_to_name, self.map_name_to_id, self.map_email_to_id) = (
-                UserCacheCommon.refresh_cache_data(users)
+                UserCacheCommon.refresh_cache_data(user_list)
             )
 
     def _get_id_for_name(self, name: str) -> Optional[str]:

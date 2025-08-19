@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional
 
 from pyatlan.cache.common import EnumCacheCommon
 from pyatlan.errors import ErrorCode
@@ -52,7 +52,7 @@ class AsyncEnumCache:
             # Process response using shared logic
             self.cache_by_name = EnumCacheCommon.refresh_cache_data(response)
 
-    async def _get_by_name(self, name: str) -> EnumDef:
+    async def _get_by_name(self, name: str) -> Optional[EnumDef]:
         """
         Retrieve the enumeration definition by its name, with lazy loading.
 

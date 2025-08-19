@@ -3,7 +3,7 @@
 
 from typing import Any
 
-from pyatlan.client.constants import RUN_QUERY
+from pyatlan.client.constants import API, RUN_QUERY
 from pyatlan.model.query import QueryRequest, QueryResponse
 
 
@@ -11,7 +11,7 @@ class QueryStream:
     """Shared logic for streaming query operations."""
 
     @staticmethod
-    def prepare_request(request: QueryRequest) -> tuple[str, QueryRequest]:
+    def prepare_request(request: QueryRequest) -> tuple[API, QueryRequest]:
         """
         Prepare the request for streaming query execution.
 

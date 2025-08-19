@@ -3,6 +3,7 @@
 from typing import Any
 
 from pyatlan.client.constants import (
+    API,
     PRESIGNED_URL,
     PRESIGNED_URL_DOWNLOAD,
     PRESIGNED_URL_UPLOAD_AZURE_BLOB,
@@ -21,7 +22,7 @@ class FilePresignedUrl:
     @staticmethod
     def prepare_request(
         request: PresignedURLRequest,
-    ) -> tuple[str, PresignedURLRequest]:
+    ) -> tuple[API, PresignedURLRequest]:
         """
         Prepare the API request for generating a presigned URL.
 

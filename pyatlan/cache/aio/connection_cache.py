@@ -99,7 +99,7 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Term.with_super_type_names("Asset"))
                 .where(Connection.GUID.eq(guid))
-                .execute(self.client)
+                .aexecute(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             if candidate and isinstance(candidate, Connection):
@@ -114,7 +114,7 @@ class AsyncConnectionCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Term.with_super_type_names("Asset"))
                 .where(Connection.QUALIFIED_NAME.eq(connection_qn))
-                .execute(self.client)
+                .aexecute(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             if candidate and isinstance(candidate, Connection):

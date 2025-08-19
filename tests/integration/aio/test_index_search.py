@@ -455,13 +455,12 @@ async def test_search_pagination(mock_logger, client: AsyncAtlanClient):
     mock_logger.reset_mock()
 
     # Test search() execute(): with `bulk` option using timestamp-based pagination
-    results = (
+    results = await (
         FluentSearch(where_nots=exclude_sdk_terms)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
         .page_size(size)
     ).aexecute(client, bulk=True)
-    results = await results
     expected_sorts = [
         Asset.CREATE_TIME.order(SortOrder.ASCENDING),
         Asset.GUID.order(SortOrder.ASCENDING),
@@ -796,7 +795,7 @@ async def test_index_search_with_no_aggregation_results(client: AsyncAtlanClient
             Column.QUALIFIED_NAME.startswith("some-non-existent-column-qn")
         )
     ).to_request()
-    response = await client.search(criteria=request)
+    response = await client.asset.search(criteria=request)
 
     assert response
     assert response.count == 0

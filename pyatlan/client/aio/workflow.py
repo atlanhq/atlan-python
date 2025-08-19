@@ -264,14 +264,15 @@ class AsyncWorkflowClient:
             }
         )
 
-    def _handle_workflow_types(self, workflow):
-        # Note: This method calls async methods, so it should be called within async context
+    async def _handle_workflow_types(self, workflow):
+        """Handle different workflow types and return the appropriate workflow object."""
         if isinstance(workflow, WorkflowPackage):
-            # This is a limitation - we can't call async methods from sync methods
-            # The caller should handle this conversion before calling
-            raise NotImplementedError(
-                "WorkflowPackage handling must be done by caller in async context"
-            )
+            if results := await self.find_by_type(workflow):
+                detail = results[0].source
+            else:
+                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
+                    workflow.value
+                )
         elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
         else:
@@ -316,20 +317,7 @@ class AsyncWorkflowClient:
             _type=(WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult),
             value=workflow,
         )
-
-        # Handle WorkflowPackage conversion in async context
-        if isinstance(workflow, WorkflowPackage):
-            results = await self.find_by_type(workflow)
-            if results:
-                detail = results[0].source
-            else:
-                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow.value
-                )
-        elif isinstance(workflow, WorkflowSearchResult):
-            detail = workflow.source
-        else:
-            detail = workflow
+        detail = await self._handle_workflow_types(workflow)
 
         if idempotent and detail and detail.metadata and detail.metadata.name:
             # Introducing a delay before checking the current workflow run
@@ -599,20 +587,7 @@ class AsyncWorkflowClient:
             ),
             value=workflow,
         )
-
-        # Handle WorkflowPackage conversion in async context
-        if isinstance(workflow, WorkflowPackage):
-            results = await self.find_by_type(workflow)
-            if results:
-                workflow_to_update = results[0].source
-            else:
-                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow.value
-                )
-        elif isinstance(workflow, WorkflowSearchResult):
-            workflow_to_update = workflow.source
-        else:
-            workflow_to_update = workflow
+        workflow_to_update = await self._handle_workflow_types(workflow)
 
         self._add_schedule(workflow_to_update, workflow_schedule)
         endpoint, request_obj = WorkflowScheduleUtils.prepare_request(
@@ -663,20 +638,7 @@ class AsyncWorkflowClient:
             ),
             value=workflow,
         )
-
-        # Handle WorkflowPackage conversion in async context
-        if isinstance(workflow, WorkflowPackage):
-            results = await self.find_by_type(workflow)
-            if results:
-                workflow_to_update = results[0].source
-            else:
-                raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
-                    workflow.value
-                )
-        elif isinstance(workflow, WorkflowSearchResult):
-            workflow_to_update = workflow.source
-        else:
-            workflow_to_update = workflow
+        workflow_to_update = await self._handle_workflow_types(workflow)
 
         if workflow_to_update.metadata and workflow_to_update.metadata.annotations:
             workflow_to_update.metadata.annotations.pop(

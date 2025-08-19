@@ -30,11 +30,10 @@ async def delete_group_async(client: AsyncAtlanClient, guid: str) -> None:
     await client.group.purge(guid)
 
 
-async def delete_sso_mapping_async(client: AsyncAtlanClient, group_map_id: str) -> None:
-    response = await client.sso.delete_group_mapping(
+async def delete_sso_mapping_async(client: AsyncAtlanClient, group_map_id: str):
+    await client.sso.delete_group_mapping(
         sso_alias=AtlanSSO.JUMPCLOUD, group_map_id=group_map_id
     )
-    assert response is None
 
 
 @pytest_asyncio.fixture(scope="module")

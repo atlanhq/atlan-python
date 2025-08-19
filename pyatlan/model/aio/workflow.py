@@ -73,12 +73,14 @@ class AsyncWorkflowSearchResponse(AtlanObject):
             request_obj=request,
         )
         if not raw_json.get("hits", {}).get("hits"):
-            self.hits.hits = []
+            if self.hits is not None:
+                self.hits.hits = []
             return False
         try:
-            self.hits.hits = parse_obj_as(
-                List[WorkflowSearchResult], raw_json["hits"]["hits"]
-            )
+            if self.hits is not None:
+                self.hits.hits = parse_obj_as(
+                    List[WorkflowSearchResult], raw_json["hits"]["hits"]
+                )
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
                 raw_json, 200, str(err)

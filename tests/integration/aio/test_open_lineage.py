@@ -66,7 +66,7 @@ async def test_open_lineage_integration(
         od,
         job.create_output(namespace=namespace, asset_name="AN.OTHER.VIEW"),
     ]
-    await start.emit(client=client)
+    await start.emit(client=client)  # type: ignore[func-returns-value]
 
     complete = OpenLineageEvent.creator(
         run=run, event_type=OpenLineageEventType.COMPLETE
@@ -80,4 +80,4 @@ async def test_open_lineage_integration(
         od,
         job.create_output(namespace=namespace, asset_name="AN.OTHER.VIEW"),
     ]
-    await complete.emit(client=client)
+    await complete.emit(client=client)  # type: ignore[func-returns-value]

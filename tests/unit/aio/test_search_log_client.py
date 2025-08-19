@@ -62,7 +62,9 @@ async def _assert_search_log_results(results, response_json, sorts, bulk=False):
 
 @pytest.mark.asyncio
 @patch.object(LOGGER, "debug")
-async def test_search_log_pagination(mock_logger, mock_async_api_caller, search_logs_json):
+async def test_search_log_pagination(
+    mock_logger, mock_async_api_caller, search_logs_json
+):
     client = AsyncSearchLogClient(mock_async_api_caller)
     mock_async_api_caller._call_api.side_effect = [search_logs_json, {}]
 
@@ -92,7 +94,9 @@ async def test_search_log_pagination(mock_logger, mock_async_api_caller, search_
         SortItem(field="entityGuidsAll", order=SortOrder.ASCENDING),
     ]
 
-    await _assert_search_log_results(response, search_logs_json, expected_sorts, bulk=True)
+    await _assert_search_log_results(
+        response, search_logs_json, expected_sorts, bulk=True
+    )
     # The call count will be 2 because both
     # log entries are processed in the first API call.
     # In the second API call, self._log_entries

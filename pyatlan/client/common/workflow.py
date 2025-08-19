@@ -616,7 +616,7 @@ class WorkflowFindLatestRun:
         return endpoint, request_obj
 
     @staticmethod
-    def process_response(search_response) -> Optional:
+    def process_response(search_response) -> Optional[WorkflowSearchResult]:
         """
         Process the search response to extract the latest run.
 
@@ -658,7 +658,7 @@ class WorkflowFindCurrentRun:
         return endpoint, request_obj
 
     @staticmethod
-    def process_response(search_response) -> Optional:
+    def process_response(search_response) -> Optional[WorkflowSearchResult]:
         """
         Process the search response to extract the current running workflow.
 

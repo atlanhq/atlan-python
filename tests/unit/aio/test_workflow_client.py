@@ -616,7 +616,8 @@ async def test_workflow_stop(
 @pytest.mark.asyncio
 async def test_workflow_delete(async_client: AsyncWorkflowClient, mock_api_caller):
     mock_api_caller._call_api.return_value = None
-    assert not await async_client.delete(workflow_name="test-workflow")
+    await async_client.delete(workflow_name="test-workflow")
+    assert mock_api_caller._call_api.call_count == 1
 
 
 @pytest.mark.asyncio

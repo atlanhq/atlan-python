@@ -3,14 +3,14 @@
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Union, cast
 
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.search_log import AsyncSearchLogResults
-from pyatlan.model.search_log import SearchLogRequest, SearchLogResults, SearchLogViewResults
+from pyatlan.model.search_log import SearchLogRequest, SearchLogViewResults
 
 
 class AsyncSearchLogClient:
@@ -59,6 +59,8 @@ class AsyncSearchLogClient:
         results = SearchLogSearch.process_response(
             raw_json, criteria, bulk, self._client
         )
+        # Cast to the expected union type since we know it's an async client
+        results = cast(Union[SearchLogViewResults, AsyncSearchLogResults], results)
 
         # If it's AsyncSearchLogResults (not SearchLogViewResults), check for bulk search conversion
         if isinstance(results, AsyncSearchLogResults):

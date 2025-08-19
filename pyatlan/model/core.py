@@ -366,8 +366,8 @@ class AtlanTag(AtlanObject):
         atlan_tag_name: AtlanTagName,
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
-        client: AsyncAtlanClient = None,
-    ) -> "AtlanTag":
+        client: Optional[AsyncAtlanClient] = None,
+    ) -> AtlanTag:
         """
         Async version of AtlanTag.of() for use with AsyncAtlanClient.
 

@@ -721,7 +721,7 @@ class AssetClient:
         restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
         modification_type: str = "add",
-        save_parameters: dict = None,
+        save_parameters: Optional[dict] = None,
     ) -> A:
         """
         Shared method for tag modifications using shared business logic.
@@ -1338,6 +1338,10 @@ class AssetClient:
         if guid:
             search_query = ManageTerms.build_fluent_search_by_guid(asset_type, guid)
         else:
+            if qualified_name is None:
+                raise ValueError(
+                    "qualified_name cannot be None when guid is not provided"
+                )
             search_query = ManageTerms.build_fluent_search_by_qualified_name(
                 asset_type, qualified_name
             )

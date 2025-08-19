@@ -292,4 +292,3 @@ async def test_sso_delete_group_mapping(mock_async_api_caller):
     assert response is None
     assert mock_async_api_caller._call_api.call_count == 1
     mock_async_api_caller.reset_mock()
-

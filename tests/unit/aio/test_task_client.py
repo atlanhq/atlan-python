@@ -10,9 +10,9 @@ from pydantic.v1 import ValidationError
 from pyatlan.client.aio.task import AsyncTaskClient
 from pyatlan.client.common import AsyncApiCaller
 from pyatlan.errors import InvalidRequestError
+from pyatlan.model.aio.task import AsyncTaskSearchResponse
 from pyatlan.model.enums import AtlanTaskStatus, AtlanTaskType
 from pyatlan.model.fluent_tasks import FluentTasks
-from pyatlan.model.aio.task import AsyncTaskSearchResponse
 from pyatlan.model.task import AtlanTask, TaskSearchRequest
 
 TEST_DATA_DIR = Path(__file__).parent.parent / "data"
@@ -77,7 +77,9 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
     "test_request, error_msg",
     [[None, "none is not an allowed value"], ["123", "value is not a valid dict"]],
 )
-def test_task_search_wrong_params_raises_validation_error(test_request, error_msg, mock_async_api_caller):
+def test_task_search_wrong_params_raises_validation_error(
+    test_request, error_msg, mock_async_api_caller
+):
     client = AsyncTaskClient(client=mock_async_api_caller)
     with pytest.raises(ValidationError) as err:
         client.search(request=test_request)

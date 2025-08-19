@@ -403,8 +403,9 @@ class AsyncUserClient:
 
         token_user = (await self.get_current()).username or ""
         async with client_connection(
-            client=self._client, api_key=impersonation_token
-        ) as tmp:  # type: ignore[arg-type]
+            client=self._client,  # type: ignore[arg-type]
+            api_key=impersonation_token,
+        ) as tmp:
             request = (
                 FluentSearch()
                 .where(Asset.GUID.eq(asset_guid))

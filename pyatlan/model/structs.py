@@ -22,6 +22,7 @@ from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
 
 if TYPE_CHECKING:
+    from pyatlan.cache.aio.source_tag_cache import AsyncSourceTagName
     from pyatlan.cache.source_tag_cache import SourceTagName
     from pyatlan.client.aio import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
@@ -339,7 +340,7 @@ class SourceTagAttachment(AtlanObject):
     async def by_name_async(
         cls,
         client: AsyncAtlanClient,
-        name: SourceTagName,
+        name: AsyncSourceTagName,
         source_tag_values: List[SourceTagAttachmentValue],
         source_tag_sync_timestamp: Optional[datetime] = None,
         is_source_tag_synced: Optional[bool] = None,

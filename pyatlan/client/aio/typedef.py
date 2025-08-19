@@ -149,5 +149,3 @@ class AsyncTypeDefClient:
         )
         await self._client._call_api(endpoint, request_obj)
         await TypeDefPurge.refresh_caches_async(typedef_type, self._client)
-
-

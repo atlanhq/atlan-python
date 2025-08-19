@@ -13,7 +13,7 @@ from pyatlan.model.audit import AuditSearchRequest, EntityAudit
 from pyatlan.model.search import DSL, Bool, Query, Range, SortItem
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.client.protocol import AsyncApiCaller
 
 ENTITY_AUDITS = "entityAudits"
 TOTAL_COUNT = "totalCount"
@@ -31,7 +31,7 @@ class AsyncAuditSearchResults:
 
     def __init__(
         self,
-        client: AsyncAtlanClient,
+        client: AsyncApiCaller,
         criteria: AuditSearchRequest,
         start: int,
         size: int,
@@ -277,5 +277,9 @@ class AsyncAuditSearchResults:
         """
         # Import here to avoid circular import
         from pyatlan.model.audit import AuditSearchResults
+
+        # Handle None case by providing empty list
+        if sorts is None:
+            sorts = []
 
         return AuditSearchResults.sort_by_timestamp_first(sorts)

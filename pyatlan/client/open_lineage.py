@@ -47,9 +47,9 @@ class OpenLineageClient:
         """
         # Step 1: Create credential using shared logic
         create_credential = OpenLineageCreateCredential.prepare_request(connector_type)
-        credential_response = self._client.credentials.creator(
+        credential_response = self._client.credentials.creator(  # type: ignore[attr-defined]
             credential=create_credential
-        )  # type: ignore[attr-defined]
+        )
 
         # Step 2: Create connection using shared logic
         connection = OpenLineageCreateConnection.prepare_request(

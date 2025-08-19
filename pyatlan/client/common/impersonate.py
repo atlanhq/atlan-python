@@ -7,6 +7,7 @@ from typing import Any, Dict, NamedTuple, Optional, Tuple
 from pyatlan.client.constants import GET_CLIENT_SECRET, GET_KEYCLOAK_USER, GET_TOKEN
 from pyatlan.errors import ErrorCode
 from pyatlan.model.response import AccessTokenResponse
+from pyatlan.utils import API
 
 
 class ClientInfo(NamedTuple):
@@ -29,7 +30,7 @@ class ImpersonateUser:
         return ClientInfo(client_id=final_client_id, client_secret=final_client_secret)
 
     @staticmethod
-    def prepare_request(client_info: ClientInfo) -> Tuple[str, Dict[str, str]]:
+    def prepare_request(client_info: ClientInfo) -> Tuple[API, Dict[str, str]]:
         """Prepare the escalation token request."""
         credentials = {
             "grant_type": "client_credentials",
@@ -41,7 +42,7 @@ class ImpersonateUser:
     @staticmethod
     def prepare_impersonation_request(
         client_info: ClientInfo, argo_token: str, user_id: str
-    ) -> Tuple[str, Dict[str, str]]:
+    ) -> Tuple[API, Dict[str, str]]:
         """Prepare the user impersonation request."""
         user_credentials = {
             "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
@@ -67,7 +68,7 @@ class ImpersonateEscalate:
         return ImpersonateUser.get_client_info()
 
     @staticmethod
-    def prepare_request(client_info: ClientInfo) -> Tuple[str, Dict[str, str]]:
+    def prepare_request(client_info: ClientInfo) -> Tuple[API, Dict[str, str]]:
         """Prepare the escalation request."""
         credentials = {
             "grant_type": "client_credentials",
@@ -101,7 +102,7 @@ class ImpersonateGetUserId:
     """Shared logic for retrieving user IDs from Keycloak."""
 
     @staticmethod
-    def prepare_request(username: str) -> Tuple[str, Dict[str, str]]:
+    def prepare_request(username: str) -> Tuple[API, Dict[str, str]]:
         """Prepare the get user ID request."""
         endpoint = GET_KEYCLOAK_USER.format_path_with_params()
         query_params = {"username": username or " "}

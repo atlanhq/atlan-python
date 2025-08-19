@@ -10,7 +10,7 @@ from pyatlan.model.assets import Asset
 from pyatlan.model.lineage import LineageListRequest
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.client.protocol import AsyncApiCaller
 
 
 class AsyncLineageListResults:
@@ -23,7 +23,7 @@ class AsyncLineageListResults:
 
     def __init__(
         self,
-        client: AsyncAtlanClient,
+        client: AsyncApiCaller,
         criteria: LineageListRequest,
         start: int,
         size: int,

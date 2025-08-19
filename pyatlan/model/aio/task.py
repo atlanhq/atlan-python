@@ -13,8 +13,8 @@ from pyatlan.model.task import AtlanTask, TaskSearchRequest
 from pyatlan.utils import API
 
 if TYPE_CHECKING:
-    from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.constants import API
+    from pyatlan.client.protocol import AsyncApiCaller
 
 
 class AsyncTaskSearchResponse:
@@ -22,7 +22,7 @@ class AsyncTaskSearchResponse:
 
     def __init__(
         self,
-        client: AsyncAtlanClient,
+        client: AsyncApiCaller,
         endpoint: API,
         criteria: TaskSearchRequest,
         start: int,

@@ -17,6 +17,7 @@ from pyatlan.model.search_log import (
     SearchLogViewResults,
     UserViews,
 )
+from pyatlan.utils import API
 
 UNIQUE_USERS = "uniqueUsers"
 UNIQUE_ASSETS = "uniqueAssets"
@@ -29,7 +30,7 @@ class SearchLogSearch:
     @staticmethod
     def prepare_request(
         criteria: SearchLogRequest, bulk: bool = False
-    ) -> tuple[str, SearchLogRequest]:
+    ) -> tuple[API, SearchLogRequest]:
         """
         Prepare the request for search log search.
 
@@ -53,7 +54,7 @@ class SearchLogSearch:
         criteria: SearchLogRequest,
         bulk: bool = False,
         client: Any = None,
-    ) -> Union[SearchLogViewResults, SearchLogResults]:
+    ) -> Union[SearchLogViewResults, SearchLogResults, Any]:
         """
         Process the raw API response into search log results.
 

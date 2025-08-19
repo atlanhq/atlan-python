@@ -6,6 +6,7 @@ import asyncio
 import logging
 from typing import (
     TYPE_CHECKING,
+    Awaitable,
     Callable,
     List,
     Optional,
@@ -134,7 +135,7 @@ class AsyncAssetClient:
             return await self.search(criteria)
 
         return AsyncIndexSearchResults(
-            self._client,
+            self._client,  # type: ignore[arg-type]
             criteria,
             0,
             len(response["assets"]),
@@ -459,7 +460,7 @@ class AsyncAssetClient:
 
         # Flush custom metadata asynchronously for each entity
         for asset in entities:
-            await asset.flush_custom_metadata_async(self._client)
+            await asset.flush_custom_metadata_async(self._client)  # type: ignore[arg-type]
             asset.validate_required()
 
         # Prepare query params and request without calling sync flush again
@@ -527,7 +528,9 @@ class AsyncAssetClient:
         return await GetHierarchy.process_async_search_results(response, glossary)
 
     async def process_assets(
-        self, search: IndexSearchRequestProvider, func: Callable[[Asset], None]
+        self,
+        search: IndexSearchRequestProvider,
+        func: Callable[[Asset], Awaitable[None]],
     ) -> int:
         """
         Async process assets matching a search query and apply a processing function to each unique asset.
@@ -541,8 +544,8 @@ class AsyncAssetClient:
             search: IndexSearchRequestProvider
                 The search provider that generates search queries and contains the criteria for
                 searching the assets such as a FluentSearch.
-            func: Callable[[Asset], None]
-                A callable function that receives each unique asset as its parameter and performs
+            func: Callable[[Asset], Awaitable[None]]
+                An async callable function that receives each unique asset as its parameter and performs
                 the required operations on it.
 
         Returns:
@@ -708,7 +711,7 @@ class AsyncAssetClient:
         restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
         modification_type: str = "add",
-        save_parameters: dict = None,
+        save_parameters: Optional[dict] = None,
     ) -> A:
         """
         Async shared method for tag modifications using shared business logic.
@@ -1288,6 +1291,10 @@ class AsyncAssetClient:
         if guid:
             search_query = ManageTerms.build_fluent_search_by_guid(asset_type, guid)
         else:
+            if qualified_name is None:
+                raise ValueError(
+                    "qualified_name cannot be None when guid is not provided"
+                )
             search_query = ManageTerms.build_fluent_search_by_qualified_name(
                 asset_type, qualified_name
             )

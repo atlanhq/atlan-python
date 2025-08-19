@@ -116,7 +116,7 @@ async def test_cred_test_and_update_wrong_params_raises_validation_error(
     test_credentials, client: AsyncCredentialClient
 ):
     with pytest.raises(ValidationError) as err:
-        client.test_and_update(credential=test_credentials)
+        await client.test_and_update(credential=test_credentials)
     assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR == str(err.value)
 
 

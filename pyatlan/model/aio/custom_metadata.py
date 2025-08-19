@@ -10,7 +10,7 @@ from pydantic.v1 import PrivateAttr, StrictStr
 from pyatlan.errors import NotFoundError
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.search import Exists, Term
+from pyatlan.model.search import Exists, SearchFieldType, Term
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient
@@ -263,14 +263,15 @@ class AsyncCustomMetadataField:
             )
             self._initialized = True
 
-    async def eq(self, value, case_insensitive: bool = False):
+    async def eq(self, value: SearchFieldType, case_insensitive: bool = False):
         """
         Returns a query that will match all assets whose field has a value that exactly equals
         the provided value.
         """
         await self._ensure_initialized()
+        # After initialization, elastic_field_name is guaranteed to be a StrictStr
         return Term(
-            field=self.elastic_field_name,
+            field=self.elastic_field_name,  # type: ignore[arg-type]
             value=value,
             case_insensitive=case_insensitive,
         )
@@ -280,4 +281,5 @@ class AsyncCustomMetadataField:
         Returns a query that will match all assets that have some (non-null) value for the field.
         """
         await self._ensure_initialized()
-        return Exists(field=self.elastic_field_name)
+        # After initialization, elastic_field_name is guaranteed to be a StrictStr
+        return Exists(field=self.elastic_field_name)  # type: ignore[arg-type]

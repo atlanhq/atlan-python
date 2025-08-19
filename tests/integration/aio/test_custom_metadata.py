@@ -150,6 +150,7 @@ async def term(
     cm_dq: CustomMetadataDef,
 ) -> AsyncGenerator[AtlasGlossaryTerm, None]:
     term_name = MODULE_NAME
+    assert glossary.qualified_name is not None
     t = await create_term_async(
         client, name=term_name, glossary_qualified_name=glossary.qualified_name
     )

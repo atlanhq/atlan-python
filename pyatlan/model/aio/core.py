@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pyatlan.model.aio.retranslators import AsyncAtlanTagRetranslator
 from pyatlan.model.aio.translators import AsyncAtlanTagTranslator
@@ -30,7 +30,7 @@ class AsyncAtlanResponse:
             AsyncAtlanTagTranslator(client),
             # Register more async translators here
         ]
-        self.translated = None
+        self.translated: Optional[Union[Dict[str, Any], List[Any], Any]] = None
 
     async def translate(self) -> Union[Dict[str, Any], List[Any], Any]:
         """
@@ -102,7 +102,7 @@ class AsyncAtlanRequest:
         # Serialize the instance to JSON first
         try:
             # Use json_async if available for async clients
-            if hasattr(self.instance, 'json_async'):
+            if hasattr(self.instance, "json_async"):
                 raw_json = await self.instance.json_async(
                     by_alias=True, exclude_unset=True, client=self.client
                 )

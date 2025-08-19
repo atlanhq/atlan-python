@@ -4,7 +4,7 @@
 """Conftest for async integration tests."""
 
 import logging
-from typing import AsyncGenerator, Callable, Optional
+from typing import Any, AsyncGenerator, Callable, Coroutine, Optional
 
 import pytest_asyncio
 
@@ -101,7 +101,12 @@ async def table(
 @pytest_asyncio.fixture(scope="module")
 async def make_atlan_tag_async(
     client: AsyncAtlanClient,
-) -> AsyncGenerator[Callable[[str], AtlanTagDef], None]:
+) -> AsyncGenerator[
+    Callable[
+        [str, AtlanTagColor, Optional[AtlanImage]], Coroutine[Any, Any, AtlanTagDef]
+    ],
+    None,
+]:
     """Async make_atlan_tag fixture for creating and cleaning up Atlan tags."""
     created_names = []
 

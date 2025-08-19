@@ -9,7 +9,7 @@ import pytest_asyncio
 from pyatlan import utils
 from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.model.assets import Connection
-from pyatlan.model.credential import Credential
+from pyatlan.model.credential import Credential, CredentialResponse
 from pyatlan.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
 from pyatlan.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan.model.workflow import WorkflowResponse, WorkflowSchedule
@@ -91,7 +91,7 @@ async def workflow(
 @pytest_asyncio.fixture(scope="module")
 async def create_credentials(
     client: AsyncAtlanClient,
-) -> AsyncGenerator[Credential, None]:
+) -> AsyncGenerator[CredentialResponse, None]:
     credentials_name = f"default-spark-{int(utils.get_epoch_timestamp())}-0"
 
     credentials = Credential(

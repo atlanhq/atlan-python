@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
@@ -495,7 +495,7 @@ class GetByQualifiedName:
         return endpoint_path, query_params
 
     @staticmethod
-    def handle_relationships(raw_json: Dict[str, Any]) -> A:
+    def handle_relationships(raw_json: Dict[str, Any]) -> Asset:
         """
         Handles relationship attributes in the API response.
 
@@ -510,7 +510,7 @@ class GetByQualifiedName:
                 raw_json["entity"]["relationshipAttributes"]
             )
         raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
+        asset: Asset = AssetResponse[Asset](**raw_json).entity
         asset.is_incomplete = False
         return asset
 
@@ -1824,8 +1824,8 @@ class GetHierarchy:
         :param glossary: AtlasGlossary for error messages
         :returns: CategoryHierarchy object
         """
-        top_categories: Set[str] = set()
-        category_dict: Dict[str, AtlasGlossaryCategory] = {}
+        top_categories = set()
+        category_dict = {}
 
         for category in filter(
             lambda a: isinstance(a, AtlasGlossaryCategory), response
@@ -1856,8 +1856,8 @@ class GetHierarchy:
         :param glossary: AtlasGlossary for error messages
         :returns: CategoryHierarchy object
         """
-        top_categories: Set[str] = set()
-        category_dict: Dict[str, AtlasGlossaryCategory] = {}
+        top_categories = set()
+        category_dict = {}
 
         # Handle async iteration - check if we have current_page() or need async iteration
         if hasattr(response, "current_page") and response.current_page():

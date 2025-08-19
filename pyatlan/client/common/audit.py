@@ -9,6 +9,7 @@ from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.errors import ErrorCode
 from pyatlan.model.audit import AuditSearchRequest, EntityAudit
 from pyatlan.model.search import SortItem
+from pyatlan.utils import API
 
 ENTITY_AUDITS = "entityAudits"
 LOGGER = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ class AuditSearch:
     @staticmethod
     def prepare_request(
         criteria: AuditSearchRequest, bulk: bool = False
-    ) -> tuple[str, AuditSearchRequest]:
+    ) -> tuple[API, AuditSearchRequest]:
         """
         Prepare the request for audit search.
 

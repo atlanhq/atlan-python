@@ -2788,6 +2788,8 @@ async def test_atlan_client_headers(client: AsyncAtlanClient):
             "x-atlan-client-type": "async",
         }
     )
+    # Ensure session is initialized
+    assert client._async_session is not None
     assert expected == client._async_session.headers
 
 

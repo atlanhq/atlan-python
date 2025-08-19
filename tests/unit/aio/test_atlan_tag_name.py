@@ -1,14 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 import pytest
-from unittest.mock import AsyncMock, patch
 from pydantic.v1 import parse_obj_as
 
 import pyatlan.cache.aio.atlan_tag_cache
 from pyatlan.client.aio.client import AsyncAtlanClient
+from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan.model.assets import Purpose
 from pyatlan.model.constants import DELETED_
-from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan.model.core import AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
@@ -91,9 +90,11 @@ def _assert_asset_tags(asset, is_retranslated=False):
 
 
 @pytest.mark.asyncio
-async def test_asset_tag_name_field_serde_with_translation_async(client: AsyncAtlanClient, monkeypatch):
+async def test_asset_tag_name_field_serde_with_translation_async(
+    client: AsyncAtlanClient, monkeypatch
+):
     """Test async version of asset tag name field serialization/deserialization with translation"""
-    
+
     # Mock async methods
     async def get_name_for_id(_, __):
         return None
@@ -128,7 +129,7 @@ async def test_asset_tag_name_field_serde_with_translation_async(client: AsyncAt
         "get_source_tags_attr_id",
         get_source_tags_attr_id,
     )
-    
+
     # Same raw JSON structure as sync test
     raw_json = {
         "typeName": "Purpose",
@@ -225,7 +226,7 @@ async def test_asset_tag_name_field_serde_with_translation_async(client: AsyncAt
             },
         ],
     }
-    
+
     # Build objects from 1. translated JSON and 2. raw JSON (async version)
     async_response = AsyncAtlanResponse(raw_json=raw_json, client=client)
     translated_dict = await async_response.translate()
@@ -236,12 +237,16 @@ async def test_asset_tag_name_field_serde_with_translation_async(client: AsyncAt
     async_request_with_translation = AsyncAtlanRequest(
         instance=purpose_with_translation, client=client
     )
-    retranslated_with_translated_dict = await async_request_with_translation.retranslate()
-    
+    retranslated_with_translated_dict = (
+        await async_request_with_translation.retranslate()
+    )
+
     async_request_without_translation = AsyncAtlanRequest(
         instance=purpose_without_translation, client=client
     )
-    retranslated_without_translated_dict = await async_request_without_translation.retranslate()
+    retranslated_without_translated_dict = (
+        await async_request_without_translation.retranslate()
+    )
 
     # Re-build objects from 1. retranslated JSON and 2. retranslated raw JSON
     purpose_with_translation_and_retranslation = parse_obj_as(

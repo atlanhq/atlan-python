@@ -60,6 +60,7 @@ async def test_custom_connection(custom_connection: Connection):
 async def test_custom_connection_qualified_name(
     client: AsyncAtlanClient, custom_connection: Connection
 ):
+    assert custom_connection.qualified_name is not None
     found = await client.asset.get_by_qualified_name(
         qualified_name=custom_connection.qualified_name,
         asset_type=Connection,

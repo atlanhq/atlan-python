@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, AsyncGenerator, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, AsyncGenerator, Dict, List, Optional
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
@@ -132,8 +132,6 @@ class AsyncSearchLogResults:
                 raw_json, 200, str(err)
             ) from err
 
-
-
     def _prepare_query_for_timestamp_paging(self, query: Query):
         """
         Adjusts the query to include timestamp filters for search log bulk extraction.
@@ -245,5 +243,9 @@ class AsyncSearchLogResults:
         """
         # Import here to avoid circular import
         from pyatlan.model.search_log import SearchLogResults
+
+        # Handle None case by providing empty list
+        if sorts is None:
+            sorts = []
 
         return SearchLogResults.sort_by_timestamp_first(sorts)

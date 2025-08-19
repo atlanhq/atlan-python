@@ -26,6 +26,7 @@ from pyatlan.utils import API, unflatten_custom_metadata_for_entity
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient
+    from pyatlan.client.protocol import AsyncApiCaller
 
 
 class AsyncSearchResults(abc.ABC):
@@ -35,7 +36,7 @@ class AsyncSearchResults(abc.ABC):
 
     def __init__(
         self,
-        client: AsyncAtlanClient,
+        client: AsyncApiCaller,
         endpoint: API,
         criteria: SearchRequest,
         start: int,
