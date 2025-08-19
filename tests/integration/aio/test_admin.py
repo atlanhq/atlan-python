@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 import math
 from datetime import datetime, timedelta
 from typing import AsyncGenerator
@@ -14,7 +14,7 @@ from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventReques
 from pyatlan.model.user import UserRequest
 from tests.integration.client import TestId
 
-FIXED_USER = "aryaman"
+FIXED_USER = "chris"
 TODAY = datetime.now().strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 MODULE_NAME = TestId.make_unique("AsyncAdmin")

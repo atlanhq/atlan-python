@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
+from pyatlan.client.common import GetLineageList
 from pyatlan.model.assets import Asset
 from pyatlan.model.lineage import LineageListRequest
 
@@ -65,8 +66,6 @@ class AsyncLineageListResults:
         # Update criteria for next page
         self._criteria.offset = self._start
         self._criteria.size = self._size
-
-        from pyatlan.client.common import GetLineageList
 
         endpoint, request_obj = GetLineageList.prepare_request(self._criteria)
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)

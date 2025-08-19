@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import asyncio
@@ -56,7 +58,10 @@ from pyatlan.client.common import (
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
-from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataDict
+from pyatlan.model.aio.custom_metadata import (
+    AsyncCustomMetadataDict,
+    AsyncCustomMetadataRequest,
+)
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -122,8 +127,6 @@ class AsyncAssetClient:
         INDEX_SEARCH, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = await self._client._call_api(INDEX_SEARCH, request_obj=request_obj)
         response = Search.process_response(raw_json, criteria)
-        # Import here to avoid circular dependency
-        from pyatlan.model.aio.asset import AsyncIndexSearchResults
 
         if Search._check_for_bulk_search(
             criteria, response["count"], bulk, AsyncIndexSearchResults
@@ -1197,10 +1200,7 @@ class AsyncAssetClient:
         :param custom_metadata: custom metadata to update, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-
         # Prepare request using async version
-        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataRequest
-
         custom_metadata_request = await AsyncCustomMetadataRequest.create(
             custom_metadata
         )
@@ -1227,8 +1227,6 @@ class AsyncAssetClient:
 
         # Prepare request using async version (includes clear_unset())
         custom_metadata.clear_unset()
-        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataRequest
-
         custom_metadata_request = await AsyncCustomMetadataRequest.create(
             custom_metadata
         )

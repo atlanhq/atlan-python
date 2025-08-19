@@ -5,11 +5,12 @@ from __future__ import annotations
 from collections import UserDict
 from typing import TYPE_CHECKING, Any, Dict, Optional, Set
 
-from pydantic.v1 import PrivateAttr
+from pydantic.v1 import PrivateAttr, StrictStr
 
 from pyatlan.errors import NotFoundError
 from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.search import Exists, Term
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient
@@ -61,7 +62,7 @@ class AsyncCustomMetadataDict(UserDict):
     @classmethod
     async def creator(
         cls, client: AsyncAtlanClient, name: str
-    ) -> "AsyncCustomMetadataDict":
+    ) -> AsyncCustomMetadataDict:
         """Create and initialize an AsyncCustomMetadataDict instance.
 
         This is the recommended way to create an AsyncCustomMetadataDict as it mirrors
@@ -245,8 +246,6 @@ class AsyncCustomMetadataField:
     async def _ensure_initialized(self):
         """Lazy initialization of field properties."""
         if not self._initialized:
-            from pydantic.v1 import StrictStr
-
             self.field_name = StrictStr(
                 await self.client.custom_metadata_cache.get_attribute_for_search_results(
                     self.set_name, self.attribute_name
@@ -270,8 +269,6 @@ class AsyncCustomMetadataField:
         the provided value.
         """
         await self._ensure_initialized()
-        from pyatlan.model.search import Term
-
         return Term(
             field=self.elastic_field_name,
             value=value,
@@ -283,6 +280,4 @@ class AsyncCustomMetadataField:
         Returns a query that will match all assets that have some (non-null) value for the field.
         """
         await self._ensure_initialized()
-        from pyatlan.model.search import Exists
-
         return Exists(field=self.elastic_field_name)

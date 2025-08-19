@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import threading

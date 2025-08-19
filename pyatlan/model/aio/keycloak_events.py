@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2023 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 from typing import AsyncGenerator, List
 

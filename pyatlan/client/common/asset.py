@@ -1,7 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Type, TypeVar, Union
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
@@ -1822,8 +1824,6 @@ class GetHierarchy:
         :param glossary: AtlasGlossary for error messages
         :returns: CategoryHierarchy object
         """
-        from typing import Set
-
         top_categories: Set[str] = set()
         category_dict: Dict[str, AtlasGlossaryCategory] = {}
 
@@ -1856,8 +1856,6 @@ class GetHierarchy:
         :param glossary: AtlasGlossary for error messages
         :returns: CategoryHierarchy object
         """
-        from typing import Set
-
         top_categories: Set[str] = set()
         category_dict: Dict[str, AtlasGlossaryCategory] = {}
 

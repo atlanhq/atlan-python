@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic.v1 import validate_arguments
+from pydantic.v1 import parse_obj_as, validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,
@@ -137,8 +137,6 @@ class AsyncGroupClient:
 
         # Parse records into AtlanGroup objects if they exist
         if response_data.get("records"):
-            from pydantic.v1 import parse_obj_as
-
             response_data["records"] = parse_obj_as(
                 List[AtlanGroup], response_data["records"]
             )

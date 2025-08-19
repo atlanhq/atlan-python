@@ -5,8 +5,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, List, Optional
 
-from pydantic.v1 import Field, PrivateAttr
+from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.workflow import (
     WorkflowSearchHits,
@@ -64,13 +65,6 @@ class AsyncWorkflowSearchResponse(AtlanObject):
 
     async def _get_next_page(self) -> bool:
         """Fetch the next page of results."""
-        from typing import List
-
-        from pydantic.v1 import ValidationError, parse_obj_as
-
-        from pyatlan.errors import ErrorCode
-        from pyatlan.model.workflow import WorkflowSearchRequest
-
         request = WorkflowSearchRequest(
             query=self._criteria, from_=self._start, size=self._size
         )

@@ -1,11 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+"""
+Shared logic for dq template config cache operations.
+"""
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
+from pyatlan.model.assets import Asset
+from pyatlan.model.assets.core.alpha__d_q_rule_template import alpha_DQRuleTemplate
 from pyatlan.model.fluent_search import FluentSearch
-
 
 
 class DQTemplateConfigCacheCommon:
@@ -21,12 +26,7 @@ class DQTemplateConfigCacheCommon:
 
         :returns: FluentSearch configured for DQ rule templates
         """
-        from pyatlan.model.assets import Asset
         try:
-            from pyatlan.model.assets.core.alpha__d_q_rule_template import (
-                alpha_DQRuleTemplate,
-            )
-
             return (
                 FluentSearch()
                 .where(Asset.TYPE_NAME.eq(alpha_DQRuleTemplate.__name__))

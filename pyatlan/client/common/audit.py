@@ -5,6 +5,7 @@ from typing import List
 
 from pydantic.v1 import ValidationError, parse_obj_as
 
+from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.errors import ErrorCode
 from pyatlan.model.audit import AuditSearchRequest, EntityAudit
 from pyatlan.model.search import SortItem
@@ -32,9 +33,6 @@ class AuditSearch:
         :param bulk: whether to run the search as bulk search
         :returns: tuple of (api_endpoint, prepared_criteria)
         """
-        # Import here to avoid circular import
-        from pyatlan.client.constants import AUDIT_SEARCH
-
         if bulk:
             if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
                 raise ErrorCode.UNABLE_TO_RUN_AUDIT_BULK_WITH_SORTS.exception_with_parameters()

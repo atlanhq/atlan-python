@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 import json
 from typing import AsyncGenerator, List, Optional, Tuple
 
@@ -84,8 +84,10 @@ async def limit_attribute_applicability_kwargs(
 ):
     return dict(
         applicable_asset_types={"Link"},
-        applicable_glossary_types={AtlasGlossary.__name__},
-        applicable_connection_types={connection.connector_name},
+        applicable_other_asset_types={"File"},
+        applicable_glossaries={glossary.qualified_name},
+        applicable_glossary_types={"AtlasGlossary", "AtlasGlossaryTerm"},
+        applicable_connections={connection.qualified_name},
     )
 
 
@@ -122,15 +124,62 @@ async def cm_ipr(
             attribute_type=AtlanCustomAttributePrimitiveType.URL,
         ),
     ]
-    cmd = CustomMetadataDef.create(
-        display_name=CM_IPR, attribute_defs=attribute_defs, description=CM_DESCRIPTION
+    cm = await create_custom_metadata_async(
+        client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
     )
-    response = await client.typedef.create(cmd)
-    created_cmd = response.custom_metadata_defs[0]
-    yield created_cmd
-    await wait_for_successful_custometadatadef_purge_async(
-        client, created_cmd.display_name
+    yield cm
+    await wait_for_successful_custometadatadef_purge_async(CM_IPR, client=client)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def glossary(
+    client: AsyncAtlanClient,
+) -> AsyncGenerator[AtlasGlossary, None]:
+    glossary_name = MODULE_NAME
+    g = await create_glossary_async(client, name=glossary_name)
+    yield g
+    await delete_asset_async(client, guid=g.guid, asset_type=AtlasGlossary)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def term(
+    client: AsyncAtlanClient,
+    glossary: AtlasGlossary,
+    cm_raci: CustomMetadataDef,
+    cm_ipr: CustomMetadataDef,
+    cm_dq: CustomMetadataDef,
+) -> AsyncGenerator[AtlasGlossaryTerm, None]:
+    term_name = MODULE_NAME
+    t = await create_term_async(
+        client, name=term_name, glossary_qualified_name=glossary.qualified_name
     )
+    yield t
+    await delete_asset_async(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def groups(
+    client: AsyncAtlanClient,
+    glossary: AtlasGlossary,
+    term: AtlasGlossaryTerm,
+    cm_raci: CustomMetadataDef,
+    cm_ipr: CustomMetadataDef,
+    cm_dq: CustomMetadataDef,
+) -> AsyncGenerator[List[CreateGroupResponse], None]:
+    g1 = await create_group_async(client, GROUP_NAME1)
+    g2 = await create_group_async(client, GROUP_NAME2)
+    yield [g1, g2]
+    await delete_group_async(client, g1.group)
+    await delete_group_async(client, g2.group)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def cm_enum(
+    client: AsyncAtlanClient,
+) -> AsyncGenerator[EnumDef, None]:
+    enum_def = await create_enum_async(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
+    yield enum_def
+    await wait_for_successful_enumadef_purge_async(DQ_ENUM, client=client)
 
 
 @pytest_asyncio.fixture(scope="module")
@@ -163,25 +212,22 @@ async def cm_raci(
             multi_valued=True,
         ),
         TEST_MULTI_VALUE_USING_SETTER,
+        await AttributeDef.create_async(
+            client=client,
+            display_name=CM_ATTR_RACI_EXTRA,
+            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+        ),
     ]
-    cmd = CustomMetadataDef.create(
-        display_name=CM_RACI, attribute_defs=attribute_defs, description=CM_DESCRIPTION
+    cm = await create_custom_metadata_async(
+        client,
+        name=CM_RACI,
+        attribute_defs=attribute_defs,
+        icon=AtlanIcon.USERS_THREE,
+        color=AtlanTagColor.GRAY,
+        locked=False,
     )
-    response = await client.typedef.create(cmd)
-    created_cmd = response.custom_metadata_defs[0]
-    yield created_cmd
-    await wait_for_successful_custometadatadef_purge_async(
-        client, created_cmd.display_name
-    )
-
-
-@pytest_asyncio.fixture(scope="module")
-async def cm_enum(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[EnumDef, None]:
-    enum_def = await create_enum_async(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
-    yield enum_def
-    await wait_for_successful_enumadef_purge_async(client, enum_def.name)
+    yield cm
+    await wait_for_successful_custometadatadef_purge_async(CM_RACI, client=client)
 
 
 @pytest_asyncio.fixture(scope="module")
@@ -204,85 +250,6 @@ async def cm_enum_update_with_replace(
     )
     r = await client.typedef.update(enum_def)
     yield r.enum_defs[0]
-
-
-@pytest_asyncio.fixture(scope="module")
-async def cm_dq(
-    client: AsyncAtlanClient,
-    cm_enum: EnumDef,
-) -> AsyncGenerator[CustomMetadataDef, None]:
-    attribute_defs = [
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_QUALITY_COUNT,
-            attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_QUALITY_SQL,
-            attribute_type=AtlanCustomAttributePrimitiveType.SQL,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_QUALITY_TYPE,
-            attribute_type=AtlanCustomAttributePrimitiveType.OPTIONS,
-            enum_type=cm_enum.name,
-        ),
-    ]
-    cmd = CustomMetadataDef.create(
-        display_name=CM_QUALITY,
-        attribute_defs=attribute_defs,
-        description=CM_DESCRIPTION,
-    )
-    response = await client.typedef.create(cmd)
-    created_cmd = response.custom_metadata_defs[0]
-    yield created_cmd
-    await wait_for_successful_custometadatadef_purge_async(
-        client, created_cmd.display_name
-    )
-
-
-@pytest_asyncio.fixture(scope="module")
-async def glossary(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[AtlasGlossary, None]:
-    glossary_name = MODULE_NAME
-    g = await create_glossary_async(client, name=glossary_name)
-    yield g
-    await delete_asset_async(client, guid=g.guid, asset_type=AtlasGlossary)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def term(
-    client: AsyncAtlanClient,
-    glossary: AtlasGlossary,
-    cm_raci: CustomMetadataDef,
-    cm_ipr: CustomMetadataDef,
-    cm_dq: CustomMetadataDef,
-) -> AsyncGenerator[AtlasGlossaryTerm, None]:
-    term_name = f"{MODULE_NAME}_term"
-    t = await create_term_async(
-        client, name=term_name, glossary_qualified_name=glossary.qualified_name
-    )
-    yield t
-    await delete_asset_async(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def groups(
-    client: AsyncAtlanClient,
-    glossary: AtlasGlossary,
-    term: AtlasGlossaryTerm,
-    cm_raci: CustomMetadataDef,
-) -> AsyncGenerator[List[AtlanGroup], None]:
-    groups = []
-    for group_name in [GROUP_NAME1, GROUP_NAME2]:
-        group = AtlanGroup.create(alias=group_name)
-        create_resp = await client.group.create(group)
-        groups.append(create_resp.group)
-    yield groups
-    for group in groups:
-        await client.group.delete_by_id(group.id)
 
 
 async def create_custom_metadata_async(
@@ -381,77 +348,6 @@ async def wait_for_successful_enumadef_purge_async(name: str, client: AsyncAtlan
             await asyncio.sleep(1)
 
 
-async def _get_all_qualified_names_async(client: AsyncAtlanClient, asset_type: str):
-    """Async version of _get_all_qualified_names helper"""
-    from pyatlan.model.assets import Asset
-    from pyatlan.model.fluent_search import FluentSearch
-
-    request = (
-        FluentSearch.select()
-        .where(Asset.TYPE_NAME.eq(asset_type))
-        .include_on_results(Asset.QUALIFIED_NAME)
-        .to_request()
-    )
-    results = await client.asset.search(request)
-    names = []
-    async for result in results:
-        names.append(result.qualified_name or "")
-    return set(names)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def limit_attribute_applicability_kwargs(
-    glossary: AtlasGlossary, connection: Connection
-):
-    return dict(
-        applicable_asset_types={"Link"},
-        applicable_other_asset_types={"File"},
-        applicable_glossaries={glossary.qualified_name},
-        applicable_glossary_types={"AtlasGlossary", "AtlasGlossaryTerm"},
-        applicable_connections={connection.qualified_name},
-    )
-
-
-@pytest_asyncio.fixture(scope="module")
-async def cm_ipr(
-    client: AsyncAtlanClient, limit_attribute_applicability_kwargs
-) -> AsyncGenerator[CustomMetadataDef, None]:
-    attribute_defs = [
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_IPR_LICENSE,
-            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
-            description=ATTRIBUTE_DESCRIPTION,
-            **limit_attribute_applicability_kwargs,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_IPR_VERSION,
-            attribute_type=AtlanCustomAttributePrimitiveType.DECIMAL,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_IPR_MANDATORY,
-            attribute_type=AtlanCustomAttributePrimitiveType.BOOLEAN,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_IPR_DATE,
-            attribute_type=AtlanCustomAttributePrimitiveType.DATE,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_IPR_URL,
-            attribute_type=AtlanCustomAttributePrimitiveType.URL,
-        ),
-    ]
-    cm = await create_custom_metadata_async(
-        client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
-    )
-    yield cm
-    await wait_for_successful_custometadatadef_purge_async(CM_IPR, client=client)
-
-
 async def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs):
     cm_name = CM_IPR
     assert cm_ipr.category == AtlanTypeCategory.CUSTOM_METADATA
@@ -505,54 +401,6 @@ async def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_k
     assert not one.options.multi_value_select
 
 
-@pytest_asyncio.fixture(scope="module")
-async def cm_raci(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[CustomMetadataDef, None]:
-    TEST_MULTI_VALUE_USING_SETTER = await AttributeDef.create_async(
-        client=client,
-        display_name=CM_ATTR_RACI_INFORMED,
-        attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
-    )
-    assert TEST_MULTI_VALUE_USING_SETTER and TEST_MULTI_VALUE_USING_SETTER.options
-    TEST_MULTI_VALUE_USING_SETTER.options.multi_value_select = True
-    attribute_defs = [
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_RACI_RESPONSIBLE,
-            attribute_type=AtlanCustomAttributePrimitiveType.USERS,
-            multi_valued=True,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_RACI_ACCOUNTABLE,
-            attribute_type=AtlanCustomAttributePrimitiveType.USERS,
-        ),
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_RACI_CONSULTED,
-            attribute_type=AtlanCustomAttributePrimitiveType.GROUPS,
-            multi_valued=True,
-        ),
-        TEST_MULTI_VALUE_USING_SETTER,
-        await AttributeDef.create_async(
-            client=client,
-            display_name=CM_ATTR_RACI_EXTRA,
-            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
-        ),
-    ]
-    cm = await create_custom_metadata_async(
-        client,
-        name=CM_RACI,
-        attribute_defs=attribute_defs,
-        icon=AtlanIcon.USERS_THREE,
-        color=AtlanTagColor.GRAY,
-        locked=False,
-    )
-    yield cm
-    await wait_for_successful_custometadatadef_purge_async(CM_RACI, client=client)
-
-
 async def test_cm_raci(
     cm_raci: CustomMetadataDef,
 ):
@@ -602,15 +450,6 @@ async def test_cm_raci(
     assert not one.options.multi_value_select
 
 
-@pytest_asyncio.fixture(scope="module")
-async def cm_enum(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[EnumDef, None]:
-    enum_def = await create_enum_async(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
-    yield enum_def
-    await wait_for_successful_enumadef_purge_async(DQ_ENUM, client=client)
-
-
 async def test_cm_enum(
     cm_enum: EnumDef,
 ):
@@ -631,28 +470,6 @@ async def test_cm_enum_get_by_name(client: AsyncAtlanClient):
     assert cm_enum.name == DQ_ENUM
     assert cm_enum.category == AtlanTypeCategory.ENUM
     assert len(cm_enum.element_defs) == len(DQ_TYPE_LIST)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def cm_enum_update(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[EnumDef, None]:
-    enum_def = await EnumDef.update_async(
-        client, name=DQ_ENUM, values=DQ_TYPE_EXTRA_LIST, replace_existing=False
-    )
-    r = await client.typedef.update(enum_def)
-    yield r.enum_defs[0]
-
-
-@pytest_asyncio.fixture(scope="module")
-async def cm_enum_update_with_replace(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[EnumDef, None]:
-    enum_def = await EnumDef.update_async(
-        client, name=DQ_ENUM, values=DQ_TYPE_LIST, replace_existing=True
-    )
-    r = await client.typedef.update(enum_def)
-    yield r.enum_defs[0]
 
 
 @pytest.mark.order(after="test_cm_enum")
@@ -745,48 +562,6 @@ async def test_cm_dq(
     assert one.options
     assert not one.options.multi_value_select
     assert one.options.primitive_type == AtlanCustomAttributePrimitiveType.OPTIONS.value
-
-
-@pytest_asyncio.fixture(scope="module")
-async def glossary(
-    client: AsyncAtlanClient,
-) -> AsyncGenerator[AtlasGlossary, None]:
-    glossary_name = MODULE_NAME
-    g = await create_glossary_async(client, name=glossary_name)
-    yield g
-    await delete_asset_async(client, guid=g.guid, asset_type=AtlasGlossary)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def term(
-    client: AsyncAtlanClient,
-    glossary: AtlasGlossary,
-    cm_raci: CustomMetadataDef,
-    cm_ipr: CustomMetadataDef,
-    cm_dq: CustomMetadataDef,
-) -> AsyncGenerator[AtlasGlossaryTerm, None]:
-    term_name = MODULE_NAME
-    t = await create_term_async(
-        client, name=term_name, glossary_qualified_name=glossary.qualified_name
-    )
-    yield t
-    await delete_asset_async(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
-
-
-@pytest_asyncio.fixture(scope="module")
-async def groups(
-    client: AsyncAtlanClient,
-    glossary: AtlasGlossary,
-    term: AtlasGlossaryTerm,
-    cm_raci: CustomMetadataDef,
-    cm_ipr: CustomMetadataDef,
-    cm_dq: CustomMetadataDef,
-) -> AsyncGenerator[List[CreateGroupResponse], None]:
-    g1 = await create_group_async(client, GROUP_NAME1)
-    g2 = await create_group_async(client, GROUP_NAME2)
-    yield [g1, g2]
-    await delete_group_async(client, g1.group)
-    await delete_group_async(client, g2.group)
 
 
 async def _get_groups_async(

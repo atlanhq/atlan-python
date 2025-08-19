@@ -18,6 +18,7 @@ from types import SimpleNamespace
 from typing import Optional
 
 import httpx
+from httpx_retries import RetryTransport as AsyncRetryTransport
 from pydantic.v1 import PrivateAttr
 
 from pyatlan.cache.aio import (
@@ -125,10 +126,7 @@ class AsyncAtlanClient(AtlanClient):
     def __init__(self, **kwargs):
         # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
-
         # Create async session immediately like sync client - no lazy loading
-        from httpx_retries import RetryTransport as AsyncRetryTransport
-
         self._async_session = httpx.AsyncClient(
             transport=AsyncRetryTransport(retry=self.retry),
             headers={

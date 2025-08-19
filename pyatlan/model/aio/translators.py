@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
