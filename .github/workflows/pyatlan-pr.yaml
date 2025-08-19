@@ -114,7 +114,7 @@ jobs:
           ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
           ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
         # Run with `pytest-sugar` for enhancing the overall test report output
-        run: uv run pytest tests/unit --force-sugar
+        run: uv run pytest tests/unit --force-sugar -vv
 
       - name: Prepare integration tests distribution
         id: distribute-integration-test-files
@@ -177,7 +177,7 @@ jobs:
           timeout_minutes: 10 # Maximum time per test job; otherwise, the job will fail
           # Run the integration test file using `pytest-timer` plugin
           # to display only the durations of the 10 slowest tests with `pytest-sugar`
-          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
+          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar -vv
 
 
   async-integration-tests:
@@ -219,4 +219,4 @@ jobs:
           timeout_minutes: 15 # Async tests may take longer, increased timeout
           # Run the async integration test file using `pytest-timer` plugin
           # to display only the durations of the 10 slowest tests with `pytest-sugar`
-          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar
+          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar -vv
