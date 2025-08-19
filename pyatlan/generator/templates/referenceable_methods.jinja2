@@ -21,17 +21,41 @@
         return values
 
     def json(self, *args, **kwargs) -> str:
-        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
-        if not self._metadata_proxy and kwargs.get("client"):
+        client = kwargs.get("client")
+        if (
+            not self._metadata_proxy
+            and client
+            and not hasattr(client, "_async_session")
+        ):
+            # Only handle synchronous clients in the json() method
             self._metadata_proxy = CustomMetadataProxy(
-                client=kwargs.get("client"),  # type: ignore[arg-type]
-                business_attributes=self.business_attributes,
-            )
-            self._async_metadata_proxy = AsyncCustomMetadataProxy(
-                client=kwargs.get("client"),  # type: ignore[arg-type]
+                client=client,  # type: ignore[arg-type]
                 business_attributes=self.business_attributes,
             )
             self.business_attributes = self._metadata_proxy.business_attributes
+        return super().json(**kwargs)
+
+    async def json_async(self, *args, **kwargs) -> str:
+        """
+        Async version of json() method for use with AsyncAtlanClient.
+        This properly handles async metadata proxy and sets business_attributes.
+        """
+        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        client = kwargs.get("client")
+        if (
+            not self._async_metadata_proxy
+            and client
+            and hasattr(client, "_async_session")
+        ):
+            # Only handle asynchronous clients in the json_async() method
+            self._async_metadata_proxy = AsyncCustomMetadataProxy(
+                client=client,  # type: ignore[arg-type]
+                business_attributes=self.business_attributes,
+            )
+            # Get the business attributes asynchronously and set them
+            business_attrs = await self._async_metadata_proxy.business_attributes()
+            self.business_attributes = business_attrs
         return super().json(**kwargs)
 
     def validate_required(self):
@@ -61,20 +85,6 @@
             )
         self.business_attributes = self._metadata_proxy.business_attributes
 
-    async def flush_custom_metadata_async(self, client):
-        """
-        Async version of flush_custom_metadata for use with AsyncAtlanClient.
-        This properly handles async metadata proxy and sets business_attributes.
-        """
-        from pyatlan.model.aio.custom_metadata import AsyncCustomMetadataProxy
-
-        if not self._async_metadata_proxy:
-            self._async_metadata_proxy = AsyncCustomMetadataProxy(
-                business_attributes=self.business_attributes, client=client
-            )
-        # Get the business attributes asynchronously and set them
-        business_attrs = await self._async_metadata_proxy.business_attributes()
-        self.business_attributes = business_attrs
 
     async def get_custom_metadata_async(self, client: AsyncAtlanClient, name: str):
         """

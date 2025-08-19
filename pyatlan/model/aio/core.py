@@ -101,10 +101,16 @@ class AsyncAtlanRequest:
         """
         # Serialize the instance to JSON first
         try:
-            raw_json = self.instance.json(
-                by_alias=True, exclude_unset=True, client=self.client
-            )
-        except TypeError:
+            # Use json_async if available for async clients
+            if hasattr(self.instance, 'json_async'):
+                raw_json = await self.instance.json_async(
+                    by_alias=True, exclude_unset=True, client=self.client
+                )
+            else:
+                raw_json = self.instance.json(
+                    by_alias=True, exclude_unset=True, client=self.client
+                )
+        except (TypeError, AttributeError):
             raw_json = self.instance.json(
                 by_alias=True,
                 exclude_unset=True,
