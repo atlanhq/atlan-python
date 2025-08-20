@@ -1,3 +1,83 @@
+## 8.0.0 (August 20, 2025)
+
+### New Features
+
+#### Full `async/await` support
+
+- Added `async/await` support to the SDK. All existing `clients` and `caches` now have async variants, plus new models (mainly search result models that require `async` iteration). Following `aio` directory convention for all async components.
+- Implemented `AsyncAtlanClient` for all async operations (extends `AtlanClient` for reusability).
+- For methods that accept client parameters, we've added corresponding `*_async()` variants:
+
+| sync method | async method |
+|------------|--------------|
+| `Connection.creator()` | `Connection.creator_async()` |
+| `Badge.creator()` | `Badge.creator_async()` |
+| `FluentSearch.execute()` | `FluentSearch.execute_async()` |
+| `AtlanTag.of()` | `AtlanTag.of_async()` |
+| `SourceTagAttachment.by_name()` | `SourceTagAttachment.by_name_async()` |
+| `CompoundQuery.tagged_with_value()` | `CompoundQuery.tagged_with_value_async()` |
+| `Referenceable.json()` | `Referenceable.json_async()` |
+| `Referenceable.get_custom_metadata()` | `Referenceable.get_custom_metadata_async()` |
+| `Referenceable.set_custom_metadata()` | `Referenceable.set_custom_metadata_async()` |
+| `Referenceable.flush_custom_metadata()` | `Referenceable.flush_custom_metadata_async()` |
+
+#### Shared business logic architecture
+
+- Extracted common functionality (request preparation and response processing) into a separate `common` sub-package. This enables reuse across both sync and async operations - only the middle layer (API calling with respective clients) differs.
+
+Example:
+```python
+from pyatlan.client.common import FindPurposesByName
+
+@validate_arguments
+async def find_purposes_by_name(
+    self,
+    name: str,
+    attributes: Optional[List[str]] = None,
+) -> List[Purpose]:
+    """
+    Async find purposes by name using shared business logic.
+    :param name: of the purpose
+    :param attributes: (optional) collection of attributes to retrieve for the purpose
+    :returns: all purposes with that name, if found
+    :raises NotFoundError: if no purpose with the provided name exists
+    """
+    search_request = FindPurposesByName.prepare_request(name, attributes)
+    search_results = await self.search(search_request)
+    return FindPurposesByName.process_response(
+        search_results, name, allow_multiple=True
+    )
+```
+
+### Documentation
+
+- **Asynchronous SDK operations**: https://developer.atlan.com/sdks/python/#asynchronous-sdk-operations
+
+### Breaking Changes
+
+While these aren't direct breaking changes to the SDK API, they may affect your code if you depend on these libraries:
+
+- **Migrated from [`requests`](https://requests.readthedocs.io/en/latest) to [`httpx`](https://www.python-httpx.org)**: Completely removed support for `requests` library and migrated to `httpx`, which provides similar API for `sync` operations plus `async` client support for async operations.
+- **Replaced [`urllib3`](https://urllib3.readthedocs.io/en/stable) with [`httpx-retries`](https://will-ockmore.github.io/httpx-retries)**: Removed support for `urllib3` retry mechanism and implemented retries using `httpx-retries` library (API remains similar).
+
+### QOL Improvements
+
+- Generated latest typedef models.
+- Removed redundant requirements files (no longer needed since migration to `uv` in previous releases).
+- Updated GitHub workflows for Docker image builds to use `uv sync` (without dev dependencies).
+- Added unit and integration tests for `async` SDK.
+- Added `x-atlan-client-type: sync` or `x-atlan-client-type: async` to SDK headers and logging for better observability.
+- Added `async-integration-tests` job to `pyatlan-pr.yaml` workflow. Triggers when there are changes to async SDK code or can be triggered manually via `run-async-tests` label on PR.
+- Async SDK unit tests run by default on every commit push as they have minimal time impact on test suite.
+- Used module-scoped asyncio test fixtures similar to sync integration tests:
+  ```toml
+  # pyproject.toml
+  asyncio_mode = "auto"
+  asyncio_default_test_loop_scope = "module"
+  asyncio_default_fixture_loop_scope = "module"
+  ```
+- Used `token_client` fixtures when creating/deleting API tokens with `retry=0` to avoid token overpopulation in test tenants.
+
 ## 7.2.0 (August 13, 2025)
 
 ### New Features
