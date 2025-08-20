@@ -249,7 +249,7 @@ class AsyncAssetClient:
                 normalized_attributes,
                 normalized_related_attributes,
             )
-            results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
+            results = await search.execute_async(client=self._client)  # type: ignore[arg-type]
             return GetByQualifiedName.process_fluent_search_response(
                 results, qualified_name, asset_type
             )
@@ -300,7 +300,7 @@ class AsyncAssetClient:
             search = GetByGuid.prepare_fluent_search_request(
                 guid, asset_type, normalized_attributes, normalized_related_attributes
             )
-            results = await search.aexecute(client=self._client)  # type: ignore[arg-type]
+            results = await search.execute_async(client=self._client)  # type: ignore[arg-type]
             return GetByGuid.process_fluent_search_response(results, guid, asset_type)
 
         # Use direct API call for simple requests
@@ -1299,7 +1299,7 @@ class AsyncAssetClient:
                 asset_type, qualified_name
             )
 
-        results = await search_query.aexecute(client=self._client)  # type: ignore[arg-type]
+        results = await search_query.execute_async(client=self._client)  # type: ignore[arg-type]
 
         # Validate search results using shared logic
         first_result = ManageTerms.validate_search_results(

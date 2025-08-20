@@ -215,7 +215,7 @@ async def test_search_source_synced_assets(client: AsyncAtlanClient):
                 value="Highly Restricted",
             )
         )
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     tables = [table async for table in search_results if isinstance(table, Table)]
     _assert_source_tag(tables, EXISTING_SOURCE_SYNCED_TAG, "Highly Restricted")
@@ -287,7 +287,7 @@ async def test_source_tag_assign_with_value(client: AsyncAtlanClient, table: Tab
                 value="Not Restricted",
             )
         )
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     tables = [table async for table in search_results if isinstance(table, Table)]
 
@@ -320,7 +320,7 @@ async def test_search_source_specific_custom_attributes(
         .where(CompoundQuery.active_assets())
         .where(Column.QUALIFIED_NAME.eq(snowflake_column_qn))
         .include_on_results(Column.CUSTOM_ATTRIBUTES)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
@@ -460,7 +460,7 @@ async def test_search_pagination(mock_logger, client: AsyncAtlanClient):
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
         .page_size(size)
-    ).aexecute(client, bulk=True)
+    ).execute_async(client, bulk=True)
     expected_sorts = [
         Asset.CREATE_TIME.order(SortOrder.ASCENDING),
         Asset.GUID.order(SortOrder.ASCENDING),

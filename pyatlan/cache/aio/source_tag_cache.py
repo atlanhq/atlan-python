@@ -98,7 +98,7 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.GUID.eq(guid))
-                .aexecute(self.client)
+                .execute_async(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,
@@ -116,7 +116,7 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.QUALIFIED_NAME.eq(source_tag_qn))
-                .aexecute(self.client)
+                .execute_async(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,
@@ -141,7 +141,7 @@ class AsyncSourceTagCache(AsyncAbstractAssetCache):
                 .where(Term.with_state("ACTIVE"))
                 .where(Asset.SUPER_TYPE_NAMES.eq(Tag.__name__))
                 .where(Asset.QUALIFIED_NAME.eq(source_tag_qn))
-                .aexecute(self.client)
+                .execute_async(self.client)
             )
             candidate = (response.current_page() and response.current_page()[0]) or None
             # NOTE: Checking if the first result is an "Asset" since in pyatlan,

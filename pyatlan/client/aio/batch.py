@@ -223,7 +223,7 @@ class AsyncBatch:
                     )
                 results = await search.page_size(
                     max(self._max_size * 2, DSL.__fields__.get("size").default)  # type: ignore[union-attr]
-                ).aexecute(client=self._client)  # type: ignore[arg-type]
+                ).execute_async(client=self._client)  # type: ignore[arg-type]
 
                 async for asset in results:
                     asset_id = AssetIdentity(

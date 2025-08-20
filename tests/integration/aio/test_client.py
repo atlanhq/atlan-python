@@ -1487,7 +1487,7 @@ async def test_client_401_token_refresh(
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossary))
             .page_size(100)
-            .aexecute(client=client)
+            .execute_async(client=client)
         )
 
     # Case 2: Invalid user_id
@@ -1502,7 +1502,7 @@ async def test_client_401_token_refresh(
             .where(CompoundQuery.active_assets())
             .where(CompoundQuery.asset_type(AtlasGlossary))
             .page_size(100)
-            .aexecute(client=client)
+            .execute_async(client=client)
         )
 
     # Case 3: Valid user_id associated with the expired token
@@ -1522,7 +1522,7 @@ async def test_client_401_token_refresh(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
 
     # Confirm the API key has been updated and results are returned
@@ -1561,7 +1561,7 @@ async def test_client_init_from_token_guid(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .aexecute(client=token_client_from_env_vars)
+        .execute_async(client=token_client_from_env_vars)
     )
     assert results and results.count >= 1
 
@@ -1570,7 +1570,7 @@ async def test_client_init_from_token_guid(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .aexecute(client=token_client_custom)
+        .execute_async(client=token_client_custom)
     )
     assert results and results.count >= 1
 

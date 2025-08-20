@@ -535,7 +535,7 @@ async def test_fluent_search(
     g_sorted = []
 
     # Execute the async search and collect results into a list first
-    search_results = await terms.aexecute(client)
+    search_results = await terms.execute_async(client)
     all_results = []
     async for asset in search_results:
         all_results.append(asset)
@@ -560,7 +560,7 @@ async def test_fluent_search(
         ],
         _includes_on_results=[AtlasGlossaryTerm.ANCHOR.atlan_field_name],
         _includes_on_relations=[AtlasGlossary.NAME.atlan_field_name],
-    ).aexecute(client)
+    ).execute_async(client)
 
     guids_alt = []
     g_sorted = []
@@ -582,7 +582,7 @@ async def test_fluent_search(
         _includes_on_results=["anchor"],
         _includes_on_relations=["name"],
         sorts=[AtlasGlossaryTerm.NAME.order()],
-    ).aexecute(client)
+    ).execute_async(client)
 
     names = []
     names_sorted = []
@@ -1138,7 +1138,7 @@ async def test_search_user_def_relationship_on_terms(
         .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_TO)
         .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_FROM)
         .include_relationship_attributes(True)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     assert results and results.count == 2
     async for asset in results:

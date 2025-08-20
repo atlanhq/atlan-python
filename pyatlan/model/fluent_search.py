@@ -273,7 +273,7 @@ class CompoundQuery:
                 await FluentSearch()
                 .select()
                 .where(Tag.MAPPED_CLASSIFICATION_NAME.eq(tag_id))
-                .aexecute(client=client)
+                .execute_async(client=client)
             )
         ]
         if len(synced_tags) > 1 and source_tag_qualified_name is None:
@@ -650,9 +650,9 @@ class FluentSearch(CompoundQuery):
         """
         return client.asset.search(criteria=self.to_request(), bulk=bulk)
 
-    async def aexecute(
+    async def execute_async(
         self, client: AsyncAtlanClient, bulk: bool = False
-    ) -> "AsyncIndexSearchResults":
+    ) -> AsyncIndexSearchResults:
         """
         Run the fluent search asynchronously to retrieve assets that match the supplied criteria.
         `Note:` if the number of results exceeds the predefined threshold

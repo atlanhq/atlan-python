@@ -242,7 +242,7 @@ async def test_batch_update(
         .where(Asset.TYPE_NAME.eq(View.__name__))
         .where(Asset.QUALIFIED_NAME.eq(view.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
@@ -280,7 +280,7 @@ async def test_batch_update(
         .where(Asset.TYPE_NAME.eq(MaterialisedView.__name__))
         .where(Asset.QUALIFIED_NAME.eq(mview.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
     assert results and results.count == 1
     assert results.current_page() and len(results.current_page()) == 1
@@ -339,7 +339,7 @@ async def test_batch_update(
         .where(Asset.TYPE_NAME.eq(Table.__name__))
         .where(Asset.QUALIFIED_NAME.eq(view.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
 
     assert results and results.count == 1
@@ -394,7 +394,7 @@ async def test_batch_update(
         .where(Asset.TYPE_NAME.eq(Table.__name__))
         .where(Asset.QUALIFIED_NAME.eq(table1.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
 
     assert results and results.count == 1
@@ -436,7 +436,7 @@ async def test_batch_update(
         .where(Asset.TYPE_NAME.eq(Table.__name__))
         .where(Asset.QUALIFIED_NAME.eq(table1.qualified_name))
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
 
     assert results and results.count == 1
@@ -506,7 +506,7 @@ async def test_batch_update(
         .where(Asset.QUALIFIED_NAME.eq(table.qualified_name))
         .include_on_results(Asset.IS_PARTIAL)
         .include_on_results(Asset.USER_DESCRIPTION)
-        .aexecute(client=client)
+        .execute_async(client=client)
     )
 
     assert results and results.count == 1
