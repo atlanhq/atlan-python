@@ -77,34 +77,34 @@ async def current_user(client: AsyncAtlanClient) -> UserMinimalResponse:
 
 
 @pytest_asyncio.fixture(scope="module")
-async def token(client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
+async def token(token_client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
     token = None
     try:
-        token = await create_token_async(client, MODULE_NAME)
+        token = await create_token_async(token_client, MODULE_NAME)
         yield token
     finally:
-        await delete_token_async(client, token)
+        await delete_token_async(token_client, token)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def expired_token(client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
+async def expired_token(token_client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
     token = None
     try:
-        token = await client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
+        token = await token_client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
         time.sleep(5)
         yield token
     finally:
-        await delete_token_async(client, token)
+        await delete_token_async(token_client, token)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def argo_fake_token(client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
+async def argo_fake_token(token_client: AsyncAtlanClient) -> AsyncGenerator[ApiToken, None]:
     token = None
     try:
-        token = await client.token.create(f"{MODULE_NAME}-fake-argo")
+        token = await token_client.token.create(f"{MODULE_NAME}-fake-argo")
         yield token
     finally:
-        await delete_token_async(client, token)
+        await delete_token_async(token_client, token)
 
 
 @pytest_asyncio.fixture(scope="module")

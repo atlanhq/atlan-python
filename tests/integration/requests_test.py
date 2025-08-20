@@ -10,18 +10,18 @@ MODULE_NAME = TestId.make_unique("Requests")
 API_TOKEN_NAME = f"{MODULE_NAME}"
 
 
-def create_token(client: AtlanClient, name: str) -> ApiToken:
-    t = client.token.create(name)
+def create_token(token_client: AtlanClient, name: str) -> ApiToken:
+    t = token_client.token.create(name)
     return t
 
 
-def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
+def delete_token(token_client: AtlanClient, token: Optional[ApiToken] = None):
     # If there is a partial failure on the server side
     # and the token is still visible in the Atlan UI,
     # in that case, the create method may not return a token.
     # We should retrieve the list of all tokens and delete them here.
     if not token:
-        tokens = client.token.get().records
+        tokens = token_client.token.get().records
         assert tokens
         delete_tokens = [
             token
@@ -30,20 +30,20 @@ def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
         ]
         for token in delete_tokens:
             assert token and token.guid
-            client.token.purge(token.guid)
+            token_client.token.purge(token.guid)
         return
     # In case of no partial failure, directly delete the token
-    token.guid and client.token.purge(token.guid)
+    token.guid and token_client.token.purge(token.guid)
 
 
 @pytest.fixture(scope="module")
-def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = create_token(client, API_TOKEN_NAME)
+        token = create_token(token_client, API_TOKEN_NAME)
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 def test_create_token(client: AtlanClient, token: ApiToken):

@@ -48,18 +48,18 @@ def snowflake_column_qn(snowflake_conn):
 
 
 @pytest.fixture(scope="module")
-def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = client.token.create(API_TOKEN_NAME)
+        token = token_client.token.create(API_TOKEN_NAME)
         assert token
         assert token.guid
         assert token.display_name
         # After creating the token, assign it to the
         # "Data Assets" persona to grant it query access
-        persona = client.asset.find_personas_by_name(PERSONA_NAME)[0]
+        persona = token_client.asset.find_personas_by_name(PERSONA_NAME)[0]
         assert persona.qualified_name
-        client.token.update(
+        token_client.token.update(
             guid=token.guid,
             display_name=token.display_name,
             personas={persona.qualified_name},
@@ -68,7 +68,7 @@ def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
         # its associated personas -- will leave that to later...
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")

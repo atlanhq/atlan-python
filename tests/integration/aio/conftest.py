@@ -14,6 +14,7 @@ from pyatlan.model.assets import Connection, Database, Schema, Table
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanConnectorType, AtlanTagColor, CertificateStatus
 from pyatlan.model.typedef import AtlanTagDef
+from pyatlan.client.atlan import DEFAULT_RETRY
 from tests.integration.aio.test_connection import create_connection_async
 from tests.integration.aio.utils import delete_asset_async
 from tests.integration.client import TestId
@@ -34,6 +35,13 @@ CERTIFICATE_MESSAGE = "Automated testing of the Python SDK."
 async def client():
     """Async Atlan client fixture for integration tests."""
     client = AsyncAtlanClient()
+    yield client
+
+@pytest_asyncio.fixture(scope="module")
+async def token_client():
+    """Async Atlan client fixture for api token integration tests."""
+    DEFAULT_RETRY.total = 0
+    client = AsyncAtlanClient(retry=DEFAULT_RETRY)
     yield client
 
 

@@ -66,34 +66,34 @@ call_count = 0
 
 
 @pytest.fixture(scope="module")
-def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = create_token(client, MODULE_NAME)
+        token = create_token(token_client, MODULE_NAME)
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")
-def expired_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def expired_token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
+        token = token_client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
         time.sleep(5)
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")
-def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def argo_fake_token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = client.token.create(f"{MODULE_NAME}-fake-argo")
+        token = token_client.token.create(f"{MODULE_NAME}-fake-argo")
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")

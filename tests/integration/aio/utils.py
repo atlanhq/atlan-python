@@ -19,14 +19,14 @@ from pyatlan.model.search import DSL, IndexSearchRequest
 LOGGER = logging.getLogger(__name__)
 
 
-async def create_token_async(client: AsyncAtlanClient, name: str) -> ApiToken:
+async def create_token_async(token_client: AsyncAtlanClient, name: str) -> ApiToken:
     """Create an API token asynchronously."""
-    token = await client.token.create(name)
+    token = await token_client.token.create(name)
     return token
 
 
 async def delete_token_async(
-    client: AsyncAtlanClient, token: Optional[ApiToken] = None
+    token_client: AsyncAtlanClient, token: Optional[ApiToken] = None
 ):
     """Delete an API token asynchronously."""
     # If there is a partial failure on the server side
@@ -34,7 +34,7 @@ async def delete_token_async(
     # in that case, the create method may not return a token.
     # We should retrieve the list of all tokens and delete them here.
     if not token:
-        tokens_response = await client.token.get()
+        tokens_response = await token_client.token.get()
         tokens = tokens_response.records
         assert tokens
         delete_tokens = [
@@ -44,11 +44,11 @@ async def delete_token_async(
         ]
         for token in delete_tokens:
             assert token and token.guid
-            await client.token.purge(token.guid)
+            await token_client.token.purge(token.guid)
         return
     # In case of no partial failure, directly delete the token
     if token.guid:
-        await client.token.purge(token.guid)
+        await token_client.token.purge(token.guid)
 
 
 async def delete_asset_async(
