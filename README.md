@@ -206,6 +206,98 @@ This will:
 - 🎨 Format code automatically
 - ⚡ Support incremental updates
 
+## 📁 Project Structure
+
+Understanding the codebase layout will help you navigate and contribute effectively:
+
+```
+atlan-python/
+├── pyatlan/                          # 🐍 Main Python package
+│   ├── __init__.py                   # Package initialization
+│   ├── cache/                        # 💾 Caching mechanisms
+│   │   ├── atlan_tag_cache.py       # Tag name ↔ GUID mapping
+│   │   ├── custom_metadata_cache.py  # Custom metadata definitions
+│   │   ├── enum_cache.py            # Enum value caching
+│   │   └── aio/                     # Async versions of caches
+│   ├── client/                       # 🌐 HTTP client implementations
+│   │   ├── atlan.py                 # Main synchronous client
+│   │   ├── asset.py                 # Asset operations (CRUD, search)
+│   │   ├── admin.py                 # Administrative operations
+│   │   ├── audit.py                 # Audit log operations
+│   │   ├── common/                  # Shared client logic
+│   │   └── aio/                     # Async client implementations
+│   ├── model/                        # 📊 Data models and assets
+│   │   ├── assets/                  # Asset type definitions
+│   │   │   ├── core/                # Core asset types (Table, Database, etc.)
+│   │   │   └── relations/           # Relationship models
+│   │   ├── fields/                  # Search field definitions
+│   │   ├── open_lineage/            # OpenLineage specification models
+│   │   ├── packages/                # Package/workflow models
+│   │   └── aio/                     # Async model variants
+│   ├── generator/                    # 🏗️ Code generation tools
+│   │   ├── templates/               # Jinja2 templates for generation
+│   │   └── class_generator.py       # Main generation logic
+│   ├── pkg/                         # 📦 Package creation utilities
+│   ├── events/                      # 🔔 Event handling (webhooks, lambdas)
+│   ├── samples/                     # 💡 Example code and scripts
+│   └── test_utils/                  # 🧪 Testing utilities
+├── tests/                            # 🧪 Test suite
+│   ├── unit/                        # Unit tests (fast, no external deps)
+│   ├── integration/                 # Integration tests (require Atlan instance)
+│   └── data/                        # Test fixtures and mock data
+├── docs/                            # 📚 Sphinx documentation
+│   ├── conf.py                      # Sphinx configuration
+│   └── *.rst                       # Documentation source files
+├── pyproject.toml                   # 📋 Project configuration (deps, tools)
+├── uv.lock                          # 🔒 Locked dependencies
+├── qa-checks                        # ✅ Quality assurance script
+├── formatter                        # 🎨 Code formatting script
+└── generator                        # 🏗️ Model generation script
+```
+
+### Key Components
+
+#### 🌐 **Client Layer** (`pyatlan/client/`)
+- **Synchronous**: Direct HTTP operations using `httpx`
+- **Asynchronous**: Async/await operations using `httpx.AsyncClient`
+- **Common**: Shared business logic between sync/async clients
+- **Specialized**: Domain-specific clients (admin, audit, lineage, etc.)
+
+#### 📊 **Model Layer** (`pyatlan/model/`)
+- **Assets**: 400+ asset types (tables, dashboards, pipelines, etc.)
+- **Core Models**: Base classes, requests, responses
+- **Fields**: Search and filtering field definitions
+- **OpenLineage**: Data lineage specification compliance
+
+#### 💾 **Cache Layer** (`pyatlan/cache/`)
+- **Tag Cache**: Maps human-readable tag names to internal GUIDs
+- **Custom Metadata**: Caches custom attribute definitions
+- **Connection Cache**: Stores connector and connection metadata
+- **Async Variants**: Full async implementations for all caches
+
+#### 🏗️ **Generation System** (`pyatlan/generator/`)
+- **Templates**: Jinja2 templates for assets, enums, documentation
+- **Generator**: Retrieves typedefs and generates Python models
+- **Incremental**: Only regenerates changed models for efficiency
+
+#### 🧪 **Testing Strategy**
+- **Unit Tests**: Fast, isolated tests with mocks/fixtures
+- **Integration Tests**: Real API calls (requires credentials)
+- **VCR Cassettes**: Record/replay HTTP interactions for consistent testing
+
+#### 📦 **Package System** (`pyatlan/pkg/`)
+- **Custom Packages**: Framework for building Atlan-deployable packages
+- **Templates**: Pre-built package structures and configurations
+- **Utilities**: Helper functions for package development
+
+### Development Workflow
+
+1. **Models**: Generated from your Atlan instance's typedefs
+2. **Clients**: Hand-crafted for optimal developer experience  
+3. **Tests**: Mix of unit (fast iteration) and integration (real validation)
+4. **Quality**: Automated formatting, linting, and type checking
+5. **Documentation**: Auto-generated from docstrings and examples
+
 ## 📄 License
 
 This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.

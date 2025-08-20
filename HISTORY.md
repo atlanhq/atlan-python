@@ -4,11 +4,11 @@
 
 #### Full `async/await` support
 
-- Added async/await support to the SDK. All existing `clients` and `caches` now have async variants, plus new models (mainly search result models that require async iteration). Following `aio` directory convention for all async components.
+- Added `async/await` support to the SDK. All existing `clients` and `caches` now have async variants, plus new models (mainly search result models that require `async` iteration). Following `aio` directory convention for all async components.
 - Implemented `AsyncAtlanClient` for all async operations (extends `AtlanClient` for reusability).
 - For methods that accept client parameters, we've added corresponding `*_async()` variants:
 
-| Sync Method | Async Method |
+| sync method | async method |
 |------------|--------------|
 | `Connection.creator()` | `Connection.creator_async()` |
 | `Badge.creator()` | `Badge.creator_async()` |
