@@ -1174,8 +1174,6 @@ dependencies = [
     { name = "pytz" },
     { name = "pyyaml" },
     { name = "tenacity" },
-    { name = "urllib3", version = "1.26.20", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' or platform_python_implementation == 'PyPy'" },
-    { name = "urllib3", version = "2.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and platform_python_implementation != 'PyPy'" },
 ]
 
 [package.dev-dependencies]
@@ -1194,8 +1192,7 @@ dev = [
     { name = "retry" },
     { name = "ruff" },
     { name = "twine" },
-    { name = "types-requests", version = "2.31.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' or platform_python_implementation == 'PyPy'" },
-    { name = "types-requests", version = "2.31.0.20240406", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and platform_python_implementation != 'PyPy'" },
+    { name = "types-requests" },
     { name = "types-retry" },
     { name = "types-setuptools" },
     { name = "vcrpy" },
@@ -1223,7 +1220,6 @@ requires-dist = [
     { name = "pytz", specifier = "~=2025.2" },
     { name = "pyyaml", specifier = "~=6.0.2" },
     { name = "tenacity", specifier = "~=9.1.2" },
-    { name = "urllib3", specifier = ">=1.26.0,<3" },
 ]
 
 [package.metadata.requires-dev]
@@ -1911,32 +1907,12 @@ wheels = [
 name = "types-requests"
 version = "2.31.0.6"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.10' and platform_python_implementation == 'PyPy'",
-    "python_full_version < '3.10' and platform_python_implementation == 'PyPy'",
-    "python_full_version < '3.10' and platform_python_implementation != 'PyPy'",
-]
 dependencies = [
-    { name = "types-urllib3", marker = "python_full_version < '3.10' or platform_python_implementation == 'PyPy'" },
+    { name = "types-urllib3" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f9/b8/c1e8d39996b4929b918aba10dba5de07a8b3f4c8487bb61bb79882544e69/types-requests-2.31.0.6.tar.gz", hash = "sha256:cd74ce3b53c461f1228a9b783929ac73a666658f223e28ed29753771477b3bd0", size = 15535, upload-time = "2023-09-27T06:19:38.443Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5c/a1/6f8dc74d9069e790d604ddae70cb46dcbac668f1bb08136e7b0f2f5cd3bf/types_requests-2.31.0.6-py3-none-any.whl", hash = "sha256:a2db9cb228a81da8348b49ad6db3f5519452dd20a9c1e1a868c83c5fe88fd1a9", size = 14516, upload-time = "2023-09-27T06:19:36.373Z" },
-]
-
-[[package]]
-name = "types-requests"
-version = "2.31.0.20240406"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.10' and platform_python_implementation != 'PyPy'",
-]
-dependencies = [
-    { name = "urllib3", version = "2.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10' and platform_python_implementation != 'PyPy'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/40/66afbb030f4a800c08a9312a0653a7aec06ce0bd633d83215eb0f83c0f46/types-requests-2.31.0.20240406.tar.gz", hash = "sha256:4428df33c5503945c74b3f42e82b181e86ec7b724620419a2966e2de604ce1a1", size = 17134, upload-time = "2024-04-06T02:13:39.267Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/ea/91b718b8c0b88e4f61cdd61357cc4a1f8767b32be691fb388299003a3ae3/types_requests-2.31.0.20240406-py3-none-any.whl", hash = "sha256:6216cdac377c6b9a040ac1c0404f7284bd13199c0e1bb235f4324627e8898cf5", size = 15347, upload-time = "2024-04-06T02:13:37.412Z" },
 ]
 
 [[package]]

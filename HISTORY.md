@@ -22,6 +22,7 @@
 | `Referenceable.flush_custom_metadata()` | `Referenceable.flush_custom_metadata_async()` |
 
 #### Shared business logic architecture
+
 - Extracted common functionality (request preparation and response processing) into a separate `common` sub-package. This enables reuse across both sync and async operations - only the middle layer (API calling with respective clients) differs.
 
 Example:
