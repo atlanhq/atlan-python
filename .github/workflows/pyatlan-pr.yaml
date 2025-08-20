@@ -106,8 +106,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev
 
-      # - name: QA checks (ruff-format, ruff-lint, mypy)
-      #   run: uv run ./qa-checks
+      - name: QA checks (ruff-format, ruff-lint, mypy)
+        run: uv run ./qa-checks
 
       - name: Run unit tests
         env: # Test tenant environment variables
