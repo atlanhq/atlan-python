@@ -29,6 +29,12 @@ class MicroStrategyDocument(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    MICRO_STRATEGY_COLUMNS: ClassVar[RelationField] = RelationField(
+        "microStrategyColumns"
+    )
+    """
+    TBC
+    """
     MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
         "microStrategyProject"
     )
@@ -37,8 +43,23 @@ class MicroStrategyDocument(MicroStrategy):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "micro_strategy_columns",
         "micro_strategy_project",
     ]
+
+    @property
+    def micro_strategy_columns(self) -> Optional[List[MicroStrategyColumn]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_columns
+        )
+
+    @micro_strategy_columns.setter
+    def micro_strategy_columns(
+        self, micro_strategy_columns: Optional[List[MicroStrategyColumn]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_columns = micro_strategy_columns
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
@@ -55,6 +76,9 @@ class MicroStrategyDocument(MicroStrategy):
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
+        micro_strategy_columns: Optional[List[MicroStrategyColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
             default=None, description=""
         )  # relationship
@@ -69,6 +93,7 @@ class MicroStrategyDocument(MicroStrategy):
     )
 
 
+from .micro_strategy_column import MicroStrategyColumn  # noqa: E402, F401
 from .micro_strategy_project import MicroStrategyProject  # noqa: E402, F401
 
 MicroStrategyDocument.Attributes.update_forward_refs()

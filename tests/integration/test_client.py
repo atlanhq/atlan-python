@@ -7,9 +7,9 @@ import pytest
 from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
-from pyatlan.client.audit import LOGGER as AUDIT_LOGGER
-from pyatlan.client.search_log import LOGGER as SEARCH_LOG_LOGGER
-from pyatlan.client.search_log import (
+from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
+from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
+from pyatlan.client.common.search_log import (
     AssetViews,
     SearchLogRequest,
     SearchLogResults,
@@ -66,34 +66,34 @@ call_count = 0
 
 
 @pytest.fixture(scope="module")
-def token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = create_token(client, MODULE_NAME)
+        token = create_token(token_client, MODULE_NAME)
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")
-def expired_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def expired_token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
+        token = token_client.token.create(f"{MODULE_NAME}-expired", validity_seconds=1)
         time.sleep(5)
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")
-def argo_fake_token(client: AtlanClient) -> Generator[ApiToken, None, None]:
+def argo_fake_token(token_client: AtlanClient) -> Generator[ApiToken, None, None]:
     token = None
     try:
-        token = client.token.create(f"{MODULE_NAME}-fake-argo")
+        token = token_client.token.create(f"{MODULE_NAME}-fake-argo")
         yield token
     finally:
-        delete_token(client, token)
+        delete_token(token_client, token)
 
 
 @pytest.fixture(scope="module")
@@ -1645,7 +1645,12 @@ def test_client_init_from_token_guid(
     # Ensure it's a valid API token
     assert token and token.username and token.guid
     assert "service-account" in token.username
-    token_client = AtlanClient.from_token_guid(guid=token.guid)
+    token_client_from_env_vars = AtlanClient.from_token_guid(guid=token.guid)
+    token_client_custom = AtlanClient.from_token_guid(
+        guid=token.guid,
+        client_id=argo_fake_token.client_id,
+        client_secret=argo_client_secret,
+    )
 
     # Should be able to perform all operations
     # with this client as long as it has the necessary permissions
@@ -1654,7 +1659,16 @@ def test_client_init_from_token_guid(
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossary))
         .page_size(100)
-        .execute(client=token_client)
+        .execute(client=token_client_from_env_vars)
+    )
+    assert results and results.count >= 1
+
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=token_client_custom)
     )
     assert results and results.count >= 1
 

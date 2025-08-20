@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 from typing import Any, Generator, Protocol, runtime_checkable
 
-from urllib3.util.retry import Retry
+from httpx_retries import Retry
 
 HTTPS_PREFIX = "https://"
 HTTP_PREFIX = "http://"
@@ -43,4 +43,32 @@ class ApiCaller(Protocol):
         pass
 
     def _presigned_url_file_download(self, api, file_path: str):
+        pass
+
+
+@runtime_checkable
+class AsyncApiCaller(Protocol):
+    async def _call_api(
+        self,
+        api,
+        query_params=None,
+        request_obj=None,
+        exclude_unset: bool = True,
+        text_response: bool = False,
+    ) -> Any:
+        pass
+
+    async def max_retries(self, max_retries: Retry = CONNECTION_RETRY):
+        pass
+
+    async def _s3_presigned_url_file_upload(self, api, upload_file: Any):
+        pass
+
+    async def _azure_blob_presigned_url_file_upload(self, api, upload_file: Any):
+        pass
+
+    async def _gcs_presigned_url_file_upload(self, api, upload_file: Any):
+        pass
+
+    async def _presigned_url_file_download(self, api, file_path: str):
         pass

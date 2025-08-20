@@ -2,34 +2,32 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from json import dumps
+import json
 from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import (
-    ADD_USER_TO_GROUPS,
-    CHANGE_USER_ROLE,
-    CREATE_USERS,
-    GET_CURRENT_USER,
-    GET_USER_GROUPS,
-    GET_USERS,
-    UPDATE_USER,
+from pyatlan.client.common import (
+    ApiCaller,
+    UserAddToGroups,
+    UserChangeRole,
+    UserCreate,
+    UserGet,
+    UserGetByEmail,
+    UserGetByEmails,
+    UserGetByUsername,
+    UserGetByUsernames,
+    UserGetCurrent,
+    UserGetGroups,
+    UserUpdate,
 )
 from pyatlan.errors import ErrorCode
+from pyatlan.model.assets import Asset
 from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest, GroupResponse
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.user import (
-    AddToGroupsRequest,
-    AtlanUser,
-    ChangeRoleRequest,
-    CreateUserRequest,
-    UserMinimalResponse,
-    UserRequest,
-    UserResponse,
-)
+from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest, UserResponse
 
 
 class UserClient:
@@ -57,22 +55,10 @@ class UserClient:
         :raises AtlanError: on any API communication issue
         :returns: a UserResponse object which contains the list of details of created users if `return_info` is `True`, otherwise `None`
         """
-
-        cur = CreateUserRequest(users=[])
-        for user in users:
-            role_name = str(user.workspace_role)
-            if (
-                role_id := self._client.role_cache.get_id_for_name(role_name)  # type: ignore[attr-defined]
-            ) and user.email:
-                to_create = CreateUserRequest.CreateUser(
-                    email=user.email,
-                    role_name=role_name,
-                    role_id=role_id,
-                )
-                cur.users.append(to_create)
-        self._client._call_api(CREATE_USERS, request_obj=cur, exclude_unset=True)
+        endpoint, request_obj = UserCreate.prepare_request(users, self._client)
+        self._client._call_api(endpoint, request_obj=request_obj, exclude_unset=True)
         if return_info:
-            users_emails = [user.email for user in cur.users]
+            users_emails = [user.email for user in request_obj.users]
             return self.get_by_emails(emails=users_emails)
         return None
 
@@ -92,12 +78,11 @@ class UserClient:
         :returns: basic details about the updated user
         :raises AtlanError: on any API communication issue
         """
+        endpoint, request_obj = UserUpdate.prepare_request(guid, user)
         raw_json = self._client._call_api(
-            UPDATE_USER.format_path_with_params(guid),
-            request_obj=user,
-            exclude_unset=True,
+            endpoint, request_obj=request_obj, exclude_unset=True
         )
-        return UserMinimalResponse(**raw_json)
+        return UserUpdate.process_response(raw_json)
 
     @validate_arguments
     def change_role(
@@ -112,12 +97,8 @@ class UserClient:
         :param role_id: unique identifier (GUID) of the role to move the user into
         :raises AtlanError: on any API communication issue
         """
-        crr = ChangeRoleRequest(role_id=role_id)
-        self._client._call_api(
-            CHANGE_USER_ROLE.format_path({"user_guid": guid}),
-            request_obj=crr,
-            exclude_unset=True,
-        )
+        endpoint, request_obj = UserChangeRole.prepare_request(guid, role_id)
+        self._client._call_api(endpoint, request_obj=request_obj, exclude_unset=True)
 
     def get_current(
         self,
@@ -128,8 +109,9 @@ class UserClient:
         :returns: basic details about the current user (API token)
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(GET_CURRENT_USER)
-        return UserMinimalResponse(**raw_json)
+        endpoint, request_obj = UserGetCurrent.prepare_request()
+        raw_json = self._client._call_api(endpoint, request_obj)
+        return UserGetCurrent.process_response(raw_json)
 
     @validate_arguments
     def get(
@@ -151,46 +133,25 @@ class UserClient:
         :returns: a UserResponse which contains a list of users that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
+        endpoint, query_params = UserGet.prepare_request(
+            limit, post_filter, sort, count, offset
+        )
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
+        # Build the request object for response processing
+
         request = UserRequest(
             post_filter=post_filter,
             limit=limit,
             sort=sort,
             count=count,
             offset=offset,
-            columns=[
-                "firstName",
-                "lastName",
-                "username",
-                "id",
-                "email",
-                "emailVerified",
-                "enabled",
-                "roles",
-                "defaultRoles",
-                "groupCount",
-                "attributes",
-                "personas",
-                "createdTimestamp",
-                "lastLoginTime",
-                "loginEvents",
-                "isLocked",
-                "workspaceRole",
-            ],
         )
-        endpoint = GET_USERS.format_path_with_params()
-        raw_json = self._client._call_api(
-            api=endpoint, query_params=request.query_params
+
+        response_data = UserGet.process_response(
+            raw_json, self._client, endpoint, request, offset, limit
         )
-        return UserResponse(
-            client=self._client,
-            endpoint=endpoint,
-            criteria=request,
-            start=request.offset,
-            size=request.limit,
-            records=raw_json["records"],
-            filter_record=raw_json["filterRecord"],
-            total_record=raw_json["totalRecord"],
-        )
+        return UserResponse(**response_data)
 
     @validate_arguments
     def get_all(
@@ -229,12 +190,21 @@ class UserClient:
         :param offset: starting point for the list of users when pagin
         :returns: a UserResponse object containing a list of users whose email addresses contain the provided string
         """
-        response: UserResponse = self.get(
-            offset=offset,
-            limit=limit,
+        endpoint, query_params = UserGetByEmail.prepare_request(email, limit, offset)
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
+        # Build the request object for response processing
+
+        request = UserRequest(
             post_filter='{"email":{"$ilike":"%' + email + '%"}}',
+            limit=limit,
+            offset=offset,
         )
-        return response
+
+        response_data = UserGet.process_response(
+            raw_json, self._client, endpoint, request, offset, limit
+        )
+        return UserResponse(**response_data)
 
     @validate_arguments
     def get_by_emails(
@@ -251,11 +221,22 @@ class UserClient:
         :param offset: starting point for the list of users when paginating
         :returns: a UserResponse object containing a list of users whose email addresses match the provided list
         """
-        email_filter = '{"email":{"$in":' + dumps(emails or [""]) + "}}"
-        response: UserResponse = self.get(
-            offset=offset, limit=limit, post_filter=email_filter
+        endpoint, query_params = UserGetByEmails.prepare_request(emails, limit, offset)
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
+        # Build the request object for response processing
+
+        email_filter = '{"email":{"$in":' + json.dumps(emails or [""]) + "}}"
+        request = UserRequest(
+            post_filter=email_filter,
+            limit=limit,
+            offset=offset,
         )
-        return response
+
+        response_data = UserGet.process_response(
+            raw_json, self._client, endpoint, request, offset, limit
+        )
+        return UserResponse(**response_data)
 
     @validate_arguments
     def get_by_username(self, username: str) -> Optional[AtlanUser]:
@@ -266,14 +247,22 @@ class UserClient:
         :param username: the username by which to find the user
         :returns: the with that username
         """
-        if response := self.get(
-            offset=0,
-            limit=5,
+        endpoint, query_params = UserGetByUsername.prepare_request(username)
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
+        # Build the request object for response processing
+
+        request = UserRequest(
             post_filter='{"username":"' + username + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+            limit=5,
+            offset=0,
+        )
+
+        response_data = UserGet.process_response(
+            raw_json, self._client, endpoint, request, 0, 5
+        )
+        response = UserResponse(**response_data)
+        return UserGetByUsername.process_response(response)
 
     @validate_arguments
     def get_by_usernames(
@@ -287,11 +276,24 @@ class UserClient:
         :param offset: starting point for the list of users when paginating
         :returns: a UserResponse object containing list of users with the specified usernames
         """
-        username_filter = '{"username":{"$in":' + dumps(usernames or [""]) + "}}"
-        response: UserResponse = self.get(
-            offset=offset, limit=limit, post_filter=username_filter
+        endpoint, query_params = UserGetByUsernames.prepare_request(
+            usernames, limit, offset
         )
-        return response
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
+        # Build the request object for response processing
+
+        username_filter = '{"username":{"$in":' + json.dumps(usernames or [""]) + "}}"
+        request = UserRequest(
+            post_filter=username_filter,
+            limit=limit,
+            offset=offset,
+        )
+
+        response_data = UserGet.process_response(
+            raw_json, self._client, endpoint, request, offset, limit
+        )
+        return UserResponse(**response_data)
 
     @validate_arguments
     def add_to_groups(
@@ -306,12 +308,8 @@ class UserClient:
         :param group_ids: unique identifiers (GUIDs) of the groups to add the user into
         :raises AtlanError: on any API communication issue
         """
-        atgr = AddToGroupsRequest(groups=group_ids)
-        self._client._call_api(
-            ADD_USER_TO_GROUPS.format_path({"user_guid": guid}),
-            request_obj=atgr,
-            exclude_unset=True,
-        )
+        endpoint, request_obj = UserAddToGroups.prepare_request(guid, group_ids)
+        self._client._call_api(endpoint, request_obj=request_obj, exclude_unset=True)
 
     @validate_arguments
     def get_groups(
@@ -325,25 +323,15 @@ class UserClient:
         :returns: a GroupResponse which contains the groups this user belongs to
         :raises AtlanError: on any API communication issue
         """
+        endpoint, query_params = UserGetGroups.prepare_request(guid, request)
+        raw_json = self._client._call_api(api=endpoint, query_params=query_params)
+
         if not request:
             request = GroupRequest()
-        endpoint = GET_USER_GROUPS.format_path(
-            {"user_guid": guid}
-        ).format_path_with_params()
-        raw_json = self._client._call_api(
-            api=endpoint,
-            query_params=request.query_params,
+        response_data = UserGetGroups.process_response(
+            raw_json, self._client, endpoint, request
         )
-        return GroupResponse(
-            client=self._client,
-            endpoint=endpoint,
-            criteria=request,
-            start=request.offset,
-            size=request.limit,
-            records=raw_json.get("records"),
-            filter_record=raw_json.get("filterRecord"),
-            total_record=raw_json.get("totalRecord"),
-        )
+        return GroupResponse(**response_data)
 
     @validate_arguments
     def add_as_admin(
@@ -360,7 +348,6 @@ class UserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
         """
-        from pyatlan.model.assets import Asset
 
         return self._add_as(
             asset_guid=asset_guid,
@@ -383,7 +370,6 @@ class UserClient:
         :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
-        from pyatlan.model.assets import Asset
 
         return self._add_as(
             asset_guid=asset_guid,
@@ -405,8 +391,6 @@ class UserClient:
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.client.atlan import client_connection
-        from pyatlan.model.assets import Asset
-        from pyatlan.model.fluent_search import FluentSearch
 
         if keyword_field not in [Asset.ADMIN_USERS, Asset.VIEWER_USERS]:
             raise ValueError(

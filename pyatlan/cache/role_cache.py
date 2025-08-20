@@ -5,6 +5,7 @@ from __future__ import annotations
 from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
+from pyatlan.cache.common import RoleCacheCommon
 from pyatlan.model.role import AtlanRole
 
 if TYPE_CHECKING:
@@ -58,15 +59,11 @@ class RoleCache:
             )
             if not response:
                 return
-            self.cache_by_id = {}
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            for role in response.records:
-                role_id = role.id
-                role_name = role.name
-                self.cache_by_id[role_id] = role
-                self.map_id_to_name[role_id] = role_name
-                self.map_name_to_id[role_name] = role_id
+
+            # Process response using shared logic
+            (self.cache_by_id, self.map_id_to_name, self.map_name_to_id) = (
+                RoleCacheCommon.refresh_cache_data(response.records)
+            )
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """

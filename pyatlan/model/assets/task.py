@@ -40,43 +40,43 @@ class Task(Asset, type_name="Task"):
         "taskRecipient", "taskRecipient"
     )
     """
-    recipient of the task
+    Recipient of the task.
     """
     TASK_TYPE: ClassVar[KeywordField] = KeywordField("taskType", "taskType")
     """
-    type of task
+    Type of task.
     """
     TASK_REQUESTOR: ClassVar[KeywordField] = KeywordField(
         "taskRequestor", "taskRequestor"
     )
     """
-    requestor of the task
+    Requestor of the task.
     """
     TASK_IS_READ: ClassVar[BooleanField] = BooleanField("taskIsRead", "taskIsRead")
     """
-    flag to make task read/unread
+    Flag to make task read/unread.
     """
     TASK_REQUESTOR_COMMENT: ClassVar[TextField] = TextField(
         "taskRequestorComment", "taskRequestorComment"
     )
     """
-    comment of requestor for the task
+    Comment of requestor for the task.
     """
     TASK_RELATED_ASSET_GUID: ClassVar[KeywordField] = KeywordField(
         "taskRelatedAssetGuid", "taskRelatedAssetGuid"
     )
     """
-    assetId to preview
+    Unique identifier of the asset to preview.
     """
     TASK_PROPOSALS: ClassVar[TextField] = TextField("taskProposals", "taskProposals")
     """
-    contains the payload that is proposed to the task
+    Contains the payload that is proposed to the task.
     """
     TASK_EXPIRES_AT: ClassVar[NumericField] = NumericField(
         "taskExpiresAt", "taskExpiresAt"
     )
     """
-    Time (epoch) at which the task expires .
+    Time (epoch) at which the task expires.
     """
     TASK_ACTIONS: ClassVar[KeywordField] = KeywordField("taskActions", "taskActions")
     """
@@ -86,31 +86,31 @@ class Task(Asset, type_name="Task"):
         "taskExecutionComment", "taskExecutionComment"
     )
     """
-    comment for the action executed by user
+    Comment for the action executed by user.
     """
     TASK_EXECUTION_ACTION: ClassVar[KeywordField] = KeywordField(
         "taskExecutionAction", "taskExecutionAction"
     )
     """
-    action executed by the recipient
+    Action executed by the recipient.
     """
     TASK_INTEGRATION_CONFIG: ClassVar[TextField] = TextField(
         "taskIntegrationConfig", "taskIntegrationConfig"
     )
     """
-    contains external integration config for the task
+    Contains external integration config for the task.
     """
     TASK_CREATED_BY: ClassVar[KeywordField] = KeywordField(
         "taskCreatedBy", "taskCreatedBy"
     )
     """
-    username of the user who created this task
+    Username of the user who created this task.
     """
     TASK_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
         "taskUpdatedBy", "taskUpdatedBy"
     )
     """
-    username of the user who updated this task
+    Username of the user who updated this task.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Dict, Optional
+from typing import Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import GET_ROLES
+from pyatlan.client.common import ApiCaller, RoleGet, RoleGetAll
 from pyatlan.errors import ErrorCode
 from pyatlan.model.role import RoleResponse
 
@@ -43,19 +42,20 @@ class RoleClient:
         :returns: None or a RoleResponse object which contains list of roles that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: Dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-            "limit": str(limit),
-        }
-        if post_filter:
-            query_params["filter"] = post_filter
-        if sort:
-            query_params["sort"] = sort
-        raw_json = self._client._call_api(
-            GET_ROLES.format_path_with_params(), query_params
+        # Prepare request using shared logic
+        endpoint, query_params = RoleGet.prepare_request(
+            limit=limit,
+            post_filter=post_filter,
+            sort=sort,
+            count=count,
+            offset=offset,
         )
-        return RoleResponse(**raw_json)
+
+        # Execute API call
+        raw_json = self._client._call_api(endpoint, query_params)
+
+        # Process response using shared logic
+        return RoleGet.process_response(raw_json)
 
     def get_all(self) -> RoleResponse:
         """
@@ -64,5 +64,11 @@ class RoleClient:
         :returns:  a RoleResponse which contains a list of all the roles defined in Atlan
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(GET_ROLES.format_path_with_params())
-        return RoleResponse(**raw_json)
+        # Prepare request using shared logic
+        endpoint = RoleGetAll.prepare_request()
+
+        # Execute API call
+        raw_json = self._client._call_api(endpoint)
+
+        # Process response using shared logic
+        return RoleGetAll.process_response(raw_json)

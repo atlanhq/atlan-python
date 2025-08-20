@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -125,6 +125,12 @@ class FlowDataset(Catalog):
     """
     Optional error message of the flow run.
     """
+    FLOW_INPUT_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "flowInputParameters", "flowInputParameters"
+    )
+    """
+    Input parameters for the flow run.
+    """
 
     FLOW_PARENT_UNIT: ClassVar[RelationField] = RelationField("flowParentUnit")
     """
@@ -157,6 +163,7 @@ class FlowDataset(Catalog):
         "flow_id",
         "flow_run_id",
         "flow_error_message",
+        "flow_input_parameters",
         "flow_parent_unit",
         "flow_fields",
         "flow_detailed_by",
@@ -351,6 +358,18 @@ class FlowDataset(Catalog):
         self.attributes.flow_error_message = flow_error_message
 
     @property
+    def flow_input_parameters(self) -> Optional[Dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.flow_input_parameters
+        )
+
+    @flow_input_parameters.setter
+    def flow_input_parameters(self, flow_input_parameters: Optional[Dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_input_parameters = flow_input_parameters
+
+    @property
     def flow_parent_unit(self) -> Optional[FlowReusableUnit]:
         return None if self.attributes is None else self.attributes.flow_parent_unit
 
@@ -400,6 +419,9 @@ class FlowDataset(Catalog):
         flow_id: Optional[str] = Field(default=None, description="")
         flow_run_id: Optional[str] = Field(default=None, description="")
         flow_error_message: Optional[str] = Field(default=None, description="")
+        flow_input_parameters: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         flow_parent_unit: Optional[FlowReusableUnit] = Field(
             default=None, description=""
         )  # relationship

@@ -6,7 +6,7 @@ from typing import Any, Dict, Generator, List, Optional, Protocol
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.core import AtlanObject

@@ -4,7 +4,7 @@ from typing import Any, ClassVar, Dict, Generator, Iterable, List, Optional
 
 from pydantic.v1 import Field, ValidationError, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject, SearchRequest
@@ -109,7 +109,7 @@ class TaskSearchResponse(Iterable):
 
     def __init__(
         self,
-        client: ApiCaller,
+        client: "ApiCaller",
         endpoint: API,
         criteria: TaskSearchRequest,
         start: int,

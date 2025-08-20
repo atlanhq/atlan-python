@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
 import abc
@@ -25,7 +25,6 @@ from typing import (
 )
 from warnings import warn
 
-import requests
 from pydantic.v1 import (
     StrictStr,
     ValidationError,
@@ -33,20 +32,55 @@ from pydantic.v1 import (
     parse_obj_as,
     validate_arguments,
 )
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
+from tenacity import (
+    RetryError,
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+    wait_fixed,
+)
 
-from pyatlan.client.common import ApiCaller
+from pyatlan.client.common import (
+    ApiCaller,
+    DeleteByGuid,
+    FindCategoryFastByName,
+    FindConnectionsByName,
+    FindDomainByName,
+    FindGlossaryByName,
+    FindPersonasByName,
+    FindProductByName,
+    FindPurposesByName,
+    FindTermFastByName,
+    GetByGuid,
+    GetByQualifiedName,
+    GetHierarchy,
+    GetLineageList,
+    ManageCustomMetadata,
+    ManageTerms,
+    ModifyAtlanTags,
+    PurgeByGuid,
+    RemoveAnnouncement,
+    RemoveCertificate,
+    RemoveCustomMetadata,
+    ReplaceCustomMetadata,
+    RestoreAsset,
+    Save,
+    Search,
+    SearchForAssetWithName,
+    UpdateAnnouncement,
+    UpdateAsset,
+    UpdateAssetByAttribute,
+    UpdateCertificate,
+    UpdateCustomMetadataAttributes,
+)
 from pyatlan.client.constants import (
-    ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
     DELETE_ENTITIES_BY_GUIDS,
-    GET_ENTITY_BY_GUID,
-    GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_LINEAGE_LIST,
     INDEX_SEARCH,
-    PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
 )
-from pyatlan.errors import AtlanError, ErrorCode
+from pyatlan.errors import AtlanError, ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.assets import (
     Asset,
@@ -65,17 +99,8 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.core import (
-    Announcement,
-    AssetRequest,
-    AssetResponse,
-    AtlanObject,
-    AtlanTag,
-    AtlanTagName,
-    BulkRequest,
-    SearchRequest,
-)
-from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataRequest
+from pyatlan.model.core import Announcement, AtlanObject, SearchRequest
+from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AssetCreationHandling,
     AtlanConnectorType,
@@ -87,21 +112,9 @@ from pyatlan.model.enums import (
     alpha_DQScheduleType,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.lineage import LineageDirection, LineageListRequest
+from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.search import (
-    DSL,
-    Bool,
-    IndexSearchRequest,
-    Query,
-    Range,
-    SortItem,
-    Term,
-    Terms,
-    with_active_category,
-    with_active_glossary,
-    with_active_term,
-)
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, Range, SortItem
 from pyatlan.utils import API, unflatten_custom_metadata_for_entity
 
 if TYPE_CHECKING:
@@ -153,59 +166,6 @@ class AssetClient:
             )
         self._client = client
 
-    @staticmethod
-    def _prepare_sorts_for_bulk_search(sorts: List[SortItem]):
-        if not IndexSearchResults.presorted_by_timestamp(sorts):
-            # Pre-sort by creation time (ascending) for mass-sequential iteration,
-            # if not already sorted by creation time first
-            return IndexSearchResults.sort_by_timestamp_first(sorts)
-
-    def _get_bulk_search_log_message(self, bulk):
-        return (
-            (
-                "Bulk search option is enabled. "
-                if bulk
-                else "Result size (%s) exceeds threshold (%s). "
-            )
-            + "Ignoring requests for offset-based paging and using timestamp-based paging instead."
-        )
-
-    @staticmethod
-    def _ensure_type_filter_present(criteria: IndexSearchRequest) -> None:
-        """
-        Ensures that at least one 'typeName' filter is present in both 'must' and 'filter' clauses.
-        If missing in either, appends a default filter for 'Referenceable' to that clause.
-        """
-        if not (
-            criteria
-            and criteria.dsl
-            and criteria.dsl.query
-            and isinstance(criteria.dsl.query, Bool)
-        ):
-            return
-
-        query = criteria.dsl.query
-        default_filter = Term.with_super_type_names(Referenceable.__name__)
-        type_field = Referenceable.TYPE_NAME.keyword_field_name
-
-        def needs_type_filter(clause: Optional[List]) -> bool:
-            return not any(
-                isinstance(f, (Term, Terms)) and f.field == type_field
-                for f in clause or []
-            )
-
-        # Update 'filter' clause if needed
-        if needs_type_filter(query.filter):
-            if query.filter is None:
-                query.filter = []
-            query.filter.append(default_filter)
-
-        # Update 'must' clause if needed
-        if needs_type_filter(query.must):
-            if query.must is None:
-                query.must = []
-            query.must.append(default_filter)
-
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
     # https://github.com/atlanhq/atlan-python/pull/88#discussion_r1260892704
@@ -230,69 +190,24 @@ class AssetClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
-        if bulk:
-            # If there is any user-specified sorting present in the search request
-            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
-            LOGGER.debug(self._get_bulk_search_log_message(bulk))
-        self._ensure_type_filter_present(criteria)
+        endpoint, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = self._client._call_api(
-            INDEX_SEARCH,
-            request_obj=criteria,
+            endpoint,
+            request_obj=request_obj,
         )
-        if "entities" in raw_json:
-            try:
-                for entity in raw_json["entities"]:
-                    unflatten_custom_metadata_for_entity(
-                        entity=entity, attributes=criteria.attributes
-                    )
-                assets = parse_obj_as(List[Asset], raw_json["entities"])
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            assets = []
-        aggregations = self._get_aggregations(raw_json)
-        count = raw_json.get("approximateCount", 0)
-
-        if (
-            count > IndexSearchResults._MASS_EXTRACT_THRESHOLD
-            and not IndexSearchResults.presorted_by_timestamp(criteria.dsl.sort)
-        ):
-            # If there is any user-specified sorting present in the search request
-            if criteria.dsl.sort and len(criteria.dsl.sort) > 1:
-                raise ErrorCode.UNABLE_TO_RUN_BULK_WITH_SORTS.exception_with_parameters()
-            # Re-fetch the first page results with updated timestamp sorting
-            # for bulk search if count > _MASS_EXTRACT_THRESHOLD (100,000 assets)
-            criteria.dsl.sort = self._prepare_sorts_for_bulk_search(criteria.dsl.sort)
-            LOGGER.debug(
-                self._get_bulk_search_log_message(bulk),
-                count,
-                IndexSearchResults._MASS_EXTRACT_THRESHOLD,
-            )
+        response = Search.process_response(raw_json, criteria)
+        if Search._check_for_bulk_search(criteria, response["count"], bulk):
             return self.search(criteria)
-
         return IndexSearchResults(
             client=self._client,
             criteria=criteria,
             start=criteria.dsl.from_,
             size=criteria.dsl.size,
-            count=count,
-            assets=assets,
-            aggregations=aggregations,
+            count=response["count"],
+            assets=response["assets"],
+            aggregations=response["aggregations"],
             bulk=bulk,
         )
-
-    def _get_aggregations(self, raw_json) -> Optional[Aggregations]:
-        aggregations = None
-        if "aggregations" in raw_json:
-            try:
-                aggregations = Aggregations.parse_obj(raw_json["aggregations"])
-            except ValidationError:
-                pass
-        return aggregations
 
     # TODO: Try adding @validate_arguments to this method once
     # the issue below is fixed or when we switch to pydantic v2
@@ -308,33 +223,16 @@ class AssetClient:
         :raises InvalidRequestError: if the requested lineage direction is 'BOTH' (unsupported for this operation)
         :raises AtlanError: on any API communication issue
         """
-        if lineage_request.direction == LineageDirection.BOTH:
-            raise ErrorCode.INVALID_LINEAGE_DIRECTION.exception_with_parameters()
-        raw_json = self._client._call_api(
-            GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True
-        )
-        if "entities" in raw_json:
-            try:
-                for entity in raw_json["entities"]:
-                    unflatten_custom_metadata_for_entity(
-                        entity=entity, attributes=lineage_request.attributes
-                    )
-                assets = parse_obj_as(List[Asset], raw_json["entities"])
-                has_more = parse_obj_as(bool, raw_json["hasMore"])
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            assets = []
-            has_more = False
+        endpoint, request_obj = GetLineageList.prepare_request(lineage_request)
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        response = GetLineageList.process_response(raw_json, lineage_request)
         return LineageListResults(
             client=self._client,
             criteria=lineage_request,
             start=lineage_request.offset or 0,
             size=lineage_request.size or 10,
-            has_more=has_more,
-            assets=assets,
+            has_more=response["has_more"],
+            assets=response["assets"],
         )
 
     @validate_arguments
@@ -351,19 +249,10 @@ class AssetClient:
         :returns: all personas with that name, if found
         :raises NotFoundError: if no persona with the provided name exists
         """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PERSONA")
-            + Term.with_name(name)
-        )
-        return self._search_for_asset_with_name(
-            query=query,
-            name=name,
-            asset_type=Persona,
-            attributes=attributes,
-            allow_multiple=True,
+        search_request = FindPersonasByName.prepare_request(name, attributes)
+        search_results = self.search(search_request)
+        return FindPersonasByName.process_response(
+            search_results, name, allow_multiple=True
         )
 
     @validate_arguments
@@ -380,28 +269,11 @@ class AssetClient:
         :returns: all purposes with that name, if found
         :raises NotFoundError: if no purpose with the provided name exists
         """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PURPOSE")
-            + Term.with_name(name)
+        search_request = FindPurposesByName.prepare_request(name, attributes)
+        search_results = self.search(search_request)
+        return FindPurposesByName.process_response(
+            search_results, name, allow_multiple=True
         )
-        return self._search_for_asset_with_name(
-            query=query,
-            name=name,
-            asset_type=Purpose,
-            attributes=attributes,
-            allow_multiple=True,
-        )
-
-    def _normalize_search_fields(
-        self,
-        fields: Optional[Union[List[str], List[AtlanField]]],
-    ) -> List[str]:
-        if not fields:
-            return []
-        return [f.atlan_field_name if isinstance(f, AtlanField) else f for f in fields]
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_qualified_name(
@@ -426,56 +298,36 @@ class AssetClient:
         :raises NotFoundError: if the asset does not exist
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.model.fluent_search import FluentSearch
 
-        query_params = {
-            "attr:qualifiedName": qualified_name,
-            "minExtInfo": min_ext_info,
-            "ignoreRelationships": ignore_relationships,
-        }
-        attributes = self._normalize_search_fields(attributes)
-        related_attributes = self._normalize_search_fields(related_attributes)
-
-        if (attributes and len(attributes)) or (
-            related_attributes and len(related_attributes)
-        ):
-            search = (
-                FluentSearch()
-                .where(Asset.QUALIFIED_NAME.eq(qualified_name))
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-            )
-            for attribute in attributes:
-                search = search.include_on_results(attribute)
-            for relation_attribute in related_attributes:
-                search = search.include_on_relations(relation_attribute)
-            results = search.execute(client=self._client)  # type: ignore[arg-type]
-            if results and results.current_page():
-                first_result = results.current_page()[0]
-                if isinstance(first_result, asset_type):
-                    return first_result
-                else:
-                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        asset_type.__name__, qualified_name
-                    )
-            else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
-
-        raw_json = self._client._call_api(
-            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
-            query_params,
+        # Normalize field inputs
+        normalized_attributes = GetByQualifiedName.normalize_search_fields(attributes)
+        normalized_related_attributes = GetByQualifiedName.normalize_search_fields(
+            related_attributes
         )
-        if raw_json["entity"]["typeName"] != asset_type.__name__:
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
+
+        # Use FluentSearch if specific attributes are requested
+        if (normalized_attributes and len(normalized_attributes)) or (
+            normalized_related_attributes and len(normalized_related_attributes)
+        ):
+            search = GetByQualifiedName.prepare_fluent_search_request(
+                qualified_name,
+                asset_type,
+                normalized_attributes,
+                normalized_related_attributes,
             )
-        asset = self._handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                asset_type.__name__, qualified_name
+            results = search.execute(client=self._client)  # type: ignore[arg-type]
+            return GetByQualifiedName.process_fluent_search_response(
+                results, qualified_name, asset_type
             )
-        return asset
+
+        # Use direct API call for simple requests
+        endpoint_path, query_params = GetByQualifiedName.prepare_direct_api_request(
+            qualified_name, asset_type, min_ext_info, ignore_relationships
+        )
+        raw_json = self._client._call_api(endpoint_path, query_params)
+        return GetByQualifiedName.process_direct_api_response(
+            raw_json, qualified_name, asset_type
+        )
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def get_by_guid(
@@ -500,62 +352,29 @@ class AssetClient:
         :raises NotFoundError: if the asset does not exist, or is not of the type requested
         :raises AtlanError: on any API communication issue
         """
-        from pyatlan.model.fluent_search import FluentSearch
 
-        query_params = {
-            "minExtInfo": min_ext_info,
-            "ignoreRelationships": ignore_relationships,
-        }
-        attributes = self._normalize_search_fields(attributes)
-        related_attributes = self._normalize_search_fields(related_attributes)
-
-        if (attributes and len(attributes)) or (
-            related_attributes and len(related_attributes)
-        ):
-            search = (
-                FluentSearch()
-                .where(Asset.GUID.eq(guid))
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-            )
-            for attribute in attributes:
-                search = search.include_on_results(attribute)
-            for relation_attribute in related_attributes:
-                search = search.include_on_relations(relation_attribute)
-            results = search.execute(client=self._client)  # type: ignore[arg-type]
-            if results and results.current_page():
-                first_result = results.current_page()[0]
-                if isinstance(first_result, asset_type):
-                    return first_result
-                else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
-            else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-
-        raw_json = self._client._call_api(
-            GET_ENTITY_BY_GUID.format_path_with_params(guid),
-            query_params,
+        # Normalize field inputs
+        normalized_attributes = GetByQualifiedName.normalize_search_fields(attributes)
+        normalized_related_attributes = GetByQualifiedName.normalize_search_fields(
+            related_attributes
         )
-        asset = self._handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
-            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                guid, asset_type.__name__
-            )
-        return asset
 
-    def _handle_relationships(self, raw_json):
-        if (
-            "relationshipAttributes" in raw_json["entity"]
-            and raw_json["entity"]["relationshipAttributes"]
+        # Use FluentSearch if specific attributes are requested
+        if (normalized_attributes and len(normalized_attributes)) or (
+            normalized_related_attributes and len(normalized_related_attributes)
         ):
-            raw_json["entity"]["attributes"].update(
-                raw_json["entity"]["relationshipAttributes"]
+            search = GetByGuid.prepare_fluent_search_request(
+                guid, asset_type, normalized_attributes, normalized_related_attributes
             )
-        raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
-        asset.is_incomplete = False
-        return asset
+            results = search.execute(client=self._client)  # type: ignore[arg-type]
+            return GetByGuid.process_fluent_search_response(results, guid, asset_type)
+
+        # Use direct API call for simple requests
+        endpoint_path, query_params = GetByGuid.prepare_direct_api_request(
+            guid, min_ext_info, ignore_relationships
+        )
+        raw_json = self._client._call_api(endpoint_path, query_params)
+        return GetByGuid.process_direct_api_response(raw_json, guid, asset_type)
 
     @validate_arguments
     def retrieve_minimal(
@@ -622,35 +441,38 @@ class AssetClient:
         :raises AtlanError: on any API communication issue
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
-        query_params = {
-            "replaceTags": replace_atlan_tags,
-            "appendTags": append_atlan_tags,
-            "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttributes": overwrite_custom_metadata,
-        }
-        entities: List[Asset] = []
-        if isinstance(entity, list):
-            entities.extend(entity)
-        else:
-            entities.append(entity)
-        for asset in entities:
-            asset.validate_required()
-            asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
-        request = BulkRequest[Asset](entities=entities)
+        query_params, request = Save.prepare_request(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            replace_custom_metadata=replace_custom_metadata,
+            overwrite_custom_metadata=overwrite_custom_metadata,
+            append_atlan_tags=append_atlan_tags,
+        )
+        Save.validate_and_flush_entities(request.entities, self._client)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
-        response = AssetMutationResponse(**raw_json)
+        response = Save.process_response(raw_json)
         if connections_created := response.assets_created(Connection):
             self._wait_for_connections_to_be_created(connections_created)
         return response
 
     def _wait_for_connections_to_be_created(self, connections_created):
-        with self._client.max_retries():
-            LOGGER.debug("Waiting for connections")
-            for connection in connections_created:
-                guid = connection.guid
-                LOGGER.debug("Attempting to retrieve connection with guid: %s", guid)
-                self.retrieve_minimal(guid=guid, asset_type=Connection)
-            LOGGER.debug("Finished waiting for connections")
+        guids = Save.get_connection_guids_to_wait_for(connections_created)
+
+        @retry(
+            retry=retry_if_exception_type(PermissionError),
+            wait=wait_exponential(multiplier=1, min=1, max=8),
+            stop=stop_after_attempt(10),
+            reraise=True,
+        )
+        def _retrieve_connection_with_retry(guid):
+            """Retry connection retrieval on permission errors."""
+            self.retrieve_minimal(guid=guid, asset_type=Connection)
+
+        # Wait for each connection to be fully created and accessible
+        for guid in guids:
+            _retrieve_connection_with_retry(guid)
+
+        Save.log_connections_finished()
 
     @validate_arguments
     def upsert_merging_cm(
@@ -700,19 +522,18 @@ class AssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-        self.get_by_qualified_name(
+        UpdateAsset.validate_asset_exists(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
-            min_ext_info=True,
-            ignore_relationships=True,
-        )  # Allow this to throw the NotFoundError if the entity does not exist
+            get_by_qualified_name_func=self.get_by_qualified_name,
+        )
         return self.save_merging_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
     @validate_arguments
     def upsert_replacing_cm(
-        self, entity: Union[Asset, List[Asset]], replace_atlan_tagss: bool = False
+        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
         warn(
@@ -721,7 +542,7 @@ class AssetClient:
             stacklevel=2,
         )
         return self.save_replacing_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tagss
+            entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
     @validate_arguments
@@ -740,23 +561,13 @@ class AssetClient:
         :returns: details of the created or updated assets
         :raises AtlanError: on any API communication issue
         """
-
-        query_params = {
-            "replaceClassifications": replace_atlan_tags,
-            "replaceBusinessAttributes": True,
-            "overwriteBusinessAttributes": True,
-        }
-        entities: List[Asset] = []
-        if isinstance(entity, list):
-            entities.extend(entity)
-        else:
-            entities.append(entity)
-        for asset in entities:
-            asset.validate_required()
-            asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
-        request = BulkRequest[Asset](entities=entities)
+        query_params, request = Save.prepare_request_replacing_cm(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            client=self._client,
+        )
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
-        return AssetMutationResponse(**raw_json)
+        return Save.process_response_replacing_cm(raw_json)
 
     @validate_arguments
     def update_replacing_cm(
@@ -773,13 +584,11 @@ class AssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-
-        self.get_by_qualified_name(
+        UpdateAsset.validate_asset_exists(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
-            min_ext_info=True,
-            ignore_relationships=True,
-        )  # Allow this to throw the NotFoundError if the entity does not exist
+            get_by_qualified_name_func=self.get_by_qualified_name,
+        )
         return self.save_replacing_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
@@ -805,16 +614,11 @@ class AssetClient:
         .. warning::
             PURGE and HARD deletions are irreversible operations. Use with caution.
         """
-        guids: List[str] = []
-        if isinstance(guid, list):
-            guids.extend(guid)
-        else:
-            guids.append(guid)
-        query_params = {"deleteType": delete_type.value, "guid": guids}
+        query_params = PurgeByGuid.prepare_request(guid, delete_type)
         raw_json = self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
         )
-        return AssetMutationResponse(**raw_json)
+        return PurgeByGuid.process_response(raw_json)
 
     @validate_arguments
     def delete_by_guid(self, guid: Union[str, List[str]]) -> AssetMutationResponse:
@@ -828,24 +632,28 @@ class AssetClient:
         :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted
         :raises InvalidRequestError: if an asset does not support archiving
         """
-        guids: List[str] = []
-        if isinstance(guid, list):
-            guids.extend(guid)
-        else:
-            guids.append(guid)
-        for guid in guids:
-            asset = self.retrieve_minimal(guid=guid, asset_type=Asset)
-            if not asset.can_be_archived():
-                raise ErrorCode.ASSET_CAN_NOT_BE_ARCHIVED.exception_with_parameters(
-                    guid, asset.type_name
-                )
-        query_params = {"deleteType": AtlanDeleteType.SOFT.value, "guid": guids}
+        guids = DeleteByGuid.prepare_request(guid)
+
+        # Validate each asset can be archived
+        assets = []
+        for single_guid in guids:
+            asset = self.retrieve_minimal(guid=single_guid, asset_type=Asset)
+            assets.append(asset)
+        DeleteByGuid.validate_assets_can_be_archived(assets)
+
+        # Perform the deletion
+        query_params = DeleteByGuid.prepare_delete_request(guids)
         raw_json = self._client._call_api(
             DELETE_ENTITIES_BY_GUIDS, query_params=query_params
         )
-        response = AssetMutationResponse(**raw_json)
-        for asset in response.assets_deleted(asset_type=Asset):
-            self._wait_till_deleted(asset)
+        response = DeleteByGuid.process_response(raw_json)
+
+        # Wait for deletion confirmation
+        for asset in DeleteByGuid.get_deleted_assets(response):
+            try:
+                self._wait_till_deleted(asset)
+            except RetryError as err:
+                raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         return response
 
     @retry(
@@ -855,12 +663,9 @@ class AssetClient:
         wait=wait_fixed(1),
     )
     def _wait_till_deleted(self, asset: Asset):
-        try:
-            asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
-            if asset.status == EntityStatus.DELETED:
-                return
-        except requests.exceptions.RetryError as err:
-            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
+        asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
+        if asset.status == EntityStatus.DELETED:
+            return
 
     @validate_arguments
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
@@ -875,8 +680,9 @@ class AssetClient:
         return self._restore(asset_type, qualified_name, 0)
 
     def _restore(self, asset_type: Type[A], qualified_name: str, retries: int) -> bool:
-        if not asset_type.can_be_archived():
+        if not RestoreAsset.can_asset_type_be_archived(asset_type):
             return False
+
         existing = self.get_by_qualified_name(
             asset_type=asset_type,
             qualified_name=qualified_name,
@@ -885,7 +691,7 @@ class AssetClient:
         if not existing:
             # Nothing to restore, so cannot be restored
             return False
-        elif existing.status is EntityStatus.ACTIVE:
+        elif RestoreAsset.is_asset_active(existing):
             # Already active, but could be due to the async nature of delete handlers
             if retries < 10:
                 time.sleep(2)
@@ -895,24 +701,18 @@ class AssetClient:
                 return True
         else:
             response = self._restore_asset(existing)
-            return response is not None and response.guid_assignments is not None
+            return RestoreAsset.is_restore_successful(response)
 
     def _restore_asset(self, asset: Asset) -> AssetMutationResponse:
-        to_restore = asset.trim_to_required()
-        to_restore.status = EntityStatus.ACTIVE
-        query_params = {
-            "replaceClassifications": False,
-            "replaceBusinessAttributes": False,
-            "overwriteBusinessAttributes": False,
-        }
-        to_restore.flush_custom_metadata(self._client)  # type: ignore[arg-type]
-        request = BulkRequest[Asset](entities=[to_restore])
+        query_params, request = RestoreAsset.prepare_restore_request(asset)
+        # Flush custom metadata for the restored asset
+        for restored_asset in request.entities:
+            restored_asset.flush_custom_metadata(self._client)  # type: ignore[arg-type]
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
-        return AssetMutationResponse(**raw_json)
+        return RestoreAsset.process_restore_response(raw_json)
 
     def _modify_tags(
         self,
-        type_of_modification,
         asset_type: Type[A],
         qualified_name: str,
         atlan_tag_names: List[str],
@@ -920,52 +720,69 @@ class AssetClient:
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = False,
         restrict_propagation_through_hierarchy: bool = False,
-        replace_atlan_tags: bool = False,
-        append_atlan_tags: bool = False,
+        modification_type: str = "add",
+        save_parameters: Optional[dict] = None,
     ) -> A:
-        reterieved_asset = self.get_by_qualified_name(
-            qualified_name=qualified_name,
-            asset_type=asset_type,
-            attributes=[AtlasGlossaryTerm.ANCHOR],  # type: ignore[arg-type]
+        """
+        Shared method for tag modifications using shared business logic.
+
+        :param asset_type: type of asset to modify tags for
+        :param qualified_name: qualified name of the asset
+        :param atlan_tag_names: human-readable names of the Atlan tags
+        :param propagate: whether to propagate the Atlan tag
+        :param remove_propagation_on_delete: whether to remove propagated tags on deletion
+        :param restrict_lineage_propagation: whether to avoid propagating through lineage
+        :param restrict_propagation_through_hierarchy: whether to prevent hierarchy propagation
+        :param modification_type: type of modification (add, update, remove, replace)
+        :param save_parameters: parameters for the save operation
+        :returns: the updated asset
+        """
+        if save_parameters is None:
+            save_parameters = {}
+
+        # Retrieve the asset with necessary attributes
+        # Add retry mechanism to handle search index eventual consistency
+        @retry(
+            reraise=True,
+            retry=retry_if_exception_type(NotFoundError),
+            stop=stop_after_attempt(10),
+            wait=wait_exponential(multiplier=1, min=1, max=5),
         )
-        if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
-            updated_asset = asset_type.updater(
+        def _get_asset_with_retry():
+            return self.get_by_qualified_name(
                 qualified_name=qualified_name,
-                name=reterieved_asset.name,
-                glossary_guid=reterieved_asset.anchor.guid,  # type: ignore[attr-defined]
-            )
-        else:
-            updated_asset = asset_type.updater(
-                qualified_name=qualified_name, name=reterieved_asset.name
+                asset_type=asset_type,
+                attributes=ModifyAtlanTags.get_retrieve_attributes(),
             )
 
-        atlan_tag = [
-            AtlanTag(  # type: ignore[call-arg]
-                type_name=AtlanTagName(display_text=name),
-                propagate=propagate,
-                remove_propagations_on_entity_delete=remove_propagation_on_delete,
-                restrict_propagation_through_lineage=restrict_lineage_propagation,
-                restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
-            )
-            for name in atlan_tag_names
-        ]
+        retrieved_asset = _get_asset_with_retry()
 
-        if type_of_modification == "add" or "update":
-            updated_asset.add_or_update_classifications = atlan_tag
-        if type_of_modification == "remove":
-            updated_asset.remove_classifications = atlan_tag
-        if type_of_modification == "replace":
-            updated_asset.classifications = atlan_tag
-
-        response = self.save(
-            entity=updated_asset,
-            replace_atlan_tags=replace_atlan_tags,
-            append_atlan_tags=append_atlan_tags,
+        # Prepare the asset updater using shared logic
+        updated_asset = ModifyAtlanTags.prepare_asset_updater(
+            retrieved_asset, asset_type, qualified_name
         )
 
-        if assets := response.assets_updated(asset_type=asset_type):
-            return assets[0]
-        return updated_asset
+        # Create AtlanTag objects using shared logic
+        atlan_tags = ModifyAtlanTags.create_atlan_tags(
+            atlan_tag_names=atlan_tag_names,
+            propagate=propagate,
+            remove_propagation_on_delete=remove_propagation_on_delete,
+            restrict_lineage_propagation=restrict_lineage_propagation,
+            restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
+        )
+
+        # Apply the tag modification using shared logic
+        ModifyAtlanTags.apply_tag_modification(
+            updated_asset, atlan_tags, modification_type
+        )
+
+        # Save the asset with the provided parameters
+        response = self.save(entity=updated_asset, **save_parameters)
+
+        # Process the response using shared logic
+        return ModifyAtlanTags.process_save_response(
+            response, asset_type, updated_asset
+        )
 
     @validate_arguments
     def add_atlan_tags(
@@ -994,9 +811,7 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the added Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-
-        response = self._modify_tags(
-            type_of_modification="add",
+        return self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
             atlan_tag_names=atlan_tag_names,
@@ -1004,11 +819,12 @@ class AssetClient:
             remove_propagation_on_delete=remove_propagation_on_delete,
             restrict_lineage_propagation=restrict_lineage_propagation,
             restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
-            replace_atlan_tags=False,
-            append_atlan_tags=True,
+            modification_type="add",
+            save_parameters={
+                "replace_atlan_tags": False,
+                "append_atlan_tags": True,
+            },
         )
-
-        return response
 
     @validate_arguments
     def update_atlan_tags(
@@ -1037,9 +853,7 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the updated Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-
-        response = self._modify_tags(
-            type_of_modification="update",
+        return self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
             atlan_tag_names=atlan_tag_names,
@@ -1047,11 +861,12 @@ class AssetClient:
             remove_propagation_on_delete=remove_propagation_on_delete,
             restrict_lineage_propagation=restrict_lineage_propagation,
             restrict_propagation_through_hierarchy=restrict_propagation_through_hierarchy,
-            replace_atlan_tags=False,
-            append_atlan_tags=True,
+            modification_type="update",
+            save_parameters={
+                "replace_atlan_tags": False,
+                "append_atlan_tags": True,
+            },
         )
-
-        return response
 
     @validate_arguments
     def remove_atlan_tag(
@@ -1069,17 +884,16 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the deleted Atlan tag)
         :raises AtlanError: on any API communication issue
         """
-
-        response = self._modify_tags(
-            type_of_modification="remove",
+        return self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
             atlan_tag_names=[atlan_tag_name],
-            replace_atlan_tags=False,
-            append_atlan_tags=True,
+            modification_type="remove",
+            save_parameters={
+                "replace_atlan_tags": False,
+                "append_atlan_tags": True,
+            },
         )
-
-        return response
 
     @validate_arguments
     def remove_atlan_tags(
@@ -1097,35 +911,46 @@ class AssetClient:
         :returns: the asset that was updated (note that it will NOT contain details of the deleted Atlan tags)
         :raises AtlanError: on any API communication issue
         """
-        response = self._modify_tags(
-            type_of_modification="remove",
+        return self._modify_tags(
             asset_type=asset_type,
             qualified_name=qualified_name,
             atlan_tag_names=atlan_tag_names,
-            replace_atlan_tags=False,
-            append_atlan_tags=True,
+            modification_type="remove",
+            save_parameters={
+                "replace_atlan_tags": False,
+                "append_atlan_tags": True,
+            },
         )
-
-        return response
 
     def _update_asset_by_attribute(
         self, asset: A, asset_type: Type[A], qualified_name: str
-    ):
-        query_params = {"attr:qualifiedName": qualified_name}
+    ) -> Optional[A]:
+        """
+        Shared method for updating assets by attribute using shared business logic.
+
+        :param asset: the asset to update
+        :param asset_type: type of asset being updated
+        :param qualified_name: qualified name of the asset
+        :returns: updated asset or None if update failed
+        """
+
+        # Prepare request parameters using shared logic
+        query_params = UpdateAssetByAttribute.prepare_request_params(qualified_name)
+
+        # Flush custom metadata
         asset.flush_custom_metadata(client=self._client)  # type: ignore[arg-type]
-        raw_json = self._client._call_api(
-            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
-                asset_type.__name__
-            ),
-            query_params,
-            AssetRequest[Asset](entity=asset),
-        )
-        response = AssetMutationResponse(**raw_json)
-        if assets := response.assets_partially_updated(asset_type=asset_type):
-            return assets[0]
-        if assets := response.assets_updated(asset_type=asset_type):
-            return assets[0]
-        return None
+
+        # Prepare request body using shared logic
+        request_body = UpdateAssetByAttribute.prepare_request_body(asset)
+
+        # Get API endpoint using shared logic
+        endpoint = UpdateAssetByAttribute.get_api_endpoint(asset_type)
+
+        # Make API call
+        raw_json = self._client._call_api(endpoint, query_params, request_body)
+
+        # Process response using shared logic
+        return UpdateAssetByAttribute.process_response(raw_json, asset_type)
 
     def _update_glossary_anchor(
         self,
@@ -1193,13 +1018,18 @@ class AssetClient:
         :returns: the result of the update, or None if the update failed
         :raises AtlanError: on any API communication issue
         """
-        asset = asset_type()
-        asset.qualified_name = qualified_name
-        asset.certificate_status = certificate_status
-        asset.name = name
-        asset.certificate_status_message = message
-        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
+
+        # Prepare asset with certificate using shared logic
+        asset = UpdateCertificate.prepare_asset_with_certificate(
+            asset_type=asset_type,
+            qualified_name=qualified_name,
+            name=name,
+            certificate_status=certificate_status,
+            message=message,
+            glossary_guid=glossary_guid,
+        )
+
+        # Execute update using shared logic
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1247,12 +1077,16 @@ class AssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the removal, or None if the removal failed
         """
-        asset = asset_type()
-        asset.qualified_name = qualified_name
-        asset.name = name
-        asset.remove_certificate()
-        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
+
+        # Prepare asset for certificate removal using shared logic
+        asset = RemoveCertificate.prepare_asset_for_certificate_removal(
+            asset_type=asset_type,
+            qualified_name=qualified_name,
+            name=name,
+            glossary_guid=glossary_guid,
+        )
+
+        # Execute update using shared logic
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1305,12 +1139,17 @@ class AssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the update, or None if the update failed
         """
-        asset = asset_type()
-        asset.qualified_name = qualified_name
-        asset.set_announcement(announcement)
-        asset.name = name
-        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
+
+        # Prepare asset with announcement using shared logic
+        asset = UpdateAnnouncement.prepare_asset_with_announcement(
+            asset_type=asset_type,
+            qualified_name=qualified_name,
+            name=name,
+            announcement=announcement,
+            glossary_guid=glossary_guid,
+        )
+
+        # Execute update using shared logic
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1357,12 +1196,16 @@ class AssetClient:
         only when the asset type is `AtlasGlossaryTerm` or `AtlasGlossaryCategory`
         :returns: the result of the removal, or None if the removal failed
         """
-        asset = asset_type()
-        asset.qualified_name = qualified_name
-        asset.name = name
-        asset.remove_announcement()
-        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
-            self._update_glossary_anchor(asset, asset_type.__name__, glossary_guid)
+
+        # Prepare asset for announcement removal using shared logic
+        asset = RemoveAnnouncement.prepare_asset_for_announcement_removal(
+            asset_type=asset_type,
+            qualified_name=qualified_name,
+            name=name,
+            glossary_guid=glossary_guid,
+        )
+
+        # Execute update using shared logic
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
@@ -1370,6 +1213,10 @@ class AssetClient:
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
         """
+            ManageCustomMetadata,
+            UpdateCustomMetadataAttributes,
+        )
+
         Update only the provided custom metadata attributes on the asset. This will leave all
         other custom metadata attributes, even within the same named custom metadata, unchanged.
 
@@ -1377,19 +1224,18 @@ class AssetClient:
         :param custom_metadata: custom metadata to update, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
+        # Prepare request using shared logic
+        custom_metadata_request = UpdateCustomMetadataAttributes.prepare_request(
+            custom_metadata
         )
-        self._client._call_api(
-            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                {
-                    "entity_guid": guid,
-                    "bm_id": custom_metadata_request.custom_metadata_set_id,
-                }
-            ),
-            None,
-            custom_metadata_request,
+
+        # Get API endpoint using shared logic
+        endpoint = ManageCustomMetadata.get_api_endpoint(
+            guid, custom_metadata_request.custom_metadata_set_id
         )
+
+        # Make API call
+        self._client._call_api(endpoint, None, custom_metadata_request)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
@@ -1401,21 +1247,17 @@ class AssetClient:
         :param custom_metadata: custom metadata to replace, as human-readable names mapped to values
         :raises AtlanError: on any API communication issue
         """
-        # clear unset attributes so that they are removed
-        custom_metadata.clear_unset()
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
+
+        # Prepare request using shared logic (includes clear_unset())
+        custom_metadata_request = ReplaceCustomMetadata.prepare_request(custom_metadata)
+
+        # Get API endpoint using shared logic
+        endpoint = ManageCustomMetadata.get_api_endpoint(
+            guid, custom_metadata_request.custom_metadata_set_id
         )
-        self._client._call_api(
-            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                {
-                    "entity_guid": guid,
-                    "bm_id": custom_metadata_request.custom_metadata_set_id,
-                }
-            ),
-            None,
-            custom_metadata_request,
-        )
+
+        # Make API call
+        self._client._call_api(endpoint, None, custom_metadata_request)
 
     @validate_arguments
     def remove_custom_metadata(self, guid: str, cm_name: str):
@@ -1426,22 +1268,103 @@ class AssetClient:
         :param cm_name: human-readable name of the custom metadata to remove
         :raises AtlanError: on any API communication issue
         """
-        custom_metadata = CustomMetadataDict(client=self._client, name=cm_name)  # type: ignore[arg-type]
-        # invoke clear_all so all attributes are set to None and consequently removed
-        custom_metadata.clear_all()
-        custom_metadata_request = CustomMetadataRequest.create(
-            custom_metadata_dict=custom_metadata
+
+        # Prepare request using shared logic (includes clear_all())
+        custom_metadata_request = RemoveCustomMetadata.prepare_request(
+            cm_name, self._client
         )
-        self._client._call_api(
-            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                {
-                    "entity_guid": guid,
-                    "bm_id": custom_metadata_request.custom_metadata_set_id,
-                }
-            ),
-            None,
-            custom_metadata_request,
+
+        # Get API endpoint using shared logic
+        endpoint = ManageCustomMetadata.get_api_endpoint(
+            guid, custom_metadata_request.custom_metadata_set_id
         )
+
+        # Make API call
+        self._client._call_api(endpoint, None, custom_metadata_request)
+
+    def _search_for_asset_with_name(
+        self,
+        query: Query,
+        name: str,
+        asset_type: Type[A],
+        attributes: Optional[List],
+        allow_multiple: bool = False,
+    ) -> List[A]:
+        """
+        Shared method for searching assets by name using shared business logic.
+
+        :param query: query to execute
+        :param name: name that was searched for (for error messages)
+        :param asset_type: expected asset type
+        :param attributes: optional collection of attributes to retrieve
+        :param allow_multiple: whether multiple results are allowed
+        :returns: list of found assets
+        """
+
+        # Build search request using shared logic
+        search_request = SearchForAssetWithName.build_search_request(query, attributes)
+
+        # Execute search
+        results = self.search(search_request)
+
+        # Process results using shared logic
+        return SearchForAssetWithName.process_search_results(
+            results, name, asset_type, allow_multiple
+        )
+
+    def _manage_terms(
+        self,
+        asset_type: Type[A],
+        terms: List[AtlasGlossaryTerm],
+        save_semantic: SaveSemantic,
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        """
+        Shared method for managing terms using shared business logic.
+
+        :param asset_type: type of the asset
+        :param terms: list of terms to manage
+        :param save_semantic: semantic for saving terms (APPEND, REPLACE, REMOVE)
+        :param guid: unique identifier (GUID) of the asset
+        :param qualified_name: qualified name of the asset
+        :returns: the updated asset
+        """
+
+        # Validate input parameters using shared logic
+        ManageTerms.validate_guid_and_qualified_name(guid, qualified_name)
+
+        # Build and execute search using shared logic
+        if guid:
+            search_query = ManageTerms.build_fluent_search_by_guid(asset_type, guid)
+        else:
+            if qualified_name is None:
+                raise ValueError(
+                    "qualified_name cannot be None when guid is not provided"
+                )
+            search_query = ManageTerms.build_fluent_search_by_qualified_name(
+                asset_type, qualified_name
+            )
+
+        results = search_query.execute(client=self._client)  # type: ignore[arg-type]
+
+        # Validate search results using shared logic
+        first_result = ManageTerms.validate_search_results(
+            results, asset_type, guid, qualified_name
+        )
+
+        # Create asset updater
+        updated_asset = asset_type.updater(
+            qualified_name=first_result.qualified_name, name=first_result.name
+        )
+
+        # Process terms with save semantic using shared logic
+        processed_terms = ManageTerms.process_terms_with_semantic(terms, save_semantic)
+        updated_asset.assigned_terms = processed_terms
+
+        # Save and process response using shared logic
+        response = self.save(entity=updated_asset)
+        return ManageTerms.process_save_response(response, asset_type, updated_asset)
 
     @validate_arguments
     def append_terms(
@@ -1463,64 +1386,13 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to link the terms
         :returns: the asset that was updated (note that it will NOT contain details of the appended terms)
         """
-        from pyatlan.model.fluent_search import FluentSearch
-
-        if guid:
-            if qualified_name:
-                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
-        if results and results.current_page():
-            first_result = results.current_page()[0]
-            if not isinstance(first_result, asset_type):
-                if guid is None:
-                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        asset_type.__name__, qualified_name
-                    )
-                else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
-        else:
-            if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
-            else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-        qualified_name = first_result.qualified_name
-        name = first_result.name
-        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-        for i, term in enumerate(terms):
-            if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.APPEND
-                )
-            elif hasattr(term, "qualified_name") and term.qualified_name:
-                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
-                    qualified_name=term.qualified_name, semantic=SaveSemantic.APPEND
-                )
-        updated_asset.assigned_terms = terms
-        response = self.save(entity=updated_asset)
-        if assets := response.assets_updated(asset_type=asset_type):
-            return assets[0]
-        return updated_asset
+        return self._manage_terms(
+            asset_type=asset_type,
+            terms=terms,
+            save_semantic=SaveSemantic.APPEND,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
 
     @validate_arguments
     def replace_terms(
@@ -1540,64 +1412,13 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset to which to replace the terms
         :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)
         """
-        from pyatlan.model.fluent_search import FluentSearch
-
-        if guid:
-            if qualified_name:
-                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
-        if results and results.current_page():
-            first_result = results.current_page()[0]
-            if not isinstance(first_result, asset_type):
-                if guid is None:
-                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        asset_type.__name__, qualified_name
-                    )
-                else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
-        else:
-            if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
-            else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-        qualified_name = first_result.qualified_name
-        name = first_result.name
-        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-        for i, term in enumerate(terms):
-            if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.REPLACE
-                )
-            elif hasattr(term, "qualified_name") and term.qualified_name:
-                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
-                    qualified_name=term.qualified_name, semantic=SaveSemantic.REPLACE
-                )
-        updated_asset.assigned_terms = terms
-        response = self.save(entity=updated_asset)
-        if assets := response.assets_updated(asset_type=asset_type):
-            return assets[0]
-        return updated_asset
+        return self._manage_terms(
+            asset_type=asset_type,
+            terms=terms,
+            save_semantic=SaveSemantic.REPLACE,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
 
     @validate_arguments
     def remove_terms(
@@ -1619,64 +1440,13 @@ class AssetClient:
         :param qualified_name: the qualified_name of the asset from which to remove the terms
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
-        from pyatlan.model.fluent_search import FluentSearch
-
-        if guid:
-            if qualified_name:
-                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.GUID.eq(guid))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        elif qualified_name:
-            results = (
-                FluentSearch()
-                .select()
-                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
-                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
-                .execute(client=self._client)  # type: ignore[arg-type]
-            )
-        else:
-            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
-
-        if results and results.current_page():
-            first_result = results.current_page()[0]
-            if not isinstance(first_result, asset_type):
-                if guid is None:
-                    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                        asset_type.__name__, qualified_name
-                    )
-                else:
-                    raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                        guid, asset_type.__name__
-                    )
-        else:
-            if guid is None:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
-                    qualified_name, asset_type.__name__
-                )
-            else:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-        qualified_name = first_result.qualified_name
-        name = first_result.name
-        updated_asset = asset_type.updater(qualified_name=qualified_name, name=name)
-        for i, term in enumerate(terms):
-            if hasattr(term, "guid") and term.guid:
-                terms[i] = AtlasGlossaryTerm.ref_by_guid(
-                    guid=term.guid, semantic=SaveSemantic.REMOVE
-                )
-            elif hasattr(term, "qualified_name") and term.qualified_name:
-                terms[i] = AtlasGlossaryTerm.ref_by_qualified_name(
-                    qualified_name=term.qualified_name, semantic=SaveSemantic.REMOVE
-                )
-        updated_asset.assigned_terms = terms
-        response = self.save(entity=updated_asset)
-        if assets := response.assets_updated(asset_type=asset_type):
-            return assets[0]
-        return updated_asset
+        return self._manage_terms(
+            asset_type=asset_type,
+            terms=terms,
+            save_semantic=SaveSemantic.REMOVE,
+            guid=guid,
+            qualified_name=qualified_name,
+        )
 
     @validate_arguments
     def find_connections_by_name(
@@ -1696,12 +1466,11 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("CONNECTION")
-            + Term.with_name(name)
-            + Term(field="connectorName", value=connector_type.value)
-        )
+
+        # Build query using shared logic
+        query = FindConnectionsByName.build_query(name, connector_type)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query,
             name=name,
@@ -1726,7 +1495,11 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = with_active_glossary(name=name)
+
+        # Build query using shared logic
+        query = FindGlossaryByName.build_query(name)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
         )[0]
@@ -1754,9 +1527,11 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = with_active_category(
-            name=name, glossary_qualified_name=glossary_qualified_name
-        )
+
+        # Build query using shared logic
+        query = FindCategoryFastByName.build_query(name, glossary_qualified_name)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query,
             name=name,
@@ -1785,59 +1560,14 @@ class AssetClient:
         :returns: the category, if found
         :raises NotFoundError: if no category with the provided name exists in the glossary
         """
+        # First find the glossary by name
         glossary = self.find_glossary_by_name(name=glossary_name)
+
+        # Then find the category in that glossary using the fast method
         return self.find_category_fast_by_name(
             name=name,
             glossary_qualified_name=glossary.qualified_name,
             attributes=attributes,
-        )
-
-    def _search_for_asset_with_name(
-        self,
-        query: Query,
-        name: str,
-        asset_type: Type[A],
-        attributes: Optional[List[StrictStr]],
-        allow_multiple: bool = False,
-    ) -> List[A]:
-        """
-        Search for assets by name.
-
-        :param query: the search query to execute
-        :param name: name of the asset being searched
-        :param asset_type: type of asset to find
-        :param attributes: attributes to retrieve
-        :param allow_multiple: whether to allow multiple results
-        :returns: list of found assets
-        :raises: ErrorCode.ASSET_NOT_FOUND_BY_NAME if no assets found
-        """
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl, attributes=attributes, relation_attributes=["name"]
-        )
-        results = self.search(search_request)
-        if (
-            results
-            and results.count > 0
-            and (
-                # Check for paginated results first;
-                # if not paginated, iterate over the results
-                assets := [
-                    asset
-                    for asset in (results.current_page() or results)
-                    if isinstance(asset, asset_type)
-                ]
-            )
-        ):
-            if not allow_multiple and len(assets) > 1:
-                LOGGER.warning(
-                    "More than 1 %s found with the name '%s', returning only the first.",
-                    asset_type.__name__,
-                    name,
-                )
-            return assets
-        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-            asset_type.__name__, name
         )
 
     @validate_arguments
@@ -1862,9 +1592,11 @@ class AssetClient:
         """
         if attributes is None:
             attributes = []
-        query = with_active_term(
-            name=name, glossary_qualified_name=glossary_qualified_name
-        )
+
+        # Build query using shared logic
+        query = FindTermFastByName.build_query(name, glossary_qualified_name)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
         )[0]
@@ -1888,7 +1620,10 @@ class AssetClient:
         :returns: the term, if found
         :raises NotFoundError: if no term with the provided name exists in the glossary
         """
+        # First find the glossary by name
         glossary = self.find_glossary_by_name(name=glossary_name)
+
+        # Then find the term in that glossary using the fast method
         return self.find_term_fast_by_name(
             name=name,
             glossary_qualified_name=glossary.qualified_name,
@@ -1910,11 +1645,11 @@ class AssetClient:
         :raises NotFoundError: if no domain with the provided name exists
         """
         attributes = attributes or []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_name(name)
-            + Term.with_type_name("DataDomain")
-        )
+
+        # Build query using shared logic
+        query = FindDomainByName.build_query(name)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=DataDomain, attributes=attributes
         )[0]
@@ -1934,11 +1669,11 @@ class AssetClient:
         :raises NotFoundError: if no product with the provided name exists
         """
         attributes = attributes or []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_name(name)
-            + Term.with_type_name("DataProduct")
-        )
+
+        # Build query using shared logic
+        query = FindProductByName.build_query(name)
+
+        # Execute search using shared logic
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=DataProduct, attributes=attributes
         )[0]
@@ -1964,43 +1699,20 @@ class AssetClient:
         :param related_attributes: attributes to retrieve for each related asset in the hierarchy
         :returns: a traversable category hierarchy
         """
-        from pyatlan.model.fluent_search import FluentSearch
 
-        if not glossary.qualified_name:
-            raise ErrorCode.GLOSSARY_MISSING_QUALIFIED_NAME.exception_with_parameters()
-        if attributes is None:
-            attributes = []
-        if related_attributes is None:
-            related_attributes = []
-        top_categories: Set[str] = set()
-        category_dict: Dict[str, AtlasGlossaryCategory] = {}
-        search = (
-            FluentSearch.select()
-            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
-            .where(Term.with_type_name("AtlasGlossaryCategory"))
-            .include_on_results(AtlasGlossaryCategory.PARENT_CATEGORY)
-            .page_size(20)
-            .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
+        # Validate glossary using shared logic
+        GetHierarchy.validate_glossary(glossary)
+
+        # Prepare search request using shared logic
+        request = GetHierarchy.prepare_search_request(
+            glossary, attributes, related_attributes
         )
-        for field in attributes:
-            search = search.include_on_results(field)
-        for field in related_attributes:
-            search = search.include_on_relations(field)
-        request = search.to_request()
-        response = self.search(request)
-        for category in filter(
-            lambda a: isinstance(a, AtlasGlossaryCategory), response
-        ):
-            guid = category.guid
-            category_dict[guid] = category
-            if category.parent_category is None:
-                top_categories.add(guid)
 
-        if not top_categories:
-            raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
-                glossary.guid, glossary.qualified_name
-            )
-        return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
+        # Execute search
+        response = self.search(request)
+
+        # Process results using shared logic
+        return GetHierarchy.process_search_results(response, glossary)
 
     def process_assets(
         self, search: IndexSearchRequestProvider, func: Callable[[Asset], None]
@@ -2605,12 +2317,12 @@ class Batch:
         return self.flush() if len(self._batch) == self._max_size else None
 
     def flush(self) -> Optional[AssetMutationResponse]:
-        from pyatlan.model.fluent_search import FluentSearch
-
         """Flush any remaining assets in the batch.
 
         :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed
         """
+        from pyatlan.model.fluent_search import FluentSearch
+
         revised: list = []
         response: Optional[AssetMutationResponse] = None
         if self._batch:

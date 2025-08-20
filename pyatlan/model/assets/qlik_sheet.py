@@ -40,6 +40,10 @@ class QlikSheet(Qlik):
     """
     TBC
     """
+    QLIK_COLUMNS: ClassVar[RelationField] = RelationField("qlikColumns")
+    """
+    TBC
+    """
     QLIK_CHARTS: ClassVar[RelationField] = RelationField("qlikCharts")
     """
     TBC
@@ -48,6 +52,7 @@ class QlikSheet(Qlik):
     _convenience_properties: ClassVar[List[str]] = [
         "qlik_sheet_is_approved",
         "qlik_app",
+        "qlik_columns",
         "qlik_charts",
     ]
 
@@ -74,6 +79,16 @@ class QlikSheet(Qlik):
         self.attributes.qlik_app = qlik_app
 
     @property
+    def qlik_columns(self) -> Optional[List[QlikColumn]]:
+        return None if self.attributes is None else self.attributes.qlik_columns
+
+    @qlik_columns.setter
+    def qlik_columns(self, qlik_columns: Optional[List[QlikColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_columns = qlik_columns
+
+    @property
     def qlik_charts(self) -> Optional[List[QlikChart]]:
         return None if self.attributes is None else self.attributes.qlik_charts
 
@@ -86,6 +101,9 @@ class QlikSheet(Qlik):
     class Attributes(Qlik.Attributes):
         qlik_sheet_is_approved: Optional[bool] = Field(default=None, description="")
         qlik_app: Optional[QlikApp] = Field(
+            default=None, description=""
+        )  # relationship
+        qlik_columns: Optional[List[QlikColumn]] = Field(
             default=None, description=""
         )  # relationship
         qlik_charts: Optional[List[QlikChart]] = Field(
@@ -104,5 +122,6 @@ class QlikSheet(Qlik):
 
 from .qlik_app import QlikApp  # noqa: E402, F401
 from .qlik_chart import QlikChart  # noqa: E402, F401
+from .qlik_column import QlikColumn  # noqa: E402, F401
 
 QlikSheet.Attributes.update_forward_refs()

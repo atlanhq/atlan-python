@@ -5,6 +5,8 @@ from __future__ import annotations
 from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
+from pyatlan.cache.common import GroupCacheCommon
+
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
@@ -65,16 +67,11 @@ class GroupCache:
             groups = self.client.group.get_all()
             if not groups:
                 return
-            self.map_id_to_name = {}
-            self.map_name_to_id = {}
-            self.map_alias_to_id = {}
-            for group in groups:
-                group_id = str(group.id)
-                group_name = str(group.name)
-                group_alias = str(group.alias)
-                self.map_id_to_name[group_id] = group_name
-                self.map_name_to_id[group_name] = group_id
-                self.map_alias_to_id[group_alias] = group_id
+            # Process response using shared logic - extract records from response
+            group_list = groups.records or []
+            (self.map_id_to_name, self.map_name_to_id, self.map_alias_to_id) = (
+                GroupCacheCommon.refresh_cache_data(group_list)
+            )
 
     def _get_id_for_name(self, name: str) -> Optional[str]:
         """

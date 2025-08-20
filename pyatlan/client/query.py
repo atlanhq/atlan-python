@@ -1,7 +1,6 @@
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import RUN_QUERY
+from pyatlan.client.common import ApiCaller, QueryStream
 from pyatlan.errors import ErrorCode
 from pyatlan.model.query import QueryRequest, QueryResponse
 
@@ -27,5 +26,11 @@ class QueryClient:
         :returns: results of the query.
         :raises : AtlanError on any issues with API communication.
         """
-        es_responses = self._client._call_api(RUN_QUERY, request_obj=request)
-        return QueryResponse(events=es_responses)
+        # Prepare request using shared logic
+        endpoint, request_obj = QueryStream.prepare_request(request)
+
+        # Execute API call
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+
+        # Process response using shared logic
+        return QueryStream.process_response(raw_json)

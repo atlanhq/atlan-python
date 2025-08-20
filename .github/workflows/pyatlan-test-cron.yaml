@@ -37,4 +37,4 @@ jobs:
         # to display only the durations of the 25 slowest tests with `pytest-sugar`
         run: |
           uv run pytest tests/unit
-          uv run pytest tests/integration  -p name_of_plugin --timer-top-n 25
+          uv run pytest tests/integration  -p name_of_plugin --timer-top-n 25 -vv

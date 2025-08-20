@@ -760,3 +760,26 @@ TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES = [
         "ATLAN-PYTHON-400-048 Invalid parameter type for applicable_glossaries should be Set[str]",
     ),
 ]
+
+# Async-specific constants (same as sync but with AsyncCustomMetadataDict)
+TEST_ASSET_CLIENT_METHODS_ASYNC = {
+    **TEST_ASSET_CLIENT_METHODS,
+    "update_custom_metadata_attributes": [
+        ([[123], ["cm"]], "guid\n  str type expected"),
+        ([None, ["cm"]], "none is not an allowed value"),
+        (
+            ["name", 123],
+            "custom_metadata\n  instance of AsyncCustomMetadataDict expected",
+        ),
+        (["name", None], "none is not an allowed value"),
+    ],
+    "replace_custom_metadata": [
+        ([[123], ["cm"]], "guid\n  str type expected"),
+        ([None, ["cm"]], "none is not an allowed value"),
+        (
+            ["name", 123],
+            "custom_metadata\n  instance of AsyncCustomMetadataDict expected",
+        ),
+        (["name", None], "none is not an allowed value"),
+    ],
+}

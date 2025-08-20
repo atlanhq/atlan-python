@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import ColumnValueFrequencyMap, Histogram
+from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
@@ -461,6 +461,66 @@ class Column(SQL):
     """
     List of top values in this column.
     """
+    COLUMN_MAX_VALUE: ClassVar[NumericField] = NumericField(
+        "columnMaxValue", "columnMaxValue"
+    )
+    """
+    Greatest value in a numeric column.
+    """
+    COLUMN_MIN_VALUE: ClassVar[NumericField] = NumericField(
+        "columnMinValue", "columnMinValue"
+    )
+    """
+    Least value in a numeric column.
+    """
+    COLUMN_MEAN_VALUE: ClassVar[NumericField] = NumericField(
+        "columnMeanValue", "columnMeanValue"
+    )
+    """
+    Arithmetic mean of the values in a numeric column.
+    """
+    COLUMN_SUM_VALUE: ClassVar[NumericField] = NumericField(
+        "columnSumValue", "columnSumValue"
+    )
+    """
+    Calculated sum of the values in a numeric column.
+    """
+    COLUMN_MEDIAN_VALUE: ClassVar[NumericField] = NumericField(
+        "columnMedianValue", "columnMedianValue"
+    )
+    """
+    Calculated median of the values in a numeric column.
+    """
+    COLUMN_STANDARD_DEVIATION_VALUE: ClassVar[NumericField] = NumericField(
+        "columnStandardDeviationValue", "columnStandardDeviationValue"
+    )
+    """
+    Calculated standard deviation of the values in a numeric column.
+    """
+    COLUMN_AVERAGE_VALUE: ClassVar[NumericField] = NumericField(
+        "columnAverageValue", "columnAverageValue"
+    )
+    """
+    Average value in this column.
+    """
+    COLUMN_VARIANCE_VALUE: ClassVar[NumericField] = NumericField(
+        "columnVarianceValue", "columnVarianceValue"
+    )
+    """
+    Calculated variance of the values in a numeric column.
+    """
+    COLUMN_AVERAGE_LENGTH_VALUE: ClassVar[NumericField] = NumericField(
+        "columnAverageLengthValue", "columnAverageLengthValue"
+    )
+    """
+    Average length of values in a string column.
+    """
+    COLUMN_DISTRIBUTION_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
+        "columnDistributionHistogram", "columnDistributionHistogram"
+    )
+    """
+    Detailed information representing a histogram of values for a column.
+    """
     COLUMN_DEPTH_LEVEL: ClassVar[NumericField] = NumericField(
         "columnDepthLevel", "columnDepthLevel"
     )
@@ -635,6 +695,16 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
+        "column_max_value",
+        "column_min_value",
+        "column_mean_value",
+        "column_sum_value",
+        "column_median_value",
+        "column_standard_deviation_value",
+        "column_average_value",
+        "column_variance_value",
+        "column_average_length_value",
+        "column_distribution_histogram",
         "column_depth_level",
         "nosql_collection_name",
         "nosql_collection_qualified_name",
@@ -1280,6 +1350,126 @@ class Column(SQL):
         self.attributes.column_top_values = column_top_values
 
     @property
+    def column_max_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_max_value
+
+    @column_max_value.setter
+    def column_max_value(self, column_max_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_max_value = column_max_value
+
+    @property
+    def column_min_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_min_value
+
+    @column_min_value.setter
+    def column_min_value(self, column_min_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_min_value = column_min_value
+
+    @property
+    def column_mean_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_mean_value
+
+    @column_mean_value.setter
+    def column_mean_value(self, column_mean_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_mean_value = column_mean_value
+
+    @property
+    def column_sum_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_sum_value
+
+    @column_sum_value.setter
+    def column_sum_value(self, column_sum_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_sum_value = column_sum_value
+
+    @property
+    def column_median_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_median_value
+
+    @column_median_value.setter
+    def column_median_value(self, column_median_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_median_value = column_median_value
+
+    @property
+    def column_standard_deviation_value(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_standard_deviation_value
+        )
+
+    @column_standard_deviation_value.setter
+    def column_standard_deviation_value(
+        self, column_standard_deviation_value: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_standard_deviation_value = (
+            column_standard_deviation_value
+        )
+
+    @property
+    def column_average_value(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_average_value
+
+    @column_average_value.setter
+    def column_average_value(self, column_average_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_average_value = column_average_value
+
+    @property
+    def column_variance_value(self) -> Optional[float]:
+        return (
+            None if self.attributes is None else self.attributes.column_variance_value
+        )
+
+    @column_variance_value.setter
+    def column_variance_value(self, column_variance_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_variance_value = column_variance_value
+
+    @property
+    def column_average_length_value(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_average_length_value
+        )
+
+    @column_average_length_value.setter
+    def column_average_length_value(self, column_average_length_value: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_average_length_value = column_average_length_value
+
+    @property
+    def column_distribution_histogram(self) -> Optional[AssetHistogram]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distribution_histogram
+        )
+
+    @column_distribution_histogram.setter
+    def column_distribution_histogram(
+        self, column_distribution_histogram: Optional[AssetHistogram]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_distribution_histogram = column_distribution_histogram
+
+    @property
     def column_depth_level(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.column_depth_level
 
@@ -1643,6 +1833,22 @@ class Column(SQL):
         )
         column_variance: Optional[float] = Field(default=None, description="")
         column_top_values: Optional[List[ColumnValueFrequencyMap]] = Field(
+            default=None, description=""
+        )
+        column_max_value: Optional[float] = Field(default=None, description="")
+        column_min_value: Optional[float] = Field(default=None, description="")
+        column_mean_value: Optional[float] = Field(default=None, description="")
+        column_sum_value: Optional[float] = Field(default=None, description="")
+        column_median_value: Optional[float] = Field(default=None, description="")
+        column_standard_deviation_value: Optional[float] = Field(
+            default=None, description=""
+        )
+        column_average_value: Optional[float] = Field(default=None, description="")
+        column_variance_value: Optional[float] = Field(default=None, description="")
+        column_average_length_value: Optional[float] = Field(
+            default=None, description=""
+        )
+        column_distribution_histogram: Optional[AssetHistogram] = Field(
             default=None, description=""
         )
         column_depth_level: Optional[int] = Field(default=None, description="")

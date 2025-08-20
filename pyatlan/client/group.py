@@ -1,27 +1,20 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import (
-    CREATE_GROUP,
-    DELETE_GROUP,
-    GET_GROUP_MEMBERS,
-    GET_GROUPS,
-    REMOVE_USERS_FROM_GROUP,
-    UPDATE_GROUP,
+from pyatlan.client.common import (
+    ApiCaller,
+    GroupCreate,
+    GroupGet,
+    GroupGetMembers,
+    GroupPurge,
+    GroupRemoveUsers,
+    GroupUpdate,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.group import (
-    AtlanGroup,
-    CreateGroupRequest,
-    CreateGroupResponse,
-    GroupRequest,
-    GroupResponse,
-    RemoveFromGroupRequest,
-)
+from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
 from pyatlan.model.user import UserRequest, UserResponse
 
 
@@ -52,13 +45,16 @@ class GroupClient:
         :returns: details of the created group and user association
         :raises AtlanError: on any API communication issue
         """
-        payload = CreateGroupRequest(group=group)
-        if user_ids:
-            payload.users = user_ids
+        # Prepare request using shared logic
+        endpoint, request_obj = GroupCreate.prepare_request(group, user_ids)
+
+        # Make API call
         raw_json = self._client._call_api(
-            CREATE_GROUP, request_obj=payload, exclude_unset=True
+            endpoint, request_obj=request_obj, exclude_unset=True
         )
-        return CreateGroupResponse(**raw_json)
+
+        # Process response using shared logic
+        return GroupCreate.process_response(raw_json)
 
     @validate_arguments
     def update(
@@ -71,8 +67,12 @@ class GroupClient:
         :param group: details to update on the group
         :raises AtlanError: on any API communication issue
         """
+        # Prepare request using shared logic
+        endpoint = GroupUpdate.prepare_request(group)
+
+        # Make API call
         self._client._call_api(
-            UPDATE_GROUP.format_path_with_params(group.id),
+            endpoint,
             request_obj=group,
             exclude_unset=True,
         )
@@ -88,7 +88,11 @@ class GroupClient:
         :param guid: unique identifier (GUID) of the group to delete
         :raises AtlanError: on any API communication issue
         """
-        self._client._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
+        # Prepare request using shared logic
+        endpoint = GroupPurge.prepare_request(guid)
+
+        # Make API call
+        self._client._call_api(endpoint)
 
     @validate_arguments
     def get(
@@ -112,28 +116,21 @@ class GroupClient:
         :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        request = GroupRequest(
-            post_filter=post_filter,
-            limit=limit,
-            sort=sort,
-            count=count,
-            offset=offset,
-            columns=columns,
+        # Prepare request using shared logic
+        endpoint, request = GroupGet.prepare_request(
+            limit, post_filter, sort, count, offset, columns
         )
-        endpoint = GET_GROUPS.format_path_with_params()
+
+        # Make API call
         raw_json = self._client._call_api(
             api=endpoint, query_params=request.query_params
         )
-        return GroupResponse(
-            client=self._client,
-            endpoint=GET_GROUPS,
-            criteria=request,
-            start=request.offset,
-            size=request.limit,
-            records=raw_json.get("records"),
-            filter_record=raw_json.get("filterRecord"),
-            total_record=raw_json.get("totalRecord"),
+
+        # Process response using shared logic
+        response_data = GroupGet.process_response(
+            raw_json, self._client, endpoint, request
         )
+        return GroupResponse(**response_data)
 
     @validate_arguments
     def get_all(
@@ -194,25 +191,20 @@ class GroupClient:
         :returns: a UserResponse object which contains a list of users that are members of the group
         :raises AtlanError: on any API communication issue
         """
-        if not request:
-            request = UserRequest()
-        endpoint = GET_GROUP_MEMBERS.format_path(
-            {"group_guid": guid}
-        ).format_path_with_params()
+        # Prepare request using shared logic
+        endpoint, user_request = GroupGetMembers.prepare_request(guid, request)
+
+        # Make API call
         raw_json = self._client._call_api(
             api=endpoint,
-            query_params=request.query_params,
+            query_params=user_request.query_params,
         )
-        return UserResponse(
-            client=self._client,
-            endpoint=endpoint,
-            criteria=request,
-            start=request.offset,
-            size=request.limit,
-            records=raw_json.get("records"),
-            filter_record=raw_json.get("filterRecord"),
-            total_record=raw_json.get("totalRecord"),
+
+        # Process response using shared logic
+        response_data = GroupGetMembers.process_response(
+            raw_json, self._client, endpoint, user_request
         )
+        return UserResponse(**response_data)
 
     @validate_arguments
     def remove_users(self, guid: str, user_ids: Optional[List[str]] = None) -> None:
@@ -223,9 +215,12 @@ class GroupClient:
         :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
         :raises AtlanError: on any API communication issue
         """
-        rfgr = RemoveFromGroupRequest(users=user_ids or [])
+        # Prepare request using shared logic
+        endpoint, request_obj = GroupRemoveUsers.prepare_request(guid, user_ids)
+
+        # Make API call
         self._client._call_api(
-            REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
-            request_obj=rfgr,
+            endpoint,
+            request_obj=request_obj,
             exclude_unset=True,
         )

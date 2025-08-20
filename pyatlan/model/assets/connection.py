@@ -27,6 +27,7 @@ from pyatlan.utils import init_guid, validate_required_fields
 from .core.asset import Asset
 
 if TYPE_CHECKING:
+    from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
 
 
@@ -66,6 +67,61 @@ class Connection(Asset, type_name="Connection"):
         attr.admin_users = set() if admin_users is None else set(admin_users)
         attr.admin_groups = set() if admin_groups is None else set(admin_groups)
         attr.admin_roles = set() if admin_roles is None else set(admin_roles)
+        attr.host = host
+        attr.port = port
+        return cls(attributes=attr)
+
+    @classmethod
+    @init_guid
+    async def creator_async(
+        cls,
+        *,
+        client: AsyncAtlanClient,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+    ) -> Connection:
+        """
+        Async version of creator() method for creating a new connection.
+
+        :param client: async client to use for validation
+        :param name: name for the connection
+        :param connector_type: type of connector this connection is for
+        :param admin_users: list of admin usernames for the connection
+        :param admin_groups: list of admin group names for the connection
+        :param admin_roles: list of admin role GUIDs for the connection
+        :param host: hostname for the connection
+        :param port: port number for the connection
+        :returns: the new connection object
+        :raises ValueError: if required parameters are missing or invalid
+        """
+        validate_required_fields(
+            ["client", "name", "connector_type"], [client, name, connector_type]
+        )
+        if not admin_users and not admin_groups and not admin_roles:
+            raise ValueError(
+                "One of admin_user, admin_groups or admin_roles is required"
+            )
+        attr = cls.Attributes(
+            name=name,
+            qualified_name=connector_type.to_qualified_name(),
+            connector_name=connector_type.value,
+            category=connector_type.category.value,
+        )
+
+        # Use async cache validation methods
+        await client.user_cache.validate_names(names=admin_users or [])
+        await client.role_cache.validate_idstrs(idstrs=admin_roles or [])
+        await client.group_cache.validate_aliases(aliases=admin_groups or [])
+
+        attr.admin_users = set() if admin_users is None else set(admin_users)
+        attr.admin_groups = set() if admin_groups is None else set(admin_groups)
+        attr.admin_roles = set() if admin_roles is None else set(admin_roles)
+
         attr.host = host
         attr.port = port
         return cls(attributes=attr)

@@ -30,6 +30,7 @@ TYPE_REPLACEMENTS = [
     ("array<int>", "Set[int]"),
     ("array<float>", "Set[float]"),
     ("array<long>", "Set[int]"),
+    ("array<double>", "Set[float]"),
     ("icon_type", "IconType"),
     ("string", "str"),
     ("date", "datetime"),
@@ -37,6 +38,7 @@ TYPE_REPLACEMENTS = [
     ("boolean", "bool"),
     ("float", "float"),
     ("long", "int"),
+    ("double", "float"),
     ("__internal", "Internal"),
     ("certificate_status", "CertificateStatus"),
     ("map", "Dict"),
@@ -64,6 +66,7 @@ PRIMITIVE_MAPPINGS = {
     "long": "int",
     "date": "int",
     "float": "float",
+    "double": "float",
     "string,string": "str, str",
     "string,long": "str, int",
 }
@@ -228,6 +231,11 @@ class AssetInfo:
         "Referenceable",
         "Purpose",
         "alpha_DQRule",
+    }
+    _ASSETS_REQUIRE_ASYNC_CLIENT = {
+        "Badge",
+        "Connection",
+        "Referenceable",
     }
     _CORE_ASSETS = {
         "Referenceable",
@@ -1001,6 +1009,9 @@ if __name__ == "__main__":
         help="Path to the typedefs file (default: /tmp/typedefs.json or $TMPDIR/typedefs.json)",
     )
     args = parser.parse_args()
+
+    # Ensure docs directory exists
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
     type_defs = get_type_defs(args.typedefs_file)
     filter_attributes_of_custom_entity_type()

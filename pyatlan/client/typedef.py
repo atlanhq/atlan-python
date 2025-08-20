@@ -1,95 +1,28 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 from typing import List, Union
 
-from pydantic.v1 import ValidationError, validate_arguments
+from pydantic.v1 import validate_arguments
 
-from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import (
-    CREATE_TYPE_DEFS,
-    DELETE_TYPE_DEF_BY_NAME,
-    GET_ALL_TYPE_DEFS,
-    GET_TYPE_DEF_BY_NAME,
-    UPDATE_TYPE_DEFS,
+from pyatlan.client.common import (
+    ApiCaller,
+    TypeDefCreate,
+    TypeDefGet,
+    TypeDefGetByName,
+    TypeDefPurge,
+    TypeDefUpdate,
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
-    EntityDef,
     EnumDef,
-    RelationshipDef,
-    StructDef,
     TypeDef,
     TypeDefResponse,
 )
-
-
-def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
-    if isinstance(typedef, AtlanTagDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[typedef],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )  # type: ignore[call-arg]
-    elif isinstance(typedef, CustomMetadataDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[typedef],
-        )  # type: ignore[call-arg]
-    elif isinstance(typedef, EnumDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[typedef],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )  # type: ignore[call-arg]
-    else:
-        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
-            typedef.category.value
-        )
-    return payload
-
-
-class TypeDefFactory:
-    @staticmethod
-    def create(raw_json: dict) -> TypeDef:
-        """
-        Creates a specific type definition object based on the provided raw JSON.
-
-        :param raw_json: raw JSON data representing the type definition
-        :returns: type definition object
-        :raises ApiError: on receiving an unsupported type definition category
-        """
-        TYPE_DEF_MAP = {
-            AtlanTypeCategory.ENUM: EnumDef,
-            AtlanTypeCategory.STRUCT: StructDef,
-            AtlanTypeCategory.CLASSIFICATION: AtlanTagDef,
-            AtlanTypeCategory.ENTITY: EntityDef,
-            AtlanTypeCategory.RELATIONSHIP: RelationshipDef,
-            AtlanTypeCategory.CUSTOM_METADATA: CustomMetadataDef,
-        }
-        category = raw_json.get("category")
-        type_def_model = category and TYPE_DEF_MAP.get(category)
-        if type_def_model:
-            return type_def_model(**raw_json)
-        else:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                raw_json, 200, f"Unsupported type definition category: {category}"
-            )
 
 
 class TypeDefClient:
@@ -106,6 +39,7 @@ class TypeDefClient:
         self._client = client
 
     def _refresh_caches(self, typedef: TypeDef) -> None:
+        """Refresh appropriate caches after creating or updating a type definition."""
         if isinstance(typedef, AtlanTagDef):
             self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]
         if isinstance(typedef, CustomMetadataDef):
@@ -120,8 +54,9 @@ class TypeDefClient:
         :returns: TypeDefResponse object that contains  a list of all the type definitions in Atlan
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(GET_ALL_TYPE_DEFS)
-        return TypeDefResponse(**raw_json)
+        endpoint, query_params = TypeDefGet.prepare_request_all()
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TypeDefGet.process_response(raw_json)
 
     @validate_arguments
     def get(
@@ -134,17 +69,9 @@ class TypeDefClient:
         :returns: TypeDefResponse object that contain a list that contains the requested list of type definitions
         :raises AtlanError: on any API communication issue
         """
-        categories: List[str] = []
-        if isinstance(type_category, list):
-            categories.extend(map(lambda x: x.value, type_category))
-        else:
-            categories.append(type_category.value)
-        query_params = {"type": categories}
-        raw_json = self._client._call_api(
-            GET_ALL_TYPE_DEFS.format_path_with_params(),
-            query_params,
-        )
-        return TypeDefResponse(**raw_json)
+        endpoint, query_params = TypeDefGet.prepare_request_by_category(type_category)
+        raw_json = self._client._call_api(endpoint, query_params)
+        return TypeDefGet.process_response(raw_json)
 
     @validate_arguments
     def get_by_name(self, name: str) -> TypeDef:
@@ -157,15 +84,9 @@ class TypeDefClient:
         category or when unable to produce a valid response
         :raises AtlanError: on any API communication issue
         """
-        raw_json = self._client._call_api(
-            GET_TYPE_DEF_BY_NAME.format_path_with_params(name)
-        )
-        try:
-            return TypeDefFactory.create(raw_json)
-        except (ValidationError, AttributeError) as err:
-            raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                raw_json, 200, str(err)
-            ) from err
+        endpoint, request_obj = TypeDefGetByName.prepare_request(name)
+        raw_json = self._client._call_api(endpoint, request_obj)
+        return TypeDefGetByName.process_response(raw_json)
 
     @validate_arguments
     def create(self, typedef: TypeDef) -> TypeDefResponse:
@@ -181,12 +102,12 @@ class TypeDefClient:
         trying to create is not one of the allowed types
         :raises AtlanError: on any API communication issue
         """
-        payload = _build_typedef_request(typedef)
+        endpoint, request_obj = TypeDefCreate.prepare_request(typedef)
         raw_json = self._client._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+            endpoint, request_obj=request_obj, exclude_unset=True
         )
         self._refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return TypeDefCreate.process_response(raw_json)
 
     @validate_arguments
     def update(self, typedef: TypeDef) -> TypeDefResponse:
@@ -202,12 +123,12 @@ class TypeDefClient:
         trying to update is not one of the allowed types
         :raises AtlanError: on any API communication issue
         """
-        payload = _build_typedef_request(typedef)
+        endpoint, request_obj = TypeDefUpdate.prepare_request(typedef)
         raw_json = self._client._call_api(
-            UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+            endpoint, request_obj=request_obj, exclude_unset=True
         )
         self._refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return TypeDefUpdate.process_response(raw_json)
 
     @validate_arguments
     def purge(self, name: str, typedef_type: type) -> None:
@@ -222,26 +143,8 @@ class TypeDefClient:
         :raises NotFoundError: if the typedef you are trying to delete cannot be found
         :raises AtlanError: on any API communication issue
         """
-        if typedef_type == CustomMetadataDef:
-            internal_name = self._client.custom_metadata_cache.get_id_for_name(name)  # type: ignore[attr-defined]
-        elif typedef_type == EnumDef:
-            internal_name = name
-        elif typedef_type == AtlanTagDef:
-            internal_name = str(self._client.atlan_tag_cache.get_id_for_name(name))  # type: ignore[attr-defined]
-        else:
-            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
-                typedef_type
-            )
-        if internal_name:
-            self._client._call_api(  # type: ignore[attr-defined]
-                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
-            )
-        else:
-            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
-
-        if typedef_type == CustomMetadataDef:
-            self._client.custom_metadata_cache.refresh_cache()  # type: ignore[attr-defined]
-        elif typedef_type == EnumDef:
-            self._client.enum_cache.refresh_cache()  # type: ignore[attr-defined]
-        elif typedef_type == AtlanTagDef:
-            self._client.atlan_tag_cache.refresh_cache()  # type: ignore[attr-defined]
+        endpoint, request_obj = TypeDefPurge.prepare_request(
+            name, typedef_type, self._client
+        )
+        self._client._call_api(endpoint, request_obj)
+        TypeDefPurge.refresh_caches(typedef_type, self._client)

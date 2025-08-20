@@ -67,6 +67,10 @@ class QlikDataset(Qlik):
     Whether the Qlik dataset is an implicit dataset
     """
 
+    QLIK_COLUMNS: ClassVar[RelationField] = RelationField("qlikColumns")
+    """
+    TBC
+    """
     QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
     """
     TBC
@@ -78,6 +82,7 @@ class QlikDataset(Qlik):
         "qlik_dataset_uri",
         "qlik_dataset_subtype",
         "qlik_is_implicit",
+        "qlik_columns",
         "qlik_space",
     ]
 
@@ -136,6 +141,16 @@ class QlikDataset(Qlik):
         self.attributes.qlik_is_implicit = qlik_is_implicit
 
     @property
+    def qlik_columns(self) -> Optional[List[QlikColumn]]:
+        return None if self.attributes is None else self.attributes.qlik_columns
+
+    @qlik_columns.setter
+    def qlik_columns(self, qlik_columns: Optional[List[QlikColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_columns = qlik_columns
+
+    @property
     def qlik_space(self) -> Optional[QlikSpace]:
         return None if self.attributes is None else self.attributes.qlik_space
 
@@ -151,6 +166,9 @@ class QlikDataset(Qlik):
         qlik_dataset_uri: Optional[str] = Field(default=None, description="")
         qlik_dataset_subtype: Optional[str] = Field(default=None, description="")
         qlik_is_implicit: Optional[bool] = Field(default=None, description="")
+        qlik_columns: Optional[List[QlikColumn]] = Field(
+            default=None, description=""
+        )  # relationship
         qlik_space: Optional[QlikSpace] = Field(
             default=None, description=""
         )  # relationship
@@ -165,6 +183,7 @@ class QlikDataset(Qlik):
     )
 
 
+from .qlik_column import QlikColumn  # noqa: E402, F401
 from .qlik_space import QlikSpace  # noqa: E402, F401
 
 QlikDataset.Attributes.update_forward_refs()

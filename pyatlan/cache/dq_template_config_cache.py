@@ -5,8 +5,7 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING, Dict, Optional
 
-from pyatlan.model.assets import Asset
-from pyatlan.model.fluent_search import FluentSearch
+from pyatlan.cache.common.dq_template_config_cache import DQTemplateConfigCacheCommon
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
@@ -22,6 +21,12 @@ class DQTemplateConfigCache:
         self._cache: Dict[str, Dict] = {}
         self._lock: threading.Lock = threading.Lock()
         self._initialized: bool = False
+
+    def refresh_cache(self) -> None:
+        """
+        Refreshes the cache of DQ template configurations by requesting the full set from Atlan.
+        """
+        self._refresh_cache()
 
     def get_template_config(self, rule_type: str) -> Optional[Dict]:
         """
@@ -42,36 +47,21 @@ class DQTemplateConfigCache:
                 return
 
             try:
-                from pyatlan.model.assets.core.alpha__d_q_rule_template import (
-                    alpha_DQRuleTemplate,
+                search_request = DQTemplateConfigCacheCommon.prepare_search_request()
+                request = search_request.to_request()
+                results = self.client.asset.search(request)
+
+                success, error = DQTemplateConfigCacheCommon.process_search_results(
+                    results, self._cache
                 )
 
-                request = (
-                    FluentSearch()
-                    .where(Asset.TYPE_NAME.eq(alpha_DQRuleTemplate.__name__))
-                    .include_on_results(alpha_DQRuleTemplate.NAME)
-                    .include_on_results(alpha_DQRuleTemplate.QUALIFIED_NAME)
-                    .include_on_results(alpha_DQRuleTemplate.DISPLAY_NAME)
-                    .include_on_results(
-                        alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_DIMENSION
-                    )
-                    .include_on_results(
-                        alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_CONFIG
-                    )
-                ).to_request()
-
-                results = self.client.asset.search(request)
-                for result in results:
-                    template_config = {
-                        "name": result.name,
-                        "qualified_name": result.qualified_name,
-                        "display_name": result.display_name,
-                        "dimension": result.alpha_dq_rule_template_dimension,  # type: ignore
-                        "config": result.alpha_dq_rule_template_config,  # type: ignore
-                    }
-                    self._cache[result.display_name] = template_config  # type: ignore
-
-                self._initialized = True
+                if success:
+                    self._initialized = True
+                else:
+                    # If cache refresh fails, mark as initialized to prevent infinite retries
+                    self._initialized = True
+                    if error:
+                        raise error
             except Exception:
                 # If cache refresh fails, mark as initialized to prevent infinite retries
                 self._initialized = True

@@ -14,6 +14,7 @@ from pyatlan.model.utils import encoders, to_camel_case
 if TYPE_CHECKING:
     from dataclasses import dataclass
 
+    from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
 else:
     from pydantic.v1.dataclasses import dataclass
@@ -353,6 +354,41 @@ class AtlanTag(AtlanObject):
                 raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
             tag_id = client.atlan_tag_cache.get_id_for_name(str(atlan_tag_name))
             source_tag_attr_id = client.atlan_tag_cache.get_source_tags_attr_id(
+                tag_id or ""
+            )
+            tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]
+            tag.source_tag_attachments.append(source_tag_attachment)
+        return tag
+
+    @classmethod
+    async def of_async(
+        cls,
+        atlan_tag_name: AtlanTagName,
+        entity_guid: Optional[str] = None,
+        source_tag_attachment: Optional[SourceTagAttachment] = None,
+        client: Optional[AsyncAtlanClient] = None,
+    ) -> AtlanTag:
+        """
+        Async version of AtlanTag.of() for use with AsyncAtlanClient.
+
+        Construct an Atlan tag assignment for a specific entity.
+
+        :param atlan_tag_name: human-readable name of the Atlan tag
+        :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
+        :param source_tag_attachment: (optional) source-specific details for the tag
+        :param client: (optional) async client instance used for translating source-specific details
+        :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
+        """
+        tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
+        if entity_guid:
+            tag.entity_guid = entity_guid
+            tag.entity_status = EntityStatus.ACTIVE
+        if source_tag_attachment:
+            if not client:
+                raise ErrorCode.NO_ATLAN_CLIENT.exception_with_parameters()
+            tag_id = await client.atlan_tag_cache.get_id_for_name(str(atlan_tag_name))
+            source_tag_attr_id = await client.atlan_tag_cache.get_source_tags_attr_id(
                 tag_id or ""
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]

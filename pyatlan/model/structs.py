@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Atlan Pte. Ltd.
+# Copyright 2025 Atlan Pte. Ltd.
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 from pydantic.v1 import BaseModel, Extra, Field, root_validator
 
 from pyatlan.model.enums import (
+    AppWorkflowRunStatus,
     AtlanConnectorType,
     BadgeComparisonOperator,
     BadgeConditionColor,
@@ -21,7 +22,9 @@ from pyatlan.model.utils import to_camel_case
 from pyatlan.utils import select_optional_set_fields, validate_required_fields
 
 if TYPE_CHECKING:
+    from pyatlan.cache.aio.source_tag_cache import AsyncSourceTagName
     from pyatlan.cache.source_tag_cache import SourceTagName
+    from pyatlan.client.aio import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
 
 
@@ -334,6 +337,49 @@ class SourceTagAttachment(AtlanObject):
         )
 
     @classmethod
+    async def by_name_async(
+        cls,
+        client: AsyncAtlanClient,
+        name: AsyncSourceTagName,
+        source_tag_values: List[SourceTagAttachmentValue],
+        source_tag_sync_timestamp: Optional[datetime] = None,
+        is_source_tag_synced: Optional[bool] = None,
+        source_tag_sync_error: Optional[str] = None,
+    ):
+        """
+        Async version of by_name that creates a source-synced tag attachment with
+        a particular value when the attachment is synced to the source.
+
+        :param client: async connectivity to an Atlan tenant
+        :param name: unique name of the source tag in Atlan
+        :param source_tag_values: value of the tag attachment from the source
+        :param is_source_tag_synced: whether the tag attachment has been synced at the source (True) or not (False)
+        :param source_tag_sync_timestamp: time (epoch) when the tag attachment was synced at the source, in milliseconds
+        :param source_tag_sync_error: error message if the tag attachment sync at the source failed
+        :returns: a SourceTagAttachment with the provided information
+        :raises AtlanError: on any error communicating via the underlying APIs
+        :raises NotFoundError: if the source-synced tag cannot be resolved
+        """
+        tag = await client.source_tag_cache.get_by_name(name)
+        tag_connector_name = AtlanConnectorType._get_connector_type_from_qualified_name(
+            tag.qualified_name or ""
+        )
+        return cls.of(
+            source_tag_name=tag.name,
+            source_tag_qualified_name=tag.qualified_name,
+            source_tag_guid=tag.guid,
+            source_tag_connector_name=tag_connector_name,
+            source_tag_values=source_tag_values,
+            **select_optional_set_fields(
+                dict(
+                    is_source_tag_synced=is_source_tag_synced,
+                    source_tag_sync_timestamp=source_tag_sync_timestamp,
+                    source_tag_sync_error=source_tag_sync_error,
+                )
+            ),
+        )
+
+    @classmethod
     def by_qualified_name(
         cls,
         client: AtlanClient,
@@ -431,6 +477,28 @@ class AuthPolicyCondition(AtlanObject):
     policy_condition_values: Set[str] = Field(description="")
 
 
+class DbtMetricFilter(AtlanObject):
+    """Description"""
+
+    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+
+
+class AssetHistogram(AtlanObject):
+    """Description"""
+
+    asset_histogram_boundaries: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+    asset_histogram_frequencies: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+
+
 class alpha_DQRuleConfigArguments(AtlanObject):
     """Description"""
 
@@ -454,15 +522,22 @@ class alpha_DQRuleRangeForTesting(AtlanObject):
     )
 
 
-class DbtMetricFilter(AtlanObject):
+class AppWorkflowRunStep(AtlanObject):
     """Description"""
 
-    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+    app_workflow_run_label: Optional[str] = Field(default=None, description="")
+    app_workflow_run_status: Optional[AppWorkflowRunStatus] = Field(
         default=None, description=""
     )
-    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+    app_workflow_run_started_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    app_workflow_run_completed_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    app_workflow_run_outputs: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -571,6 +646,12 @@ SourceTagAttachment.update_forward_refs()
 AzureTag.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
+
+DbtMetricFilter.update_forward_refs()
+
+AssetHistogram.update_forward_refs()
+
+AppWorkflowRunStep.update_forward_refs()
 
 alpha_DQRuleConfigArguments.update_forward_refs()
 

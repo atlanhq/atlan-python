@@ -8,6 +8,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.model.response import A
+from pyatlan.client.atlan import DEFAULT_RETRY
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,6 +30,13 @@ class TestId:
 def client() -> Generator[AtlanClient, None, None]:
     client = AtlanClient()
 
+    yield client
+
+
+@pytest.fixture(scope="module")
+def token_client() -> Generator[AtlanClient, None, None]:
+    DEFAULT_RETRY.total = 0
+    client = AtlanClient(retry=DEFAULT_RETRY)
     yield client
 
 

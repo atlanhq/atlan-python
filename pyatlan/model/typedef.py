@@ -364,6 +364,44 @@ class EnumDef(TypeDef):
             element_defs=EnumDef.ElementDef.list_from(update_values),
         )
 
+    @staticmethod
+    async def update_async(
+        client, name: str, values: List[str], replace_existing: bool
+    ) -> EnumDef:
+        """
+        Builds the minimal object necessary to update an enumeration definition.
+
+        :param client: connectivity to an Atlan tenant
+        :param name: display name the human-readable name for the enumeration
+        :param values: the list of additional valid values
+        (as strings) to add to the existing enumeration
+        :param replace_existing: if `True`, will replace all
+        existing values in the enumeration with the new ones;
+        or if `False` the new ones will be appended to the existing set
+        :returns: the minimal object necessary to update the enumeration typedef
+        """
+        from pyatlan.utils import validate_required_fields
+
+        validate_required_fields(
+            ["name", "values", "replace_existing"],
+            [name, values, replace_existing],
+        )
+        update_values = (
+            values
+            if replace_existing
+            else EnumDef.ElementDef.extend_elements(
+                new=values,
+                current=(
+                    await client.enum_cache.get_by_name(str(name))
+                ).get_valid_values(),
+            )
+        )
+        return EnumDef(
+            name=name,
+            category=AtlanTypeCategory.ENUM,
+            element_defs=EnumDef.ElementDef.list_from(update_values),
+        )
+
     def get_valid_values(self) -> List[str]:
         """
         Translate the element definitions in this enumeration into simple list of strings.
@@ -950,6 +988,125 @@ class AttributeDef(AtlanObject):
         )
         attr_def.applicable_glossaries = (
             applicable_glossaries or _get_all_qualified_names(client, "AtlasGlossary")
+        )
+        attr_def.applicable_domains = applicable_domains or _all_domains
+        attr_def.applicable_ai_asset_types = applicable_ai_asset_types or set()
+        return attr_def
+
+    @staticmethod
+    async def create_async(
+        client,  # AsyncAtlanClient
+        display_name: str,
+        attribute_type: AtlanCustomAttributePrimitiveType,
+        multi_valued: bool = False,
+        options_name: Optional[str] = None,
+        applicable_connections: Optional[Set[str]] = None,
+        applicable_asset_types: Optional[Union[Set[str], AssetTypes]] = None,
+        applicable_glossaries: Optional[Set[str]] = None,
+        applicable_glossary_types: Optional[GlossaryTypes] = None,
+        applicable_other_asset_types: Optional[OtherAssetTypes] = None,
+        applicable_domains: Optional[Set[str]] = None,
+        applicable_domain_types: Optional[DomainTypes] = None,
+        applicable_ai_asset_types: Optional[AIAssetTypes] = None,
+        description: Optional[str] = None,
+    ) -> AttributeDef:
+        """
+        Create an AttributeDef with async client support.
+
+        :param client: AsyncAtlanClient instance
+        :param display_name: human-readable name for the attribute
+        :param attribute_type: type of the attribute
+        :param multi_valued: whether the attribute can have multiple values
+        :param options_name: name of the enumeration (if type is OPTIONS)
+        :param applicable_connections: connections where this attribute applies
+        :param applicable_asset_types: asset types where this attribute applies
+        :param applicable_glossaries: glossaries where this attribute applies
+        :param applicable_glossary_types: glossary types where this attribute applies
+        :param applicable_other_asset_types: other asset types where this attribute applies
+        :param applicable_domains: domains where this attribute applies
+        :param applicable_domain_types: domain types where this attribute applies
+        :param applicable_ai_asset_types: AI asset types where this attribute applies
+        :param description: description of the attribute
+        :returns: AttributeDef configured for the specified parameters
+        """
+        from pyatlan.utils import validate_required_fields
+
+        validate_required_fields(
+            ["display_name", "attribute_type"],
+            [display_name, attribute_type],
+        )
+
+        # Async version of _get_all_qualified_names helper
+        async def _get_all_qualified_names_async(asset_type: str):
+            from pyatlan.model.assets import Asset
+            from pyatlan.model.fluent_search import FluentSearch
+
+            request = (
+                FluentSearch.select()
+                .where(Asset.TYPE_NAME.eq(asset_type))
+                .include_on_results(Asset.QUALIFIED_NAME)
+                .to_request()
+            )
+            results = await client.asset.search(request)
+            names = []
+            async for result in results:
+                names.append(result.qualified_name or "")
+            return set(names)
+
+        # Create the AttributeDef - match sync implementation exactly
+        attr_def = AttributeDef(
+            display_name=display_name,
+            options=AttributeDef.Options.create(
+                attribute_type=attribute_type, options_name=options_name
+            ),
+            is_new=True,
+            cardinality=Cardinality.SINGLE,
+            description=description,
+            name="",
+            include_in_notification=False,
+            is_indexable=True,
+            is_optional=True,
+            is_unique=False,
+            values_min_count=0,
+            values_max_count=1,
+        )
+        add_enum_values = attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS
+        if attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS:
+            base_type = options_name
+        elif attribute_type in (
+            AtlanCustomAttributePrimitiveType.USERS,
+            AtlanCustomAttributePrimitiveType.GROUPS,
+            AtlanCustomAttributePrimitiveType.URL,
+            AtlanCustomAttributePrimitiveType.SQL,
+        ):
+            base_type = AtlanCustomAttributePrimitiveType.STRING.value
+        else:
+            base_type = attribute_type.value
+        if multi_valued:
+            attr_def.type_name = f"array<{str(base_type)}>"
+            attr_def.options.multi_value_select = True  # type: ignore
+        else:
+            attr_def.type_name = base_type
+        if add_enum_values:
+            if enum_def := await client.enum_cache.get_by_name(str(options_name)):
+                attr_def.enum_values = enum_def.get_valid_values()
+            else:
+                attr_def.enum_values = []
+
+        attr_def.applicable_asset_types = applicable_asset_types or _complete_type_list
+        attr_def.applicable_glossary_types = (
+            applicable_glossary_types or _all_glossary_types
+        )
+        attr_def.applicable_domain_types = applicable_domain_types or _all_domain_types
+        attr_def.applicable_other_asset_types = (
+            applicable_other_asset_types or _all_other_types
+        )
+        attr_def.applicable_connections = (
+            applicable_connections or await _get_all_qualified_names_async("Connection")
+        )
+        attr_def.applicable_glossaries = (
+            applicable_glossaries
+            or await _get_all_qualified_names_async("AtlasGlossary")
         )
         attr_def.applicable_domains = applicable_domains or _all_domains
         attr_def.applicable_ai_asset_types = applicable_ai_asset_types or set()

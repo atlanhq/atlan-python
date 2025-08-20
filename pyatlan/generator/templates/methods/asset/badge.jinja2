@@ -23,6 +23,28 @@
 
     @classmethod
     @init_guid
+    async def creator_async(
+        cls,
+        *,
+        client: AsyncAtlanClient,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: List[BadgeCondition],
+    ) -> Badge:
+        return cls(
+            status=EntityStatus.ACTIVE,
+            attributes=await Badge.Attributes.create_async(
+                client=client,
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            ),
+        )
+
+    @classmethod
+    @init_guid
     def create(
         cls,
         *,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
@@ -5,8 +7,8 @@ from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 from pydantic.v1 import Field, ValidationError, parse_obj_as, root_validator
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import AUDIT_SEARCH
+from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Asset
