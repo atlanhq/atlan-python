@@ -37,6 +37,7 @@ async def client():
     client = AsyncAtlanClient()
     yield client
 
+
 @pytest_asyncio.fixture(scope="module")
 async def token_client():
     """Async Atlan client fixture for api token integration tests."""

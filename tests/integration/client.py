@@ -32,6 +32,7 @@ def client() -> Generator[AtlanClient, None, None]:
 
     yield client
 
+
 @pytest.fixture(scope="module")
 def token_client() -> Generator[AtlanClient, None, None]:
     DEFAULT_RETRY.total = 0
