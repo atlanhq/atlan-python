@@ -13,19 +13,15 @@ RUN apk add python-${PYTHON_VERSION} && \
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-USER nonroot
-
-# Create uv cache directory with proper permissions
-RUN mkdir -p /home/nonroot/.cache/uv && \
-    chown -R nonroot:nonroot /home/nonroot/.cache
-
-# Install pyatlan from PyPI using uv pip install
-RUN --mount=type=cache,target=/home/nonroot/.cache/uv,uid=65532,gid=65532 \
+# Install pyatlan from PyPI using uv pip install (as root for --system)
+RUN --mount=type=cache,target=/root/.cache/uv \
     if [ "$PYATLAN_VERSION" = "latest" ]; then \
         uv pip install --system pyatlan; \
     else \
         uv pip install --system pyatlan==$PYATLAN_VERSION; \
     fi
+
+USER nonroot
 
 # Set environment variables
 ENV PYTHONPATH=/app
