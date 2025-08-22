@@ -1,0 +1,38 @@
+FROM cgr.dev/chainguard/wolfi-base
+
+# Build arguments for configurable versions
+ARG PYTHON_VERSION=3.11
+ARG PYATLAN_VERSION=latest
+
+WORKDIR /app
+
+# Install Python
+RUN apk add python-${PYTHON_VERSION} && \
+    chown -R nonroot:nonroot /app/
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+USER nonroot
+
+# Create uv cache directory with proper permissions
+RUN mkdir -p /home/nonroot/.cache/uv && \
+    chown -R nonroot:nonroot /home/nonroot/.cache
+
+# Install pyatlan from PyPI using uv pip install
+RUN --mount=type=cache,target=/home/nonroot/.cache/uv,uid=65532,gid=65532 \
+    if [ "$PYATLAN_VERSION" = "latest" ]; then \
+        uv pip install --system pyatlan; \
+    else \
+        uv pip install --system pyatlan==$PYATLAN_VERSION; \
+    fi
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PATH="/home/nonroot/.local/bin:${PATH}"
+
+# Default working directory for applications
+WORKDIR /app
+
+# Default command (can be overridden by extending images)
+CMD ["python"]
