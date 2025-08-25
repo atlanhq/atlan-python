@@ -1,3 +1,25 @@
+## 8.0.1 (August 25, 2025)
+
+### New Features
+
+- Added `get_client_async()` for initializing `AsyncAtlanClient` when using packages.
+- Added optional parameter `set_pkg_headers()` to set package headers on the client (defaults to `False`).
+
+### Bug Fixes
+
+- Fixed `httpcore.LocalProtocolError` exception in `get_client()` that occurred when `ATLAN_API_KEY` environment variable was not configured (commonly encountered during package impersonation with empty `API` key strings).
+
+### QOL Improvements
+
+- Added `pyatlan-wolfi-base` Docker image workflow with enhanced capabilities:
+  - **Automatic release builds**: Workflow now triggers automatically on GitHub releases using latest Python (3.13) and SDK versions
+  - **Git branch support**: Added ability to install SDK from any git branch for development/testing purposes via `pyatlan_branch` parameter
+  - **Smart installation logic**: Automatically chooses between PyPI (stable) or git (development) installation methods
+  - **Enhanced tagging**: Branch builds tagged as `branch-{branchname}-{python}-{commit}` for easy identification
+  - **Build metadata**: Images include labels tracking installation source, version/branch, and Python version
+  - **Conditional PyPI checks**: Skips PyPI availability checks when installing from git branches
+  - **Improved logging**: Shows installation method, branch info, and trigger source in build outputs
+
 ## 8.0.0 (August 20, 2025)
 
 ### New Features
