@@ -108,7 +108,7 @@ def get_client(
 
 async def get_client_async(
     impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
-):
+) -> AsyncAtlanClient:
     """
     Set up the default async Atlan client, based on environment variables.
     This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
