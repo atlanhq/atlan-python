@@ -174,10 +174,7 @@ class AsyncAtlanClient(AtlanClient):
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
-        client = cls(base_url=final_base_url)
-        # Explicitly set api_key to empty string to avoid
-        # httpx.LocalProtocolError: Illegal header value b'Bearer '
-        client.api_key = ""
+        client = cls(base_url=final_base_url, api_key="")
         client_info = ImpersonateUser.get_client_info(
             client_id=client_id, client_secret=client_secret
         )
@@ -872,6 +869,11 @@ class AsyncAtlanClient(AtlanClient):
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return await self._call_api_internal(api, path, params, binary_data=post_data)
+
+    def update_headers(self, header: dict[str, str]):
+        """Update headers for the async session."""
+        if self._async_session:
+            self._async_session.headers.update(header)
 
     async def aclose(self):
         """Close async resources"""

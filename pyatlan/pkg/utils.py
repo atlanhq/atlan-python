@@ -4,14 +4,18 @@ import json
 import logging
 import os
 import sys
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
+from typing import Any, Dict, List, Mapping, Optional, Sequence, TypeVar, Union
 
 from pydantic.v1 import parse_obj_as, parse_raw_as
 
+from pyatlan.client.aio import AsyncAtlanClient
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.pkg.models import RuntimeConfig
 
 LOGGER = logging.getLogger(__name__)
+
+# Type variable for client types
+ClientType = TypeVar("ClientType", AtlanClient, AsyncAtlanClient)
 
 # Try to import OpenTelemetry libraries
 try:
@@ -64,13 +68,16 @@ except ImportError:
     OTEL_IMPORTS_AVAILABLE = False
 
 
-def get_client(impersonate_user_id: str) -> AtlanClient:
+def get_client(
+    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+) -> AtlanClient:
     """
     Set up the default Atlan client, based on environment variables.
     This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
     ATLAN_API_KEY is empty.
 
     :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    :param set_pkg_headers: whether to set package headers on the client (default is False)
     :returns: an initialized client
     """
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
@@ -94,6 +101,46 @@ def get_client(impersonate_user_id: str) -> AtlanClient:
     client = AtlanClient(base_url=base_url, api_key=api_key)
     if user_id:
         client._user_id = user_id
+    if set_pkg_headers:
+        client = set_package_headers(client)
+    return client
+
+
+async def get_client_async(
+    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+):
+    """
+    Set up the default async Atlan client, based on environment variables.
+    This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
+    ATLAN_API_KEY is empty.
+
+    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    :param set_pkg_headers: whether to set package headers on the client (default is False)
+    :returns: an initialized async client
+    """
+    base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+    api_token = os.environ.get("ATLAN_API_KEY", "")
+    user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+
+    if api_token:
+        LOGGER.info("Using provided API token for authentication.")
+        api_key = api_token
+    elif user_id:
+        LOGGER.info("No API token found, attempting to impersonate user: %s", user_id)
+        client = AsyncAtlanClient(base_url=base_url, api_key="")
+        api_key = await client.impersonate.user(user_id=user_id)
+    else:
+        LOGGER.info(
+            "No API token or impersonation user, attempting short-lived escalation."
+        )
+        client = AsyncAtlanClient(base_url=base_url, api_key="")
+        api_key = await client.impersonate.escalate()
+
+    client = AsyncAtlanClient(base_url=base_url, api_key=api_key)
+    if user_id:
+        client._user_id = user_id
+    if set_pkg_headers:
+        client = set_package_headers(client)
     return client
 
 
@@ -110,12 +157,12 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     return client
 
 
-def set_package_headers(client: AtlanClient) -> AtlanClient:
+def set_package_headers(client: ClientType) -> ClientType:
     """
-    Configure the AtlanClient with package headers from environment variables.
+    Configure the AtlanClient or AsyncAtlanClient with package headers from environment variables.
 
-    :param client: AtlanClient instance to configure
-    :returns: updated AtlanClient instance.
+    :param client: AtlanClient or AsyncAtlanClient instance to configure
+    :returns: updated client instance of the same type.
     """
 
     if (agent := os.environ.get("X_ATLAN_AGENT")) and (
