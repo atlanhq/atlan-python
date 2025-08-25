@@ -3,23 +3,40 @@ FROM cgr.dev/chainguard/wolfi-base
 # Build arguments for configurable versions
 ARG PYTHON_VERSION=3.11
 ARG PYATLAN_VERSION=latest
+ARG PYATLAN_BRANCH=""
+ARG INSTALL_FROM_GIT=false
 
 WORKDIR /app
 
-# Install Python
-RUN apk add python-${PYTHON_VERSION} && \
+# Install Python and git (needed for git-based installations)
+RUN apk add python-${PYTHON_VERSION} git && \
     chown -R nonroot:nonroot /app/
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Install pyatlan from PyPI using uv pip install (as root for --system)
+# Install pyatlan - either from PyPI or git branch
 RUN --mount=type=cache,target=/root/.cache/uv \
-    if [ "$PYATLAN_VERSION" = "latest" ]; then \
+    if [ "$INSTALL_FROM_GIT" = "true" ]; then \
+        echo "Installing pyatlan from git branch: $PYATLAN_BRANCH"; \
+        uv pip install --system "git+https://github.com/atlanhq/atlan-python.git@$PYATLAN_BRANCH"; \
+    elif [ "$PYATLAN_VERSION" = "latest" ]; then \
+        echo "Installing latest pyatlan from PyPI"; \
         uv pip install --system pyatlan; \
     else \
+        echo "Installing pyatlan==$PYATLAN_VERSION from PyPI"; \
         uv pip install --system pyatlan==$PYATLAN_VERSION; \
     fi
+
+# Add build information as labels
+RUN if [ "$INSTALL_FROM_GIT" = "true" ]; then \
+        echo "LABEL pyatlan.source=git" >> /tmp/labels && \
+        echo "LABEL pyatlan.branch=$PYATLAN_BRANCH" >> /tmp/labels; \
+    else \
+        echo "LABEL pyatlan.source=pypi" >> /tmp/labels && \
+        echo "LABEL pyatlan.version=$PYATLAN_VERSION" >> /tmp/labels; \
+    fi && \
+    echo "LABEL python.version=$PYTHON_VERSION" >> /tmp/labels
 
 USER nonroot
 

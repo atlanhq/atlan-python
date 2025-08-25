@@ -167,11 +167,11 @@ class AtlanClient(BaseSettings):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self._request_params = {
-            "headers": {
-                "authorization": f"Bearer {self.api_key}",
-            }
-        }
+        self._request_params = (
+            {"headers": {"authorization": f"Bearer {self.api_key}"}}
+            if self.api_key and self.api_key.strip()
+            else {"headers": {}}
+        )
         # Configure httpx client with the provided retry settings
         self._session = httpx.Client(
             transport=RetryTransport(retry=self.retry),
@@ -377,10 +377,7 @@ class AtlanClient(BaseSettings):
 
         # Step 1: Initialize base client and get Atlan-Argo credentials
         # Note: Using empty api_key as we're bootstrapping authentication
-        client = AtlanClient(base_url=final_base_url)
-        # Explicitly set api_key to empty string to avoid
-        # httpx.LocalProtocolError: Illegal header value b'Bearer '
-        client.api_key = ""
+        client = AtlanClient(base_url=final_base_url, api_key="")
         client_info = ImpersonateUser.get_client_info(
             client_id=client_id, client_secret=client_secret
         )

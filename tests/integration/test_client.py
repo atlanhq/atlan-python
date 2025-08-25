@@ -4,8 +4,10 @@ from typing import Generator, List, Optional, Type
 from unittest.mock import patch
 
 import pytest
+from httpx import Headers
 from pydantic.v1 import StrictStr
 
+from pyatlan import __version__ as VERSION
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
 from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
@@ -46,6 +48,8 @@ from pyatlan.model.search import (
     Term,
 )
 from pyatlan.model.user import UserMinimalResponse
+from pyatlan.pkg.utils import get_client
+from pyatlan.utils import get_python_version
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 from tests.integration.requests_test import create_token, delete_token
@@ -1626,6 +1630,76 @@ def test_client_401_token_refresh(
     # Confirm the API key has been updated and results are returned
     assert client.api_key != expired_api_token
     assert results and results.count >= 1
+
+    # Verify similar results with get_client()
+    # Setting ATLAN_API_KEY to empty string to force impersonation
+    monkeypatch.setenv("ATLAN_API_KEY", "")
+    assert expired_token_user_id
+    client = get_client(impersonate_user_id=expired_token_user_id)
+    results = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossary))
+        .page_size(100)
+        .execute(client=client)
+    )
+
+    # Confirm the API key has been updated and results are returned
+    assert client.api_key != expired_api_token
+    assert results and results.count >= 1
+
+    # Verify package headers are set correctly
+    expected_common_headers = Headers(
+        {
+            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "x-atlan-agent": "sdk",
+            "x-atlan-agent-id": "python",
+            "x-atlan-client-origin": "product_sdk",
+            "x-atlan-python-version": get_python_version(),
+            "x-atlan-client-type": "sync",
+        }
+    )
+
+    # Clear package environment variables to test default headers
+    for var in [
+        "X_ATLAN_AGENT",
+        "X_ATLAN_AGENT_ID",
+        "X_ATLAN_AGENT_PACKAGE_NAME",
+        "X_ATLAN_AGENT_WORKFLOW_ID",
+    ]:
+        monkeypatch.delenv(var, raising=False)
+
+    client = get_client(
+        impersonate_user_id=expired_token_user_id, set_pkg_headers=False
+    )
+    assert expected_common_headers == client._session.headers
+
+    # Set package environment variables to test package headers
+    monkeypatch.setenv("X_ATLAN_AGENT", "agent_value")
+    monkeypatch.setenv("X_ATLAN_AGENT_ID", "agent_id_value")
+    monkeypatch.setenv("X_ATLAN_AGENT_PACKAGE_NAME", "package_name_value")
+    monkeypatch.setenv("X_ATLAN_AGENT_WORKFLOW_ID", "workflow_id_value")
+
+    expected = Headers(
+        {
+            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "x-atlan-client-origin": "product_sdk",
+            "x-atlan-python-version": get_python_version(),
+            "x-atlan-client-type": "sync",
+            "x-atlan-agent": "agent_value",
+            "x-atlan-agent-id": "agent_id_value",
+            "x-atlan-agent-package-name": "package_name_value",
+            "x-atlan-agent-workflow-id": "workflow_id_value",
+        }
+    )
+    client = get_client(impersonate_user_id=expired_token_user_id, set_pkg_headers=True)
+    assert expected == client._session.headers
 
 
 def test_client_init_from_token_guid(
