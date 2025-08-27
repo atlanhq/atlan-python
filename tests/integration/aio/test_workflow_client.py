@@ -191,6 +191,8 @@ async def test_workflow_get_runs_and_stop(
         [AtlanWorkflowPhase.FAILED], started_at="now-1h"
     )
     assert runs_status
+    async for _ in runs_status:
+        pass
 
 
 async def test_workflow_get_all_scheduled_runs(
