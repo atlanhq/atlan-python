@@ -66,7 +66,7 @@ class AsyncWorkflowSearchResponse(AtlanObject):
     async def _get_next_page(self) -> bool:
         """Fetch the next page of results."""
         request = WorkflowSearchRequest(
-            query=self._criteria.query, from_=self._start, size=self._size
+            query=self._criteria, from_=self._start, size=self._size
         )
         raw_json = await self._client._call_api(
             api=self._endpoint,
