@@ -1,3 +1,9 @@
+## 8.0.2 (September 1, 2025)
+
+### Bug Fixes
+
+- Fixed `AsyncWorkflowSearchResponse` async iterator.
+
 ## 8.0.1 (August 25, 2025)
 
 ### New Features
