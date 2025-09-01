@@ -243,7 +243,7 @@ class AsyncWorkflowClient:
         return AsyncWorkflowSearchResponse(
             client=self._client,
             endpoint=endpoint,
-            criteria=request_obj,
+            criteria=query,
             start=from_,
             size=size,
             **sync_response,
