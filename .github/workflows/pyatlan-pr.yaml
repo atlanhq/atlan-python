@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938  # v4.2.0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -96,7 +96,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -155,7 +155,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           # Specify version as a string
           # https://github.com/actions/setup-python/issues/160"
@@ -197,7 +197,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           # Specify version as a string
           # https://github.com/actions/setup-python/issues/160"
