@@ -1,0 +1,11 @@
+{
+    "eventTime": "2025-01-04T21:36:06.116Z",
+    "eventType": "START",
+    "run": {
+        "runId": "minimal-run-id"
+    },
+    "job": {
+        "namespace": "default",
+        "name": "minimal_job"
+    }
+}

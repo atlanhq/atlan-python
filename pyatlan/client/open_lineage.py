@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic.v1 import validate_arguments
 
@@ -10,8 +10,9 @@ from pyatlan.client.common import (
 )
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.open_lineage.event import OpenLineageEvent
+from pyatlan.model.open_lineage.event import OpenLineageEvent, OpenLineageRawEvent
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.utils import validate_type
 
 
 class OpenLineageClient:
@@ -65,24 +66,48 @@ class OpenLineageClient:
         # Save connection and return response directly
         return self._client.asset.save(connection)  # type: ignore[attr-defined]
 
-    @validate_arguments
     def send(
-        self, request: OpenLineageEvent, connector_type: AtlanConnectorType
+        self,
+        request: Union[
+            OpenLineageEvent,
+            OpenLineageRawEvent,
+            List[Dict[str, Any]],
+            Dict[str, Any],
+            str,
+        ],
+        connector_type: AtlanConnectorType,
     ) -> None:
         """
         Sends the OpenLineage event to Atlan to be consumed.
 
-        :param request: OpenLineage event to send
+        :param request: OpenLineage event to send - can be an OpenLineageEvent, OpenLineageRawEvent, list of dicts, dict, or JSON string
         :param connector_type: of the connection that should receive the OpenLineage event
         :raises AtlanError: when OpenLineage is not configured OR on any issues with API communication
         """
+        validate_type(
+            name="request",
+            _type=(OpenLineageEvent, OpenLineageRawEvent, list, dict, str),
+            value=request,
+        )
+        validate_type(
+            name="connector_type",
+            _type=(AtlanConnectorType),
+            value=connector_type,
+        )
         try:
+            # Convert raw list/dict/str/ of dicts to OpenLineageRawEvent if needed
+            if isinstance(request, (dict, str, list)):
+                if isinstance(request, str):
+                    request = OpenLineageRawEvent.parse_raw(request)
+                else:
+                    # For list or dict, use parse_obj
+                    request = OpenLineageRawEvent.parse_obj(request)
+
             # Prepare request using shared logic
             api_endpoint, request_obj, api_options = OpenLineageSend.prepare_request(
                 request, connector_type
             )
-
-            # Make API call
+            # Make API call - _call_api handles JSON conversion automatically
             self._client._call_api(
                 request_obj=request_obj, api=api_endpoint, **api_options
             )

@@ -1,0 +1,151 @@
+[
+    {
+        "eventTime": "2025-01-04T21:36:06.116Z",
+        "producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+        "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+        "eventType": "START",
+        "run": {
+            "runId": "0194333f-2de8-7a79-9bbb-8f5d62c232c6",
+            "facets": {
+                "parent": {
+                    "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                    "_schemaURL": "https://openlineage.io/spec/facets/1-0-1/ParentRunFacet.json#/$defs/ParentRunFacet",
+                    "run": {"runId": "0194333f-1045-744a-9547-4e1584e534fb"},
+                    "job": {"namespace": "default", "name": "csv_example"}
+                },
+                "spark_properties": {
+                    "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                    "_schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet",
+                    "properties": {
+                        "spark.master": "local[*]",
+                        "spark.app.name": "CSVExample"
+                    }
+                },
+                "processing_engine": {
+                    "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                    "_schemaURL": "https://openlineage.io/spec/facets/1-1-1/ProcessingEngineRunFacet.json#/$defs/ProcessingEngineRunFacet",
+                    "version": "3.5.4",
+                    "name": "spark",
+                    "openlineageAdapterVersion": "1.26.0"
+                },
+                "environment-properties": {
+                    "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                    "_schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet",
+                    "environment-properties": {}
+                }
+            }
+        },
+        "job": {
+            "namespace": "default",
+            "name": "csv_example.execute_insert_into_hadoop_fs_relation_command.data_output_csv",
+            "facets": {
+                "jobType": {
+                    "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                    "_schemaURL": "https://openlineage.io/spec/facets/2-0-3/JobTypeJobFacet.json#/$defs/JobTypeJobFacet",
+                    "processingType": "BATCH",
+                    "integration": "SPARK",
+                    "jobType": "SQL_JOB"
+                }
+            }
+        },
+        "inputs": [
+            {
+                "namespace": "file",
+                "name": "/Users/luke.hoffman/PycharmProjects/SparkOpenLineageSandbox/localSpark/data/sample.csv",
+                "facets": {
+                    "dataSource": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-0-1/DatasourceDatasetFacet.json#/$defs/DatasourceDatasetFacet",
+                        "name": "file",
+                        "uri": "file"
+                    },
+                    "schema": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-1-1/SchemaDatasetFacet.json#/$defs/SchemaDatasetFacet",
+                        "fields": [
+                            {"name": "id", "type": "string"},
+                            {"name": "name", "type": "string"}
+                        ]
+                    }
+                },
+                "inputFacets": {
+                    "inputStatistics": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/InputStatisticsInputDatasetFacet.json#/$defs/InputStatisticsInputDatasetFacet",
+                        "size": 56,
+                        "fileCount": 4
+                    }
+                }
+            }
+        ],
+        "outputs": [
+            {
+                "namespace": "file",
+                "name": "/Users/luke.hoffman/PycharmProjects/SparkOpenLineageSandbox/localSpark/data/output.csv",
+                "facets": {
+                    "dataSource": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-0-1/DatasourceDatasetFacet.json#/$defs/DatasourceDatasetFacet",
+                        "name": "file",
+                        "uri": "file"
+                    },
+                    "columnLineage": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-2-0/ColumnLineageDatasetFacet.json#/$defs/ColumnLineageDatasetFacet",
+                        "fields": {
+                            "id": {
+                                "inputFields": [
+                                    {
+                                        "namespace": "file",
+                                        "name": "/Users/luke.hoffman/PycharmProjects/SparkOpenLineageSandbox/localSpark/data/sample.csv",
+                                        "field": "id",
+                                        "transformations": [
+                                            {
+                                                "type": "DIRECT",
+                                                "subtype": "IDENTITY",
+                                                "description": "",
+                                                "masking": false
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "inputFields": [
+                                    {
+                                        "namespace": "file",
+                                        "name": "/Users/luke.hoffman/PycharmProjects/SparkOpenLineageSandbox/localSpark/data/sample.csv",
+                                        "field": "name",
+                                        "transformations": [
+                                            {
+                                                "type": "DIRECT",
+                                                "subtype": "IDENTITY",
+                                                "description": "",
+                                                "masking": false
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "lifecycleStateChange": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-0-1/LifecycleStateChangeDatasetFacet.json#/$defs/LifecycleStateChangeDatasetFacet",
+                        "lifecycleStateChange": "OVERWRITE"
+                    },
+                    "schema": {
+                        "_producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+                        "_schemaURL": "https://openlineage.io/spec/facets/1-1-1/SchemaDatasetFacet.json#/$defs/SchemaDatasetFacet",
+                        "fields": [
+                            {"name": "id", "type": "string"},
+                            {"name": "name", "type": "string"},
+                            {"name": "Country", "type": "string"}
+                        ]
+                    }
+                },
+                "outputFacets": {}
+            }
+        ]
+    }
+]
