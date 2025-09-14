@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic.v1 import Field, root_validator
 from pytz import utc  # type:ignore[import-untyped]
 
+from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
 from pyatlan.model.open_lineage.base import OpenLineageBaseEvent
 from pyatlan.model.open_lineage.input_dataset import OpenLineageInputDataset
@@ -14,7 +15,43 @@ from pyatlan.model.open_lineage.output_dataset import OpenLineageOutputDataset
 from pyatlan.model.open_lineage.run import OpenLineageRun
 
 if TYPE_CHECKING:
+    from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
+
+
+class OpenLineageRawEvent(AtlanObject):
+    """
+    Root model for handling raw OpenLineage events.
+
+    This model accepts any arbitrary data structure (dict, list of dicts, string, etc.) and allows
+    it to be sent as raw OpenLineage event data to Atlan's API.
+
+    Use the built-in pydantic methods:
+    - OpenLineageRawEvent.parse_raw(json_string)
+    - OpenLineageRawEvent.parse_obj(any_data)
+    """
+
+    __root__: Union[List[Dict[str, Any]], Dict[str, Any], str, Any]
+
+    @classmethod
+    def from_json(cls, json_str: str) -> OpenLineageRawEvent:
+        """
+        Create an OpenLineageRawEvent from a JSON string.
+
+        :param json_str: JSON string containing raw OpenLineage event data
+        :returns: New OpenLineageRawEvent instance
+        """
+        return cls.parse_raw(json_str)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> OpenLineageRawEvent:
+        """
+        Create an OpenLineageRawEvent from a dictionary.
+
+        :param data: Dictionary containing raw OpenLineage event data
+        :returns: New OpenLineageRawEvent instance
+        """
+        return cls.parse_obj(data)
 
 
 class OpenLineageEvent(OpenLineageBaseEvent):
@@ -80,4 +117,51 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         """
         return client.open_lineage.send(
             request=self, connector_type=AtlanConnectorType.SPARK
+        )
+
+    async def emit_async(self, client: AsyncAtlanClient) -> None:
+        """
+        Send the OpenLineage event to Atlan to be processed (async version).
+
+        :param client: async connectivity to an Atlan tenant
+        :raises AtlanError: on any API communication issues
+        """
+        return await client.open_lineage.send(
+            request=self, connector_type=AtlanConnectorType.SPARK
+        )
+
+    @classmethod
+    def emit_raw(
+        cls,
+        client: AtlanClient,
+        event: Union[OpenLineageRawEvent, List[Dict[str, Any]], Dict[str, Any], str],
+        connector_type: AtlanConnectorType = AtlanConnectorType.SPARK,
+    ) -> None:
+        """
+        Send raw OpenLineage event data to Atlan to be processed.
+
+        :param client: connectivity to an Atlan tenant
+        :param event: Raw event(s) as JSON string, dict, list of dicts, or OpenLineageRawEvent
+        :param connector_type: connector type for the OpenLineage event
+        :raises AtlanError: on any API communication issues
+        """
+        return client.open_lineage.send(request=event, connector_type=connector_type)
+
+    @classmethod
+    async def emit_raw_async(
+        cls,
+        client: AsyncAtlanClient,
+        event: Union[OpenLineageRawEvent, List[Dict[str, Any]], Dict[str, Any], str],
+        connector_type: AtlanConnectorType = AtlanConnectorType.SPARK,
+    ) -> None:
+        """
+        Send raw OpenLineage event data to Atlan to be processed (async version).
+
+        :param client: async connectivity to an Atlan tenant
+        :param event: Raw event(s) as JSON string, dict, list of dicts, or OpenLineageRawEvent
+        :param connector_type: connector type for the OpenLineage event
+        :raises AtlanError: on any API communication issues
+        """
+        return await client.open_lineage.send(
+            request=event, connector_type=connector_type
         )

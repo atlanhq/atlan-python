@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2024 Atlan Pte. Ltd.
+import json
 from json import load, loads
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-from pydantic.v1 import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
@@ -13,11 +13,23 @@ from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.errors import AtlanError, InvalidRequestError
 from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
 from pyatlan.model.fluent_tasks import FluentTasks
-from pyatlan.model.open_lineage import OpenLineageEvent, OpenLineageJob, OpenLineageRun
+from pyatlan.model.open_lineage import (
+    OpenLineageEvent,
+    OpenLineageJob,
+    OpenLineageRawEvent,
+    OpenLineageRun,
+)
 
 TEST_DATA_DIR = Path(__file__).parent.parent.parent / "data"
 OL_EVENT_START = str(TEST_DATA_DIR / "open_lineage_requests/event_start.json")
 OL_EVENT_COMPLETE = str(TEST_DATA_DIR / "open_lineage_requests/event_complete.json")
+
+# Raw event test data files
+RAW_EVENTS_LIST = str(TEST_DATA_DIR / "open_lineage_requests/raw_events_list.json")
+SINGLE_EVENT = str(TEST_DATA_DIR / "open_lineage_requests/single_event.json")
+MULTIPLE_EVENTS = str(TEST_DATA_DIR / "open_lineage_requests/multiple_events.json")
+MINIMAL_EVENT = str(TEST_DATA_DIR / "open_lineage_requests/minimal_event.json")
+EMPTY_EVENTS = str(TEST_DATA_DIR / "open_lineage_requests/empty_events.json")
 
 PRODUCER = "https://your.orchestrator/unique/id/123"
 NAMESPACE = "snowflake://abc123.snowflakecomputing.com"
@@ -38,9 +50,13 @@ def to_json(model):
     return loads(model.json(by_alias=True, exclude_unset=True))
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def mock_api_caller():
-    return Mock(spec=ApiCaller)
+    mock = Mock(spec=ApiCaller)
+    # Reset any previous side_effect that might interfere
+    mock._call_api.side_effect = None
+    mock._call_api.return_value = "Event received"
+    return mock
 
 
 @pytest.fixture()
@@ -80,24 +96,28 @@ def mock_session():
 
 
 @pytest.mark.parametrize(
-    "test_request, connector_type, error_msg",
+    "test_request, connector_type, expected_exception",
     [
-        [None, AtlanConnectorType.SPARK, "none is not an allowed value"],
-        ["123", AtlanConnectorType.SPARK, "value is not a valid dict"],
-        [
-            OpenLineageEvent(),
-            "invalid-connector-type",
-            "value is not a valid enumeration member",
-        ],
-        [OpenLineageEvent(), None, "none is not an allowed value"],
+        # Invalid request parameter tests
+        [None, AtlanConnectorType.SPARK, InvalidRequestError],
+        [123, AtlanConnectorType.SPARK, InvalidRequestError],
+        [set(), AtlanConnectorType.SPARK, InvalidRequestError],
+        [object(), AtlanConnectorType.SPARK, InvalidRequestError],
+        # Invalid connector_type parameter tests
+        [{"eventType": "START"}, None, InvalidRequestError],
+        [{"eventType": "START"}, "spark", InvalidRequestError],
+        [{"eventType": "START"}, 123, InvalidRequestError],
+        [{"eventType": "START"}, object(), InvalidRequestError],
+        [{"eventType": "START"}, set(), InvalidRequestError],
     ],
 )
 def test_ol_client_send_raises_validation_error(
-    test_request, connector_type, error_msg
+    test_request, connector_type, expected_exception, mock_api_caller
 ):
-    with pytest.raises(ValidationError) as err:
-        OpenLineageClient.send(request=test_request, connector_type=connector_type)
-    assert error_msg in str(err.value)
+    client = OpenLineageClient(client=mock_api_caller)
+
+    with pytest.raises(expected_exception):
+        client.send(request=test_request, connector_type=connector_type)
 
 
 @pytest.mark.parametrize(
@@ -119,7 +139,7 @@ def test_ol_invalid_client_raises_invalid_request_error(
 def test_ol_client_send(
     mock_api_caller,
 ):
-    mock_api_caller._call_api.side_effect = ["Event recieved"]
+    mock_api_caller._call_api.return_value = "Event received"
     test_event = OpenLineageEvent()
     assert (
         OpenLineageClient(client=mock_api_caller).send(
@@ -185,3 +205,123 @@ def test_ol_models(mock_run_id, mock_event_time):
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
     assert to_json(complete) == load_json(OL_EVENT_COMPLETE)
+
+
+@pytest.mark.parametrize(
+    "test_data_file,test_description",
+    [
+        (SINGLE_EVENT, "single_event_dict"),
+        (MULTIPLE_EVENTS, "multiple_events_list"),
+        (RAW_EVENTS_LIST, "complex_event_list"),
+        (MINIMAL_EVENT, "minimal_event_dict"),
+    ],
+)
+def test_ol_raw_events_from_json_files(
+    mock_api_caller, test_data_file, test_description
+):
+    # Load test data from file
+    test_data = load_json(test_data_file)
+
+    # Test send method with OpenLineageClient
+    ol_client = OpenLineageClient(client=mock_api_caller)
+    ol_client.send(request=test_data, connector_type=AtlanConnectorType.SPARK)
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+    )
+    assert (
+        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
+    )
+    mock_api_caller.reset_mock()
+
+    # Test emit_raw classmethod with AtlanClient mock
+    mock_atlan_client = Mock()
+    mock_atlan_client.open_lineage = ol_client
+
+    OpenLineageEvent.emit_raw(
+        client=mock_atlan_client,
+        event=test_data,
+        connector_type=AtlanConnectorType.SPARK,
+    )
+    assert mock_api_caller._call_api.call_count == 1
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+    )
+    assert (
+        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
+    )
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.parametrize(
+    "test_data_file,input_type",
+    [
+        (SINGLE_EVENT, "json_string"),
+        (MULTIPLE_EVENTS, "json_string"),
+        (MINIMAL_EVENT, "json_string"),
+    ],
+)
+def test_ol_raw_events_from_json_strings(mock_api_caller, test_data_file, input_type):
+    # Load test data and convert to JSON string
+    test_data = load_json(test_data_file)
+    test_json_string = json.dumps(test_data)
+
+    # Test send method with JSON string
+    ol_client = OpenLineageClient(client=mock_api_caller)
+    ol_client.send(request=test_json_string, connector_type=AtlanConnectorType.SPARK)
+
+    assert mock_api_caller._call_api.call_count == 1
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+    )
+    # When parsing from JSON string, the __root__ should equal the original test_data
+    assert (
+        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
+    )
+    mock_api_caller.reset_mock()
+
+
+def test_ol_raw_events_edge_cases(mock_api_caller):
+    ol_client = OpenLineageClient(client=mock_api_caller)
+
+    # Test empty list
+    empty_list = load_json(EMPTY_EVENTS)
+    ol_client.send(request=empty_list, connector_type=AtlanConnectorType.SPARK)
+    assert mock_api_caller._call_api.call_count == 1
+    assert isinstance(
+        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+    )
+    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == []
+    mock_api_caller.reset_mock()
+
+    # Test custom connector type
+    test_data = load_json(MINIMAL_EVENT)
+    ol_client.send(request=test_data, connector_type=AtlanConnectorType.DATABRICKS)
+    assert mock_api_caller._call_api.call_count == 1
+    mock_api_caller.reset_mock()
+
+
+def test_ol_raw_event_model_methods():
+    # Test from_dict
+    test_dict = {"eventTime": "2025-01-01T00:00:00Z", "eventType": "START"}
+    raw_event = OpenLineageRawEvent.from_dict(test_dict)
+    assert raw_event.__root__ == test_dict
+
+    # Test from_json
+    test_json = '{"eventTime": "2025-01-01T00:00:00Z", "eventType": "COMPLETE"}'
+    raw_event = OpenLineageRawEvent.from_json(test_json)
+    assert raw_event.__root__ == {
+        "eventTime": "2025-01-01T00:00:00Z",
+        "eventType": "COMPLETE",
+    }
+
+    # Test parse_obj with list
+    test_list = [{"eventType": "START"}, {"eventType": "COMPLETE"}]
+    raw_event = OpenLineageRawEvent.parse_obj(test_list)
+    assert raw_event.__root__ == test_list
+
+    # Test parse_raw with complex JSON
+    complex_json = json.dumps(load_json(MULTIPLE_EVENTS))
+    raw_event = OpenLineageRawEvent.parse_raw(complex_json)
+    assert raw_event.__root__ == load_json(MULTIPLE_EVENTS)

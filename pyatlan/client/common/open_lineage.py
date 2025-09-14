@@ -10,7 +10,6 @@ from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.assets import Connection
 from pyatlan.model.credential import Credential
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.open_lineage.event import OpenLineageEvent
 
 
 class OpenLineageCreateCredential:
@@ -91,8 +90,8 @@ class OpenLineageSend:
 
     @staticmethod
     def prepare_request(
-        request: OpenLineageEvent, connector_type: AtlanConnectorType
-    ) -> Tuple[str, OpenLineageEvent, Dict[str, Any]]:
+        request: Any, connector_type: AtlanConnectorType
+    ) -> Tuple[str, Any, Dict[str, Any]]:
         """Prepare the send event request."""
         api_endpoint = OPEN_LINEAGE_SEND_EVENT_API.format_path(
             {"connector_type": connector_type.value}

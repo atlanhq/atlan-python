@@ -1,0 +1,44 @@
+[
+    {
+        "eventTime": "2025-01-04T21:35:06.116Z",
+        "producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+        "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+        "eventType": "START",
+        "run": {
+            "runId": "event-1-run-id",
+            "facets": {}
+        },
+        "job": {
+            "namespace": "default",
+            "name": "job_1"
+        }
+    },
+    {
+        "eventTime": "2025-01-04T21:36:06.116Z",
+        "producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+        "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+        "eventType": "COMPLETE",
+        "run": {
+            "runId": "event-2-run-id",
+            "facets": {}
+        },
+        "job": {
+            "namespace": "default",
+            "name": "job_2"
+        }
+    },
+    {
+        "eventTime": "2025-01-04T21:37:06.116Z",
+        "producer": "https://github.com/OpenLineage/OpenLineage/tree/1.26.0/integration/spark",
+        "schemaURL": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunEvent",
+        "eventType": "FAIL",
+        "run": {
+            "runId": "event-3-run-id",
+            "facets": {}
+        },
+        "job": {
+            "namespace": "default",
+            "name": "job_3"
+        }
+    }
+]
