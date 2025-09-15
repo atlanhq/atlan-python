@@ -1,3 +1,19 @@
+## 8.1.0 (September 15, 2025)
+
+### New Features
+
+- Added support for sending OpenLineage raw events via `OpenLineageEvent.emit_raw()`
+
+### Breaking Changes
+
+- Relationship removal is now idempotent, i.e removing a relationship that does not already exist using `SaveSemantic.REMOVE` will now simply succeed and do nothing, whereas it previously threw a `NotFoundError`
+
+### QOL Improvements
+
+- Added update policy test to `persona_test`
+- Fixed `glossary_test.test_remove_unrelated_relationship`
+- Updated `Atlas` endpoint to enforce rate limiting within apps
+
 ## 8.0.2 (September 1, 2025)
 
 ### Bug Fixes
