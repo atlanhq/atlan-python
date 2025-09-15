@@ -181,7 +181,7 @@ class EndpointMixin:
 class EndPoint(EndpointMixin, Enum):
     ATLAS = (
         "api/meta/",
-        "http://atlas-service-atlas.atlas.svc.cluster.local/api/atlas/v2/",
+        "http://atlas-ratelimited.atlas.svc.cluster.local/api/atlas/v2/",
     )
     HEKA = "api/sql/", "http://heka-service.heka.svc.cluster.local/"
     IMPERSONATION = "", "http://keycloak-http.keycloak.svc.cluster.local/"
