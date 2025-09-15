@@ -1,11 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Generator
+from typing import Generator, Optional
 
 import pytest
+from pydantic.v1 import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossary, AuthPolicy, Connection, Persona
+from pyatlan.model.assets import (
+    AccessControl,
+    AtlasGlossary,
+    AuthPolicy,
+    Connection,
+    Persona,
+)
+from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
     AssetSidebarTab,
     AtlanConnectorType,
@@ -14,6 +22,7 @@ from pyatlan.model.enums import (
     PersonaGlossaryAction,
     PersonaMetadataAction,
 )
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 from tests.integration.glossary_test import create_glossary
@@ -54,6 +63,16 @@ def persona(
     p = response.assets_created(asset_type=Persona)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Persona)
+
+
+class PolicyInfo(AtlanObject):
+    guid: Optional[str]
+    name: Optional[str]
+
+
+@pytest.fixture(scope="module")
+def policy_info() -> PolicyInfo:
+    return PolicyInfo(guid=None, name=None)
 
 
 def test_persona(
@@ -162,6 +181,7 @@ def test_retrieve_persona(
     persona: Persona,
     connection: Connection,
     glossary: AtlasGlossary,
+    policy_info: PolicyInfo,
 ):
     assert persona.qualified_name
     one = client.asset.get_by_qualified_name(
@@ -187,6 +207,9 @@ def test_retrieve_persona(
         full = client.asset.get_by_guid(
             guid=policy.guid, asset_type=AuthPolicy, ignore_relationships=False
         )
+        if policy_info.guid is None and policy_info.name is None:
+            policy_info.guid = full.guid
+            policy_info.name = full.name
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat
@@ -211,3 +234,45 @@ def test_retrieve_persona(
             assert PersonaGlossaryAction.UPDATE in full.policy_actions
             assert full.policy_resources
             assert f"entity:{glossary.qualified_name}" in full.policy_resources
+
+
+@pytest.mark.order(after="test_retrieve_persona")
+def test_update_policy(
+    client: AtlanClient,
+    policy_info: PolicyInfo,
+):
+    assert policy_info.guid
+    assert policy_info.name
+    request = (
+        FluentSearch()
+        .where(FluentSearch.asset_type(AuthPolicy))
+        .where(AuthPolicy.POLICY_CATEGORY.eq(StrictStr("persona")))
+        .where(AuthPolicy.NAME.eq(policy_info.name))
+        .where(AuthPolicy.GUID.eq(policy_info.guid))
+        .where(CompoundQuery.active_assets())
+        .include_on_results(AuthPolicy.POLICY_CATEGORY)
+        .include_on_results(AuthPolicy.NAME)
+        .include_on_results(AuthPolicy.POLICY_SERVICE_NAME)
+        .include_on_results(AuthPolicy.ACCESS_CONTROL)
+        .include_on_results(AuthPolicy.POLICY_ACTIONS)
+        .include_on_results(AuthPolicy.POLICY_RESOURCES)
+        .include_on_results(AuthPolicy.CONNECTION_QUALIFIED_NAME)
+        .include_on_results(AuthPolicy.POLICY_TYPE)
+        .include_on_results(AuthPolicy.POLICY_SUB_CATEGORY)
+        .include_on_relations(AccessControl.IS_ACCESS_CONTROL_ENABLED)
+        .include_on_relations(AccessControl.NAME)
+    ).to_request()
+    to_update = client.asset.search(request)
+
+    assert to_update.count == 1
+    policy = to_update.current_page()[0]
+    assert policy
+    policy.name = f"Updated policy ({MODULE_NAME})"
+
+    response = client.asset.save(policy)
+    assert response
+    updated = response.assets_updated(asset_type=AuthPolicy)
+    assert updated
+    assert len(updated) == 1
+    assert updated[0].guid == policy.guid
+    assert updated[0].name == f"Updated policy ({MODULE_NAME})"

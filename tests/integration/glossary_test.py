@@ -993,6 +993,8 @@ def test_remove_unrelated_relationship(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
+    term3: AtlasGlossaryTerm,
+    term4: AtlasGlossaryTerm,
     glossary: AtlasGlossary,
 ):
     assert term1
@@ -1007,16 +1009,23 @@ def test_remove_unrelated_relationship(
     term.see_also = [
         AtlasGlossaryTerm.ref_by_guid(guid=term2.guid, semantic=SaveSemantic.REMOVE),
     ]
-    with pytest.raises(NotFoundError) as err:
-        client.asset.save(term)
 
-    EXPECTED_ERR = (
-        "ATLAN-PYTHON-404-000 Server responded with a not found error ATLAS-409-00-0021: "
-        "relationship AtlasGlossaryRelatedTerm does "
-        f"not exist between entities {term2.guid} and {term1.guid}. "
-        "Suggestion: Check the details of the server's message to correct your request."
+    response = client.asset.save(term)
+    assert response
+
+    result = client.asset.get_by_guid(
+        guid=term1.guid, asset_type=AtlasGlossaryTerm, ignore_relationships=False
     )
-    assert EXPECTED_ERR == str(err.value)
+    assert result
+    assert result.see_also
+    active_relationships = []
+    for term in result.see_also:
+        assert term.guid
+        if term.relationship_status == "ACTIVE":
+            active_relationships.append(term.guid)
+    assert len(active_relationships) == 2
+    assert term3.guid in active_relationships
+    assert term4.guid in active_relationships
 
 
 def test_move_sub_category_to_category(
