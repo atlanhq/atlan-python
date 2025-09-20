@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional
+from typing import Any, List, Optional
+from warnings import warn
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
 from pyatlan.model.packages.base.crawler import AbstractCrawler
 from pyatlan.model.workflow import WorkflowMetadata
@@ -36,6 +38,22 @@ class DatabricksCrawler(AbstractCrawler):
     class ExtractionMethod(str, Enum):
         JDBC = "jdbc"
         REST = "rest"
+        SYSTEM_TABLES = "system-tables"
+
+    class RegexAssetTypes(str, Enum):
+        DATABASES = "database"
+        SCHEMAS = "schema"
+        TABLE_VIEWS = "table"
+
+    class AssetsSelectionCriteria(str, Enum):
+        INCLUDE_BY_HIERARCHY = "include-filter-system-tables"
+        EXCLUDE_BY_HIERARCHY = "exclude-filter-system-tables"
+        INCLUDE_BY_REGEX = "include-regex-system-tables"
+        EXCLUDE_BY_REGEX = "exclude-regex-system-tables"
+
+    class AssetsSelection(AtlanObject):
+        type: DatabricksCrawler.AssetsSelectionCriteria
+        values: Any
 
     def __init__(
         self,
@@ -112,12 +130,17 @@ class DatabricksCrawler(AbstractCrawler):
         self, personal_access_token: str, http_path: str
     ) -> DatabricksCrawler:
         """
-        Set up the crawler to use basic authentication.
+        (DEPRECATED) Set up the crawler to use basic authentication.
 
         :param personal_access_token: through which to access Databricks instance
         :param http_path: HTTP path of your Databricks instance
         :returns: crawler, set up to use basic authentication
         """
+        warn(
+            "This method is deprecated, please use 'pat()' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         local_creds = {
             "authType": "basic",
             "username": "",
@@ -125,6 +148,28 @@ class DatabricksCrawler(AbstractCrawler):
             "connector_type": "dual",
             "extra": {
                 "__http_path": http_path,
+            },
+        }
+        self._credentials_body.update(local_creds)
+        return self
+
+    def pat(self, access_token: str, sql_warehouse_id: str) -> DatabricksCrawler:
+        """
+        Set up the crawler to use PAT authentication.
+
+        :param access_token: through which to access Databricks instance
+        :param sql_warehouse_id: ID of the associated SQL warehouse
+            if this data source is backed by a SQL warehouse. eg: `3d939b0cc668be06`
+            ref: https://docs.databricks.com/api/workspace/datasources/list#warehouse_id
+        :returns: crawler, set up to use PAT
+        """
+        local_creds = {
+            "authType": "basic",
+            "username": "",
+            "password": access_token,
+            "connector_type": "dual",
+            "extra": {
+                "__http_path": f"/sql/1.0/warehouses/{sql_warehouse_id}",
             },
         }
         self._credentials_body.update(local_creds)
@@ -186,6 +231,35 @@ class DatabricksCrawler(AbstractCrawler):
         Defaults to `DatabricksCrawler.ExtractionMethod.JDBC`
         """
         self._parameters.append({"name": "extract-strategy", "value": type.value})
+        return self
+
+    def enable_cross_workspace_discovery(
+        self, include: bool = False
+    ) -> DatabricksCrawler:
+        """
+        Whether to enable cross-workspace discovery to discover assets from other workspaces.
+
+        :param include: if True, cross-workspace discovery will be included while crawling Databricks, default: False
+        :returns: crawler, set to include or exclude cross-workspace discovery
+        """
+        self._parameters.append(
+            {
+                "name": "enable-cross-workspace-discovery",
+                "value": "true" if include else "false",
+            }
+        )
+        return self
+
+    def enable_incremental_extraction(self, include: bool = False) -> DatabricksCrawler:
+        """
+        Whether to enable or disable schema incremental extraction on source.
+
+        :param include: if True, incremental extraction will be included while crawling Databricks, default: False
+        :returns: crawler, set to include or exclude incremental extraction
+        """
+        self._parameters.append(
+            {"name": "incremental-extraction", "value": "true" if include else "false"}
+        )
         return self
 
     def enable_view_lineage(self, include: bool = True) -> DatabricksCrawler:
@@ -278,6 +352,81 @@ class DatabricksCrawler(AbstractCrawler):
         self._parameters.append(
             dict(name="exclude-filter-rest", value=to_exclude or "{}")
         )
+        return self
+
+    def asset_selection_for_system_tables(
+        self, selection_criteria: List[DatabricksCrawler.AssetsSelection]
+    ) -> DatabricksCrawler:
+        """
+        Defines the filter for system table assets to include or exclude when crawling.
+
+        This method allows you to configure asset selection specifically for Databricks
+        system tables using various selection criteria including hierarchical filtering
+        and regex-based filtering.
+
+        :param selection_criteria: List of selection criteria objects containing
+        the type of selection (include/exclude) and the corresponding values
+        for filtering system table assets
+        :returns: crawler, configured with system table asset selection filters
+        """
+        for criteria in selection_criteria:
+            if (
+                criteria.type
+                == DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_HIERARCHY
+            ):
+                include_assets = criteria.values or {}
+                to_include = self.build_selective_hierarchical_filter(include_assets)
+                self._parameters.append(
+                    dict(name=criteria.type.value, value=to_include or "{}")
+                )
+
+            elif (
+                criteria.type
+                == DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_HIERARCHY
+            ):
+                exclude_assets = criteria.values or {}
+                to_exclude = self.build_selective_hierarchical_filter(exclude_assets)
+                self._parameters.append(
+                    dict(name=criteria.type.value, value=to_exclude or "{}")
+                )
+
+            elif (
+                criteria.type
+                == DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_REGEX
+            ):
+                include_regex = criteria.values
+                asset_type = include_regex.get("asset_type")
+                if asset_type not in DatabricksCrawler.RegexAssetTypes:
+                    raise ValueError(
+                        f"Invalid asset_type: {asset_type}. Must be one of {[e.value for e in DatabricksCrawler.RegexAssetTypes]}"
+                    )
+                self._parameters.append(
+                    dict(
+                        name=f"include-{asset_type.value}-regex",
+                        value=include_regex.get("regex", ""),
+                    )
+                )
+
+            elif (
+                criteria.type
+                == DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_REGEX
+            ):
+                exclude_regex = criteria.values
+                asset_type = exclude_regex.get("asset_type")
+                if asset_type not in DatabricksCrawler.RegexAssetTypes:
+                    raise ValueError(
+                        f"Invalid asset_type: {asset_type}. Must be one of {[e.value for e in DatabricksCrawler.RegexAssetTypes]}"
+                    )
+                self._parameters.append(
+                    dict(
+                        # NOTE: temp-table-regex-system-tables is the name
+                        # of the parameter for exclude regex for system tables (TABLE_VIEWS)
+                        name="temp-table-regex-system-tables"
+                        if asset_type == DatabricksCrawler.RegexAssetTypes.TABLE_VIEWS
+                        else f"exclude-{asset_type.value}-regex",
+                        value=exclude_regex.get("regex", ""),
+                    )
+                )
         return self
 
     def sql_warehouse(self, warehouse_ids: List[str]) -> DatabricksCrawler:
@@ -380,3 +529,6 @@ class DatabricksCrawler(AbstractCrawler):
             name=f"{self._PACKAGE_PREFIX}-{self._epoch}",
             namespace="default",
         )
+
+
+DatabricksCrawler.AssetsSelection.update_forward_refs()
