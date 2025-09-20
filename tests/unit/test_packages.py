@@ -93,6 +93,7 @@ DATABRICKS_MINER_POPULARITY_REST = "databricks_miner_popularity_rest.json"
 DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE = (
     "databricks_miner_popularity_system_table.json"
 )
+DATABRICKS_SYSTEM_TABLES = "databricks_system_tables.json"
 ORACLE_CRAWLER_BASIC = "oracle_crawler_basic.json"
 ORACLE_CRAWLER_OFFLINE = "oracle_crawler_offline.json"
 ORACLE_CRAWLER_BASIC_AGENT = "oracle_crawler_basic_agent.json"
@@ -898,6 +899,90 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
     )
     request_json = loads(databricks_azure.json(by_alias=True, exclude_none=True))
     assert request_json == load_json(DATABRICKS_AZURE)
+
+    databricks_system_tables = (
+        DatabricksCrawler(
+            client=client,
+            connection_name="test-databricks-system-tables",
+            admin_roles=["admin-guid-1234"],
+            admin_groups=None,
+            admin_users=None,
+            row_limit=10000,
+            allow_query=True,
+            allow_query_preview=True,
+        )
+        .direct(hostname="test-hostname.com")
+        .pat(
+            access_token="test-access-token",
+            sql_warehouse_id="test-sql-warehouse-id",
+        )
+        .metadata_extraction_method(
+            type=DatabricksCrawler.ExtractionMethod.SYSTEM_TABLES
+        )
+        .import_tags(include=True)
+        .sql_warehouse(warehouse_ids=["test-sql-warehouse-id"])
+        .enable_cross_workspace_discovery(include=True)
+        .asset_selection_for_system_tables(
+            selection_criteria=[
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_HIERARCHY,
+                    values={"t1": ["s1", "s2", "s3"], "t2": [], "t3": ["s4", "s5"]},
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_HIERARCHY,
+                    values={"t1": ["s1", "s2", "s3"], "t2": [], "t3": ["s4", "s5"]},
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.DATABASES,
+                        "regex": "test-db-regex",
+                    },
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.SCHEMAS,
+                        "regex": "test-schema-regex",
+                    },
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.INCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.TABLE_VIEWS,
+                        "regex": "test-table-view-regex",
+                    },
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.DATABASES,
+                        "regex": "test-db-exclude-regex",
+                    },
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.SCHEMAS,
+                        "regex": "test-schema-exclude-regex",
+                    },
+                ),
+                DatabricksCrawler.AssetsSelection(
+                    type=DatabricksCrawler.AssetsSelectionCriteria.EXCLUDE_BY_REGEX,
+                    values={
+                        "asset_type": DatabricksCrawler.RegexAssetTypes.TABLE_VIEWS,
+                        "regex": "test-table-view-exclude-regex",
+                    },
+                ),
+            ]
+        )
+        .enable_incremental_extraction(True)
+        .to_workflow()
+    )
+    request_json = loads(
+        databricks_system_tables.json(by_alias=True, exclude_none=True)
+    )
+    assert request_json == load_json(DATABRICKS_SYSTEM_TABLES)
 
     databricks_offline = (
         DatabricksCrawler(
