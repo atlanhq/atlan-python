@@ -115,6 +115,41 @@ class AbstractCrawler(AbstractPackage):
             raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
 
     @staticmethod
+    def build_selective_hierarchical_filter(raw_filter: Optional[dict]) -> str:
+        """
+        Build a selective hierarchical filter from the provided map of databases and schemas.
+
+        Transforms a mapping of database names to schema lists into a nested dictionary
+        structure where each database contains a dictionary of its schemas.
+
+        :param raw_filter: Dictionary keyed by database name with each value being a list of schemas.
+                        Example: {"samples": ["ti1", "ti2"], "ex-system": []}
+        :returns: A JSON string representing the hierarchical filter structure.
+                Example: "{"samples":{"ti1":{},"ti2":{}},"ex-system":{}}"
+        :raises InvalidRequestException: If the provided filter cannot be translated
+        """
+        if not raw_filter:
+            return ""
+
+        try:
+            to_include: Dict[str, Dict[str, Dict]] = {}
+
+            for db_name, schemas in raw_filter.items():
+                # Create a dictionary for this database
+                schema_dict: Dict[str, Any] = {}
+
+                # Add each schema as a key with an empty dict as value
+                for schema in schemas:
+                    schema_dict[schema] = {}
+
+                # Add the database with its schemas (empty dict if no schemas)
+                to_include[db_name] = schema_dict
+
+            return dumps(to_include)
+        except (AttributeError, TypeError):
+            raise ErrorCode.UNABLE_TO_TRANSLATE_FILTERS.exception_with_parameters()
+
+    @staticmethod
     def build_flat_filter(raw_filter: Optional[list]) -> str:
         """
         Build a filter from the provided list of object names / IDs.
