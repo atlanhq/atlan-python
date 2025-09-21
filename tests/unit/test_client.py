@@ -2767,3 +2767,25 @@ def test_add_dq_rule_schedule(mock_api_caller):
             )
             mock_save.assert_called_once_with(updated_table)
             assert result == mock_response
+
+
+def test_set_dq_row_scope_filter_column(mock_api_caller):
+    from pyatlan.model.response import AssetMutationResponse
+    from tests.unit.model.constants import (
+        ALPHA_DQ_COLUMN_QUALIFIED_NAME,
+        ALPHA_DQ_TABLE_QUALIFIED_NAME,
+    )
+
+    asset_client = AssetClient(mock_api_caller)
+    mock_response = Mock(spec=AssetMutationResponse)
+
+    with patch.object(asset_client, "save", return_value=mock_response) as mock_save:
+        result = asset_client.set_dq_row_scope_filter_column(
+            asset_type=Table,
+            asset_name="TestTable",
+            asset_qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME,
+            row_scope_filter_column_qualified_name=ALPHA_DQ_COLUMN_QUALIFIED_NAME,
+        )
+
+        mock_save.assert_called_once()
+        assert result == mock_response
