@@ -46,13 +46,19 @@ class DQCondition(AtlanObject):
             validate_required_fields(
                 ["min_value", "max_value"], [self.min_value, self.max_value]
             )
-            if self.min_value < 0 or self.max_value < 0:
+            if (self.min_value is not None and self.min_value < 0) or (
+                self.max_value is not None and self.max_value < 0
+            ):
                 raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                     f"min_value={self.min_value}, max_value={self.max_value}",
                     "min_value, max_value",
                     "non-negative integers",
                 )
-            if self.min_value > self.max_value:
+            if (
+                self.min_value is not None
+                and self.max_value is not None
+                and self.min_value > self.max_value
+            ):
                 raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                     f"min_value={self.min_value}, max_value={self.max_value}",
                     "min_value, max_value",
@@ -73,7 +79,7 @@ class DQCondition(AtlanObject):
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the condition to a dictionary representation."""
-        result = {"type": self.type.value}
+        result: Dict[str, Any] = {"type": self.type.value}
 
         if self.type == alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN:
             result["value"] = {"minValue": self.min_value, "maxValue": self.max_value}
@@ -86,7 +92,7 @@ class DQCondition(AtlanObject):
 class DQRuleConditionsBuilder:
     """Builder for data quality rule conditions."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._conditions: List[DQCondition] = []
 
     def add_condition(

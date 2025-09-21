@@ -289,8 +289,8 @@ class alpha_DQRule(DataQuality):
         retrieved_column = search_result.alpha_dq_rule_base_column  # type: ignore[attr-defined]
         retrieved_alert_priority = search_result.alpha_dq_rule_alert_priority  # type: ignore[attr-defined]
         retrieved_row_scope_filtering_enabled = (
-            search_result.alpha_dq_rule_row_scope_filtering_enabled
-        )  # type: ignore[attr-defined]
+            search_result.alpha_dq_rule_row_scope_filtering_enabled  # type: ignore[attr-defined]
+        )
         retrieved_description = search_result.user_description
         retrieved_asset = search_result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
         retrieved_template_rule_name = search_result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
@@ -332,12 +332,18 @@ class alpha_DQRule(DataQuality):
             )
         )
 
+        final_compare_operator = (
+            validated_threshold_operator
+            or threshold_compare_operator
+            or retrieved_threshold_compare_operator
+        )
+
         config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
             is_alert_enabled=True,
             custom_sql=custom_sql or retrieved_custom_sql,
             display_name=rule_name or retrieved_rule_name,
             dimension=dimension or retrieved_dimension,
-            compare_operator=validated_threshold_operator,
+            compare_operator=final_compare_operator,
             threshold_value=threshold_value or retrieved_threshold_value,
             threshold_unit=threshold_unit or retrieved_threshold_unit,
             column=retrieved_column,
@@ -351,7 +357,7 @@ class alpha_DQRule(DataQuality):
             name="",
             alpha_dq_rule_config_arguments=alpha_DQRuleConfigArguments(
                 alpha_dq_rule_threshold_object=alpha_DQRuleThresholdObject(
-                    alpha_dq_rule_threshold_compare_operator=validated_threshold_operator,
+                    alpha_dq_rule_threshold_compare_operator=final_compare_operator,
                     alpha_dq_rule_threshold_value=threshold_value
                     or retrieved_threshold_value,
                     alpha_dq_rule_threshold_unit=threshold_unit
@@ -1085,7 +1091,9 @@ class alpha_DQRule(DataQuality):
 
         @staticmethod
         def _get_template_config_value(
-            config_value: str, property_name: str = None, value_key: str = "default"
+            config_value: str,
+            property_name: Optional[str] = None,
+            value_key: str = "default",
         ):
             if not config_value:
                 return None
@@ -1112,9 +1120,9 @@ class alpha_DQRule(DataQuality):
                 alpha_DQRuleThresholdCompareOperator
             ] = None,
             asset: Optional[Asset] = None,
-        ) -> alpha_DQRuleThresholdCompareOperator:
+        ) -> Optional[alpha_DQRuleThresholdCompareOperator]:
             if not template_config or not template_config.get("config"):
-                return
+                return None
 
             config = template_config["config"]
 
@@ -1147,7 +1155,7 @@ class alpha_DQRule(DataQuality):
             if rule_conditions:
                 allowed_rule_conditions = (
                     alpha_DQRule.Attributes._get_template_config_value(
-                        config.alpha_dq_rule_template_config_rule_conditions,
+                        config.alpha_dq_rule_template_config_rule_conditions or "",
                         None,
                         "enum",
                     )
