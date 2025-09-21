@@ -665,7 +665,7 @@ class ErrorCode(Enum):
         400,
         "ATLAN-PYTHON-400-075",
         "Row scope filter column not configured for asset '{0}'.",
-        "please configure the row scope filter column first.",
+        "Use client.asset.set_dq_row_scope_filter_column() to configure the row scope filter column first.",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (

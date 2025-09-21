@@ -1782,6 +1782,33 @@ class AssetClient:
         response = self.save(updated_asset)
         return response
 
+    @validate_arguments
+    def set_dq_row_scope_filter_column(
+        self,
+        asset_type: Type[A],
+        asset_name: str,
+        asset_qualified_name: str,
+        row_scope_filter_column_qualified_name: str,
+    ) -> AssetMutationResponse:
+        """
+        Set the row scope filter column for data quality rules on an asset.
+
+        :param asset_type: the type of asset to update (e.g., Table)
+        :param asset_name: the name of the asset to update
+        :param asset_qualified_name: the qualified name of the asset to update
+        :param row_scope_filter_column_qualified_name: the qualified name of the column to use for row scope filtering
+        :returns: the result of the save
+        :raises AtlanError: on any API communication issue
+        """
+        updated_asset = asset_type.updater(
+            qualified_name=asset_qualified_name, name=asset_name
+        )
+        updated_asset.alpha_asset_d_q_row_scope_filter_column_qualified_name = (
+            row_scope_filter_column_qualified_name
+        )
+        response = self.save(updated_asset)
+        return response
+
 
 class SearchResults(ABC, Iterable):
     """
