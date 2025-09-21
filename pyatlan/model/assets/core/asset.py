@@ -1143,6 +1143,15 @@ class Asset(Referenceable):
     """
     Internal Popularity score for this asset.
     """
+    ALPHAASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[KeywordField] = (
+        KeywordField(
+            "alpha_assetDQRowScopeFilterColumnQualifiedName",
+            "alpha_assetDQRowScopeFilterColumnQualifiedName",
+        )
+    )
+    """
+    Qualified name of the column to be used for row scope filter
+    """
     ALPHAASSET_DQ_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
         "alpha_assetDQScheduleType", "alpha_assetDQScheduleType"
     )
@@ -1510,6 +1519,7 @@ class Asset(Referenceable):
         "application_field_qualified_name",
         "asset_user_defined_type",
         "asset_internal_popularity_score",
+        "alpha_asset_d_q_row_scope_filter_column_qualified_name",
         "alpha_asset_d_q_schedule_type",
         "alpha_asset_d_q_schedule_crontab",
         "alpha_asset_d_q_schedule_time_zone",
@@ -3562,6 +3572,24 @@ class Asset(Referenceable):
         )
 
     @property
+    def alpha_asset_d_q_row_scope_filter_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.alpha_asset_d_q_row_scope_filter_column_qualified_name
+        )
+
+    @alpha_asset_d_q_row_scope_filter_column_qualified_name.setter
+    def alpha_asset_d_q_row_scope_filter_column_qualified_name(
+        self, alpha_asset_d_q_row_scope_filter_column_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alpha_asset_d_q_row_scope_filter_column_qualified_name = (
+            alpha_asset_d_q_row_scope_filter_column_qualified_name
+        )
+
+    @property
     def alpha_asset_d_q_schedule_type(self) -> Optional[alpha_DQScheduleType]:
         return (
             None
@@ -4449,6 +4477,9 @@ class Asset(Referenceable):
         )
         asset_user_defined_type: Optional[str] = Field(default=None, description="")
         asset_internal_popularity_score: Optional[float] = Field(
+            default=None, description=""
+        )
+        alpha_asset_d_q_row_scope_filter_column_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         alpha_asset_d_q_schedule_type: Optional[alpha_DQScheduleType] = Field(

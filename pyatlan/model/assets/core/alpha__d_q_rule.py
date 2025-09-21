@@ -41,7 +41,7 @@ from .data_quality import DataQuality
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
-    from pyatlan.model.assets import Column
+    from pyatlan.model.assets import Asset, Column
 
 
 class alpha_DQRule(DataQuality):
@@ -185,6 +185,22 @@ class alpha_DQRule(DataQuality):
             ],
         )
         template_config = client.dq_template_config_cache.get_template_config(rule_type)
+
+        asset_for_validation = asset
+        if row_scope_filtering_enabled and asset.qualified_name:
+            from pyatlan.model.fluent_search import FluentSearch
+
+            search_request = (
+                FluentSearch()
+                .where(Asset.QUALIFIED_NAME.eq(asset.qualified_name))
+                .include_on_results(
+                    Asset.ALPHAASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                )
+            ).to_request()
+            results = client.asset.search(search_request)
+            if results.count == 1:
+                asset_for_validation = results.current_page()[0]
+
         threshold_compare_operator = (
             alpha_DQRule.Attributes._validate_template_features(
                 rule_type,
@@ -192,6 +208,7 @@ class alpha_DQRule(DataQuality):
                 row_scope_filtering_enabled,
                 template_config,
                 threshold_compare_operator,
+                asset_for_validation,
             )
         )
 
@@ -311,6 +328,7 @@ class alpha_DQRule(DataQuality):
                 row_scope_filtering_enabled,
                 template_config,
                 threshold_compare_operator or retrieved_threshold_compare_operator,
+                retrieved_asset,
             )
         )
 
@@ -1093,6 +1111,7 @@ class alpha_DQRule(DataQuality):
             threshold_compare_operator: Optional[
                 alpha_DQRuleThresholdCompareOperator
             ] = None,
+            asset: Optional[Asset] = None,
         ) -> alpha_DQRuleThresholdCompareOperator:
             if not template_config or not template_config.get("config"):
                 return
@@ -1114,6 +1133,15 @@ class alpha_DQRule(DataQuality):
                 if "alpha_dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
                         rule_type, "row scope filtering"
+                    )
+
+                if asset and not getattr(
+                    asset,
+                    "alpha_asset_d_q_row_scope_filter_column_qualified_name",
+                    None,
+                ):
+                    raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
+                        getattr(asset, "qualified_name", "unknown")
                     )
 
             if rule_conditions:

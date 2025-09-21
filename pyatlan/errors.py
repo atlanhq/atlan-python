@@ -661,6 +661,13 @@ class ErrorCode(Enum):
         "Ensure your rule conditions are valid and match the expected format.",
         InvalidRequestError,
     )
+    DQ_ROW_SCOPE_FILTER_COLUMN_MISSING = (
+        400,
+        "ATLAN-PYTHON-400-075",
+        "Row scope filter column not configured for asset '{0}'.",
+        "please configure the row scope filter column first.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
