@@ -647,6 +647,20 @@ class ErrorCode(Enum):
         "Ensure your product instance has a valid `data_product_assets_d_s_l` value before making the request.",
         InvalidRequestError,
     )
+    DQ_RULE_TYPE_NOT_SUPPORTED = (
+        400,
+        "ATLAN-PYTHON-400-073",
+        "Rule type '{0}' does not support {1}.",
+        "Choose a rule type that supports the specified template configuration.",
+        InvalidRequestError,
+    )
+    DQ_RULE_CONDITIONS_INVALID = (
+        400,
+        "ATLAN-PYTHON-400-074",
+        "Invalid rule conditions: {0}.",
+        "Ensure your rule conditions are valid and match the expected format.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

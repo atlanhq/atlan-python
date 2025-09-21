@@ -2505,6 +2505,24 @@ class alpha_DQSourceSyncStatus(str, Enum):
     WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
 
 
+class alpha_dqRuleTemplateConfigRuleConditions(str, Enum):
+    # String Length conditions
+    STRING_LENGTH_BETWEEN = "STRING_LENGTH_BETWEEN"
+    STRING_LENGTH_EQUALS = "STRING_LENGTH_EQUALS"
+    STRING_LENGTH_GREATER_THAN = "STRING_LENGTH_GREATER_THAN"
+    STRING_LENGTH_LESS_THAN = "STRING_LENGTH_LESS_THAN"
+    STRING_LENGTH_GREATER_THAN_EQUALS = "STRING_LENGTH_GREATER_THAN_EQUALS"
+    STRING_LENGTH_LESS_THAN_EQUALS = "STRING_LENGTH_LESS_THAN_EQUALS"
+
+    # Regex conditions
+    REGEX_MATCH = "REGEX_MATCH"
+    REGEX_NOT_MATCH = "REGEX_NOT_MATCH"
+
+    # List conditions
+    IN_LIST = "IN_LIST"
+    NOT_IN_LIST = "NOT_IN_LIST"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************
