@@ -14,14 +14,7 @@ from pyatlan.utils import validate_required_fields, validate_type
 
 
 class DQCondition(AtlanObject):
-    """
-    Data quality rule condition.
-
-    :param type: the condition type enum value
-    :param value: value of type str, int, or list depending on condition type
-    :param min_value: minimum value for range-based conditions
-    :param max_value: maximum value for range-based conditions
-    """
+    """Data quality rule condition."""
 
     type: alpha_dqRuleTemplateConfigRuleConditions = Field(description="")
     value: Optional[Union[str, int, List[str], Dict[str, Any]]] = Field(
@@ -78,13 +71,12 @@ class DQCondition(AtlanObject):
                 validate_type("value", str, self.value)
 
     def to_dict(self) -> Dict[str, Any]:
-        """Convert the condition to a dictionary representation."""
         result: Dict[str, Any] = {"type": self.type.value}
 
         if self.type == alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN:
             result["value"] = {"minValue": self.min_value, "maxValue": self.max_value}
         else:
-            result["value"] = self.value
+            result["value"] = {"value": self.value}
 
         return result
 
@@ -119,7 +111,6 @@ class DQRuleConditionsBuilder:
         return self
 
     def build(self) -> str:
-        """Build the conditions as a JSON string."""
         if not self._conditions:
             raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                 "empty conditions list", "conditions", "at least one condition"
