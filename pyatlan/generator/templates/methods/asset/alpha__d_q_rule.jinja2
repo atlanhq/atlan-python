@@ -1,5 +1,5 @@
 
-    @classmethod
+@classmethod
     @init_guid
     def custom_sql_creator(
         cls,
@@ -137,12 +137,31 @@
             ],
         )
         template_config = client.dq_template_config_cache.get_template_config(rule_type)
-        threshold_compare_operator = alpha_DQRule.Attributes._validate_template_features(
-            rule_type,
-            rule_conditions,
-            row_scope_filtering_enabled,
-            template_config,
-            threshold_compare_operator,
+
+        asset_for_validation = asset
+        if row_scope_filtering_enabled and asset.qualified_name:
+            from pyatlan.model.fluent_search import FluentSearch
+
+            search_request = (
+                FluentSearch()
+                .where(Asset.QUALIFIED_NAME.eq(asset.qualified_name))
+                .include_on_results(
+                    Asset.ALPHAASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                )
+            ).to_request()
+            results = client.asset.search(search_request)
+            if results.count == 1:
+                asset_for_validation = results.current_page()[0]
+
+        threshold_compare_operator = (
+            alpha_DQRule.Attributes._validate_template_features(
+                rule_type,
+                rule_conditions,
+                row_scope_filtering_enabled,
+                template_config,
+                threshold_compare_operator,
+                asset_for_validation,
+            )
         )
 
         attributes = alpha_DQRule.Attributes.creator(
@@ -222,8 +241,8 @@
         retrieved_column = search_result.alpha_dq_rule_base_column  # type: ignore[attr-defined]
         retrieved_alert_priority = search_result.alpha_dq_rule_alert_priority  # type: ignore[attr-defined]
         retrieved_row_scope_filtering_enabled = (
-            search_result.alpha_dq_rule_row_scope_filtering_enabled
-        )  # type: ignore[attr-defined]
+            search_result.alpha_dq_rule_row_scope_filtering_enabled  # type: ignore[attr-defined]
+        )
         retrieved_description = search_result.user_description
         retrieved_asset = search_result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
         retrieved_template_rule_name = search_result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
@@ -254,12 +273,21 @@
         template_config = client.dq_template_config_cache.get_template_config(
             retrieved_rule_type
         )
-        validated_threshold_operator = alpha_DQRule.Attributes._validate_template_features(
-            retrieved_rule_type,
-            rule_conditions,
-            row_scope_filtering_enabled,
-            template_config,
-            threshold_compare_operator or retrieved_threshold_compare_operator,
+        validated_threshold_operator = (
+            alpha_DQRule.Attributes._validate_template_features(
+                retrieved_rule_type,
+                rule_conditions,
+                row_scope_filtering_enabled,
+                template_config,
+                threshold_compare_operator or retrieved_threshold_compare_operator,
+                retrieved_asset,
+            )
+        )
+
+        final_compare_operator = (
+            validated_threshold_operator
+            or threshold_compare_operator
+            or retrieved_threshold_compare_operator
         )
 
         config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
@@ -267,7 +295,7 @@
             custom_sql=custom_sql or retrieved_custom_sql,
             display_name=rule_name or retrieved_rule_name,
             dimension=dimension or retrieved_dimension,
-            compare_operator=validated_threshold_operator,
+            compare_operator=final_compare_operator,
             threshold_value=threshold_value or retrieved_threshold_value,
             threshold_unit=threshold_unit or retrieved_threshold_unit,
             column=retrieved_column,
@@ -281,7 +309,7 @@
             name="",
             alpha_dq_rule_config_arguments=alpha_DQRuleConfigArguments(
                 alpha_dq_rule_threshold_object=alpha_DQRuleThresholdObject(
-                    alpha_dq_rule_threshold_compare_operator=validated_threshold_operator,
+                    alpha_dq_rule_threshold_compare_operator=final_compare_operator,
                     alpha_dq_rule_threshold_value=threshold_value
                     or retrieved_threshold_value,
                     alpha_dq_rule_threshold_unit=threshold_unit

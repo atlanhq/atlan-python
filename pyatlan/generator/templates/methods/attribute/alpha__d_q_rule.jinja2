@@ -1,6 +1,8 @@
         @staticmethod
         def _get_template_config_value(
-            config_value: str, property_name: str = None, value_key: str = "default"
+            config_value: str,
+            property_name: Optional[str] = None,
+            value_key: str = "default",
         ):
             if not config_value:
                 return None
@@ -26,9 +28,10 @@
             threshold_compare_operator: Optional[
                 alpha_DQRuleThresholdCompareOperator
             ] = None,
-        ) -> alpha_DQRuleThresholdCompareOperator:
+            asset: Optional[Asset] = None,
+        ) -> Optional[alpha_DQRuleThresholdCompareOperator]:
             if not template_config or not template_config.get("config"):
-                return
+                return None
 
             config = template_config["config"]
 
@@ -41,15 +44,30 @@
                 )
 
             if row_scope_filtering_enabled:
-                advanced_settings = config.alpha_dq_rule_template_advanced_settings or ""
+                advanced_settings = (
+                    config.alpha_dq_rule_template_advanced_settings or ""
+                )
                 if "alpha_dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
                         rule_type, "row scope filtering"
                     )
 
+                if asset and not getattr(
+                    asset,
+                    "alpha_asset_d_q_row_scope_filter_column_qualified_name",
+                    None,
+                ):
+                    raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
+                        getattr(asset, "qualified_name", "unknown")
+                    )
+
             if rule_conditions:
-                allowed_rule_conditions = alpha_DQRule.Attributes._get_template_config_value(
-                    config.alpha_dq_rule_template_config_rule_conditions, None, "enum"
+                allowed_rule_conditions = (
+                    alpha_DQRule.Attributes._get_template_config_value(
+                        config.alpha_dq_rule_template_config_rule_conditions or "",
+                        None,
+                        "enum",
+                    )
                 )
                 if allowed_rule_conditions:
                     try:
@@ -71,7 +89,8 @@
                 if threshold_compare_operator is None:
                     return alpha_DQRuleThresholdCompareOperator.EQUAL
                 elif (
-                    threshold_compare_operator != alpha_DQRuleThresholdCompareOperator.EQUAL
+                    threshold_compare_operator
+                    != alpha_DQRuleThresholdCompareOperator.EQUAL
                 ):
                     raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                         f"threshold_compare_operator={threshold_compare_operator.value}",
