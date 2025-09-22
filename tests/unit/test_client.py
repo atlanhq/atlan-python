@@ -71,6 +71,8 @@ from tests.unit.constants import (
     TEST_USER_CLIENT_METHODS,
 )
 from tests.unit.model.constants import (
+    ALPHA_DQ_COLUMN_QUALIFIED_NAME,
+    ALPHA_DQ_TABLE_QUALIFIED_NAME,
     CONNECTION_NAME,
     CONNECTOR_TYPE,
     DATA_DOMAIN_NAME,
@@ -2770,12 +2772,6 @@ def test_add_dq_rule_schedule(mock_api_caller):
 
 
 def test_set_dq_row_scope_filter_column(mock_api_caller):
-    from pyatlan.model.response import AssetMutationResponse
-    from tests.unit.model.constants import (
-        ALPHA_DQ_COLUMN_QUALIFIED_NAME,
-        ALPHA_DQ_TABLE_QUALIFIED_NAME,
-    )
-
     asset_client = AssetClient(mock_api_caller)
     mock_response = Mock(spec=AssetMutationResponse)
 

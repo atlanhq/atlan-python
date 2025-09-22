@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from pyatlan.errors import ErrorCode, InvalidRequestError
 from pyatlan.model.assets import Column, Table, alpha_DQRule
 from pyatlan.model.dq_rule_conditions import DQRuleConditionsBuilder
 from pyatlan.model.enums import (
@@ -454,8 +455,6 @@ def test_column_level_rule_creator_with_rule_conditions(mock_client):
 
 
 def test_validate_template_features_rule_conditions_not_supported(mock_client):
-    from pyatlan.errors import InvalidRequestError
-
     config = Mock()
     config.alpha_dq_rule_template_config_rule_conditions = None
     config.alpha_dq_rule_template_advanced_settings = json.dumps({})
@@ -494,8 +493,6 @@ def test_validate_template_features_rule_conditions_not_supported(mock_client):
 
 
 def test_validate_template_features_row_scope_filtering_not_supported(mock_client):
-    from pyatlan.errors import InvalidRequestError
-
     config = Mock()
     config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
         {"enum": ["STRING_LENGTH_BETWEEN"]}
@@ -538,4 +535,77 @@ def test_updater_with_invalid_parameter_raises_value_error(
         alpha_DQRule.updater(
             client=mock_client,
             qualified_name=qualified_name,
+        )
+
+
+def test_validate_template_features_invalid_rule_conditions(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps({})
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    unsupported_condition = json.dumps(
+        {"conditions": [{"type": "UNSUPPORTED_CONDITION", "value": "test"}]}
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match="Invalid rule conditions: condition type 'UNSUPPORTED_CONDITION' not supported, allowed: \\['STRING_LENGTH_BETWEEN'\\]",
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Test Rule",
+            rule_conditions=unsupported_condition,
+            row_scope_filtering_enabled=False,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+        )
+
+
+def test_validate_template_features_row_scope_filter_column_missing(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps(
+        {"alpha_dqRuleRowScopeFilteringEnabled": True}
+    )
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    table_asset = Table.ref_by_qualified_name(
+        qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.error_message.format(
+            ALPHA_DQ_TABLE_QUALIFIED_NAME
+        ),
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Test Rule",
+            rule_conditions=None,
+            row_scope_filtering_enabled=True,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+            asset=table_asset,
         )

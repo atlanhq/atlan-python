@@ -93,7 +93,7 @@ class DQRuleConditionsBuilder:
         value: Optional[Union[str, int, List[str]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
-    ) -> "DQRuleConditionsBuilder":
+    ) -> DQRuleConditionsBuilder:
         """
         Add a condition to the builder.
 
