@@ -201,7 +201,7 @@ class alpha_DQRule(DataQuality):
             if results.count == 1:
                 asset_for_validation = results.current_page()[0]
 
-        threshold_compare_operator = (
+        validated_threshold_operator = (
             alpha_DQRule.Attributes._validate_template_features(
                 rule_type,
                 rule_conditions,
@@ -212,12 +212,18 @@ class alpha_DQRule(DataQuality):
             )
         )
 
+        final_threshold_compare_operator = (
+            validated_threshold_operator
+            or threshold_compare_operator
+            or alpha_DQRuleThresholdCompareOperator.LESS_THAN_EQUAL
+        )
+
         attributes = alpha_DQRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
             column=column,
-            threshold_compare_operator=threshold_compare_operator,
+            threshold_compare_operator=final_threshold_compare_operator,
             threshold_value=threshold_value,
             alert_priority=alert_priority,
             threshold_unit=threshold_unit,
@@ -336,6 +342,7 @@ class alpha_DQRule(DataQuality):
             validated_threshold_operator
             or threshold_compare_operator
             or retrieved_threshold_compare_operator
+            or alpha_DQRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
         config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
