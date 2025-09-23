@@ -3,11 +3,14 @@ from unittest.mock import Mock
 
 import pytest
 
+from pyatlan.errors import ErrorCode, InvalidRequestError
 from pyatlan.model.assets import Column, Table, alpha_DQRule
+from pyatlan.model.dq_rule_conditions import DQRuleConditionsBuilder
 from pyatlan.model.enums import (
     alpha_DQDimension,
     alpha_DQRuleAlertPriority,
     alpha_DQRuleStatus,
+    alpha_dqRuleTemplateConfigRuleConditions,
     alpha_DQRuleThresholdCompareOperator,
     alpha_DQRuleThresholdUnit,
 )
@@ -38,6 +41,12 @@ def mock_client():
                 }
             }
         }
+    )
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN", "STRING_LENGTH_EQUAL"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps(
+        {"alpha_dqRuleRowScopeFilteringEnabled": True}
     )
 
     client.dq_template_config_cache.get_template_config.return_value = {
@@ -383,6 +392,136 @@ def test_column_level_rule_creator_with_optional_parameters(mock_client):
     )
 
 
+def test_column_level_rule_creator_with_row_scope_filtering(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME)
+    asset.alpha_asset_d_q_row_scope_filter_column_qualified_name = (
+        ALPHA_DQ_COLUMN_QUALIFIED_NAME
+    )
+    column = Column.ref_by_qualified_name(qualified_name=ALPHA_DQ_COLUMN_QUALIFIED_NAME)
+
+    dq_rule = alpha_DQRule.column_level_rule_creator(
+        client=mock_client,
+        rule_type=ALPHA_DQ_RULE_TYPE_COLUMN,
+        asset=asset,
+        column=column,
+        threshold_value=ALPHA_DQ_RULE_THRESHOLD_VALUE,
+        alert_priority=alpha_DQRuleAlertPriority.NORMAL,
+        row_scope_filtering_enabled=True,
+    )
+
+    assert dq_rule.alpha_dq_rule_alert_priority == alpha_DQRuleAlertPriority.NORMAL
+    assert dq_rule.alpha_dq_rule_status == alpha_DQRuleStatus.ACTIVE
+    assert dq_rule.alpha_dq_rule_row_scope_filtering_enabled is True
+    assert (
+        dq_rule.alpha_dq_rule_base_column_qualified_name
+        == ALPHA_DQ_COLUMN_QUALIFIED_NAME
+    )
+
+
+def test_column_level_rule_creator_with_rule_conditions(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME)
+    column = Column.ref_by_qualified_name(qualified_name=ALPHA_DQ_COLUMN_QUALIFIED_NAME)
+
+    rule_conditions = (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN,
+            min_value=5,
+            max_value=50,
+        )
+        .build()
+    )
+
+    dq_rule = alpha_DQRule.column_level_rule_creator(
+        client=mock_client,
+        rule_type=ALPHA_DQ_RULE_TYPE_COLUMN,
+        asset=asset,
+        column=column,
+        threshold_value=ALPHA_DQ_RULE_THRESHOLD_VALUE,
+        alert_priority=alpha_DQRuleAlertPriority.NORMAL,
+        rule_conditions=rule_conditions,
+    )
+
+    assert dq_rule.alpha_dq_rule_alert_priority == alpha_DQRuleAlertPriority.NORMAL
+    assert dq_rule.alpha_dq_rule_status == alpha_DQRuleStatus.ACTIVE
+    assert (
+        dq_rule.alpha_dq_rule_config_arguments.alpha_dq_rule_config_rule_conditions
+        == rule_conditions
+    )
+    assert (
+        dq_rule.alpha_dq_rule_base_column_qualified_name
+        == ALPHA_DQ_COLUMN_QUALIFIED_NAME
+    )
+
+
+def test_validate_template_features_rule_conditions_not_supported(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = None
+    config.alpha_dq_rule_template_advanced_settings = json.dumps({})
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    rule_conditions = (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN,
+            min_value=5,
+            max_value=50,
+        )
+        .build()
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match="Rule type 'Blank Count' does not support rule conditions",
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Blank Count",
+            rule_conditions=rule_conditions,
+            row_scope_filtering_enabled=False,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+        )
+
+
+def test_validate_template_features_row_scope_filtering_not_supported(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps({})
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match="Rule type 'Blank Count' does not support row scope filtering",
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Blank Count",
+            rule_conditions=None,
+            row_scope_filtering_enabled=True,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+        )
+
+
 @pytest.mark.parametrize(
     "qualified_name, message",
     [
@@ -396,4 +535,77 @@ def test_updater_with_invalid_parameter_raises_value_error(
         alpha_DQRule.updater(
             client=mock_client,
             qualified_name=qualified_name,
+        )
+
+
+def test_validate_template_features_invalid_rule_conditions(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps({})
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    unsupported_condition = json.dumps(
+        {"conditions": [{"type": "UNSUPPORTED_CONDITION", "value": "test"}]}
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match="Invalid rule conditions: condition type 'UNSUPPORTED_CONDITION' not supported, allowed: \\['STRING_LENGTH_BETWEEN'\\]",
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Test Rule",
+            rule_conditions=unsupported_condition,
+            row_scope_filtering_enabled=False,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+        )
+
+
+def test_validate_template_features_row_scope_filter_column_missing(mock_client):
+    config = Mock()
+    config.alpha_dq_rule_template_config_rule_conditions = json.dumps(
+        {"enum": ["STRING_LENGTH_BETWEEN"]}
+    )
+    config.alpha_dq_rule_template_advanced_settings = json.dumps(
+        {"alpha_dqRuleRowScopeFilteringEnabled": True}
+    )
+
+    template_config = {
+        "name": "Test Template",
+        "qualified_name": "test/template/123",
+        "config": config,
+    }
+
+    mock_client.dq_template_config_cache.get_template_config.return_value = (
+        template_config
+    )
+
+    table_asset = Table.ref_by_qualified_name(
+        qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME
+    )
+
+    with pytest.raises(
+        InvalidRequestError,
+        match=ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.error_message.format(
+            ALPHA_DQ_TABLE_QUALIFIED_NAME
+        ),
+    ):
+        alpha_DQRule.Attributes._validate_template_features(
+            rule_type="Test Rule",
+            rule_conditions=None,
+            row_scope_filtering_enabled=True,
+            template_config=template_config,
+            threshold_compare_operator=alpha_DQRuleThresholdCompareOperator.EQUAL,
+            asset=table_asset,
         )

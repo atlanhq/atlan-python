@@ -647,6 +647,27 @@ class ErrorCode(Enum):
         "Ensure your product instance has a valid `data_product_assets_d_s_l` value before making the request.",
         InvalidRequestError,
     )
+    DQ_RULE_TYPE_NOT_SUPPORTED = (
+        400,
+        "ATLAN-PYTHON-400-073",
+        "Rule type '{0}' does not support {1}.",
+        "Choose a rule type that supports the specified template configuration.",
+        InvalidRequestError,
+    )
+    DQ_RULE_CONDITIONS_INVALID = (
+        400,
+        "ATLAN-PYTHON-400-074",
+        "Invalid rule conditions: {0}.",
+        "Ensure your rule conditions are valid and match the expected format.",
+        InvalidRequestError,
+    )
+    DQ_ROW_SCOPE_FILTER_COLUMN_MISSING = (
+        400,
+        "ATLAN-PYTHON-400-075",
+        "Row scope filter column not configured for asset '{0}'.",
+        "Use client.asset.set_dq_row_scope_filter_column() to configure the row scope filter column first.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

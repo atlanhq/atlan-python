@@ -177,6 +177,9 @@ class alpha_DQRuleTemplateConfig(AtlanObject):
     alpha_dq_rule_template_config_user_description: Optional[str] = Field(
         default=None, description=""
     )
+    alpha_dq_rule_template_config_rule_conditions: Optional[str] = Field(
+        default=None, description=""
+    )
     alpha_dq_rule_template_advanced_settings: Optional[str] = Field(
         default=None, description=""
     )
@@ -506,6 +509,9 @@ class alpha_DQRuleConfigArguments(AtlanObject):
         default=None, description=""
     )
     alpha_dq_rule_config_arguments_raw: Optional[str] = Field(
+        default=None, description=""
+    )
+    alpha_dq_rule_config_rule_conditions: Optional[str] = Field(
         default=None, description=""
     )
 
