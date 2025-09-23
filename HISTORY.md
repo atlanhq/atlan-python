@@ -1,3 +1,14 @@
+## 8.1.1 (September 23, 2025)
+
+### New Features
+
+- Added support for `Databricks` system tables in the `DatabricksCrawler`.
+- Added support for rule conditions and incremental updates for `DQ` rules.
+
+### Other Changes
+
+- Deprecated `DatabricksCrawler.basic_auth()` - use `pat()` authentication method instead.  
+
 ## 8.1.0 (September 15, 2025)
 
 ### New Features
