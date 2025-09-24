@@ -1380,5 +1380,6 @@ class DataQualityRule(DataQuality):
 
 
 from .asset import Asset  # noqa: E402, F401
-from .column import Column  # noqa: E402, F401
+
+# from .column import Column  # noqa: E402, F401
 from .data_quality_rule_template import DataQualityRuleTemplate  # noqa: E402, F401
