@@ -8,12 +8,12 @@
         rule_name: str,
         asset: Asset,
         custom_sql: str,
-        threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+        threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
-        alert_priority: alpha_DQRuleAlertPriority,
-        dimension: alpha_DQDimension,
+        alert_priority: DataQualityRuleAlertPriority,
+        dimension: DataQualityDimension,
         description: Optional[str] = None,
-    ) -> alpha_DQRule:
+    ) -> DataQualityRule:
         validate_required_fields(
             [
                 "client",
@@ -37,7 +37,7 @@
             ],
         )
 
-        attributes = alpha_DQRule.Attributes.creator(
+        attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_name=rule_name,
             rule_type="Custom SQL",
@@ -61,10 +61,10 @@
         client: AtlanClient,
         rule_type: str,
         asset: Asset,
-        threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+        threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
-        alert_priority: alpha_DQRuleAlertPriority,
-    ) -> alpha_DQRule:
+        alert_priority: DataQualityRuleAlertPriority,
+    ) -> DataQualityRule:
         validate_required_fields(
             [
                 "client",
@@ -84,7 +84,7 @@
             ],
         )
 
-        attributes = alpha_DQRule.Attributes.creator(
+        attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
@@ -110,14 +110,14 @@
         asset: Asset,
         column: Asset,
         threshold_value: int,
-        alert_priority: alpha_DQRuleAlertPriority,
+        alert_priority: DataQualityRuleAlertPriority,
         threshold_compare_operator: Optional[
-            alpha_DQRuleThresholdCompareOperator
+            DataQualityRuleThresholdCompareOperator
         ] = None,
-        threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
+        threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
         rule_conditions: Optional[str] = None,
         row_scope_filtering_enabled: Optional[bool] = False,
-    ) -> alpha_DQRule:
+    ) -> DataQualityRule:
         validate_required_fields(
             [
                 "client",
@@ -146,7 +146,7 @@
                 FluentSearch()
                 .where(Asset.QUALIFIED_NAME.eq(asset.qualified_name))
                 .include_on_results(
-                    Asset.ALPHAASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                    Asset.DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
                 )
             ).to_request()
             results = client.asset.search(search_request)
@@ -154,7 +154,7 @@
                 asset_for_validation = results.current_page()[0]
 
         validated_threshold_operator = (
-            alpha_DQRule.Attributes._validate_template_features(
+            DataQualityRule.Attributes._validate_template_features(
                 rule_type,
                 rule_conditions,
                 row_scope_filtering_enabled,
@@ -167,10 +167,10 @@
         final_threshold_compare_operator = (
             validated_threshold_operator
             or threshold_compare_operator
-            or alpha_DQRuleThresholdCompareOperator.LESS_THAN_EQUAL
+            or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
-        attributes = alpha_DQRule.Attributes.creator(
+        attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
@@ -195,12 +195,12 @@
         client: AtlanClient,
         qualified_name: str,
         threshold_compare_operator: Optional[
-            alpha_DQRuleThresholdCompareOperator
+            DataQualityRuleThresholdCompareOperator
         ] = None,
         threshold_value: Optional[int] = None,
-        alert_priority: Optional[alpha_DQRuleAlertPriority] = None,
-        threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
-        dimension: Optional[alpha_DQDimension] = None,
+        alert_priority: Optional[DataQualityRuleAlertPriority] = None,
+        threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
+        dimension: Optional[DataQualityDimension] = None,
         custom_sql: Optional[str] = None,
         rule_name: Optional[str] = None,
         description: Optional[str] = None,
@@ -215,21 +215,21 @@
         )
         request = (
             FluentSearch()
-            .where(alpha_DQRule.QUALIFIED_NAME.eq(qualified_name))
-            .include_on_results(alpha_DQRule.NAME)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_TEMPLATE_NAME)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_TEMPLATE)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_BASE_DATASET)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_BASE_COLUMN)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_ALERT_PRIORITY)
-            .include_on_results(alpha_DQRule.DISPLAY_NAME)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_CUSTOM_SQL)
-            .include_on_results(alpha_DQRule.USER_DESCRIPTION)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_DIMENSION)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_CONFIG_ARGUMENTS)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_ROW_SCOPE_FILTERING_ENABLED)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_SOURCE_SYNC_STATUS)
-            .include_on_results(alpha_DQRule.ALPHADQ_RULE_STATUS)
+            .where(DataQualityRule.QUALIFIED_NAME.eq(qualified_name))
+            .include_on_results(DataQualityRule.NAME)
+            .include_on_results(DataQualityRule.DQ_RULE_TEMPLATE_NAME)
+            .include_on_results(DataQualityRule.DQ_RULE_TEMPLATE)
+            .include_on_results(DataQualityRule.DQ_RULE_BASE_DATASET)
+            .include_on_results(DataQualityRule.DQ_RULE_BASE_COLUMN)
+            .include_on_results(DataQualityRule.DQ_RULE_ALERT_PRIORITY)
+            .include_on_results(DataQualityRule.DISPLAY_NAME)
+            .include_on_results(DataQualityRule.DQ_RULE_CUSTOM_SQL)
+            .include_on_results(DataQualityRule.USER_DESCRIPTION)
+            .include_on_results(DataQualityRule.DQ_RULE_DIMENSION)
+            .include_on_results(DataQualityRule.DQ_RULE_CONFIG_ARGUMENTS)
+            .include_on_results(DataQualityRule.DQ_RULE_ROW_SCOPE_FILTERING_ENABLED)
+            .include_on_results(DataQualityRule.DQ_RULE_SOURCE_SYNC_STATUS)
+            .include_on_results(DataQualityRule.DQ_RULE_STATUS)
         ).to_request()
 
         results = client.asset.search(request)
@@ -241,36 +241,36 @@
             )
         search_result = results.current_page()[0]
 
-        retrieved_custom_sql = search_result.alpha_dq_rule_custom_s_q_l  # type: ignore[attr-defined]
+        retrieved_custom_sql = search_result.dq_rule_custom_s_q_l  # type: ignore[attr-defined]
         retrieved_rule_name = search_result.display_name
-        retrieved_dimension = search_result.alpha_dq_rule_dimension  # type: ignore[attr-defined]
-        retrieved_column = search_result.alpha_dq_rule_base_column  # type: ignore[attr-defined]
-        retrieved_alert_priority = search_result.alpha_dq_rule_alert_priority  # type: ignore[attr-defined]
+        retrieved_dimension = search_result.dq_rule_dimension  # type: ignore[attr-defined]
+        retrieved_column = search_result.dq_rule_base_column  # type: ignore[attr-defined]
+        retrieved_alert_priority = search_result.dq_rule_alert_priority  # type: ignore[attr-defined]
         retrieved_row_scope_filtering_enabled = (
-            search_result.alpha_dq_rule_row_scope_filtering_enabled  # type: ignore[attr-defined]
+            search_result.dq_rule_row_scope_filtering_enabled  # type: ignore[attr-defined]
         )
         retrieved_description = search_result.user_description
-        retrieved_asset = search_result.alpha_dq_rule_base_dataset  # type: ignore[attr-defined]
-        retrieved_template_rule_name = search_result.alpha_dq_rule_template_name  # type: ignore[attr-defined]
-        retrieved_template = search_result.alpha_dq_rule_template  # type: ignore[attr-defined]
+        retrieved_asset = search_result.dq_rule_base_dataset  # type: ignore[attr-defined]
+        retrieved_template_rule_name = search_result.dq_rule_template_name  # type: ignore[attr-defined]
+        retrieved_template = search_result.dq_rule_template  # type: ignore[attr-defined]
         retrieved_threshold_compare_operator = (
-            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
-            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
-            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            search_result.dq_rule_config_arguments.dq_rule_threshold_object.dq_rule_threshold_compare_operator  # type: ignore[attr-defined]
+            if search_result.dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.dq_rule_config_arguments.dq_rule_threshold_object  # type: ignore[attr-defined]
             is not None
             else None
         )
         retrieved_threshold_value = (
-            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_value  # type: ignore[attr-defined]
-            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
-            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            search_result.dq_rule_config_arguments.dq_rule_threshold_object.dq_rule_threshold_value  # type: ignore[attr-defined]
+            if search_result.dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.dq_rule_config_arguments.dq_rule_threshold_object  # type: ignore[attr-defined]
             is not None
             else None
         )  # type: ignore[attr-defined]
         retrieved_threshold_unit = (
-            search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object.alpha_dq_rule_threshold_unit  # type: ignore[attr-defined]
-            if search_result.alpha_dq_rule_config_arguments is not None  # type: ignore[attr-defined]
-            and search_result.alpha_dq_rule_config_arguments.alpha_dq_rule_threshold_object  # type: ignore[attr-defined]
+            search_result.dq_rule_config_arguments.dq_rule_threshold_object.dq_rule_threshold_unit  # type: ignore[attr-defined]
+            if search_result.dq_rule_config_arguments is not None  # type: ignore[attr-defined]
+            and search_result.dq_rule_config_arguments.dq_rule_threshold_object  # type: ignore[attr-defined]
             is not None
             else None
         )  # type: ignore[attr-defined]
@@ -280,7 +280,7 @@
             retrieved_rule_type
         )
         validated_threshold_operator = (
-            alpha_DQRule.Attributes._validate_template_features(
+            DataQualityRule.Attributes._validate_template_features(
                 retrieved_rule_type,
                 rule_conditions,
                 row_scope_filtering_enabled,
@@ -294,10 +294,10 @@
             validated_threshold_operator
             or threshold_compare_operator
             or retrieved_threshold_compare_operator
-            or alpha_DQRuleThresholdCompareOperator.LESS_THAN_EQUAL
+            or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
-        config_arguments_raw = alpha_DQRule.Attributes._generate_config_arguments_raw(
+        config_arguments_raw = DataQualityRule.Attributes._generate_config_arguments_raw(
             is_alert_enabled=True,
             custom_sql=custom_sql or retrieved_custom_sql,
             display_name=rule_name or retrieved_rule_name,
@@ -314,39 +314,39 @@
 
         attr_dq = cls.Attributes(
             name="",
-            alpha_dq_rule_config_arguments=alpha_DQRuleConfigArguments(
-                alpha_dq_rule_threshold_object=alpha_DQRuleThresholdObject(
-                    alpha_dq_rule_threshold_compare_operator=final_compare_operator,
-                    alpha_dq_rule_threshold_value=threshold_value
+            dq_rule_config_arguments=DataQualityRuleConfigArguments(
+                dq_rule_threshold_object=DataQualityRuleThresholdObject(
+                    dq_rule_threshold_compare_operator=final_compare_operator,
+                    dq_rule_threshold_value=threshold_value
                     or retrieved_threshold_value,
-                    alpha_dq_rule_threshold_unit=threshold_unit
+                    dq_rule_threshold_unit=threshold_unit
                     or retrieved_threshold_unit,
                 ),
-                alpha_dq_rule_config_arguments_raw=config_arguments_raw,
-                alpha_dq_rule_config_rule_conditions=rule_conditions,
+                dq_rule_config_arguments_raw=config_arguments_raw,
+                dq_rule_config_rule_conditions=rule_conditions,
             ),
-            alpha_dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
-            alpha_dq_rule_alert_priority=alert_priority or retrieved_alert_priority,
-            alpha_dq_rule_row_scope_filtering_enabled=row_scope_filtering_enabled
+            dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
+            dq_rule_alert_priority=alert_priority or retrieved_alert_priority,
+            dq_rule_row_scope_filtering_enabled=row_scope_filtering_enabled
             or retrieved_row_scope_filtering_enabled,
-            alpha_dq_rule_base_dataset=retrieved_asset,
+            dq_rule_base_dataset=retrieved_asset,
             qualified_name=qualified_name,
-            alpha_dq_rule_dimension=dimension or retrieved_dimension,
-            alpha_dq_rule_template_name=retrieved_template_rule_name,
-            alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(
+            dq_rule_dimension=dimension or retrieved_dimension,
+            dq_rule_template_name=retrieved_template_rule_name,
+            dq_rule_template=DataQualityRuleTemplate.ref_by_qualified_name(
                 qualified_name=retrieved_template.qualified_name
             ),
         )
 
         if retrieved_column is not None:
-            attr_dq.alpha_dq_rule_base_column_qualified_name = (
+            attr_dq.dq_rule_base_column_qualified_name = (
                 retrieved_column.qualified_name
             )
-            attr_dq.alpha_dq_rule_base_column = retrieved_column  # type: ignore
+            attr_dq.dq_rule_base_column = retrieved_column  # type: ignore
 
         custom_sql = custom_sql or retrieved_custom_sql
         if custom_sql is not None:
-            attr_dq.alpha_dq_rule_custom_s_q_l = custom_sql
+            attr_dq.dq_rule_custom_s_q_l = custom_sql
             attr_dq.display_name = rule_name or retrieved_rule_name
             if description is not None:
                 attr_dq.user_description = description or retrieved_description
