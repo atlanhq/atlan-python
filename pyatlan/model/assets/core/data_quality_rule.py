@@ -8,11 +8,10 @@ import json
 import time
 import uuid
 from datetime import datetime
-from typing import ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     DataQualityDimension,
@@ -38,6 +37,10 @@ from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import SelfAsset
 from .data_quality import DataQuality
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+    from pyatlan.model.assets import Column
 
 
 class DataQualityRule(DataQuality):

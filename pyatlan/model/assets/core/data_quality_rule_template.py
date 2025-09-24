@@ -10,10 +10,10 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import (
     DataQualityDimension,
-    DataQualityRuleTemplateConfig,
     DataQualityRuleTemplateMetricValueType,
 )
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.structs import DataQualityRuleTemplateConfig
 
 from .data_quality import DataQuality
 
