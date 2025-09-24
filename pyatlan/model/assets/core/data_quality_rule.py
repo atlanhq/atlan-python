@@ -192,7 +192,9 @@ class DataQualityRule(DataQuality):
             search_request = (
                 FluentSearch()
                 .where(Asset.QUALIFIED_NAME.eq(asset.qualified_name))
-                .include_on_results(Asset.DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME)
+                .include_on_results(
+                    Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                )
             ).to_request()
             results = client.asset.search(search_request)
             if results.count == 1:
