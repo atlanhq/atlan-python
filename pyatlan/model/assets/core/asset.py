@@ -16,12 +16,12 @@ from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
     CertificateStatus,
+    DataQualityDimension,
+    DataQualityResult,
+    DataQualityScheduleType,
+    DataQualitySourceSyncStatus,
     SaveSemantic,
     SourceCostUnitType,
-    alpha_DQDimension,
-    alpha_DQResult,
-    alpha_DQScheduleType,
-    alpha_DQSourceSyncStatus,
 )
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
@@ -1143,135 +1143,146 @@ class Asset(Referenceable):
     """
     Internal Popularity score for this asset.
     """
-    ALPHAASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[KeywordField] = (
-        KeywordField(
-            "alpha_assetDQRowScopeFilterColumnQualifiedName",
-            "alpha_assetDQRowScopeFilterColumnQualifiedName",
-        )
+    ASSET_DQ_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "assetDQScheduleType", "assetDQScheduleType"
     )
     """
-    Qualified name of the column to be used for row scope filter
+    Type of schedule of the DQ rule that will run at datasource.
     """
-    ALPHAASSET_DQ_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQScheduleType", "alpha_assetDQScheduleType"
+    ASSET_DQ_SCHEDULE_CRONTAB: ClassVar[KeywordField] = KeywordField(
+        "assetDQScheduleCrontab", "assetDQScheduleCrontab"
     )
     """
-    Type of schedule of the DQ rule that will run at datasource
+    Crontab of the DQ rule that will run at datasource.
     """
-    ALPHAASSET_DQ_SCHEDULE_CRONTAB: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQScheduleCrontab", "alpha_assetDQScheduleCrontab"
-    )
-    """
-    Crontab of the DQ rule that will run at datasource
-    """
-    ALPHAASSET_DQ_SCHEDULE_TIME_ZONE: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQScheduleTimeZone", "alpha_assetDQScheduleTimeZone"
+    ASSET_DQ_SCHEDULE_TIME_ZONE: ClassVar[KeywordField] = KeywordField(
+        "assetDQScheduleTimeZone", "assetDQScheduleTimeZone"
     )
     """
     Timezone of the DQ rule schedule that will run at datasource
     """
-    ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQScheduleSourceSyncStatus", "alpha_assetDQScheduleSourceSyncStatus"
+    ASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetDQScheduleSourceSyncStatus", "assetDQScheduleSourceSyncStatus"
     )
     """
     Latest sync status of the schedule to the source.
     """
-    ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQScheduleSourceSyncedAt", "alpha_assetDQScheduleSourceSyncedAt"
+    ASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT: ClassVar[NumericField] = NumericField(
+        "assetDQScheduleSourceSyncedAt", "assetDQScheduleSourceSyncedAt"
     )
     """
     Time (epoch) at which the schedule synced to the source.
     """
-    ALPHAASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE: ClassVar[TextField] = TextField(
-        "alpha_assetDQScheduleSourceSyncErrorMessage",
-        "alpha_assetDQScheduleSourceSyncErrorMessage",
+    ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE: ClassVar[TextField] = TextField(
+        "assetDQScheduleSourceSyncErrorMessage", "assetDQScheduleSourceSyncErrorMessage"
     )
     """
     Error message in the case of sync state being "error".
     """
-    ALPHAASSET_DQ_RULE_ATTACHED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRuleAttachedDimensions", "alpha_assetDQRuleAttachedDimensions"
+    ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_CODE: ClassVar[KeywordField] = KeywordField(
+        "assetDQScheduleSourceSyncErrorCode", "assetDQScheduleSourceSyncErrorCode"
+    )
+    """
+    Error code in the case of sync state being "error".
+    """
+    ASSET_DQ_SCHEDULE_SOURCE_SYNC_RAW_ERROR: ClassVar[TextField] = TextField(
+        "assetDQScheduleSourceSyncRawError", "assetDQScheduleSourceSyncRawError"
+    )
+    """
+    Raw error message from the source.
+    """
+    ASSET_DQ_RULE_ATTACHED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
+        "assetDQRuleAttachedDimensions", "assetDQRuleAttachedDimensions"
     )
     """
     List of all the dimensions of attached rules.
     """
-    ALPHAASSET_DQ_RULE_FAILED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRuleFailedDimensions", "alpha_assetDQRuleFailedDimensions"
+    ASSET_DQ_RULE_FAILED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
+        "assetDQRuleFailedDimensions", "assetDQRuleFailedDimensions"
     )
     """
     List of all the dimensions of failed rules.
     """
-    ALPHAASSET_DQ_RULE_PASSED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRulePassedDimensions", "alpha_assetDQRulePassedDimensions"
+    ASSET_DQ_RULE_PASSED_DIMENSIONS: ClassVar[KeywordField] = KeywordField(
+        "assetDQRulePassedDimensions", "assetDQRulePassedDimensions"
     )
     """
     List of all the dimensions for which all the rules passed.
     """
-    ALPHAASSET_DQ_RULE_ATTACHED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRuleAttachedRuleTypes", "alpha_assetDQRuleAttachedRuleTypes"
+    ASSET_DQ_RULE_ATTACHED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetDQRuleAttachedRuleTypes", "assetDQRuleAttachedRuleTypes"
     )
     """
     List of all the types of attached rules.
     """
-    ALPHAASSET_DQ_RULE_FAILED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRuleFailedRuleTypes", "alpha_assetDQRuleFailedRuleTypes"
+    ASSET_DQ_RULE_FAILED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetDQRuleFailedRuleTypes", "assetDQRuleFailedRuleTypes"
     )
     """
     List of all the types of failed rules.
     """
-    ALPHAASSET_DQ_RULE_PASSED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRulePassedRuleTypes", "alpha_assetDQRulePassedRuleTypes"
+    ASSET_DQ_RULE_PASSED_RULE_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetDQRulePassedRuleTypes", "assetDQRulePassedRuleTypes"
     )
     """
     List of all the types of rules for which all the rules passed.
     """
-    ALPHAASSET_DQ_RULE_RESULT_TAGS: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQRuleResultTags", "alpha_assetDQRuleResultTags"
+    ASSET_DQ_RULE_RESULT_TAGS: ClassVar[KeywordField] = KeywordField(
+        "assetDQRuleResultTags", "assetDQRuleResultTags"
     )
     """
-    Tag for the result of the DQ rules. eg. rule_pass:completeness:null_count
+    Tag for the result of the DQ rules. Eg, rule_pass:completeness:null_count.
     """
-    ALPHAASSET_DQ_RULE_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQRuleLastRunAt", "alpha_assetDQRuleLastRunAt"
+    ASSET_DQ_RULE_LAST_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetDQRuleLastRunAt", "assetDQRuleLastRunAt"
     )
     """
     Time (epoch) at which the last dq rule ran.
     """
-    ALPHAASSET_DQ_RULE_TOTAL_COUNT: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQRuleTotalCount", "alpha_assetDQRuleTotalCount"
+    ASSET_DQ_RULE_TOTAL_COUNT: ClassVar[NumericField] = NumericField(
+        "assetDQRuleTotalCount", "assetDQRuleTotalCount"
     )
     """
-    Count of DQ rules attached to this asset
+    Count of DQ rules attached to this asset.
     """
-    ALPHAASSET_DQ_RULE_FAILED_COUNT: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQRuleFailedCount", "alpha_assetDQRuleFailedCount"
+    ASSET_DQ_RULE_FAILED_COUNT: ClassVar[NumericField] = NumericField(
+        "assetDQRuleFailedCount", "assetDQRuleFailedCount"
     )
     """
-    Count of failed DQ rules attached to this asset
+    Count of failed DQ rules attached to this asset.
     """
-    ALPHAASSET_DQ_RULE_PASSED_COUNT: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQRulePassedCount", "alpha_assetDQRulePassedCount"
+    ASSET_DQ_RULE_PASSED_COUNT: ClassVar[NumericField] = NumericField(
+        "assetDQRulePassedCount", "assetDQRulePassedCount"
     )
     """
-    Count of passed DQ rules attached to this asset
+    Count of passed DQ rules attached to this asset.
     """
-    ALPHAASSET_DQ_RESULT: ClassVar[KeywordField] = KeywordField(
-        "alpha_assetDQResult", "alpha_assetDQResult"
+    ASSET_DQ_RESULT: ClassVar[KeywordField] = KeywordField(
+        "assetDQResult", "assetDQResult"
     )
     """
-    Overall result of all the dq rules. (If any one rule failed, then fail else pass)
+    Overall result of all the dq rules. If any one rule failed, then fail else pass.
     """
-    ALPHAASSET_DQ_FRESHNESS_VALUE: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQFreshnessValue", "alpha_assetDQFreshnessValue"
+    ASSET_DQ_FRESHNESS_VALUE: ClassVar[NumericField] = NumericField(
+        "assetDQFreshnessValue", "assetDQFreshnessValue"
     )
     """
     Value of data freshness from Source.
     """
-    ALPHAASSET_DQ_FRESHNESS_EXPECTATION: ClassVar[NumericField] = NumericField(
-        "alpha_assetDQFreshnessExpectation", "alpha_assetDQFreshnessExpectation"
+    ASSET_DQ_FRESHNESS_EXPECTATION: ClassVar[NumericField] = NumericField(
+        "assetDQFreshnessExpectation", "assetDQFreshnessExpectation"
     )
     """
     Expectation of data freshness from Source.
+    """
+    ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[KeywordField] = (
+        KeywordField(
+            "assetDQRowScopeFilterColumnQualifiedName",
+            "assetDQRowScopeFilterColumnQualifiedName",
+        )
+    )
+    """
+    Qualified name of the column used for row scope filtering in DQ rules for this asset.
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1287,6 +1298,10 @@ class Asset(Referenceable):
     TBC
     """
     ANOMALO_CHECKS: ClassVar[RelationField] = RelationField("anomaloChecks")
+    """
+    TBC
+    """
+    DQ_BASE_DATASET_RULES: ClassVar[RelationField] = RelationField("dqBaseDatasetRules")
     """
     TBC
     """
@@ -1308,13 +1323,13 @@ class Asset(Referenceable):
     """
     TBC
     """
-    ALPHADQ_BASE_DATASET_RULES: ClassVar[RelationField] = RelationField(
-        "alpha_dqBaseDatasetRules"
-    )
+    README: ClassVar[RelationField] = RelationField("readme")
     """
     TBC
     """
-    README: ClassVar[RelationField] = RelationField("readme")
+    DQ_REFERENCE_DATASET_RULES: ClassVar[RelationField] = RelationField(
+        "dqReferenceDatasetRules"
+    )
     """
     TBC
     """
@@ -1323,12 +1338,6 @@ class Asset(Referenceable):
     TBC
     """
     DATA_CONTRACT_LATEST: ClassVar[RelationField] = RelationField("dataContractLatest")
-    """
-    TBC
-    """
-    ALPHADQ_REFERENCE_DATASET_RULES: ClassVar[RelationField] = RelationField(
-        "alpha_dqReferenceDatasetRules"
-    )
     """
     TBC
     """
@@ -1519,39 +1528,41 @@ class Asset(Referenceable):
         "application_field_qualified_name",
         "asset_user_defined_type",
         "asset_internal_popularity_score",
-        "alpha_asset_d_q_row_scope_filter_column_qualified_name",
-        "alpha_asset_d_q_schedule_type",
-        "alpha_asset_d_q_schedule_crontab",
-        "alpha_asset_d_q_schedule_time_zone",
-        "alpha_asset_d_q_schedule_source_sync_status",
-        "alpha_asset_d_q_schedule_source_synced_at",
-        "alpha_asset_d_q_schedule_source_sync_error_message",
-        "alpha_asset_d_q_rule_attached_dimensions",
-        "alpha_asset_d_q_rule_failed_dimensions",
-        "alpha_asset_d_q_rule_passed_dimensions",
-        "alpha_asset_d_q_rule_attached_rule_types",
-        "alpha_asset_d_q_rule_failed_rule_types",
-        "alpha_asset_d_q_rule_passed_rule_types",
-        "alpha_asset_d_q_rule_result_tags",
-        "alpha_asset_d_q_rule_last_run_at",
-        "alpha_asset_d_q_rule_total_count",
-        "alpha_asset_d_q_rule_failed_count",
-        "alpha_asset_d_q_rule_passed_count",
-        "alpha_asset_d_q_result",
-        "alpha_asset_d_q_freshness_value",
-        "alpha_asset_d_q_freshness_expectation",
+        "asset_d_q_schedule_type",
+        "asset_d_q_schedule_crontab",
+        "asset_d_q_schedule_time_zone",
+        "asset_d_q_schedule_source_sync_status",
+        "asset_d_q_schedule_source_synced_at",
+        "asset_d_q_schedule_source_sync_error_message",
+        "asset_d_q_schedule_source_sync_error_code",
+        "asset_d_q_schedule_source_sync_raw_error",
+        "asset_d_q_rule_attached_dimensions",
+        "asset_d_q_rule_failed_dimensions",
+        "asset_d_q_rule_passed_dimensions",
+        "asset_d_q_rule_attached_rule_types",
+        "asset_d_q_rule_failed_rule_types",
+        "asset_d_q_rule_passed_rule_types",
+        "asset_d_q_rule_result_tags",
+        "asset_d_q_rule_last_run_at",
+        "asset_d_q_rule_total_count",
+        "asset_d_q_rule_failed_count",
+        "asset_d_q_rule_passed_count",
+        "asset_d_q_result",
+        "asset_d_q_freshness_value",
+        "asset_d_q_freshness_expectation",
+        "asset_d_q_row_scope_filter_column_qualified_name",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
+        "dq_base_dataset_rules",
         "user_def_relationship_to",
         "output_port_data_products",
         "user_def_relationship_from",
-        "alpha_dq_base_dataset_rules",
         "readme",
+        "dq_reference_dataset_rules",
         "application_field",
         "data_contract_latest",
         "assigned_terms",
-        "alpha_dq_reference_dataset_rules",
         "mc_monitors",
         "application",
         "files",
@@ -3572,383 +3583,382 @@ class Asset(Referenceable):
         )
 
     @property
-    def alpha_asset_d_q_row_scope_filter_column_qualified_name(self) -> Optional[str]:
+    def asset_d_q_schedule_type(self) -> Optional[DataQualityScheduleType]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.alpha_asset_d_q_row_scope_filter_column_qualified_name
+            None if self.attributes is None else self.attributes.asset_d_q_schedule_type
         )
 
-    @alpha_asset_d_q_row_scope_filter_column_qualified_name.setter
-    def alpha_asset_d_q_row_scope_filter_column_qualified_name(
-        self, alpha_asset_d_q_row_scope_filter_column_qualified_name: Optional[str]
+    @asset_d_q_schedule_type.setter
+    def asset_d_q_schedule_type(
+        self, asset_d_q_schedule_type: Optional[DataQualityScheduleType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_row_scope_filter_column_qualified_name = (
-            alpha_asset_d_q_row_scope_filter_column_qualified_name
-        )
+        self.attributes.asset_d_q_schedule_type = asset_d_q_schedule_type
 
     @property
-    def alpha_asset_d_q_schedule_type(self) -> Optional[alpha_DQScheduleType]:
+    def asset_d_q_schedule_crontab(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_type
+            else self.attributes.asset_d_q_schedule_crontab
         )
 
-    @alpha_asset_d_q_schedule_type.setter
-    def alpha_asset_d_q_schedule_type(
-        self, alpha_asset_d_q_schedule_type: Optional[alpha_DQScheduleType]
-    ):
+    @asset_d_q_schedule_crontab.setter
+    def asset_d_q_schedule_crontab(self, asset_d_q_schedule_crontab: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_type = alpha_asset_d_q_schedule_type
+        self.attributes.asset_d_q_schedule_crontab = asset_d_q_schedule_crontab
 
     @property
-    def alpha_asset_d_q_schedule_crontab(self) -> Optional[str]:
+    def asset_d_q_schedule_time_zone(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_crontab
+            else self.attributes.asset_d_q_schedule_time_zone
         )
 
-    @alpha_asset_d_q_schedule_crontab.setter
-    def alpha_asset_d_q_schedule_crontab(
-        self, alpha_asset_d_q_schedule_crontab: Optional[str]
-    ):
+    @asset_d_q_schedule_time_zone.setter
+    def asset_d_q_schedule_time_zone(self, asset_d_q_schedule_time_zone: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_crontab = (
-            alpha_asset_d_q_schedule_crontab
-        )
+        self.attributes.asset_d_q_schedule_time_zone = asset_d_q_schedule_time_zone
 
     @property
-    def alpha_asset_d_q_schedule_time_zone(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_time_zone
-        )
-
-    @alpha_asset_d_q_schedule_time_zone.setter
-    def alpha_asset_d_q_schedule_time_zone(
-        self, alpha_asset_d_q_schedule_time_zone: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_time_zone = (
-            alpha_asset_d_q_schedule_time_zone
-        )
-
-    @property
-    def alpha_asset_d_q_schedule_source_sync_status(
+    def asset_d_q_schedule_source_sync_status(
         self,
-    ) -> Optional[alpha_DQSourceSyncStatus]:
+    ) -> Optional[DataQualitySourceSyncStatus]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_source_sync_status
+            else self.attributes.asset_d_q_schedule_source_sync_status
         )
 
-    @alpha_asset_d_q_schedule_source_sync_status.setter
-    def alpha_asset_d_q_schedule_source_sync_status(
+    @asset_d_q_schedule_source_sync_status.setter
+    def asset_d_q_schedule_source_sync_status(
         self,
-        alpha_asset_d_q_schedule_source_sync_status: Optional[alpha_DQSourceSyncStatus],
+        asset_d_q_schedule_source_sync_status: Optional[DataQualitySourceSyncStatus],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_source_sync_status = (
-            alpha_asset_d_q_schedule_source_sync_status
+        self.attributes.asset_d_q_schedule_source_sync_status = (
+            asset_d_q_schedule_source_sync_status
         )
 
     @property
-    def alpha_asset_d_q_schedule_source_synced_at(self) -> Optional[datetime]:
+    def asset_d_q_schedule_source_synced_at(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_source_synced_at
+            else self.attributes.asset_d_q_schedule_source_synced_at
         )
 
-    @alpha_asset_d_q_schedule_source_synced_at.setter
-    def alpha_asset_d_q_schedule_source_synced_at(
-        self, alpha_asset_d_q_schedule_source_synced_at: Optional[datetime]
+    @asset_d_q_schedule_source_synced_at.setter
+    def asset_d_q_schedule_source_synced_at(
+        self, asset_d_q_schedule_source_synced_at: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_source_synced_at = (
-            alpha_asset_d_q_schedule_source_synced_at
+        self.attributes.asset_d_q_schedule_source_synced_at = (
+            asset_d_q_schedule_source_synced_at
         )
 
     @property
-    def alpha_asset_d_q_schedule_source_sync_error_message(self) -> Optional[str]:
+    def asset_d_q_schedule_source_sync_error_message(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_schedule_source_sync_error_message
+            else self.attributes.asset_d_q_schedule_source_sync_error_message
         )
 
-    @alpha_asset_d_q_schedule_source_sync_error_message.setter
-    def alpha_asset_d_q_schedule_source_sync_error_message(
-        self, alpha_asset_d_q_schedule_source_sync_error_message: Optional[str]
+    @asset_d_q_schedule_source_sync_error_message.setter
+    def asset_d_q_schedule_source_sync_error_message(
+        self, asset_d_q_schedule_source_sync_error_message: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_schedule_source_sync_error_message = (
-            alpha_asset_d_q_schedule_source_sync_error_message
+        self.attributes.asset_d_q_schedule_source_sync_error_message = (
+            asset_d_q_schedule_source_sync_error_message
         )
 
     @property
-    def alpha_asset_d_q_rule_attached_dimensions(
+    def asset_d_q_schedule_source_sync_error_code(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_d_q_schedule_source_sync_error_code
+        )
+
+    @asset_d_q_schedule_source_sync_error_code.setter
+    def asset_d_q_schedule_source_sync_error_code(
+        self, asset_d_q_schedule_source_sync_error_code: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_d_q_schedule_source_sync_error_code = (
+            asset_d_q_schedule_source_sync_error_code
+        )
+
+    @property
+    def asset_d_q_schedule_source_sync_raw_error(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_d_q_schedule_source_sync_raw_error
+        )
+
+    @asset_d_q_schedule_source_sync_raw_error.setter
+    def asset_d_q_schedule_source_sync_raw_error(
+        self, asset_d_q_schedule_source_sync_raw_error: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_d_q_schedule_source_sync_raw_error = (
+            asset_d_q_schedule_source_sync_raw_error
+        )
+
+    @property
+    def asset_d_q_rule_attached_dimensions(
         self,
-    ) -> Optional[List[alpha_DQDimension]]:
+    ) -> Optional[List[DataQualityDimension]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_attached_dimensions
+            else self.attributes.asset_d_q_rule_attached_dimensions
         )
 
-    @alpha_asset_d_q_rule_attached_dimensions.setter
-    def alpha_asset_d_q_rule_attached_dimensions(
-        self,
-        alpha_asset_d_q_rule_attached_dimensions: Optional[List[alpha_DQDimension]],
+    @asset_d_q_rule_attached_dimensions.setter
+    def asset_d_q_rule_attached_dimensions(
+        self, asset_d_q_rule_attached_dimensions: Optional[List[DataQualityDimension]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_attached_dimensions = (
-            alpha_asset_d_q_rule_attached_dimensions
+        self.attributes.asset_d_q_rule_attached_dimensions = (
+            asset_d_q_rule_attached_dimensions
         )
 
     @property
-    def alpha_asset_d_q_rule_failed_dimensions(
-        self,
-    ) -> Optional[List[alpha_DQDimension]]:
+    def asset_d_q_rule_failed_dimensions(self) -> Optional[List[DataQualityDimension]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_failed_dimensions
+            else self.attributes.asset_d_q_rule_failed_dimensions
         )
 
-    @alpha_asset_d_q_rule_failed_dimensions.setter
-    def alpha_asset_d_q_rule_failed_dimensions(
-        self, alpha_asset_d_q_rule_failed_dimensions: Optional[List[alpha_DQDimension]]
+    @asset_d_q_rule_failed_dimensions.setter
+    def asset_d_q_rule_failed_dimensions(
+        self, asset_d_q_rule_failed_dimensions: Optional[List[DataQualityDimension]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_failed_dimensions = (
-            alpha_asset_d_q_rule_failed_dimensions
+        self.attributes.asset_d_q_rule_failed_dimensions = (
+            asset_d_q_rule_failed_dimensions
         )
 
     @property
-    def alpha_asset_d_q_rule_passed_dimensions(
-        self,
-    ) -> Optional[List[alpha_DQDimension]]:
+    def asset_d_q_rule_passed_dimensions(self) -> Optional[List[DataQualityDimension]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_passed_dimensions
+            else self.attributes.asset_d_q_rule_passed_dimensions
         )
 
-    @alpha_asset_d_q_rule_passed_dimensions.setter
-    def alpha_asset_d_q_rule_passed_dimensions(
-        self, alpha_asset_d_q_rule_passed_dimensions: Optional[List[alpha_DQDimension]]
+    @asset_d_q_rule_passed_dimensions.setter
+    def asset_d_q_rule_passed_dimensions(
+        self, asset_d_q_rule_passed_dimensions: Optional[List[DataQualityDimension]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_passed_dimensions = (
-            alpha_asset_d_q_rule_passed_dimensions
+        self.attributes.asset_d_q_rule_passed_dimensions = (
+            asset_d_q_rule_passed_dimensions
         )
 
     @property
-    def alpha_asset_d_q_rule_attached_rule_types(self) -> Optional[Set[str]]:
+    def asset_d_q_rule_attached_rule_types(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_attached_rule_types
+            else self.attributes.asset_d_q_rule_attached_rule_types
         )
 
-    @alpha_asset_d_q_rule_attached_rule_types.setter
-    def alpha_asset_d_q_rule_attached_rule_types(
-        self, alpha_asset_d_q_rule_attached_rule_types: Optional[Set[str]]
+    @asset_d_q_rule_attached_rule_types.setter
+    def asset_d_q_rule_attached_rule_types(
+        self, asset_d_q_rule_attached_rule_types: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_attached_rule_types = (
-            alpha_asset_d_q_rule_attached_rule_types
+        self.attributes.asset_d_q_rule_attached_rule_types = (
+            asset_d_q_rule_attached_rule_types
         )
 
     @property
-    def alpha_asset_d_q_rule_failed_rule_types(self) -> Optional[Set[str]]:
+    def asset_d_q_rule_failed_rule_types(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_failed_rule_types
+            else self.attributes.asset_d_q_rule_failed_rule_types
         )
 
-    @alpha_asset_d_q_rule_failed_rule_types.setter
-    def alpha_asset_d_q_rule_failed_rule_types(
-        self, alpha_asset_d_q_rule_failed_rule_types: Optional[Set[str]]
+    @asset_d_q_rule_failed_rule_types.setter
+    def asset_d_q_rule_failed_rule_types(
+        self, asset_d_q_rule_failed_rule_types: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_failed_rule_types = (
-            alpha_asset_d_q_rule_failed_rule_types
+        self.attributes.asset_d_q_rule_failed_rule_types = (
+            asset_d_q_rule_failed_rule_types
         )
 
     @property
-    def alpha_asset_d_q_rule_passed_rule_types(self) -> Optional[Set[str]]:
+    def asset_d_q_rule_passed_rule_types(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_passed_rule_types
+            else self.attributes.asset_d_q_rule_passed_rule_types
         )
 
-    @alpha_asset_d_q_rule_passed_rule_types.setter
-    def alpha_asset_d_q_rule_passed_rule_types(
-        self, alpha_asset_d_q_rule_passed_rule_types: Optional[Set[str]]
+    @asset_d_q_rule_passed_rule_types.setter
+    def asset_d_q_rule_passed_rule_types(
+        self, asset_d_q_rule_passed_rule_types: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_passed_rule_types = (
-            alpha_asset_d_q_rule_passed_rule_types
+        self.attributes.asset_d_q_rule_passed_rule_types = (
+            asset_d_q_rule_passed_rule_types
         )
 
     @property
-    def alpha_asset_d_q_rule_result_tags(self) -> Optional[Set[str]]:
+    def asset_d_q_rule_result_tags(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_result_tags
+            else self.attributes.asset_d_q_rule_result_tags
         )
 
-    @alpha_asset_d_q_rule_result_tags.setter
-    def alpha_asset_d_q_rule_result_tags(
-        self, alpha_asset_d_q_rule_result_tags: Optional[Set[str]]
+    @asset_d_q_rule_result_tags.setter
+    def asset_d_q_rule_result_tags(
+        self, asset_d_q_rule_result_tags: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_result_tags = (
-            alpha_asset_d_q_rule_result_tags
-        )
+        self.attributes.asset_d_q_rule_result_tags = asset_d_q_rule_result_tags
 
     @property
-    def alpha_asset_d_q_rule_last_run_at(self) -> Optional[datetime]:
+    def asset_d_q_rule_last_run_at(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_last_run_at
+            else self.attributes.asset_d_q_rule_last_run_at
         )
 
-    @alpha_asset_d_q_rule_last_run_at.setter
-    def alpha_asset_d_q_rule_last_run_at(
-        self, alpha_asset_d_q_rule_last_run_at: Optional[datetime]
+    @asset_d_q_rule_last_run_at.setter
+    def asset_d_q_rule_last_run_at(
+        self, asset_d_q_rule_last_run_at: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_last_run_at = (
-            alpha_asset_d_q_rule_last_run_at
-        )
+        self.attributes.asset_d_q_rule_last_run_at = asset_d_q_rule_last_run_at
 
     @property
-    def alpha_asset_d_q_rule_total_count(self) -> Optional[int]:
+    def asset_d_q_rule_total_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_total_count
+            else self.attributes.asset_d_q_rule_total_count
         )
 
-    @alpha_asset_d_q_rule_total_count.setter
-    def alpha_asset_d_q_rule_total_count(
-        self, alpha_asset_d_q_rule_total_count: Optional[int]
-    ):
+    @asset_d_q_rule_total_count.setter
+    def asset_d_q_rule_total_count(self, asset_d_q_rule_total_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_total_count = (
-            alpha_asset_d_q_rule_total_count
-        )
+        self.attributes.asset_d_q_rule_total_count = asset_d_q_rule_total_count
 
     @property
-    def alpha_asset_d_q_rule_failed_count(self) -> Optional[int]:
+    def asset_d_q_rule_failed_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_failed_count
+            else self.attributes.asset_d_q_rule_failed_count
         )
 
-    @alpha_asset_d_q_rule_failed_count.setter
-    def alpha_asset_d_q_rule_failed_count(
-        self, alpha_asset_d_q_rule_failed_count: Optional[int]
-    ):
+    @asset_d_q_rule_failed_count.setter
+    def asset_d_q_rule_failed_count(self, asset_d_q_rule_failed_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_failed_count = (
-            alpha_asset_d_q_rule_failed_count
-        )
+        self.attributes.asset_d_q_rule_failed_count = asset_d_q_rule_failed_count
 
     @property
-    def alpha_asset_d_q_rule_passed_count(self) -> Optional[int]:
+    def asset_d_q_rule_passed_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_rule_passed_count
+            else self.attributes.asset_d_q_rule_passed_count
         )
 
-    @alpha_asset_d_q_rule_passed_count.setter
-    def alpha_asset_d_q_rule_passed_count(
-        self, alpha_asset_d_q_rule_passed_count: Optional[int]
-    ):
+    @asset_d_q_rule_passed_count.setter
+    def asset_d_q_rule_passed_count(self, asset_d_q_rule_passed_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_rule_passed_count = (
-            alpha_asset_d_q_rule_passed_count
-        )
+        self.attributes.asset_d_q_rule_passed_count = asset_d_q_rule_passed_count
 
     @property
-    def alpha_asset_d_q_result(self) -> Optional[alpha_DQResult]:
-        return (
-            None if self.attributes is None else self.attributes.alpha_asset_d_q_result
-        )
+    def asset_d_q_result(self) -> Optional[DataQualityResult]:
+        return None if self.attributes is None else self.attributes.asset_d_q_result
 
-    @alpha_asset_d_q_result.setter
-    def alpha_asset_d_q_result(self, alpha_asset_d_q_result: Optional[alpha_DQResult]):
+    @asset_d_q_result.setter
+    def asset_d_q_result(self, asset_d_q_result: Optional[DataQualityResult]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_result = alpha_asset_d_q_result
+        self.attributes.asset_d_q_result = asset_d_q_result
 
     @property
-    def alpha_asset_d_q_freshness_value(self) -> Optional[datetime]:
+    def asset_d_q_freshness_value(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_freshness_value
+            else self.attributes.asset_d_q_freshness_value
         )
 
-    @alpha_asset_d_q_freshness_value.setter
-    def alpha_asset_d_q_freshness_value(
-        self, alpha_asset_d_q_freshness_value: Optional[datetime]
-    ):
+    @asset_d_q_freshness_value.setter
+    def asset_d_q_freshness_value(self, asset_d_q_freshness_value: Optional[datetime]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_freshness_value = (
-            alpha_asset_d_q_freshness_value
-        )
+        self.attributes.asset_d_q_freshness_value = asset_d_q_freshness_value
 
     @property
-    def alpha_asset_d_q_freshness_expectation(self) -> Optional[datetime]:
+    def asset_d_q_freshness_expectation(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.alpha_asset_d_q_freshness_expectation
+            else self.attributes.asset_d_q_freshness_expectation
         )
 
-    @alpha_asset_d_q_freshness_expectation.setter
-    def alpha_asset_d_q_freshness_expectation(
-        self, alpha_asset_d_q_freshness_expectation: Optional[datetime]
+    @asset_d_q_freshness_expectation.setter
+    def asset_d_q_freshness_expectation(
+        self, asset_d_q_freshness_expectation: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.alpha_asset_d_q_freshness_expectation = (
-            alpha_asset_d_q_freshness_expectation
+        self.attributes.asset_d_q_freshness_expectation = (
+            asset_d_q_freshness_expectation
+        )
+
+    @property
+    def asset_d_q_row_scope_filter_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_d_q_row_scope_filter_column_qualified_name
+        )
+
+    @asset_d_q_row_scope_filter_column_qualified_name.setter
+    def asset_d_q_row_scope_filter_column_qualified_name(
+        self, asset_d_q_row_scope_filter_column_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_d_q_row_scope_filter_column_qualified_name = (
+            asset_d_q_row_scope_filter_column_qualified_name
         )
 
     @property
@@ -3992,6 +4002,20 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anomalo_checks = anomalo_checks
+
+    @property
+    def dq_base_dataset_rules(self) -> Optional[List[DataQualityRule]]:
+        return (
+            None if self.attributes is None else self.attributes.dq_base_dataset_rules
+        )
+
+    @dq_base_dataset_rules.setter
+    def dq_base_dataset_rules(
+        self, dq_base_dataset_rules: Optional[List[DataQualityRule]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_base_dataset_rules = dq_base_dataset_rules
 
     @property
     def user_def_relationship_to(self) -> Optional[List[Referenceable]]:
@@ -4042,22 +4066,6 @@ class Asset(Referenceable):
         self.attributes.user_def_relationship_from = user_def_relationship_from
 
     @property
-    def alpha_dq_base_dataset_rules(self) -> Optional[List[alpha_DQRule]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.alpha_dq_base_dataset_rules
-        )
-
-    @alpha_dq_base_dataset_rules.setter
-    def alpha_dq_base_dataset_rules(
-        self, alpha_dq_base_dataset_rules: Optional[List[alpha_DQRule]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alpha_dq_base_dataset_rules = alpha_dq_base_dataset_rules
-
-    @property
     def readme(self) -> Optional[Readme]:
         return None if self.attributes is None else self.attributes.readme
 
@@ -4066,6 +4074,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.readme = readme
+
+    @property
+    def dq_reference_dataset_rules(self) -> Optional[List[DataQualityRule]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dq_reference_dataset_rules
+        )
+
+    @dq_reference_dataset_rules.setter
+    def dq_reference_dataset_rules(
+        self, dq_reference_dataset_rules: Optional[List[DataQualityRule]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_reference_dataset_rules = dq_reference_dataset_rules
 
     @property
     def application_field(self) -> Optional[ApplicationField]:
@@ -4096,24 +4120,6 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
-
-    @property
-    def alpha_dq_reference_dataset_rules(self) -> Optional[List[alpha_DQRule]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.alpha_dq_reference_dataset_rules
-        )
-
-    @alpha_dq_reference_dataset_rules.setter
-    def alpha_dq_reference_dataset_rules(
-        self, alpha_dq_reference_dataset_rules: Optional[List[alpha_DQRule]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alpha_dq_reference_dataset_rules = (
-            alpha_dq_reference_dataset_rules
-        )
 
     @property
     def mc_monitors(self) -> Optional[List[MCMonitor]]:
@@ -4479,67 +4485,65 @@ class Asset(Referenceable):
         asset_internal_popularity_score: Optional[float] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_row_scope_filter_column_qualified_name: Optional[str] = Field(
+        asset_d_q_schedule_type: Optional[DataQualityScheduleType] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_schedule_type: Optional[alpha_DQScheduleType] = Field(
+        asset_d_q_schedule_crontab: Optional[str] = Field(default=None, description="")
+        asset_d_q_schedule_time_zone: Optional[str] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_schedule_crontab: Optional[str] = Field(
-            default=None, description=""
-        )
-        alpha_asset_d_q_schedule_time_zone: Optional[str] = Field(
-            default=None, description=""
-        )
-        alpha_asset_d_q_schedule_source_sync_status: Optional[
-            alpha_DQSourceSyncStatus
-        ] = Field(default=None, description="")
-        alpha_asset_d_q_schedule_source_synced_at: Optional[datetime] = Field(
-            default=None, description=""
-        )
-        alpha_asset_d_q_schedule_source_sync_error_message: Optional[str] = Field(
-            default=None, description=""
-        )
-        alpha_asset_d_q_rule_attached_dimensions: Optional[List[alpha_DQDimension]] = (
+        asset_d_q_schedule_source_sync_status: Optional[DataQualitySourceSyncStatus] = (
             Field(default=None, description="")
         )
-        alpha_asset_d_q_rule_failed_dimensions: Optional[List[alpha_DQDimension]] = (
+        asset_d_q_schedule_source_synced_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        asset_d_q_schedule_source_sync_error_message: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_d_q_schedule_source_sync_error_code: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_d_q_schedule_source_sync_raw_error: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_d_q_rule_attached_dimensions: Optional[List[DataQualityDimension]] = (
             Field(default=None, description="")
         )
-        alpha_asset_d_q_rule_passed_dimensions: Optional[List[alpha_DQDimension]] = (
-            Field(default=None, description="")
-        )
-        alpha_asset_d_q_rule_attached_rule_types: Optional[Set[str]] = Field(
+        asset_d_q_rule_failed_dimensions: Optional[List[DataQualityDimension]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_failed_rule_types: Optional[Set[str]] = Field(
+        asset_d_q_rule_passed_dimensions: Optional[List[DataQualityDimension]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_passed_rule_types: Optional[Set[str]] = Field(
+        asset_d_q_rule_attached_rule_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_result_tags: Optional[Set[str]] = Field(
+        asset_d_q_rule_failed_rule_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_last_run_at: Optional[datetime] = Field(
+        asset_d_q_rule_passed_rule_types: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_total_count: Optional[int] = Field(
+        asset_d_q_rule_result_tags: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_failed_count: Optional[int] = Field(
+        asset_d_q_rule_last_run_at: Optional[datetime] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_rule_passed_count: Optional[int] = Field(
+        asset_d_q_rule_total_count: Optional[int] = Field(default=None, description="")
+        asset_d_q_rule_failed_count: Optional[int] = Field(default=None, description="")
+        asset_d_q_rule_passed_count: Optional[int] = Field(default=None, description="")
+        asset_d_q_result: Optional[DataQualityResult] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_result: Optional[alpha_DQResult] = Field(
+        asset_d_q_freshness_value: Optional[datetime] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_freshness_value: Optional[datetime] = Field(
+        asset_d_q_freshness_expectation: Optional[datetime] = Field(
             default=None, description=""
         )
-        alpha_asset_d_q_freshness_expectation: Optional[datetime] = Field(
+        asset_d_q_row_scope_filter_column_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
@@ -4551,6 +4555,9 @@ class Asset(Referenceable):
         anomalo_checks: Optional[List[AnomaloCheck]] = Field(
             default=None, description=""
         )  # relationship
+        dq_base_dataset_rules: Optional[List[DataQualityRule]] = Field(
+            default=None, description=""
+        )  # relationship
         user_def_relationship_to: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
@@ -4560,10 +4567,10 @@ class Asset(Referenceable):
         user_def_relationship_from: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
-        alpha_dq_base_dataset_rules: Optional[List[alpha_DQRule]] = Field(
+        readme: Optional[Readme] = Field(default=None, description="")  # relationship
+        dq_reference_dataset_rules: Optional[List[DataQualityRule]] = Field(
             default=None, description=""
         )  # relationship
-        readme: Optional[Readme] = Field(default=None, description="")  # relationship
         application_field: Optional[ApplicationField] = Field(
             default=None, description=""
         )  # relationship
@@ -4571,9 +4578,6 @@ class Asset(Referenceable):
             default=None, description=""
         )  # relationship
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
-            default=None, description=""
-        )  # relationship
-        alpha_dq_reference_dataset_rules: Optional[List[alpha_DQRule]] = Field(
             default=None, description=""
         )  # relationship
         mc_monitors: Optional[List[MCMonitor]] = Field(
@@ -4630,13 +4634,13 @@ class Asset(Referenceable):
     )
 
 
-from .alpha__d_q_rule import alpha_DQRule  # noqa: E402, F401
 from .anomalo_check import AnomaloCheck  # noqa: E402, F401
 from .application import Application  # noqa: E402, F401
 from .application_field import ApplicationField  # noqa: E402, F401
 from .atlas_glossary_term import AtlasGlossaryTerm  # noqa: E402, F401
 from .data_contract import DataContract  # noqa: E402, F401
 from .data_product import DataProduct  # noqa: E402, F401
+from .data_quality_rule import DataQualityRule  # noqa: E402, F401
 from .file import File  # noqa: E402, F401
 from .link import Link  # noqa: E402, F401
 from .m_c_incident import MCIncident  # noqa: E402, F401

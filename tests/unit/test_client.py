@@ -45,10 +45,10 @@ from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
     AnnouncementType,
     CertificateStatus,
+    DataQualityScheduleType,
     LineageDirection,
     SaveSemantic,
     SortOrder,
-    alpha_DQScheduleType,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.group import GroupRequest
@@ -71,12 +71,12 @@ from tests.unit.constants import (
     TEST_USER_CLIENT_METHODS,
 )
 from tests.unit.model.constants import (
-    ALPHA_DQ_COLUMN_QUALIFIED_NAME,
-    ALPHA_DQ_TABLE_QUALIFIED_NAME,
     CONNECTION_NAME,
     CONNECTOR_TYPE,
     DATA_DOMAIN_NAME,
     DATA_PRODUCT_NAME,
+    DQ_COLUMN_QUALIFIED_NAME,
+    DQ_TABLE_QUALIFIED_NAME,
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
@@ -2734,9 +2734,9 @@ def test_add_dq_rule_schedule(mock_api_caller):
 
     updated_table = Table()
     updated_table.guid = "test-guid-123"
-    updated_table.alpha_asset_d_q_schedule_time_zone = schedule_time_zone
-    updated_table.alpha_asset_d_q_schedule_crontab = schedule_cron_string
-    updated_table.alpha_asset_d_q_schedule_type = alpha_DQScheduleType.CRON
+    updated_table.asset_d_q_schedule_time_zone = schedule_time_zone
+    updated_table.asset_d_q_schedule_crontab = schedule_cron_string
+    updated_table.asset_d_q_schedule_type = DataQualityScheduleType.CRON
 
     mock_response = Mock(spec=AssetMutationResponse)
 
@@ -2758,15 +2758,9 @@ def test_add_dq_rule_schedule(mock_api_caller):
                 qualified_name=asset_qualified_name,
                 name=asset_name,
             )
-            assert (
-                updated_table.alpha_asset_d_q_schedule_time_zone == schedule_time_zone
-            )
-            assert (
-                updated_table.alpha_asset_d_q_schedule_crontab == schedule_cron_string
-            )
-            assert (
-                updated_table.alpha_asset_d_q_schedule_type == alpha_DQScheduleType.CRON
-            )
+            assert updated_table.asset_d_q_schedule_time_zone == schedule_time_zone
+            assert updated_table.asset_d_q_schedule_crontab == schedule_cron_string
+            assert updated_table.asset_d_q_schedule_type == DataQualityScheduleType.CRON
             mock_save.assert_called_once_with(updated_table)
             assert result == mock_response
 
@@ -2779,8 +2773,8 @@ def test_set_dq_row_scope_filter_column(mock_api_caller):
         result = asset_client.set_dq_row_scope_filter_column(
             asset_type=Table,
             asset_name="TestTable",
-            asset_qualified_name=ALPHA_DQ_TABLE_QUALIFIED_NAME,
-            row_scope_filter_column_qualified_name=ALPHA_DQ_COLUMN_QUALIFIED_NAME,
+            asset_qualified_name=DQ_TABLE_QUALIFIED_NAME,
+            row_scope_filter_column_qualified_name=DQ_COLUMN_QUALIFIED_NAME,
         )
 
         mock_save.assert_called_once()

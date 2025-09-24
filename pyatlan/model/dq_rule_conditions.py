@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic.v1 import Field
 
 from pyatlan.errors import ErrorCode
-from pyatlan.model.enums import alpha_dqRuleTemplateConfigRuleConditions
+from pyatlan.model.enums import DataQualityRuleTemplateConfigRuleConditions
 from pyatlan.model.structs import AtlanObject
 from pyatlan.utils import validate_required_fields, validate_type
 
@@ -16,7 +16,7 @@ from pyatlan.utils import validate_required_fields, validate_type
 class DQCondition(AtlanObject):
     """Data quality rule condition."""
 
-    type: alpha_dqRuleTemplateConfigRuleConditions = Field(description="")
+    type: DataQualityRuleTemplateConfigRuleConditions = Field(description="")
     value: Optional[Union[str, int, List[str], Dict[str, Any]]] = Field(
         default=None, description=""
     )
@@ -25,7 +25,7 @@ class DQCondition(AtlanObject):
 
     def __init__(
         self,
-        type: alpha_dqRuleTemplateConfigRuleConditions,
+        type: DataQualityRuleTemplateConfigRuleConditions,
         value: Optional[Union[str, int, List[str], Dict[str, Any]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
@@ -35,7 +35,10 @@ class DQCondition(AtlanObject):
             type=type, value=value, min_value=min_value, max_value=max_value, **kwargs
         )
 
-        if self.type == alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN:
+        if (
+            self.type
+            == DataQualityRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN
+        ):
             validate_required_fields(
                 ["min_value", "max_value"], [self.min_value, self.max_value]
             )
@@ -60,20 +63,23 @@ class DQCondition(AtlanObject):
         else:
             validate_required_fields(["value"], [self.value])
             if self.type in [
-                alpha_dqRuleTemplateConfigRuleConditions.IN_LIST,
-                alpha_dqRuleTemplateConfigRuleConditions.NOT_IN_LIST,
+                DataQualityRuleTemplateConfigRuleConditions.IN_LIST,
+                DataQualityRuleTemplateConfigRuleConditions.NOT_IN_LIST,
             ]:
                 validate_type("value", list, self.value)
             elif self.type in [
-                alpha_dqRuleTemplateConfigRuleConditions.REGEX_MATCH,
-                alpha_dqRuleTemplateConfigRuleConditions.REGEX_NOT_MATCH,
+                DataQualityRuleTemplateConfigRuleConditions.REGEX_MATCH,
+                DataQualityRuleTemplateConfigRuleConditions.REGEX_NOT_MATCH,
             ]:
                 validate_type("value", str, self.value)
 
     def to_dict(self) -> Dict[str, Any]:
         result: Dict[str, Any] = {"type": self.type.value}
 
-        if self.type == alpha_dqRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN:
+        if (
+            self.type
+            == DataQualityRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN
+        ):
             result["value"] = {"minValue": self.min_value, "maxValue": self.max_value}
         else:
             result["value"] = {"value": self.value}
@@ -89,7 +95,7 @@ class DQRuleConditionsBuilder:
 
     def add_condition(
         self,
-        type: alpha_dqRuleTemplateConfigRuleConditions,
+        type: DataQualityRuleTemplateConfigRuleConditions,
         value: Optional[Union[str, int, List[str]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,

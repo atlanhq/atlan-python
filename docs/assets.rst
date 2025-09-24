@@ -118,6 +118,8 @@ You can interact with all of the following different kinds of assets:
     asset/datamesh
     asset/dataproduct
     asset/dataquality
+    asset/dataqualityrule
+    asset/dataqualityruletemplate
     asset/dataset
     asset/datastudio
     asset/datastudioasset

@@ -63,7 +63,9 @@ __all__ = [
     "FivetranConnector",
     "Anomalo",
     "MonteCarlo",
+    "DataQualityRuleTemplate",
     "Metric",
+    "DataQualityRule",
     "Soda",
     "AIApplication",
     "AIModelVersion",
@@ -365,8 +367,6 @@ __all__ = [
     "AzureEventHubConsumerGroup",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
-    "alpha_DQRuleTemplate",
-    "alpha_DQRule",
     "IndistinctAsset",
 ]
 
@@ -449,8 +449,6 @@ from .core.adf_pipeline import AdfPipeline
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
-from .core.alpha__d_q_rule import alpha_DQRule
-from .core.alpha__d_q_rule_template import alpha_DQRuleTemplate
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App
@@ -476,6 +474,8 @@ from .core.data_domain import DataDomain
 from .core.data_mesh import DataMesh
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
+from .core.data_quality_rule import DataQualityRule
+from .core.data_quality_rule_template import DataQualityRuleTemplate
 from .core.database import Database
 from .core.databricks_a_i_model_context import DatabricksAIModelContext
 from .core.databricks_a_i_model_version import DatabricksAIModelVersion
