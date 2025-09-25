@@ -2434,7 +2434,7 @@ class OpenLineageEventType(Enum):
     OTHER = "OTHER"
 
 
-class alpha_DQRuleThresholdCompareOperator(str, Enum):
+class DataQualityRuleThresholdCompareOperator(str, Enum):
     EQUAL = "EQ"
     GREATER_THAN_EQUAL = "GTE"
     LESS_THAN_EQUAL = "LTE"
@@ -2443,70 +2443,7 @@ class alpha_DQRuleThresholdCompareOperator(str, Enum):
     LESS_THAN = "LT"
 
 
-class alpha_DQDimension(str, Enum):
-    COMPLETENESS = "completeness"
-    TIMELINESS = "timeliness"
-    ACCURACY = "accuracy"
-    CONSISTENCY = "consistency"
-    UNIQUENESS = "uniqueness"
-    VALIDITY = "validity"
-    VOLUME = "volume"
-
-
-class alpha_DQEnvironmentSetupStatus(str, Enum):
-    NOT_STARTED = "NOT_STARTED"
-    IN_PROGRESS = "IN_PROGRESS"
-    SUCCESSFUL = "SUCCESSFUL"
-    FAILED = "FAILED"
-
-
-class alpha_DQResult(str, Enum):
-    PASS = "PASS"
-    FAIL = "FAIL"
-
-
-class alpha_DQRuleAlertPriority(str, Enum):
-    URGENT = "URGENT"
-    NORMAL = "NORMAL"
-    LOW = "LOW"
-
-
-class alpha_DQRuleStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    SUSPENDED = "SUSPENDED"
-
-
-class alpha_DQRuleTemplateMetricValueType(str, Enum):
-    ABSOLUTE = "ABSOLUTE"
-    PERCENTAGE = "PERCENTAGE"
-    TIME = "TIME"
-
-
-class alpha_DQRuleThresholdUnit(str, Enum):
-    PERCENTAGE = "PERCENTAGE"
-    SECONDS = "SECONDS"
-    MINUTES = "MINUTES"
-    HOURS = "HOURS"
-    DAYS = "DAYS"
-    WEEKS = "WEEKS"
-    MONTHS = "MONTHS"
-    YEARS = "YEARS"
-
-
-class alpha_DQScheduleType(str, Enum):
-    ON_DATA_CHANGE = "ON_DATA_CHANGE"
-    CRON = "CRON"
-    NOT_SCHEDULED = "NOT_SCHEDULED"
-
-
-class alpha_DQSourceSyncStatus(str, Enum):
-    SUCCESSFUL = "SUCCESSFUL"
-    FAILURE = "FAILURE"
-    IN_PROGRESS = "IN_PROGRESS"
-    WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
-
-
-class alpha_dqRuleTemplateConfigRuleConditions(str, Enum):
+class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     # String Length conditions
     STRING_LENGTH_BETWEEN = "STRING_LENGTH_BETWEEN"
     STRING_LENGTH_EQUALS = "STRING_LENGTH_EQUALS"
@@ -2710,6 +2647,13 @@ class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
 
 
+class ConnectionDQEnvironmentSetupStatus(str, Enum):
+    NOT_STARTED = "NOT_STARTED"
+    IN_PROGRESS = "IN_PROGRESS"
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILED = "FAILED"
+
+
 class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
@@ -2740,6 +2684,62 @@ class DataProductVisibility(str, Enum):
     PRIVATE = "Private"
     PROTECTED = "Protected"
     PUBLIC = "Public"
+
+
+class DataQualityDimension(str, Enum):
+    COMPLETENESS = "completeness"
+    TIMELINESS = "timeliness"
+    ACCURACY = "accuracy"
+    CONSISTENCY = "consistency"
+    UNIQUENESS = "uniqueness"
+    VALIDITY = "validity"
+    VOLUME = "volume"
+
+
+class DataQualityResult(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+
+
+class DataQualityRuleAlertPriority(str, Enum):
+    URGENT = "URGENT"
+    NORMAL = "NORMAL"
+    LOW = "LOW"
+
+
+class DataQualityRuleStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+
+
+class DataQualityRuleTemplateMetricValueType(str, Enum):
+    ABSOLUTE = "ABSOLUTE"
+    PERCENTAGE = "PERCENTAGE"
+    TIME = "TIME"
+
+
+class DataQualityRuleThresholdUnit(str, Enum):
+    PERCENTAGE = "PERCENTAGE"
+    SECONDS = "SECONDS"
+    MINUTES = "MINUTES"
+    HOURS = "HOURS"
+    DAYS = "DAYS"
+    WEEKS = "WEEKS"
+    MONTHS = "MONTHS"
+    YEARS = "YEARS"
+
+
+class DataQualityScheduleType(str, Enum):
+    ON_DATA_CHANGE = "ON_DATA_CHANGE"
+    CRON = "CRON"
+    NOT_SCHEDULED = "NOT_SCHEDULED"
+
+
+class DataQualitySourceSyncStatus(str, Enum):
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILURE = "FAILURE"
+    IN_PROGRESS = "IN_PROGRESS"
+    WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
 
 
 class DocumentDBCollectionValidationAction(str, Enum):

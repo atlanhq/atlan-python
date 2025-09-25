@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Dict, Optional, Tuple
 
 from pyatlan.model.assets import Asset
-from pyatlan.model.assets.core.alpha__d_q_rule_template import alpha_DQRuleTemplate
+from pyatlan.model.assets.core.data_quality_rule_template import DataQualityRuleTemplate
 from pyatlan.model.fluent_search import FluentSearch
 
 
@@ -29,17 +29,15 @@ class DQTemplateConfigCacheCommon:
         try:
             return (
                 FluentSearch()
-                .where(Asset.TYPE_NAME.eq(alpha_DQRuleTemplate.__name__))
-                .include_on_results(alpha_DQRuleTemplate.NAME)
-                .include_on_results(alpha_DQRuleTemplate.QUALIFIED_NAME)
-                .include_on_results(alpha_DQRuleTemplate.DISPLAY_NAME)
-                .include_on_results(
-                    alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_DIMENSION
-                )
-                .include_on_results(alpha_DQRuleTemplate.ALPHADQ_RULE_TEMPLATE_CONFIG)
+                .where(Asset.TYPE_NAME.eq(DataQualityRuleTemplate.__name__))
+                .include_on_results(DataQualityRuleTemplate.NAME)
+                .include_on_results(DataQualityRuleTemplate.QUALIFIED_NAME)
+                .include_on_results(DataQualityRuleTemplate.DISPLAY_NAME)
+                .include_on_results(DataQualityRuleTemplate.DQ_RULE_TEMPLATE_DIMENSION)
+                .include_on_results(DataQualityRuleTemplate.DQ_RULE_TEMPLATE_CONFIG)
             )
         except ImportError:
-            # If the alpha_DQRuleTemplate is not available, return empty search
+            # If the DataQualityRuleTemplate is not available, return empty search
             return FluentSearch()
 
     @classmethod
@@ -59,8 +57,8 @@ class DQTemplateConfigCacheCommon:
                     "name": result.name,
                     "qualified_name": result.qualified_name,
                     "display_name": result.display_name,
-                    "dimension": result.alpha_dq_rule_template_dimension,  # type: ignore
-                    "config": result.alpha_dq_rule_template_config,  # type: ignore
+                    "dimension": result.dq_rule_template_dimension,  # type: ignore
+                    "config": result.dq_rule_template_config,  # type: ignore
                 }
                 cache[result.display_name] = template_config  # type: ignore
             return True, None

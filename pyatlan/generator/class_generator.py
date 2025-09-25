@@ -230,7 +230,7 @@ class AssetInfo:
         "DataProduct",
         "Referenceable",
         "Purpose",
-        "alpha_DQRule",
+        "DataQualityRule",
     }
     _ASSETS_REQUIRE_ASYNC_CLIENT = {
         "Badge",

@@ -16,8 +16,6 @@ from .adf_pipeline import AdfPipeline
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
-from .alpha__d_q_rule import alpha_DQRule
-from .alpha__d_q_rule_template import alpha_DQRuleTemplate
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .app import App
@@ -43,6 +41,8 @@ from .data_domain import DataDomain
 from .data_mesh import DataMesh
 from .data_product import DataProduct
 from .data_quality import DataQuality
+from .data_quality_rule import DataQualityRule
+from .data_quality_rule_template import DataQualityRuleTemplate
 from .database import Database
 from .databricks_a_i_model_context import DatabricksAIModelContext
 from .databricks_a_i_model_version import DatabricksAIModelVersion
@@ -198,10 +198,10 @@ DbtSource.Attributes.update_forward_refs(**localns)
 DbtSeed.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
-alpha_DQRuleTemplate.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
+DataQualityRuleTemplate.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
-alpha_DQRule.Attributes.update_forward_refs(**localns)
+DataQualityRule.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
 AIApplication.Attributes.update_forward_refs(**localns)
 AIModelVersion.Attributes.update_forward_refs(**localns)

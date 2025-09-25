@@ -1,3 +1,4 @@
+
         @staticmethod
         def _get_template_config_value(
             config_value: str,
@@ -26,10 +27,10 @@
             row_scope_filtering_enabled: Optional[bool],
             template_config: Optional[dict],
             threshold_compare_operator: Optional[
-                alpha_DQRuleThresholdCompareOperator
+                DataQualityRuleThresholdCompareOperator
             ] = None,
             asset: Optional[Asset] = None,
-        ) -> Optional[alpha_DQRuleThresholdCompareOperator]:
+        ) -> Optional[DataQualityRuleThresholdCompareOperator]:
             if not template_config or not template_config.get("config"):
                 return None
 
@@ -37,7 +38,7 @@
 
             if (
                 rule_conditions
-                and config.alpha_dq_rule_template_config_rule_conditions is None
+                and config.dq_rule_template_config_rule_conditions is None
             ):
                 raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
                     rule_type, "rule conditions"
@@ -45,16 +46,16 @@
 
             if row_scope_filtering_enabled:
                 advanced_settings = (
-                    config.alpha_dq_rule_template_advanced_settings or ""
+                    config.dq_rule_template_config_advanced_settings or ""
                 )
-                if "alpha_dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
+                if "dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
                         rule_type, "row scope filtering"
                     )
 
                 if asset and not getattr(
                     asset,
-                    "alpha_asset_d_q_row_scope_filter_column_qualified_name",
+                    "asset_d_q_row_scope_filter_column_qualified_name",
                     None,
                 ):
                     raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
@@ -63,8 +64,8 @@
 
             if rule_conditions:
                 allowed_rule_conditions = (
-                    alpha_DQRule.Attributes._get_template_config_value(
-                        config.alpha_dq_rule_template_config_rule_conditions or "",
+                    DataQualityRule.Attributes._get_template_config_value(
+                        config.dq_rule_template_config_rule_conditions or "",
                         None,
                         "enum",
                     )
@@ -87,10 +88,10 @@
                         )
 
                 if threshold_compare_operator is None:
-                    return alpha_DQRuleThresholdCompareOperator.EQUAL
+                    return DataQualityRuleThresholdCompareOperator.EQUAL
                 elif (
                     threshold_compare_operator
-                    != alpha_DQRuleThresholdCompareOperator.EQUAL
+                    != DataQualityRuleThresholdCompareOperator.EQUAL
                 ):
                     raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
                         f"threshold_compare_operator={threshold_compare_operator.value}",
@@ -99,9 +100,9 @@
                     )
 
             if threshold_compare_operator is not None:
-                allowed_operators = alpha_DQRule.Attributes._get_template_config_value(
-                    config.alpha_dq_rule_template_config_threshold_object,
-                    "alpha_dqRuleTemplateConfigThresholdCompareOperator",
+                allowed_operators = DataQualityRule.Attributes._get_template_config_value(
+                    config.dq_rule_template_config_threshold_object,
+                    "dqRuleTemplateConfigThresholdCompareOperator",
                     "enum",
                 )
                 if (
@@ -114,19 +115,19 @@
                         f"must be one of {allowed_operators}",
                     )
             elif threshold_compare_operator is None:
-                default_value = alpha_DQRule.Attributes._get_template_config_value(
-                    config.alpha_dq_rule_template_config_threshold_object,
-                    "alpha_dqRuleTemplateConfigThresholdCompareOperator",
+                default_value = DataQualityRule.Attributes._get_template_config_value(
+                    config.dq_rule_template_config_threshold_object,
+                    "dqRuleTemplateConfigThresholdCompareOperator",
                     "default",
                 )
                 if default_value:
-                    threshold_compare_operator = alpha_DQRuleThresholdCompareOperator(
+                    threshold_compare_operator = DataQualityRuleThresholdCompareOperator(
                         default_value
                     )
 
             return (
                 threshold_compare_operator
-                or alpha_DQRuleThresholdCompareOperator.LESS_THAN_EQUAL
+                or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
             )
 
         @staticmethod
@@ -135,51 +136,51 @@
             is_alert_enabled: bool = True,
             custom_sql: Optional[str] = None,
             display_name: Optional[str] = None,
-            dimension: Optional[alpha_DQDimension] = None,
-            compare_operator: alpha_DQRuleThresholdCompareOperator,
+            dimension: Optional[DataQualityDimension] = None,
+            compare_operator: DataQualityRuleThresholdCompareOperator,
             threshold_value: int,
-            threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
+            threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
             column: Optional[Asset] = None,
-            dq_priority: alpha_DQRuleAlertPriority,
+            dq_priority: DataQualityRuleAlertPriority,
             description: Optional[str] = None,
             rule_conditions: Optional[str] = None,
             row_scope_filtering_enabled: Optional[bool] = None,
         ) -> str:
             config = {
                 "isAlertEnabled": is_alert_enabled,
-                "alpha_dqRuleTemplateConfigThresholdObject": {
-                    "alpha_dqRuleTemplateConfigThresholdCompareOperator": compare_operator,
-                    "alpha_dqRuleTemplateConfigThresholdValue": threshold_value,
-                    "alpha_dqRuleTemplateConfigThresholdUnit": threshold_unit,
+                "dqRuleTemplateConfigThresholdObject": {
+                    "dqRuleTemplateConfigThresholdCompareOperator": compare_operator,
+                    "dqRuleTemplateConfigThresholdValue": threshold_value,
+                    "dqRuleTemplateConfigThresholdUnit": threshold_unit,
                 },
-                "alpha_dqRuleTemplateAdvancedSettings.dqPriority": dq_priority,
+                "dqRuleTemplateConfigAdvancedSettings.dqPriority": dq_priority,
             }
 
             if column is not None:
-                config["alpha_dqRuleTemplateConfigBaseColumnQualifiedName"] = (
+                config["dqRuleTemplateConfigBaseColumnQualifiedName"] = (
                     column.qualified_name
                 )
 
             if description is not None:
-                config["alpha_dqRuleTemplateConfigUserDescription"] = description
+                config["dqRuleTemplateConfigUserDescription"] = description
 
             if custom_sql is not None:
-                config["alpha_dqRuleTemplateConfigCustomSQL"] = custom_sql
+                config["dqRuleTemplateConfigCustomSQL"] = custom_sql
 
             if display_name is not None:
-                config["alpha_dqRuleTemplateConfigDisplayName"] = display_name
+                config["dqRuleTemplateConfigDisplayName"] = display_name
 
             if dimension is not None:
-                config["alpha_dqRuleTemplateConfigDimension"] = dimension
+                config["dqRuleTemplateConfigDimension"] = dimension
 
             if rule_conditions is not None:
-                config["alpha_dqRuleTemplateConfigRuleConditions"] = json.loads(
+                config["dqRuleTemplateConfigRuleConditions"] = json.loads(
                     rule_conditions
                 )
 
             if row_scope_filtering_enabled is not None:
                 config[
-                    "alpha_dqRuleTemplateAdvancedSettings.alpha_dqRuleRowScopeFilteringEnabled"
+                    "dqRuleTemplateConfigAdvancedSettings.dqRuleRowScopeFilteringEnabled"
                 ] = row_scope_filtering_enabled
 
             return json.dumps(config)
@@ -215,17 +216,17 @@
             rule_name: str,
             rule_type: str,
             asset: Asset,
-            threshold_compare_operator: alpha_DQRuleThresholdCompareOperator,
+            threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
             threshold_value: int,
-            alert_priority: alpha_DQRuleAlertPriority,
+            alert_priority: DataQualityRuleAlertPriority,
             column: Optional[Asset] = None,
-            threshold_unit: Optional[alpha_DQRuleThresholdUnit] = None,
-            dimension: Optional[alpha_DQDimension] = None,
+            threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
+            dimension: Optional[DataQualityDimension] = None,
             custom_sql: Optional[str] = None,
             description: Optional[str] = None,
             rule_conditions: Optional[str] = None,
             row_scope_filtering_enabled: Optional[bool] = False,
-        ) -> alpha_DQRule.Attributes:
+        ) -> DataQualityRule.Attributes:
             template_config = client.dq_template_config_cache.get_template_config(
                 rule_type
             )
@@ -242,14 +243,14 @@
             if threshold_unit is None:
                 config = template_config.get("config")
                 if config is not None:
-                    threshold_unit = alpha_DQRule.Attributes._get_template_config_value(
-                        config.alpha_dq_rule_template_config_threshold_object,
-                        "alpha_dqRuleTemplateConfigThresholdUnit",
+                    threshold_unit = DataQualityRule.Attributes._get_template_config_value(
+                        config.dq_rule_template_config_threshold_object,
+                        "dqRuleTemplateConfigThresholdUnit",
                         "default",
                     )
 
             config_arguments_raw = (
-                alpha_DQRule.Attributes._generate_config_arguments_raw(
+                DataQualityRule.Attributes._generate_config_arguments_raw(
                     is_alert_enabled=True,
                     custom_sql=custom_sql,
                     display_name=rule_name,
@@ -265,37 +266,37 @@
                 )
             )
 
-            attr_dq = alpha_DQRule.Attributes(
+            attr_dq = DataQualityRule.Attributes(
                 name="",
-                alpha_dq_rule_config_arguments=alpha_DQRuleConfigArguments(
-                    alpha_dq_rule_threshold_object=alpha_DQRuleThresholdObject(
-                        alpha_dq_rule_threshold_compare_operator=threshold_compare_operator,
-                        alpha_dq_rule_threshold_value=threshold_value,
-                        alpha_dq_rule_threshold_unit=threshold_unit,
+                dq_rule_config_arguments=DataQualityRuleConfigArguments(
+                    dq_rule_threshold_object=DataQualityRuleThresholdObject(
+                        dq_rule_threshold_compare_operator=threshold_compare_operator,
+                        dq_rule_threshold_value=threshold_value,
+                        dq_rule_threshold_unit=threshold_unit,
                     ),
-                    alpha_dq_rule_config_arguments_raw=config_arguments_raw,
-                    alpha_dq_rule_config_rule_conditions=rule_conditions,
+                    dq_rule_config_arguments_raw=config_arguments_raw,
+                    dq_rule_config_rule_conditions=rule_conditions,
                 ),
-                alpha_dq_rule_base_dataset_qualified_name=asset.qualified_name,
-                alpha_dq_rule_alert_priority=alert_priority,
-                alpha_dq_rule_row_scope_filtering_enabled=row_scope_filtering_enabled,
-                alpha_dq_rule_source_sync_status=alpha_DQSourceSyncStatus.IN_PROGRESS,
-                alpha_dq_rule_status=alpha_DQRuleStatus.ACTIVE,
-                alpha_dq_rule_base_dataset=asset,
+                dq_rule_base_dataset_qualified_name=asset.qualified_name,
+                dq_rule_alert_priority=alert_priority,
+                dq_rule_row_scope_filtering_enabled=row_scope_filtering_enabled,
+                dq_rule_source_sync_status=DataQualitySourceSyncStatus.IN_PROGRESS,
+                dq_rule_status=DataQualityRuleStatus.ACTIVE,
+                dq_rule_base_dataset=asset,
                 qualified_name=f"{asset.qualified_name}/rule/{str(cls._generate_uuid())}",
-                alpha_dq_rule_dimension=dimension,
-                alpha_dq_rule_template_name=template_rule_name,
-                alpha_dq_rule_template=alpha_DQRuleTemplate.ref_by_qualified_name(
+                dq_rule_dimension=dimension,
+                dq_rule_template_name=template_rule_name,
+                dq_rule_template=DataQualityRuleTemplate.ref_by_qualified_name(
                     qualified_name=template_qualified_name  # type: ignore
                 ),
             )
 
             if column is not None:
-                attr_dq.alpha_dq_rule_base_column_qualified_name = column.qualified_name
-                attr_dq.alpha_dq_rule_base_column = column  # type: ignore
+                attr_dq.dq_rule_base_column_qualified_name = column.qualified_name
+                attr_dq.dq_rule_base_column = column  # type: ignore
 
             if custom_sql is not None:
-                attr_dq.alpha_dq_rule_custom_s_q_l = custom_sql
+                attr_dq.dq_rule_custom_s_q_l = custom_sql
                 attr_dq.display_name = rule_name
                 if description is not None:
                     attr_dq.user_description = description
