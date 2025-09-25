@@ -1,4 +1,4 @@
-## 7.1.7 (September 25, 2025)
+## 7.1.8 (September 25, 2025)
 
 ### QOL Improvements
 
