@@ -192,7 +192,8 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     def CREATE_CUSTOM(
         cls, name: str, value: str, category=AtlanConnectionCategory.CUSTOM
     ) -> "AtlanConnectorType":
-        return cls.add_value(name, value, category)
+        # Force-lowercase the value to avoid frontend case-related issues
+        return cls.add_value(name, value.lower(), category)
 
     def to_qualified_name(self):
         return f"default/{self.value}/{int(utils.get_epoch_timestamp())}"

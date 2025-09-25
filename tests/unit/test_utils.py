@@ -323,6 +323,32 @@ def test_atlan_connector_type_create_custom(custom_connectors):
         ) in AtlanConnectorType.get_items()
 
 
+def test_atlan_connector_type_create_custom_force_lowercase():
+    """Test that CREATE_CUSTOM method force-lowercases the value parameter to avoid case-related issues."""
+
+    custom_connector = AtlanConnectorType.CREATE_CUSTOM(
+        name="MIXED_CASE", value="MiXeD_CaSe", category=AtlanConnectionCategory.CUSTOM
+    )
+    assert custom_connector.value == "mixed_case"
+
+    custom_connector_upper = AtlanConnectorType.CREATE_CUSTOM(
+        name="UPPER_CASE", value="UPPERCASE", category=AtlanConnectionCategory.CUSTOM
+    )
+    assert custom_connector_upper.value == "uppercase"
+
+    custom_connector_lower = AtlanConnectorType.CREATE_CUSTOM(
+        name="LOWER_CASE", value="lowercase", category=AtlanConnectionCategory.CUSTOM
+    )
+    assert custom_connector_lower.value == "lowercase"
+
+    custom_connector_special = AtlanConnectorType.CREATE_CUSTOM(
+        name="SPECIAL_CHARS",
+        value="My-Connector_Type",
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+    assert custom_connector_special.value == "my-connector_type"
+
+
 @pytest.mark.parametrize(
     "custom_asset_qns",
     [
