@@ -367,22 +367,25 @@ class AtlanTags(AtlanObject):
 
 
 class Meaning(AtlanObject):
-    term_guid: str = Field(
+    term_guid: Optional[str] = Field(
+        default=None,
         description="Unique identifier (GUID) of the related term.",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         alias="termGuid",
     )
-    relation_guid: str = Field(
+    relation_guid: Optional[str] = Field(
+        default=None,
         description="Unique identifier (GUID) of the relationship itself.",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         alias="relationGuid",
     )
-    display_text: str = Field(
+    display_text: Optional[str] = Field(
+        default=None,
         description="Human-readable display name of the related term.",
         example="Company",
         alias="displayText",
     )
-    confidence: int = Field(description="Unused", example=1)
+    confidence: Optional[int] = Field(default=None, description="Unused", example=1)
 
 
 T = TypeVar("T")
