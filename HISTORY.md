@@ -1,3 +1,9 @@
+## 7.1.7 (September 25, 2025)
+
+### QOL Improvements
+
+- Updated `Meaning` model fields to be optional.
+
 ## 7.1.6 (August 7, 2025)
 
 ### Experimental
