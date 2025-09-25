@@ -325,27 +325,26 @@ def test_atlan_connector_type_create_custom(custom_connectors):
 
 def test_atlan_connector_type_create_custom_force_lowercase():
     """Test that CREATE_CUSTOM method force-lowercases the value parameter to avoid case-related issues."""
-    # Test CREATE_CUSTOM with mixed case - value should be lowercased
+
     custom_connector = AtlanConnectorType.CREATE_CUSTOM(
         name="MIXED_CASE", value="MiXeD_CaSe", category=AtlanConnectionCategory.CUSTOM
     )
     assert custom_connector.value == "mixed_case"
-    
-    # Test CREATE_CUSTOM with uppercase - value should be lowercased
+
     custom_connector_upper = AtlanConnectorType.CREATE_CUSTOM(
         name="UPPER_CASE", value="UPPERCASE", category=AtlanConnectionCategory.CUSTOM
     )
     assert custom_connector_upper.value == "uppercase"
-    
-    # Test CREATE_CUSTOM with already lowercase - should remain unchanged
+
     custom_connector_lower = AtlanConnectorType.CREATE_CUSTOM(
         name="LOWER_CASE", value="lowercase", category=AtlanConnectionCategory.CUSTOM
     )
     assert custom_connector_lower.value == "lowercase"
-    
-    # Test CREATE_CUSTOM with special characters - should be lowercased
+
     custom_connector_special = AtlanConnectorType.CREATE_CUSTOM(
-        name="SPECIAL_CHARS", value="My-Connector_Type", category=AtlanConnectionCategory.CUSTOM
+        name="SPECIAL_CHARS",
+        value="My-Connector_Type",
+        category=AtlanConnectionCategory.CUSTOM,
     )
     assert custom_connector_special.value == "my-connector_type"
 
