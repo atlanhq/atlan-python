@@ -192,7 +192,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     def CREATE_CUSTOM(
         cls, name: str, value: str, category=AtlanConnectionCategory.CUSTOM
     ) -> "AtlanConnectorType":
-        # Force-lowercase the value to avoid frotend case-related issues
+        # Force-lowercase the value to avoid frontend case-related issues
         return cls.add_value(name, value.lower(), category)
 
     def to_qualified_name(self):
