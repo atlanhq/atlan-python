@@ -45,7 +45,7 @@ def mock_client():
     config.dq_rule_template_config_rule_conditions = json.dumps(
         {"enum": ["STRING_LENGTH_BETWEEN", "STRING_LENGTH_EQUAL"]}
     )
-    config.dq_rule_template_advanced_settings = json.dumps(
+    config.dq_rule_template_config_advanced_settings = json.dumps(
         {"dqRuleRowScopeFilteringEnabled": True}
     )
 
@@ -443,7 +443,7 @@ def test_column_level_rule_creator_with_rule_conditions(mock_client):
 def test_validate_template_features_rule_conditions_not_supported(mock_client):
     config = Mock()
     config.dq_rule_template_config_rule_conditions = None
-    config.dq_rule_template_advanced_settings = json.dumps({})
+    config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
         "name": "Test Template",
@@ -483,7 +483,7 @@ def test_validate_template_features_row_scope_filtering_not_supported(mock_clien
     config.dq_rule_template_config_rule_conditions = json.dumps(
         {"enum": ["STRING_LENGTH_BETWEEN"]}
     )
-    config.dq_rule_template_advanced_settings = json.dumps({})
+    config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
         "name": "Test Template",
@@ -529,7 +529,7 @@ def test_validate_template_features_invalid_rule_conditions(mock_client):
     config.dq_rule_template_config_rule_conditions = json.dumps(
         {"enum": ["STRING_LENGTH_BETWEEN"]}
     )
-    config.dq_rule_template_advanced_settings = json.dumps({})
+    config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
         "name": "Test Template",
@@ -563,7 +563,7 @@ def test_validate_template_features_row_scope_filter_column_missing(mock_client)
     config.dq_rule_template_config_rule_conditions = json.dumps(
         {"enum": ["STRING_LENGTH_BETWEEN"]}
     )
-    config.dq_rule_template_advanced_settings = json.dumps(
+    config.dq_rule_template_config_advanced_settings = json.dumps(
         {"dqRuleRowScopeFilteringEnabled": True}
     )
 

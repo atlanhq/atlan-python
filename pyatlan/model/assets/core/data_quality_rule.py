@@ -1109,7 +1109,9 @@ class DataQualityRule(DataQuality):
                 )
 
             if row_scope_filtering_enabled:
-                advanced_settings = config.dq_rule_template_advanced_settings or ""
+                advanced_settings = (
+                    config.dq_rule_template_config_advanced_settings or ""
+                )
                 if "dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
                         rule_type, "row scope filtering"
@@ -1217,7 +1219,7 @@ class DataQualityRule(DataQuality):
                     "dqRuleTemplateConfigThresholdValue": threshold_value,
                     "dqRuleTemplateConfigThresholdUnit": threshold_unit,
                 },
-                "dqRuleTemplateAdvancedSettings.dqPriority": dq_priority,
+                "dqRuleTemplateConfigAdvancedSettings.dqPriority": dq_priority,
             }
 
             if column is not None:
@@ -1244,7 +1246,7 @@ class DataQualityRule(DataQuality):
 
             if row_scope_filtering_enabled is not None:
                 config[
-                    "dqRuleTemplateAdvancedSettings.dqRuleRowScopeFilteringEnabled"
+                    "dqRuleTemplateConfigAdvancedSettings.dqRuleRowScopeFilteringEnabled"
                 ] = row_scope_filtering_enabled
 
             return json.dumps(config)
