@@ -1,3 +1,15 @@
+## 8.2.0 (September 25, 2025)
+
+### Breaking Changes
+
+- DQ typedef models have been updated, resulting in changes to the DQ rule management methods. Please refer to the developer docs for the latest updates: https://developer.atlan.com/patterns/create/dq_rules
+
+### QOL Improvements
+
+- Generated latest DQ typedef models.
+- Updated `Meaning` model fields to be optional.
+- Forced lowercase when creating custom connector names to avoid frontend-related issues.
+
 ## 8.1.1 (September 23, 2025)
 
 ### New Features
