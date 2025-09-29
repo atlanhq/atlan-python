@@ -61,6 +61,7 @@ from pyatlan.model.search import (
 from pyatlan.utils import unflatten_custom_metadata_for_entity
 
 if TYPE_CHECKING:
+    from pyatlan.client.aio import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.fluent_search import FluentSearch
 
@@ -712,7 +713,48 @@ class Save:
         return query_params, BulkRequest[Asset](entities=entities)
 
     @staticmethod
-    def validate_and_flush_entities(entities: List[Asset], client) -> None:
+    async def prepare_request_async(
+        entity: Union[Asset, List[Asset]],
+        replace_atlan_tags: bool = False,
+        replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
+        append_atlan_tags: bool = False,
+        client: Optional[AsyncAtlanClient] = None,
+    ) -> tuple[Dict[str, Any], BulkRequest[Asset]]:
+        """
+        Prepare the request for saving assets.
+
+        :param entity: one or more assets to save
+        :param replace_atlan_tags: whether to replace AtlanTags during an update
+        :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
+        :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
+        :param append_atlan_tags: whether to add/update/remove AtlanTags during an update
+        :param client: Optional[AsyncAtlanClient] = None,
+        :returns: tuple of (query_params, bulk_request)
+        """
+        query_params = {
+            "replaceTags": replace_atlan_tags,
+            "appendTags": append_atlan_tags,
+            "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
+        }
+
+        entities: List[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+
+        if not client:
+            raise ValueError(
+                "AsyncAtlanClient instance must be provided to validate and flush cm for assets."
+            )
+        # Validate and flush entities BEFORE creating the BulkRequest
+        await Save.validate_and_flush_entities_async(entities, client)
+        return query_params, BulkRequest[Asset](entities=entities)
+
+    @staticmethod
+    def validate_and_flush_entities(entities: List[Asset], client: AtlanClient) -> None:
         """
         Validate required fields and flush custom metadata for each asset.
 
@@ -722,6 +764,20 @@ class Save:
         for asset in entities:
             asset.validate_required()
             asset.flush_custom_metadata(client=client)
+
+    @staticmethod
+    async def validate_and_flush_entities_async(
+        entities: List[Asset], client: AsyncAtlanClient
+    ) -> None:
+        """
+        Validate required fields and flush custom metadata for each asset.
+
+        :param entities: list of assets to validate and flush
+        :param client: the Atlan client instance
+        """
+        for asset in entities:
+            asset.validate_required()
+            await asset.flush_custom_metadata_async(client=client)
 
     @staticmethod
     def process_response(raw_json: Dict[str, Any]) -> AssetMutationResponse:
