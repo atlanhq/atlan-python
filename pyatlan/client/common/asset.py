@@ -676,6 +676,7 @@ class Save:
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
         append_atlan_tags: bool = False,
+        client=None,
     ) -> tuple[Dict[str, Any], BulkRequest[Asset]]:
         """
         Prepare the request for saving assets.
@@ -685,6 +686,7 @@ class Save:
         :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
         :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
         :param append_atlan_tags: whether to add/update/remove AtlanTags during an update
+        :param client: the Atlan client instance for flushing custom metadata
         :returns: tuple of (query_params, bulk_request)
         """
         query_params = {
@@ -700,6 +702,8 @@ class Save:
         else:
             entities.append(entity)
 
+        # Validate and flush entities BEFORE creating the BulkRequest
+        Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
 
     @staticmethod
@@ -774,11 +778,7 @@ class Save:
             entities.append(entity)
 
         # Validate and flush entities BEFORE creating the BulkRequest
-        if client:
-            for asset in entities:
-                asset.validate_required()
-                asset.flush_custom_metadata(client=client)
-
+        Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
 
     @staticmethod
