@@ -61,6 +61,7 @@ from pyatlan.model.search import (
 from pyatlan.utils import unflatten_custom_metadata_for_entity
 
 if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.fluent_search import FluentSearch
 
 LOGGER = logging.getLogger(__name__)
@@ -676,7 +677,7 @@ class Save:
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
         append_atlan_tags: bool = False,
-        client=None,
+        client: Optional[AtlanClient] = None,
     ) -> tuple[Dict[str, Any], BulkRequest[Asset]]:
         """
         Prepare the request for saving assets.
@@ -702,6 +703,10 @@ class Save:
         else:
             entities.append(entity)
 
+        if not client:
+            raise ValueError(
+                "AtlanClient instance must be provided to validate and flush cm for assets."
+            )
         # Validate and flush entities BEFORE creating the BulkRequest
         Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
@@ -754,7 +759,7 @@ class Save:
     def prepare_request_replacing_cm(
         entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
-        client=None,
+        client: Optional[AtlanClient] = None,
     ) -> tuple[Dict[str, Any], BulkRequest[Asset]]:
         """
         Prepare the request for saving assets with replacing custom metadata.
@@ -777,6 +782,10 @@ class Save:
         else:
             entities.append(entity)
 
+        if not client:
+            raise ValueError(
+                "AtlanClient instance must be provided to validate and flush cm for assets."
+            )
         # Validate and flush entities BEFORE creating the BulkRequest
         Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
