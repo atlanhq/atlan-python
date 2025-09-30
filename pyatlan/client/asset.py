@@ -447,8 +447,8 @@ class AssetClient:
             replace_custom_metadata=replace_custom_metadata,
             overwrite_custom_metadata=overwrite_custom_metadata,
             append_atlan_tags=append_atlan_tags,
+            client=self._client,  # type: ignore[arg-type]
         )
-        Save.validate_and_flush_entities(request.entities, self._client)
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         response = Save.process_response(raw_json)
         if connections_created := response.assets_created(Connection):
@@ -564,7 +564,7 @@ class AssetClient:
         query_params, request = Save.prepare_request_replacing_cm(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
-            client=self._client,
+            client=self._client,  # type: ignore[arg-type]
         )
         raw_json = self._client._call_api(BULK_UPDATE, query_params, request)
         return Save.process_response_replacing_cm(raw_json)
