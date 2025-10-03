@@ -10,6 +10,10 @@ from pydantic.v1 import ValidationError, parse_obj_as
 from pyatlan.client.constants import (
     GET_ALL_SCHEDULE_RUNS,
     GET_SCHEDULE_RUN,
+    PACKAGE_WORKFLOW_ARCHIVE,
+    PACKAGE_WORKFLOW_RERUN,
+    PACKAGE_WORKFLOW_RUN,
+    PACKAGE_WORKFLOW_UPDATE,
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     STOP_WORKFLOW_RUN,
@@ -223,11 +227,14 @@ class WorkflowRerun:
     """Shared logic for rerunning workflows."""
 
     @staticmethod
-    def prepare_request(detail: WorkflowSearchResultDetail) -> tuple:
+    def prepare_request(
+        detail: WorkflowSearchResultDetail, use_package_endpoint: bool = False
+    ) -> tuple:
         """
         Prepare the request for rerunning a workflow.
 
         :param detail: workflow details
+        :param use_package_endpoint: whether to use package-workflows endpoint
         :returns: tuple of (endpoint, request_obj)
         """
         request = None
@@ -235,7 +242,8 @@ class WorkflowRerun:
             request = ReRunRequest(
                 namespace=detail.metadata.namespace, resource_name=detail.metadata.name
             )
-        return WORKFLOW_RERUN, request
+        endpoint = PACKAGE_WORKFLOW_RERUN if use_package_endpoint else WORKFLOW_RERUN
+        return endpoint, request
 
     @staticmethod
     def process_response(raw_json: Dict) -> WorkflowRunResponse:
@@ -253,18 +261,22 @@ class WorkflowRun:
 
     @staticmethod
     def prepare_request(
-        workflow: Workflow, workflow_schedule: Optional[WorkflowSchedule] = None
+        workflow: Workflow,
+        workflow_schedule: Optional[WorkflowSchedule] = None,
+        use_package_endpoint: bool = False,
     ) -> tuple:
         """
         Prepare the request for running a workflow.
 
         :param workflow: workflow object to run
         :param workflow_schedule: optional schedule for the workflow
+        :param use_package_endpoint: whether to use package-workflows endpoint
         :returns: tuple of (endpoint, request_obj)
         """
         if workflow_schedule:
             WorkflowScheduleUtils.add_schedule(workflow, workflow_schedule)
-        return WORKFLOW_RUN, workflow
+        endpoint = PACKAGE_WORKFLOW_RUN if use_package_endpoint else WORKFLOW_RUN
+        return endpoint, workflow
 
     @staticmethod
     def process_response(raw_json: Dict) -> WorkflowResponse:
@@ -281,16 +293,24 @@ class WorkflowUpdate:
     """Shared logic for updating workflows."""
 
     @staticmethod
-    def prepare_request(workflow: Workflow) -> tuple:
+    def prepare_request(
+        workflow: Workflow, use_package_endpoint: bool = False
+    ) -> tuple:
         """
         Prepare the request for updating a workflow.
 
         :param workflow: workflow with revised configuration
+        :param use_package_endpoint: whether to use package-workflows endpoint
         :returns: tuple of (endpoint, request_obj)
         """
-        endpoint = WORKFLOW_UPDATE.format_path(
-            {"workflow_name": workflow.metadata and workflow.metadata.name}
-        )
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow.metadata and workflow.metadata.name}
+            )
+        else:
+            endpoint = WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow.metadata and workflow.metadata.name}
+            )
         return endpoint, workflow
 
     @staticmethod
@@ -360,14 +380,22 @@ class WorkflowDelete:
     """Shared logic for deleting workflows."""
 
     @staticmethod
-    def prepare_request(workflow_name: str) -> tuple:
+    def prepare_request(
+        workflow_name: str, use_package_endpoint: bool = False
+    ) -> tuple:
         """
         Prepare the request for deleting a workflow.
 
         :param workflow_name: name of the workflow to delete
+        :param use_package_endpoint: whether to use package-workflows endpoint
         :returns: tuple of (endpoint, request_obj)
         """
-        endpoint = WORKFLOW_ARCHIVE.format_path({"workflow_name": workflow_name})
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_ARCHIVE.format_path(
+                {"workflow_name": workflow_name}
+            )
+        else:
+            endpoint = WORKFLOW_ARCHIVE.format_path({"workflow_name": workflow_name})
         return endpoint, None
 
 
@@ -535,16 +563,23 @@ class WorkflowScheduleUtils:
     _WORKFLOW_RUN_TIMEZONE = "orchestration.atlan.com/timezone"
 
     @staticmethod
-    def prepare_request(workflow: WorkflowSearchResultDetail) -> tuple:
+    def prepare_request(
+        workflow: WorkflowSearchResultDetail, use_package_endpoint: bool = False
+    ) -> tuple:
         """
         Prepare the request for workflow scheduling operations.
 
         :param workflow: workflow to schedule
+        :param use_package_endpoint: whether to use package-workflows endpoint
         :returns: tuple of (endpoint, request_obj)
         """
-        endpoint = WORKFLOW_UPDATE.format_path(
-            {"workflow_name": workflow.metadata and workflow.metadata.name}
-        )
+        workflow_name = workflow.metadata and workflow.metadata.name
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow_name}
+            )
+        else:
+            endpoint = WORKFLOW_UPDATE.format_path({"workflow_name": workflow_name})
         return endpoint, workflow
 
     @staticmethod
