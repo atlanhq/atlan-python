@@ -6,6 +6,7 @@ import asyncio
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
 from pyatlan.cache.common import RoleCacheCommon
+from pyatlan.client.constants import GET_KEYCLOAK_USER_ROLE_MAPPING
 from pyatlan.model.role import AtlanRole
 
 if TYPE_CHECKING:
@@ -23,6 +24,7 @@ class AsyncRoleCache:
         self.map_id_to_name: Dict[str, str] = {}
         self.map_name_to_id: Dict[str, str] = {}
         self.lock: asyncio.Lock = asyncio.Lock()
+        self._is_api_token_user: Optional[bool] = None
 
     async def get_id_for_name(self, name: str) -> Optional[str]:
         """
@@ -94,3 +96,32 @@ class AsyncRoleCache:
             return role_name
         await self._refresh_cache()
         return self.map_id_to_name.get(idstr)
+
+    async def is_api_token_user(self) -> bool:
+        """
+        Check if the current user is authenticated via an API token or OAuth client.
+        This method checks for the presence of $api-token-default-access or $admin roles.
+
+        :returns: True if the user is an API token user or admin, False otherwise
+        """
+        if self._is_api_token_user is not None:
+            return self._is_api_token_user
+
+        current_user = await self.client.user.get_current()
+
+        # Fetch role mappings for the current user
+        raw_json = await self.client._call_api(
+            api=GET_KEYCLOAK_USER_ROLE_MAPPING.format_path(
+                {"user_uuid": current_user.id}
+            )
+        )
+
+        # Check if the user has $api-token-default-access or $admin roles
+        for role_mapping in raw_json["realmMappings"]:
+            role_name = role_mapping.get("name")
+            if role_name in ["$api-token-default-access", "$admin"]:
+                self._is_api_token_user = True
+                return self._is_api_token_user
+
+        self._is_api_token_user = False
+        return self._is_api_token_user
