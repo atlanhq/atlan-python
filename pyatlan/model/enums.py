@@ -240,6 +240,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     TABLEAU = ("tableau", AtlanConnectionCategory.BI)
     REDSHIFT = ("redshift", AtlanConnectionCategory.WAREHOUSE)
     POSTGRES = ("postgres", AtlanConnectionCategory.DATABASE)
+    CLOUDSQL_POSTGRES = ("cloudsql-postgres", AtlanConnectionCategory.DATABASE)
     ATHENA = ("athena", AtlanConnectionCategory.QUERY_ENGINE)
     DATABRICKS = ("databricks", AtlanConnectionCategory.LAKE)
     POWERBI = ("powerbi", AtlanConnectionCategory.BI)
