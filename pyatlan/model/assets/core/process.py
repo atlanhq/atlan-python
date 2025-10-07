@@ -416,6 +416,7 @@ class Process(Asset, type_name="Process"):
             if extra_hash_params:
                 for param in extra_hash_params:
                     buffer.write(param)
+            # file deepcode ignore InsecureHash: this is not used for generating security keys
             ret_value = hashlib.md5(  # noqa: S303, S324
                 buffer.getvalue().encode()
             ).hexdigest()

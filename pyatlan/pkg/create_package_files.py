@@ -144,6 +144,7 @@ def write_file(output_file: Path, data: Optional[str] = None):
 
 
 def main(package_name: str):
+    # file deepcode ignore PT: this is used for generating package files
     output_dir = Path(package_name)
     package_id = f"@csa/{sys.argv[1].replace('_', '-')}"
     output_file = output_dir / FILE_NAME

@@ -96,6 +96,7 @@ def test__create(
     expected_value = (
         expected_value
         if process_id
+        # deepcode ignore InsecureHash/test: this is not used for generating security keys
         else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
@@ -234,6 +235,7 @@ def test_process_attributes_generate_qualified_name(
     expected_value = (
         expected_value
         if process_id
+        # deepcode ignore InsecureHash/test: this is not used for generating security keys
         else f"{connection_qualified_name}/{md5(expected_value.encode()).hexdigest()}"
     )
 
