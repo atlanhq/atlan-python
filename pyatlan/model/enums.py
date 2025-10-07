@@ -1853,6 +1853,7 @@ class AtlanIcon(str, Enum):
     UPLOAD = "PhUpload"
     UPLOAD_SIMPLE = "PhUploadSimple"
     USB = "PhUsb"
+    # file deepcode ignore NoHardcodedCredentials: this is not a credential
     USER = "PhUser"
     USERS = "PhUsers"
     USERS_FOUR = "PhUsersFour"
