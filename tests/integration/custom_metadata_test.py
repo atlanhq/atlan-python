@@ -61,6 +61,7 @@ CM_ATTR_IPR_URL = "URL"
 
 
 CM_QUALITY = f"{MODULE_NAME}_DQ"
+CM_SQL = f"{MODULE_NAME}_SQL"
 CM_ATTR_QUALITY_COUNT = "Count"
 CM_ATTR_QUALITY_SQL = "SQL"
 CM_ATTR_QUALITY_TYPE = "Type"
@@ -430,6 +431,29 @@ def cm_dq(
     )
     yield cm
     wait_for_successful_custometadatadef_purge(CM_QUALITY, client=client)
+
+
+@pytest.fixture(scope="module")
+def cm_sql(
+    client: AtlanClient,
+) -> Generator[CustomMetadataDef, None, None]:
+    attribute_defs = [
+        AttributeDef.create(
+            client=client,
+            display_name=f"{MODULE_NAME}_{CM_ATTR_QUALITY_SQL}",
+            attribute_type=AtlanCustomAttributePrimitiveType.SQL,
+        ),
+    ]
+    cm = create_custom_metadata(
+        client,
+        name=CM_SQL,
+        attribute_defs=attribute_defs,
+        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/"
+        "gx-mark-160.png",
+        locked=False,
+    )
+    yield cm
+    wait_for_successful_custometadatadef_purge(CM_SQL, client=client)
 
 
 def test_cm_dq(
@@ -1145,3 +1169,45 @@ def test_add_badge_cm_dq(
     assert (badges := response.assets_created(asset_type=Badge))
     assert len(badges) == 1
     client.asset.purge_by_guid(badges[0].guid)
+
+
+@pytest.mark.order()
+def test_save_merging_cm(
+    term: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+    cm_sql: CustomMetadataDef,
+    client: AtlanClient,
+):
+    cm_sql_dict = CustomMetadataDict(client=client, name=CM_SQL)
+    cm_sql_dict[f"{MODULE_NAME}_{CM_ATTR_QUALITY_SQL}"] = "SELECT * FROM batman;"
+    assert term.qualified_name
+    assert term.name
+
+    to_update = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
+    )
+    to_update.set_custom_metadata(custom_metadata=cm_sql_dict, client=client)
+    response = client.asset.save_merging_cm(to_update, replace_atlan_tags=False)
+    assert response
+    assert len(response.assets_deleted(asset_type=AtlasGlossaryTerm)) == 0
+    assert len(response.assets_created(asset_type=AtlasGlossaryTerm)) == 0
+    assert len(response.assets_updated(asset_type=AtlasGlossaryTerm)) == 1
+
+    t = response.assets_updated(asset_type=AtlasGlossaryTerm)[0]
+    assert isinstance(t, AtlasGlossaryTerm)
+    assert t.guid == term.guid
+    assert t.qualified_name == term.qualified_name
+    assert term.qualified_name
+
+    x = client.asset.get_by_qualified_name(
+        qualified_name=term.qualified_name,
+        asset_type=AtlasGlossaryTerm,
+        ignore_relationships=False,
+    )
+    assert x
+    assert not x.is_incomplete
+    assert x.qualified_name == term.qualified_name
+    retrieved_cm_sql = x.get_custom_metadata(client=client, name=CM_SQL)
+    assert retrieved_cm_sql
+    sql_attr_value = retrieved_cm_sql[f"{MODULE_NAME}_{CM_ATTR_QUALITY_SQL}"]
+    assert sql_attr_value == "SELECT * FROM batman;"

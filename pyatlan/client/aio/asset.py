@@ -353,14 +353,14 @@ class AsyncAssetClient:
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
 
-        query_params, request = Save.prepare_request(
+        query_params, request = await Save.prepare_request_async(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
             replace_custom_metadata=replace_custom_metadata,
             overwrite_custom_metadata=overwrite_custom_metadata,
             append_atlan_tags=append_atlan_tags,
+            client=self._client,  # type: ignore[arg-type]
         )
-        Save.validate_and_flush_entities(request.entities, self._client)
         raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
         response = Save.process_response(raw_json)
         if connections_created := response.assets_created(Connection):

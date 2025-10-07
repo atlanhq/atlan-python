@@ -2219,6 +2219,7 @@ class WorkflowPackage(str, Enum):
     AZURE_EVENT_HUB = "atlan-azure-event-hub"
     BIGQUERY = "atlan-bigquery"
     BIGQUERY_MINER = "atlan-bigquery-miner"
+    CLOUDSQL_POSTGRES = "atlan-cloudsql-postgres"
     CONNECTION_DELETE = "atlan-connection-delete"
     DATABRICKS = "atlan-databricks"
     DATABRICKS_LINEAGE = "atlan-databricks-lineage"

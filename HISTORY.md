@@ -1,3 +1,9 @@
+## 8.2.1 (September 30, 2025)
+
+### Bug Fixes
+
+- Fixed issue where custom metadata was not flushed before `BulkRequest` object creation for the `save()` operation in `AssetClient.save_merging_cm()` method.
+
 ## 8.2.0 (September 25, 2025)
 
 ### Breaking Changes
