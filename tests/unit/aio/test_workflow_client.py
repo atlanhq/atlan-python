@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from pydantic.v1 import ValidationError
@@ -46,7 +46,13 @@ def set_env(monkeypatch):
 
 @pytest.fixture()
 def mock_api_caller():
-    return Mock(spec=AsyncApiCaller)
+    mock = Mock(spec=AsyncApiCaller)
+    # Add role_cache attribute to the mock
+    mock.role_cache = Mock()
+    mock.role_cache.is_api_token_user = AsyncMock(
+        return_value=False
+    )  # Default to non-API token user
+    return mock
 
 
 @pytest.fixture()
@@ -832,4 +838,181 @@ async def test_workflow_get_scheduled_run(
 
     assert mock_api_caller._call_api.call_count == 1
     assert response == WorkflowScheduleResponse(**schedule_response.dict())
+    mock_api_caller.reset_mock()
+
+
+# Tests for role_cache functionality
+@pytest.mark.asyncio
+async def test_rerun_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    search_result: WorkflowSearchResult,
+    rerun_response: WorkflowRunResponse,
+):
+    """Test that rerun uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = rerun_response.dict()
+
+    response = await async_client.rerun(search_result)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == rerun_response
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_rerun_with_role_cache_non_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    search_result: WorkflowSearchResult,
+    rerun_response: WorkflowRunResponse,
+):
+    """Test that rerun uses non-package endpoint when user is not API token user."""
+    # Mock role_cache to return False for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=False)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = rerun_response.dict()
+
+    response = await async_client.rerun(search_result)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == rerun_response
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_run_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    workflow_response: WorkflowResponse,
+):
+    """Test that run uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+
+    workflow = Workflow(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+        payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
+    )
+
+    response = await async_client.run(workflow)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == workflow_response
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_update_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    workflow_response: WorkflowResponse,
+):
+    """Test that update uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+
+    workflow = Workflow(
+        metadata=WorkflowMetadata(name="name", namespace="namespace"),
+        spec=WorkflowSpec(),
+        payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
+    )
+
+    response = await async_client.update(workflow)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == workflow_response
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_delete_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+):
+    """Test that delete uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = None
+
+    await async_client.delete("test-workflow-name")
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_add_schedule_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    search_result: WorkflowSearchResult,
+    schedule: WorkflowSchedule,
+    workflow_response: WorkflowResponse,
+):
+    """Test that add_schedule uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+
+    response = await async_client.add_schedule(search_result, schedule)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == workflow_response
+    mock_api_caller.reset_mock()
+
+
+@pytest.mark.asyncio
+async def test_remove_schedule_with_role_cache_api_token_user(
+    async_client: AsyncWorkflowClient,
+    mock_api_caller,
+    mock_role_cache,
+    search_result: WorkflowSearchResult,
+    workflow_response: WorkflowResponse,
+):
+    """Test that remove_schedule uses package endpoint when user is API token user."""
+    # Mock role_cache to return True for is_api_token_user
+    mock_role_cache.is_api_token_user = AsyncMock(return_value=True)
+    mock_api_caller.role_cache = mock_role_cache
+    mock_api_caller._call_api.return_value = workflow_response.dict()
+
+    response = await async_client.remove_schedule(search_result)
+
+    # Verify that role_cache.is_api_token_user was called
+    mock_role_cache.is_api_token_user.assert_called_once()
+    # Verify that _call_api was called (endpoint selection happens in prepare_request)
+    mock_api_caller._call_api.assert_called_once()
+    assert response == workflow_response
     mock_api_caller.reset_mock()
