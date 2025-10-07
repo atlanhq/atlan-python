@@ -20,6 +20,7 @@ class ServerError(Exception):
 def create_typedef_file(typedefs_file_path=None):
     # Use provided path or default to tmp directory
     if typedefs_file_path:
+        # file deepcode ignore PT: used in class generator script
         typedef_file = Path(typedefs_file_path)
     else:
         typedef_file = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"

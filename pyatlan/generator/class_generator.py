@@ -696,6 +696,7 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
 
 class Generator:
     def __init__(self) -> None:
+        # file deepcode ignore Jinja2AutoEscapeFalse: this is not a web application
         self.environment = Environment(
             loader=PackageLoader("pyatlan.generator", "templates")
         )

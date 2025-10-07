@@ -241,6 +241,7 @@ class PackageWriter(BaseModel):
         self._root_dir = self.path / self.pkg.name
         self._config_maps_dir = self._root_dir / "configmaps"
         self._templates_dir = self._root_dir / "templates"
+        # file deepcode ignore Jinja2AutoEscapeFalse: this is not a web application
         self._env = Environment(  # noqa: S701
             loader=PackageLoader("pyatlan.pkg", "templates")
         )
