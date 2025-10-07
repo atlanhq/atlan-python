@@ -1,3 +1,22 @@
+## 8.2.2 (October 7, 2025)
+
+### Features
+
+- Added support for new workflow package: `WorkflowPackage.CLOUDSQL_POSTGRES`.
+- Added support for new connector type: `AtlanConnectorType.CLOUDSQL_POSTGRES`.
+- Added support for executing following workflow methods using AtlanClient created via OAuth credentials.
+
+1. WorkflowClient.rerun()
+2. WorkflowClient.run()
+3. WorkflowClient.update()
+4. WorkflowClient.delete()
+5. WorkflowClient.add_schedule()
+6. WorkflowClient.remove_schedule()
+
+### QOL Improvements
+
+- Fixed snyk reported code issues.
+
 ## 8.2.1 (September 30, 2025)
 
 ### Bug Fixes
