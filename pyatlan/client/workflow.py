@@ -334,7 +334,7 @@ class WorkflowClient:
                     WorkflowRunResponse,
                 )
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowRerun.prepare_request(
             detail, use_package_endpoint
         )
@@ -384,7 +384,7 @@ class WorkflowClient:
         if workflow_schedule:
             self._add_schedule(workflow, workflow_schedule)
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowRun.prepare_request(
             workflow, workflow_schedule, use_package_endpoint
         )
@@ -402,7 +402,7 @@ class WorkflowClient:
         :raises AtlanError: on any API communication issue
         """
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowUpdate.prepare_request(
             workflow, use_package_endpoint
         )
@@ -537,7 +537,7 @@ class WorkflowClient:
         :raises AtlanError: on any API communication issue.
         """
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowDelete.prepare_request(
             workflow_name, use_package_endpoint
         )
@@ -597,7 +597,7 @@ class WorkflowClient:
         workflow_to_update = self._handle_workflow_types(workflow)
         self._add_schedule(workflow_to_update, workflow_schedule)
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowScheduleUtils.prepare_request(
             workflow_to_update, use_package_endpoint
         )
@@ -647,7 +647,7 @@ class WorkflowClient:
         workflow_to_update = self._handle_workflow_types(workflow)
         WorkflowScheduleUtils.remove_schedule(workflow_to_update)
         # Check if user is API token user to determine endpoint
-        use_package_endpoint = not self._client.role_cache.is_api_token_user()
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
         endpoint, request_obj = WorkflowScheduleUtils.prepare_request(
             workflow_to_update, use_package_endpoint
         )
