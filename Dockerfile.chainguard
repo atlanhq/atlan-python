@@ -1,0 +1,57 @@
+FROM cgr.dev/atlan.com/python:3.11
+
+# Build arguments for configurable versions
+ARG PYTHON_VERSION=3.11
+ARG PYATLAN_VERSION=latest
+ARG PYATLAN_BRANCH=""
+ARG INSTALL_FROM_GIT=false
+
+WORKDIR /app
+
+# Install Python and git (needed for git-based installations)
+# Update package index and use --no-cache to avoid download corruption issues
+# Add retry logic to handle transient network issues
+# Clean up package cache in same layer to avoid increasing image size
+RUN for i in 1 2 3; do \
+        apk update && \
+        apk add --no-cache python-${PYTHON_VERSION} git && \
+        break || \
+        (echo "Attempt $i failed, retrying..." && sleep 5); \
+    done && \
+    rm -rf /var/cache/apk/* && \
+    chown -R nonroot:nonroot /app/
+
+# Install pyatlan - either from PyPI or git branch
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ "$INSTALL_FROM_GIT" = "true" ]; then \
+        echo "Installing pyatlan from git branch: $PYATLAN_BRANCH"; \
+        uv pip install --system "git+https://github.com/atlanhq/atlan-python.git@$PYATLAN_BRANCH"; \
+    elif [ "$PYATLAN_VERSION" = "latest" ]; then \
+        echo "Installing latest pyatlan from PyPI"; \
+        uv pip install --system pyatlan; \
+    else \
+        echo "Installing pyatlan==$PYATLAN_VERSION from PyPI"; \
+        uv pip install --system pyatlan==$PYATLAN_VERSION; \
+    fi
+
+# Add build information as labels
+RUN if [ "$INSTALL_FROM_GIT" = "true" ]; then \
+        echo "LABEL pyatlan.source=git" >> /tmp/labels && \
+        echo "LABEL pyatlan.branch=$PYATLAN_BRANCH" >> /tmp/labels; \
+    else \
+        echo "LABEL pyatlan.source=pypi" >> /tmp/labels && \
+        echo "LABEL pyatlan.version=$PYATLAN_VERSION" >> /tmp/labels; \
+    fi && \
+    echo "LABEL python.version=$PYTHON_VERSION" >> /tmp/labels
+
+USER nonroot
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PATH="/home/nonroot/.local/bin:${PATH}"
+
+# Default working directory for applications
+WORKDIR /app
+
+# Default command (can be overridden by extending images)
+CMD ["python"]
