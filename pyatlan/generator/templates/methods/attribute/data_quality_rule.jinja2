@@ -100,10 +100,12 @@
                     )
 
             if threshold_compare_operator is not None:
-                allowed_operators = DataQualityRule.Attributes._get_template_config_value(
-                    config.dq_rule_template_config_threshold_object,
-                    "dqRuleTemplateConfigThresholdCompareOperator",
-                    "enum",
+                allowed_operators = (
+                    DataQualityRule.Attributes._get_template_config_value(
+                        config.dq_rule_template_config_threshold_object,
+                        "dqRuleTemplateConfigThresholdCompareOperator",
+                        "enum",
+                    )
                 )
                 if (
                     allowed_operators
@@ -121,69 +123,14 @@
                     "default",
                 )
                 if default_value:
-                    threshold_compare_operator = DataQualityRuleThresholdCompareOperator(
-                        default_value
+                    threshold_compare_operator = (
+                        DataQualityRuleThresholdCompareOperator(default_value)
                     )
 
             return (
                 threshold_compare_operator
                 or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
             )
-
-        @staticmethod
-        def _generate_config_arguments_raw(
-            *,
-            is_alert_enabled: bool = True,
-            custom_sql: Optional[str] = None,
-            display_name: Optional[str] = None,
-            dimension: Optional[DataQualityDimension] = None,
-            compare_operator: DataQualityRuleThresholdCompareOperator,
-            threshold_value: int,
-            threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
-            column: Optional[Asset] = None,
-            dq_priority: DataQualityRuleAlertPriority,
-            description: Optional[str] = None,
-            rule_conditions: Optional[str] = None,
-            row_scope_filtering_enabled: Optional[bool] = None,
-        ) -> str:
-            config = {
-                "isAlertEnabled": is_alert_enabled,
-                "dqRuleTemplateConfigThresholdObject": {
-                    "dqRuleTemplateConfigThresholdCompareOperator": compare_operator,
-                    "dqRuleTemplateConfigThresholdValue": threshold_value,
-                    "dqRuleTemplateConfigThresholdUnit": threshold_unit,
-                },
-                "dqRuleTemplateConfigAdvancedSettings.dqPriority": dq_priority,
-            }
-
-            if column is not None:
-                config["dqRuleTemplateConfigBaseColumnQualifiedName"] = (
-                    column.qualified_name
-                )
-
-            if description is not None:
-                config["dqRuleTemplateConfigUserDescription"] = description
-
-            if custom_sql is not None:
-                config["dqRuleTemplateConfigCustomSQL"] = custom_sql
-
-            if display_name is not None:
-                config["dqRuleTemplateConfigDisplayName"] = display_name
-
-            if dimension is not None:
-                config["dqRuleTemplateConfigDimension"] = dimension
-
-            if rule_conditions is not None:
-                config["dqRuleTemplateConfigRuleConditions"] = json.loads(
-                    rule_conditions
-                )
-
-            if row_scope_filtering_enabled is not None:
-                config[
-                    "dqRuleTemplateConfigAdvancedSettings.dqRuleRowScopeFilteringEnabled"
-                ] = row_scope_filtering_enabled
-
-            return json.dumps(config)
 
         @staticmethod
         def _generate_uuid():
@@ -243,28 +190,13 @@
             if threshold_unit is None:
                 config = template_config.get("config")
                 if config is not None:
-                    threshold_unit = DataQualityRule.Attributes._get_template_config_value(
-                        config.dq_rule_template_config_threshold_object,
-                        "dqRuleTemplateConfigThresholdUnit",
-                        "default",
+                    threshold_unit = (
+                        DataQualityRule.Attributes._get_template_config_value(
+                            config.dq_rule_template_config_threshold_object,
+                            "dqRuleTemplateConfigThresholdUnit",
+                            "default",
+                        )
                     )
-
-            config_arguments_raw = (
-                DataQualityRule.Attributes._generate_config_arguments_raw(
-                    is_alert_enabled=True,
-                    custom_sql=custom_sql,
-                    display_name=rule_name,
-                    dimension=dimension,
-                    compare_operator=threshold_compare_operator,
-                    threshold_value=threshold_value,
-                    threshold_unit=threshold_unit,
-                    column=column,
-                    dq_priority=alert_priority,
-                    description=description,
-                    rule_conditions=rule_conditions,
-                    row_scope_filtering_enabled=row_scope_filtering_enabled,
-                )
-            )
 
             attr_dq = DataQualityRule.Attributes(
                 name="",
@@ -274,7 +206,6 @@
                         dq_rule_threshold_value=threshold_value,
                         dq_rule_threshold_unit=threshold_unit,
                     ),
-                    dq_rule_config_arguments_raw=config_arguments_raw,
                     dq_rule_config_rule_conditions=rule_conditions,
                 ),
                 dq_rule_base_dataset_qualified_name=asset.qualified_name,
