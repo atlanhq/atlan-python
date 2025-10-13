@@ -1,4 +1,4 @@
-FROM cgr.dev/atlan.com/python:3.11
+FROM cgr.dev/atlan.com/pyatlan-golden:3.11
 
 # Build arguments for configurable versions
 ARG PYTHON_VERSION=3.11
@@ -8,18 +8,17 @@ ARG INSTALL_FROM_GIT=false
 
 WORKDIR /app
 
+# Set UV environment variables
+# REMOVE THIS WHEN https://github.com/astral-sh/uv/issues/8635 IS FIXED
+ENV UV_NO_MANAGED_PYTHON=true \
+    UV_SYSTEM_PYTHON=true
+
+# Switch to root for installation
+USER root
+
 # Install pyatlan - either from PyPI or git branch
-RUN --mount=type=cache,target=/root/.cache/uv \
-    if [ "$INSTALL_FROM_GIT" = "true" ]; then \
-        echo "Installing pyatlan from git branch: $PYATLAN_BRANCH"; \
-        uv pip install --system "git+https://github.com/atlanhq/atlan-python.git@$PYATLAN_BRANCH"; \
-    elif [ "$PYATLAN_VERSION" = "latest" ]; then \
-        echo "Installing latest pyatlan from PyPI"; \
-        uv pip install --system pyatlan; \
-    else \
-        echo "Installing pyatlan==$PYATLAN_VERSION from PyPI"; \
-        uv pip install --system pyatlan==$PYATLAN_VERSION; \
-    fi
+RUN echo "Installing pyatlan==$PYATLAN_VERSION from PyPI"; \
+    uv pip install --system pyatlan==$PYATLAN_VERSION;
 
 # Add build information as labels
 RUN if [ "$INSTALL_FROM_GIT" = "true" ]; then \
@@ -30,6 +29,9 @@ RUN if [ "$INSTALL_FROM_GIT" = "true" ]; then \
         echo "LABEL pyatlan.version=$PYATLAN_VERSION" >> /tmp/labels; \
     fi && \
     echo "LABEL python.version=$PYTHON_VERSION" >> /tmp/labels
+
+# Switch back to nonroot user
+USER nonroot
 
 # Default working directory for applications
 WORKDIR /app
