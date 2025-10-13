@@ -8,19 +8,6 @@ ARG INSTALL_FROM_GIT=false
 
 WORKDIR /app
 
-# Install Python and git (needed for git-based installations)
-# Update package index and use --no-cache to avoid download corruption issues
-# Add retry logic to handle transient network issues
-# Clean up package cache in same layer to avoid increasing image size
-RUN for i in 1 2 3; do \
-        apk update && \
-        apk add --no-cache python-${PYTHON_VERSION} git && \
-        break || \
-        (echo "Attempt $i failed, retrying..." && sleep 5); \
-    done && \
-    rm -rf /var/cache/apk/* && \
-    chown -R nonroot:nonroot /app/
-
 # Install pyatlan - either from PyPI or git branch
 RUN --mount=type=cache,target=/root/.cache/uv \
     if [ "$INSTALL_FROM_GIT" = "true" ]; then \
@@ -43,12 +30,6 @@ RUN if [ "$INSTALL_FROM_GIT" = "true" ]; then \
         echo "LABEL pyatlan.version=$PYATLAN_VERSION" >> /tmp/labels; \
     fi && \
     echo "LABEL python.version=$PYTHON_VERSION" >> /tmp/labels
-
-USER nonroot
-
-# Set environment variables
-ENV PYTHONPATH=/app
-ENV PATH="/home/nonroot/.local/bin:${PATH}"
 
 # Default working directory for applications
 WORKDIR /app
