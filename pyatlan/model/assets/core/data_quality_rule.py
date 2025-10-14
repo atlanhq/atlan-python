@@ -344,23 +344,6 @@ class DataQualityRule(DataQuality):
             or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
-        config_arguments_raw = (
-            DataQualityRule.Attributes._generate_config_arguments_raw(
-                is_alert_enabled=True,
-                custom_sql=custom_sql or retrieved_custom_sql,
-                display_name=rule_name or retrieved_rule_name,
-                dimension=dimension or retrieved_dimension,
-                compare_operator=final_compare_operator,
-                threshold_value=threshold_value or retrieved_threshold_value,
-                threshold_unit=threshold_unit or retrieved_threshold_unit,
-                column=retrieved_column,
-                dq_priority=alert_priority or retrieved_alert_priority,
-                description=description or retrieved_description,
-                rule_conditions=rule_conditions,
-                row_scope_filtering_enabled=row_scope_filtering_enabled,
-            )
-        )
-
         attr_dq = cls.Attributes(
             name="",
             dq_rule_config_arguments=DataQualityRuleConfigArguments(
@@ -370,7 +353,6 @@ class DataQualityRule(DataQuality):
                     or retrieved_threshold_value,
                     dq_rule_threshold_unit=threshold_unit or retrieved_threshold_unit,
                 ),
-                dq_rule_config_arguments_raw=config_arguments_raw,
                 dq_rule_config_rule_conditions=rule_conditions,
             ),
             dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
@@ -1197,61 +1179,6 @@ class DataQualityRule(DataQuality):
             )
 
         @staticmethod
-        def _generate_config_arguments_raw(
-            *,
-            is_alert_enabled: bool = True,
-            custom_sql: Optional[str] = None,
-            display_name: Optional[str] = None,
-            dimension: Optional[DataQualityDimension] = None,
-            compare_operator: DataQualityRuleThresholdCompareOperator,
-            threshold_value: int,
-            threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
-            column: Optional[Asset] = None,
-            dq_priority: DataQualityRuleAlertPriority,
-            description: Optional[str] = None,
-            rule_conditions: Optional[str] = None,
-            row_scope_filtering_enabled: Optional[bool] = None,
-        ) -> str:
-            config = {
-                "isAlertEnabled": is_alert_enabled,
-                "dqRuleTemplateConfigThresholdObject": {
-                    "dqRuleTemplateConfigThresholdCompareOperator": compare_operator,
-                    "dqRuleTemplateConfigThresholdValue": threshold_value,
-                    "dqRuleTemplateConfigThresholdUnit": threshold_unit,
-                },
-                "dqRuleTemplateConfigAdvancedSettings.dqPriority": dq_priority,
-            }
-
-            if column is not None:
-                config["dqRuleTemplateConfigBaseColumnQualifiedName"] = (
-                    column.qualified_name
-                )
-
-            if description is not None:
-                config["dqRuleTemplateConfigUserDescription"] = description
-
-            if custom_sql is not None:
-                config["dqRuleTemplateConfigCustomSQL"] = custom_sql
-
-            if display_name is not None:
-                config["dqRuleTemplateConfigDisplayName"] = display_name
-
-            if dimension is not None:
-                config["dqRuleTemplateConfigDimension"] = dimension
-
-            if rule_conditions is not None:
-                config["dqRuleTemplateConfigRuleConditions"] = json.loads(
-                    rule_conditions
-                )
-
-            if row_scope_filtering_enabled is not None:
-                config[
-                    "dqRuleTemplateConfigAdvancedSettings.dqRuleRowScopeFilteringEnabled"
-                ] = row_scope_filtering_enabled
-
-            return json.dumps(config)
-
-        @staticmethod
         def _generate_uuid():
             d = int(time.time() * 1000)
             random_bytes = uuid.uuid4().bytes
@@ -1317,23 +1244,6 @@ class DataQualityRule(DataQuality):
                         )
                     )
 
-            config_arguments_raw = (
-                DataQualityRule.Attributes._generate_config_arguments_raw(
-                    is_alert_enabled=True,
-                    custom_sql=custom_sql,
-                    display_name=rule_name,
-                    dimension=dimension,
-                    compare_operator=threshold_compare_operator,
-                    threshold_value=threshold_value,
-                    threshold_unit=threshold_unit,
-                    column=column,
-                    dq_priority=alert_priority,
-                    description=description,
-                    rule_conditions=rule_conditions,
-                    row_scope_filtering_enabled=row_scope_filtering_enabled,
-                )
-            )
-
             attr_dq = DataQualityRule.Attributes(
                 name="",
                 dq_rule_config_arguments=DataQualityRuleConfigArguments(
@@ -1342,7 +1252,6 @@ class DataQualityRule(DataQuality):
                         dq_rule_threshold_value=threshold_value,
                         dq_rule_threshold_unit=threshold_unit,
                     ),
-                    dq_rule_config_arguments_raw=config_arguments_raw,
                     dq_rule_config_rule_conditions=rule_conditions,
                 ),
                 dq_rule_base_dataset_qualified_name=asset.qualified_name,
