@@ -1,3 +1,17 @@
+
+## 7.1.9 (October 14, 2025)
+
+### New Features
+
+- Added support for `Databricks` system tables in the `DatabricksCrawler`.
+- Added support for executing the following workflow methods using `AtlanClient` created via `OAuth` credentials:
+  1. `WorkflowClient.rerun()`
+  2. `WorkflowClient.run()`
+  3. `WorkflowClient.update()`
+  4. `WorkflowClient.delete()`
+  5. `WorkflowClient.add_schedule()`
+  6. `WorkflowClient.remove_schedule()
+
 ## 7.1.8 (September 25, 2025)
 
 ### QOL Improvements
