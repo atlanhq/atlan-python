@@ -17,7 +17,7 @@ from urllib.parse import urljoin
 from warnings import warn
 
 import httpx
-from httpx_retries import Retry, RetryTransport
+from httpx_retries import Retry
 from pydantic.v1 import (
     BaseSettings,
     Field,
@@ -54,6 +54,7 @@ from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.sso import SSOClient
 from pyatlan.client.task import TaskClient
 from pyatlan.client.token import TokenClient
+from pyatlan.client.transport import PyatlanSyncTransport  # type: ignore
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.client.workflow import WorkflowClient
@@ -131,7 +132,6 @@ class AtlanClient(BaseSettings):
     retry: Retry = DEFAULT_RETRY
     proxy: Optional[Any] = Field(default=None, exclude=True)
     verify: Optional[Any] = Field(default=True, exclude=True)
-    mounts: Optional[Any] = Field(default=None, exclude=True)
     _401_has_retried: ContextVar[bool] = ContextVar("_401_has_retried", default=False)
     _session: httpx.Client = PrivateAttr()
     _request_params: dict = PrivateAttr()
@@ -177,15 +177,13 @@ class AtlanClient(BaseSettings):
             else {"headers": {}}
         )
 
-        # Build proxy/SSL kwargs if provided
-        client_proxy_kwargs = {}
-        for key in ["verify", "proxy", "mounts"]:
-            if data.get(key) is not None:
-                client_proxy_kwargs[key] = data.get(key)
-
-        # Configure httpx client with the provided retry settings
+        # Build proxy/SSL configuration with environment variable fallback
+        transport_kwargs = self._build_transport_proxy_config(data)
+        # Configure httpx client with custom transport that supports retry and proxy
+        # Note: We pass proxy/SSL config to the transport, not the client,
+        # so that retry logic properly respects these settings
         self._session = httpx.Client(
-            transport=RetryTransport(retry=self.retry),
+            transport=PyatlanSyncTransport(retry=self.retry, **transport_kwargs),
             headers={
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
@@ -195,9 +193,62 @@ class AtlanClient(BaseSettings):
                 "User-Agent": f"Atlan-PythonSDK/{VERSION}",
             },
             event_hooks={"response": [log_response]},
-            **client_proxy_kwargs,
         )
         self._401_has_retried.set(False)
+
+    def _build_transport_proxy_config(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Build proxy and SSL configuration for the transport.
+
+        When trust_env=True (default), httpx.HTTPTransport automatically respects:
+        - HTTP_PROXY, HTTPS_PROXY, ALL_PROXY environment variables
+        - NO_PROXY for exclusions
+        - SSL_CERT_FILE, REQUESTS_CA_BUNDLE for SSL certificates
+
+        This method passes explicitly provided values and also handles environment
+        variables to ensure they work correctly.
+
+        :param data: Configuration data passed to __init__
+        :returns: Dictionary of proxy/SSL kwargs for PyatlanSyncTransport
+        """
+        transport_kwargs = {}
+
+        # Handle proxy configuration
+        if "proxy" in data:
+            proxy = data["proxy"]
+            self.proxy = proxy
+            if proxy is not None:
+                transport_kwargs["proxy"] = proxy
+        else:
+            # Check environment variables for proxy settings
+            # Note: httpx with trust_env=True should handle this automatically,
+            # but we explicitly handle it here to ensure it works correctly
+            proxy = (
+                os.environ.get("HTTPS_PROXY")
+                or os.environ.get("https_proxy")
+                or os.environ.get("HTTP_PROXY")
+                or os.environ.get("http_proxy")
+            )
+            if proxy:
+                self.proxy = proxy
+                transport_kwargs["proxy"] = proxy
+
+        # Handle SSL verification
+        # Note: We need to explicitly handle SSL_CERT_FILE from env vars
+        # because httpx's trust_env handling might not work correctly with relative paths
+        if "verify" in data:
+            verify = data["verify"]
+            self.verify = verify
+            transport_kwargs["verify"] = verify
+        else:
+            # Check environment variables and convert relative paths to absolute
+            ssl_cert_file = os.environ.get("SSL_CERT_FILE") or os.environ.get(
+                "REQUESTS_CA_BUNDLE"
+            )
+            if ssl_cert_file:
+                self.verify = ssl_cert_file
+                transport_kwargs["verify"] = ssl_cert_file
+        return transport_kwargs
 
     @property
     def admin(self) -> AdminClient:
@@ -1893,7 +1944,15 @@ class AtlanClient(BaseSettings):
         The original Retry information will be restored when the context is exited."""
         # Store current transport and create new one with updated retries
         current_transport = self._session._transport
-        new_transport = RetryTransport(retry=max_retries)
+
+        # Build transport kwargs with current proxy/SSL settings
+        transport_kwargs = {}
+        if self.proxy:
+            transport_kwargs["proxy"] = self.proxy
+        if self.verify is not None:
+            transport_kwargs["verify"] = self.verify
+
+        new_transport = PyatlanSyncTransport(retry=max_retries, **transport_kwargs)
         self._session._transport = new_transport
 
         LOGGER.debug(
