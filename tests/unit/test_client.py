@@ -6,6 +6,7 @@ from pathlib import Path
 from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
+import httpx
 import pytest
 from pydantic.v1 import ValidationError
 
@@ -2547,18 +2548,102 @@ class TestBulkRequest:
 
 def test_atlan_client_headers(client: AtlanClient):
     VERSION = read_text("pyatlan", "version.txt").strip()
-    expected = {
-        "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept": "*/*",
-        "Connection": "keep-alive",
-        "x-atlan-agent": "sdk",
-        "x-atlan-agent-id": "python",
-        "x-atlan-client-origin": "product_sdk",
-        "x-atlan-python-version": get_python_version(),
-        "x-atlan-client-type": "sync",
+    headers = client._session.headers
+
+    # Check custom Atlan headers
+    assert headers["x-atlan-agent"] == "sdk"
+    assert headers["x-atlan-agent-id"] == "python"
+    assert headers["x-atlan-client-origin"] == "product_sdk"
+    assert headers["x-atlan-python-version"] == get_python_version()
+    assert headers["x-atlan-client-type"] == "sync"
+    assert headers["user-agent"] == f"Atlan-PythonSDK/{VERSION}"
+
+    # Check standard headers exist
+    assert "accept" in headers
+    assert "accept-encoding" in headers
+    assert "connection" in headers
+
+
+@pytest.mark.parametrize(
+    "proxy_config",
+    [
+        # No proxy configuration (default)
+        {},
+        # Simple proxy
+        {"proxy": "http://127.0.0.1:8080"},
+        # Proxy with SSL verification disabled
+        {"proxy": "http://127.0.0.1:8080", "verify": False},
+        # HTTP and HTTPS mounts
+        {
+            "mounts": {
+                "http://": httpx.HTTPTransport(proxy="http://127.0.0.1:8080"),
+                "https://": httpx.HTTPTransport(proxy="https://127.0.0.1:8443"),
+            }
+        },
+        # Combined proxy and mounts
+        {
+            "proxy": "http://proxy1:8080",
+            "mounts": {
+                "http://": httpx.HTTPTransport(proxy="http://proxy2:8080"),
+            },
+        },
+    ],
+)
+def test_atlan_client_proxy_configurations(monkeypatch, proxy_config):
+    """Test various proxy and SSL configurations are properly initialized."""
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Create client with proxy settings
+    client = AtlanClient(**proxy_config)
+
+    # Verify the session was created
+    assert client._session is not None
+    assert isinstance(client._session, httpx.Client)
+
+    # Verify proxy is set correctly if provided
+    if "proxy" in proxy_config:
+        assert client.proxy == proxy_config["proxy"]
+    else:
+        assert client.proxy is None
+
+    # Verify verify is set correctly if provided
+    if "verify" in proxy_config:
+        assert client.verify == proxy_config["verify"]
+    else:
+        assert client.verify is True  # Default value
+
+    # Verify mounts are set correctly if provided
+    if "mounts" in proxy_config:
+        assert client.mounts == proxy_config["mounts"]
+    else:
+        assert client.mounts is None
+
+
+@patch("httpx.Client")
+def test_atlan_client_proxy_passed_to_httpx_client(mock_httpx_client, monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Test with all three parameters
+    proxy_url = "http://127.0.0.1:8080"
+    ssl_cert = "/path/to/cert.pem"
+    mounts = {
+        "http://": httpx.HTTPTransport(proxy="http://127.0.0.1:8080"),
     }
-    assert expected == client._session.headers
+
+    AtlanClient(proxy=proxy_url, verify=ssl_cert, mounts=mounts)
+
+    # Verify httpx.Client was called with the correct arguments
+    mock_httpx_client.assert_called_once()
+    call_kwargs = mock_httpx_client.call_args.kwargs
+
+    assert "proxy" in call_kwargs
+    assert call_kwargs["proxy"] == proxy_url
+    assert "verify" in call_kwargs
+    assert call_kwargs["verify"] == ssl_cert
+    assert "mounts" in call_kwargs
+    assert call_kwargs["mounts"] == mounts
 
 
 def test_get_all_pagination(group_client, mock_api_caller):

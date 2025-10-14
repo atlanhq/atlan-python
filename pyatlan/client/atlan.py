@@ -20,6 +20,7 @@ import httpx
 from httpx_retries import Retry, RetryTransport
 from pydantic.v1 import (
     BaseSettings,
+    Field,
     HttpUrl,
     PrivateAttr,
     StrictStr,
@@ -128,6 +129,9 @@ class AtlanClient(BaseSettings):
     connect_timeout: float = 30.0  # 30 secs
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
+    proxy: Optional[Any] = Field(default=None, exclude=True)
+    verify: Optional[Any] = Field(default=True, exclude=True)
+    mounts: Optional[Any] = Field(default=None, exclude=True)
     _401_has_retried: ContextVar[bool] = ContextVar("_401_has_retried", default=False)
     _session: httpx.Client = PrivateAttr()
     _request_params: dict = PrivateAttr()
@@ -172,6 +176,13 @@ class AtlanClient(BaseSettings):
             if self.api_key and self.api_key.strip()
             else {"headers": {}}
         )
+
+        # Build proxy/SSL kwargs if provided
+        client_proxy_kwargs = {}
+        for key in ["verify", "proxy", "mounts"]:
+            if data.get(key) is not None:
+                client_proxy_kwargs[key] = data.get(key)
+
         # Configure httpx client with the provided retry settings
         self._session = httpx.Client(
             transport=RetryTransport(retry=self.retry),
@@ -184,6 +195,7 @@ class AtlanClient(BaseSettings):
                 "User-Agent": f"Atlan-PythonSDK/{VERSION}",
             },
             event_hooks={"response": [log_response]},
+            **client_proxy_kwargs,
         )
         self._401_has_retried.set(False)
 
