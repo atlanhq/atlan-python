@@ -146,6 +146,12 @@ GET_KEYCLOAK_USER = API(
     HTTPStatus.OK,
     endpoint=EndPoint.IMPERSONATION,
 )
+GET_KEYCLOAK_USER_ROLE_MAPPING = API(
+    "auth/admin/realms/default/users/{user_uuid}/role-mappings",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.IMPERSONATION,
+)
 
 ENTITY_API = "entity/"
 PREFIX_ATTR = "attr:"
@@ -462,6 +468,35 @@ WORKFLOW_ARCHIVE = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+
+# Package workflow endpoints (new endpoints only these are supported)
+PACKAGE_WORKFLOW_RERUN_API = "package-workflows/submit"
+PACKAGE_WORKFLOW_RERUN = API(
+    PACKAGE_WORKFLOW_RERUN_API,
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+PACKAGE_WORKFLOW_RUN_API = "package-workflows?submit=true"
+PACKAGE_WORKFLOW_RUN = API(
+    PACKAGE_WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+
+PACKAGE_WORKFLOW_API = "package-workflows"
+PACKAGE_WORKFLOW_UPDATE = API(
+    PACKAGE_WORKFLOW_API + "/{workflow_name}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+PACKAGE_WORKFLOW_ARCHIVE = API(
+    PACKAGE_WORKFLOW_API + "/{workflow_name}/archive",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 WORKFLOW_SCHEDULE_RUN = "runs"
 GET_ALL_SCHEDULE_RUNS = API(
     WORKFLOW_SCHEDULE_RUN + "/cron",

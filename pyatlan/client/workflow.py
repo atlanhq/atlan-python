@@ -10,6 +10,10 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     GET_ALL_SCHEDULE_RUNS,
     GET_SCHEDULE_RUN,
+    PACKAGE_WORKFLOW_ARCHIVE,
+    PACKAGE_WORKFLOW_RERUN,
+    PACKAGE_WORKFLOW_RUN,
+    PACKAGE_WORKFLOW_UPDATE,
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     STOP_WORKFLOW_RUN,
@@ -384,8 +388,11 @@ class WorkflowClient:
             request = ReRunRequest(
                 namespace=detail.metadata.namespace, resource_name=detail.metadata.name
             )
+
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        endpoint = PACKAGE_WORKFLOW_RERUN if use_package_endpoint else WORKFLOW_RERUN
         raw_json = self._client._call_api(
-            WORKFLOW_RERUN,
+            endpoint,
             request_obj=request,
         )
         return WorkflowRunResponse(**raw_json)
@@ -432,8 +439,10 @@ class WorkflowClient:
             workflow = Workflow.parse_raw(workflow)
         if workflow_schedule:
             self._add_schedule(workflow, workflow_schedule)
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        endpoint = PACKAGE_WORKFLOW_RUN if use_package_endpoint else WORKFLOW_RUN
         raw_json = self._client._call_api(
-            WORKFLOW_RUN,
+            endpoint,
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
@@ -448,10 +457,17 @@ class WorkflowClient:
         :raises ValidationError: If the provided `workflow` is invalid.
         :raises AtlanError: on any API communication issue.
         """
-        raw_json = self._client._call_api(
-            WORKFLOW_UPDATE.format_path(
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
                 {"workflow_name": workflow.metadata and workflow.metadata.name}
-            ),
+            )
+        else:
+            endpoint = WORKFLOW_UPDATE.format_path(
+                {"workflow_name": workflow.metadata and workflow.metadata.name}
+            )
+        raw_json = self._client._call_api(
+            endpoint,
             request_obj=workflow,
         )
         return WorkflowResponse(**raw_json)
@@ -583,9 +599,14 @@ class WorkflowClient:
         in the UI (e.g: `atlan-snowflake-miner-1714638976`).
         :raises AtlanError: on any API communication issue.
         """
-        self._client._call_api(
-            WORKFLOW_ARCHIVE.format_path({"workflow_name": workflow_name}),
-        )
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_ARCHIVE.format_path(
+                {"workflow_name": workflow_name}
+            )
+        else:
+            endpoint = WORKFLOW_ARCHIVE.format_path({"workflow_name": workflow_name})
+        self._client._call_api(endpoint)
 
     @overload
     def add_schedule(
@@ -640,13 +661,23 @@ class WorkflowClient:
         )
         workflow_to_update = self._handle_workflow_types(workflow)
         self._add_schedule(workflow_to_update, workflow_schedule)
-        raw_json = self._client._call_api(
-            WORKFLOW_UPDATE.format_path(
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
                 {
                     "workflow_name": workflow_to_update.metadata
                     and workflow_to_update.metadata.name
                 }
-            ),
+            )
+        else:
+            endpoint = WORKFLOW_UPDATE.format_path(
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
+            )
+        raw_json = self._client._call_api(
+            endpoint,
             request_obj=workflow_to_update,
         )
         return WorkflowResponse(**raw_json)
@@ -696,13 +727,23 @@ class WorkflowClient:
             workflow_to_update.metadata.annotations.pop(
                 self._WORKFLOW_RUN_SCHEDULE, None
             )
-        raw_json = self._client._call_api(
-            WORKFLOW_UPDATE.format_path(
+        use_package_endpoint = not self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
+        if use_package_endpoint:
+            endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
                 {
                     "workflow_name": workflow_to_update.metadata
                     and workflow_to_update.metadata.name
                 }
-            ),
+            )
+        else:
+            endpoint = WORKFLOW_UPDATE.format_path(
+                {
+                    "workflow_name": workflow_to_update.metadata
+                    and workflow_to_update.metadata.name
+                }
+            )
+        raw_json = self._client._call_api(
+            endpoint,
             request_obj=workflow_to_update,
         )
         return WorkflowResponse(**raw_json)
