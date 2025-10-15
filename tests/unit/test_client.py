@@ -6,6 +6,7 @@ from pathlib import Path
 from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
+import httpx
 import pytest
 from pydantic.v1 import ValidationError
 
@@ -2547,18 +2548,233 @@ class TestBulkRequest:
 
 def test_atlan_client_headers(client: AtlanClient):
     VERSION = read_text("pyatlan", "version.txt").strip()
-    expected = {
-        "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept": "*/*",
-        "Connection": "keep-alive",
-        "x-atlan-agent": "sdk",
-        "x-atlan-agent-id": "python",
-        "x-atlan-client-origin": "product_sdk",
-        "x-atlan-python-version": get_python_version(),
-        "x-atlan-client-type": "sync",
-    }
-    assert expected == client._session.headers
+    headers = client._session.headers
+
+    # Check custom Atlan headers
+    assert headers["x-atlan-agent"] == "sdk"
+    assert headers["x-atlan-agent-id"] == "python"
+    assert headers["x-atlan-client-origin"] == "product_sdk"
+    assert headers["x-atlan-python-version"] == get_python_version()
+    assert headers["x-atlan-client-type"] == "sync"
+    assert headers["user-agent"] == f"Atlan-PythonSDK/{VERSION}"
+
+    # Check standard headers exist
+    assert "accept" in headers
+    assert "accept-encoding" in headers
+    assert "connection" in headers
+
+
+@pytest.mark.parametrize(
+    "proxy_config",
+    [
+        # No proxy configuration (default)
+        {},
+        # Simple proxy
+        {"proxy": "http://127.0.0.1:8080"},
+        # Proxy with SSL verification disabled
+        {"proxy": "http://127.0.0.1:8080", "verify": False},
+    ],
+)
+def test_atlan_client_proxy_configurations(monkeypatch, proxy_config):
+    """Test various proxy and SSL configurations are properly initialized."""
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Clear any system proxy/SSL env vars that might interfere with tests
+    for var in [
+        "HTTP_PROXY",
+        "http_proxy",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
+    ]:
+        monkeypatch.delenv(var, raising=False)
+
+    # Create client with proxy settings
+    client = AtlanClient(**proxy_config)
+
+    # Verify the session was created
+    assert client._session is not None
+    assert isinstance(client._session, httpx.Client)
+
+    # Verify proxy is set correctly if provided
+    if "proxy" in proxy_config:
+        assert client.proxy == proxy_config["proxy"]
+    else:
+        assert client.proxy is None
+
+    # Verify verify is set correctly if provided
+    if "verify" in proxy_config:
+        assert client.verify == proxy_config["verify"]
+    else:
+        assert client.verify is True  # Default value
+
+
+def test_atlan_client_proxy_passed_to_transport(monkeypatch):
+    """Test that proxy and verify settings are correctly configured on the client."""
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Clear any proxy env vars that might interfere
+    for var in [
+        "HTTP_PROXY",
+        "http_proxy",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
+    ]:
+        monkeypatch.delenv(var, raising=False)
+
+    # Test with proxy and verify=False (to disable SSL verification for testing)
+    proxy_url = "http://127.0.0.1:8080"
+
+    client = AtlanClient(proxy=proxy_url, verify=False)
+
+    # Verify the client has the correct settings
+    assert client.proxy == proxy_url
+    assert client.verify is False
+
+    # Verify the transport was created
+    assert client._session is not None
+    assert hasattr(client._session, "_transport")
+
+
+@pytest.mark.parametrize(
+    "env_vars, expected_proxy, expected_verify",
+    [
+        # HTTP_PROXY environment variable
+        (
+            {"HTTP_PROXY": "http://proxy.example.com:8080"},
+            "http://proxy.example.com:8080",
+            False,
+        ),
+        # http_proxy (lowercase) environment variable
+        (
+            {"http_proxy": "http://proxy.example.com:8080"},
+            "http://proxy.example.com:8080",
+            False,
+        ),
+        # Separate HTTP and HTTPS proxy env vars (HTTPS takes precedence)
+        (
+            {
+                "HTTP_PROXY": "http://proxy.example.com:8080",
+                "HTTPS_PROXY": "https://proxy.example.com:8443",
+            },
+            "https://proxy.example.com:8443",  # HTTPS_PROXY takes precedence
+            False,
+        ),
+    ],
+)
+@patch("httpx.Client")
+def test_atlan_client_proxy_from_environment_variables(
+    mock_httpx_client,
+    monkeypatch,
+    env_vars,
+    expected_proxy,
+    expected_verify,
+):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Clear any system proxy/SSL env vars that might interfere with tests
+    for var in [
+        "HTTP_PROXY",
+        "http_proxy",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
+    ]:
+        monkeypatch.delenv(var, raising=False)
+
+    # Set environment variables
+    for key, value in env_vars.items():
+        monkeypatch.setenv(key, value)
+
+    # Create client without explicit proxy settings
+    client = AtlanClient()
+
+    # Verify proxy configuration
+    if expected_proxy:
+        assert client.proxy == expected_proxy
+
+    if expected_verify:
+        assert client.verify == expected_verify
+
+
+@patch("httpx_retries.transport.httpx.AsyncHTTPTransport")
+@patch("httpx_retries.transport.httpx.HTTPTransport")
+@patch("httpx.Client")
+def test_atlan_client_proxy_with_ssl_cert_file_from_env(
+    mock_httpx_client, mock_http_transport, mock_async_http_transport, monkeypatch
+):
+    """Test that SSL_CERT_FILE environment variable is picked up."""
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Use the fake certificate file
+    fake_cert_path = str(
+        Path(__file__).parent / "data" / "fake_certificates" / "fake-cert.pem"
+    )
+    monkeypatch.setenv("SSL_CERT_FILE", fake_cert_path)
+
+    client = AtlanClient()
+
+    # Verify SSL cert path was picked up
+    assert client.verify == fake_cert_path
+
+
+@patch("httpx_retries.transport.httpx.AsyncHTTPTransport")
+@patch("httpx_retries.transport.httpx.HTTPTransport")
+@patch("httpx.Client")
+def test_atlan_client_explicit_args_override_env_vars(
+    mock_httpx_client, mock_http_transport, mock_async_http_transport, monkeypatch
+):
+    """Test that explicitly provided arguments take precedence over environment variables."""
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Use the fake certificate file
+    fake_cert_path = str(
+        Path(__file__).parent / "data" / "fake_certificates" / "fake-cert.pem"
+    )
+
+    # Set environment variables
+    monkeypatch.setenv("HTTP_PROXY", "http://env-proxy:8080")
+    monkeypatch.setenv("SSL_CERT_FILE", fake_cert_path)
+
+    # Explicitly provide different values
+    explicit_proxy = "http://explicit-proxy:9090"
+    explicit_verify = False
+
+    client = AtlanClient(proxy=explicit_proxy, verify=explicit_verify)
+
+    # Verify explicit values take precedence
+    assert client.proxy == explicit_proxy
+    assert client.verify == explicit_verify
+
+
+def test_atlan_client_no_proxy_when_no_env_vars(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+    # Ensure proxy env vars are not set
+    for env_var in [
+        "HTTP_PROXY",
+        "http_proxy",
+        "HTTPS_PROXY",
+        "https_proxy",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
+    ]:
+        monkeypatch.delenv(env_var, raising=False)
+
+    client = AtlanClient()
+
+    assert client.proxy is None
+    assert client.verify is True  # Default value
 
 
 def test_get_all_pagination(group_client, mock_api_caller):

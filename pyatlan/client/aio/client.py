@@ -18,7 +18,6 @@ from types import SimpleNamespace
 from typing import Optional
 
 import httpx
-from httpx_retries import RetryTransport as AsyncRetryTransport
 from httpx_retries.retry import Retry
 from pydantic.v1 import PrivateAttr
 
@@ -59,6 +58,7 @@ from pyatlan.client.atlan import (
 )
 from pyatlan.client.common import ImpersonateUser
 from pyatlan.client.constants import EVENT_STREAM, GET_TOKEN, UPLOAD_IMAGE
+from pyatlan.client.transport import PyatlanAsyncTransport  # type: ignore
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan.model.atlan_image import AtlanImage
@@ -132,9 +132,13 @@ class AsyncAtlanClient(AtlanClient):
     def __init__(self, **kwargs):
         # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
-        # Create async session immediately like sync client - no lazy loading
+
+        # Build proxy/SSL configuration (reuse from sync client)
+        transport_kwargs = self._build_transport_proxy_config(kwargs)
+
+        # Create async session with custom transport that supports retry and proxy
         self._async_session = httpx.AsyncClient(
-            transport=AsyncRetryTransport(retry=self.retry),
+            transport=PyatlanAsyncTransport(retry=self.retry, **transport_kwargs),
             headers={
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
@@ -899,7 +903,15 @@ class AsyncAtlanClient(AtlanClient):
             raise RuntimeError("Async session not initialized")
 
         current_transport = session._transport
-        new_transport = AsyncRetryTransport(retry=max_retries)
+
+        # Build transport kwargs with current proxy/SSL settings
+        transport_kwargs = {}
+        if self.proxy:
+            transport_kwargs["proxy"] = self.proxy
+        if self.verify is not None:
+            transport_kwargs["verify"] = self.verify
+
+        new_transport = PyatlanAsyncTransport(retry=max_retries, **transport_kwargs)
         session._transport = new_transport
 
         LOGGER.debug(
