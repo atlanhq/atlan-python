@@ -37,7 +37,6 @@ dependencies = [
     "PyYAML~=6.0.2",
     "httpx~=0.28.1",
     "httpx-retries~=0.4.0",
-    "pytest-asyncio~=1.1.0",
 ]
 
 [project.urls]
@@ -46,7 +45,6 @@ Repository = "https://github.com/atlanhq/atlan-python"
 Documentation = "https://github.com/atlanhq/atlan-python"
 Issues = "https://github.com/atlanhq/atlan-python/issues"
 
-[dependency-groups]
 dev = [
     "mypy~=1.9.0",
     "ruff~=0.12.8",
@@ -66,6 +64,7 @@ dev = [
     "types-retry~=0.9.9.20241221",
     "networkx~=3.1.0",
     "networkx-stubs~=0.0.1",
+    "pytest-asyncio~=1.1.0",
 ]
 
 docs = [
