@@ -34,10 +34,13 @@ RUN cd /tmp/build/atlan-python && \
     echo "Version: $(cat pyatlan/version.txt)" && \
     # Build wheel in builder stage (smaller than copying full source)
     python3 -m build --wheel --outdir /tmp/wheels . && \
-    # Remove everything except the wheel
+    # Preserve version.txt before removing source
+    cp pyatlan/version.txt /tmp/version.txt && \
+    # Remove everything except the wheel and version.txt
     cd /tmp && \
     rm -rf /tmp/build/atlan-python && \
-    echo "Built wheel: $(ls -lh /tmp/wheels/*.whl)"
+    echo "Built wheel: $(ls -lh /tmp/wheels/*.whl)" && \
+    echo "Preserved version: $(cat /tmp/version.txt)"
 
 # ============================================
 # Stage 2: Final - Runtime image
@@ -49,7 +52,7 @@ ARG PYTHON_VERSION=3.11
 ARG PYATLAN_COMMIT_SHA=""
 
 # Copy version.txt from builder and set PYATLAN_VERSION if not provided
-COPY --from=builder /tmp/build/atlan-python/pyatlan/version.txt /tmp/version.txt
+COPY --from=builder /tmp/version.txt /tmp/version.txt
 ARG PYATLAN_VERSION
 RUN if [ -z "$PYATLAN_VERSION" ]; then \
         PYATLAN_VERSION=$(cat /tmp/version.txt | tr -d '\n\r'); \

@@ -113,19 +113,31 @@ jobs:
             PLATFORMS="linux/amd64,linux/arm64"
           fi
           echo "PLATFORMS=$PLATFORMS" >> $GITHUB_ENV
-
-          # Generate commit hash for dev builds
+          
+          # Generate commit hash for dev builds (for image tagging only)
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-
+          
+          # Set PYATLAN_COMMIT_SHA only if pyatlan_branch input is provided
+          # Otherwise, leave empty to let Dockerfile use version tag
+          if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
+            echo "PYATLAN_COMMIT_SHA=${{ github.event.inputs.pyatlan_branch }}" >> $GITHUB_ENV
+          else
+            echo "PYATLAN_COMMIT_SHA=" >> $GITHUB_ENV
+          fi
+          
           echo "Build parameters:"
           echo "  - Trigger: ${{ github.event_name }}"
           echo "  - Build Type: $BUILD_TYPE"
           echo "  - Python Version: $PYTHON_VERSION"
-          echo "  - Pyatlan Version: $PYATLAN_VERSION (from git tag v${PYATLAN_VERSION})"
+          if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
+            echo "  - Pyatlan Source: git commit/branch ${{ github.event.inputs.pyatlan_branch }}"
+          else
+            echo "  - Pyatlan Source: git tag v${PYATLAN_VERSION}"
+          fi
           echo "  - Build Method: Multi-stage build from GitHub source"
           echo "  - Platforms: $PLATFORMS"
-          echo "  - Commit Hash: $COMMIT_HASH"
+          echo "  - Image Tag Suffix: $COMMIT_HASH"
 
       - name: Generate image tags
         id: generate-tags
@@ -159,7 +171,7 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYATLAN_VERSION=${{ env.PYATLAN_VERSION }}
-            PYATLAN_COMMIT_SHA=${{ env.COMMIT_HASH }}
+            PYATLAN_COMMIT_SHA=${{ env.PYATLAN_COMMIT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -173,11 +185,15 @@ jobs:
           echo "- **Build Type:** ${{ env.BUILD_TYPE }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Method:** Multi-stage from GitHub source (no PyPI)" >> $GITHUB_STEP_SUMMARY
           echo "- **Python Version:** ${{ env.PYTHON_VERSION }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Pyatlan Version:** ${{ env.PYATLAN_VERSION }} (git tag v${{ env.PYATLAN_VERSION }})" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ env.PYATLAN_COMMIT_SHA }}" ]; then
+            echo "- **Pyatlan Source:** Git commit/branch ${{ env.PYATLAN_COMMIT_SHA }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Pyatlan Source:** Git tag v${{ env.PYATLAN_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "- **Dependencies:** Hardened from Chainguard APK + minimal pip" >> $GITHUB_STEP_SUMMARY
           echo "- **Platforms:** ${{ env.PLATFORMS }}" >> $GITHUB_STEP_SUMMARY
           if [ "${{ env.BUILD_TYPE }}" = "dev" ]; then
-            echo "- **Commit Hash:** ${{ env.COMMIT_HASH }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Image Tag Suffix:** ${{ env.COMMIT_HASH }}" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Available Tag:" >> $GITHUB_STEP_SUMMARY
