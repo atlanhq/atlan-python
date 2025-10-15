@@ -46,7 +46,6 @@ Repository = "https://github.com/atlanhq/atlan-python"
 Documentation = "https://github.com/atlanhq/atlan-python"
 Issues = "https://github.com/atlanhq/atlan-python/issues"
 
-[dependency-groups]
 dev = [
     "mypy~=1.18.0",
     "ruff~=0.14.5",
