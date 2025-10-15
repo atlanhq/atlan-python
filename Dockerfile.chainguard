@@ -12,6 +12,9 @@ ARG PYATLAN_COMMIT_SHA=""
 USER root
 WORKDIR /tmp/build
 
+# Install git and build tools
+RUN apk add --no-cache git py3.11-build
+
 # Clone pyatlan from GitHub
 RUN echo "=== Cloning pyatlan from GitHub ===" && \
     git clone https://github.com/atlanhq/atlan-python.git /tmp/build/atlan-python
@@ -28,7 +31,13 @@ RUN cd /tmp/build/atlan-python && \
         (git checkout "v$PYATLAN_VERSION" || git checkout "$PYATLAN_VERSION"); \
     fi && \
     echo "Commit: $(git rev-parse HEAD)" && \
-    echo "Version: $(cat pyatlan/version.txt)"
+    echo "Version: $(cat pyatlan/version.txt)" && \
+    # Build wheel in builder stage (smaller than copying full source)
+    python3 -m build --wheel --outdir /tmp/wheels . && \
+    # Remove everything except the wheel
+    cd /tmp && \
+    rm -rf /tmp/build/atlan-python && \
+    echo "Built wheel: $(ls -lh /tmp/wheels/*.whl)"
 
 # ============================================
 # Stage 2: Final - Runtime image
@@ -66,13 +75,11 @@ RUN apk add --no-cache \
     py3.11-pyyaml=6.0.3-r0 \
     py3.11-httpx=0.28.1-r2
 
-# Install dependencies and pyatlan in ONE layer (copy + install + cleanup)
-# This prevents Docker from keeping source files in image layers
-RUN --mount=type=bind,from=builder,source=/tmp/build/atlan-python,target=/mnt/source,readonly \
-    # Copy source to writable location
-    cp -r /mnt/source /tmp/pyatlan-source && \
-    # Install non-APK dependencies
-    uv pip install --system --no-cache \
+# Copy only the wheel from builder (much smaller than full source)
+COPY --from=builder /tmp/wheels/*.whl /tmp/
+
+# Install dependencies + pyatlan wheel + cleanup in ONE layer
+RUN uv pip install --system --no-cache \
         lazy_loader~=0.4 \
         nanoid~=2.0.0 \
         httpx-retries~=0.4.0 && \
