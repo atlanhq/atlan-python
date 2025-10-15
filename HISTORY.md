@@ -1,3 +1,32 @@
+## 8.2.2 (October 15, 2025)
+
+### Bug Fixes
+
+- Fixed an issue with populating data to raw arguments in data quality.
+
+### Experimental
+
+- Added new `httpx` transports: `PyatlanSyncTransport` and `PyatlanAsyncTransport` that support both `httpx` retries and gracefully handle proxy configuration for the SDK client. Previously, we found that `RetryTransport` (from `httpx-retries`) clobbered proxy environment variables, causing users to face SSL certificate verification failures and EOF errors.
+
+Users can explicitly configure these settings via:
+```py
+from pyatlan.client.atlan import AtlanClient
+
+proxy_settings = {
+    "verify": "mitmproxy-ca-cert.pem",  # Path to certificate file
+    "proxy": "http://127.0.0.1:8081",    # Proxy URL to use
+}
+
+client = AtlanClient(**proxy_settings)
+```
+
+Or through environment variables:
+```bash
+export HTTP_PROXY=http://127.0.0.1:8080
+export HTTPS_PROXY=http://127.0.0.1:8080
+export SSL_CERT_FILE=mitmproxy-ca-cert.pem
+```
+
 ## 8.2.2 (October 7, 2025)
 
 ### Features
