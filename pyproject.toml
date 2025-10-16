@@ -27,7 +27,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "pydantic~=2.11.7",
+    "pydantic>=2.11.7,<2.13.0",
     "jinja2~=3.1.6",
     "tenacity~=9.1.2",
     "lazy_loader~=0.4",
@@ -72,7 +72,7 @@ docs = [
     "sphinx~=7.2.6",
     "furo~=2024.8.6",
     "requests~=2.32.4",
-    "pydantic~=2.11.7",
+    "pydantic>=2.11.7,<2.13.0",
     "jinja2~=3.1.6",
     "networkx~=3.1.0",
     "tenacity~=9.1.2",
