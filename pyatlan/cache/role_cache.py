@@ -6,7 +6,7 @@ from threading import Lock
 from typing import TYPE_CHECKING, Dict, Iterable, Optional
 
 from pyatlan.cache.common import RoleCacheCommon
-from pyatlan.client.constants import GET_KEYCLOAK_USER_ROLE_MAPPING
+from pyatlan.client.constants import GET_WHOAMI_USER
 from pyatlan.model.role import AtlanRole
 
 if TYPE_CHECKING:
@@ -111,18 +111,11 @@ class RoleCache:
         if self._is_api_token_user is not None:
             return self._is_api_token_user
 
-        # Get current user to retrieve their UUID
-        current_user = self.client.user.get_current()
-
         # Fetch role mappings for the current user
-        raw_json = self.client._call_api(
-            api=GET_KEYCLOAK_USER_ROLE_MAPPING.format_path(
-                {"user_uuid": current_user.id}
-            )
-        )
+        raw_json = self.client._call_api(api=GET_WHOAMI_USER)
 
         # Check if the user has $api-token-default-access or $admin roles
-        for role_mapping in raw_json["realmMappings"]:
+        for role_mapping in raw_json["roles"]:
             role_name = role_mapping.get("name")
             if role_name in ["$api-token-default-access", "$admin"]:
                 self._is_api_token_user = True

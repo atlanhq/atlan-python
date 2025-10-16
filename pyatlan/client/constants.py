@@ -20,6 +20,7 @@ QUERY_API = "query"
 IMAGE_API = "images"
 LOGS_API = "events"
 TOKENS_API = "apikeys"
+WHOAMI_API = "whoami"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
@@ -84,7 +85,9 @@ CHANGE_USER_ROLE = API(
 GET_CURRENT_USER = API(
     f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
-
+GET_WHOAMI_USER = API(
+    WHOAMI_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 # SQL parsing APIs
 PARSE_QUERY = API(
     f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA
@@ -141,12 +144,6 @@ GET_CLIENT_SECRET = API(
 )
 GET_KEYCLOAK_USER = API(
     "/auth/admin/realms/default/users",
-    HTTPMethod.GET,
-    HTTPStatus.OK,
-    endpoint=EndPoint.IMPERSONATION,
-)
-GET_KEYCLOAK_USER_ROLE_MAPPING = API(
-    "auth/admin/realms/default/users/{user_uuid}/role-mappings",
     HTTPMethod.GET,
     HTTPStatus.OK,
     endpoint=EndPoint.IMPERSONATION,
