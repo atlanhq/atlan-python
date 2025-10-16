@@ -1,4 +1,10 @@
-## 8.2.2 (October 15, 2025)
+## 8.3.1 (October 16, 2025)
+
+### Bug Fixes
+
+- Fixed permission errors (`403`) by using the `/whoami` endpoint instead of Keycloak endpoints (which are blocked for customers) to fetch user role mapping for determining whether an API token is being used.
+
+## 8.3.0 (October 15, 2025)
 
 ### Bug Fixes
 
