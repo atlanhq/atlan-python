@@ -2344,6 +2344,11 @@ class UTMTags(str, Enum):
     UI_MAIN_LIST = "ui_main_list"
 
 
+class S3ObjectLockMode(str, Enum):
+    GOVERNANCE = "GOVERNANCE"
+    COMPLIANCE = "COMPLIANCE"
+
+
 class HekaFlow(str, Enum):
     BYPASS = "BYPASS_FLOW"
     REWRITE = "REWRITE_FLOW"

@@ -348,6 +348,7 @@ __PYATLAN_ASSETS__ = {
     "dynamo_dbtable": ["DynamoDBTable"],
     "s3_bucket": ["S3Bucket"],
     "s3_object": ["S3Object"],
+    "s3_prefix": ["S3Prefix"],
     "a_d_l_s_account": ["ADLSAccount"],
     "a_d_l_s_container": ["ADLSContainer"],
     "a_d_l_s_object": ["ADLSObject"],

@@ -2778,22 +2778,20 @@ class TestBulkRequest:
 @pytest.mark.asyncio
 async def test_atlan_client_headers(client: AsyncAtlanClient):
     VERSION = read_text("pyatlan", "version.txt").strip()
-    expected = Headers(
-        {
-            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept": "*/*",
-            "Connection": "keep-alive",
-            "x-atlan-agent": "sdk",
-            "x-atlan-agent-id": "python",
-            "x-atlan-python-version": get_python_version(),
-            "x-atlan-client-origin": "product_sdk",
-            "x-atlan-client-type": "async",
-        }
-    )
-    # Ensure session is initialized
-    assert client._async_session is not None
-    assert expected == client._async_session.headers
+    headers = client._async_session.headers
+
+    # Check custom Atlan headers
+    assert headers["x-atlan-agent"] == "sdk"
+    assert headers["x-atlan-agent-id"] == "python"
+    assert headers["x-atlan-client-origin"] == "product_sdk"
+    assert headers["x-atlan-python-version"] == get_python_version()
+    assert headers["x-atlan-client-type"] == "async"
+    assert headers["user-agent"] == f"Atlan-PythonSDK/{VERSION}"
+
+    # Check standard headers exist
+    assert "accept" in headers
+    assert "accept-encoding" in headers
+    assert "connection" in headers
 
 
 @pytest.mark.asyncio

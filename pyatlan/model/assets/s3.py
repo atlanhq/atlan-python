@@ -8,7 +8,11 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
 from pyatlan.model.structs import AwsTag
 
 from .object_store import ObjectStore
@@ -39,6 +43,12 @@ class S3(ObjectStore):
     S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
     """
 
+    """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
     """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
@@ -88,6 +98,7 @@ class S3(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
         "s3_encryption",
+        "catalog_has_partial_fields",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -118,6 +129,20 @@ class S3(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_encryption = s3_encryption
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -212,6 +237,7 @@ class S3(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(default=None, description="")
         s3_encryption: Optional[str] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         aws_arn: Optional[str] = Field(default=None, description="")
         aws_partition: Optional[str] = Field(default=None, description="")
         aws_service: Optional[str] = Field(default=None, description="")

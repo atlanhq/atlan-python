@@ -344,6 +344,7 @@ __all__ = [
     "DynamoDBTable",
     "S3Bucket",
     "S3Object",
+    "S3Prefix",
     "ADLSAccount",
     "ADLSContainer",
     "ADLSObject",
@@ -676,6 +677,7 @@ from .response import Response
 from .s3 import S3
 from .s3_bucket import S3Bucket
 from .s3_object import S3Object
+from .s3_prefix import S3Prefix
 from .s_a_p import SAP
 from .saa_s import SaaS
 from .salesforce import Salesforce
