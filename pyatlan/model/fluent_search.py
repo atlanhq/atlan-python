@@ -206,9 +206,6 @@ class CompoundQuery:
             little_spans.append(
                 SpanTerm(field="__classificationsText.text", value=token)
             )
-        little_spans.append(
-            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey")
-        )
 
         # Contruct big spans
         big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
@@ -299,9 +296,6 @@ class CompoundQuery:
             little_spans.append(
                 SpanTerm(field="__classificationsText.text", value=token)
             )
-        little_spans.append(
-            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey")
-        )
 
         # Contruct big spans
         big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
