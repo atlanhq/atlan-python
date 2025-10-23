@@ -12,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     RelationField,
+    NumericField,
 )
 
 from .s3 import S3
@@ -45,6 +46,18 @@ class S3Prefix(S3):
     """
     Unique name of the bucket in which this prefix exists.
     """
+    S3PREFIX_COUNT: ClassVar[NumericField] = NumericField(
+        "s3PrefixCount", "s3PrefixCount"
+    )
+    """
+    Number of prefixes immediately contained within the prefix.
+    """
+    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "s3ObjectCount", "s3ObjectCount"
+    )
+    """
+    Number of objects immediately contained within the prefix.
+    """
 
     S3BUCKET: ClassVar[RelationField] = RelationField("s3Bucket")
     """
@@ -66,6 +79,8 @@ class S3Prefix(S3):
     _convenience_properties: ClassVar[List[str]] = [
         "s3_bucket_name",
         "s3_bucket_qualified_name",
+        "s3_prefix_count",
+        "s3_object_count",
         "s3_bucket",
         "s3_objects",
         "s3_parent_prefix",
@@ -95,6 +110,34 @@ class S3Prefix(S3):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
+    
+    @property
+    def s3_prefix_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_prefix_count
+        )
+
+    @s3_prefix_count.setter
+    def s3_prefix_count(self, s3_prefix_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_prefix_count = s3_prefix_count
+
+    @property
+    def s3_object_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_count
+        )
+
+    @s3_object_count.setter
+    def s3_object_count(self, s3_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_count = s3_object_count
 
     @property
     def s3_bucket(self) -> Optional[S3Bucket]:
@@ -139,6 +182,8 @@ class S3Prefix(S3):
     class Attributes(S3.Attributes):
         s3_bucket_name: Optional[str] = Field(default=None, description="")
         s3_bucket_qualified_name: Optional[str] = Field(default=None, description="")
+        s3_prefix_count: Optional[int] = Field(default=None, description="")
+        s3_object_count: Optional[int] = Field(default=None, description="")
         s3_bucket: Optional[S3Bucket] = Field(
             default=None, description=""
         )  # relationship
