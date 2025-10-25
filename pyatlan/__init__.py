@@ -13,7 +13,7 @@ try:
 except ImportError:
     # Fallback for older Python versions
     try:
-        import pkg_resources
+        import pkg_resources  # type: ignore[import-not-found]
 
         __version__ = pkg_resources.get_distribution("pyatlan").version
     except Exception:
