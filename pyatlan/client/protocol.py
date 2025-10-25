@@ -2,7 +2,8 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Generator, Protocol, runtime_checkable
+from contextlib import _AsyncGeneratorContextManager, _GeneratorContextManager
+from typing import Any, Protocol, runtime_checkable
 
 from httpx_retries import Retry
 
@@ -30,7 +31,7 @@ class ApiCaller(Protocol):
 
     def max_retries(
         self, max_retries: Retry = CONNECTION_RETRY
-    ) -> Generator[None, None, None]:
+    ) -> _GeneratorContextManager[None]:
         pass
 
     def _s3_presigned_url_file_upload(self, api, upload_file: Any):
@@ -58,7 +59,9 @@ class AsyncApiCaller(Protocol):
     ) -> Any:
         pass
 
-    async def max_retries(self, max_retries: Retry = CONNECTION_RETRY):
+    async def max_retries(
+        self, max_retries: Retry = CONNECTION_RETRY
+    ) -> _AsyncGeneratorContextManager[None]:
         pass
 
     async def _s3_presigned_url_file_upload(self, api, upload_file: Any):

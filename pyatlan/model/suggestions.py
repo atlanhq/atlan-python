@@ -309,7 +309,7 @@ class Suggestions(AtlanObject):
         return suggestion_response
 
     def _get_descriptions(self, result: Aggregations, field: AtlanField):
-        results = []
+        results = []  # type: ignore[var-annotated]
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
                 count = bucket.doc_count
@@ -321,7 +321,7 @@ class Suggestions(AtlanObject):
         return results
 
     def _get_terms(self, result: Aggregations):
-        results = []
+        results = []  # type: ignore[var-annotated]
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
                 count = bucket.doc_count
@@ -335,7 +335,7 @@ class Suggestions(AtlanObject):
         return results
 
     def _get_tags(self, client: AtlanClient, result: Aggregations):
-        results = []
+        results = []  # type: ignore[var-annotated]
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
                 count = bucket.doc_count
@@ -348,7 +348,7 @@ class Suggestions(AtlanObject):
         return results
 
     def _get_others(self, result: Aggregations):
-        results = []
+        results = []  # type: ignore[var-annotated]
         if isinstance(result, AggregationBucketResult):
             for bucket in result.buckets:
                 count = bucket.doc_count
