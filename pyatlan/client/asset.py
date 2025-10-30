@@ -193,7 +193,7 @@ class AssetClient:
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                isinstance(f, (Term, Terms)) and f.field in (type_name_fields)
+                isinstance(f, (Term, Terms)) and f.field in type_name_fields
                 for f in clause or []
             )
 

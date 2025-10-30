@@ -528,7 +528,7 @@ def _count_type_filters(query):
                 type_filter_count += 1
 
     return type_filter_count
-    
+
 def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(

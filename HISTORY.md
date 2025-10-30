@@ -1,3 +1,8 @@
+## 7.1.10 (October 30, 2025)
+
+### Bug Fixes
+
+- Fixed missing `needs_type_filter ` check on asset  `superTypeName`.
 
 ## 7.1.9 (October 14, 2025)
 
