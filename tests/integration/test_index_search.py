@@ -476,11 +476,6 @@ def test_search_pagination(mock_logger, client: AtlanClient):
 
 @patch.object(LOGGER, "debug")
 def test_type_filter_duplication_with_pagination(mock_logger, client: AtlanClient):
-    """
-    Test to ensure that type filters are not duplicated during multiple pagination
-    cycles with size=1 in bulk search mode. This addresses the potential issue where
-    _ensure_type_filter_present might add duplicate filters during pagination.
-    """
     query = CompoundQuery(where_somes=[CompoundQuery.active_assets()]).to_query()
 
     dsl = DSL(
@@ -504,8 +499,6 @@ def test_type_filter_duplication_with_pagination(mock_logger, client: AtlanClien
         pagination_count += 1
 
         current_type_filters = _count_type_filters(results._criteria.dsl.query)  # type: ignore
-        print(current_type_filters)
-        print(initial_type_filters)
         assert current_type_filters == initial_type_filters
 
     assert pagination_count > 0
@@ -513,10 +506,6 @@ def test_type_filter_duplication_with_pagination(mock_logger, client: AtlanClien
 
 
 def _count_type_filters(query):
-    """
-    Helper function to count the number of type-related filters in a query.
-    Looks for Term and Terms filters with __typeName or __superTypeNames fields.
-    """
     if not isinstance(query, Bool):
         return 0
 
