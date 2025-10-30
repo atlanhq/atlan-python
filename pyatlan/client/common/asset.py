@@ -122,7 +122,8 @@ class Search:
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                isinstance(f, (Term, Terms)) and f.field in (type_field, super_type_field)
+                isinstance(f, (Term, Terms))
+                and f.field in (type_field, super_type_field)
                 for f in clause or []
             )
 
