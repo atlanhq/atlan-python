@@ -168,7 +168,7 @@ class AsyncIndexSearchResults(AsyncSearchResults):
         bulk: bool = False,
     ):
         super().__init__(
-            client,
+            client,  # type: ignore[arg-type]
             INDEX_SEARCH,
             criteria,
             start,

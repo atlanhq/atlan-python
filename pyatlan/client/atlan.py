@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import uuid
+from contextlib import _GeneratorContextManager
 from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
@@ -1936,10 +1937,10 @@ class AtlanClient(BaseSettings):
             name=name, glossary_name=glossary_name, attributes=attributes
         )
 
-    @contextlib.contextmanager
-    def max_retries(
+    @contextlib.contextmanager  # type: ignore[misc,arg-type]
+    def max_retries(  # type: ignore[misc]
         self, max_retries: Retry = CONNECTION_RETRY
-    ) -> Generator[None, None, None]:
+    ) -> _GeneratorContextManager[None]:
         """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
         The original Retry information will be restored when the context is exited."""
         # Store current transport and create new one with updated retries

@@ -13,6 +13,7 @@ import copy
 import json
 import logging
 import os
+from contextlib import _AsyncGeneratorContextManager
 from http import HTTPStatus
 from types import SimpleNamespace
 from typing import Optional
@@ -233,126 +234,126 @@ class AsyncAtlanClient(AtlanClient):
     def admin(self) -> AsyncAdminClient:  # type: ignore[override]
         """Get async admin client with same API as sync"""
         if self._async_admin_client is None:
-            self._async_admin_client = AsyncAdminClient(self)
+            self._async_admin_client = AsyncAdminClient(self)  # type: ignore[arg-type]
         return self._async_admin_client
 
     @property
     def asset(self) -> AsyncAssetClient:  # type: ignore[override]
         """Get async asset client with same API as sync"""
         if self._async_asset_client is None:
-            self._async_asset_client = AsyncAssetClient(self)
+            self._async_asset_client = AsyncAssetClient(self)  # type: ignore[arg-type]
         return self._async_asset_client
 
     @property
     def audit(self) -> AsyncAuditClient:  # type: ignore[override]
         """Get async audit client with same API as sync"""
         if self._async_audit_client is None:
-            self._async_audit_client = AsyncAuditClient(self)
+            self._async_audit_client = AsyncAuditClient(self)  # type: ignore[arg-type]
         return self._async_audit_client
 
     @property
     def contracts(self) -> AsyncContractClient:  # type: ignore[override]
         """Get async contract client with same API as sync"""
         if self._async_contract_client is None:
-            self._async_contract_client = AsyncContractClient(self)
+            self._async_contract_client = AsyncContractClient(self)  # type: ignore[arg-type]
         return self._async_contract_client
 
     @property
     def credentials(self) -> AsyncCredentialClient:  # type: ignore[override]
         """Get async credential client with same API as sync"""
         if self._async_credential_client is None:
-            self._async_credential_client = AsyncCredentialClient(self)
+            self._async_credential_client = AsyncCredentialClient(self)  # type: ignore[arg-type]
         return self._async_credential_client
 
     @property
     def files(self) -> AsyncFileClient:  # type: ignore[override]
         """Get async file client with same API as sync"""
         if self._async_file_client is None:
-            self._async_file_client = AsyncFileClient(self)
+            self._async_file_client = AsyncFileClient(self)  # type: ignore[arg-type]
         return self._async_file_client
 
     @property
     def group(self) -> AsyncGroupClient:  # type: ignore[override]
         """Get async group client with same API as sync"""
         if self._async_group_client is None:
-            self._async_group_client = AsyncGroupClient(self)
+            self._async_group_client = AsyncGroupClient(self)  # type: ignore[arg-type]
         return self._async_group_client
 
     @property
     def impersonate(self) -> AsyncImpersonationClient:  # type: ignore[override]
         """Get async impersonate client with same API as sync"""
         if self._async_impersonate_client is None:
-            self._async_impersonate_client = AsyncImpersonationClient(self)
+            self._async_impersonate_client = AsyncImpersonationClient(self)  # type: ignore[arg-type]
         return self._async_impersonate_client
 
     @property
     def open_lineage(self) -> AsyncOpenLineageClient:  # type: ignore[override]
         """Get async open lineage client with same API as sync"""
         if self._async_open_lineage_client is None:
-            self._async_open_lineage_client = AsyncOpenLineageClient(self)
+            self._async_open_lineage_client = AsyncOpenLineageClient(self)  # type: ignore[arg-type]
         return self._async_open_lineage_client
 
     @property
     def queries(self) -> AsyncQueryClient:  # type: ignore[override]
         """Get async query client with same API as sync"""
         if self._async_query_client is None:
-            self._async_query_client = AsyncQueryClient(self)
+            self._async_query_client = AsyncQueryClient(self)  # type: ignore[arg-type]
         return self._async_query_client
 
     @property
     def role(self) -> AsyncRoleClient:  # type: ignore[override]
         """Get async role client with same API as sync"""
         if self._async_role_client is None:
-            self._async_role_client = AsyncRoleClient(self)
+            self._async_role_client = AsyncRoleClient(self)  # type: ignore[arg-type]
         return self._async_role_client
 
     @property
     def search_log(self) -> AsyncSearchLogClient:  # type: ignore[override]
         """Get async search log client with same API as sync"""
         if self._async_search_log_client is None:
-            self._async_search_log_client = AsyncSearchLogClient(self)
+            self._async_search_log_client = AsyncSearchLogClient(self)  # type: ignore[arg-type]
         return self._async_search_log_client
 
     @property
     def sso(self) -> AsyncSSOClient:  # type: ignore[override]
         """Get async SSO client with same API as sync"""
         if self._async_sso_client is None:
-            self._async_sso_client = AsyncSSOClient(self)
+            self._async_sso_client = AsyncSSOClient(self)  # type: ignore[arg-type]
         return self._async_sso_client
 
     @property
     def tasks(self) -> AsyncTaskClient:  # type: ignore[override]
         """Get the task client."""
         if self._async_task_client is None:
-            self._async_task_client = AsyncTaskClient(client=self)
+            self._async_task_client = AsyncTaskClient(client=self)  # type: ignore[arg-type]
         return self._async_task_client
 
     @property
     def token(self) -> AsyncTokenClient:  # type: ignore[override]
         """Get async token client with same API as sync"""
         if self._async_token_client is None:
-            self._async_token_client = AsyncTokenClient(self)
+            self._async_token_client = AsyncTokenClient(self)  # type: ignore[arg-type]
         return self._async_token_client
 
     @property
     def typedef(self) -> AsyncTypeDefClient:  # type: ignore[override]
         """Get async typedef client with same API as sync"""
         if self._async_typedef_client is None:
-            self._async_typedef_client = AsyncTypeDefClient(self)
+            self._async_typedef_client = AsyncTypeDefClient(self)  # type: ignore[arg-type]
         return self._async_typedef_client
 
     @property
     def user(self) -> AsyncUserClient:  # type: ignore[override]
         """Get async user client with same API as sync"""
         if self._async_user_client is None:
-            self._async_user_client = AsyncUserClient(self)
+            self._async_user_client = AsyncUserClient(self)  # type: ignore[arg-type]
         return self._async_user_client
 
     @property
     def workflow(self) -> AsyncWorkflowClient:  # type: ignore[override]
         """Get async workflow client with same API as sync"""
         if self._async_workflow_client is None:
-            self._async_workflow_client = AsyncWorkflowClient(self)
+            self._async_workflow_client = AsyncWorkflowClient(self)  # type: ignore[arg-type]
         return self._async_workflow_client
 
     @property
@@ -884,17 +885,31 @@ class AsyncAtlanClient(AtlanClient):
         if self._async_session:
             await self._async_session.aclose()
             self._async_session = None
-        if self._async_asset_client:
-            self._async_asset_client = None
-        if self._async_file_client:
-            self._async_file_client = None
-        if self._async_group_client:
-            self._async_group_client = None
 
-    @contextlib.asynccontextmanager
-    async def max_retries(  # type: ignore[override]
+        # Clean up all client references
+        self._async_admin_client = None
+        self._async_asset_client = None
+        self._async_audit_client = None
+        self._async_contract_client = None
+        self._async_credential_client = None
+        self._async_file_client = None
+        self._async_group_client = None
+        self._async_impersonate_client = None
+        self._async_open_lineage_client = None
+        self._async_query_client = None
+        self._async_role_client = None
+        self._async_search_log_client = None
+        self._async_sso_client = None
+        self._async_task_client = None
+        self._async_token_client = None
+        self._async_typedef_client = None
+        self._async_user_client = None
+        self._async_workflow_client = None
+
+    @contextlib.asynccontextmanager  # type: ignore[arg-type]
+    async def max_retries(  # type: ignore[override,misc]
         self, max_retries: Retry = CONNECTION_RETRY
-    ):
+    ) -> _AsyncGeneratorContextManager[None]:
         """Creates an async context manager that can be used to temporarily change parameters used for retrying connections.
         The original Retry information will be restored when the context is exited."""
         # Store current transport and create new one with updated retries
