@@ -186,11 +186,14 @@ class AssetClient:
 
         query = criteria.dsl.query
         default_filter = Term.with_super_type_names(Referenceable.__name__)
-        type_field = Referenceable.TYPE_NAME.keyword_field_name
+        type_name_fields = (
+            Referenceable.TYPE_NAME.keyword_field_name,
+            Referenceable.SUPER_TYPE_NAMES.keyword_field_name,
+        )
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                isinstance(f, (Term, Terms)) and f.field == type_field
+                isinstance(f, (Term, Terms)) and f.field in (type_name_fields)
                 for f in clause or []
             )
 

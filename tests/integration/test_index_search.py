@@ -14,13 +14,14 @@ from urllib3 import Retry
 from pyatlan.cache.source_tag_cache import SourceTagName
 from pyatlan.client.asset import LOGGER, IndexSearchResults, Persona, Purpose
 from pyatlan.client.atlan import AtlanClient, client_connection
-from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Table
+from pyatlan.model.assets import Asset, AtlasGlossaryTerm, Column, Referenceable, Table
 from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan.model.fields.atlan_fields import SearchableField
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import (
     DSL,
+    Bool,
     Exists,
     IndexSearchRequest,
     Match,
@@ -28,6 +29,7 @@ from pyatlan.model.search import (
     Range,
     Regexp,
     Term,
+    Terms,
     Wildcard,
 )
 from pyatlan.model.structs import SourceTagAttachment, SourceTagAttachmentValue
@@ -475,6 +477,58 @@ def test_search_iter(client: AtlanClient):
     assert len([a for a in results]) == results.count
 
 
+@patch.object(LOGGER, "debug")
+def test_type_filter_duplication_with_pagination(mock_logger, client: AtlanClient):
+    query = CompoundQuery(where_somes=[CompoundQuery.active_assets()]).to_query()
+
+    dsl = DSL(
+        query=query,
+        size=1,
+    )
+
+    request = IndexSearchRequest(dsl=dsl)
+
+    results = client.asset.search(criteria=request, bulk=True)
+
+    assert results._criteria.dsl.query and results._criteria.dsl.query.filter  # type: ignore
+
+    initial_type_filters = _count_type_filters(results._criteria.dsl.query)  # type: ignore
+    assert initial_type_filters > 0
+
+    pagination_count = 0
+    max_iterations = 5
+
+    while results.next_page() and pagination_count < max_iterations:
+        pagination_count += 1
+
+        current_type_filters = _count_type_filters(results._criteria.dsl.query)  # type: ignore
+        assert current_type_filters == initial_type_filters
+
+    assert pagination_count > 0
+    assert mock_logger.call_count >= 1
+
+
+def _count_type_filters(query):
+    if not isinstance(query, Bool):
+        return 0
+
+    type_field = Referenceable.TYPE_NAME.keyword_field_name
+    super_type_field = Referenceable.SUPER_TYPE_NAMES.keyword_field_name
+
+    type_filter_count = 0
+
+    for clause in [query.filter, query.must]:
+        if not clause:
+            continue
+        for filter_item in clause:
+            if isinstance(filter_item, (Term, Terms)) and filter_item.field in (
+                type_field,
+                super_type_field,
+            ):
+                type_filter_count += 1
+
+    return type_filter_count
+    
 def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(
