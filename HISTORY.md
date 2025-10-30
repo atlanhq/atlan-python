@@ -1,3 +1,14 @@
+## 8.4.0 (October 30, 2025)
+
+### Bug Fixes
+
+- Fixed source tag search with value.
+- Fixed missing `needs_type_filter ` check on asset  `superTypeName`.
+  
+### QOL Improvements
+
+- Bumped SDK core and development dependencies to the latest version.
+
 ## 8.3.1 (October 16, 2025)
 
 ### Bug Fixes
