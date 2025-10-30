@@ -118,10 +118,11 @@ class Search:
         query = criteria.dsl.query
         default_filter = Term.with_super_type_names(Referenceable.__name__)
         type_field = Referenceable.TYPE_NAME.keyword_field_name
+        super_type_field = Referenceable.SUPER_TYPE_NAMES.keyword_field_name
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                isinstance(f, (Term, Terms)) and f.field == type_field
+                isinstance(f, (Term, Terms)) and f.field in (type_field, super_type_field)
                 for f in clause or []
             )
 
