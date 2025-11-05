@@ -565,6 +565,18 @@ class SpanNear(Query):
 
 
 @dataclass
+class SpanOr(Query):
+    clauses: Optional[Sequence[Query]] = None
+    type_name: Literal["span_or"] = "span_or"
+
+    def to_dict(self):
+        span_or = {}
+        if self.clauses is not None:
+            span_or["clauses"] = self.clauses
+        return {self.type_name: span_or}
+
+
+@dataclass
 class Span(Query):
     span_within: Optional[Query] = None
     span_near: Optional[Query] = None
