@@ -281,6 +281,8 @@ class CompoundQuery:
         :returns: a query that will only match assets that have
         a particular value assigned for the given Atlan tag
         """
+        big_spans = []
+        little_spans = []
         tag_id = await client.atlan_tag_cache.get_id_for_name(atlan_tag_name) or ""
         synced_tags = [
             tag
@@ -306,10 +308,10 @@ class CompoundQuery:
         else:
             synced_tag_qn = "NON_EXISTENT"
 
-        # Construct little spans
-        little_spans = [
+        # Contruct little spans
+        little_spans.append(
             SpanTerm(field="__classificationsText.text", value="tagAttachmentValue")
-        ]
+        )
         for token in value.split(" "):
             little_spans.append(
                 SpanTerm(field="__classificationsText.text", value=token)
@@ -334,20 +336,17 @@ class CompoundQuery:
         ]
         little_spans.append(SpanOr(clauses=span_or_clauses))  # type: ignore
 
-        # Construct big spans
-        big_spans = [
-            SpanTerm(field="__classificationsText.text", value=tag_id),
-            SpanTerm(field="__classificationsText.text", value=synced_tag_qn),
-        ]
+        # Contruct big spans
+        big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
+        big_spans.append(
+            SpanTerm(field="__classificationsText.text", value=synced_tag_qn)
+        )
 
-        # Construct final span query
-        span_within = SpanWithin(
+        # Contruct final span query
+        span = SpanWithin(
             little=SpanNear(clauses=little_spans, slop=0, in_order=True),
             big=SpanNear(clauses=big_spans, slop=10000000, in_order=True),
         )
-
-        # Wrap in bool query with should clause
-        span = Bool(should=[span_within])
 
         # Without atlan tag propagation
         if directly:
