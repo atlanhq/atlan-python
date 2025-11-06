@@ -66,6 +66,10 @@ CM_ATTR_QUALITY_COUNT = "Count"
 CM_ATTR_QUALITY_SQL = "SQL"
 CM_ATTR_QUALITY_TYPE = "Type"
 
+CM_RICH_TEXT = f"{MODULE_NAME}_RICH_TEXT"
+CM_ATTR_RICH_TEXT_CONTENT = "Rich Content"
+CM_ATTR_RICH_TEXT_DESCRIPTION = "Rich Description"
+
 DQ_ENUM = f"{MODULE_NAME}_DataQualityType"
 DQ_TYPE_LIST = [
     "Accuracy",
@@ -490,6 +494,83 @@ def test_cm_dq(
     assert one.options
     assert not one.options.multi_value_select
     assert one.options.primitive_type == AtlanCustomAttributePrimitiveType.OPTIONS.value
+
+
+@pytest.fixture(scope="module")
+def cm_rich_text(
+    client: AtlanClient,
+) -> Generator[CustomMetadataDef, None, None]:
+    attribute_defs = [
+        AttributeDef.create(
+            client=client,
+            display_name=CM_ATTR_RICH_TEXT_CONTENT,
+            attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+            description=ATTRIBUTE_DESCRIPTION,
+        ),
+        AttributeDef.create(
+            client=client,
+            display_name=CM_ATTR_RICH_TEXT_DESCRIPTION,
+            attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+        ),
+    ]
+    cm = create_custom_metadata(
+        client,
+        name=CM_RICH_TEXT,
+        attribute_defs=attribute_defs,
+        logo="📝",
+        locked=False,
+    )
+    yield cm
+    wait_for_successful_custometadatadef_purge(CM_RICH_TEXT, client=client)
+
+
+def test_cm_rich_text(cm_rich_text: CustomMetadataDef):
+    cm_name = CM_RICH_TEXT
+    assert cm_rich_text.category == AtlanTypeCategory.CUSTOM_METADATA
+    assert cm_rich_text.name
+    assert cm_rich_text.guid
+    assert cm_rich_text.name != cm_name
+    assert cm_rich_text.display_name == cm_name
+    attributes = cm_rich_text.attribute_defs
+    assert attributes
+    assert len(attributes) == 2
+
+    # Test first attribute
+    content_attr = attributes[0]
+    assert content_attr
+    assert content_attr.display_name == CM_ATTR_RICH_TEXT_CONTENT
+    assert content_attr.name
+    assert content_attr.name != CM_ATTR_RICH_TEXT_CONTENT
+    assert content_attr.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert content_attr.options
+    assert content_attr.options.is_rich_text is True
+    assert not content_attr.options.multi_value_select
+    assert content_attr.description == ATTRIBUTE_DESCRIPTION
+
+    # Test second attribute
+    desc_attr = attributes[1]
+    assert desc_attr.display_name == CM_ATTR_RICH_TEXT_DESCRIPTION
+    assert desc_attr.name != CM_ATTR_RICH_TEXT_DESCRIPTION
+    assert desc_attr.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert desc_attr.options
+    assert desc_attr.options.is_rich_text is True
+    assert not desc_attr.options.multi_value_select
+
+
+def test_rich_text_cannot_be_multi_valued(client: AtlanClient):
+    """Test that RICH_TEXT attributes cannot be multi-valued"""
+    from pyatlan.errors import AtlanError
+
+    with pytest.raises(AtlanError) as exc_info:
+        AttributeDef.create(
+            client=client,
+            display_name="Invalid Rich Text",
+            attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+            multi_valued=True,
+        )
+
+    error = exc_info.value
+    assert "ATLAN-PYTHON-400-076" in str(error)
 
 
 @pytest.fixture(scope="module")
