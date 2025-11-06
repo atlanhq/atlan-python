@@ -18,6 +18,7 @@ from pyatlan.model.search import (
     Query,
     SortItem,
     SpanNear,
+    SpanOr,
     SpanTerm,
     SpanWithin,
     Term,
@@ -207,6 +208,25 @@ class CompoundQuery:
                 SpanTerm(field="__classificationsText.text", value=token)
             )
 
+        # Add span_or clause with tag-related terms
+        span_or_clauses = [
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey"),
+            SpanTerm(field="__classificationsText.text", value="sourceTagName"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagQualifiedName"
+            ),
+            SpanTerm(field="__classificationsText.text", value="sourceTagGuid"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagConnectorName"
+            ),
+            SpanTerm(field="__classificationsText.text", value="isSourceTagSynced"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagSyncTimestamp"
+            ),
+            SpanTerm(field="__classificationsText.text", value="sourceTagValue"),
+        ]
+        little_spans.append(SpanOr(clauses=span_or_clauses))  # type: ignore
+
         # Contruct big spans
         big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
         big_spans.append(
@@ -296,6 +316,25 @@ class CompoundQuery:
             little_spans.append(
                 SpanTerm(field="__classificationsText.text", value=token)
             )
+
+        # Add span_or clause with tag-related terms
+        span_or_clauses = [
+            SpanTerm(field="__classificationsText.text", value="tagAttachmentKey"),
+            SpanTerm(field="__classificationsText.text", value="sourceTagName"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagQualifiedName"
+            ),
+            SpanTerm(field="__classificationsText.text", value="sourceTagGuid"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagConnectorName"
+            ),
+            SpanTerm(field="__classificationsText.text", value="isSourceTagSynced"),
+            SpanTerm(
+                field="__classificationsText.text", value="sourceTagSyncTimestamp"
+            ),
+            SpanTerm(field="__classificationsText.text", value="sourceTagValue"),
+        ]
+        little_spans.append(SpanOr(clauses=span_or_clauses))  # type: ignore
 
         # Contruct big spans
         big_spans.append(SpanTerm(field="__classificationsText.text", value=tag_id))
