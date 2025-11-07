@@ -2048,9 +2048,9 @@ class IndexSearchRequest(SearchRequest):
     enable_full_restriction: Optional[bool] = Field(
         default=None,
         description=(
-            "Whether to enable full restriction mode for search results (True) or use "
-            "standard access controls (False). When enabled, applies comprehensive "
-            "access control restrictions. By default, this is None and standard "
+            "Whether to enable full authorization restrictions for search results. "
+            "When true, applies full authorization restrictions to show only assets "
+            "the user has access to. By default, this is None and standard "
             "access controls apply."
         ),
         alias="enableFullRestriction",
