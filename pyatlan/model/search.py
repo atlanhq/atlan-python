@@ -2045,6 +2045,16 @@ class IndexSearchRequest(SearchRequest):
             "relationship-level attributes are not included."
         ),
     )
+    enable_full_restriction: Optional[bool] = Field(
+        default=None,
+        description=(
+            "Whether to enable full restriction mode for search results (True) or use "
+            "standard access controls (False). When enabled, applies comprehensive "
+            "access control restrictions. By default, this is None and standard "
+            "access controls apply."
+        ),
+        alias="enableFullRestriction",
+    )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
             # Set this to `False` to prevent the frequent

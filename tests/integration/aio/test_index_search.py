@@ -185,6 +185,35 @@ async def test_search(client: AsyncAtlanClient, asset_tracker, cls):
         asset_tracker.missing_types.add(name)
 
 
+async def test_search_with_enable_full_restriction(client: AsyncAtlanClient):
+    """Test async search API with enableFullRestriction parameter."""
+    query = Term.with_state("ACTIVE")
+    post_filter = Term.with_type_name("Table")
+    dsl = DSL(query=query, post_filter=post_filter, size=1)
+
+    # Test with enableFullRestriction=True
+    request = IndexSearchRequest(
+        dsl=dsl, attributes=["name"], enable_full_restriction=True
+    )
+    results = await client.asset.search(criteria=request)
+    assert results is not None
+    assert hasattr(results, "count")
+
+    # Test with enableFullRestriction=False
+    request_false = IndexSearchRequest(
+        dsl=dsl, attributes=["name"], enable_full_restriction=False
+    )
+    results_false = await client.asset.search(criteria=request_false)
+    assert results_false is not None
+    assert hasattr(results_false, "count")
+
+    # Test without the parameter (default behavior)
+    request_default = IndexSearchRequest(dsl=dsl, attributes=["name"])
+    results_default = await client.asset.search(criteria=request_default)
+    assert results_default is not None
+    assert hasattr(results_default, "count")
+
+
 def _assert_source_tag(tables, source_tag, source_tag_value):
     assert tables and len(tables) > 0
     for table in tables:
