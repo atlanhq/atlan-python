@@ -2045,6 +2045,16 @@ class IndexSearchRequest(SearchRequest):
             "relationship-level attributes are not included."
         ),
     )
+    enable_full_restriction: Optional[bool] = Field(
+        default=None,
+        description=(
+            "Whether to enable full authorization restrictions for search results. "
+            "When true, applies full authorization restrictions to show only assets "
+            "the user has access to. By default, this is None and standard "
+            "access controls apply."
+        ),
+        alias="enableFullRestriction",
+    )
     request_metadata: Optional[IndexSearchRequestMetadata] = Field(
         default_factory=lambda: IndexSearchRequestMetadata(
             # Set this to `False` to prevent the frequent

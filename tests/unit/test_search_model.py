@@ -297,6 +297,36 @@ def test_index_search_request():
     )
 
 
+def test_index_search_request_with_enable_full_restriction():
+    """Test IndexSearchRequest with enableFullRestriction parameter."""
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+
+    # Test with enableFullRestriction=True
+    request = IndexSearchRequest(
+        dsl=dsl, attributes=["schemaName", "databaseName"], enable_full_restriction=True
+    )
+    json_str = request.json(by_alias=True, exclude_none=True)
+
+    # Verify the parameter is serialized correctly
+    assert "enableFullRestriction" in json_str
+    assert '"enableFullRestriction": true' in json_str
+
+    # Test with enableFullRestriction=False
+    request_false = IndexSearchRequest(
+        dsl=dsl, attributes=["schemaName"], enable_full_restriction=False
+    )
+    json_str_false = request_false.json(by_alias=True, exclude_none=True)
+    assert '"enableFullRestriction": false' in json_str_false
+
+    # Test without the parameter (should not appear in JSON)
+    request_none = IndexSearchRequest(dsl=dsl, attributes=["schemaName"])
+    json_str_none = request_none.json(by_alias=True, exclude_none=True)
+    assert "enableFullRestriction" not in json_str_none
+
+
 def test_audit_search_request():
     dsl = DSL(
         query=Term(field="__typeName.keyword", value="Schema"),
