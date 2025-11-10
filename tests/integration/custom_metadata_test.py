@@ -7,6 +7,7 @@ from typing import Generator, List, Optional, Tuple
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.errors import AtlanError
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -559,7 +560,6 @@ def test_cm_rich_text(cm_rich_text: CustomMetadataDef):
 
 def test_rich_text_cannot_be_multi_valued(client: AtlanClient):
     """Test that RICH_TEXT attributes cannot be multi-valued"""
-    from pyatlan.errors import AtlanError
 
     with pytest.raises(AtlanError) as exc_info:
         AttributeDef.create(

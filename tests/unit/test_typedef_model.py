@@ -11,7 +11,7 @@ import pytest
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
-from pyatlan.errors import InvalidRequestError, NotFoundError
+from pyatlan.errors import AtlanError, InvalidRequestError, NotFoundError
 from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
@@ -500,7 +500,6 @@ class TestAttributeDef:
 
     def test_rich_text_cannot_be_multi_valued(self, client: AtlanClient):
         """Test that RICH_TEXT attributes cannot be multi-valued"""
-        from pyatlan.errors import AtlanError
 
         with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()

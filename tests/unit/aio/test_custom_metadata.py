@@ -5,13 +5,15 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from pyatlan.client.aio.client import AsyncAtlanClient
-from pyatlan.errors import ErrorCode, NotFoundError
+from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
 from pyatlan.model.aio.custom_metadata import (
     AsyncCustomMetadataDict,
     AsyncCustomMetadataProxy,
     AsyncCustomMetadataRequest,
 )
 from pyatlan.model.assets.core.asset import Asset
+from pyatlan.model.enums import AtlanCustomAttributePrimitiveType
+from pyatlan.model.typedef import AttributeDef
 
 ATTR_LAST_NAME = "Last Name"
 ATTR_LAST_NAME_ID = "2"
@@ -477,10 +479,6 @@ class TestAsyncAttributeDefRichText:
     @pytest.mark.asyncio
     async def test_async_rich_text_attribute_creation(self, client: AsyncAtlanClient):
         """Test that RICH_TEXT attributes are created correctly using async method"""
-        from unittest.mock import AsyncMock, patch
-
-        from pyatlan.model.enums import AtlanCustomAttributePrimitiveType
-        from pyatlan.model.typedef import AttributeDef
 
         # Mock the client.asset.search method that _get_all_qualified_names_async calls
         with patch.object(
@@ -512,11 +510,6 @@ class TestAsyncAttributeDefRichText:
         self, client: AsyncAtlanClient
     ):
         """Test that async RICH_TEXT attributes cannot be multi-valued"""
-        from unittest.mock import AsyncMock, patch
-
-        from pyatlan.errors import AtlanError
-        from pyatlan.model.enums import AtlanCustomAttributePrimitiveType
-        from pyatlan.model.typedef import AttributeDef
 
         # Mock the client.asset.search method that _get_all_qualified_names_async calls
         with patch.object(
@@ -545,10 +538,6 @@ class TestAsyncAttributeDefRichText:
         self, client: AsyncAtlanClient
     ):
         """Test that async RICH_TEXT options are configured correctly"""
-        from unittest.mock import AsyncMock, patch
-
-        from pyatlan.model.enums import AtlanCustomAttributePrimitiveType
-        from pyatlan.model.typedef import AttributeDef
 
         # Mock the client.asset.search method that _get_all_qualified_names_async calls
         with patch.object(

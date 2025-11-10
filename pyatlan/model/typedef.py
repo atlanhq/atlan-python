@@ -549,7 +549,7 @@ class AttributeDef(AtlanObject):
         )
         is_rich_text: Optional[bool] = Field(
             default=False,
-            description="Whether this attribute supports rich text formatting (true) or not (false). ",
+            description="Whether this attribute supports rich text formatting (True) or not (False). ",
         )
 
         def __setattr__(self, name, value):

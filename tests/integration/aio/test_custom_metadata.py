@@ -7,6 +7,7 @@ import pytest
 import pytest_asyncio
 
 from pyatlan.client.aio.client import AsyncAtlanClient
+from pyatlan.errors import AtlanError
 from pyatlan.model.aio.custom_metadata import (
     AsyncCustomMetadataDict,
     AsyncCustomMetadataField,
@@ -632,9 +633,6 @@ async def test_cm_rich_text_async(cm_rich_text: CustomMetadataDef):
 
 async def test_rich_text_cannot_be_multi_valued_async(client: AsyncAtlanClient):
     """Test that RICH_TEXT attributes cannot be multi-valued"""
-    import pytest
-
-    from pyatlan.errors import AtlanError
 
     with pytest.raises(AtlanError) as exc_info:
         await AttributeDef.create_async(
