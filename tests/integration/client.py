@@ -5,10 +5,9 @@ from typing import Generator, Type
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
 from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.model.response import A
-from pyatlan.client.atlan import DEFAULT_RETRY
 
 LOGGER = logging.getLogger(__name__)
 

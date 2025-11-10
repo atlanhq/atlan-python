@@ -2049,7 +2049,7 @@ class IndexSearchRequest(SearchRequest):
         default=None,
         description=(
             "Whether to enable full authorization restrictions for search results. "
-            "When true, applies full authorization restrictions to show only assets "
+            "When (True), applies full authorization restrictions to show only assets "
             "the user has access to. By default, this is None and standard "
             "access controls apply."
         ),

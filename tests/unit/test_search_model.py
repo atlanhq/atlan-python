@@ -1812,7 +1812,13 @@ def test_match_phrase_to_dict(
 
 
 def test_match_phrase_textfield():
-    search_request = FluentSearch().where(Asset.NAME.match_phrase("tmp")).to_request()
+    search_request = (
+        FluentSearch()
+        .where(Asset.NAME.match_phrase("tmp"))
+        .enable_full_restriction(True)
+        .to_request()
+    )
     assert search_request.dsl.query == Bool(
         filter=[MatchPhrase(field="name", query="tmp")]
     )
+    assert search_request.enable_full_restriction is True

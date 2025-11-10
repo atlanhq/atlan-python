@@ -40,7 +40,7 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -72,14 +72,14 @@ jobs:
           else
             # Manual dispatch: use provided inputs with defaults
             BUILD_TYPE="${{ github.event.inputs.build_type }}"
-            
+
             # Set Python version (default to 3.13 if empty)
             if [ -z "${{ github.event.inputs.python_version }}" ]; then
               PYTHON_VERSION="3.13"
             else
               PYTHON_VERSION="${{ github.event.inputs.python_version }}"
             fi
-            
+
             # Check if branch is provided (overrides version)
             if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
               PYATLAN_BRANCH="${{ github.event.inputs.pyatlan_branch }}"
@@ -99,13 +99,13 @@ jobs:
               INSTALL_FROM_GIT="false"
             fi
           fi
-          
+
           echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
           echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
           echo "PYATLAN_BRANCH=$PYATLAN_BRANCH" >> $GITHUB_ENV
           echo "INSTALL_FROM_GIT=$INSTALL_FROM_GIT" >> $GITHUB_ENV
-          
+
           # Set platforms based on build type
           if [ "$BUILD_TYPE" = "dev" ]; then
             PLATFORMS="linux/amd64"
@@ -113,11 +113,11 @@ jobs:
             PLATFORMS="linux/amd64,linux/arm64"
           fi
           echo "PLATFORMS=$PLATFORMS" >> $GITHUB_ENV
-          
+
           # Generate commit hash for dev builds
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-          
+
           echo "Build parameters:"
           echo "  - Trigger: ${{ github.event_name }}"
           echo "  - Build Type: $BUILD_TYPE"
@@ -139,7 +139,7 @@ jobs:
           PYTHON_VERSION="${{ env.PYTHON_VERSION }}"
           PYATLAN_VERSION="${{ env.PYATLAN_VERSION }}"
           COMMIT_HASH="${{ env.COMMIT_HASH }}"
-          
+
           if [ "$BUILD_TYPE" = "dev" ]; then
             # Dev: 8.0.0-3.11-commithash
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}-${COMMIT_HASH}"
@@ -147,9 +147,9 @@ jobs:
             # Release: 8.0.0-3.11
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}"
           fi
-          
+
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-          
+
           echo "Generated image tag: ghcr.io/atlanhq/pyatlan-wolfi-base:$IMAGE_TAG"
 
       - name: Wait for PyPI availability

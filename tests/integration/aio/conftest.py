@@ -9,12 +9,12 @@ from typing import Any, AsyncGenerator, Callable, Coroutine, Optional
 import pytest_asyncio
 
 from pyatlan.client.aio import AsyncAtlanClient
+from pyatlan.client.atlan import DEFAULT_RETRY
 from pyatlan.errors import AtlanError
 from pyatlan.model.assets import Connection, Database, Schema, Table
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanConnectorType, AtlanTagColor, CertificateStatus
 from pyatlan.model.typedef import AtlanTagDef
-from pyatlan.client.atlan import DEFAULT_RETRY
 from tests.integration.aio.test_connection import create_connection_async
 from tests.integration.aio.utils import delete_asset_async
 from tests.integration.client import TestId

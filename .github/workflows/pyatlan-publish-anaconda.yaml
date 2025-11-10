@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Conda environment creation and activation
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -24,25 +24,25 @@ jobs:
           show-channel-urls: true
           channels: conda-forge
           conda-remove-defaults: "true"
-      
+
       - name: Get version from version.txt
         id: get_version
         run: |
           PYATLAN_VERSION=$(cat pyatlan/version.txt | tr -d ' \n')
           echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
           echo "Building version: $PYATLAN_VERSION"
-      
+
       - name: Install conda-build and anaconda-client
         run: |
           conda install conda-build anaconda-client anaconda-auth -y
-      
+
       - name: Build noarch conda package
         env:
           PYATLAN_VERSION: ${{ env.PYATLAN_VERSION }}
         run: |
           echo "Building noarch conda package with version: $PYATLAN_VERSION"
           conda build .conda-envs/meta.yaml --output-folder /tmp/conda-builds --package-format tar.bz2
-      
+
       - name: Upload to Anaconda
         env:
           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
@@ -56,24 +56,24 @@ jobs:
               break
             fi
           done
-          
+
           if [ -z "$ANACONDA_CMD" ]; then
             echo "anaconda command not found. Installing anaconda-client..."
             conda install anaconda-client anaconda-auth -y
             ANACONDA_CMD="anaconda"
           fi
-          
+
           # Upload the noarch package
           for pkg in /tmp/conda-builds/*/*.tar.bz2; do
             if [ -f "$pkg" ]; then
               echo "Uploading noarch package: $pkg"
               UPLOAD_OUTPUT=$($ANACONDA_CMD upload --user atlanhq --label main "$pkg" 2>&1)
               UPLOAD_EXIT_CODE=$?
-              
+
               echo "Upload output for $pkg:"
               echo "$UPLOAD_OUTPUT"
               echo "Exit code: $UPLOAD_EXIT_CODE"
-              
+
               if [ $UPLOAD_EXIT_CODE -eq 0 ]; then
                 echo "Successfully uploaded: $pkg"
               elif echo "$UPLOAD_OUTPUT" | grep -q "already exists\|Conflict"; then
