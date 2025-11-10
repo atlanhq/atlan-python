@@ -615,7 +615,7 @@ class FluentSearch(CompoundQuery):
         clone = self.include_on_relations("name")
         clone._include_relationship_attributes = include
         return clone
-    
+
     def enable_full_restriction(self, enable: bool) -> "FluentSearch":
         """
         Add an attribute to enable full authorization restrictions for search results.

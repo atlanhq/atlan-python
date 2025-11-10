@@ -65,7 +65,7 @@ jobs:
             echo "🏷️ Manual trigger: Found 'run-async-tests' label"
             exit 0
           fi
-          
+
           # Check for changes in AIO-related paths
           if git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E "(pyatlan/.*aio/|tests/.*aio/)"; then
             echo "run-async-tests=true" >> $GITHUB_OUTPUT

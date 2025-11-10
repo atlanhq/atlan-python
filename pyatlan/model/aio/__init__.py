@@ -12,6 +12,7 @@ for all operations that involve API calls or iteration.
 from .asset import AsyncIndexSearchResults, AsyncSearchResults
 from .audit import AsyncAuditSearchResults
 from .core import AsyncAtlanRequest, AsyncAtlanResponse
+from .custom_metadata import AsyncCustomMetadataDict, AsyncCustomMetadataProxy
 from .group import AsyncGroupResponse
 from .keycloak_events import AsyncAdminEventResponse, AsyncKeycloakEventResponse
 from .lineage import AsyncLineageListResults
@@ -21,7 +22,6 @@ from .task import AsyncTaskSearchResponse
 from .translators import AsyncAtlanTagTranslator, AsyncBaseTranslator
 from .user import AsyncUserResponse
 from .workflow import AsyncWorkflowSearchResponse
-from .custom_metadata import AsyncCustomMetadataDict, AsyncCustomMetadataProxy
 
 __all__ = [
     # Asset search results

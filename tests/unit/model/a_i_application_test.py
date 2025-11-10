@@ -3,11 +3,11 @@ import pytest
 from pyatlan.model.assets import AIApplication
 from pyatlan.model.enums import AIApplicationDevelopmentStage
 from tests.unit.model.constants import (
-    AI_APPLICATION_VERSION,
-    AI_APPLICATION_NAME,
     AI_APPLICATION_DEVELOPMENT_STAGE,
-    AI_APPLICATION_QUALIFIED_NAME,
     AI_APPLICATION_DEVELOPMENT_STAGE_UPDATED,
+    AI_APPLICATION_NAME,
+    AI_APPLICATION_QUALIFIED_NAME,
+    AI_APPLICATION_VERSION,
 )
 
 
