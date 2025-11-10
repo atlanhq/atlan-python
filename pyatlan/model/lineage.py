@@ -276,7 +276,7 @@ class LineageListRequest(SearchRequest):
         "Any sub-graphs beyond the entities filtered out by these filters will not be included"
         "in the lineage result.",
     )
-    relation_attributes: Optional[str] = Field(
+    relation_attributes: Optional[List[str]] = Field(
         default=None,
         description="List of related attributes to be returned for each asset",
     )
