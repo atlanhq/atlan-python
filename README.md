@@ -293,7 +293,7 @@ atlan-python/
 ### Development Workflow
 
 1. **Models**: Generated from your Atlan instance's typedefs
-2. **Clients**: Hand-crafted for optimal developer experience  
+2. **Clients**: Hand-crafted for optimal developer experience
 3. **Tests**: Mix of unit (fast iteration) and integration (real validation)
 4. **Quality**: Automated formatting, linting, and type checking
 5. **Documentation**: Auto-generated from docstrings and examples
