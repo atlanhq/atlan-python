@@ -5,13 +5,15 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from pyatlan.client.aio.client import AsyncAtlanClient
-from pyatlan.errors import ErrorCode, NotFoundError
+from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
 from pyatlan.model.aio.custom_metadata import (
     AsyncCustomMetadataDict,
     AsyncCustomMetadataProxy,
     AsyncCustomMetadataRequest,
 )
 from pyatlan.model.assets.core.asset import Asset
+from pyatlan.model.enums import AtlanCustomAttributePrimitiveType
+from pyatlan.model.typedef import AttributeDef
 
 ATTR_LAST_NAME = "Last Name"
 ATTR_LAST_NAME_ID = "2"
@@ -469,3 +471,98 @@ class TestAsyncReferenceableCustomMetadata:
             assert asset._async_metadata_proxy is not None
             assert asset._metadata_proxy is not None
             assert asset._async_metadata_proxy != asset._metadata_proxy
+
+
+class TestAsyncAttributeDefRichText:
+    """Test async RICH_TEXT AttributeDef functionality"""
+
+    @pytest.mark.asyncio
+    async def test_async_rich_text_attribute_creation(self, client: AsyncAtlanClient):
+        """Test that RICH_TEXT attributes are created correctly using async method"""
+
+        # Mock the client.asset.search method that _get_all_qualified_names_async calls
+        with patch.object(
+            client.asset, "search", new_callable=AsyncMock
+        ) as mock_search:
+            # Mock an empty search result
+            async def async_generator():
+                return
+                yield  # pragma: no cover
+
+            mock_search.return_value = async_generator()
+
+            attr_def = await AttributeDef.create_async(
+                client=client,
+                display_name="Rich Content",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                description="Test rich text attribute",
+            )
+
+        assert attr_def.display_name == "Rich Content"
+        assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+        assert attr_def.description == "Test rich text attribute"
+        assert attr_def.options
+        assert attr_def.options.is_rich_text is True
+        assert attr_def.options.multi_value_select is False
+
+    @pytest.mark.asyncio
+    async def test_async_rich_text_cannot_be_multi_valued(
+        self, client: AsyncAtlanClient
+    ):
+        """Test that async RICH_TEXT attributes cannot be multi-valued"""
+
+        # Mock the client.asset.search method that _get_all_qualified_names_async calls
+        with patch.object(
+            client.asset, "search", new_callable=AsyncMock
+        ) as mock_search:
+            # Mock an empty search result
+            async def async_generator():
+                return
+                yield  # pragma: no cover
+
+            mock_search.return_value = async_generator()
+
+            with pytest.raises(AtlanError) as exc_info:
+                await AttributeDef.create_async(
+                    client=client,
+                    display_name="Invalid Rich Text",
+                    attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                    multi_valued=True,
+                )
+
+        error = exc_info.value
+        assert "ATLAN-PYTHON-400-076" in str(error)
+
+    @pytest.mark.asyncio
+    async def test_async_rich_text_options_configuration(
+        self, client: AsyncAtlanClient
+    ):
+        """Test that async RICH_TEXT options are configured correctly"""
+
+        # Mock the client.asset.search method that _get_all_qualified_names_async calls
+        with patch.object(
+            client.asset, "search", new_callable=AsyncMock
+        ) as mock_search:
+            # Mock an empty search result
+            async def async_generator():
+                return
+                yield  # pragma: no cover
+
+            mock_search.return_value = async_generator()
+
+            attr_def = await AttributeDef.create_async(
+                client=client,
+                display_name="Rich Text Field",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+            )
+
+        options = attr_def.options
+        assert options is not None
+        # Rich text uses string primitive type
+        assert options.primitive_type == AtlanCustomAttributePrimitiveType.STRING.value
+        # Should have rich text flag enabled
+        assert options.is_rich_text is True
+        # Cannot be multi-valued
+        assert options.multi_value_select is False
+        # Should not have custom_type set (that's for SQL, URL, etc.)
+        assert not hasattr(options, "custom_type") or options.custom_type is None

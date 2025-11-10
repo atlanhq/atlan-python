@@ -668,6 +668,13 @@ class ErrorCode(Enum):
         "Use client.asset.set_dq_row_scope_filter_column() to configure the row scope filter column first.",
         InvalidRequestError,
     )
+    INVALID_RICH_TEXT_CREATION = (
+        400,
+        "ATLAN-PYTHON-400-076",
+        "Rich text attributes cannot be multi-valued for '{0}'.",
+        "Set multi_valued=False when creating rich text attributes.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

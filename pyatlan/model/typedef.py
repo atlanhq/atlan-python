@@ -547,6 +547,10 @@ class AttributeDef(AtlanObject):
             "These cover any asset type that is not managed within a connection or a glossary. "
             "Only assets of one of these types will have this attribute available.",
         )
+        is_rich_text: Optional[bool] = Field(
+            default=False,
+            description="Whether this attribute supports rich text formatting (True) or not (False). ",
+        )
 
         def __setattr__(self, name, value):
             super().__setattr__(name, value)
@@ -579,6 +583,7 @@ class AttributeDef(AtlanObject):
                 multi_value_select=False,
                 show_in_overview=False,
                 is_enum=False,
+                is_rich_text=False,
             )
             if attribute_type in (
                 AtlanCustomAttributePrimitiveType.USERS,
@@ -590,6 +595,11 @@ class AttributeDef(AtlanObject):
             elif attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS:
                 options.is_enum = True
                 options.enum_type = options_name
+            elif attribute_type == AtlanCustomAttributePrimitiveType.RICH_TEXT:
+                # For RichText, we set the primitive type as string and enable rich text
+                options.is_rich_text = True
+                # Rich text attributes cannot be multi-valued
+                options.multi_value_select = False
             return options
 
     is_new: Optional[bool] = Field(
@@ -935,6 +945,14 @@ class AttributeDef(AtlanObject):
             ["display_name", "attribute_type"],
             [display_name, attribute_type],
         )
+        # RichText attributes cannot be multi-valued
+        if (
+            attribute_type == AtlanCustomAttributePrimitiveType.RICH_TEXT
+            and multi_valued
+        ):
+            raise ErrorCode.INVALID_RICH_TEXT_CREATION.exception_with_parameters(
+                display_name
+            )
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
         attr_def = AttributeDef(
             display_name=display_name,
@@ -1035,6 +1053,14 @@ class AttributeDef(AtlanObject):
             ["display_name", "attribute_type"],
             [display_name, attribute_type],
         )
+        # RichText attributes cannot be multi-valued
+        if (
+            attribute_type == AtlanCustomAttributePrimitiveType.RICH_TEXT
+            and multi_valued
+        ):
+            raise ErrorCode.INVALID_RICH_TEXT_CREATION.exception_with_parameters(
+                display_name
+            )
 
         # Async version of _get_all_qualified_names helper
         async def _get_all_qualified_names_async(asset_type: str):

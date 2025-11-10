@@ -11,7 +11,7 @@ import pytest
 from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
-from pyatlan.errors import InvalidRequestError, NotFoundError
+from pyatlan.errors import AtlanError, InvalidRequestError, NotFoundError
 from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.typedef import (
     AtlanTagDef,
@@ -479,3 +479,58 @@ class TestAttributeDef:
                 attr_def.type_name
                 == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
             )
+
+    def test_rich_text_attribute_creation(self, client: AtlanClient):
+        """Test that RICH_TEXT attributes are created with correct options"""
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Rich Content",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                description="Test rich text attribute",
+            )
+
+        assert attr_def.display_name == "Rich Content"
+        assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+        assert attr_def.description == "Test rich text attribute"
+        assert attr_def.options
+        assert attr_def.options.is_rich_text is True
+        assert attr_def.options.multi_value_select is False
+
+    def test_rich_text_cannot_be_multi_valued(self, client: AtlanClient):
+        """Test that RICH_TEXT attributes cannot be multi-valued"""
+
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            with pytest.raises(AtlanError) as exc_info:
+                AttributeDef.create(
+                    client=client,
+                    display_name="Invalid Rich Text",
+                    attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                    multi_valued=True,
+                )
+
+        error = exc_info.value
+        assert "ATLAN-PYTHON-400-076" in str(error)
+
+    def test_rich_text_options_configuration(self, client: AtlanClient):
+        """Test that RICH_TEXT options are configured correctly"""
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Rich Text Field",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+            )
+
+        options = attr_def.options
+        assert options is not None
+        # Rich text uses string primitive type
+        assert options.primitive_type == AtlanCustomAttributePrimitiveType.STRING.value
+        # Should have rich text flag enabled
+        assert options.is_rich_text is True
+        # Cannot be multi-valued
+        assert options.multi_value_select is False
+        # Should not have custom_type set (that's for SQL, URL, etc.)
+        assert not hasattr(options, "custom_type") or options.custom_type is None
