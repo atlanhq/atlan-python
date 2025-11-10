@@ -32,6 +32,7 @@ from pyatlan.model.lineage import (
     FilterList,
     FluentLineage,
     LineageGraph,
+    LineageListRequest,
     LineageRelation,
     LineageResponse,
 )
@@ -596,7 +597,8 @@ GOOD_DEPTH = 1
 GOOD_EXCLUDE_MEANINGS = False
 GOOD_EXCLUDE_CLASSIFICATIONS = True
 GOOD_INCLUDES_IN_RESULTS: List[AtlanField] = []
-GOOD_INCLUDE_ON_RESULTS: List[LineageFilter] = []
+GOOD_INCLUDES_ON_RESULTS: List[LineageFilter] = []
+GOOD_INCLUDES_ON_RELATIONS: List[AtlanField] = []
 GOOD_WHERE_ASSETS: List[LineageFilter] = []
 GOOD_WHERE_RELATIONSHIPS: List[LineageFilter] = []
 BAD_STRING = True
@@ -616,7 +618,7 @@ class TestFluentLineage:
 
     @pytest.mark.parametrize(
         "starting_guid, depth, direction, size, exclude_meanings, exclude_atlan_tags, includes_in_results, "
-        "includes_on_results, where_assets, where_relationships, message",
+        "includes_on_results, includes_on_relations, where_assets, where_relationships, message",
         [
             (
                 None,
@@ -626,7 +628,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\nstarting_guid\n  none is not an allowed value "
@@ -640,7 +643,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\nstarting_guid\n  str type expected \(type=type_error.str\)",
@@ -653,7 +657,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\ndepth\n  value is not a valid integer \(type=type_error.integer\)",
@@ -666,7 +671,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\ndirection\n  value is not a valid enumeration member; permitted:",
@@ -679,7 +685,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\nsize\n  value is not a valid integer \(type=type_error.integer\)",
@@ -692,7 +699,8 @@ class TestFluentLineage:
                 BAD_BOOL,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\nexclude_meanings\n  value is not a valid boolean "
@@ -706,7 +714,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 BAD_BOOL,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"1 validation error for Init\nexclude_atlan_tags\n  value is not a valid boolean "
@@ -720,7 +729,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 BAD_LINEAGE_FILTER_LIST,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"3 validation errors for Init\nincludes_in_results",
@@ -734,6 +744,7 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
                 BAD_LINEAGE_FILTER_LIST,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"4 validation errors for Init\nincludes_on_results",
@@ -746,7 +757,22 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                BAD_LINEAGE_FILTER_LIST,
+                GOOD_WHERE_ASSETS,
+                GOOD_WHERE_RELATIONSHIPS,
+                r"4 validation errors for Init\nincludes_on_relations",
+            ),
+            (
+                GOOD_GUID,
+                GOOD_DEPTH,
+                LineageDirection.DOWNSTREAM,
+                GOOD_SIZE,
+                GOOD_EXCLUDE_MEANINGS,
+                GOOD_EXCLUDE_CLASSIFICATIONS,
+                GOOD_INCLUDES_IN_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_RELATIONSHIPS,
                 r"3 validation errors for Init\nwhere_assets",
@@ -759,7 +785,8 @@ class TestFluentLineage:
                 GOOD_EXCLUDE_MEANINGS,
                 GOOD_EXCLUDE_CLASSIFICATIONS,
                 GOOD_INCLUDES_IN_RESULTS,
-                GOOD_INCLUDE_ON_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 BAD_LINEAGE_FILTER_LIST,
                 r"3 validation errors for Init\nwhere_relationships",
@@ -776,6 +803,7 @@ class TestFluentLineage:
         exclude_atlan_tags,
         includes_in_results,
         includes_on_results,
+        includes_on_relations,
         where_assets,
         where_relationships,
         message,
@@ -790,9 +818,105 @@ class TestFluentLineage:
                 exclude_atlan_tags=exclude_atlan_tags,
                 includes_on_results=includes_on_results,
                 includes_in_results=includes_in_results,
+                includes_on_relations=includes_on_relations,
                 where_assets=where_assets,
                 where_relationships=where_relationships,
             )
+
+    @pytest.mark.parametrize(
+        "starting_guid, depth, direction, size, exclude_meanings, exclude_atlan_tags, includes_in_results, "
+        "includes_on_results, includes_on_relations, where_assets, where_relationships",
+        [
+            (
+                GOOD_GUID,
+                GOOD_DEPTH,
+                LineageDirection.DOWNSTREAM,
+                GOOD_SIZE,
+                GOOD_EXCLUDE_MEANINGS,
+                GOOD_EXCLUDE_CLASSIFICATIONS,
+                GOOD_INCLUDES_IN_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                ["some_field", "another_field"],
+                GOOD_WHERE_ASSETS,
+                GOOD_WHERE_RELATIONSHIPS,
+            ),
+            (
+                GOOD_GUID,
+                GOOD_DEPTH,
+                LineageDirection.DOWNSTREAM,
+                GOOD_SIZE,
+                GOOD_EXCLUDE_MEANINGS,
+                GOOD_EXCLUDE_CLASSIFICATIONS,
+                GOOD_INCLUDES_IN_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                [Asset.DESCRIPTION, Asset.OWNER_GROUPS],
+                GOOD_WHERE_ASSETS,
+                GOOD_WHERE_RELATIONSHIPS,
+            ),
+            (
+                GOOD_GUID,
+                GOOD_DEPTH,
+                LineageDirection.DOWNSTREAM,
+                GOOD_SIZE,
+                GOOD_EXCLUDE_MEANINGS,
+                GOOD_EXCLUDE_CLASSIFICATIONS,
+                GOOD_INCLUDES_IN_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                "some_field",
+                GOOD_WHERE_ASSETS,
+                GOOD_WHERE_RELATIONSHIPS,
+            ),
+            (
+                GOOD_GUID,
+                GOOD_DEPTH,
+                LineageDirection.DOWNSTREAM,
+                GOOD_SIZE,
+                GOOD_EXCLUDE_MEANINGS,
+                GOOD_EXCLUDE_CLASSIFICATIONS,
+                GOOD_INCLUDES_IN_RESULTS,
+                GOOD_INCLUDES_ON_RESULTS,
+                Asset.NAME,
+                GOOD_WHERE_ASSETS,
+                GOOD_WHERE_RELATIONSHIPS,
+            ),
+        ],
+    )
+    def test_init_and_request_for_includes_on_relations(
+        self,
+        starting_guid,
+        depth,
+        direction,
+        size,
+        exclude_meanings,
+        exclude_atlan_tags,
+        includes_in_results,
+        includes_on_results,
+        includes_on_relations,
+        where_assets,
+        where_relationships,
+    ):
+        fl = FluentLineage(
+            starting_guid=starting_guid,
+            depth=depth,
+            direction=direction,
+            size=size,
+            exclude_meanings=exclude_meanings,
+            exclude_atlan_tags=exclude_atlan_tags,
+            includes_on_results=includes_on_results,
+            includes_in_results=includes_in_results,
+            includes_on_relations=includes_on_relations,
+            where_assets=where_assets,
+            where_relationships=where_relationships,
+        )
+        assert isinstance(fl.request, LineageListRequest)
+        if isinstance(includes_on_relations, str) or isinstance(
+            includes_on_relations, AtlanField
+        ):
+            assert (
+                len(fl.request.relation_attributes) == [includes_on_relations].__len__()
+            )
+        else:
+            assert len(fl.request.relation_attributes) == len(includes_on_relations)
 
     def test_request_with_defaults(self, sut: FluentLineage):
         request = sut.request
