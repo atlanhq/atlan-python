@@ -1143,6 +1143,7 @@ def test_search_user_def_relationship_on_terms(
         .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_TO)
         .include_on_results(AtlasGlossaryTerm.USER_DEF_RELATIONSHIP_FROM)
         .include_relationship_attributes(True)
+        .enable_full_restriction(True)
         .execute(client=client)
     )
     assert results and results.count == 2
