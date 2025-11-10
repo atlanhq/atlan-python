@@ -1,10 +1,25 @@
+## 8.4.1 (November 10, 2025)
+
+### New Features
+
+- Added support for `enable_full_restriction` to `IndexSearchRequest` & `FluentSearch`.
+- Added support for new custom metadata attribute type: `AtlanCustomAttributePrimitiveType.RichText`.
+
+### Bug Fixes
+
+- Fixed field type for `LineageListRequest.relation_attributes` to be `Optional[List[str]]`.
+
+### QOL Improvements
+
+- Updated source tag search with value query to match latest frontend changes.
+
 ## 8.4.0 (October 30, 2025)
 
 ### Bug Fixes
 
 - Fixed source tag search with value.
 - Fixed missing `needs_type_filter ` check on asset  `superTypeName`.
-  
+
 ### QOL Improvements
 
 - Bumped SDK core and development dependencies to the latest version.
@@ -90,7 +105,7 @@ export SSL_CERT_FILE=mitmproxy-ca-cert.pem
 
 ### Other Changes
 
-- Deprecated `DatabricksCrawler.basic_auth()` - use `pat()` authentication method instead.  
+- Deprecated `DatabricksCrawler.basic_auth()` - use `pat()` authentication method instead.
 
 ## 8.1.0 (September 15, 2025)
 
