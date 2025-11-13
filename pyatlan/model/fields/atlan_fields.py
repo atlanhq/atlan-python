@@ -593,6 +593,45 @@ class KeywordTextField(KeywordField, TextField):
         return self._text_field_name
 
 
+class KeywordTextDelimitedField(KeywordTextField):
+    """
+    Represents any field in Atlan that can be searched by keyword or text-based search operations,
+    including a delimited variation using the atlan_text_analyzer_v2 analyzer.
+    """
+
+    delimited_field_name: StrictStr
+
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        keyword_field_name: StrictStr,
+        text_field_name: StrictStr,
+        delimited_field_name: StrictStr,
+    ):
+        """
+        Default constructor.
+
+        :param atlan_field_name: name of the attribute in the metastore
+        :param keyword_field_name: name of the keyword field in the search index
+        :param text_field_name: name of the text field in the search index
+        :param delimited_field_name: name of the delimited text field in the search index
+        """
+        super().__init__(atlan_field_name, keyword_field_name, text_field_name)
+        self.delimited_field_name = delimited_field_name
+
+    def match_delimited(self, value: StrictStr) -> Query:
+        """
+        Returns a query that will textually match the provided value against the field. This
+        analyzes the provided value according to the atlan_text_analyzer_v2 analyzer which
+        tokenizes on common delimiters.
+
+        :param value: the string value to match against
+        :returns: a query that will only match assets whose analyzed value for the field matches the value provided
+                  (which will also be analyzed using the delimited analyzer)
+        """
+        return Match(field=self.delimited_field_name, query=value)
+
+
 class InternalKeywordTextField(KeywordTextField):
     """Represents any field in Atlan that can be searched by keyword or text-based search operations, and can also
     be searched against a special internal field directly within Atlan."""
