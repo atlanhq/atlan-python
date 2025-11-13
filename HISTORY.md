@@ -1,3 +1,13 @@
+## 8.4.2 (November 13, 2025)
+
+### New Features
+
+- Added DQ permissions enum.
+
+### Bug Fixes
+
+- Fixed time range condition in `WorkflowClient.find_runs_by_status_and_time_range()`
+
 ## 8.4.1 (November 10, 2025)
 
 ### New Features
