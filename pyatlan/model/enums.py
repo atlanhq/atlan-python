@@ -2130,6 +2130,10 @@ class PersonaMetadataAction(str, Enum):
     REMOVE_ATLAN_TAG = "persona-entity-remove-classification"
     ATTACH_TERMS = "persona-add-terms"
     DETACH_TERMS = "persona-remove-terms"
+    DQ_CREATE = "persona-dq-create"
+    DQ_READ = "persona-dq-read"
+    DQ_UPDATE = "persona-dq-update"
+    DQ_DELETE = "persona-dq-delete"
 
 
 class PersonaDomainAction(str, Enum):
