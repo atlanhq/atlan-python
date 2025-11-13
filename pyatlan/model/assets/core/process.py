@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import hashlib
 from io import StringIO
-from typing import ClassVar, List, Optional, Set
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -16,6 +16,9 @@ from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextF
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset import Asset
+
+if TYPE_CHECKING:
+    from pyatlan.model.assets import BigqueryRoutine, FabricActivity, Procedure
 
 
 class Process(Asset, type_name="Process"):
@@ -123,7 +126,19 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
+    SQL_PROCEDURES: ClassVar[RelationField] = RelationField("sqlProcedures")
+    """
+    TBC
+    """
+    FABRIC_ACTIVITIES: ClassVar[RelationField] = RelationField("fabricActivities")
+    """
+    TBC
+    """
     ADF_ACTIVITY: ClassVar[RelationField] = RelationField("adfActivity")
+    """
+    TBC
+    """
+    BIGQUERY_ROUTINES: ClassVar[RelationField] = RelationField("bigqueryRoutines")
     """
     TBC
     """
@@ -162,7 +177,10 @@ class Process(Asset, type_name="Process"):
         "additional_etl_context",
         "ai_dataset_type",
         "flow_orchestrated_by",
+        "sql_procedures",
+        "fabric_activities",
         "adf_activity",
+        "bigquery_routines",
         "spark_jobs",
         "matillion_component",
         "airflow_tasks",
@@ -274,6 +292,26 @@ class Process(Asset, type_name="Process"):
         self.attributes.flow_orchestrated_by = flow_orchestrated_by
 
     @property
+    def sql_procedures(self) -> Optional[List[Procedure]]:
+        return None if self.attributes is None else self.attributes.sql_procedures
+
+    @sql_procedures.setter
+    def sql_procedures(self, sql_procedures: Optional[List[Procedure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_procedures = sql_procedures
+
+    @property
+    def fabric_activities(self) -> Optional[List[FabricActivity]]:
+        return None if self.attributes is None else self.attributes.fabric_activities
+
+    @fabric_activities.setter
+    def fabric_activities(self, fabric_activities: Optional[List[FabricActivity]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fabric_activities = fabric_activities
+
+    @property
     def adf_activity(self) -> Optional[AdfActivity]:
         return None if self.attributes is None else self.attributes.adf_activity
 
@@ -282,6 +320,16 @@ class Process(Asset, type_name="Process"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adf_activity = adf_activity
+
+    @property
+    def bigquery_routines(self) -> Optional[List[BigqueryRoutine]]:
+        return None if self.attributes is None else self.attributes.bigquery_routines
+
+    @bigquery_routines.setter
+    def bigquery_routines(self, bigquery_routines: Optional[List[BigqueryRoutine]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.bigquery_routines = bigquery_routines
 
     @property
     def spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -357,7 +405,16 @@ class Process(Asset, type_name="Process"):
         flow_orchestrated_by: Optional[FlowControlOperation] = Field(
             default=None, description=""
         )  # relationship
+        sql_procedures: Optional[List[Procedure]] = Field(
+            default=None, description=""
+        )  # relationship
+        fabric_activities: Optional[List[FabricActivity]] = Field(
+            default=None, description=""
+        )  # relationship
         adf_activity: Optional[AdfActivity] = Field(
+            default=None, description=""
+        )  # relationship
+        bigquery_routines: Optional[List[BigqueryRoutine]] = Field(
             default=None, description=""
         )  # relationship
         spark_jobs: Optional[List[SparkJob]] = Field(

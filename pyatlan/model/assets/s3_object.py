@@ -10,8 +10,9 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, S3ObjectLockMode
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -215,7 +216,29 @@ class S3Object(S3):
     """
     Version of this object. This is only applicable when versioning is enabled on the bucket in which this object exists.
     """  # noqa: E501
+    S3OBJECT_LOCK_RETAIN_UNTIL: ClassVar[NumericField] = NumericField(
+        "s3ObjectLockRetainUntil", "s3ObjectLockRetainUntil"
+    )
+    """
+    Time (epoch) when the object lock retention will expire.
+    """
+    S3OBJECT_LOCK_MODE: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectLockMode", "s3ObjectLockMode"
+    )
+    """
+    Mode of the object lock retention.
+    """
+    S3OBJECT_LOCK_LEGAL_HOLD_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "s3ObjectLockLegalHoldEnabled", "s3ObjectLockLegalHoldEnabled"
+    )
+    """
+    Whether the object lock legal hold is enabled (true) or not (false).
+    """
 
+    S3PREFIX: ClassVar[RelationField] = RelationField("s3Prefix")
+    """
+    TBC
+    """
     BUCKET: ClassVar[RelationField] = RelationField("bucket")
     """
     TBC
@@ -231,6 +254,10 @@ class S3Object(S3):
         "s3_object_content_type",
         "s3_object_content_disposition",
         "s3_object_version_id",
+        "s3_object_lock_retain_until",
+        "s3_object_lock_mode",
+        "s3_object_lock_legal_hold_enabled",
+        "s3_prefix",
         "bucket",
     ]
 
@@ -345,6 +372,60 @@ class S3Object(S3):
         self.attributes.s3_object_version_id = s3_object_version_id
 
     @property
+    def s3_object_lock_retain_until(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_lock_retain_until
+        )
+
+    @s3_object_lock_retain_until.setter
+    def s3_object_lock_retain_until(
+        self, s3_object_lock_retain_until: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_lock_retain_until = s3_object_lock_retain_until
+
+    @property
+    def s3_object_lock_mode(self) -> Optional[S3ObjectLockMode]:
+        return None if self.attributes is None else self.attributes.s3_object_lock_mode
+
+    @s3_object_lock_mode.setter
+    def s3_object_lock_mode(self, s3_object_lock_mode: Optional[S3ObjectLockMode]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_lock_mode = s3_object_lock_mode
+
+    @property
+    def s3_object_lock_legal_hold_enabled(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_lock_legal_hold_enabled
+        )
+
+    @s3_object_lock_legal_hold_enabled.setter
+    def s3_object_lock_legal_hold_enabled(
+        self, s3_object_lock_legal_hold_enabled: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_lock_legal_hold_enabled = (
+            s3_object_lock_legal_hold_enabled
+        )
+
+    @property
+    def s3_prefix(self) -> Optional[S3Prefix]:
+        return None if self.attributes is None else self.attributes.s3_prefix
+
+    @s3_prefix.setter
+    def s3_prefix(self, s3_prefix: Optional[S3Prefix]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_prefix = s3_prefix
+
+    @property
     def bucket(self) -> Optional[S3Bucket]:
         return None if self.attributes is None else self.attributes.bucket
 
@@ -368,6 +449,18 @@ class S3Object(S3):
             default=None, description=""
         )
         s3_object_version_id: Optional[str] = Field(default=None, description="")
+        s3_object_lock_retain_until: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        s3_object_lock_mode: Optional[S3ObjectLockMode] = Field(
+            default=None, description=""
+        )
+        s3_object_lock_legal_hold_enabled: Optional[bool] = Field(
+            default=None, description=""
+        )
+        s3_prefix: Optional[S3Prefix] = Field(
+            default=None, description=""
+        )  # relationship
         bucket: Optional[S3Bucket] = Field(default=None, description="")  # relationship
 
         @classmethod
@@ -481,5 +574,6 @@ class S3Object(S3):
 
 
 from .s3_bucket import S3Bucket  # noqa: E402, F401
+from .s3_prefix import S3Prefix  # noqa: E402, F401
 
 S3Object.Attributes.update_forward_refs()

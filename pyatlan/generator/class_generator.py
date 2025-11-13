@@ -267,7 +267,7 @@ class AssetInfo:
         "FabricReport",
         "FabricSemanticModel",
     }
-    _IGNORE_ASSETS = {}
+    _IGNORE_ASSETS = {}  # type: ignore[var-annotated]
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
@@ -322,9 +322,11 @@ class AssetInfo:
             # Though we import Column in data_quality_rule.py for type hinting purposes,
             if self.name == "DataQualityRule" and required_asset.name == "Column":
                 continue
+
             # FIXME: Temporary fix to avoid circular import issues
-            # Process cant have relationship to Procedure, 
-            # BigqueryRoutine, FabricActivity since its a super type is SQL
+            # Process cannot import relationship types for Procedure, BigqueryRoutine,
+            # and FabricActivity because these assets extend from SQL, which would
+            # create circular import dependencies
             if self.name == "Process" and required_asset.name in (
                 "Procedure",
                 "BigqueryRoutine",

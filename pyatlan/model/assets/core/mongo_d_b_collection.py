@@ -356,6 +356,10 @@ class MongoDBCollection(Table):
     """
     Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
     """  # noqa: E501
+    SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
+    """
+    Whether this asset is secure (true) or not (false).
+    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -425,6 +429,7 @@ class MongoDBCollection(Table):
         "is_profiled",
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
+        "sql_is_secure",
         "no_s_q_l_schema_definition",
         "mongo_d_b_database",
     ]
@@ -1136,6 +1141,16 @@ class MongoDBCollection(Table):
         )
 
     @property
+    def sql_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_is_secure
+
+    @sql_is_secure.setter
+    def sql_is_secure(self, sql_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_secure = sql_is_secure
+
+    @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
@@ -1250,6 +1265,7 @@ class MongoDBCollection(Table):
         sql_a_i_model_context_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sql_is_secure: Optional[bool] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""

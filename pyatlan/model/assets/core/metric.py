@@ -183,6 +183,6 @@ from .catalog import Catalog  # noqa: I001, E402, F401
 from .s_q_l import SQL  # noqa: I001, E402, F401
 
 
-from .column import Column  # noqa: E402, F401
-
 from .asset import Asset  # noqa: E402, F401
+
+from .column import Column  # noqa: E402, F401

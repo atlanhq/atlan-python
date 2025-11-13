@@ -120,6 +120,18 @@ class SapErpColumn(SAP):
     """
     Unique name of the SAP ERP CDS view in which this column asset exists.
     """
+    SAP_ERP_COLUMN_CHECK_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapErpColumnCheckTableName", "sapErpColumnCheckTableName"
+    )
+    """
+    Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column.
+    """
+    SAP_ERP_COLUMN_CHECK_TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "sapErpColumnCheckTableQualifiedName", "sapErpColumnCheckTableQualifiedName"
+    )
+    """
+    Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column.
+    """
     SAP_TECHNICAL_NAME: ClassVar[KeywordField] = KeywordField(
         "sapTechnicalName", "sapTechnicalName"
     )
@@ -258,6 +270,10 @@ class SapErpColumn(SAP):
     """
     Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
     """  # noqa: E501
+    SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
+    """
+    Whether this asset is secure (true) or not (false).
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -310,6 +326,8 @@ class SapErpColumn(SAP):
         "sap_erp_view_qualified_name",
         "sap_erp_cds_view_name",
         "sap_erp_cds_view_qualified_name",
+        "sap_erp_column_check_table_name",
+        "sap_erp_column_check_table_qualified_name",
         "sap_technical_name",
         "sap_logical_name",
         "sap_package_name",
@@ -334,6 +352,7 @@ class SapErpColumn(SAP):
         "is_profiled",
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
+        "sql_is_secure",
         "dbt_sources",
         "sap_erp_table",
         "sql_dbt_models",
@@ -519,6 +538,42 @@ class SapErpColumn(SAP):
             self.attributes = self.Attributes()
         self.attributes.sap_erp_cds_view_qualified_name = (
             sap_erp_cds_view_qualified_name
+        )
+
+    @property
+    def sap_erp_column_check_table_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sap_erp_column_check_table_name
+        )
+
+    @sap_erp_column_check_table_name.setter
+    def sap_erp_column_check_table_name(
+        self, sap_erp_column_check_table_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_column_check_table_name = (
+            sap_erp_column_check_table_name
+        )
+
+    @property
+    def sap_erp_column_check_table_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sap_erp_column_check_table_qualified_name
+        )
+
+    @sap_erp_column_check_table_qualified_name.setter
+    def sap_erp_column_check_table_qualified_name(
+        self, sap_erp_column_check_table_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sap_erp_column_check_table_qualified_name = (
+            sap_erp_column_check_table_qualified_name
         )
 
     @property
@@ -786,6 +841,16 @@ class SapErpColumn(SAP):
         )
 
     @property
+    def sql_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_is_secure
+
+    @sql_is_secure.setter
+    def sql_is_secure(self, sql_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_secure = sql_is_secure
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -897,6 +962,12 @@ class SapErpColumn(SAP):
         sap_erp_cds_view_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sap_erp_column_check_table_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        sap_erp_column_check_table_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         sap_technical_name: Optional[str] = Field(default=None, description="")
         sap_logical_name: Optional[str] = Field(default=None, description="")
         sap_package_name: Optional[str] = Field(default=None, description="")
@@ -925,6 +996,7 @@ class SapErpColumn(SAP):
         sql_a_i_model_context_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sql_is_secure: Optional[bool] = Field(default=None, description="")
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship

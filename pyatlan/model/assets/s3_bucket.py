@@ -128,11 +128,16 @@ class S3Bucket(S3):
     """
     TBC
     """
+    S3PREFIXES: ClassVar[RelationField] = RelationField("s3Prefixes")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "s3_object_count",
         "s3_bucket_versioning_enabled",
         "objects",
+        "s3_prefixes",
     ]
 
     @property
@@ -171,12 +176,25 @@ class S3Bucket(S3):
             self.attributes = self.Attributes()
         self.attributes.objects = objects
 
+    @property
+    def s3_prefixes(self) -> Optional[List[S3Prefix]]:
+        return None if self.attributes is None else self.attributes.s3_prefixes
+
+    @s3_prefixes.setter
+    def s3_prefixes(self, s3_prefixes: Optional[List[S3Prefix]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_prefixes = s3_prefixes
+
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(default=None, description="")
         s3_bucket_versioning_enabled: Optional[bool] = Field(
             default=None, description=""
         )
         objects: Optional[List[S3Object]] = Field(
+            default=None, description=""
+        )  # relationship
+        s3_prefixes: Optional[List[S3Prefix]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -223,5 +241,6 @@ class S3Bucket(S3):
 
 
 from .s3_object import S3Object  # noqa: E402, F401
+from .s3_prefix import S3Prefix  # noqa: E402, F401
 
 S3Bucket.Attributes.update_forward_refs()

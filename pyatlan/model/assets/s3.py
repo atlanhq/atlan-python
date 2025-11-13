@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -40,6 +40,18 @@ class S3(ObjectStore):
     """
 
     """
+    S3PARENT_PREFIX_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
+    )
+    """
+    Unique name of the immediate parent prefix in which this asset exists.
+    """
+    S3PREFIX_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "s3PrefixHierarchy", "s3PrefixHierarchy"
+    )
+    """
+    Ordered array of prefix assets with qualified name and name representing the complete prefix hierarchy path for this asset, from immediate parent to root prefix.
+    """  # noqa: E501
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
@@ -88,6 +100,8 @@ class S3(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
         "s3_encryption",
+        "s3_parent_prefix_qualified_name",
+        "s3_prefix_hierarchy",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -118,6 +132,34 @@ class S3(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_encryption = s3_encryption
+
+    @property
+    def s3_parent_prefix_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_parent_prefix_qualified_name
+        )
+
+    @s3_parent_prefix_qualified_name.setter
+    def s3_parent_prefix_qualified_name(
+        self, s3_parent_prefix_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_parent_prefix_qualified_name = (
+            s3_parent_prefix_qualified_name
+        )
+
+    @property
+    def s3_prefix_hierarchy(self) -> Optional[List[Dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.s3_prefix_hierarchy
+
+    @s3_prefix_hierarchy.setter
+    def s3_prefix_hierarchy(self, s3_prefix_hierarchy: Optional[List[Dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_prefix_hierarchy = s3_prefix_hierarchy
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -212,6 +254,12 @@ class S3(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(default=None, description="")
         s3_encryption: Optional[str] = Field(default=None, description="")
+        s3_parent_prefix_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        s3_prefix_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         aws_arn: Optional[str] = Field(default=None, description="")
         aws_partition: Optional[str] = Field(default=None, description="")
         aws_service: Optional[str] = Field(default=None, description="")

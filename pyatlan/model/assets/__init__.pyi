@@ -52,6 +52,7 @@ __all__ = [
     "AdfLinkedservice",
     "AdfActivity",
     "PowerBI",
+    "Fabric",
     "CosmosMongoDB",
     "DocumentDB",
     "DbtModelColumn",
@@ -75,6 +76,7 @@ __all__ = [
     "Link",
     "DataDomain",
     "DataProduct",
+    "Dremio",
     "Table",
     "Query",
     "Schema",
@@ -90,6 +92,7 @@ __all__ = [
     "Database",
     "CalculationView",
     "Procedure",
+    "Databricks",
     "SnowflakeTag",
     "MatillionGroup",
     "MatillionJob",
@@ -116,6 +119,18 @@ __all__ = [
     "PowerBIDataset",
     "PowerBIApp",
     "PowerBIPage",
+    "FabricVisual",
+    "FabricDashboard",
+    "FabricDataflow",
+    "FabricActivity",
+    "FabricPage",
+    "FabricWorkspace",
+    "FabricDataPipeline",
+    "FabricSemanticModelTable",
+    "FabricSemanticModelTableColumn",
+    "FabricDataflowEntityColumn",
+    "FabricReport",
+    "FabricSemanticModel",
     "CosmosMongoDBCollection",
     "CosmosMongoDBAccount",
     "CosmosMongoDBDatabase",
@@ -133,6 +148,9 @@ __all__ = [
     "SnowflakeAIModelContext",
     "DatabricksAIModelContext",
     "SnowflakeDynamicTable",
+    "BigqueryRoutine",
+    "DatabricksVolume",
+    "DatabricksVolumePath",
     "Task",
     "Form",
     "DataSet",
@@ -218,7 +236,6 @@ __all__ = [
     "CustomEntity",
     "BigqueryTag",
     "Snowflake",
-    "Databricks",
     "APISpec",
     "APIQuery",
     "APIObject",
@@ -343,6 +360,7 @@ __all__ = [
     "CassandraKeyspace",
     "DynamoDBTable",
     "S3Bucket",
+    "S3Prefix",
     "S3Object",
     "ADLSAccount",
     "ADLSContainer",
@@ -362,6 +380,14 @@ __all__ = [
     "SalesforceOrganization",
     "SalesforceDashboard",
     "SalesforceReport",
+    "DremioVirtualDataset",
+    "DremioColumn",
+    "DremioSpace",
+    "DremioPhysicalDataset",
+    "DremioFolder",
+    "DremioSource",
+    "DatabricksExternalLocation",
+    "DatabricksExternalLocationPath",
     "QlikStream",
     "AzureEventHub",
     "AzureEventHubConsumerGroup",
@@ -461,6 +487,7 @@ from .core.atlas_glossary_term import AtlasGlossaryTerm
 from .core.auth_policy import AuthPolicy
 from .core.b_i import BI
 from .core.b_i_process import BIProcess
+from .core.bigquery_routine import BigqueryRoutine
 from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
 from .core.column import Column
@@ -477,9 +504,12 @@ from .core.data_quality import DataQuality
 from .core.data_quality_rule import DataQualityRule
 from .core.data_quality_rule_template import DataQualityRuleTemplate
 from .core.database import Database
+from .core.databricks import Databricks
 from .core.databricks_a_i_model_context import DatabricksAIModelContext
 from .core.databricks_a_i_model_version import DatabricksAIModelVersion
 from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
+from .core.databricks_volume import DatabricksVolume
+from .core.databricks_volume_path import DatabricksVolumePath
 from .core.dbt import Dbt
 from .core.dbt_metric import DbtMetric
 from .core.dbt_model import DbtModel
@@ -490,7 +520,21 @@ from .core.dbt_test import DbtTest
 from .core.document_d_b import DocumentDB
 from .core.document_d_b_collection import DocumentDBCollection
 from .core.document_d_b_database import DocumentDBDatabase
+from .core.dremio import Dremio
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
+from .core.fabric import Fabric
+from .core.fabric_activity import FabricActivity
+from .core.fabric_dashboard import FabricDashboard
+from .core.fabric_data_pipeline import FabricDataPipeline
+from .core.fabric_dataflow import FabricDataflow
+from .core.fabric_dataflow_entity_column import FabricDataflowEntityColumn
+from .core.fabric_page import FabricPage
+from .core.fabric_report import FabricReport
+from .core.fabric_semantic_model import FabricSemanticModel
+from .core.fabric_semantic_model_table import FabricSemanticModelTable
+from .core.fabric_semantic_model_table_column import FabricSemanticModelTableColumn
+from .core.fabric_visual import FabricVisual
+from .core.fabric_workspace import FabricWorkspace
 from .core.file import File
 from .core.fivetran import Fivetran
 from .core.fivetran_connector import FivetranConnector
@@ -577,7 +621,8 @@ from .custom_entity import CustomEntity
 from .data_set import DataSet
 from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
-from .databricks import Databricks
+from .databricks_external_location import DatabricksExternalLocation
+from .databricks_external_location_path import DatabricksExternalLocationPath
 from .databricks_notebook import DatabricksNotebook
 from .dataverse import Dataverse
 from .dataverse_attribute import DataverseAttribute
@@ -590,6 +635,12 @@ from .domo_card import DomoCard
 from .domo_dashboard import DomoDashboard
 from .domo_dataset import DomoDataset
 from .domo_dataset_column import DomoDatasetColumn
+from .dremio_column import DremioColumn
+from .dremio_folder import DremioFolder
+from .dremio_physical_dataset import DremioPhysicalDataset
+from .dremio_source import DremioSource
+from .dremio_space import DremioSpace
+from .dremio_virtual_dataset import DremioVirtualDataset
 from .dynamo_d_b import DynamoDB
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
 from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
@@ -676,6 +727,7 @@ from .response import Response
 from .s3 import S3
 from .s3_bucket import S3Bucket
 from .s3_object import S3Object
+from .s3_prefix import S3Prefix
 from .s_a_p import SAP
 from .saa_s import SaaS
 from .salesforce import Salesforce

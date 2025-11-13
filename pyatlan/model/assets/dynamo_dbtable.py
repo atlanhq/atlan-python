@@ -294,6 +294,10 @@ class DynamoDBTable(Table):
     """
     Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
     """  # noqa: E501
+    SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
+    """
+    Whether this asset is secure (true) or not (false).
+    """
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -391,6 +395,7 @@ class DynamoDBTable(Table):
         "is_profiled",
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
+        "sql_is_secure",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
@@ -928,6 +933,16 @@ class DynamoDBTable(Table):
         )
 
     @property
+    def sql_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_is_secure
+
+    @sql_is_secure.setter
+    def sql_is_secure(self, sql_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_secure = sql_is_secure
+
+    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -1110,6 +1125,7 @@ class DynamoDBTable(Table):
         sql_a_i_model_context_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sql_is_secure: Optional[bool] = Field(default=None, description="")
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )

@@ -10,7 +10,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import OpenLineageRunState
-from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
+from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 
 from .catalog import Catalog
 
@@ -62,12 +62,20 @@ class Spark(Catalog):
     OpenLineage state of the Spark Job run eg. COMPLETE
     """
 
+    SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS: ClassVar[RelationField] = RelationField(
+        "sparkOrchestratedByAirflowAssets"
+    )
+    """
+    TBC
+    """
+
     _convenience_properties: ClassVar[List[str]] = [
         "spark_run_version",
         "spark_run_open_lineage_version",
         "spark_run_start_time",
         "spark_run_end_time",
         "spark_run_open_lineage_state",
+        "spark_orchestrated_by_airflow_assets",
     ]
 
     @property
@@ -132,6 +140,24 @@ class Spark(Catalog):
             self.attributes = self.Attributes()
         self.attributes.spark_run_open_lineage_state = spark_run_open_lineage_state
 
+    @property
+    def spark_orchestrated_by_airflow_assets(self) -> Optional[List[Airflow]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.spark_orchestrated_by_airflow_assets
+        )
+
+    @spark_orchestrated_by_airflow_assets.setter
+    def spark_orchestrated_by_airflow_assets(
+        self, spark_orchestrated_by_airflow_assets: Optional[List[Airflow]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.spark_orchestrated_by_airflow_assets = (
+            spark_orchestrated_by_airflow_assets
+        )
+
     class Attributes(Catalog.Attributes):
         spark_run_version: Optional[str] = Field(default=None, description="")
         spark_run_open_lineage_version: Optional[str] = Field(
@@ -142,6 +168,9 @@ class Spark(Catalog):
         spark_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
             default=None, description=""
         )
+        spark_orchestrated_by_airflow_assets: Optional[List[Airflow]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: Spark.Attributes = Field(
         default_factory=lambda: Spark.Attributes(),
@@ -151,3 +180,6 @@ class Spark(Catalog):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+from .airflow import Airflow  # noqa: E402, F401
