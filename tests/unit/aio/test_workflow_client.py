@@ -16,6 +16,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
+from pyatlan.model.search import Range
 from pyatlan.model.workflow import (
     PackageParameter,
     ScheduleQueriesSearchRequest,
@@ -299,17 +300,31 @@ async def test_find_runs_by_status_and_time_range(
     status = [AtlanWorkflowPhase.SUCCESS, AtlanWorkflowPhase.FAILED]
     started_at = "now-2h"
     finished_at = "now-1h"
-    assert await async_client.find_runs_by_status_and_time_range(
+    response = await async_client.find_runs_by_status_and_time_range(
         status=status,
         started_at=started_at,
         finished_at=finished_at,
         from_=10,
         size=5,
-    ) == WorkflowSearchResponse(**raw_json)
-    mock_api_caller._call_api.assert_called_once()
-    assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
     )
+    assert response == WorkflowSearchResponse(**raw_json)
+    mock_api_caller._call_api.assert_called_once()
+    request_obj = mock_api_caller._call_api.call_args.kwargs["request_obj"]
+    assert isinstance(request_obj, WorkflowSearchRequest)
+    assert request_obj.query
+    range_filters = [
+        clause
+        for clause in request_obj.query.must  # type: ignore
+        if isinstance(clause, Range)
+    ]
+    assert any(
+        rf.field == "status.startedAt" and rf.gte == started_at for rf in range_filters
+    )
+    finished_filters = [rf for rf in range_filters if rf.field == "status.finishedAt"]
+    assert len(finished_filters) == 1
+    finished_filter = finished_filters[0]
+    assert finished_filter.lte == finished_at
+    assert finished_filter.gte is None
 
 
 @pytest.mark.asyncio

@@ -142,7 +142,7 @@ class WorkflowClient:
         if started_at:
             time_filters.append(Range(field="status.startedAt", gte=started_at))
         if finished_at:
-            time_filters.append(Range(field="status.finishedAt", gte=finished_at))
+            time_filters.append(Range(field="status.finishedAt", lte=finished_at))
 
         run_lookup_query = Bool(
             must=[
