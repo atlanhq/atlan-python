@@ -223,7 +223,7 @@ class AssetInfo:
     entity_defs_by_name: Dict[str, EntityDef] = {}
     sub_type_names_to_ignore: Set[str] = set()
     is_core_asset: bool = False
-    _ASSETS_REQUIRE_CLIENT = {
+    _ASSETS_REQUIRE_TYPE_CHECKING = {
         "Badge",
         "Collection",
         "Connection",
@@ -231,6 +231,7 @@ class AssetInfo:
         "Referenceable",
         "Purpose",
         "DataQualityRule",
+        "Process",
     }
     _ASSETS_REQUIRE_ASYNC_CLIENT = {
         "Badge",
@@ -253,7 +254,20 @@ class AssetInfo:
         "DocumentDBCollection",
         "FlowDataset",
         "DatabricksAIModelVersion",
+        "Fabric",
+        "FabricDashboard",
+        "FabricDataflow",
+        "FabricActivity",
+        "FabricPage",
+        "FabricWorkspace",
+        "FabricDataPipeline",
+        "FabricSemanticModelTable",
+        "FabricSemanticModelTableColumn",
+        "FabricDataflowEntityColumn",
+        "FabricReport",
+        "FabricSemanticModel",
     }
+    _IGNORE_ASSETS = {}  # type: ignore[var-annotated]
 
     def __init__(self, name: str, entity_def: EntityDef):
         self._name = name
@@ -304,6 +318,21 @@ class AssetInfo:
         imports = []
 
         for required_asset in self.required_asset_infos:
+            # To avoid circular import issues with DataQualityRule and Column
+            # Though we import Column in data_quality_rule.py for type hinting purposes,
+            if self.name == "DataQualityRule" and required_asset.name == "Column":
+                continue
+
+            # FIXME: Temporary fix to avoid circular import issues
+            # Process cannot import relationship types for Procedure, BigqueryRoutine,
+            # and FabricActivity because these assets extend from SQL, which would
+            # create circular import dependencies
+            if self.name == "Process" and required_asset.name in (
+                "Procedure",
+                "BigqueryRoutine",
+                "FabricActivity",
+            ):
+                continue
             if not self.is_core_asset and required_asset.is_core_asset:
                 import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
             else:
@@ -357,6 +386,8 @@ class AssetInfo:
         relationship_attribute_defs = self.entity_def.relationship_attribute_defs or []
         for attribute in attribute_defs + relationship_attribute_defs:
             type_name = attribute["typeName"].replace("array<", "").replace(">", "")
+            # if type_name in AssetInfo._IGNORE_ASSETS:
+            #     continue
             if type_name == self._name:
                 continue
             if type_name in AssetInfo.super_type_names_to_ignore:
@@ -438,6 +469,9 @@ class AssetInfo:
             cls.hierarchy_graph, REFERENCEABLE
         ):
             for asset_name in [parent_name] + successors:
+                # if asset_name in cls._IGNORE_ASSETS:
+                #     print(f"Ignoring asset {asset_name}")
+                #     continue
                 asset_info = cls.asset_info_by_name[asset_name]
                 asset_info.order = order
                 order += 1

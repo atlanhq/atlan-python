@@ -68,6 +68,10 @@ class Database(SQL):
     Number of schemas in this database.
     """
 
+    FABRIC_WORKSPACE: ClassVar[RelationField] = RelationField("fabricWorkspace")
+    """
+    TBC
+    """
     SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
     """
     TBC
@@ -75,6 +79,7 @@ class Database(SQL):
 
     _convenience_properties: ClassVar[List[str]] = [
         "schema_count",
+        "fabric_workspace",
         "schemas",
     ]
 
@@ -89,6 +94,16 @@ class Database(SQL):
         self.attributes.schema_count = schema_count
 
     @property
+    def fabric_workspace(self) -> Optional[FabricWorkspace]:
+        return None if self.attributes is None else self.attributes.fabric_workspace
+
+    @fabric_workspace.setter
+    def fabric_workspace(self, fabric_workspace: Optional[FabricWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fabric_workspace = fabric_workspace
+
+    @property
     def schemas(self) -> Optional[List[Schema]]:
         return None if self.attributes is None else self.attributes.schemas
 
@@ -100,6 +115,9 @@ class Database(SQL):
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(default=None, description="")
+        fabric_workspace: Optional[FabricWorkspace] = Field(
+            default=None, description=""
+        )  # relationship
         schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
@@ -131,4 +149,5 @@ class Database(SQL):
     )
 
 
+from .fabric_workspace import FabricWorkspace  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

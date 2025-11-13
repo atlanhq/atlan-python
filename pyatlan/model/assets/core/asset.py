@@ -33,7 +33,12 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import PopularityInsights, StarredDetails
+from pyatlan.model.structs import (
+    AssetExternalDQMetadata,
+    AssetGCPDataplexMetadata,
+    PopularityInsights,
+    StarredDetails,
+)
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .referenceable import Referenceable
@@ -1049,6 +1054,12 @@ class Asset(Referenceable):
     """
     Name of the icon to use for this asset. (Only applies to glossaries, currently.)
     """
+    ASSET_EXTERNAL_DQ_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
+    )
+    """
+    DQ metadata captured for asset from external DQ tool(s).
+    """
     IS_PARTIAL: ClassVar[BooleanField] = BooleanField("isPartial", "isPartial")
     """
     Indicates this asset is not fully-known, if true.
@@ -1284,6 +1295,36 @@ class Asset(Referenceable):
     """
     Qualified name of the column used for row scope filtering in DQ rules for this asset.
     """
+    ASSET_SPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetSpaceQualifiedName", "assetSpaceQualifiedName"
+    )
+    """
+    Unique name of the space that contains this asset.
+    """
+    ASSET_SPACE_NAME: ClassVar[KeywordField] = KeywordField(
+        "assetSpaceName", "assetSpaceName"
+    )
+    """
+    Name of the space that contains this asset.
+    """
+    ASSET_V3GCP_DATAPLEX_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "assetV3GCPDataplexMetadataDetails", "assetV3GCPDataplexMetadataDetails"
+    )
+    """
+    Metrics captured by GCP Dataplex for objects associated with GCP services..
+    """
+    ASSET_V3GCP_DATAPLEX_ASPECT_LIST: ClassVar[KeywordField] = KeywordField(
+        "assetV3GCPDataplexAspectList", "assetV3GCPDataplexAspectList"
+    )
+    """
+    List of names of all Aspects linked to this asset.
+    """
+    ASSET_V3GCP_DATAPLEX_ASPECT_FIELD_LIST: ClassVar[KeywordField] = KeywordField(
+        "assetV3GCPDataplexAspectFieldList", "assetV3GCPDataplexAspectFieldList"
+    )
+    """
+    List of field key-values associated with all Aspects linked to this asset.
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1511,6 +1552,7 @@ class Asset(Referenceable):
         "asset_soda_check_statuses",
         "asset_soda_source_url",
         "asset_icon",
+        "asset_external_d_q_metadata_details",
         "is_partial",
         "is_a_i_generated",
         "asset_cover_image",
@@ -1551,6 +1593,11 @@ class Asset(Referenceable):
         "asset_d_q_freshness_value",
         "asset_d_q_freshness_expectation",
         "asset_d_q_row_scope_filter_column_qualified_name",
+        "asset_space_qualified_name",
+        "asset_space_name",
+        "asset_v3_g_c_p_dataplex_metadata_details",
+        "asset_v3_g_c_p_dataplex_aspect_list",
+        "asset_v3_g_c_p_dataplex_aspect_field_list",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -3373,6 +3420,29 @@ class Asset(Referenceable):
         self.attributes.asset_icon = asset_icon
 
     @property
+    def asset_external_d_q_metadata_details(
+        self,
+    ) -> Optional[Dict[str, AssetExternalDQMetadata]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_metadata_details
+        )
+
+    @asset_external_d_q_metadata_details.setter
+    def asset_external_d_q_metadata_details(
+        self,
+        asset_external_d_q_metadata_details: Optional[
+            Dict[str, AssetExternalDQMetadata]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_metadata_details = (
+            asset_external_d_q_metadata_details
+        )
+
+    @property
     def is_partial(self) -> Optional[bool]:
         return None if self.attributes is None else self.attributes.is_partial
 
@@ -3962,6 +4032,87 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_space_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_space_qualified_name
+        )
+
+    @asset_space_qualified_name.setter
+    def asset_space_qualified_name(self, asset_space_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_space_qualified_name = asset_space_qualified_name
+
+    @property
+    def asset_space_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.asset_space_name
+
+    @asset_space_name.setter
+    def asset_space_name(self, asset_space_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_space_name = asset_space_name
+
+    @property
+    def asset_v3_g_c_p_dataplex_metadata_details(
+        self,
+    ) -> Optional[AssetGCPDataplexMetadata]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_v3_g_c_p_dataplex_metadata_details
+        )
+
+    @asset_v3_g_c_p_dataplex_metadata_details.setter
+    def asset_v3_g_c_p_dataplex_metadata_details(
+        self,
+        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_v3_g_c_p_dataplex_metadata_details = (
+            asset_v3_g_c_p_dataplex_metadata_details
+        )
+
+    @property
+    def asset_v3_g_c_p_dataplex_aspect_list(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_v3_g_c_p_dataplex_aspect_list
+        )
+
+    @asset_v3_g_c_p_dataplex_aspect_list.setter
+    def asset_v3_g_c_p_dataplex_aspect_list(
+        self, asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_v3_g_c_p_dataplex_aspect_list = (
+            asset_v3_g_c_p_dataplex_aspect_list
+        )
+
+    @property
+    def asset_v3_g_c_p_dataplex_aspect_field_list(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list
+        )
+
+    @asset_v3_g_c_p_dataplex_aspect_field_list.setter
+    def asset_v3_g_c_p_dataplex_aspect_field_list(
+        self, asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list = (
+            asset_v3_g_c_p_dataplex_aspect_field_list
+        )
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -4458,6 +4609,9 @@ class Asset(Referenceable):
         asset_soda_check_statuses: Optional[str] = Field(default=None, description="")
         asset_soda_source_url: Optional[str] = Field(default=None, description="")
         asset_icon: Optional[str] = Field(default=None, description="")
+        asset_external_d_q_metadata_details: Optional[
+            Dict[str, AssetExternalDQMetadata]
+        ] = Field(default=None, description="")
         is_partial: Optional[bool] = Field(default=None, description="")
         is_a_i_generated: Optional[bool] = Field(default=None, description="")
         asset_cover_image: Optional[str] = Field(default=None, description="")
@@ -4544,6 +4698,17 @@ class Asset(Referenceable):
             default=None, description=""
         )
         asset_d_q_row_scope_filter_column_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        asset_space_qualified_name: Optional[str] = Field(default=None, description="")
+        asset_space_name: Optional[str] = Field(default=None, description="")
+        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata] = (
+            Field(default=None, description="")
+        )
+        asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(

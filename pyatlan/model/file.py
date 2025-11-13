@@ -8,13 +8,13 @@ from pyatlan.model.core import AtlanObject
 
 
 class PresignedURLRequest(AtlanObject):
-    key: str
-    expiry: str
-    method: PresignedURLRequest.Method
-
     class Method(str, Enum):
         GET = "GET"
         PUT = "PUT"
+
+    key: str
+    expiry: str
+    method: PresignedURLRequest.Method
 
 
 class CloudStorageIdentifier(str, Enum):

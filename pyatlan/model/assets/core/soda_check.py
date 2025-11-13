@@ -63,6 +63,12 @@ class SodaCheck(Soda):
     """
 
     """
+    SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "sodaCheckLinkedAssetQualifiedName", "sodaCheckLinkedAssetQualifiedName"
+    )
+    """
+    QualifiedName of the asset associated with the check.
+    """
 
     SODA_CHECK_COLUMNS: ClassVar[RelationField] = RelationField("sodaCheckColumns")
     """
@@ -79,6 +85,7 @@ class SodaCheck(Soda):
         "soda_check_definition",
         "soda_check_last_scan_at",
         "soda_check_incident_count",
+        "soda_check_linked_asset_qualified_name",
         "soda_check_columns",
         "soda_check_assets",
     ]
@@ -146,6 +153,24 @@ class SodaCheck(Soda):
         self.attributes.soda_check_incident_count = soda_check_incident_count
 
     @property
+    def soda_check_linked_asset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.soda_check_linked_asset_qualified_name
+        )
+
+    @soda_check_linked_asset_qualified_name.setter
+    def soda_check_linked_asset_qualified_name(
+        self, soda_check_linked_asset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_linked_asset_qualified_name = (
+            soda_check_linked_asset_qualified_name
+        )
+
+    @property
     def soda_check_columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.soda_check_columns
 
@@ -175,6 +200,9 @@ class SodaCheck(Soda):
             default=None, description=""
         )
         soda_check_incident_count: Optional[int] = Field(default=None, description="")
+        soda_check_linked_asset_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         soda_check_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship

@@ -161,6 +161,10 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
     """  # noqa: E501
+    SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
+    """
+    Whether this asset is secure (true) or not (false).
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -169,6 +173,10 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     COSMOS_MONGO_DB_ACCOUNT: ClassVar[RelationField] = RelationField(
         "cosmosMongoDBAccount"
     )
+    """
+    TBC
+    """
+    FABRIC_WORKSPACE: ClassVar[RelationField] = RelationField("fabricWorkspace")
     """
     TBC
     """
@@ -229,8 +237,10 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         "is_profiled",
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
+        "sql_is_secure",
         "dbt_sources",
         "cosmos_mongo_d_b_account",
+        "fabric_workspace",
         "sql_dbt_models",
         "dbt_tests",
         "mongo_d_b_collections",
@@ -496,6 +506,16 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         )
 
     @property
+    def sql_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_is_secure
+
+    @sql_is_secure.setter
+    def sql_is_secure(self, sql_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_secure = sql_is_secure
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -520,6 +540,16 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.cosmos_mongo_d_b_account = cosmos_mongo_d_b_account
+
+    @property
+    def fabric_workspace(self) -> Optional[FabricWorkspace]:
+        return None if self.attributes is None else self.attributes.fabric_workspace
+
+    @fabric_workspace.setter
+    def fabric_workspace(self, fabric_workspace: Optional[FabricWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fabric_workspace = fabric_workspace
 
     @property
     def sql_dbt_models(self) -> Optional[List[DbtModel]]:
@@ -641,10 +671,14 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         sql_a_i_model_context_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sql_is_secure: Optional[bool] = Field(default=None, description="")
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
         cosmos_mongo_d_b_account: Optional[CosmosMongoDBAccount] = Field(
+            default=None, description=""
+        )  # relationship
+        fabric_workspace: Optional[FabricWorkspace] = Field(
             default=None, description=""
         )  # relationship
         sql_dbt_models: Optional[List[DbtModel]] = Field(
@@ -688,5 +722,6 @@ from .dbt_model import DbtModel  # noqa: E402, F401
 from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
 from .dbt_test import DbtTest  # noqa: E402, F401
+from .fabric_workspace import FabricWorkspace  # noqa: E402, F401
 from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

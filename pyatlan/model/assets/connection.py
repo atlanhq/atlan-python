@@ -200,6 +200,12 @@ class Connection(Asset, type_name="Connection"):
     """
     Configuration for preview queries.
     """
+    CONNECTION_WORKFLOW_CONFIGURATION: ClassVar[KeywordField] = KeywordField(
+        "connectionWorkflowConfiguration", "connectionWorkflowConfiguration"
+    )
+    """
+    Configuration for a workflow run.
+    """
     QUERY_CONFIG: ClassVar[TextField] = TextField("queryConfig", "queryConfig")
     """
     Query config for this connection.
@@ -379,6 +385,7 @@ class Connection(Asset, type_name="Connection"):
         "allow_query",
         "allow_query_preview",
         "query_preview_config",
+        "connection_workflow_configuration",
         "query_config",
         "credential_strategy",
         "preview_credential_strategy",
@@ -479,6 +486,24 @@ class Connection(Asset, type_name="Connection"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def connection_workflow_configuration(self) -> Optional[Dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_workflow_configuration
+        )
+
+    @connection_workflow_configuration.setter
+    def connection_workflow_configuration(
+        self, connection_workflow_configuration: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_workflow_configuration = (
+            connection_workflow_configuration
+        )
 
     @property
     def query_config(self) -> Optional[str]:
@@ -903,6 +928,9 @@ class Connection(Asset, type_name="Connection"):
         allow_query: Optional[bool] = Field(default=None, description="")
         allow_query_preview: Optional[bool] = Field(default=None, description="")
         query_preview_config: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
+        connection_workflow_configuration: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
         query_config: Optional[str] = Field(default=None, description="")

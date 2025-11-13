@@ -28,6 +28,7 @@ from .atlas_glossary_term import AtlasGlossaryTerm
 from .auth_policy import AuthPolicy
 from .b_i import BI
 from .b_i_process import BIProcess
+from .bigquery_routine import BigqueryRoutine
 from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
@@ -44,9 +45,12 @@ from .data_quality import DataQuality
 from .data_quality_rule import DataQualityRule
 from .data_quality_rule_template import DataQualityRuleTemplate
 from .database import Database
+from .databricks import Databricks
 from .databricks_a_i_model_context import DatabricksAIModelContext
 from .databricks_a_i_model_version import DatabricksAIModelVersion
 from .databricks_unity_catalog_tag import DatabricksUnityCatalogTag
+from .databricks_volume import DatabricksVolume
+from .databricks_volume_path import DatabricksVolumePath
 from .dbt import Dbt
 from .dbt_metric import DbtMetric
 from .dbt_model import DbtModel
@@ -57,7 +61,21 @@ from .dbt_test import DbtTest
 from .document_d_b import DocumentDB
 from .document_d_b_collection import DocumentDBCollection
 from .document_d_b_database import DocumentDBDatabase
+from .dremio import Dremio
 from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
+from .fabric import Fabric
+from .fabric_activity import FabricActivity
+from .fabric_dashboard import FabricDashboard
+from .fabric_data_pipeline import FabricDataPipeline
+from .fabric_dataflow import FabricDataflow
+from .fabric_dataflow_entity_column import FabricDataflowEntityColumn
+from .fabric_page import FabricPage
+from .fabric_report import FabricReport
+from .fabric_semantic_model import FabricSemanticModel
+from .fabric_semantic_model_table import FabricSemanticModelTable
+from .fabric_semantic_model_table_column import FabricSemanticModelTableColumn
+from .fabric_visual import FabricVisual
+from .fabric_workspace import FabricWorkspace
 from .file import File
 from .fivetran import Fivetran
 from .fivetran_connector import FivetranConnector
@@ -188,6 +206,7 @@ AdfPipeline.Attributes.update_forward_refs(**localns)
 AdfLinkedservice.Attributes.update_forward_refs(**localns)
 AdfActivity.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
+Fabric.Attributes.update_forward_refs(**localns)
 CosmosMongoDB.Attributes.update_forward_refs(**localns)
 DocumentDB.Attributes.update_forward_refs(**localns)
 DbtModelColumn.Attributes.update_forward_refs(**localns)
@@ -211,6 +230,7 @@ File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
 DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
+Dremio.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
@@ -226,6 +246,7 @@ SnowflakeStream.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
+Databricks.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
 MatillionJob.Attributes.update_forward_refs(**localns)
@@ -252,6 +273,18 @@ PowerBITile.Attributes.update_forward_refs(**localns)
 PowerBIDataset.Attributes.update_forward_refs(**localns)
 PowerBIApp.Attributes.update_forward_refs(**localns)
 PowerBIPage.Attributes.update_forward_refs(**localns)
+FabricVisual.Attributes.update_forward_refs(**localns)
+FabricDashboard.Attributes.update_forward_refs(**localns)
+FabricDataflow.Attributes.update_forward_refs(**localns)
+FabricActivity.Attributes.update_forward_refs(**localns)
+FabricPage.Attributes.update_forward_refs(**localns)
+FabricWorkspace.Attributes.update_forward_refs(**localns)
+FabricDataPipeline.Attributes.update_forward_refs(**localns)
+FabricSemanticModelTable.Attributes.update_forward_refs(**localns)
+FabricSemanticModelTableColumn.Attributes.update_forward_refs(**localns)
+FabricDataflowEntityColumn.Attributes.update_forward_refs(**localns)
+FabricReport.Attributes.update_forward_refs(**localns)
+FabricSemanticModel.Attributes.update_forward_refs(**localns)
 CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
 CosmosMongoDBAccount.Attributes.update_forward_refs(**localns)
 CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)
@@ -269,3 +302,6 @@ SnowflakeAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelContext.Attributes.update_forward_refs(**localns)
 DatabricksAIModelContext.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
+BigqueryRoutine.Attributes.update_forward_refs(**localns)
+DatabricksVolume.Attributes.update_forward_refs(**localns)
+DatabricksVolumePath.Attributes.update_forward_refs(**localns)

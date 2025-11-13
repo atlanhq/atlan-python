@@ -66,6 +66,7 @@ You can interact with all of the following different kinds of assets:
     asset/bi
     asset/biprocess
     asset/badge
+    asset/bigqueryroutine
     asset/bigquerytag
     asset/businesspolicy
     asset/businesspolicyexception
@@ -127,8 +128,12 @@ You can interact with all of the following different kinds of assets:
     asset/databricks
     asset/databricksaimodelcontext
     asset/databricksaimodelversion
+    asset/databricksexternallocation
+    asset/databricksexternallocationpath
     asset/databricksnotebook
     asset/databricksunitycatalogtag
+    asset/databricksvolume
+    asset/databricksvolumepath
     asset/dataverse
     asset/dataverseattribute
     asset/dataverseentity
@@ -150,12 +155,32 @@ You can interact with all of the following different kinds of assets:
     asset/domodashboard
     asset/domodataset
     asset/domodatasetcolumn
+    asset/dremio
+    asset/dremiocolumn
+    asset/dremiofolder
+    asset/dremiophysicaldataset
+    asset/dremiosource
+    asset/dremiospace
+    asset/dremiovirtualdataset
     asset/dynamodb
     asset/dynamodbglobalsecondaryindex
     asset/dynamodblocalsecondaryindex
     asset/dynamodbsecondaryindex
     asset/dynamodbtable
     asset/eventstore
+    asset/fabric
+    asset/fabricactivity
+    asset/fabricdashboard
+    asset/fabricdatapipeline
+    asset/fabricdataflow
+    asset/fabricdataflowentitycolumn
+    asset/fabricpage
+    asset/fabricreport
+    asset/fabricsemanticmodel
+    asset/fabricsemanticmodeltable
+    asset/fabricsemanticmodeltablecolumn
+    asset/fabricvisual
+    asset/fabricworkspace
     asset/file
     asset/fivetran
     asset/fivetranconnector
@@ -292,6 +317,7 @@ You can interact with all of the following different kinds of assets:
     asset/s3
     asset/s3bucket
     asset/s3object
+    asset/s3prefix
     asset/sap
     asset/sql
     asset/saas

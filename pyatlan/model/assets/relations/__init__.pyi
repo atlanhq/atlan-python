@@ -3,19 +3,19 @@
 __all__ = [
     "RelationshipAttributes",
     "IndistinctRelationship",
-    "CustomParentEntityCustomChildEntities",
     "AtlasGlossaryAntonym",
-    "AtlasGlossarySynonym",
-    "AtlasGlossaryReplacementTerm",
     "AtlasGlossarySemanticAssignment",
     "UserDefRelationship",
-    "AtlasGlossaryPreferredTerm",
     "AtlasGlossaryRelatedTerm",
-    "AtlasGlossaryTermCategorization",
     "AtlasGlossaryTranslation",
     "AtlasGlossaryValidValue",
-    "CustomRelatedFromEntitiesCustomRelatedToEntities",
     "AtlasGlossaryIsARelationship",
+    "CustomParentEntityCustomChildEntities",
+    "AtlasGlossarySynonym",
+    "AtlasGlossaryReplacementTerm",
+    "AtlasGlossaryPreferredTerm",
+    "AtlasGlossaryTermCategorization",
+    "CustomRelatedFromEntitiesCustomRelatedToEntities",
 ]
 
 from .atlas_glossary_antonym import AtlasGlossaryAntonym

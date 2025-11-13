@@ -2649,6 +2649,12 @@ class AuthPolicyType(str, Enum):
     ROW_FILTER = "rowFilter"
 
 
+class BigqueryRoutineType(str, Enum):
+    SP = "SP"
+    UDF = "UDF"
+    TVF = "TVF"
+
+
 class CertificateStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     DRAFT = "DRAFT"
@@ -2750,6 +2756,11 @@ class DataQualitySourceSyncStatus(str, Enum):
     WAITING_FOR_SCHEDULE = "WAITING_FOR_SCHEDULE"
 
 
+class DatabricksVolumeType(str, Enum):
+    MANAGED = "MANAGED"
+    EXTERNAL = "EXTERNAL"
+
+
 class DocumentDBCollectionValidationAction(str, Enum):
     ERROR = "ERROR"
     WARN = "WARN"
@@ -2767,6 +2778,11 @@ class DomoCardType(str, Enum):
     CHART = "CHART"
     DRILL_VIEW = "DRILL VIEW"
     NOTEBOOK = "NOTEBOOK"
+
+
+class DremioParentAssetType(str, Enum):
+    SPACE = "SPACE"
+    SOURCE = "SOURCE"
 
 
 class DynamoDBSecondaryIndexProjectionType(str, Enum):
@@ -2958,6 +2974,11 @@ class QuickSightDatasetImportMode(str, Enum):
 
 class QuickSightFolderType(str, Enum):
     SHARED = "SHARED"
+
+
+class S3ObjectLockMode(str, Enum):
+    GOVERNANCE = "GOVERNANCE"
+    COMPLIANCE = "COMPLIANCE"
 
 
 class SchemaRegistrySchemaCompatibility(str, Enum):

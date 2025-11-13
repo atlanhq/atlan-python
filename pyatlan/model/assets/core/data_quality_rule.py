@@ -25,7 +25,6 @@ from pyatlan.model.enums import (
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
 )
@@ -394,38 +393,26 @@ class DataQualityRule(DataQuality):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DQ_RULE_BASE_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dqRuleBaseDatasetQualifiedName",
-        "dqRuleBaseDatasetQualifiedName",
-        "dqRuleBaseDatasetQualifiedName.text",
+    DQ_RULE_BASE_DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dqRuleBaseDatasetQualifiedName", "dqRuleBaseDatasetQualifiedName"
     )
     """
     Base dataset qualified name that attached to this rule.
     """
-    DQ_RULE_BASE_COLUMN_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dqRuleBaseColumnQualifiedName",
-        "dqRuleBaseColumnQualifiedName",
-        "dqRuleBaseColumnQualifiedName.text",
+    DQ_RULE_BASE_COLUMN_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dqRuleBaseColumnQualifiedName", "dqRuleBaseColumnQualifiedName"
     )
     """
     Base column qualified name that attached to this rule.
     """
-    DQ_RULE_REFERENCE_DATASET_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "dqRuleReferenceDatasetQualifiedNames",
-            "dqRuleReferenceDatasetQualifiedNames",
-            "dqRuleReferenceDatasetQualifiedNames.text",
-        )
+    DQ_RULE_REFERENCE_DATASET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "dqRuleReferenceDatasetQualifiedNames", "dqRuleReferenceDatasetQualifiedNames"
     )
     """
     List of unique reference dataset's qualified names related to this rule.
     """
-    DQ_RULE_REFERENCE_COLUMN_QUALIFIED_NAMES: ClassVar[KeywordTextField] = (
-        KeywordTextField(
-            "dqRuleReferenceColumnQualifiedNames",
-            "dqRuleReferenceColumnQualifiedNames",
-            "dqRuleReferenceColumnQualifiedNames.text",
-        )
+    DQ_RULE_REFERENCE_COLUMN_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "dqRuleReferenceColumnQualifiedNames", "dqRuleReferenceColumnQualifiedNames"
     )
     """
     List of unique reference column's qualified names related to this rule.
@@ -496,8 +483,8 @@ class DataQualityRule(DataQuality):
     """
     Dimension of the data quality rule.
     """
-    DQ_RULE_TEMPLATE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "dqRuleTemplateName", "dqRuleTemplateName", "dqRuleTemplateName.text"
+    DQ_RULE_TEMPLATE_NAME: ClassVar[KeywordField] = KeywordField(
+        "dqRuleTemplateName", "dqRuleTemplateName"
     )
     """
     Name of the rule template corresponding to the rule.
@@ -525,6 +512,12 @@ class DataQualityRule(DataQuality):
     )
     """
     SQL code for custom SQL rules.
+    """
+    DQ_RULE_FAILED_ROWS_SQL: ClassVar[KeywordField] = KeywordField(
+        "dqRuleFailedRowsSQL", "dqRuleFailedRowsSQL"
+    )
+    """
+    SQL query used to retrieve failed rows.
     """
     DQ_RULE_ROW_SCOPE_FILTERING_ENABLED: ClassVar[BooleanField] = BooleanField(
         "dqRuleRowScopeFilteringEnabled", "dqRuleRowScopeFilteringEnabled"
@@ -579,6 +572,7 @@ class DataQualityRule(DataQuality):
         "dq_rule_alert_priority",
         "dq_rule_config_arguments",
         "dq_rule_custom_s_q_l",
+        "dq_rule_failed_rows_s_q_l",
         "dq_rule_row_scope_filtering_enabled",
         "dq_rule_base_dataset",
         "dq_rule_reference_datasets",
@@ -892,6 +886,20 @@ class DataQualityRule(DataQuality):
         self.attributes.dq_rule_custom_s_q_l = dq_rule_custom_s_q_l
 
     @property
+    def dq_rule_failed_rows_s_q_l(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dq_rule_failed_rows_s_q_l
+        )
+
+    @dq_rule_failed_rows_s_q_l.setter
+    def dq_rule_failed_rows_s_q_l(self, dq_rule_failed_rows_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_rule_failed_rows_s_q_l = dq_rule_failed_rows_s_q_l
+
+    @property
     def dq_rule_row_scope_filtering_enabled(self) -> Optional[bool]:
         return (
             None
@@ -1026,6 +1034,7 @@ class DataQualityRule(DataQuality):
             default=None, description=""
         )
         dq_rule_custom_s_q_l: Optional[str] = Field(default=None, description="")
+        dq_rule_failed_rows_s_q_l: Optional[str] = Field(default=None, description="")
         dq_rule_row_scope_filtering_enabled: Optional[bool] = Field(
             default=None, description=""
         )
@@ -1291,6 +1300,4 @@ class DataQualityRule(DataQuality):
 
 
 from .asset import Asset  # noqa: E402, F401
-
-# from .column import Column  # noqa: E402, F401
 from .data_quality_rule_template import DataQualityRuleTemplate  # noqa: E402, F401

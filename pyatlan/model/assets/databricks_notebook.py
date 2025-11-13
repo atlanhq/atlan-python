@@ -146,6 +146,10 @@ class DatabricksNotebook(Notebook):
     """
     Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context.
     """  # noqa: E501
+    SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
+    """
+    Whether this asset is secure (true) or not (false).
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
     """
@@ -192,6 +196,7 @@ class DatabricksNotebook(Notebook):
         "is_profiled",
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
+        "sql_is_secure",
         "dbt_sources",
         "sql_dbt_models",
         "dbt_tests",
@@ -427,6 +432,16 @@ class DatabricksNotebook(Notebook):
         )
 
     @property
+    def sql_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_is_secure
+
+    @sql_is_secure.setter
+    def sql_is_secure(self, sql_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_is_secure = sql_is_secure
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -512,6 +527,7 @@ class DatabricksNotebook(Notebook):
         sql_a_i_model_context_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        sql_is_secure: Optional[bool] = Field(default=None, description="")
         dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship

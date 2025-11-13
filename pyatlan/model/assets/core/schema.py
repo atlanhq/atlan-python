@@ -110,10 +110,6 @@ class Schema(SQL):
     Unique name of the Linked Schema on which this Schema is dependent. This concept is mostly applicable for linked datasets/datasource in Google BigQuery via Analytics Hub Listing
     """  # noqa: E501
 
-    SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
-    """
-    TBC
-    """
     DATABRICKS_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
         "databricksAIModelContexts"
     )
@@ -124,39 +120,15 @@ class Schema(SQL):
     """
     TBC
     """
-    SNOWFLAKE_STAGES: ClassVar[RelationField] = RelationField("snowflakeStages")
-    """
-    TBC
-    """
     TABLES: ClassVar[RelationField] = RelationField("tables")
     """
     TBC
     """
-    DATABASE: ClassVar[RelationField] = RelationField("database")
-    """
-    TBC
-    """
-    PROCEDURES: ClassVar[RelationField] = RelationField("procedures")
-    """
-    TBC
-    """
-    VIEWS: ClassVar[RelationField] = RelationField("views")
+    BIGQUERY_ROUTINES: ClassVar[RelationField] = RelationField("bigqueryRoutines")
     """
     TBC
     """
     MATERIALISED_VIEWS: ClassVar[RelationField] = RelationField("materialisedViews")
-    """
-    TBC
-    """
-    SNOWFLAKE_DYNAMIC_TABLES: ClassVar[RelationField] = RelationField(
-        "snowflakeDynamicTables"
-    )
-    """
-    TBC
-    """
-    SNOWFLAKE_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
-        "snowflakeAIModelContexts"
-    )
     """
     TBC
     """
@@ -172,26 +144,64 @@ class Schema(SQL):
     """
     TBC
     """
+    SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
+    """
+    TBC
+    """
+    DATABRICKS_VOLUMES: ClassVar[RelationField] = RelationField("databricksVolumes")
+    """
+    TBC
+    """
+    SNOWFLAKE_STAGES: ClassVar[RelationField] = RelationField("snowflakeStages")
+    """
+    TBC
+    """
+    DATABASE: ClassVar[RelationField] = RelationField("database")
+    """
+    TBC
+    """
+    PROCEDURES: ClassVar[RelationField] = RelationField("procedures")
+    """
+    TBC
+    """
+    VIEWS: ClassVar[RelationField] = RelationField("views")
+    """
+    TBC
+    """
+    SNOWFLAKE_DYNAMIC_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTables"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
+        "snowflakeAIModelContexts"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "table_count",
         "schema_external_location",
         "views_count",
         "linked_schema_qualified_name",
-        "snowflake_tags",
         "databricks_a_i_model_contexts",
         "functions",
-        "snowflake_stages",
         "tables",
-        "database",
-        "procedures",
-        "views",
+        "bigquery_routines",
         "materialised_views",
-        "snowflake_dynamic_tables",
-        "snowflake_a_i_model_contexts",
         "snowflake_pipes",
         "snowflake_streams",
         "calculation_views",
+        "snowflake_tags",
+        "databricks_volumes",
+        "snowflake_stages",
+        "database",
+        "procedures",
+        "views",
+        "snowflake_dynamic_tables",
+        "snowflake_a_i_model_contexts",
     ]
 
     @property
@@ -243,16 +253,6 @@ class Schema(SQL):
         self.attributes.linked_schema_qualified_name = linked_schema_qualified_name
 
     @property
-    def snowflake_tags(self) -> Optional[List[SnowflakeTag]]:
-        return None if self.attributes is None else self.attributes.snowflake_tags
-
-    @snowflake_tags.setter
-    def snowflake_tags(self, snowflake_tags: Optional[List[SnowflakeTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_tags = snowflake_tags
-
-    @property
     def databricks_a_i_model_contexts(self) -> Optional[List[DatabricksAIModelContext]]:
         return (
             None
@@ -279,16 +279,6 @@ class Schema(SQL):
         self.attributes.functions = functions
 
     @property
-    def snowflake_stages(self) -> Optional[List[SnowflakeStage]]:
-        return None if self.attributes is None else self.attributes.snowflake_stages
-
-    @snowflake_stages.setter
-    def snowflake_stages(self, snowflake_stages: Optional[List[SnowflakeStage]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stages = snowflake_stages
-
-    @property
     def tables(self) -> Optional[List[Table]]:
         return None if self.attributes is None else self.attributes.tables
 
@@ -297,6 +287,86 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tables = tables
+
+    @property
+    def bigquery_routines(self) -> Optional[List[BigqueryRoutine]]:
+        return None if self.attributes is None else self.attributes.bigquery_routines
+
+    @bigquery_routines.setter
+    def bigquery_routines(self, bigquery_routines: Optional[List[BigqueryRoutine]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.bigquery_routines = bigquery_routines
+
+    @property
+    def materialised_views(self) -> Optional[List[MaterialisedView]]:
+        return None if self.attributes is None else self.attributes.materialised_views
+
+    @materialised_views.setter
+    def materialised_views(self, materialised_views: Optional[List[MaterialisedView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_views = materialised_views
+
+    @property
+    def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
+        return None if self.attributes is None else self.attributes.snowflake_pipes
+
+    @snowflake_pipes.setter
+    def snowflake_pipes(self, snowflake_pipes: Optional[List[SnowflakePipe]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_pipes = snowflake_pipes
+
+    @property
+    def snowflake_streams(self) -> Optional[List[SnowflakeStream]]:
+        return None if self.attributes is None else self.attributes.snowflake_streams
+
+    @snowflake_streams.setter
+    def snowflake_streams(self, snowflake_streams: Optional[List[SnowflakeStream]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_streams = snowflake_streams
+
+    @property
+    def calculation_views(self) -> Optional[List[CalculationView]]:
+        return None if self.attributes is None else self.attributes.calculation_views
+
+    @calculation_views.setter
+    def calculation_views(self, calculation_views: Optional[List[CalculationView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculation_views = calculation_views
+
+    @property
+    def snowflake_tags(self) -> Optional[List[SnowflakeTag]]:
+        return None if self.attributes is None else self.attributes.snowflake_tags
+
+    @snowflake_tags.setter
+    def snowflake_tags(self, snowflake_tags: Optional[List[SnowflakeTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_tags = snowflake_tags
+
+    @property
+    def databricks_volumes(self) -> Optional[List[DatabricksVolume]]:
+        return None if self.attributes is None else self.attributes.databricks_volumes
+
+    @databricks_volumes.setter
+    def databricks_volumes(self, databricks_volumes: Optional[List[DatabricksVolume]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.databricks_volumes = databricks_volumes
+
+    @property
+    def snowflake_stages(self) -> Optional[List[SnowflakeStage]]:
+        return None if self.attributes is None else self.attributes.snowflake_stages
+
+    @snowflake_stages.setter
+    def snowflake_stages(self, snowflake_stages: Optional[List[SnowflakeStage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stages = snowflake_stages
 
     @property
     def database(self) -> Optional[Database]:
@@ -327,16 +397,6 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views = views
-
-    @property
-    def materialised_views(self) -> Optional[List[MaterialisedView]]:
-        return None if self.attributes is None else self.attributes.materialised_views
-
-    @materialised_views.setter
-    def materialised_views(self, materialised_views: Optional[List[MaterialisedView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.materialised_views = materialised_views
 
     @property
     def snowflake_dynamic_tables(self) -> Optional[List[SnowflakeDynamicTable]]:
@@ -370,36 +430,6 @@ class Schema(SQL):
             self.attributes = self.Attributes()
         self.attributes.snowflake_a_i_model_contexts = snowflake_a_i_model_contexts
 
-    @property
-    def snowflake_pipes(self) -> Optional[List[SnowflakePipe]]:
-        return None if self.attributes is None else self.attributes.snowflake_pipes
-
-    @snowflake_pipes.setter
-    def snowflake_pipes(self, snowflake_pipes: Optional[List[SnowflakePipe]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_pipes = snowflake_pipes
-
-    @property
-    def snowflake_streams(self) -> Optional[List[SnowflakeStream]]:
-        return None if self.attributes is None else self.attributes.snowflake_streams
-
-    @snowflake_streams.setter
-    def snowflake_streams(self, snowflake_streams: Optional[List[SnowflakeStream]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_streams = snowflake_streams
-
-    @property
-    def calculation_views(self) -> Optional[List[CalculationView]]:
-        return None if self.attributes is None else self.attributes.calculation_views
-
-    @calculation_views.setter
-    def calculation_views(self, calculation_views: Optional[List[CalculationView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.calculation_views = calculation_views
-
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(default=None, description="")
         schema_external_location: Optional[str] = Field(default=None, description="")
@@ -407,19 +437,37 @@ class Schema(SQL):
         linked_schema_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        snowflake_tags: Optional[List[SnowflakeTag]] = Field(
-            default=None, description=""
-        )  # relationship
         databricks_a_i_model_contexts: Optional[List[DatabricksAIModelContext]] = Field(
             default=None, description=""
         )  # relationship
         functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_stages: Optional[List[SnowflakeStage]] = Field(
+        tables: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
-        tables: Optional[List[Table]] = Field(
+        bigquery_routines: Optional[List[BigqueryRoutine]] = Field(
+            default=None, description=""
+        )  # relationship
+        materialised_views: Optional[List[MaterialisedView]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_streams: Optional[List[SnowflakeStream]] = Field(
+            default=None, description=""
+        )  # relationship
+        calculation_views: Optional[List[CalculationView]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_tags: Optional[List[SnowflakeTag]] = Field(
+            default=None, description=""
+        )  # relationship
+        databricks_volumes: Optional[List[DatabricksVolume]] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_stages: Optional[List[SnowflakeStage]] = Field(
             default=None, description=""
         )  # relationship
         database: Optional[Database] = Field(
@@ -431,22 +479,10 @@ class Schema(SQL):
         views: Optional[List[View]] = Field(
             default=None, description=""
         )  # relationship
-        materialised_views: Optional[List[MaterialisedView]] = Field(
-            default=None, description=""
-        )  # relationship
         snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]] = Field(
             default=None, description=""
         )  # relationship
         snowflake_a_i_model_contexts: Optional[List[SnowflakeAIModelContext]] = Field(
-            default=None, description=""
-        )  # relationship
-        snowflake_pipes: Optional[List[SnowflakePipe]] = Field(
-            default=None, description=""
-        )  # relationship
-        snowflake_streams: Optional[List[SnowflakeStream]] = Field(
-            default=None, description=""
-        )  # relationship
-        calculation_views: Optional[List[CalculationView]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -498,9 +534,11 @@ class Schema(SQL):
     )
 
 
+from .bigquery_routine import BigqueryRoutine  # noqa: E402, F401
 from .calculation_view import CalculationView  # noqa: E402, F401
 from .database import Database  # noqa: E402, F401
 from .databricks_a_i_model_context import DatabricksAIModelContext  # noqa: E402, F401
+from .databricks_volume import DatabricksVolume  # noqa: E402, F401
 from .function import Function  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
