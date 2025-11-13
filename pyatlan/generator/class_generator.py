@@ -577,6 +577,7 @@ class IndexType(Enum):
     BOOLEAN = enum.auto()
     NUMERIC = enum.auto()
     STEMMED = enum.auto()
+    DELIMITER = enum.auto()
     RELATION = enum.auto()
 
 
@@ -634,6 +635,9 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
                         searchable[IndexType.STEMMED] = attr_name
                     else:
                         searchable[IndexType.TEXT] = attr_name
+                elif analyzer == "atlan_text_analyzer_v2":
+                    # Delimiter index uses atlan_text_analyzer_v2
+                    searchable[IndexType.DELIMITER] = attr_name
             elif attr_def.get("indexType") == "STRING":
                 searchable[IndexType.KEYWORD] = attr_name
             else:
@@ -647,10 +651,28 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
                         if index_type == "keyword":
                             searchable[IndexType.KEYWORD] = field_name
                         elif index_type == "text":
-                            if field_name.endswith(".stemmed"):
-                                searchable[IndexType.STEMMED] = field_name
-                            else:
-                                searchable[IndexType.TEXT] = field_name
+                            # Skip adding TEXT index for description/userDescription subfields
+                            # as they already have a main TEXT index
+                            if attr_name in (
+                                "description",
+                                "userDescription",
+                            ) and field_suffix in ("text", "keyword"):
+                                continue
+
+                            if field_config := fields.get(field_suffix):
+                                if field_analyzer := field_config.get("analyzer"):
+                                    if field_analyzer == "atlan_text_analyzer_v2":
+                                        searchable[IndexType.DELIMITER] = field_name
+                                    elif field_analyzer == "atlan_text_analyzer":
+                                        if field_name.endswith(".stemmed"):
+                                            searchable[IndexType.STEMMED] = field_name
+                                        else:
+                                            searchable[IndexType.TEXT] = field_name
+                                else:
+                                    if field_name.endswith(".stemmed"):
+                                        searchable[IndexType.STEMMED] = field_name
+                                    else:
+                                        searchable[IndexType.TEXT] = field_name
                         elif index_type == "rank_feature":
                             searchable[IndexType.RANK_FEATURE] = field_name
                     else:
@@ -683,6 +705,13 @@ def get_search_type(attr_def: Dict[str, Any]) -> SearchType:
         return SearchType(
             name="KeywordTextField",
             args=f'"{search_map.get(IndexType.KEYWORD)}", "{search_map.get(IndexType.TEXT)}"',
+        )
+    elif indices == {IndexType.KEYWORD, IndexType.TEXT, IndexType.DELIMITER}:
+        return SearchType(
+            name="KeywordTextDelimitedField",
+            args=f'"{search_map.get(IndexType.KEYWORD)}", '
+            f'"{search_map.get(IndexType.TEXT)}", '
+            f'"{search_map.get(IndexType.DELIMITER)}"',
         )
     elif indices == {IndexType.KEYWORD, IndexType.TEXT, IndexType.STEMMED}:
         return SearchType(
