@@ -18,7 +18,7 @@ class AtlanTask(AtlanObject):
     TYPE: ClassVar[KeywordField] = KeywordField("type", "__task_type")
     """Type of the task."""
 
-    GUID: ClassVar[TextField] = TextField("guid", "__task_guid")
+    GUID: ClassVar[KeywordField] = KeywordField("guid", "__task_guid")
     """Unique identifier of the task."""
 
     CREATED_BY: ClassVar[KeywordField] = KeywordField("createdBy", "__task_createdBy")
