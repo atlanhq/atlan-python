@@ -90,6 +90,7 @@ class AsyncAtlanClient(AtlanClient):
     """
 
     _async_session: Optional[httpx.AsyncClient] = PrivateAttr(default=None)
+    _async_oauth_token_manager: Optional[Any] = PrivateAttr(default=None)
     _async_admin_client: Optional[AsyncAdminClient] = PrivateAttr(default=None)
     _async_asset_client: Optional[AsyncAssetClient] = PrivateAttr(default=None)
     _async_audit_client: Optional[AsyncAuditClient] = PrivateAttr(default=None)
@@ -131,13 +132,19 @@ class AsyncAtlanClient(AtlanClient):
     _async_user_cache: Optional[AsyncUserCache] = PrivateAttr(default=None)
 
     def __init__(self, **kwargs):
-        # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
 
-        # Build proxy/SSL configuration (reuse from sync client)
+        if self.oauth_client_id and self.oauth_client_secret:
+            from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
+
+            self._async_oauth_token_manager = AsyncOAuthTokenManager(
+                base_url=str(self.base_url),
+                client_id=self.oauth_client_id,
+                client_secret=self.oauth_client_secret,
+            )
+
         transport_kwargs = self._build_transport_proxy_config(kwargs)
 
-        # Create async session with custom transport that supports retry and proxy
         self._async_session = httpx.AsyncClient(
             transport=PyatlanAsyncTransport(retry=self.retry, **transport_kwargs),
             headers={
@@ -434,17 +441,16 @@ class AsyncAtlanClient(AtlanClient):
     async def _create_params(
         self, api, query_params, request_obj, exclude_unset: bool = True
     ):
-        """
-        Async version of _create_params that uses AsyncAtlanRequest for AtlanObject instances.
-        """
         params = copy.deepcopy(self._request_params)
+        if self._async_oauth_token_manager:
+            token = await self._async_oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
         if query_params is not None:
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                # Use AsyncAtlanRequest for async retranslation
                 async_request = AsyncAtlanRequest(instance=request_obj, client=self)
                 params["data"] = await async_request.json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
@@ -685,9 +691,8 @@ class AsyncAtlanClient(AtlanClient):
                 "\n".join(error_cause_details) if error_cause_details else ""
             )
 
-            # Retry with impersonation (if _user_id is present) on authentication failure
             if (
-                self._user_id
+                (self._user_id or self._async_oauth_token_manager)
                 and not self._401_has_retried.get()
                 and response.status_code
                 == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
@@ -742,12 +747,22 @@ class AsyncAtlanClient(AtlanClient):
         download_file_path=None,
         text_response=False,
     ):
-        """
-        Async version of token refresh and retry logic.
-        Handles token refresh and retries the API request upon a 401 Unauthorized response.
-        """
+        if self._async_oauth_token_manager:
+            await self._async_oauth_token_manager.invalidate_token()
+            token = await self._async_oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
+            self._401_has_retried.set(True)
+            LOGGER.debug("Successfully refreshed OAuth token after 401.")
+            return await self._call_api_internal(
+                api,
+                path,
+                params,
+                binary_data=binary_data,
+                download_file_path=download_file_path,
+                text_response=text_response,
+            )
+
         try:
-            # Use sync impersonation call since it's a quick API call
             new_token = await self.impersonate.user(user_id=self._user_id)
         except Exception as e:
             LOGGER.debug(
@@ -763,11 +778,9 @@ class AsyncAtlanClient(AtlanClient):
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed async 401 automatic token refresh.")
 
-        # Async retry loop to ensure token is active before retrying original request
         retry_count = 1
         while retry_count <= self.retry.total:
             try:
-                # Use async typedef call to validate token
                 response = await self.typedef.get(
                     type_category=[AtlanTypeCategory.STRUCT]
                 )
@@ -778,10 +791,9 @@ class AsyncAtlanClient(AtlanClient):
                     "Retrying async to get typedefs (to ensure token is active) after token refresh failed: %s",
                     e,
                 )
-            await asyncio.sleep(retry_count)  # Linear backoff with async sleep
+            await asyncio.sleep(retry_count)
             retry_count += 1
 
-        # Retry the API call with the new token
         return await self._call_api_internal(
             api,
             path,
