@@ -27,6 +27,7 @@ __all__ = [
     "Fivetran",
     "DataContract",
     "DataQuality",
+    "PartialV01",
     "AI",
     "Resource",
     "FlowField",
@@ -68,6 +69,7 @@ __all__ = [
     "Metric",
     "DataQualityRule",
     "Soda",
+    "PartialV01Field",
     "AIApplication",
     "AIModelVersion",
     "AIModel",
@@ -76,7 +78,6 @@ __all__ = [
     "Link",
     "DataDomain",
     "DataProduct",
-    "Dremio",
     "Table",
     "Query",
     "Schema",
@@ -87,8 +88,8 @@ __all__ = [
     "TablePartition",
     "Column",
     "SnowflakeStage",
-    "DatabricksUnityCatalogTag",
     "SnowflakeStream",
+    "DatabricksUnityCatalogTag",
     "Database",
     "CalculationView",
     "Procedure",
@@ -148,6 +149,7 @@ __all__ = [
     "SnowflakeAIModelContext",
     "DatabricksAIModelContext",
     "SnowflakeDynamicTable",
+    "DatabricksMetricView",
     "BigqueryRoutine",
     "DatabricksVolume",
     "DatabricksVolumePath",
@@ -225,6 +227,7 @@ __all__ = [
     "ADLS",
     "GCS",
     "DatabricksNotebook",
+    "PartialV01Object",
     "Dataverse",
     "Cognite",
     "Salesforce",
@@ -234,6 +237,7 @@ __all__ = [
     "CubeDimension",
     "CubeField",
     "CustomEntity",
+    "Dremio",
     "BigqueryTag",
     "Snowflake",
     "APISpec",
@@ -507,6 +511,7 @@ from .core.database import Database
 from .core.databricks import Databricks
 from .core.databricks_a_i_model_context import DatabricksAIModelContext
 from .core.databricks_a_i_model_version import DatabricksAIModelVersion
+from .core.databricks_metric_view import DatabricksMetricView
 from .core.databricks_unity_catalog_tag import DatabricksUnityCatalogTag
 from .core.databricks_volume import DatabricksVolume
 from .core.databricks_volume_path import DatabricksVolumePath
@@ -520,7 +525,6 @@ from .core.dbt_test import DbtTest
 from .core.document_d_b import DocumentDB
 from .core.document_d_b_collection import DocumentDBCollection
 from .core.document_d_b_database import DocumentDBDatabase
-from .core.dremio import Dremio
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .core.fabric import Fabric
 from .core.fabric_activity import FabricActivity
@@ -570,6 +574,8 @@ from .core.mongo_d_b_database import MongoDBDatabase
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.no_s_q_l import NoSQL
+from .core.partial_v01 import PartialV01
+from .core.partial_v01_field import PartialV01Field
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
 from .core.power_b_i_app import PowerBIApp
@@ -635,6 +641,7 @@ from .domo_card import DomoCard
 from .domo_dashboard import DomoDashboard
 from .domo_dataset import DomoDataset
 from .domo_dataset_column import DomoDatasetColumn
+from .dremio import Dremio
 from .dremio_column import DremioColumn
 from .dremio_folder import DremioFolder
 from .dremio_physical_dataset import DremioPhysicalDataset
@@ -695,6 +702,7 @@ from .mongo_d_b import MongoDB
 from .multi_dimensional_dataset import MultiDimensionalDataset
 from .notebook import Notebook
 from .object_store import ObjectStore
+from .partial_v01_object import PartialV01Object
 from .preset import Preset
 from .preset_chart import PresetChart
 from .preset_dashboard import PresetDashboard

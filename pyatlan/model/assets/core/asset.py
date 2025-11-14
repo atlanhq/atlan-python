@@ -35,7 +35,6 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import (
     AssetExternalDQMetadata,
-    AssetGCPDataplexMetadata,
     PopularityInsights,
     StarredDetails,
 )
@@ -268,13 +267,13 @@ class Asset(Referenceable):
     Name of this asset. Fallback for display purposes, if displayName is empty.
     """
     DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "displayName", "displayName.keyword", "displayName"
+        "displayName", "displayName.keyword", "displayName.delimiter"
     )
     """
     Human-readable name of this asset used for display purposes (in user interface).
     """
     DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
-        "description", "description.keyword", "description"
+        "description", "description.keyword", "description.text"
     )
     """
     Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.
@@ -286,7 +285,7 @@ class Asset(Referenceable):
     Readme of this asset, as extracted from source. If present, this will be used for the readme in user interface.
     """
     USER_DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
-        "userDescription", "userDescription.keyword", "userDescription"
+        "userDescription", "userDescription.keyword", "userDescription.text"
     )
     """
     Description of this asset, as provided by a user. If present, this will be used for the description in user interface.
@@ -1307,24 +1306,6 @@ class Asset(Referenceable):
     """
     Name of the space that contains this asset.
     """
-    ASSET_V3GCP_DATAPLEX_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexMetadataDetails", "assetV3GCPDataplexMetadataDetails"
-    )
-    """
-    Metrics captured by GCP Dataplex for objects associated with GCP services..
-    """
-    ASSET_V3GCP_DATAPLEX_ASPECT_LIST: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexAspectList", "assetV3GCPDataplexAspectList"
-    )
-    """
-    List of names of all Aspects linked to this asset.
-    """
-    ASSET_V3GCP_DATAPLEX_ASPECT_FIELD_LIST: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexAspectFieldList", "assetV3GCPDataplexAspectFieldList"
-    )
-    """
-    List of field key-values associated with all Aspects linked to this asset.
-    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1595,9 +1576,6 @@ class Asset(Referenceable):
         "asset_d_q_row_scope_filter_column_qualified_name",
         "asset_space_qualified_name",
         "asset_space_name",
-        "asset_v3_g_c_p_dataplex_metadata_details",
-        "asset_v3_g_c_p_dataplex_aspect_list",
-        "asset_v3_g_c_p_dataplex_aspect_field_list",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -4056,63 +4034,6 @@ class Asset(Referenceable):
         self.attributes.asset_space_name = asset_space_name
 
     @property
-    def asset_v3_g_c_p_dataplex_metadata_details(
-        self,
-    ) -> Optional[AssetGCPDataplexMetadata]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_metadata_details
-        )
-
-    @asset_v3_g_c_p_dataplex_metadata_details.setter
-    def asset_v3_g_c_p_dataplex_metadata_details(
-        self,
-        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_metadata_details = (
-            asset_v3_g_c_p_dataplex_metadata_details
-        )
-
-    @property
-    def asset_v3_g_c_p_dataplex_aspect_list(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_aspect_list
-        )
-
-    @asset_v3_g_c_p_dataplex_aspect_list.setter
-    def asset_v3_g_c_p_dataplex_aspect_list(
-        self, asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_aspect_list = (
-            asset_v3_g_c_p_dataplex_aspect_list
-        )
-
-    @property
-    def asset_v3_g_c_p_dataplex_aspect_field_list(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list
-        )
-
-    @asset_v3_g_c_p_dataplex_aspect_field_list.setter
-    def asset_v3_g_c_p_dataplex_aspect_field_list(
-        self, asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list = (
-            asset_v3_g_c_p_dataplex_aspect_field_list
-        )
-
-    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -4702,15 +4623,6 @@ class Asset(Referenceable):
         )
         asset_space_qualified_name: Optional[str] = Field(default=None, description="")
         asset_space_name: Optional[str] = Field(default=None, description="")
-        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata] = (
-            Field(default=None, description="")
-        )
-        asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
-        asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

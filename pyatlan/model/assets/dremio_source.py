@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioSource(Dremio):

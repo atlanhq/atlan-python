@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioColumn(Dremio):

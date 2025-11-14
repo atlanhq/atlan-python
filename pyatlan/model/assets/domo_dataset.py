@@ -8,7 +8,12 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import NumericField, RelationField, TextField
+from pyatlan.model.fields.atlan_fields import (
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
 
 from .domo import Domo
 
@@ -41,6 +46,12 @@ class DomoDataset(Domo):
     """
     Number of columns in the Domo dataset.
     """
+    DOMO_DATASET_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "domoDatasetType", "domoDatasetType.keyword", "domoDatasetType"
+    )
+    """
+    Type of Domo dataset.
+    """
     DOMO_DATASET_CARD_COUNT: ClassVar[NumericField] = NumericField(
         "domoDatasetCardCount", "domoDatasetCardCount"
     )
@@ -66,6 +77,7 @@ class DomoDataset(Domo):
     _convenience_properties: ClassVar[List[str]] = [
         "domo_dataset_row_count",
         "domo_dataset_column_count",
+        "domo_dataset_type",
         "domo_dataset_card_count",
         "domo_dataset_last_run",
         "domo_cards",
@@ -97,6 +109,16 @@ class DomoDataset(Domo):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.domo_dataset_column_count = domo_dataset_column_count
+
+    @property
+    def domo_dataset_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.domo_dataset_type
+
+    @domo_dataset_type.setter
+    def domo_dataset_type(self, domo_dataset_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_dataset_type = domo_dataset_type
 
     @property
     def domo_dataset_card_count(self) -> Optional[int]:
@@ -147,6 +169,7 @@ class DomoDataset(Domo):
     class Attributes(Domo.Attributes):
         domo_dataset_row_count: Optional[int] = Field(default=None, description="")
         domo_dataset_column_count: Optional[int] = Field(default=None, description="")
+        domo_dataset_type: Optional[str] = Field(default=None, description="")
         domo_dataset_card_count: Optional[int] = Field(default=None, description="")
         domo_dataset_last_run: Optional[str] = Field(default=None, description="")
         domo_cards: Optional[List[DomoCard]] = Field(

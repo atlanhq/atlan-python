@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .s_q_l import SQL
+from .core.s_q_l import SQL
 
 
 class Dremio(SQL):
@@ -209,3 +209,6 @@ class Dremio(SQL):
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+Dremio.Attributes.update_forward_refs()
