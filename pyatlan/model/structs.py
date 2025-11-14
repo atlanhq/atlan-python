@@ -84,6 +84,19 @@ class AssetExternalDQMetadata(AtlanObject):
     )
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -100,24 +113,18 @@ class DbtJobRun(AtlanObject):
     dbt_compiled_code: Optional[str] = Field(default=None, description="")
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class AwsCloudWatchMetric(AtlanObject):
     """Description"""
 
     aws_cloud_watch_metric_name: str = Field(description="")
     aws_cloud_watch_metric_scope: str = Field(description="")
+
+
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class Action(AtlanObject):
@@ -127,13 +134,6 @@ class Action(AtlanObject):
     task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
     task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
     task_action_display_text: Optional[str] = Field(default=None, description="")
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
 
 
 class AssetExternalDQTestRunHistory(AtlanObject):
@@ -155,6 +155,13 @@ class ColumnValueFrequencyMap(AtlanObject):
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional[str] = Field(default=None, description="")
+    tag_attachment_value: Optional[str] = Field(default=None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -189,13 +196,6 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional[str] = Field(default=None, description="")
-    tag_attachment_value: Optional[str] = Field(default=None, description="")
-
-
 class StarredDetails(AtlanObject):
     """Description"""
 
@@ -216,6 +216,9 @@ class AssetGCPDataplexAspectMetadata(AtlanObject):
     asset_v3_g_c_p_dataplex_aspect_full_name: Optional[str] = Field(
         default=None, description=""
     )
+    asset_v3_g_c_p_dataplex_aspect_display_name: Optional[str] = Field(
+        default=None, description=""
+    )
     asset_v3_g_c_p_dataplex_aspect_type: Optional[str] = Field(
         default=None, description=""
     )
@@ -231,13 +234,6 @@ class AssetGCPDataplexAspectMetadata(AtlanObject):
     asset_v3_g_c_p_dataplex_aspect_fields: Optional[Dict[str, str]] = Field(
         default=None, description=""
     )
-
-
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
 
 
 class AssetExternalDQTestDetails(AtlanObject):
@@ -257,6 +253,13 @@ class AssetExternalDQTestDetails(AtlanObject):
     asset_external_d_q_test_runs: Optional[List[AssetExternalDQTestRunHistory]] = Field(
         default=None, description=""
     )
+
+
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
 
 
 class BusinessPolicyRule(AtlanObject):
@@ -308,6 +311,15 @@ class FormField(AtlanObject):
     form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
 
 
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
 class DatabricksAIModelVersionMetric(AtlanObject):
     """Description"""
 
@@ -323,15 +335,6 @@ class DatabricksAIModelVersionMetric(AtlanObject):
     databricks_a_i_model_version_metric_step: Optional[int] = Field(
         default=None, description=""
     )
-
-
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class SQLProcedureReturn(AtlanObject):
@@ -566,6 +569,17 @@ class AuthPolicyCondition(AtlanObject):
     policy_condition_values: Set[str] = Field(description="")
 
 
+class AssetGCPDataplexMetadata(AtlanObject):
+    """Description"""
+
+    asset_v3_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_v3_g_c_p_dataplex_aspect_details: Optional[
+        Dict[str, AssetGCPDataplexAspectMetadata]
+    ] = Field(default=None, description="")
+
+
 class DataQualityRuleConfigArguments(AtlanObject):
     """Description"""
 
@@ -581,17 +595,6 @@ class SQLProcedureArgument(AtlanObject):
 
     sql_argument_name: Optional[str] = Field(default=None, description="")
     sql_argument_type: Optional[str] = Field(default=None, description="")
-
-
-class AssetGCPDataplexMetadata(AtlanObject):
-    """Description"""
-
-    asset_v3_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_details: Optional[
-        Dict[str, AssetGCPDataplexAspectMetadata]
-    ] = Field(default=None, description="")
 
 
 class DbtMetricFilter(AtlanObject):
@@ -741,23 +744,23 @@ class SourceTagAttribute(AtlanObject):
 
 AssetExternalDQMetadata.update_forward_refs()
 
-DbtJobRun.update_forward_refs()
-
 MCRuleSchedule.update_forward_refs()
+
+DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Action.update_forward_refs()
-
 Histogram.update_forward_refs()
+
+Action.update_forward_refs()
 
 AssetExternalDQTestRunHistory.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
+
+BadgeCondition.update_forward_refs()
 
 StarredDetails.update_forward_refs()
 
@@ -765,9 +768,9 @@ AwsTag.update_forward_refs()
 
 AssetGCPDataplexAspectMetadata.update_forward_refs()
 
-GoogleTag.update_forward_refs()
-
 AssetExternalDQTestDetails.update_forward_refs()
+
+GoogleTag.update_forward_refs()
 
 BusinessPolicyRule.update_forward_refs()
 
@@ -775,9 +778,9 @@ ResponseValue.update_forward_refs()
 
 FormField.update_forward_refs()
 
-DatabricksAIModelVersionMetric.update_forward_refs()
-
 KafkaTopicConsumption.update_forward_refs()
+
+DatabricksAIModelVersionMetric.update_forward_refs()
 
 SQLProcedureReturn.update_forward_refs()
 
@@ -789,11 +792,11 @@ AssetExternalDQScoreBreakdownByDimension.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 
+AssetGCPDataplexMetadata.update_forward_refs()
+
 DataQualityRuleConfigArguments.update_forward_refs()
 
 SQLProcedureArgument.update_forward_refs()
-
-AssetGCPDataplexMetadata.update_forward_refs()
 
 DbtMetricFilter.update_forward_refs()
 

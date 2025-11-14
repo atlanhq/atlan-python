@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -18,69 +18,25 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .dremio import Dremio
+from .databricks import Databricks
 
 
-class DremioVirtualDataset(Dremio):
+class DatabricksMetricView(Databricks):
     """Description"""
 
-    type_name: str = Field(default="DremioVirtualDataset", allow_mutation=False)
+    type_name: str = Field(default="DatabricksMetricView", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DremioVirtualDataset":
-            raise ValueError("must be DremioVirtualDataset")
+        if v != "DatabricksMetricView":
+            raise ValueError("must be DatabricksMetricView")
         return v
 
     def __setattr__(self, name, value):
-        if name in DremioVirtualDataset._convenience_properties:
+        if name in DatabricksMetricView._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DREMIO_ID: ClassVar[KeywordField] = KeywordField("dremioId", "dremioId")
-    """
-    Source ID of this asset in Dremio.
-    """
-    DREMIO_SPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dremioSpaceQualifiedName", "dremioSpaceQualifiedName"
-    )
-    """
-    Unique qualified name of the Dremio Space containing this asset.
-    """
-    DREMIO_SPACE_NAME: ClassVar[KeywordField] = KeywordField(
-        "dremioSpaceName", "dremioSpaceName"
-    )
-    """
-    Simple name of the Dremio Space containing this asset.
-    """
-    DREMIO_SOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dremioSourceQualifiedName", "dremioSourceQualifiedName"
-    )
-    """
-    Unique qualified name of the Dremio Source containing this asset.
-    """
-    DREMIO_SOURCE_NAME: ClassVar[KeywordField] = KeywordField(
-        "dremioSourceName", "dremioSourceName"
-    )
-    """
-    Simple name of the Dremio Source containing this asset.
-    """
-    DREMIO_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName"
-    )
-    """
-    Unique qualified name of the immediate parent folder containing this asset.
-    """
-    DREMIO_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "dremioFolderHierarchy", "dremioFolderHierarchy"
-    )
-    """
-    Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder.
-    """  # noqa: E501
-    DREMIO_LABELS: ClassVar[KeywordField] = KeywordField("dremioLabels", "dremioLabels")
-    """
-    Dremio Labels associated with this asset.
-    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -220,19 +176,11 @@ class DremioVirtualDataset(Dremio):
     SQL definition of this view.
     """
 
-    DREMIO_SPACE: ClassVar[RelationField] = RelationField("dremioSpace")
-    """
-    TBC
-    """
     COLUMNS: ClassVar[RelationField] = RelationField("columns")
     """
     TBC
     """
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
-    """
-    TBC
-    """
-    DREMIO_FOLDER: ClassVar[RelationField] = RelationField("dremioFolder")
     """
     TBC
     """
@@ -242,14 +190,6 @@ class DremioVirtualDataset(Dremio):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dremio_id",
-        "dremio_space_qualified_name",
-        "dremio_space_name",
-        "dremio_source_qualified_name",
-        "dremio_source_name",
-        "dremio_parent_folder_qualified_name",
-        "dremio_folder_hierarchy",
-        "dremio_labels",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -276,112 +216,10 @@ class DremioVirtualDataset(Dremio):
         "alias",
         "is_temporary",
         "definition",
-        "dremio_space",
         "columns",
         "atlan_schema",
-        "dremio_folder",
         "queries",
     ]
-
-    @property
-    def dremio_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dremio_id
-
-    @dremio_id.setter
-    def dremio_id(self, dremio_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_id = dremio_id
-
-    @property
-    def dremio_space_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dremio_space_qualified_name
-        )
-
-    @dremio_space_qualified_name.setter
-    def dremio_space_qualified_name(self, dremio_space_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_space_qualified_name = dremio_space_qualified_name
-
-    @property
-    def dremio_space_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dremio_space_name
-
-    @dremio_space_name.setter
-    def dremio_space_name(self, dremio_space_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_space_name = dremio_space_name
-
-    @property
-    def dremio_source_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dremio_source_qualified_name
-        )
-
-    @dremio_source_qualified_name.setter
-    def dremio_source_qualified_name(self, dremio_source_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_source_qualified_name = dremio_source_qualified_name
-
-    @property
-    def dremio_source_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dremio_source_name
-
-    @dremio_source_name.setter
-    def dremio_source_name(self, dremio_source_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_source_name = dremio_source_name
-
-    @property
-    def dremio_parent_folder_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dremio_parent_folder_qualified_name
-        )
-
-    @dremio_parent_folder_qualified_name.setter
-    def dremio_parent_folder_qualified_name(
-        self, dremio_parent_folder_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_parent_folder_qualified_name = (
-            dremio_parent_folder_qualified_name
-        )
-
-    @property
-    def dremio_folder_hierarchy(self) -> Optional[List[Dict[str, str]]]:
-        return (
-            None if self.attributes is None else self.attributes.dremio_folder_hierarchy
-        )
-
-    @dremio_folder_hierarchy.setter
-    def dremio_folder_hierarchy(
-        self, dremio_folder_hierarchy: Optional[List[Dict[str, str]]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_folder_hierarchy = dremio_folder_hierarchy
-
-    @property
-    def dremio_labels(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.dremio_labels
-
-    @dremio_labels.setter
-    def dremio_labels(self, dremio_labels: Optional[Set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_labels = dremio_labels
 
     @property
     def query_count(self) -> Optional[int]:
@@ -668,16 +506,6 @@ class DremioVirtualDataset(Dremio):
         self.attributes.definition = definition
 
     @property
-    def dremio_space(self) -> Optional[DremioSpace]:
-        return None if self.attributes is None else self.attributes.dremio_space
-
-    @dremio_space.setter
-    def dremio_space(self, dremio_space: Optional[DremioSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_space = dremio_space
-
-    @property
     def columns(self) -> Optional[List[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -698,16 +526,6 @@ class DremioVirtualDataset(Dremio):
         self.attributes.atlan_schema = atlan_schema
 
     @property
-    def dremio_folder(self) -> Optional[DremioFolder]:
-        return None if self.attributes is None else self.attributes.dremio_folder
-
-    @dremio_folder.setter
-    def dremio_folder(self, dremio_folder: Optional[DremioFolder]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dremio_folder = dremio_folder
-
-    @property
     def queries(self) -> Optional[List[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
@@ -717,21 +535,7 @@ class DremioVirtualDataset(Dremio):
             self.attributes = self.Attributes()
         self.attributes.queries = queries
 
-    class Attributes(Dremio.Attributes):
-        dremio_id: Optional[str] = Field(default=None, description="")
-        dremio_space_qualified_name: Optional[str] = Field(default=None, description="")
-        dremio_space_name: Optional[str] = Field(default=None, description="")
-        dremio_source_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        dremio_source_name: Optional[str] = Field(default=None, description="")
-        dremio_parent_folder_qualified_name: Optional[str] = Field(
-            default=None, description=""
-        )
-        dremio_folder_hierarchy: Optional[List[Dict[str, str]]] = Field(
-            default=None, description=""
-        )
-        dremio_labels: Optional[Set[str]] = Field(default=None, description="")
+    class Attributes(Databricks.Attributes):
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
@@ -764,24 +568,18 @@ class DremioVirtualDataset(Dremio):
         alias: Optional[str] = Field(default=None, description="")
         is_temporary: Optional[bool] = Field(default=None, description="")
         definition: Optional[str] = Field(default=None, description="")
-        dremio_space: Optional[DremioSpace] = Field(
-            default=None, description=""
-        )  # relationship
         columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
-        dremio_folder: Optional[DremioFolder] = Field(
-            default=None, description=""
-        )  # relationship
         queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
 
-    attributes: DremioVirtualDataset.Attributes = Field(
-        default_factory=lambda: DremioVirtualDataset.Attributes(),
+    attributes: DatabricksMetricView.Attributes = Field(
+        default_factory=lambda: DatabricksMetricView.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -790,10 +588,6 @@ class DremioVirtualDataset(Dremio):
     )
 
 
-from .core.column import Column  # noqa: E402, F401
-from .core.query import Query  # noqa: E402, F401
-from .core.schema import Schema  # noqa: E402, F401
-from .dremio_folder import DremioFolder  # noqa: E402, F401
-from .dremio_space import DremioSpace  # noqa: E402, F401
-
-DremioVirtualDataset.Attributes.update_forward_refs()
+from .column import Column  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401

@@ -130,6 +130,7 @@ You can interact with all of the following different kinds of assets:
     asset/databricksaimodelversion
     asset/databricksexternallocation
     asset/databricksexternallocationpath
+    asset/databricksmetricview
     asset/databricksnotebook
     asset/databricksunitycatalogtag
     asset/databricksvolume
@@ -264,6 +265,9 @@ You can interact with all of the following different kinds of assets:
     asset/nosql
     asset/notebook
     asset/objectstore
+    asset/partialv01
+    asset/partialv01field
+    asset/partialv01object
     asset/persona
     asset/powerbi
     asset/powerbiapp

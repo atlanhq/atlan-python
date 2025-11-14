@@ -147,6 +147,12 @@ class GCS(Google):
     """
     TBC
     """
+    PARTIAL_V01CHILD_FIELDS: ClassVar[RelationField] = RelationField(
+        "partialV01ChildFields"
+    )
+    """
+    TBC
+    """
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelImplementedEntities"
     )
@@ -181,6 +187,7 @@ class GCS(Google):
         "model_implemented_attributes",
         "output_from_airflow_tasks",
         "output_from_spark_jobs",
+        "partial_v01_child_fields",
         "model_implemented_entities",
         "output_from_processes",
     ]
@@ -408,6 +415,22 @@ class GCS(Google):
         self.attributes.output_from_spark_jobs = output_from_spark_jobs
 
     @property
+    def partial_v01_child_fields(self) -> Optional[List[PartialV01Field]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.partial_v01_child_fields
+        )
+
+    @partial_v01_child_fields.setter
+    def partial_v01_child_fields(
+        self, partial_v01_child_fields: Optional[List[PartialV01Field]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v01_child_fields = partial_v01_child_fields
+
+    @property
     def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
         return (
             None
@@ -468,6 +491,9 @@ class GCS(Google):
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
+        partial_v01_child_fields: Optional[List[PartialV01Field]] = Field(
+            default=None, description=""
+        )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
             default=None, description=""
         )  # relationship
@@ -488,6 +514,7 @@ class GCS(Google):
 from .core.airflow_task import AirflowTask  # noqa: E402, F401
 from .core.model_attribute import ModelAttribute  # noqa: E402, F401
 from .core.model_entity import ModelEntity  # noqa: E402, F401
+from .core.partial_v01_field import PartialV01Field  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
 
