@@ -132,11 +132,14 @@ class AsyncAtlanClient(AtlanClient):
     _async_user_cache: Optional[AsyncUserCache] = PrivateAttr(default=None)
 
     def __init__(self, **kwargs):
-        # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
 
         if self.oauth_client_id and self.oauth_client_secret:
             from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
+
+            if self._oauth_token_manager:
+                self._oauth_token_manager.close()
+                self._oauth_token_manager = None
 
             self._async_oauth_token_manager = AsyncOAuthTokenManager(
                 base_url=str(self.base_url),
@@ -144,7 +147,6 @@ class AsyncAtlanClient(AtlanClient):
                 client_secret=self.oauth_client_secret,
             )
 
-        # Build proxy/SSL configuration (reuse from sync client)
         transport_kwargs = self._build_transport_proxy_config(kwargs)
 
         # Create async session with custom transport that supports retry and proxy
