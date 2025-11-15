@@ -7,6 +7,9 @@ from typing import Optional
 import httpx
 from authlib.oauth2.rfc6749 import OAuth2Token
 
+from pyatlan.client.constants import GET_OAUTH_CLIENT
+from pyatlan.utils import API
+
 
 class AsyncOAuthTokenManager:
     def __init__(
@@ -16,10 +19,10 @@ class AsyncOAuthTokenManager:
         client_secret: str,
         http_client: Optional[httpx.AsyncClient] = None,
     ):
-        self.base_url = base_url.rstrip("/")
+        self.base_url = base_url
         self.client_id = client_id
         self.client_secret = client_secret
-        self.token_url = f"{self.base_url}/api/service/oauth-clients/token"
+        self.token_url = self._create_path(GET_OAUTH_CLIENT)
         self._lock = asyncio.Lock()
         self._http_client = http_client or httpx.AsyncClient(timeout=30.0)
         self._token: Optional[OAuth2Token] = None
@@ -28,7 +31,7 @@ class AsyncOAuthTokenManager:
     async def get_token(self) -> str:
         async with self._lock:
             if self._token and not self._token.is_expired():
-                return self._token["access_token"]
+                return str(self._token["access_token"])
 
             response = await self._http_client.post(
                 self.token_url,
@@ -66,6 +69,16 @@ class AsyncOAuthTokenManager:
     async def invalidate_token(self):
         async with self._lock:
             self._token = None
+
+    def _create_path(self, api: API):
+        from urllib.parse import urljoin
+
+        if self.base_url == "INTERNAL":
+            base_with_prefix = urljoin(api.endpoint.service, api.endpoint.prefix)
+            return urljoin(base_with_prefix, api.path)
+        else:
+            base_with_prefix = urljoin(self.base_url, api.endpoint.prefix)
+            return urljoin(base_with_prefix, api.path)
 
     async def aclose(self):
         if self._owns_client:

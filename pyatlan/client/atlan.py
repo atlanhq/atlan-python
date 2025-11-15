@@ -48,6 +48,7 @@ from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
+from pyatlan.client.oauth import OAuthTokenManager
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
@@ -177,12 +178,21 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
 
         if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
-            from pyatlan.client.oauth import OAuthTokenManager
+            LOGGER.debug("API KEY not provided. Using OAuth flow for authentication")
 
+            final_base_url = self.base_url or os.environ.get(
+                "ATLAN_BASE_URL", "INTERNAL"
+            )
+            final_oauth_client_id = self.oauth_client_id or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_ID"
+            )
+            final_oauth_client_secret = self.oauth_client_secret or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_SECRET"
+            )
             self._oauth_token_manager = OAuthTokenManager(
-                base_url=str(self.base_url),
-                client_id=self.oauth_client_id,
-                client_secret=self.oauth_client_secret,
+                base_url=final_base_url,
+                client_id=final_oauth_client_id,
+                client_secret=final_oauth_client_secret,
             )
             self._request_params = {"headers": {}}
         else:
