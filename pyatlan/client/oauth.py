@@ -43,7 +43,7 @@ class OAuthTokenManager:
             data = response.json()
             access_token = data.get("accessToken") or data.get("access_token")
             expires_in = data.get("expiresIn") or data.get("expires_in", 600)
-            print(data.get("expiresIn"))
+
             self._token = OAuth2Token(
                 {
                     "access_token": access_token,

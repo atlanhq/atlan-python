@@ -192,7 +192,12 @@ class AtlanClient(BaseSettings):
                 else {"headers": {}}
             )
 
+        # Build proxy/SSL configuration with environment variable fallback
         transport_kwargs = self._build_transport_proxy_config(data)
+
+        # Configure httpx client with custom transport that supports retry and proxy
+        # Note: We pass proxy/SSL config to the transport, not the client,
+        # so that retry logic properly respects these settings
         self._session = httpx.Client(
             transport=PyatlanSyncTransport(retry=self.retry, **transport_kwargs),
             headers={
@@ -832,6 +837,9 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
+                # Always use AtlanRequest, which accepts a Pydantic model instance and the client
+                # Behind the scenes, it handles retranslation tasks—such as converting
+                # human-readable Atlan tag names back into hashed IDs as required by the backend
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
@@ -848,6 +856,13 @@ class AtlanClient(BaseSettings):
         download_file_path=None,
         text_response=False,
     ):
+        """
+        Handles token refresh and retries the API request upon a 401 Unauthorized response.
+        1. Impersonates the user (if a user ID is available) to fetch a new token.
+        2. Updates the authorization header with the refreshed token.
+        3. Retries the API request with the new token.
+        returns: HTTP response received after retrying the request with the refreshed token
+        """
         if self._oauth_token_manager:
             self._oauth_token_manager.invalidate_token()
             token = self._oauth_token_manager.get_token()
@@ -878,6 +893,11 @@ class AtlanClient(BaseSettings):
         self._request_params["headers"]["authorization"] = f"Bearer {self.api_key}"
         LOGGER.debug("Successfully completed 401 automatic token refresh.")
 
+        # Added a retry loop to ensure a token is active before retrying original request
+        # This helps ensure that when we fetch typedefs using the new token,
+        # the backend has fully recognized the token as valid.
+        # Without this delay, we occasionally get an empty response `[]` from the API,
+        # likely because the backend hasn’t fully propagated token validity yet.
         import time
 
         retry_count = 1
@@ -891,9 +911,10 @@ class AtlanClient(BaseSettings):
                     "Retrying to get typedefs (to ensure token is active) after token refresh failed: %s",
                     e,
                 )
-            time.sleep(retry_count)
+            time.sleep(retry_count)  # Linear backoff
             retry_count += 1
 
+        # Retry the API call with the new token
         return self._call_api_internal(
             api,
             path,

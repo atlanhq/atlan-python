@@ -16,7 +16,7 @@ import os
 from contextlib import _AsyncGeneratorContextManager
 from http import HTTPStatus
 from types import SimpleNamespace
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 from httpx_retries.retry import Retry
