@@ -176,7 +176,7 @@ class AtlanClient(BaseSettings):
     def __init__(self, **data):
         super().__init__(**data)
 
-        if self.oauth_client_id and self.oauth_client_secret:
+        if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
             from pyatlan.client.oauth import OAuthTokenManager
 
             self._oauth_token_manager = OAuthTokenManager(

@@ -132,12 +132,17 @@ class AsyncAtlanClient(AtlanClient):
     _async_user_cache: Optional[AsyncUserCache] = PrivateAttr(default=None)
 
     def __init__(self, **kwargs):
+        # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
 
-        if self.oauth_client_id and self.oauth_client_secret:
+        if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
+            LOGGER.debug(
+                "API Key not provided. Using Async OAuth flow for authentication"
+            )
             from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 
             if self._oauth_token_manager:
+                LOGGER.debug("Sync oauth flow open. Closing it for Async oauth flow")
                 self._oauth_token_manager.close()
                 self._oauth_token_manager = None
 
@@ -147,6 +152,7 @@ class AsyncAtlanClient(AtlanClient):
                 client_secret=self.oauth_client_secret,
             )
 
+        # Build proxy/SSL configuration (reuse from sync client)
         transport_kwargs = self._build_transport_proxy_config(kwargs)
 
         # Create async session with custom transport that supports retry and proxy
@@ -707,10 +713,6 @@ class AsyncAtlanClient(AtlanClient):
                 and response.status_code
                 == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
             ):
-                """
-                Async version of token refresh and retry logic.
-                Handles token refresh and retries the API request upon a 401 Unauthorized response.
-                """
                 try:
                     LOGGER.debug("Starting async 401 automatic token refresh.")
                     return await self._handle_401_token_refresh(
@@ -761,6 +763,10 @@ class AsyncAtlanClient(AtlanClient):
         download_file_path=None,
         text_response=False,
     ):
+        """
+        Async version of token refresh and retry logic.
+        Handles token refresh and retries the API request upon a 401 Unauthorized response.
+        """
         if self._async_oauth_token_manager:
             await self._async_oauth_token_manager.invalidate_token()
             token = await self._async_oauth_token_manager.get_token()
