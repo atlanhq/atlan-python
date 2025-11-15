@@ -17,6 +17,7 @@ Tests for OAuth authentication in the asynchronous AsyncAtlanClient:
 import asyncio
 import os
 from unittest.mock import Mock, patch
+from urllib.parse import urlparse
 
 import httpx
 import pytest
@@ -24,10 +25,6 @@ import pytest
 from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 from pyatlan.client.oauth import OAuthTokenManager
-
-# ============================================================================
-# Fixtures
-# ============================================================================
 
 
 @pytest.fixture
@@ -47,7 +44,6 @@ def clear_env_vars():
 
     yield
 
-    # Restore original values
     for var, value in original_values.items():
         if value is not None:
             os.environ[var] = value
@@ -73,11 +69,6 @@ def mock_oauth_response_snake_case():
         "token_type": "Bearer",
         "expires_in": 3600,
     }
-
-
-# ============================================================================
-# Test 1: AsyncOAuthTokenManager Initialization
-# ============================================================================
 
 
 class TestAsyncOAuthTokenManagerInit:
@@ -135,7 +126,6 @@ class TestAsyncOAuthTokenManagerInit:
         assert manager._owns_client is False
 
         await manager.aclose()
-        # External client should not be closed
         assert not external_client.is_closed
         await external_client.aclose()
 
@@ -153,11 +143,6 @@ class TestAsyncOAuthTokenManagerInit:
         assert manager._owns_client is True
 
         await manager.aclose()
-
-
-# ============================================================================
-# Test 2: Token Fetching and Caching
-# ============================================================================
 
 
 class TestTokenFetchingAndCaching:
@@ -185,7 +170,6 @@ class TestTokenFetchingAndCaching:
         assert token == "async-test-access-token-12345"
         assert mock_post.call_count == 1
 
-        # Verify request payload
         call_args = mock_post.call_args
         assert call_args[1]["json"]["clientId"] == "test-client-id"
         assert call_args[1]["json"]["clientSecret"] == "test-client-secret"
@@ -208,20 +192,17 @@ class TestTokenFetchingAndCaching:
             client_secret="test-client-secret",
         )
 
-        # First call
         token1 = await manager.get_token()
         assert token1 == "async-test-access-token-12345"
         assert mock_post.call_count == 1
 
-        # Second call should use cache
         token2 = await manager.get_token()
         assert token2 == "async-test-access-token-12345"
-        assert mock_post.call_count == 1  # Still 1
+        assert mock_post.call_count == 1
 
-        # Third call should use cache
         token3 = await manager.get_token()
         assert token3 == "async-test-access-token-12345"
-        assert mock_post.call_count == 1  # Still 1
+        assert mock_post.call_count == 1
 
         await manager.aclose()
 
@@ -248,11 +229,6 @@ class TestTokenFetchingAndCaching:
         await manager.aclose()
 
 
-# ============================================================================
-# Test 3: Token Expiry and Refresh
-# ============================================================================
-
-
 class TestTokenExpiryAndRefresh:
     """Test token expiry detection and automatic refresh"""
 
@@ -260,7 +236,6 @@ class TestTokenExpiryAndRefresh:
     @patch("httpx.AsyncClient.post")
     async def test_token_refresh_on_expiry(self, mock_post, clear_env_vars):
         """Expired token should trigger automatic refresh"""
-        # First response with 1 second expiry
         first_response = Mock()
         first_response.json = Mock(
             return_value={
@@ -271,7 +246,6 @@ class TestTokenExpiryAndRefresh:
         )
         first_response.raise_for_status = Mock()
 
-        # Second response
         second_response = Mock()
         second_response.json = Mock(
             return_value={
@@ -290,15 +264,12 @@ class TestTokenExpiryAndRefresh:
             client_secret="test-client-secret",
         )
 
-        # First call
         token1 = await manager.get_token()
         assert token1 == "async-token-1"
         assert mock_post.call_count == 1
 
-        # Wait for expiry
         await asyncio.sleep(2)
 
-        # Second call should fetch new token
         token2 = await manager.get_token()
         assert token2 == "async-token-2"
         assert mock_post.call_count == 2
@@ -322,24 +293,16 @@ class TestTokenExpiryAndRefresh:
             client_secret="test-client-secret",
         )
 
-        # First call
         await manager.get_token()
         assert mock_post.call_count == 1
 
-        # Manually invalidate
         await manager.invalidate_token()
         assert manager._token is None
 
-        # Next call should fetch new token
         await manager.get_token()
         assert mock_post.call_count == 2
 
         await manager.aclose()
-
-
-# ============================================================================
-# Test 4: Error Handling
-# ============================================================================
 
 
 class TestErrorHandling:
@@ -473,11 +436,6 @@ class TestErrorHandling:
         await manager.aclose()
 
 
-# ============================================================================
-# Test 5: Async Concurrency Safety
-# ============================================================================
-
-
 class TestAsyncConcurrencySafety:
     """Test async concurrency safety of OAuth token management"""
 
@@ -491,7 +449,7 @@ class TestAsyncConcurrencySafety:
 
         async def mock_post_with_delay(*args, **kwargs):
             call_count["count"] += 1
-            await asyncio.sleep(0.1)  # Simulate network delay
+            await asyncio.sleep(0.1)
             mock_response = Mock()
             mock_response.json = Mock(return_value=mock_oauth_response)
             mock_response.raise_for_status = Mock()
@@ -505,14 +463,11 @@ class TestAsyncConcurrencySafety:
             client_secret="test-client-secret",
         )
 
-        # Start 10 coroutines simultaneously
         tokens = await asyncio.gather(*[manager.get_token() for _ in range(10)])
 
-        # All coroutines should get the same token
         assert len(tokens) == 10
         assert all(token == tokens[0] for token in tokens)
 
-        # Should only have called the API once (or very few times due to race)
         assert call_count["count"] <= 2
 
         await manager.aclose()
@@ -534,7 +489,6 @@ class TestAsyncConcurrencySafety:
             client_secret="test-client-secret",
         )
 
-        # Pre-fetch token
         await manager.get_token()
 
         async def invalidate_repeatedly():
@@ -547,20 +501,13 @@ class TestAsyncConcurrencySafety:
                 await manager.get_token()
                 await asyncio.sleep(0.01)
 
-        # Run invalidation and fetch concurrently
         await asyncio.gather(
             invalidate_repeatedly(),
             fetch_repeatedly(),
             fetch_repeatedly(),
         )
 
-        # Should complete without errors
         await manager.aclose()
-
-
-# ============================================================================
-# Test 6: Resource Cleanup
-# ============================================================================
 
 
 class TestResourceCleanup:
@@ -595,15 +542,9 @@ class TestResourceCleanup:
 
         await manager.aclose()
 
-        # External client should NOT be closed
         assert not external_client.is_closed
 
         await external_client.aclose()
-
-
-# ============================================================================
-# Test 7: AsyncAtlanClient Authentication Precedence
-# ============================================================================
 
 
 class TestAsyncAtlanClientAuthPrecedence:
@@ -638,7 +579,7 @@ class TestAsyncAtlanClientAuthPrecedence:
 
         assert client.api_key is None
         assert client._async_oauth_token_manager is not None
-        assert client._oauth_token_manager is None  # Sync manager should be closed
+        assert client._oauth_token_manager is None
         assert client._async_oauth_token_manager.client_id == "test-client-id"
         assert client._async_oauth_token_manager.client_secret == "test-client-secret"
 
@@ -691,11 +632,6 @@ class TestAsyncAtlanClientAuthPrecedence:
         await client.aclose()
 
 
-# ============================================================================
-# Test 8: Sync Manager Cleanup (Resource Leak Prevention)
-# ============================================================================
-
-
 class TestSyncManagerCleanup:
     """Test that sync OAuth manager is properly closed to prevent resource leaks"""
 
@@ -709,7 +645,6 @@ class TestSyncManagerCleanup:
                 oauth_client_secret="test-client-secret",
             )
 
-            # Sync manager should have been closed
             assert mock_close.called or client._oauth_token_manager is None
             assert client._async_oauth_token_manager is not None
 
@@ -724,17 +659,10 @@ class TestSyncManagerCleanup:
             oauth_client_secret="test-client-secret",
         )
 
-        # Sync manager should be None (closed and nullified)
         assert client._oauth_token_manager is None
-        # Async manager should exist
         assert client._async_oauth_token_manager is not None
 
         await client.aclose()
-
-
-# ============================================================================
-# Test 9: Environment Variable Handling
-# ============================================================================
 
 
 class TestEnvironmentVariables:
@@ -768,7 +696,7 @@ class TestEnvironmentVariables:
             oauth_client_secret="explicit-client-secret",
         )
 
-        assert "explicit.atlan.com" in str(client.base_url)
+        assert urlparse(str(client.base_url)).hostname == "explicit.atlan.com"
         assert client._async_oauth_token_manager.client_id == "explicit-client-id"
         assert (
             client._async_oauth_token_manager.client_secret == "explicit-client-secret"
@@ -799,18 +727,12 @@ class TestEnvironmentVariables:
         """Partial OAuth credentials should not create manager"""
         os.environ["ATLAN_BASE_URL"] = "https://test.atlan.com"
         os.environ["ATLAN_OAUTH_CLIENT_ID"] = "env-client-id"
-        # Missing ATLAN_OAUTH_CLIENT_SECRET
 
         client = AsyncAtlanClient()
 
         assert client._async_oauth_token_manager is None
 
         await client.aclose()
-
-
-# ============================================================================
-# Test 10: Edge Cases
-# ============================================================================
 
 
 class TestEdgeCases:
@@ -825,7 +747,6 @@ class TestEdgeCases:
             return_value={
                 "accessToken": "test-token",
                 "tokenType": "Bearer",
-                # Missing expiresIn
             }
         )
         mock_response.raise_for_status = Mock()
