@@ -69,7 +69,7 @@ except ImportError:
 
 
 def get_client(
-    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+    impersonate_user_id: Optional[str] = None, set_pkg_headers: Optional[bool] = False
 ) -> AtlanClient:
     """
     Set up the default Atlan client, based on environment variables.
@@ -96,6 +96,11 @@ def get_client(
         if set_pkg_headers:
             client = set_package_headers(client)
         return client
+    else:
+        LOGGER.info(
+            "No OAuth client credentials found. Attempting to use API token or user impersonation."
+        )
+
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
         api_key = api_token
@@ -119,7 +124,7 @@ def get_client(
 
 
 async def get_client_async(
-    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+    impersonate_user_id: Optional[str] = None, set_pkg_headers: Optional[bool] = False
 ) -> AsyncAtlanClient:
     """
     Set up the default async Atlan client, based on environment variables.
@@ -146,6 +151,10 @@ async def get_client_async(
         if set_pkg_headers:
             client = set_package_headers(client)
         return client
+    else:
+        LOGGER.info(
+            "No OAuth client credentials found. Attempting to use API token or user impersonation."
+        )
 
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
