@@ -42,6 +42,13 @@ class OAuthTokenManager:
 
             data = response.json()
             access_token = data.get("accessToken") or data.get("access_token")
+
+            if not access_token:
+                raise ValueError(
+                    f"OAuth token response missing 'accessToken' field. "
+                    f"Response keys: {list(data.keys())}"
+                )
+
             expires_in = data.get("expiresIn") or data.get("expires_in", 600)
 
             self._token = OAuth2Token(
