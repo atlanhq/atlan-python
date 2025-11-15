@@ -83,7 +83,19 @@ def get_client(
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+    oauth_client_id = os.environ.get("ATLAN_OAUTH_CLIENT_ID", "")
+    oauth_client_secret = os.environ.get("ATLAN_OAUTH_CLIENT_SECRET", "")
 
+    if oauth_client_id and oauth_client_secret:
+        LOGGER.info("Using OAuth client credentials for authentication.")
+        client = AtlanClient(
+            base_url=base_url,
+            oauth_client_id=oauth_client_id,
+            oauth_client_secret=oauth_client_secret,
+        )
+        if set_pkg_headers:
+            client = set_package_headers(client)
+        return client
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
         api_key = api_token
@@ -121,6 +133,19 @@ async def get_client_async(
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+    oauth_client_id = os.environ.get("ATLAN_OAUTH_CLIENT_ID", "")
+    oauth_client_secret = os.environ.get("ATLAN_OAUTH_CLIENT_SECRET", "")
+
+    if oauth_client_id and oauth_client_secret:
+        LOGGER.info("Using Async OAuth client credentials for authentication.")
+        client = AsyncAtlanClient(
+            base_url=base_url,
+            oauth_client_id=oauth_client_id,
+            oauth_client_secret=oauth_client_secret,
+        )
+        if set_pkg_headers:
+            client = set_package_headers(client)
+        return client
 
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
