@@ -69,7 +69,7 @@ except ImportError:
 
 
 def get_client(
-    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+    impersonate_user_id: Optional[str] = None, set_pkg_headers: Optional[bool] = False
 ) -> AtlanClient:
     """
     Set up the default Atlan client, based on environment variables.
@@ -83,6 +83,23 @@ def get_client(
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+    oauth_client_id = os.environ.get("ATLAN_OAUTH_CLIENT_ID", "")
+    oauth_client_secret = os.environ.get("ATLAN_OAUTH_CLIENT_SECRET", "")
+
+    if oauth_client_id and oauth_client_secret:
+        LOGGER.info("Using OAuth client credentials for authentication.")
+        client = AtlanClient(
+            base_url=base_url,
+            oauth_client_id=oauth_client_id,
+            oauth_client_secret=oauth_client_secret,
+        )
+        if set_pkg_headers:
+            client = set_package_headers(client)
+        return client
+    else:
+        LOGGER.info(
+            "No OAuth client credentials found. Attempting to use API token or user impersonation."
+        )
 
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
@@ -107,7 +124,7 @@ def get_client(
 
 
 async def get_client_async(
-    impersonate_user_id: str, set_pkg_headers: Optional[bool] = False
+    impersonate_user_id: Optional[str] = None, set_pkg_headers: Optional[bool] = False
 ) -> AsyncAtlanClient:
     """
     Set up the default async Atlan client, based on environment variables.
@@ -121,6 +138,23 @@ async def get_client_async(
     base_url = os.environ.get("ATLAN_BASE_URL", "INTERNAL")
     api_token = os.environ.get("ATLAN_API_KEY", "")
     user_id = os.environ.get("ATLAN_USER_ID", impersonate_user_id)
+    oauth_client_id = os.environ.get("ATLAN_OAUTH_CLIENT_ID", "")
+    oauth_client_secret = os.environ.get("ATLAN_OAUTH_CLIENT_SECRET", "")
+
+    if oauth_client_id and oauth_client_secret:
+        LOGGER.info("Using Async OAuth client credentials for authentication.")
+        client = AsyncAtlanClient(
+            base_url=base_url,
+            oauth_client_id=oauth_client_id,
+            oauth_client_secret=oauth_client_secret,
+        )
+        if set_pkg_headers:
+            client = set_package_headers(client)
+        return client
+    else:
+        LOGGER.info(
+            "No OAuth client credentials found. Attempting to use API token or user impersonation."
+        )
 
     if api_token:
         LOGGER.info("Using provided API token for authentication.")
