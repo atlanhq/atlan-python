@@ -194,7 +194,6 @@ class AtlanClient(BaseSettings):
 
         # Build proxy/SSL configuration with environment variable fallback
         transport_kwargs = self._build_transport_proxy_config(data)
-
         # Configure httpx client with custom transport that supports retry and proxy
         # Note: We pass proxy/SSL config to the transport, not the client,
         # so that retry logic properly respects these settings
@@ -861,6 +860,7 @@ class AtlanClient(BaseSettings):
         1. Impersonates the user (if a user ID is available) to fetch a new token.
         2. Updates the authorization header with the refreshed token.
         3. Retries the API request with the new token.
+
         returns: HTTP response received after retrying the request with the refreshed token
         """
         if self._oauth_token_manager:
