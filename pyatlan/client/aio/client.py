@@ -146,10 +146,19 @@ class AsyncAtlanClient(AtlanClient):
                 self._oauth_token_manager.close()
                 self._oauth_token_manager = None
 
+            final_base_url = self.base_url or os.environ.get(
+                "ATLAN_BASE_URL", "INTERNAL"
+            )
+            final_oauth_client_id = self.oauth_client_id or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_ID"
+            )
+            final_oauth_client_secret = self.oauth_client_secret or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_SECRET"
+            )
             self._async_oauth_token_manager = AsyncOAuthTokenManager(
-                base_url=str(self.base_url),
-                client_id=self.oauth_client_id,
-                client_secret=self.oauth_client_secret,
+                base_url=final_base_url,
+                client_id=final_oauth_client_id,
+                client_secret=final_oauth_client_secret,
             )
 
         # Build proxy/SSL configuration (reuse from sync client)
