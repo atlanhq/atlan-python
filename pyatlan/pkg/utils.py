@@ -86,12 +86,16 @@ def get_client(
     oauth_client_id = os.environ.get("ATLAN_OAUTH_CLIENT_ID", "")
     oauth_client_secret = os.environ.get("ATLAN_OAUTH_CLIENT_SECRET", "")
 
+    print(oauth_client_id)
+    print(oauth_client_secret)
+    print(type(oauth_client_id))
+    print(type(oauth_client_secret))
     if oauth_client_id and oauth_client_secret:
         LOGGER.info("Using OAuth client credentials for authentication.")
         client = AtlanClient(
             base_url=base_url,
-            oauth_client_id=oauth_client_id,
-            oauth_client_secret=oauth_client_secret,
+            oauth_client_id=str(oauth_client_id),
+            oauth_client_secret=str(oauth_client_secret),
         )
         if set_pkg_headers:
             client = set_package_headers(client)
