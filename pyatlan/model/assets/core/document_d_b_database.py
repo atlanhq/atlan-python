@@ -64,6 +64,12 @@ class DocumentDBDatabase(DocumentDB):
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
     SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
     """
     Number of schemas in this database.
@@ -213,6 +219,7 @@ class DocumentDBDatabase(DocumentDB):
     _convenience_properties: ClassVar[List[str]] = [
         "document_d_b_database_collection_count",
         "no_s_q_l_schema_definition",
+        "catalog_has_partial_fields",
         "schema_count",
         "query_count",
         "query_user_count",
@@ -274,6 +281,20 @@ class DocumentDBDatabase(DocumentDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def schema_count(self) -> Optional[int]:
@@ -590,6 +611,7 @@ class DocumentDBDatabase(DocumentDB):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         schema_count: Optional[int] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")

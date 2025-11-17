@@ -110,6 +110,12 @@ class SnowflakeAIModelContext(AIModel):
     """
     Environmental consciousness configuration for ensuring the ethical use of an AI asset
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -261,6 +267,7 @@ class SnowflakeAIModelContext(AIModel):
         "ethical_a_i_transparency_config",
         "ethical_a_i_accountability_config",
         "ethical_a_i_environmental_consciousness_config",
+        "catalog_has_partial_fields",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -457,6 +464,20 @@ class SnowflakeAIModelContext(AIModel):
         self.attributes.ethical_a_i_environmental_consciousness_config = (
             ethical_a_i_environmental_consciousness_config
         )
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def query_count(self) -> Optional[int]:
@@ -777,6 +798,7 @@ class SnowflakeAIModelContext(AIModel):
         ethical_a_i_environmental_consciousness_config: Optional[
             EthicalAIEnvironmentalConsciousnessConfig
         ] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")

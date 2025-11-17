@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, RelationField
 
 from .domo import Domo
 
@@ -41,6 +41,18 @@ class DomoDatasetColumn(Domo):
     """
     Qualified name of domo dataset of this column.
     """
+    DOMO_DATASET_COLUMN_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "domoDatasetColumnExpression", "domoDatasetColumnExpression"
+    )
+    """
+    Expression used to create this calculated column.
+    """
+    DOMO_DATASET_COLUMN_IS_CALCULATED: ClassVar[BooleanField] = BooleanField(
+        "domoDatasetColumnIsCalculated", "domoDatasetColumnIsCalculated"
+    )
+    """
+    If the column is a calculated column.
+    """
 
     DOMO_DATASET: ClassVar[RelationField] = RelationField("domoDataset")
     """
@@ -50,6 +62,8 @@ class DomoDatasetColumn(Domo):
     _convenience_properties: ClassVar[List[str]] = [
         "domo_dataset_column_type",
         "domo_dataset_qualified_name",
+        "domo_dataset_column_expression",
+        "domo_dataset_column_is_calculated",
         "domo_dataset",
     ]
 
@@ -82,6 +96,40 @@ class DomoDatasetColumn(Domo):
         self.attributes.domo_dataset_qualified_name = domo_dataset_qualified_name
 
     @property
+    def domo_dataset_column_expression(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.domo_dataset_column_expression
+        )
+
+    @domo_dataset_column_expression.setter
+    def domo_dataset_column_expression(
+        self, domo_dataset_column_expression: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_dataset_column_expression = domo_dataset_column_expression
+
+    @property
+    def domo_dataset_column_is_calculated(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.domo_dataset_column_is_calculated
+        )
+
+    @domo_dataset_column_is_calculated.setter
+    def domo_dataset_column_is_calculated(
+        self, domo_dataset_column_is_calculated: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.domo_dataset_column_is_calculated = (
+            domo_dataset_column_is_calculated
+        )
+
+    @property
     def domo_dataset(self) -> Optional[DomoDataset]:
         return None if self.attributes is None else self.attributes.domo_dataset
 
@@ -94,6 +142,12 @@ class DomoDatasetColumn(Domo):
     class Attributes(Domo.Attributes):
         domo_dataset_column_type: Optional[str] = Field(default=None, description="")
         domo_dataset_qualified_name: Optional[str] = Field(default=None, description="")
+        domo_dataset_column_expression: Optional[str] = Field(
+            default=None, description=""
+        )
+        domo_dataset_column_is_calculated: Optional[bool] = Field(
+            default=None, description=""
+        )
         domo_dataset: Optional[DomoDataset] = Field(
             default=None, description=""
         )  # relationship

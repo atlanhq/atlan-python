@@ -268,13 +268,13 @@ class Asset(Referenceable):
     Name of this asset. Fallback for display purposes, if displayName is empty.
     """
     DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "displayName", "displayName.keyword", "displayName"
+        "displayName", "displayName.keyword", "displayName.delimiter"
     )
     """
     Human-readable name of this asset used for display purposes (in user interface).
     """
     DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
-        "description", "description.keyword", "description"
+        "description", "description.keyword", "description.text"
     )
     """
     Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty.
@@ -286,7 +286,7 @@ class Asset(Referenceable):
     Readme of this asset, as extracted from source. If present, this will be used for the readme in user interface.
     """
     USER_DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
-        "userDescription", "userDescription.keyword", "userDescription"
+        "userDescription", "userDescription.keyword", "userDescription.text"
     )
     """
     Description of this asset, as provided by a user. If present, this will be used for the description in user interface.

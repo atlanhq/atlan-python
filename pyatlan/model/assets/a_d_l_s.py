@@ -8,7 +8,11 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
 from pyatlan.model.structs import AzureTag
 
 from .object_store import ObjectStore
@@ -44,6 +48,12 @@ class ADLS(ObjectStore):
     """
     Name of the account for this ADLS asset.
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
     AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
@@ -70,6 +80,7 @@ class ADLS(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
         "adls_account_name",
+        "catalog_has_partial_fields",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
@@ -99,6 +110,20 @@ class ADLS(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_name = adls_account_name
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def azure_resource_id(self) -> Optional[str]:
@@ -151,6 +176,7 @@ class ADLS(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(default=None, description="")
         adls_account_name: Optional[str] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
         adls_account_secondary_location: Optional[str] = Field(

@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import DremioParentAssetType
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioFolder(Dremio):
