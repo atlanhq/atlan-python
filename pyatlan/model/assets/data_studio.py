@@ -9,6 +9,7 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -79,6 +80,12 @@ class DataStudio(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
@@ -140,6 +147,7 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "catalog_has_partial_fields",
         "input_to_spark_jobs",
         "input_to_airflow_tasks",
         "input_to_processes",
@@ -232,6 +240,20 @@ class DataStudio(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -364,6 +386,7 @@ class DataStudio(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship

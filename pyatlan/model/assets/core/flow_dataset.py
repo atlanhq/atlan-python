@@ -10,6 +10,7 @@ from typing import ClassVar, Dict, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -54,6 +55,12 @@ class FlowDataset(Catalog):
     FLOW_QUERY: ClassVar[KeywordField] = KeywordField("flowQuery", "flowQuery")
     """
     Query (e.g. SQL) that was run to produce this ephemeral piece of data.
+    """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
     """
     FLOW_STARTED_AT: ClassVar[NumericField] = NumericField(
         "flowStartedAt", "flowStartedAt"
@@ -150,6 +157,7 @@ class FlowDataset(Catalog):
         "flow_type",
         "flow_expression",
         "flow_query",
+        "catalog_has_partial_fields",
         "flow_started_at",
         "flow_finished_at",
         "flow_status",
@@ -208,6 +216,20 @@ class FlowDataset(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flow_query = flow_query
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def flow_started_at(self) -> Optional[datetime]:
@@ -404,6 +426,7 @@ class FlowDataset(Catalog):
         flow_type: Optional[str] = Field(default=None, description="")
         flow_expression: Optional[str] = Field(default=None, description="")
         flow_query: Optional[str] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         flow_started_at: Optional[datetime] = Field(default=None, description="")
         flow_finished_at: Optional[datetime] = Field(default=None, description="")
         flow_status: Optional[str] = Field(default=None, description="")

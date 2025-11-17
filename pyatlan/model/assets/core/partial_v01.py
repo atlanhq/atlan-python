@@ -41,10 +41,17 @@ class PartialV01(Catalog):
     """
     Atlan-mapped type name of this partial asset.
     """
+    PARTIAL_V01UNKNOWN_ATTRIBUTES_HASH_ID: ClassVar[KeywordField] = KeywordField(
+        "partialV01UnknownAttributesHashId", "partialV01UnknownAttributesHashId"
+    )
+    """
+    Hash ID of the unknown attributes for this partial asset.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "partial_v01_structure_j_s_o_n",
         "partial_v01_resolved_type_name",
+        "partial_v01_unknown_attributes_hash_id",
     ]
 
     @property
@@ -79,11 +86,32 @@ class PartialV01(Catalog):
             self.attributes = self.Attributes()
         self.attributes.partial_v01_resolved_type_name = partial_v01_resolved_type_name
 
+    @property
+    def partial_v01_unknown_attributes_hash_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.partial_v01_unknown_attributes_hash_id
+        )
+
+    @partial_v01_unknown_attributes_hash_id.setter
+    def partial_v01_unknown_attributes_hash_id(
+        self, partial_v01_unknown_attributes_hash_id: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v01_unknown_attributes_hash_id = (
+            partial_v01_unknown_attributes_hash_id
+        )
+
     class Attributes(Catalog.Attributes):
         partial_v01_structure_j_s_o_n: Optional[str] = Field(
             default=None, description=""
         )
         partial_v01_resolved_type_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        partial_v01_unknown_attributes_hash_id: Optional[str] = Field(
             default=None, description=""
         )
 

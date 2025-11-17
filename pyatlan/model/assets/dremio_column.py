@@ -184,6 +184,12 @@ class DremioColumn(Dremio):
     """
     Whether this asset is secure (true) or not (false).
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
     DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "dataType", "dataType", "dataType.text"
     )
@@ -659,6 +665,7 @@ class DremioColumn(Dremio):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "catalog_has_partial_fields",
         "data_type",
         "sub_data_type",
         "column_compression",
@@ -1051,6 +1058,20 @@ class DremioColumn(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_is_secure = sql_is_secure
+
+    @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def data_type(self) -> Optional[str]:
@@ -2107,6 +2128,7 @@ class DremioColumn(Dremio):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         data_type: Optional[str] = Field(default=None, description="")
         sub_data_type: Optional[str] = Field(default=None, description="")
         column_compression: Optional[str] = Field(default=None, description="")

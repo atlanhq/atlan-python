@@ -139,6 +139,12 @@ class DatabricksMetricView(Databricks):
     """
     Whether this asset is secure (true) or not (false).
     """
+    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
+        "catalogHasPartialFields", "catalogHasPartialFields"
+    )
+    """
+    Indicates this catalog asset has partial fields, if true.
+    """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
     Number of columns in this view.
@@ -208,6 +214,7 @@ class DatabricksMetricView(Databricks):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "catalog_has_partial_fields",
         "column_count",
         "row_count",
         "size_bytes",
@@ -426,6 +433,20 @@ class DatabricksMetricView(Databricks):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
+    def catalog_has_partial_fields(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.catalog_has_partial_fields
+        )
+
+    @catalog_has_partial_fields.setter
+    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
+
+    @property
     def column_count(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.column_count
 
@@ -558,6 +579,7 @@ class DatabricksMetricView(Databricks):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         column_count: Optional[int] = Field(default=None, description="")
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
