@@ -159,6 +159,8 @@ class AsyncAtlanClient(AtlanClient):
                 base_url=final_base_url,
                 client_id=final_oauth_client_id,
                 client_secret=final_oauth_client_secret,
+                connect_timeout=self.connect_timeout,
+                read_timeout=self.read_timeout,
             )
 
         # Build proxy/SSL configuration (reuse from sync client)

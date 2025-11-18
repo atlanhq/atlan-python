@@ -18,13 +18,19 @@ class AsyncOAuthTokenManager:
         client_id: str,
         client_secret: str,
         http_client: Optional[httpx.AsyncClient] = None,
+        connect_timeout: float = 30.0,
+        read_timeout: float = 900.0,
     ):
         self.base_url = base_url
         self.client_id = client_id
         self.client_secret = client_secret
         self.token_url = self._create_path(GET_OAUTH_CLIENT)
         self._lock = asyncio.Lock()
-        self._http_client = http_client or httpx.AsyncClient(timeout=30.0)
+        self._http_client = http_client or httpx.AsyncClient(
+            timeout=httpx.Timeout(
+                connect=connect_timeout, read=read_timeout, write=30.0, pool=30.0
+            )
+        )
         self._token: Optional[OAuth2Token] = None
         self._owns_client = http_client is None
 
