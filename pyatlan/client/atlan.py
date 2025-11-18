@@ -193,6 +193,8 @@ class AtlanClient(BaseSettings):
                 base_url=final_base_url,
                 client_id=final_oauth_client_id,
                 client_secret=final_oauth_client_secret,
+                connect_timeout=self.connect_timeout,
+                read_timeout=self.read_timeout,
             )
             self._request_params = {"headers": {}}
         else:
