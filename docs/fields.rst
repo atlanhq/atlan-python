@@ -27,5 +27,6 @@ Subclasses:
    field/numeric_field
    field/numeric_rank_field
    field/keyword_text_field
+   field/keyword_text_delimited_field
    field/keyword_text_stemmed_field
    field/custom_metadata_field
