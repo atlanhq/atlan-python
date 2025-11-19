@@ -1325,6 +1325,18 @@ class Asset(Referenceable):
     """
     List of field key-values associated with all Aspects linked to this asset.
     """
+    ASSET_IMMUTA_REQUEST_URL: ClassVar[TextField] = TextField(
+        "assetImmutaRequestURL", "assetImmutaRequestURL"
+    )
+    """
+    URL of the request form on Immuta relevant to the asset.
+    """
+    ASSET_IMMUTA_REQUEST_TYPE: ClassVar[KeywordField] = KeywordField(
+        "assetImmutaRequestType", "assetImmutaRequestType"
+    )
+    """
+    The type of request form on Immuta applicable for the asset.
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1598,6 +1610,8 @@ class Asset(Referenceable):
         "asset_v3_g_c_p_dataplex_metadata_details",
         "asset_v3_g_c_p_dataplex_aspect_list",
         "asset_v3_g_c_p_dataplex_aspect_field_list",
+        "asset_immuta_request_url",
+        "asset_immuta_request_type",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -4113,6 +4127,34 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_immuta_request_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_immuta_request_url
+        )
+
+    @asset_immuta_request_url.setter
+    def asset_immuta_request_url(self, asset_immuta_request_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_immuta_request_url = asset_immuta_request_url
+
+    @property
+    def asset_immuta_request_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_immuta_request_type
+        )
+
+    @asset_immuta_request_type.setter
+    def asset_immuta_request_type(self, asset_immuta_request_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_immuta_request_type = asset_immuta_request_type
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -4711,6 +4753,8 @@ class Asset(Referenceable):
         asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_immuta_request_url: Optional[str] = Field(default=None, description="")
+        asset_immuta_request_type: Optional[str] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship
