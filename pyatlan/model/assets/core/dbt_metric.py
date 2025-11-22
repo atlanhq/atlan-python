@@ -158,12 +158,6 @@ class DbtMetric(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
     Type of the metric.
@@ -237,7 +231,6 @@ class DbtMetric(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
-        "catalog_has_partial_fields",
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -473,20 +466,6 @@ class DbtMetric(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def metric_type(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.metric_type
 
@@ -629,7 +608,6 @@ class DbtMetric(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")

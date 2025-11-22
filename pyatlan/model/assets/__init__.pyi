@@ -27,7 +27,7 @@ __all__ = [
     "Fivetran",
     "DataContract",
     "DataQuality",
-    "PartialV01",
+    "SaaS",
     "AI",
     "Resource",
     "FlowField",
@@ -69,7 +69,7 @@ __all__ = [
     "Metric",
     "DataQualityRule",
     "Soda",
-    "PartialV01Field",
+    "SageMakerUnifiedStudio",
     "AIApplication",
     "AIModelVersion",
     "AIModel",
@@ -78,6 +78,7 @@ __all__ = [
     "Link",
     "DataDomain",
     "DataProduct",
+    "Dremio",
     "Table",
     "Query",
     "Schema",
@@ -144,6 +145,11 @@ __all__ = [
     "MCIncident",
     "MCMonitor",
     "SodaCheck",
+    "SageMakerUnifiedStudioProject",
+    "SageMakerUnifiedStudioAsset",
+    "SageMakerUnifiedStudioSubscribedAsset",
+    "SageMakerUnifiedStudioPublishedAsset",
+    "SageMakerUnifiedStudioAssetSchema",
     "DatabricksAIModelVersion",
     "SnowflakeAIModelVersion",
     "SnowflakeAIModelContext",
@@ -227,7 +233,6 @@ __all__ = [
     "ADLS",
     "GCS",
     "DatabricksNotebook",
-    "PartialV01Object",
     "Dataverse",
     "Cognite",
     "Salesforce",
@@ -237,7 +242,6 @@ __all__ = [
     "CubeDimension",
     "CubeField",
     "CustomEntity",
-    "Dremio",
     "BigqueryTag",
     "Snowflake",
     "APISpec",
@@ -525,6 +529,7 @@ from .core.dbt_test import DbtTest
 from .core.document_d_b import DocumentDB
 from .core.document_d_b_collection import DocumentDBCollection
 from .core.document_d_b_database import DocumentDBDatabase
+from .core.dremio import Dremio
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .core.fabric import Fabric
 from .core.fabric_activity import FabricActivity
@@ -574,8 +579,6 @@ from .core.mongo_d_b_database import MongoDBDatabase
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.no_s_q_l import NoSQL
-from .core.partial_v01 import PartialV01
-from .core.partial_v01_field import PartialV01Field
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
 from .core.power_b_i_app import PowerBIApp
@@ -598,6 +601,19 @@ from .core.readme import Readme
 from .core.referenceable import Referenceable
 from .core.resource import Resource
 from .core.s_q_l import SQL
+from .core.saa_s import SaaS
+from .core.sage_maker_unified_studio import SageMakerUnifiedStudio
+from .core.sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
+from .core.sage_maker_unified_studio_asset_schema import (
+    SageMakerUnifiedStudioAssetSchema,
+)
+from .core.sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
+from .core.sage_maker_unified_studio_published_asset import (
+    SageMakerUnifiedStudioPublishedAsset,
+)
+from .core.sage_maker_unified_studio_subscribed_asset import (
+    SageMakerUnifiedStudioSubscribedAsset,
+)
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
@@ -641,7 +657,6 @@ from .domo_card import DomoCard
 from .domo_dashboard import DomoDashboard
 from .domo_dataset import DomoDataset
 from .domo_dataset_column import DomoDatasetColumn
-from .dremio import Dremio
 from .dremio_column import DremioColumn
 from .dremio_folder import DremioFolder
 from .dremio_physical_dataset import DremioPhysicalDataset
@@ -702,7 +717,6 @@ from .mongo_d_b import MongoDB
 from .multi_dimensional_dataset import MultiDimensionalDataset
 from .notebook import Notebook
 from .object_store import ObjectStore
-from .partial_v01_object import PartialV01Object
 from .preset import Preset
 from .preset_chart import PresetChart
 from .preset_dashboard import PresetDashboard
@@ -737,7 +751,6 @@ from .s3_bucket import S3Bucket
 from .s3_object import S3Object
 from .s3_prefix import S3Prefix
 from .s_a_p import SAP
-from .saa_s import SaaS
 from .salesforce import Salesforce
 from .salesforce_dashboard import SalesforceDashboard
 from .salesforce_field import SalesforceField

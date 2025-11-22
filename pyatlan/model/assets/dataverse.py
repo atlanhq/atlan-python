@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import BooleanField
 
-from .saa_s import SaaS
+from .core.saa_s import SaaS
 
 
 class Dataverse(SaaS):

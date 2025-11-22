@@ -62,6 +62,7 @@ from .dbt_test import DbtTest
 from .document_d_b import DocumentDB
 from .document_d_b_collection import DocumentDBCollection
 from .document_d_b_database import DocumentDBDatabase
+from .dremio import Dremio
 from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .fabric import Fabric
 from .fabric_activity import FabricActivity
@@ -111,8 +112,6 @@ from .mongo_d_b_database import MongoDBDatabase
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .no_s_q_l import NoSQL
-from .partial_v01 import PartialV01
-from .partial_v01_field import PartialV01Field
 from .persona import Persona
 from .power_b_i import PowerBI
 from .power_b_i_app import PowerBIApp
@@ -134,6 +133,17 @@ from .query import Query
 from .readme import Readme
 from .resource import Resource
 from .s_q_l import SQL
+from .saa_s import SaaS
+from .sage_maker_unified_studio import SageMakerUnifiedStudio
+from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
+from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema
+from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
+from .sage_maker_unified_studio_published_asset import (
+    SageMakerUnifiedStudioPublishedAsset,
+)
+from .sage_maker_unified_studio_subscribed_asset import (
+    SageMakerUnifiedStudioSubscribedAsset,
+)
 from .schema import Schema
 from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
@@ -183,7 +193,7 @@ Dbt.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
-PartialV01.Attributes.update_forward_refs(**localns)
+SaaS.Attributes.update_forward_refs(**localns)
 AI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 FlowField.Attributes.update_forward_refs(**localns)
@@ -225,7 +235,7 @@ DataQualityRuleTemplate.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 DataQualityRule.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
-PartialV01Field.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudio.Attributes.update_forward_refs(**localns)
 AIApplication.Attributes.update_forward_refs(**localns)
 AIModelVersion.Attributes.update_forward_refs(**localns)
 AIModel.Attributes.update_forward_refs(**localns)
@@ -234,6 +244,7 @@ File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
 DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
+Dremio.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
@@ -300,6 +311,11 @@ AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)
 MCMonitor.Attributes.update_forward_refs(**localns)
 SodaCheck.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudioProject.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudioAsset.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudioSubscribedAsset.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudioPublishedAsset.Attributes.update_forward_refs(**localns)
+SageMakerUnifiedStudioAssetSchema.Attributes.update_forward_refs(**localns)
 DatabricksAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelContext.Attributes.update_forward_refs(**localns)

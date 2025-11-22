@@ -35,7 +35,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import (
     AssetExternalDQMetadata,
-    AssetGCPDataplexMetadata,
+    AssetSmusMetadataFormDetails,
     PopularityInsights,
     StarredDetails,
 )
@@ -1307,23 +1307,29 @@ class Asset(Referenceable):
     """
     Name of the space that contains this asset.
     """
-    ASSET_V3GCP_DATAPLEX_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexMetadataDetails", "assetV3GCPDataplexMetadataDetails"
+    ASSET_SMUS_METADATA_FORM_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetSmusMetadataFormNames",
+        "assetSmusMetadataFormNames.keyword",
+        "assetSmusMetadataFormNames",
     )
     """
-    Metrics captured by GCP Dataplex for objects associated with GCP services..
+    List of AWS SMUS MetadataForm Names. This is mainly used for filtering purpose.
     """
-    ASSET_V3GCP_DATAPLEX_ASPECT_LIST: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexAspectList", "assetV3GCPDataplexAspectList"
+    ASSET_SMUS_METADATA_FORM_KEY_VALUE_DETAILS: ClassVar[KeywordTextField] = (
+        KeywordTextField(
+            "assetSmusMetadataFormKeyValueDetails",
+            "assetSmusMetadataFormKeyValueDetails.keyword",
+            "assetSmusMetadataFormKeyValueDetails",
+        )
     )
     """
-    List of names of all Aspects linked to this asset.
+    List of AWS SMUS MetadataForm Key:Value Details. This is mainly used for filtering purpose.
     """
-    ASSET_V3GCP_DATAPLEX_ASPECT_FIELD_LIST: ClassVar[KeywordField] = KeywordField(
-        "assetV3GCPDataplexAspectFieldList", "assetV3GCPDataplexAspectFieldList"
+    ASSET_SMUS_METADATA_FORM_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "assetSmusMetadataFormDetails", "assetSmusMetadataFormDetails"
     )
     """
-    List of field key-values associated with all Aspects linked to this asset.
+    AWS SMUS Asset MetadataForm details
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1595,9 +1601,9 @@ class Asset(Referenceable):
         "asset_d_q_row_scope_filter_column_qualified_name",
         "asset_space_qualified_name",
         "asset_space_name",
-        "asset_v3_g_c_p_dataplex_metadata_details",
-        "asset_v3_g_c_p_dataplex_aspect_list",
-        "asset_v3_g_c_p_dataplex_aspect_field_list",
+        "asset_smus_metadata_form_names",
+        "asset_smus_metadata_form_key_value_details",
+        "asset_smus_metadata_form_details",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -4056,60 +4062,58 @@ class Asset(Referenceable):
         self.attributes.asset_space_name = asset_space_name
 
     @property
-    def asset_v3_g_c_p_dataplex_metadata_details(
-        self,
-    ) -> Optional[AssetGCPDataplexMetadata]:
+    def asset_smus_metadata_form_names(self) -> Optional[Set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_metadata_details
+            else self.attributes.asset_smus_metadata_form_names
         )
 
-    @asset_v3_g_c_p_dataplex_metadata_details.setter
-    def asset_v3_g_c_p_dataplex_metadata_details(
-        self,
-        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata],
+    @asset_smus_metadata_form_names.setter
+    def asset_smus_metadata_form_names(
+        self, asset_smus_metadata_form_names: Optional[Set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_metadata_details = (
-            asset_v3_g_c_p_dataplex_metadata_details
+        self.attributes.asset_smus_metadata_form_names = asset_smus_metadata_form_names
+
+    @property
+    def asset_smus_metadata_form_key_value_details(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_smus_metadata_form_key_value_details
+        )
+
+    @asset_smus_metadata_form_key_value_details.setter
+    def asset_smus_metadata_form_key_value_details(
+        self, asset_smus_metadata_form_key_value_details: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_smus_metadata_form_key_value_details = (
+            asset_smus_metadata_form_key_value_details
         )
 
     @property
-    def asset_v3_g_c_p_dataplex_aspect_list(self) -> Optional[Set[str]]:
+    def asset_smus_metadata_form_details(
+        self,
+    ) -> Optional[List[AssetSmusMetadataFormDetails]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_aspect_list
+            else self.attributes.asset_smus_metadata_form_details
         )
 
-    @asset_v3_g_c_p_dataplex_aspect_list.setter
-    def asset_v3_g_c_p_dataplex_aspect_list(
-        self, asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]]
+    @asset_smus_metadata_form_details.setter
+    def asset_smus_metadata_form_details(
+        self,
+        asset_smus_metadata_form_details: Optional[List[AssetSmusMetadataFormDetails]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_aspect_list = (
-            asset_v3_g_c_p_dataplex_aspect_list
-        )
-
-    @property
-    def asset_v3_g_c_p_dataplex_aspect_field_list(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list
-        )
-
-    @asset_v3_g_c_p_dataplex_aspect_field_list.setter
-    def asset_v3_g_c_p_dataplex_aspect_field_list(
-        self, asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset_v3_g_c_p_dataplex_aspect_field_list = (
-            asset_v3_g_c_p_dataplex_aspect_field_list
+        self.attributes.asset_smus_metadata_form_details = (
+            asset_smus_metadata_form_details
         )
 
     @property
@@ -4702,15 +4706,15 @@ class Asset(Referenceable):
         )
         asset_space_qualified_name: Optional[str] = Field(default=None, description="")
         asset_space_name: Optional[str] = Field(default=None, description="")
-        asset_v3_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata] = (
-            Field(default=None, description="")
-        )
-        asset_v3_g_c_p_dataplex_aspect_list: Optional[Set[str]] = Field(
+        asset_smus_metadata_form_names: Optional[Set[str]] = Field(
             default=None, description=""
         )
-        asset_v3_g_c_p_dataplex_aspect_field_list: Optional[Set[str]] = Field(
+        asset_smus_metadata_form_key_value_details: Optional[Set[str]] = Field(
             default=None, description=""
         )
+        asset_smus_metadata_form_details: Optional[
+            List[AssetSmusMetadataFormDetails]
+        ] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

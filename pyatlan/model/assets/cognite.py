@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .saa_s import SaaS
+from .core.saa_s import SaaS
 
 
 class Cognite(SaaS):

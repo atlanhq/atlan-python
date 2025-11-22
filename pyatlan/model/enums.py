@@ -2582,6 +2582,11 @@ class AppWorkflowRunStatus(str, Enum):
     STOPPED = "Stopped"
 
 
+class AssetSmusMetadataFormStatus(str, Enum):
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
 class AtlasGlossaryCategoryType(str, Enum):
     DOCUMENT_FOLDER = "DOCUMENT_FOLDER"
 
@@ -2979,6 +2984,15 @@ class QuickSightFolderType(str, Enum):
 class S3ObjectLockMode(str, Enum):
     GOVERNANCE = "GOVERNANCE"
     COMPLIANCE = "COMPLIANCE"
+
+
+class SageMakerUnifiedStudioProjectStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    DELETING = "DELETING"
+    DELETE_FAILED = "DELETE_FAILED"
+    UPDATING = "UPDATING"
+    UPDATE_FAILED = "UPDATE_FAILED"
+    MOVING = "MOVING"
 
 
 class SchemaRegistrySchemaCompatibility(str, Enum):

@@ -298,12 +298,6 @@ class DynamoDBTable(Table):
     """
     Whether this asset is secure (true) or not (false).
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -402,7 +396,6 @@ class DynamoDBTable(Table):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "catalog_has_partial_fields",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
@@ -950,20 +943,6 @@ class DynamoDBTable(Table):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -1147,7 +1126,6 @@ class DynamoDBTable(Table):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )

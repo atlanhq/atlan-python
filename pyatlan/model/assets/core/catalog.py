@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import BooleanField, RelationField
+from pyatlan.model.fields.atlan_fields import RelationField
 
 from .asset import Asset
 
@@ -28,13 +28,6 @@ class Catalog(Asset, type_name="Catalog"):
         if name in Catalog._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
-
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
@@ -68,12 +61,6 @@ class Catalog(Asset, type_name="Catalog"):
     """
     TBC
     """
-    PARTIAL_V01CHILD_FIELDS: ClassVar[RelationField] = RelationField(
-        "partialV01ChildFields"
-    )
-    """
-    TBC
-    """
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelImplementedEntities"
     )
@@ -88,31 +75,15 @@ class Catalog(Asset, type_name="Catalog"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "catalog_has_partial_fields",
         "input_to_spark_jobs",
         "input_to_airflow_tasks",
         "input_to_processes",
         "model_implemented_attributes",
         "output_from_airflow_tasks",
         "output_from_spark_jobs",
-        "partial_v01_child_fields",
         "model_implemented_entities",
         "output_from_processes",
     ]
-
-    @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -193,22 +164,6 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_spark_jobs = output_from_spark_jobs
 
     @property
-    def partial_v01_child_fields(self) -> Optional[List[PartialV01Field]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.partial_v01_child_fields
-        )
-
-    @partial_v01_child_fields.setter
-    def partial_v01_child_fields(
-        self, partial_v01_child_fields: Optional[List[PartialV01Field]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partial_v01_child_fields = partial_v01_child_fields
-
-    @property
     def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
         return (
             None
@@ -237,7 +192,6 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
@@ -254,9 +208,6 @@ class Catalog(Asset, type_name="Catalog"):
             default=None, description=""
         )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        partial_v01_child_fields: Optional[List[PartialV01Field]] = Field(
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
@@ -279,6 +230,5 @@ class Catalog(Asset, type_name="Catalog"):
 from .airflow_task import AirflowTask  # noqa: E402, F401
 from .model_attribute import ModelAttribute  # noqa: E402, F401
 from .model_entity import ModelEntity  # noqa: E402, F401
-from .partial_v01_field import PartialV01Field  # noqa: E402, F401
 from .process import Process  # noqa: E402, F401
 from .spark_job import SparkJob  # noqa: E402, F401

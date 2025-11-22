@@ -260,6 +260,10 @@ class DataProduct(DataMesh):
     """
     TBC
     """
+    SMUS_PROJECTS: ClassVar[RelationField] = RelationField("smusProjects")
+    """
+    TBC
+    """
     DATA_DOMAIN: ClassVar[RelationField] = RelationField("dataDomain")
     """
     TBC
@@ -288,6 +292,7 @@ class DataProduct(DataMesh):
         "daap_input_port_guids",
         "daap_lineage_status",
         "output_ports",
+        "smus_projects",
         "data_domain",
         "input_ports",
     ]
@@ -521,6 +526,18 @@ class DataProduct(DataMesh):
         self.attributes.output_ports = output_ports
 
     @property
+    def smus_projects(self) -> Optional[List[SageMakerUnifiedStudioProject]]:
+        return None if self.attributes is None else self.attributes.smus_projects
+
+    @smus_projects.setter
+    def smus_projects(
+        self, smus_projects: Optional[List[SageMakerUnifiedStudioProject]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.smus_projects = smus_projects
+
+    @property
     def data_domain(self) -> Optional[DataDomain]:
         return None if self.attributes is None else self.attributes.data_domain
 
@@ -581,6 +598,9 @@ class DataProduct(DataMesh):
         output_ports: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
+        smus_projects: Optional[List[SageMakerUnifiedStudioProject]] = Field(
+            default=None, description=""
+        )  # relationship
         data_domain: Optional[DataDomain] = Field(
             default=None, description=""
         )  # relationship
@@ -631,3 +651,6 @@ class DataProduct(DataMesh):
 
 from .asset import Asset  # noqa: E402, F401
 from .data_domain import DataDomain  # noqa: E402, F401
+from .sage_maker_unified_studio_project import (
+    SageMakerUnifiedStudioProject,  # noqa: E402, F401
+)
