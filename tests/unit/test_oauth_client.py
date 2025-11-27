@@ -102,7 +102,9 @@ class TestOAuthTokenManagerInit:
         )
 
         assert manager.base_url == "INTERNAL"
-        expected_url = "http://heracles-service.heracles.svc.cluster.local/api/service/oauth-clients/token"
+        expected_url = (
+            "http://heracles-service.heracles.svc.cluster.local/oauth-clients/token"
+        )
         assert manager.token_url == expected_url
 
         manager.close()
