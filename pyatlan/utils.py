@@ -185,7 +185,7 @@ class EndPoint(EndpointMixin, Enum):
     )
     HEKA = "api/sql/", "http://heka-service.heka.svc.cluster.local/"
     IMPERSONATION = "", "http://keycloak-http.keycloak.svc.cluster.local/"
-    HERACLES = "api/service/", "https://heracles-service.heracles.svc.cluster.local/"
+    HERACLES = "api/service/", "http://heracles-service.heracles.svc.cluster.local/"
     CHRONOS = "events/openlineage/", "http://chronos-service.kong.svc.cluster.local/"
 
 
