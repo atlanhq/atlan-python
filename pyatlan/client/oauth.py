@@ -80,8 +80,7 @@ class OAuthTokenManager:
         from urllib.parse import urljoin
 
         if self.base_url == "INTERNAL":
-            base_with_prefix = urljoin(api.endpoint.service, api.endpoint.prefix)
-            return urljoin(base_with_prefix, api.path)
+            return urljoin(api.endpoint.service, api.path)
         else:
             base_with_prefix = urljoin(self.base_url, api.endpoint.prefix)
             return urljoin(base_with_prefix, api.path)
