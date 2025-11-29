@@ -6,6 +6,7 @@ CAMEL_CASE_OVERRIDES = {
     "index_type_es_fields": "IndexTypeESFields",
     "source_url": "sourceURL",
     "source_embed_url": "sourceEmbedURL",
+    "asset_immuta_request_url": "assetImmutaRequestURL",
     "sql_dbt_sources": "sqlDBTSources",
     "purpose_atlan_tags": "purposeClassifications",
     "mapped_atlan_tag_name": "mappedClassificationName",
