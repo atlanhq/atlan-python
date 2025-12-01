@@ -107,7 +107,7 @@ def create_connection(
 ) -> Connection:
     admin_role_guid = str(client.role_cache.get_id_for_name("$admin"))
     to_create = Connection.create(
-        name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
+        client=client, name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
     )
     response = client.asset.save(to_create)
     result = response.assets_created(asset_type=Connection)[0]
