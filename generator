@@ -15,7 +15,7 @@ if [ -z "$ATLAN_BASE_URL" ] || [ -z "$ATLAN_API_KEY" ]; then
     echo "Please set these variables before running the generator:"
     echo "  export ATLAN_BASE_URL='https://your-atlan-instance.com'"
     echo "  export ATLAN_API_KEY='your-api-key'"
-    exit 1
+#    exit 1
 fi
 
 # Get the typedefs file path from command line argument or use default

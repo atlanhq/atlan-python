@@ -49,6 +49,35 @@ class AtlanObject(BaseModel):
         return values
 
 
+class DbtJobRun(AtlanObject):
+    """Description"""
+
+    dbt_job_id: Optional[str] = Field(default=None, description="")
+    dbt_job_name: Optional[str] = Field(default=None, description="")
+    dbt_environment_id: Optional[str] = Field(default=None, description="")
+    dbt_environment_name: Optional[str] = Field(default=None, description="")
+    dbt_job_run_id: Optional[str] = Field(default=None, description="")
+    dbt_job_run_completed_at: Optional[datetime] = Field(default=None, description="")
+    dbt_job_run_status: Optional[str] = Field(default=None, description="")
+    dbt_test_run_status: Optional[str] = Field(default=None, description="")
+    dbt_model_run_status: Optional[str] = Field(default=None, description="")
+    dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
+    dbt_compiled_code: Optional[str] = Field(default=None, description="")
+
+
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class AssetExternalDQMetadata(AtlanObject):
     """Description"""
 
@@ -84,47 +113,11 @@ class AssetExternalDQMetadata(AtlanObject):
     )
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
-class DbtJobRun(AtlanObject):
-    """Description"""
-
-    dbt_job_id: Optional[str] = Field(default=None, description="")
-    dbt_job_name: Optional[str] = Field(default=None, description="")
-    dbt_environment_id: Optional[str] = Field(default=None, description="")
-    dbt_environment_name: Optional[str] = Field(default=None, description="")
-    dbt_job_run_id: Optional[str] = Field(default=None, description="")
-    dbt_job_run_completed_at: Optional[datetime] = Field(default=None, description="")
-    dbt_job_run_status: Optional[str] = Field(default=None, description="")
-    dbt_test_run_status: Optional[str] = Field(default=None, description="")
-    dbt_model_run_status: Optional[str] = Field(default=None, description="")
-    dbt_compiled_s_q_l: Optional[str] = Field(default=None, description="")
-    dbt_compiled_code: Optional[str] = Field(default=None, description="")
-
-
 class AwsCloudWatchMetric(AtlanObject):
     """Description"""
 
     aws_cloud_watch_metric_name: str = Field(description="")
     aws_cloud_watch_metric_scope: str = Field(description="")
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
 
 
 class Action(AtlanObject):
@@ -134,6 +127,13 @@ class Action(AtlanObject):
     task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
     task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
     task_action_display_text: Optional[str] = Field(default=None, description="")
+
+
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class AssetExternalDQTestRunHistory(AtlanObject):
@@ -155,6 +155,20 @@ class ColumnValueFrequencyMap(AtlanObject):
 
     column_value: Optional[str] = Field(default=None, description="")
     column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class AssetExternalDQTestMetric(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_test_metric_observed_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_metric_upper_bound: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_metric_lower_bound: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class SourceTagAttachmentValue(AtlanObject):
@@ -210,30 +224,11 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
-class AssetGCPDataplexAspectMetadata(AtlanObject):
+class GoogleTag(AtlanObject):
     """Description"""
 
-    asset_v3_g_c_p_dataplex_aspect_full_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_display_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_type: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_type_labels: Optional[Dict[str, str]] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_created_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_updated_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_fields: Optional[Dict[str, str]] = Field(
-        default=None, description=""
-    )
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
 
 
 class AssetExternalDQTestDetails(AtlanObject):
@@ -253,13 +248,6 @@ class AssetExternalDQTestDetails(AtlanObject):
     asset_external_d_q_test_runs: Optional[List[AssetExternalDQTestRunHistory]] = Field(
         default=None, description=""
     )
-
-
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
 
 
 class BusinessPolicyRule(AtlanObject):
@@ -569,15 +557,11 @@ class AuthPolicyCondition(AtlanObject):
     policy_condition_values: Set[str] = Field(description="")
 
 
-class AssetGCPDataplexMetadata(AtlanObject):
+class SQLProcedureArgument(AtlanObject):
     """Description"""
 
-    asset_v3_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_v3_g_c_p_dataplex_aspect_details: Optional[
-        Dict[str, AssetGCPDataplexAspectMetadata]
-    ] = Field(default=None, description="")
+    sql_argument_name: Optional[str] = Field(default=None, description="")
+    sql_argument_type: Optional[str] = Field(default=None, description="")
 
 
 class DataQualityRuleConfigArguments(AtlanObject):
@@ -588,13 +572,6 @@ class DataQualityRuleConfigArguments(AtlanObject):
     )
     dq_rule_config_arguments_raw: Optional[str] = Field(default=None, description="")
     dq_rule_config_rule_conditions: Optional[str] = Field(default=None, description="")
-
-
-class SQLProcedureArgument(AtlanObject):
-    """Description"""
-
-    sql_argument_name: Optional[str] = Field(default=None, description="")
-    sql_argument_type: Optional[str] = Field(default=None, description="")
 
 
 class DbtMetricFilter(AtlanObject):
@@ -742,21 +719,23 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-AssetExternalDQMetadata.update_forward_refs()
+DbtJobRun.update_forward_refs()
 
 MCRuleSchedule.update_forward_refs()
 
-DbtJobRun.update_forward_refs()
+AssetExternalDQMetadata.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Histogram.update_forward_refs()
-
 Action.update_forward_refs()
+
+Histogram.update_forward_refs()
 
 AssetExternalDQTestRunHistory.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
+
+AssetExternalDQTestMetric.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 
@@ -766,11 +745,9 @@ StarredDetails.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
-AssetGCPDataplexAspectMetadata.update_forward_refs()
+GoogleTag.update_forward_refs()
 
 AssetExternalDQTestDetails.update_forward_refs()
-
-GoogleTag.update_forward_refs()
 
 BusinessPolicyRule.update_forward_refs()
 
@@ -792,11 +769,9 @@ AssetExternalDQScoreBreakdownByDimension.update_forward_refs()
 
 AuthPolicyCondition.update_forward_refs()
 
-AssetGCPDataplexMetadata.update_forward_refs()
+SQLProcedureArgument.update_forward_refs()
 
 DataQualityRuleConfigArguments.update_forward_refs()
-
-SQLProcedureArgument.update_forward_refs()
 
 DbtMetricFilter.update_forward_refs()
 

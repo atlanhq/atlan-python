@@ -54,12 +54,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "mongoDBCollectionSubtype",
         "mongoDBCollectionSubtype",
@@ -445,7 +439,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     _convenience_properties: ClassVar[List[str]] = [
         "cosmos_mongo_d_b_database_qualified_name",
         "no_s_q_l_schema_definition",
-        "catalog_has_partial_fields",
         "mongo_d_b_collection_subtype",
         "mongo_d_b_collection_is_capped",
         "mongo_d_b_collection_time_field",
@@ -550,20 +543,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def mongo_d_b_collection_subtype(self) -> Optional[str]:
@@ -1432,7 +1411,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         mongo_d_b_collection_subtype: Optional[str] = Field(
             default=None, description=""
         )

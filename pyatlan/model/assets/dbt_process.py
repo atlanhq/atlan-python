@@ -11,7 +11,6 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AIDatasetType
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -159,12 +158,6 @@ class DbtProcess(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     CODE: ClassVar[TextField] = TextField("code", "code")
     """
     Code that ran within the process.
@@ -262,7 +255,6 @@ class DbtProcess(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
-        "catalog_has_partial_fields",
         "inputs",
         "outputs",
         "code",
@@ -509,20 +501,6 @@ class DbtProcess(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -749,7 +727,6 @@ class DbtProcess(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")

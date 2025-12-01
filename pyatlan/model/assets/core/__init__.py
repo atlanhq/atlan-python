@@ -62,6 +62,7 @@ from .dbt_test import DbtTest
 from .document_d_b import DocumentDB
 from .document_d_b_collection import DocumentDBCollection
 from .document_d_b_database import DocumentDBDatabase
+from .dremio import Dremio
 from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .fabric import Fabric
 from .fabric_activity import FabricActivity
@@ -111,8 +112,6 @@ from .mongo_d_b_database import MongoDBDatabase
 from .monte_carlo import MonteCarlo
 from .namespace import Namespace
 from .no_s_q_l import NoSQL
-from .partial_v01 import PartialV01
-from .partial_v01_field import PartialV01Field
 from .persona import Persona
 from .power_b_i import PowerBI
 from .power_b_i_app import PowerBIApp
@@ -183,7 +182,6 @@ Dbt.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
-PartialV01.Attributes.update_forward_refs(**localns)
 AI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 FlowField.Attributes.update_forward_refs(**localns)
@@ -225,7 +223,6 @@ DataQualityRuleTemplate.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 DataQualityRule.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
-PartialV01Field.Attributes.update_forward_refs(**localns)
 AIApplication.Attributes.update_forward_refs(**localns)
 AIModelVersion.Attributes.update_forward_refs(**localns)
 AIModel.Attributes.update_forward_refs(**localns)
@@ -234,6 +231,7 @@ File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
 DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
+Dremio.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
@@ -244,8 +242,8 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
-SnowflakeStream.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
+SnowflakeStream.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)

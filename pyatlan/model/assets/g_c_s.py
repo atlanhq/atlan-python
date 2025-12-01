@@ -114,12 +114,6 @@ class GCS(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
@@ -153,12 +147,6 @@ class GCS(Google):
     """
     TBC
     """
-    PARTIAL_V01CHILD_FIELDS: ClassVar[RelationField] = RelationField(
-        "partialV01ChildFields"
-    )
-    """
-    TBC
-    """
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelImplementedEntities"
     )
@@ -187,14 +175,12 @@ class GCS(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "catalog_has_partial_fields",
         "input_to_spark_jobs",
         "input_to_airflow_tasks",
         "input_to_processes",
         "model_implemented_attributes",
         "output_from_airflow_tasks",
         "output_from_spark_jobs",
-        "partial_v01_child_fields",
         "model_implemented_entities",
         "output_from_processes",
     ]
@@ -344,20 +330,6 @@ class GCS(Google):
         self.attributes.google_tags = google_tags
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
         return None if self.attributes is None else self.attributes.input_to_spark_jobs
 
@@ -436,22 +408,6 @@ class GCS(Google):
         self.attributes.output_from_spark_jobs = output_from_spark_jobs
 
     @property
-    def partial_v01_child_fields(self) -> Optional[List[PartialV01Field]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.partial_v01_child_fields
-        )
-
-    @partial_v01_child_fields.setter
-    def partial_v01_child_fields(
-        self, partial_v01_child_fields: Optional[List[PartialV01Field]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partial_v01_child_fields = partial_v01_child_fields
-
-    @property
     def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
         return (
             None
@@ -494,7 +450,6 @@ class GCS(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
@@ -511,9 +466,6 @@ class GCS(Google):
             default=None, description=""
         )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        partial_v01_child_fields: Optional[List[PartialV01Field]] = Field(
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
@@ -536,7 +488,6 @@ class GCS(Google):
 from .core.airflow_task import AirflowTask  # noqa: E402, F401
 from .core.model_attribute import ModelAttribute  # noqa: E402, F401
 from .core.model_entity import ModelEntity  # noqa: E402, F401
-from .core.partial_v01_field import PartialV01Field  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
 

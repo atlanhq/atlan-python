@@ -136,7 +136,7 @@ class TablePartition(SQL):
     """
     Size of this partition, in bytes.
     """
-    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
+    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
     """
     Alias for this partition.
     """

@@ -53,12 +53,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     MONGO_DB_DATABASE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
         "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
     )
@@ -224,7 +218,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
     _convenience_properties: ClassVar[List[str]] = [
         "cosmos_mongo_d_b_account_qualified_name",
         "no_s_q_l_schema_definition",
-        "catalog_has_partial_fields",
         "mongo_d_b_database_collection_count",
         "schema_count",
         "query_count",
@@ -289,20 +282,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def mongo_d_b_database_collection_count(self) -> Optional[int]:
@@ -667,7 +646,6 @@ class CosmosMongoDBDatabase(CosmosMongoDB):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         mongo_d_b_database_collection_count: Optional[int] = Field(
             default=None, description=""
         )

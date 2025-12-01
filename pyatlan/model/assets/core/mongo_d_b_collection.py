@@ -360,12 +360,6 @@ class MongoDBCollection(Table):
     """
     Whether this asset is secure (true) or not (false).
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -436,7 +430,6 @@ class MongoDBCollection(Table):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "catalog_has_partial_fields",
         "no_s_q_l_schema_definition",
         "mongo_d_b_database",
     ]
@@ -1158,20 +1151,6 @@ class MongoDBCollection(Table):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
@@ -1287,7 +1266,6 @@ class MongoDBCollection(Table):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
