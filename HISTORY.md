@@ -1,3 +1,14 @@
+## 8.4.3 (December 2, 2025)
+
+### Bug Fixes
+
+- Fixed `KeywordField` for `AtlanTask.GUID`.
+- Fixed circular imports caused by Process-SQL asset relationships in generated typedef models.
+
+### QOL Improvements
+
+- Regenerated models with latest typedefs.
+
 ## 8.4.2 (November 13, 2025)
 
 ### New Features
