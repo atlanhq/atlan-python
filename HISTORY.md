@@ -1,3 +1,13 @@
+## 8.4.4 (December 3, 2025)
+
+### New Features
+
+- Added support for initializing `AtlanClient` and `AsyncAtlanClient` using `OAuth` credentials.
+
+### Bug Fixes
+
+- Fixed `pyatlan.test_utils.create_connection()` which was missing the required `client` parameter.
+
 ## 8.4.3 (December 2, 2025)
 
 ### Bug Fixes
