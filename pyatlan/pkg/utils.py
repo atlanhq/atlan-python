@@ -76,7 +76,7 @@ def get_client(
     This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
     ATLAN_API_KEY is empty.
 
-    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate (default is None)
     :param set_pkg_headers: whether to set package headers on the client (default is False)
     :returns: an initialized client
     """
@@ -131,7 +131,7 @@ async def get_client_async(
     This will use an API token if found in ATLAN_API_KEY, and will fallback to attempting to impersonate a user if
     ATLAN_API_KEY is empty.
 
-    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate
+    :param impersonate_user_id: unique identifier (GUID) of a user or API token to impersonate (default is None)
     :param set_pkg_headers: whether to set package headers on the client (default is False)
     :returns: an initialized async client
     """

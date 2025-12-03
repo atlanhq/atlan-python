@@ -3,6 +3,7 @@
 import asyncio
 import time
 from typing import Optional
+from urllib.parse import urljoin
 
 import httpx
 from authlib.oauth2.rfc6749 import OAuth2Token
@@ -12,6 +13,19 @@ from pyatlan.utils import API
 
 
 class AsyncOAuthTokenManager:
+    """
+    Manages OAuth tokens for asynchronous HTTP clients.
+
+    :param base_url: Base URL of the Atlan tenant.
+    :param client_id: OAuth client ID.
+    :param client_secret: OAuth client secret.
+    :param http_client: Optional asynchronous HTTP client to use.
+    :param connect_timeout: Timeout for establishing connections.
+    :param read_timeout: Timeout for reading data.
+    :param write_timeout: Timeout for writing data.
+    :param pool_timeout: Timeout for acquiring a connection from the pool.
+    """
+
     def __init__(
         self,
         base_url: str,
@@ -20,6 +34,8 @@ class AsyncOAuthTokenManager:
         http_client: Optional[httpx.AsyncClient] = None,
         connect_timeout: float = 30.0,
         read_timeout: float = 900.0,
+        write_timeout: float = 30.0,
+        pool_timeout: float = 30.0,
     ):
         self.base_url = base_url
         self.client_id = client_id
@@ -28,13 +44,19 @@ class AsyncOAuthTokenManager:
         self._lock = asyncio.Lock()
         self._http_client = http_client or httpx.AsyncClient(
             timeout=httpx.Timeout(
-                connect=connect_timeout, read=read_timeout, write=30.0, pool=30.0
+                connect=connect_timeout,
+                read=read_timeout,
+                write=write_timeout,
+                pool=pool_timeout,
             )
         )
         self._token: Optional[OAuth2Token] = None
         self._owns_client = http_client is None
 
     async def get_token(self) -> str:
+        """
+        Retrieves a valid OAuth token, refreshing it if necessary.
+        """
         async with self._lock:
             if self._token and not self._token.is_expired():
                 return str(self._token["access_token"])
@@ -73,12 +95,16 @@ class AsyncOAuthTokenManager:
             return access_token
 
     async def invalidate_token(self):
+        """
+        Invalidates the current OAuth token.
+        """
         async with self._lock:
             self._token = None
 
     def _create_path(self, api: API):
-        from urllib.parse import urljoin
-
+        """
+        Creates the full URL for the given API endpoint.
+        """
         if self.base_url == "INTERNAL":
             return urljoin(api.endpoint.service, api.path)
         else:
@@ -86,5 +112,8 @@ class AsyncOAuthTokenManager:
             return urljoin(base_with_prefix, api.path)
 
     async def aclose(self):
+        """
+        Closes the underlying HTTP client if owned by this manager.
+        """
         if self._owns_client:
             await self._http_client.aclose()

@@ -89,7 +89,7 @@ GET_WHOAMI_USER = API(
     WHOAMI_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 
-# oauth client authentinatication
+# oauth client authentication
 GET_OAUTH_CLIENT = API(
     "oauth-clients/token",
     HTTPMethod.POST,

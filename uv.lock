@@ -1429,7 +1429,7 @@ dev = [
     { name = "pytest-vcr", specifier = "~=1.0.2" },
     { name = "ruff", specifier = "~=0.14.5" },
     { name = "twine", specifier = "~=6.2.0" },
-    { name = "types-authlib" },
+    { name = "types-authlib", specifier = "~=1.6.5.20251005" },
     { name = "types-retry", specifier = "~=0.9.9.20250322" },
     { name = "types-setuptools", specifier = "~=80.9.0.20250822" },
     { name = "vcrpy", specifier = "~=7.0.0" },

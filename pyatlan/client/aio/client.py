@@ -41,6 +41,7 @@ from pyatlan.client.aio.credential import AsyncCredentialClient
 from pyatlan.client.aio.file import AsyncFileClient
 from pyatlan.client.aio.group import AsyncGroupClient
 from pyatlan.client.aio.impersonate import AsyncImpersonationClient
+from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 from pyatlan.client.aio.open_lineage import AsyncOpenLineageClient
 from pyatlan.client.aio.query import AsyncQueryClient
 from pyatlan.client.aio.role import AsyncRoleClient
@@ -134,13 +135,10 @@ class AsyncAtlanClient(AtlanClient):
     def __init__(self, **kwargs):
         # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
-
         if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
             LOGGER.debug(
                 "API Key not provided. Using Async OAuth flow for authentication"
             )
-            from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
-
             if self._oauth_token_manager:
                 LOGGER.debug("Sync oauth flow open. Closing it for Async oauth flow")
                 self._oauth_token_manager.close()
