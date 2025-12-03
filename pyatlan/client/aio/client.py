@@ -16,7 +16,7 @@ import os
 from contextlib import _AsyncGeneratorContextManager
 from http import HTTPStatus
 from types import SimpleNamespace
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 from httpx_retries.retry import Retry
@@ -41,6 +41,7 @@ from pyatlan.client.aio.credential import AsyncCredentialClient
 from pyatlan.client.aio.file import AsyncFileClient
 from pyatlan.client.aio.group import AsyncGroupClient
 from pyatlan.client.aio.impersonate import AsyncImpersonationClient
+from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 from pyatlan.client.aio.open_lineage import AsyncOpenLineageClient
 from pyatlan.client.aio.query import AsyncQueryClient
 from pyatlan.client.aio.role import AsyncRoleClient
@@ -90,6 +91,7 @@ class AsyncAtlanClient(AtlanClient):
     """
 
     _async_session: Optional[httpx.AsyncClient] = PrivateAttr(default=None)
+    _async_oauth_token_manager: Optional[Any] = PrivateAttr(default=None)
     _async_admin_client: Optional[AsyncAdminClient] = PrivateAttr(default=None)
     _async_asset_client: Optional[AsyncAssetClient] = PrivateAttr(default=None)
     _async_audit_client: Optional[AsyncAuditClient] = PrivateAttr(default=None)
@@ -133,6 +135,31 @@ class AsyncAtlanClient(AtlanClient):
     def __init__(self, **kwargs):
         # Initialize sync client (handles all validation, env vars, etc.)
         super().__init__(**kwargs)
+        if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
+            LOGGER.debug(
+                "API Key not provided. Using Async OAuth flow for authentication"
+            )
+            if self._oauth_token_manager:
+                LOGGER.debug("Sync oauth flow open. Closing it for Async oauth flow")
+                self._oauth_token_manager.close()
+                self._oauth_token_manager = None
+
+            final_base_url = self.base_url or os.environ.get(
+                "ATLAN_BASE_URL", "INTERNAL"
+            )
+            final_oauth_client_id = self.oauth_client_id or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_ID"
+            )
+            final_oauth_client_secret = self.oauth_client_secret or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_SECRET"
+            )
+            self._async_oauth_token_manager = AsyncOAuthTokenManager(
+                base_url=final_base_url,
+                client_id=final_oauth_client_id,
+                client_secret=final_oauth_client_secret,
+                connect_timeout=self.connect_timeout,
+                read_timeout=self.read_timeout,
+            )
 
         # Build proxy/SSL configuration (reuse from sync client)
         transport_kwargs = self._build_transport_proxy_config(kwargs)
@@ -438,6 +465,9 @@ class AsyncAtlanClient(AtlanClient):
         Async version of _create_params that uses AsyncAtlanRequest for AtlanObject instances.
         """
         params = copy.deepcopy(self._request_params)
+        if self._async_oauth_token_manager:
+            token = await self._async_oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
         if query_params is not None:
@@ -687,7 +717,7 @@ class AsyncAtlanClient(AtlanClient):
 
             # Retry with impersonation (if _user_id is present) on authentication failure
             if (
-                self._user_id
+                (self._user_id or self._async_oauth_token_manager)
                 and not self._401_has_retried.get()
                 and response.status_code
                 == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
@@ -746,6 +776,21 @@ class AsyncAtlanClient(AtlanClient):
         Async version of token refresh and retry logic.
         Handles token refresh and retries the API request upon a 401 Unauthorized response.
         """
+        if self._async_oauth_token_manager:
+            await self._async_oauth_token_manager.invalidate_token()
+            token = await self._async_oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
+            self._401_has_retried.set(True)
+            LOGGER.debug("Successfully refreshed OAuth token after 401.")
+            return await self._call_api_internal(
+                api,
+                path,
+                params,
+                binary_data=binary_data,
+                download_file_path=download_file_path,
+                text_response=text_response,
+            )
+
         try:
             # Use sync impersonation call since it's a quick API call
             new_token = await self.impersonate.user(user_id=self._user_id)

@@ -37,6 +37,7 @@ dependencies = [
     "PyYAML~=6.0.3",
     "httpx~=0.28.1",
     "httpx-retries~=0.4.5",
+    "authlib~=1.6.5",
 ]
 
 [project.urls]
@@ -50,6 +51,7 @@ dev = [
     "mypy~=1.18.0",
     "ruff~=0.14.5",
     "types-setuptools~=80.9.0.20250822",
+    "types-Authlib~=1.6.5.20251005",
     "pytest~=8.4.2",
     "pytest-vcr~=1.0.2",
     "vcrpy~=7.0.0",

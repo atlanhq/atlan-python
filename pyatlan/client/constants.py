@@ -88,6 +88,14 @@ GET_CURRENT_USER = API(
 GET_WHOAMI_USER = API(
     WHOAMI_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+
+# oauth client authentication
+GET_OAUTH_CLIENT = API(
+    "oauth-clients/token",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 # SQL parsing APIs
 PARSE_QUERY = API(
     f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA

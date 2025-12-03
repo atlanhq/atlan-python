@@ -48,6 +48,7 @@ from pyatlan.client.credential import CredentialClient
 from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
+from pyatlan.client.oauth import OAuthTokenManager
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
@@ -127,7 +128,9 @@ def log_response(response, *args, **kwargs):
 
 class AtlanClient(BaseSettings):
     base_url: Union[Literal["INTERNAL"], HttpUrl]
-    api_key: str
+    api_key: Optional[str] = None
+    oauth_client_id: Optional[str] = None
+    oauth_client_secret: Optional[str] = None
     connect_timeout: float = 30.0  # 30 secs
     read_timeout: float = 900.0  # 15 mins
     retry: Retry = DEFAULT_RETRY
@@ -137,6 +140,7 @@ class AtlanClient(BaseSettings):
     _session: httpx.Client = PrivateAttr()
     _request_params: dict = PrivateAttr()
     _user_id: Optional[str] = PrivateAttr(default=None)
+    _oauth_token_manager: Optional[Any] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
@@ -172,11 +176,33 @@ class AtlanClient(BaseSettings):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self._request_params = (
-            {"headers": {"authorization": f"Bearer {self.api_key}"}}
-            if self.api_key and self.api_key.strip()
-            else {"headers": {}}
-        )
+
+        if self.oauth_client_id and self.oauth_client_secret and self.api_key is None:
+            LOGGER.debug("API KEY not provided. Using OAuth flow for authentication")
+
+            final_base_url = self.base_url or os.environ.get(
+                "ATLAN_BASE_URL", "INTERNAL"
+            )
+            final_oauth_client_id = self.oauth_client_id or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_ID"
+            )
+            final_oauth_client_secret = self.oauth_client_secret or os.environ.get(
+                "ATLAN_OAUTH_CLIENT_SECRET"
+            )
+            self._oauth_token_manager = OAuthTokenManager(
+                base_url=final_base_url,
+                client_id=final_oauth_client_id,
+                client_secret=final_oauth_client_secret,
+                connect_timeout=self.connect_timeout,
+                read_timeout=self.read_timeout,
+            )
+            self._request_params = {"headers": {}}
+        else:
+            self._request_params = (
+                {"headers": {"authorization": f"Bearer {self.api_key}"}}
+                if self.api_key and self.api_key.strip()
+                else {"headers": {}}
+            )
 
         # Build proxy/SSL configuration with environment variable fallback
         transport_kwargs = self._build_transport_proxy_config(data)
@@ -691,7 +717,7 @@ class AtlanClient(BaseSettings):
                     # Retry with impersonation (if _user_id is present)
                     # on authentication failure (token may have expired)
                     if (
-                        self._user_id
+                        (self._user_id or self._oauth_token_manager)
                         and not self._401_has_retried.get()
                         and response.status_code
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
@@ -813,6 +839,9 @@ class AtlanClient(BaseSettings):
         self, api: API, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
+        if self._oauth_token_manager:
+            token = self._oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
         if query_params is not None:
@@ -846,6 +875,21 @@ class AtlanClient(BaseSettings):
 
         returns: HTTP response received after retrying the request with the refreshed token
         """
+        if self._oauth_token_manager:
+            self._oauth_token_manager.invalidate_token()
+            token = self._oauth_token_manager.get_token()
+            params["headers"]["authorization"] = f"Bearer {token}"
+            self._401_has_retried.set(True)
+            LOGGER.debug("Successfully refreshed OAuth token after 401.")
+            return self._call_api_internal(
+                api,
+                path,
+                params,
+                binary_data=binary_data,
+                download_file_path=download_file_path,
+                text_response=text_response,
+            )
+
         try:
             new_token = self.impersonate.user(user_id=self._user_id)
         except Exception as e:
