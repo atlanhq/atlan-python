@@ -44,7 +44,7 @@ jobs:
       - name: Build Lambda layer
         run: |
           uv pip install --target=python .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: lambda-layer
           path: ./python
