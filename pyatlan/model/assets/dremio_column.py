@@ -184,12 +184,6 @@ class DremioColumn(Dremio):
     """
     Whether this asset is secure (true) or not (false).
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "dataType", "dataType", "dataType.text"
     )
@@ -561,6 +555,10 @@ class DremioColumn(Dremio):
     """
     TBC
     """
+    MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField("mongoDBCollection")
+    """
+    TBC
+    """
     COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
         "cosmosMongoDBCollection"
     )
@@ -665,7 +663,6 @@ class DremioColumn(Dremio):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "catalog_has_partial_fields",
         "data_type",
         "sub_data_type",
         "column_compression",
@@ -736,6 +733,7 @@ class DremioColumn(Dremio):
         "column_measure_type",
         "view",
         "column_dbt_model_columns",
+        "mongo_d_b_collection",
         "cosmos_mongo_d_b_collection",
         "foreign_key_from",
         "dbt_metrics",
@@ -1058,20 +1056,6 @@ class DremioColumn(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_is_secure = sql_is_secure
-
-    @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
 
     @property
     def data_type(self) -> Optional[str]:
@@ -1898,6 +1882,16 @@ class DremioColumn(Dremio):
         self.attributes.column_dbt_model_columns = column_dbt_model_columns
 
     @property
+    def mongo_d_b_collection(self) -> Optional[MongoDBCollection]:
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection
+
+    @mongo_d_b_collection.setter
+    def mongo_d_b_collection(self, mongo_d_b_collection: Optional[MongoDBCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_collection = mongo_d_b_collection
+
+    @property
     def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
         return (
             None
@@ -2128,7 +2122,6 @@ class DremioColumn(Dremio):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         data_type: Optional[str] = Field(default=None, description="")
         sub_data_type: Optional[str] = Field(default=None, description="")
         column_compression: Optional[str] = Field(default=None, description="")
@@ -2235,6 +2228,9 @@ class DremioColumn(Dremio):
         column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
+        mongo_d_b_collection: Optional[MongoDBCollection] = Field(
+            default=None, description=""
+        )  # relationship
         cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
             default=None, description=""
         )  # relationship
@@ -2305,6 +2301,7 @@ from .core.dbt_metric import DbtMetric  # noqa: E402, F401
 from .core.dbt_model_column import DbtModelColumn  # noqa: E402, F401
 from .core.materialised_view import MaterialisedView  # noqa: E402, F401
 from .core.metric import Metric  # noqa: E402, F401
+from .core.mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .core.query import Query  # noqa: E402, F401
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .core.table import Table  # noqa: E402, F401

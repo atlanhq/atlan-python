@@ -162,12 +162,6 @@ class DataStudioAsset(DataStudio):
     """
     List of tags that have been applied to the asset in Google.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_studio_asset_type",
@@ -182,7 +176,6 @@ class DataStudioAsset(DataStudio):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "catalog_has_partial_fields",
     ]
 
     @property
@@ -321,20 +314,6 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
             default=None, description=""
@@ -352,7 +331,6 @@ class DataStudioAsset(DataStudio):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
 
         @classmethod
         @init_guid

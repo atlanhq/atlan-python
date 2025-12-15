@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, TextField
+from pyatlan.model.fields.atlan_fields import KeywordField
 
 from .catalog import Catalog
 
@@ -29,11 +29,11 @@ class PartialV01(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PARTIAL_V01STRUCTURE_JSON: ClassVar[TextField] = TextField(
+    PARTIAL_V01STRUCTURE_JSON: ClassVar[KeywordField] = KeywordField(
         "partialV01StructureJSON", "partialV01StructureJSON"
     )
     """
-    Complete JSON structure of this partial asset in string.
+    Complete JSON structure of this partial asset, as a string.
     """
     PARTIAL_V01RESOLVED_TYPE_NAME: ClassVar[KeywordField] = KeywordField(
         "partialV01ResolvedTypeName", "partialV01ResolvedTypeName"

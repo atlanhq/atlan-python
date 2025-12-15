@@ -360,12 +360,6 @@ class MongoDBCollection(Table):
     """
     Whether this asset is secure (true) or not (false).
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
     NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
         "noSQLSchemaDefinition", "noSQLSchemaDefinition"
     )
@@ -373,6 +367,10 @@ class MongoDBCollection(Table):
     Represents attributes for describing the key schema for the table and indexes.
     """
 
+    MONGO_DB_COLUMNS: ClassVar[RelationField] = RelationField("mongoDBColumns")
+    """
+    TBC
+    """
     MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
     """
     TBC
@@ -436,8 +434,8 @@ class MongoDBCollection(Table):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "catalog_has_partial_fields",
         "no_s_q_l_schema_definition",
+        "mongo_d_b_columns",
         "mongo_d_b_database",
     ]
 
@@ -1158,20 +1156,6 @@ class MongoDBCollection(Table):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def no_s_q_l_schema_definition(self) -> Optional[str]:
         return (
             None
@@ -1184,6 +1168,16 @@ class MongoDBCollection(Table):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+
+    @property
+    def mongo_d_b_columns(self) -> Optional[List[Column]]:
+        return None if self.attributes is None else self.attributes.mongo_d_b_columns
+
+    @mongo_d_b_columns.setter
+    def mongo_d_b_columns(self, mongo_d_b_columns: Optional[List[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_columns = mongo_d_b_columns
 
     @property
     def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
@@ -1287,8 +1281,10 @@ class MongoDBCollection(Table):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+        mongo_d_b_columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
         mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
         )  # relationship
@@ -1303,4 +1299,5 @@ class MongoDBCollection(Table):
     )
 
 
+from .column import Column  # noqa: E402, F401
 from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
