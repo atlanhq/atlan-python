@@ -1,3 +1,9 @@
+## 8.4.5 (December 15, 2025)
+
+### QOL Improvements
+
+- Regenerated models with latest typedefs.
+
 ## 8.4.4 (December 3, 2025)
 
 ### New Features
