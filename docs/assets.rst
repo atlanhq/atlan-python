@@ -51,6 +51,9 @@ You can interact with all of the following different kinds of assets:
     asset/application
     asset/applicationfield
     asset/asset
+    asset/atlanapp
+    asset/atlanappdeployment
+    asset/atlanappinstalled
     asset/atlasglossary
     asset/atlasglossarycategory
     asset/atlasglossaryterm
@@ -265,9 +268,15 @@ You can interact with all of the following different kinds of assets:
     asset/nosql
     asset/notebook
     asset/objectstore
+    asset/partial
+    asset/partialfield
+    asset/partialobject
     asset/partialv01
     asset/partialv01field
     asset/partialv01object
+    asset/partialv02
+    asset/partialv02field
+    asset/partialv02object
     asset/persona
     asset/powerbi
     asset/powerbiapp
@@ -325,6 +334,12 @@ You can interact with all of the following different kinds of assets:
     asset/sap
     asset/sql
     asset/saas
+    asset/sagemakerunifiedstudio
+    asset/sagemakerunifiedstudioasset
+    asset/sagemakerunifiedstudioassetschema
+    asset/sagemakerunifiedstudioproject
+    asset/sagemakerunifiedstudiopublishedasset
+    asset/sagemakerunifiedstudiosubscribedasset
     asset/salesforce
     asset/salesforcedashboard
     asset/salesforcefield

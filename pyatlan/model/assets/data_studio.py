@@ -9,7 +9,6 @@ from typing import ClassVar, List, Optional
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -80,14 +79,12 @@ class DataStudio(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
-    CATALOG_HAS_PARTIAL_FIELDS: ClassVar[BooleanField] = BooleanField(
-        "catalogHasPartialFields", "catalogHasPartialFields"
-    )
-    """
-    Indicates this catalog asset has partial fields, if true.
-    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
+    """
+    TBC
+    """
+    PARTIAL_CHILD_FIELDS: ClassVar[RelationField] = RelationField("partialChildFields")
     """
     TBC
     """
@@ -113,6 +110,18 @@ class DataStudio(Google):
     """
     TBC
     """
+    PARTIAL_V02CHILD_FIELDS: ClassVar[RelationField] = RelationField(
+        "partialV02ChildFields"
+    )
+    """
+    TBC
+    """
+    PARTIAL_V02CHILD_OBJECTS: ClassVar[RelationField] = RelationField(
+        "partialV02ChildObjects"
+    )
+    """
+    TBC
+    """
     OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
         "outputFromSparkJobs"
     )
@@ -127,6 +136,12 @@ class DataStudio(Google):
     """
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
         "modelImplementedEntities"
+    )
+    """
+    TBC
+    """
+    PARTIAL_CHILD_OBJECTS: ClassVar[RelationField] = RelationField(
+        "partialChildObjects"
     )
     """
     TBC
@@ -147,15 +162,18 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "catalog_has_partial_fields",
         "input_to_spark_jobs",
+        "partial_child_fields",
         "input_to_airflow_tasks",
         "input_to_processes",
         "model_implemented_attributes",
         "output_from_airflow_tasks",
+        "partial_v02_child_fields",
+        "partial_v02_child_objects",
         "output_from_spark_jobs",
         "partial_v01_child_fields",
         "model_implemented_entities",
+        "partial_child_objects",
         "output_from_processes",
     ]
 
@@ -242,20 +260,6 @@ class DataStudio(Google):
         self.attributes.google_tags = google_tags
 
     @property
-    def catalog_has_partial_fields(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.catalog_has_partial_fields
-        )
-
-    @catalog_has_partial_fields.setter
-    def catalog_has_partial_fields(self, catalog_has_partial_fields: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.catalog_has_partial_fields = catalog_has_partial_fields
-
-    @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
         return None if self.attributes is None else self.attributes.input_to_spark_jobs
 
@@ -264,6 +268,16 @@ class DataStudio(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_spark_jobs = input_to_spark_jobs
+
+    @property
+    def partial_child_fields(self) -> Optional[List[PartialField]]:
+        return None if self.attributes is None else self.attributes.partial_child_fields
+
+    @partial_child_fields.setter
+    def partial_child_fields(self, partial_child_fields: Optional[List[PartialField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_child_fields = partial_child_fields
 
     @property
     def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
@@ -322,6 +336,38 @@ class DataStudio(Google):
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
+    def partial_v02_child_fields(self) -> Optional[List[PartialV02Field]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.partial_v02_child_fields
+        )
+
+    @partial_v02_child_fields.setter
+    def partial_v02_child_fields(
+        self, partial_v02_child_fields: Optional[List[PartialV02Field]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v02_child_fields = partial_v02_child_fields
+
+    @property
+    def partial_v02_child_objects(self) -> Optional[List[PartialV02Object]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.partial_v02_child_objects
+        )
+
+    @partial_v02_child_objects.setter
+    def partial_v02_child_objects(
+        self, partial_v02_child_objects: Optional[List[PartialV02Object]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v02_child_objects = partial_v02_child_objects
+
+    @property
     def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
         return (
             None if self.attributes is None else self.attributes.output_from_spark_jobs
@@ -366,6 +412,20 @@ class DataStudio(Google):
         self.attributes.model_implemented_entities = model_implemented_entities
 
     @property
+    def partial_child_objects(self) -> Optional[List[PartialObject]]:
+        return (
+            None if self.attributes is None else self.attributes.partial_child_objects
+        )
+
+    @partial_child_objects.setter
+    def partial_child_objects(
+        self, partial_child_objects: Optional[List[PartialObject]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_child_objects = partial_child_objects
+
+    @property
     def output_from_processes(self) -> Optional[List[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
@@ -386,8 +446,10 @@ class DataStudio(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
-        catalog_has_partial_fields: Optional[bool] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        partial_child_fields: Optional[List[PartialField]] = Field(
             default=None, description=""
         )  # relationship
         input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
@@ -402,6 +464,12 @@ class DataStudio(Google):
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
+        partial_v02_child_fields: Optional[List[PartialV02Field]] = Field(
+            default=None, description=""
+        )  # relationship
+        partial_v02_child_objects: Optional[List[PartialV02Object]] = Field(
+            default=None, description=""
+        )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
@@ -409,6 +477,9 @@ class DataStudio(Google):
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
+            default=None, description=""
+        )  # relationship
+        partial_child_objects: Optional[List[PartialObject]] = Field(
             default=None, description=""
         )  # relationship
         output_from_processes: Optional[List[Process]] = Field(
@@ -428,7 +499,11 @@ class DataStudio(Google):
 from .core.airflow_task import AirflowTask  # noqa: E402, F401
 from .core.model_attribute import ModelAttribute  # noqa: E402, F401
 from .core.model_entity import ModelEntity  # noqa: E402, F401
+from .core.partial_field import PartialField  # noqa: E402, F401
+from .core.partial_object import PartialObject  # noqa: E402, F401
 from .core.partial_v01_field import PartialV01Field  # noqa: E402, F401
+from .core.partial_v02_field import PartialV02Field  # noqa: E402, F401
+from .core.partial_v02_object import PartialV02Object  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
 

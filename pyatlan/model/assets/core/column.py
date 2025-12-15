@@ -562,6 +562,10 @@ class Column(SQL):
     """
     TBC
     """
+    MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField("mongoDBCollection")
+    """
+    TBC
+    """
     COSMOS_MONGO_DB_COLLECTION: ClassVar[RelationField] = RelationField(
         "cosmosMongoDBCollection"
     )
@@ -710,6 +714,7 @@ class Column(SQL):
         "column_measure_type",
         "view",
         "column_dbt_model_columns",
+        "mongo_d_b_collection",
         "cosmos_mongo_d_b_collection",
         "foreign_key_from",
         "dbt_metrics",
@@ -1554,6 +1559,16 @@ class Column(SQL):
         self.attributes.column_dbt_model_columns = column_dbt_model_columns
 
     @property
+    def mongo_d_b_collection(self) -> Optional[MongoDBCollection]:
+        return None if self.attributes is None else self.attributes.mongo_d_b_collection
+
+    @mongo_d_b_collection.setter
+    def mongo_d_b_collection(self, mongo_d_b_collection: Optional[MongoDBCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_collection = mongo_d_b_collection
+
+    @property
     def cosmos_mongo_d_b_collection(self) -> Optional[CosmosMongoDBCollection]:
         return (
             None
@@ -1854,6 +1869,9 @@ class Column(SQL):
         column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
             default=None, description=""
         )  # relationship
+        mongo_d_b_collection: Optional[MongoDBCollection] = Field(
+            default=None, description=""
+        )  # relationship
         cosmos_mongo_d_b_collection: Optional[CosmosMongoDBCollection] = Field(
             default=None, description=""
         )  # relationship
@@ -2032,6 +2050,7 @@ from .dbt_metric import DbtMetric  # noqa: E402, F401
 from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .metric import Metric  # noqa: E402, F401
+from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .table import Table  # noqa: E402, F401

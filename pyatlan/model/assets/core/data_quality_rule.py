@@ -17,6 +17,7 @@ from pyatlan.model.enums import (
     DataQualityDimension,
     DataQualityResult,
     DataQualityRuleAlertPriority,
+    DataQualityRuleCustomSQLReturnType,
     DataQualityRuleStatus,
     DataQualityRuleThresholdCompareOperator,
     DataQualityRuleThresholdUnit,
@@ -513,6 +514,12 @@ class DataQualityRule(DataQuality):
     """
     SQL code for custom SQL rules.
     """
+    DQ_RULE_CUSTOM_SQL_RETURN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dqRuleCustomSQLReturnType", "dqRuleCustomSQLReturnType"
+    )
+    """
+    Type of result returned by the custom SQL (number of rows or numeric value).
+    """
     DQ_RULE_FAILED_ROWS_SQL: ClassVar[KeywordField] = KeywordField(
         "dqRuleFailedRowsSQL", "dqRuleFailedRowsSQL"
     )
@@ -572,6 +579,7 @@ class DataQualityRule(DataQuality):
         "dq_rule_alert_priority",
         "dq_rule_config_arguments",
         "dq_rule_custom_s_q_l",
+        "dq_rule_custom_s_q_l_return_type",
         "dq_rule_failed_rows_s_q_l",
         "dq_rule_row_scope_filtering_enabled",
         "dq_rule_base_dataset",
@@ -886,6 +894,27 @@ class DataQualityRule(DataQuality):
         self.attributes.dq_rule_custom_s_q_l = dq_rule_custom_s_q_l
 
     @property
+    def dq_rule_custom_s_q_l_return_type(
+        self,
+    ) -> Optional[DataQualityRuleCustomSQLReturnType]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dq_rule_custom_s_q_l_return_type
+        )
+
+    @dq_rule_custom_s_q_l_return_type.setter
+    def dq_rule_custom_s_q_l_return_type(
+        self,
+        dq_rule_custom_s_q_l_return_type: Optional[DataQualityRuleCustomSQLReturnType],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_rule_custom_s_q_l_return_type = (
+            dq_rule_custom_s_q_l_return_type
+        )
+
+    @property
     def dq_rule_failed_rows_s_q_l(self) -> Optional[str]:
         return (
             None
@@ -1034,6 +1063,9 @@ class DataQualityRule(DataQuality):
             default=None, description=""
         )
         dq_rule_custom_s_q_l: Optional[str] = Field(default=None, description="")
+        dq_rule_custom_s_q_l_return_type: Optional[
+            DataQualityRuleCustomSQLReturnType
+        ] = Field(default=None, description="")
         dq_rule_failed_rows_s_q_l: Optional[str] = Field(default=None, description="")
         dq_rule_row_scope_filtering_enabled: Optional[bool] = Field(
             default=None, description=""

@@ -23,11 +23,13 @@ __all__ = [
     "BI",
     "FlowDataset",
     "NoSQL",
+    "Partial",
     "Dbt",
     "Fivetran",
     "DataContract",
     "DataQuality",
     "PartialV01",
+    "PartialV02",
     "AI",
     "Resource",
     "FlowField",
@@ -56,6 +58,8 @@ __all__ = [
     "Fabric",
     "CosmosMongoDB",
     "DocumentDB",
+    "PartialField",
+    "PartialObject",
     "DbtModelColumn",
     "DbtTest",
     "DbtModel",
@@ -70,6 +74,8 @@ __all__ = [
     "DataQualityRule",
     "Soda",
     "PartialV01Field",
+    "PartialV02Field",
+    "PartialV02Object",
     "AIApplication",
     "AIModelVersion",
     "AIModel",
@@ -88,10 +94,10 @@ __all__ = [
     "TablePartition",
     "Column",
     "SnowflakeStage",
-    "SnowflakeStream",
     "DatabricksUnityCatalogTag",
-    "Database",
+    "SnowflakeStream",
     "CalculationView",
+    "Database",
     "Procedure",
     "Databricks",
     "SnowflakeTag",
@@ -192,6 +198,7 @@ __all__ = [
     "AWS",
     "BusinessPolicyIncident",
     "DbtColumnProcess",
+    "AtlanApp",
     "SapErpTable",
     "SapErpColumn",
     "SapErpCdsView",
@@ -228,6 +235,7 @@ __all__ = [
     "GCS",
     "DatabricksNotebook",
     "PartialV01Object",
+    "SageMakerUnifiedStudio",
     "Dataverse",
     "Cognite",
     "Salesforce",
@@ -247,6 +255,8 @@ __all__ = [
     "APIField",
     "SourceTag",
     "DataStudioAsset",
+    "AtlanAppDeployment",
+    "AtlanAppInstalled",
     "PresetChart",
     "PresetDataset",
     "PresetDashboard",
@@ -371,6 +381,11 @@ __all__ = [
     "ADLSObject",
     "GCSObject",
     "GCSBucket",
+    "SageMakerUnifiedStudioProject",
+    "SageMakerUnifiedStudioAsset",
+    "SageMakerUnifiedStudioSubscribedAsset",
+    "SageMakerUnifiedStudioPublishedAsset",
+    "SageMakerUnifiedStudioAssetSchema",
     "DataverseAttribute",
     "DataverseEntity",
     "CogniteEvent",
@@ -423,6 +438,9 @@ from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace
 from .app_workflow_run import AppWorkflowRun
+from .atlan_app import AtlanApp
+from .atlan_app_deployment import AtlanAppDeployment
+from .atlan_app_installed import AtlanAppInstalled
 from .auth_service import AuthService
 from .azure import Azure
 from .azure_event_hub import AzureEventHub
@@ -574,8 +592,14 @@ from .core.mongo_d_b_database import MongoDBDatabase
 from .core.monte_carlo import MonteCarlo
 from .core.namespace import Namespace
 from .core.no_s_q_l import NoSQL
+from .core.partial import Partial
+from .core.partial_field import PartialField
+from .core.partial_object import PartialObject
 from .core.partial_v01 import PartialV01
 from .core.partial_v01_field import PartialV01Field
+from .core.partial_v02 import PartialV02
+from .core.partial_v02_field import PartialV02Field
+from .core.partial_v02_object import PartialV02Object
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
 from .core.power_b_i_app import PowerBIApp
@@ -738,6 +762,16 @@ from .s3_object import S3Object
 from .s3_prefix import S3Prefix
 from .s_a_p import SAP
 from .saa_s import SaaS
+from .sage_maker_unified_studio import SageMakerUnifiedStudio
+from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
+from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema
+from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
+from .sage_maker_unified_studio_published_asset import (
+    SageMakerUnifiedStudioPublishedAsset,
+)
+from .sage_maker_unified_studio_subscribed_asset import (
+    SageMakerUnifiedStudioSubscribedAsset,
+)
 from .salesforce import Salesforce
 from .salesforce_dashboard import SalesforceDashboard
 from .salesforce_field import SalesforceField

@@ -2582,6 +2582,23 @@ class AppWorkflowRunStatus(str, Enum):
     STOPPED = "Stopped"
 
 
+class AssetSmusMetadataFormStatus(str, Enum):
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
+class AtlanAppDeploymentOperation(str, Enum):
+    INSTALL = "INSTALL"
+    UPGRADE = "UPGRADE"
+    DOWNGRADE = "DOWNGRADE"
+
+
+class AtlanAppDeploymentStatus(str, Enum):
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+
+
 class AtlasGlossaryCategoryType(str, Enum):
     DOCUMENT_FOLDER = "DOCUMENT_FOLDER"
 
@@ -2719,6 +2736,11 @@ class DataQualityRuleAlertPriority(str, Enum):
     URGENT = "URGENT"
     NORMAL = "NORMAL"
     LOW = "LOW"
+
+
+class DataQualityRuleCustomSQLReturnType(str, Enum):
+    ROW_COUNT = "ROW_COUNT"
+    NUMERIC_VALUE = "NUMERIC_VALUE"
 
 
 class DataQualityRuleStatus(str, Enum):
@@ -2979,6 +3001,15 @@ class QuickSightFolderType(str, Enum):
 class S3ObjectLockMode(str, Enum):
     GOVERNANCE = "GOVERNANCE"
     COMPLIANCE = "COMPLIANCE"
+
+
+class SageMakerUnifiedStudioProjectStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    DELETING = "DELETING"
+    DELETE_FAILED = "DELETE_FAILED"
+    UPDATING = "UPDATING"
+    UPDATE_FAILED = "UPDATE_FAILED"
+    MOVING = "MOVING"
 
 
 class SchemaRegistrySchemaCompatibility(str, Enum):

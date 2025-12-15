@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
 from .partial_v01 import PartialV01
 
@@ -29,6 +29,19 @@ class PartialV01Field(PartialV01):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    PARTIAL_V01PARENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "partialV01ParentType", "partialV01ParentType"
+    )
+    """
+    Type of the field's parent asset.
+    """
+    PARTIAL_V01PARENT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "partialV01ParentQualifiedName", "partialV01ParentQualifiedName"
+    )
+    """
+    Unique name of the field's parent asset.
+    """
+
     PARTIAL_V01PARENT_ASSET: ClassVar[RelationField] = RelationField(
         "partialV01ParentAsset"
     )
@@ -37,8 +50,40 @@ class PartialV01Field(PartialV01):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "partial_v01_parent_type",
+        "partial_v01_parent_qualified_name",
         "partial_v01_parent_asset",
     ]
+
+    @property
+    def partial_v01_parent_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.partial_v01_parent_type
+        )
+
+    @partial_v01_parent_type.setter
+    def partial_v01_parent_type(self, partial_v01_parent_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v01_parent_type = partial_v01_parent_type
+
+    @property
+    def partial_v01_parent_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.partial_v01_parent_qualified_name
+        )
+
+    @partial_v01_parent_qualified_name.setter
+    def partial_v01_parent_qualified_name(
+        self, partial_v01_parent_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_v01_parent_qualified_name = (
+            partial_v01_parent_qualified_name
+        )
 
     @property
     def partial_v01_parent_asset(self) -> Optional[Catalog]:
@@ -55,6 +100,10 @@ class PartialV01Field(PartialV01):
         self.attributes.partial_v01_parent_asset = partial_v01_parent_asset
 
     class Attributes(PartialV01.Attributes):
+        partial_v01_parent_type: Optional[str] = Field(default=None, description="")
+        partial_v01_parent_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         partial_v01_parent_asset: Optional[Catalog] = Field(
             default=None, description=""
         )  # relationship
