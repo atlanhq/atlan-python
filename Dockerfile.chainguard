@@ -54,11 +54,18 @@ ARG PYATLAN_COMMIT_SHA=""
 # Copy version.txt from builder and set PYATLAN_VERSION if not provided
 COPY --from=builder /tmp/version.txt /tmp/version.txt
 ARG PYATLAN_VERSION
-RUN if [ -z "$PYATLAN_VERSION" ]; then \
+RUN echo "=== Debug: Version setup ===" && \
+    echo "Build arg PYATLAN_VERSION: '$PYATLAN_VERSION'" && \
+    echo "Contents of version.txt: '$(cat /tmp/version.txt)'" && \
+    if [ -z "$PYATLAN_VERSION" ]; then \
         PYATLAN_VERSION=$(cat /tmp/version.txt | tr -d '\n\r'); \
+        echo "Using version from file: $PYATLAN_VERSION"; \
+    else \
+        echo "Using build arg version: $PYATLAN_VERSION"; \
     fi && \
-    echo "Using PYATLAN_VERSION: $PYATLAN_VERSION" && \
-    echo "$PYATLAN_VERSION" > /tmp/final_version.txt
+    echo "Final PYATLAN_VERSION: $PYATLAN_VERSION" && \
+    echo "$PYATLAN_VERSION" > /tmp/final_version.txt && \
+    echo "Contents of final_version.txt: '$(cat /tmp/final_version.txt)'"
 
 USER root
 WORKDIR /app
@@ -69,8 +76,7 @@ ENV UV_NO_MANAGED_PYTHON=true \
 
 # Install pyatlan dependencies from Chainguard APK (hardened packages)
 RUN apk add --no-cache \
-    py3.11-pydantic=2.12.0-r0 \
-    py3.11-pydantic-core=2.41.1-r0 \
+    py3.11-pydantic=2.12.5-r0 \
     py3.11-jinja2=3.1.6-r1 \
     py3.11-tenacity=9.1.2-r2 \
     py3.11-pytz=2025.2-r2 \
@@ -83,43 +89,64 @@ COPY --from=builder /tmp/wheels/*.whl /tmp/
 
 # Install dependencies + pyatlan wheel + cleanup in ONE layer
 RUN uv pip install --system --no-cache \
-        lazy_loader~=0.4 \
+        lazy-loader~=0.4 \
         nanoid~=2.0.0 \
+        authlib~=1.6.0 \
         httpx-retries~=0.4.0 && \
-    # Install pyatlan with --no-deps
-    cd /tmp/pyatlan-source && \
-    uv pip install --system --no-cache --no-deps . && \
-    # Cleanup everything in same layer (source + caches + bytecode)  
-    cd / && rm -rf /tmp/pyatlan-source /root/.cache ~/.cache && \
-    rm -rf /tmp/version.txt /tmp/final_version.txt && \
+    # Install pyatlan wheel with --no-deps
+    uv pip install --system --no-cache --no-deps /tmp/*.whl && \
+    # Cleanup everything EXCEPT version files (needed for verification)
+    cd / && rm -rf /tmp/*.whl /root/.cache ~/.cache && \
     find /usr/lib/python3.11 -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
     find /usr/lib/python3.11 -type f -name '*.pyc' -delete 2>/dev/null || true
 
 # Verify installation and version
-RUN EXPECTED_VERSION="$(cat /tmp/final_version.txt)" python3 <<'EOF'
+RUN echo "=== Debug: Checking version files ===" && \
+    ls -la /tmp/ && \
+    echo "Contents of final_version.txt:" && \
+    cat /tmp/final_version.txt && \
+    echo "=== Starting verification ===" && \
+    EXPECTED_VERSION="$(cat /tmp/final_version.txt)" python3 <<'EOF'
 import sys
 import os
-import pyatlan
-from pyatlan.client.atlan import AtlanClient
 
 expected_version = os.environ.get("EXPECTED_VERSION", "unknown")
-
 print("=== Pyatlan Installation Verification ===")
-print(f"Installed version: {pyatlan.__version__}")
-print(f"Expected version: {expected_version}")
+print(f"Expected version from env: {expected_version}")
 
-# Version validation (skip if 'latest' was requested)
-if expected_version != "latest":
-    if pyatlan.__version__ != expected_version:
-        print(f"❌ ERROR: Version mismatch!")
-        print(f"   Expected: {expected_version}")
-        print(f"   Got: {pyatlan.__version__}")
-        sys.exit(1)
-
-print("✅ Version verified")
-print("✅ AtlanClient imported successfully")
-print("=== Build verification passed ===")
+try:
+    import pyatlan
+    print(f"✅ PyAtlan imported successfully")
+    print(f"Installed version: {pyatlan.__version__}")
+    
+    # Try importing AtlanClient
+    from pyatlan.client.atlan import AtlanClient
+    print(f"✅ AtlanClient imported successfully")
+    
+    # Version validation (skip if 'latest' was requested)
+    if expected_version != "latest" and expected_version != "unknown":
+        if pyatlan.__version__ != expected_version:
+            print(f"❌ ERROR: Version mismatch!")
+            print(f"   Expected: {expected_version}")
+            print(f"   Got: {pyatlan.__version__}")
+            sys.exit(1)
+        else:
+            print("✅ Version verified")
+    else:
+        print("✅ Version validation skipped (latest or unknown)")
+        
+    print("=== Build verification passed ===")
+    
+except ImportError as e:
+    print(f"❌ Import error: {e}")
+    sys.exit(1)
+except Exception as e:
+    print(f"❌ Unexpected error: {e}")
+    sys.exit(1)
 EOF
+
+# Final cleanup of temporary version files
+RUN rm -rf /tmp/version.txt /tmp/final_version.txt
 
 # Add build metadata as labels
 LABEL python.version="${PYTHON_VERSION}"
