@@ -73,9 +73,7 @@ jobs:
             BUILD_TYPE="release"
             PYTHON_VERSION="3.13"
             PYATLAN_VERSION=$(cat pyatlan/version.txt)
-            PYATLAN_BRANCH=""
-            INSTALL_FROM_GIT="false"
-            echo "Release trigger detected - using latest versions"
+            echo "Release trigger detected - building from git tag v${PYATLAN_VERSION}"
           else
             # Manual dispatch: use provided inputs with defaults
             BUILD_TYPE="${{ github.event.inputs.build_type }}"
@@ -86,33 +84,28 @@ jobs:
             else
               PYTHON_VERSION="${{ github.event.inputs.python_version }}"
             fi
-
-            # Check if branch is provided (overrides version)
-            if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
-              PYATLAN_BRANCH="${{ github.event.inputs.pyatlan_branch }}"
-              PYATLAN_VERSION="branch-${PYATLAN_BRANCH}"
-              INSTALL_FROM_GIT="true"
-              echo "Using pyatlan branch: $PYATLAN_BRANCH"
+            
+            # Set Pyatlan version (reads from pyatlan/version.txt by default)
+            # This matches the version in the repository
+            if [ -z "${{ github.event.inputs.pyatlan_version }}" ]; then
+              PYATLAN_VERSION=$(cat pyatlan/version.txt)
+              echo "Using pyatlan version from version.txt: $PYATLAN_VERSION"
             else
-              # Set Pyatlan version (default to version.txt if empty)
-              if [ -z "${{ github.event.inputs.pyatlan_version }}" ]; then
-                PYATLAN_VERSION=$(cat pyatlan/version.txt)
-                echo "Using pyatlan version from version.txt: $PYATLAN_VERSION"
-              else
-                PYATLAN_VERSION="${{ github.event.inputs.pyatlan_version }}"
-                echo "Using specified pyatlan version: $PYATLAN_VERSION"
-              fi
-              PYATLAN_BRANCH=""
-              INSTALL_FROM_GIT="false"
+              PYATLAN_VERSION="${{ github.event.inputs.pyatlan_version }}"
+              echo "Using specified pyatlan version: $PYATLAN_VERSION"
+            fi
+            
+            # Handle branch input (if provided, will be used as commit SHA or branch name)
+            if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
+              echo "Note: Building from branch/commit: ${{ github.event.inputs.pyatlan_branch }}"
+              echo "This will use PYATLAN_COMMIT_SHA build arg"
             fi
           fi
 
           echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
           echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
-          echo "PYATLAN_BRANCH=$PYATLAN_BRANCH" >> $GITHUB_ENV
-          echo "INSTALL_FROM_GIT=$INSTALL_FROM_GIT" >> $GITHUB_ENV
-
+          
           # Set platforms based on build type
           if [ "$BUILD_TYPE" = "dev" ]; then
             PLATFORMS="linux/amd64"
@@ -120,24 +113,31 @@ jobs:
             PLATFORMS="linux/amd64,linux/arm64"
           fi
           echo "PLATFORMS=$PLATFORMS" >> $GITHUB_ENV
-
-          # Generate commit hash for dev builds
+          
+          # Generate commit hash for dev builds (for image tagging only)
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-
+          
+          # Set PYATLAN_COMMIT_SHA only if pyatlan_branch input is provided
+          # Otherwise, leave empty to let Dockerfile use version tag
+          if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
+            echo "PYATLAN_COMMIT_SHA=${{ github.event.inputs.pyatlan_branch }}" >> $GITHUB_ENV
+          else
+            echo "PYATLAN_COMMIT_SHA=" >> $GITHUB_ENV
+          fi
+          
           echo "Build parameters:"
           echo "  - Trigger: ${{ github.event_name }}"
           echo "  - Build Type: $BUILD_TYPE"
           echo "  - Python Version: $PYTHON_VERSION"
-          echo "  - Pyatlan Version: $PYATLAN_VERSION"
-          if [ "$INSTALL_FROM_GIT" = "true" ]; then
-            echo "  - Pyatlan Branch: $PYATLAN_BRANCH"
-            echo "  - Install Method: Git (development build)"
+          if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
+            echo "  - Pyatlan Source: git commit/branch ${{ github.event.inputs.pyatlan_branch }}"
           else
-            echo "  - Install Method: PyPI (stable release)"
+            echo "  - Pyatlan Source: git tag v${PYATLAN_VERSION}"
           fi
+          echo "  - Build Method: Multi-stage build from GitHub source"
           echo "  - Platforms: $PLATFORMS"
-          echo "  - Commit Hash: $COMMIT_HASH"
+          echo "  - Image Tag Suffix: $COMMIT_HASH"
 
       - name: Generate image tags
         id: generate-tags
@@ -159,22 +159,6 @@ jobs:
 
           echo "Generated image tag: ghcr.io/atlanhq/pyatlan-chainguard-base:$IMAGE_TAG"
 
-      - name: Wait for PyPI availability
-        if: env.INSTALL_FROM_GIT == 'false' && (github.event.inputs.pyatlan_version != '' || github.event_name == 'release')
-        uses: nick-fields/retry@v3
-        with:
-          max_attempts: 5
-          timeout_minutes: 3
-          command: |
-            echo "Checking if pyatlan==${{ env.PYATLAN_VERSION }} is available on PyPI..."
-            if pip index versions pyatlan | grep -q "${{ env.PYATLAN_VERSION }}"; then
-              echo "Package is available on PyPI!"
-              exit 0
-            else
-              echo "Package not available yet. Retrying..."
-              exit 1
-            fi
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -187,8 +171,7 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYATLAN_VERSION=${{ env.PYATLAN_VERSION }}
-            PYATLAN_BRANCH=${{ env.PYATLAN_BRANCH }}
-            INSTALL_FROM_GIT=${{ env.INSTALL_FROM_GIT }}
+            PYATLAN_COMMIT_SHA=${{ env.PYATLAN_COMMIT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -197,20 +180,20 @@ jobs:
           echo "## 🐳 Chainguard Docker Image Built Successfully!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Image Details:" >> $GITHUB_STEP_SUMMARY
-          echo "- **Base Image:** Chainguard" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base Image:** Chainguard pyatlan-golden:3.11" >> $GITHUB_STEP_SUMMARY
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Type:** ${{ env.BUILD_TYPE }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Method:** Multi-stage from GitHub source (no PyPI)" >> $GITHUB_STEP_SUMMARY
           echo "- **Python Version:** ${{ env.PYTHON_VERSION }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Pyatlan Version:** ${{ env.PYATLAN_VERSION }}" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ env.INSTALL_FROM_GIT }}" = "true" ]; then
-            echo "- **Pyatlan Branch:** ${{ env.PYATLAN_BRANCH }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Install Method:** Git (development build)" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ env.PYATLAN_COMMIT_SHA }}" ]; then
+            echo "- **Pyatlan Source:** Git commit/branch ${{ env.PYATLAN_COMMIT_SHA }}" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- **Install Method:** PyPI (stable release)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Pyatlan Source:** Git tag v${{ env.PYATLAN_VERSION }}" >> $GITHUB_STEP_SUMMARY
           fi
+          echo "- **Dependencies:** Hardened from Chainguard APK + minimal pip" >> $GITHUB_STEP_SUMMARY
           echo "- **Platforms:** ${{ env.PLATFORMS }}" >> $GITHUB_STEP_SUMMARY
           if [ "${{ env.BUILD_TYPE }}" = "dev" ]; then
-            echo "- **Commit Hash:** ${{ env.COMMIT_HASH }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Image Tag Suffix:** ${{ env.COMMIT_HASH }}" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Available Tag:" >> $GITHUB_STEP_SUMMARY
