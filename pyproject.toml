@@ -65,7 +65,7 @@ dev = [
     "types-retry~=0.9.9.20250322",
     "networkx~=3.2.1",
     "networkx-stubs~=0.0.1",
-    "pytest-asyncio~=1.2.0",
+    "pytest-asyncio>=1.2,<1.4",
 ]
 
 docs = [
