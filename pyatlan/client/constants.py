@@ -96,6 +96,30 @@ GET_OAUTH_CLIENT = API(
     HTTPStatus.OK,
     endpoint=EndPoint.HERACLES,
 )
+
+# OAuth client management APIs
+OAUTH_CLIENTS_API = "oauth-clients"
+GET_OAUTH_CLIENTS = API(
+    OAUTH_CLIENTS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+GET_OAUTH_CLIENT_BY_ID = API(
+    OAUTH_CLIENTS_API + "/{client_id}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+UPDATE_OAUTH_CLIENT = API(
+    OAUTH_CLIENTS_API + "/{client_id}",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+DELETE_OAUTH_CLIENT = API(
+    OAUTH_CLIENTS_API + "/{client_id}",
+    HTTPMethod.DELETE,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
 # SQL parsing APIs
 PARSE_QUERY = API(
     f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HEKA

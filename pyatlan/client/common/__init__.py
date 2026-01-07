@@ -97,6 +97,15 @@ from .impersonate import (
     ImpersonateUser,
 )
 
+# OAuth client shared logic classes
+from .oauth_client import (
+    OAuthClientGet,
+    OAuthClientGetAll,
+    OAuthClientGetById,
+    OAuthClientPurge,
+    OAuthClientUpdate,
+)
+
 # OpenLineage shared logic classes
 from .open_lineage import (
     OpenLineageCreateConnection,
@@ -255,6 +264,12 @@ __all__ = [
     "ImpersonateGetClientSecret",
     "ImpersonateGetUserId",
     "ImpersonateUser",
+    # OAuth client shared logic classes
+    "OAuthClientGet",
+    "OAuthClientGetAll",
+    "OAuthClientGetById",
+    "OAuthClientPurge",
+    "OAuthClientUpdate",
     # OpenLineage shared logic classes
     "OpenLineageCreateConnection",
     "OpenLineageCreateCredential",

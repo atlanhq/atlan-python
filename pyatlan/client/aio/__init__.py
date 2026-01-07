@@ -35,6 +35,7 @@ from .credential import AsyncCredentialClient
 from .file import AsyncFileClient
 from .group import AsyncGroupClient
 from .impersonate import AsyncImpersonationClient
+from .oauth_client import AsyncOAuthClientClient
 from .open_lineage import AsyncOpenLineageClient
 from .query import AsyncQueryClient
 from .role import AsyncRoleClient
@@ -61,6 +62,7 @@ __all__ = [
     "AsyncImpersonationClient",
     "AsyncIndexSearchResults",
     "AsyncLineageListResults",
+    "AsyncOAuthClientClient",
     "AsyncOpenLineageClient",
     "AsyncQueryClient",
     "AsyncRoleClient",
