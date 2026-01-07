@@ -99,6 +99,7 @@ from .impersonate import (
 
 # OAuth client shared logic classes
 from .oauth_client import (
+    OAuthClientCreate,
     OAuthClientGet,
     OAuthClientGetAll,
     OAuthClientGetById,
@@ -265,6 +266,7 @@ __all__ = [
     "ImpersonateGetUserId",
     "ImpersonateUser",
     # OAuth client shared logic classes
+    "OAuthClientCreate",
     "OAuthClientGet",
     "OAuthClientGetAll",
     "OAuthClientGetById",

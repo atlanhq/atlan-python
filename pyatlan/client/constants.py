@@ -102,6 +102,9 @@ OAUTH_CLIENTS_API = "oauth-clients"
 GET_OAUTH_CLIENTS = API(
     OAUTH_CLIENTS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
+CREATE_OAUTH_CLIENT = API(
+    OAUTH_CLIENTS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
 GET_OAUTH_CLIENT_BY_ID = API(
     OAUTH_CLIENTS_API + "/{client_id}",
     HTTPMethod.GET,

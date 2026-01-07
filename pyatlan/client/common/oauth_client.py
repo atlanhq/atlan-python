@@ -3,15 +3,22 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from pyatlan.client.constants import (
+    CREATE_OAUTH_CLIENT,
     DELETE_OAUTH_CLIENT,
     GET_OAUTH_CLIENT_BY_ID,
     GET_OAUTH_CLIENTS,
     UPDATE_OAUTH_CLIENT,
 )
-from pyatlan.model.oauth_clients import OAuthClient, OAuthClientResponse
+from pyatlan.model.oauth_clients import (
+    OAuthClient,
+    OAuthClientCreateResponse,
+    OAuthClientRequest,
+    OAuthClientResponse,
+)
+from pyatlan.model.role import AtlanRole
 
 
 class OAuthClientGetAll:
@@ -158,3 +165,91 @@ class OAuthClientPurge:
             {"client_id": client_id}
         ).format_path_with_params()
         return endpoint, None
+
+
+class OAuthClientCreate:
+    """Shared logic for creating OAuth clients."""
+
+    @staticmethod
+    def resolve_role_name(role: str, available_roles: List[AtlanRole]) -> str:
+        """
+        Resolve the user-provided role to the actual API role name.
+
+        The user provides a role description (e.g., 'Admin', 'Member', 'Admins (Connections)')
+        and we find the corresponding role name (e.g., '$admin', '$member', '$admin_connections')
+        to send in the API payload.
+
+        :param role: user-provided role description
+        :param available_roles: list of available roles from the API
+        :returns: the actual API role name (e.g., '$admin')
+        :raises ValueError: if the role description is not found
+        """
+        role_lower = role.lower().strip()
+
+        # Build lookup: lowercased description -> role name
+        desc_to_name: Dict[str, str] = {}
+        available_descriptions: List[str] = []
+
+        for r in available_roles:
+            if r.description and r.name:
+                desc_to_name[r.description.lower()] = r.name
+                available_descriptions.append(r.description)
+
+        # Match against description
+        if role_lower in desc_to_name:
+            return desc_to_name[role_lower]
+
+        # No match found - raise error with available descriptions
+        raise ValueError(
+            f"Role '{role}' not found. Available roles: {', '.join(sorted(available_descriptions))}"
+        )
+
+    @staticmethod
+    def build_roles_filter() -> str:
+        """
+        Build the filter string to fetch workspace and admin-subrole level roles.
+
+        :returns: JSON filter string
+        """
+        import json
+
+        return json.dumps(
+            {"$or": [{"level": "workspace"}, {"level": "admin-subrole"}]}
+        )
+
+    @staticmethod
+    def prepare_request(
+        display_name: str,
+        role: str,
+        description: Optional[str] = None,
+        persona_qns: Optional[List[str]] = None,
+    ) -> tuple:
+        """
+        Prepare the request for creating an OAuth client.
+
+        Note: The role should already be resolved to the actual API value
+        (e.g., '$admin') before calling this method.
+
+        :param display_name: human-readable name for the OAuth client
+        :param role: role assigned to the OAuth client (must be the actual API value like '$admin')
+        :param description: optional explanation of the OAuth client
+        :param persona_qns: qualified names of personas to associate with the OAuth client
+        :returns: tuple of (endpoint, request_dict)
+        """
+        request = OAuthClientRequest(
+            display_name=display_name,
+            description=description,
+            role=role,
+            persona_qns=persona_qns,
+        )
+        return CREATE_OAUTH_CLIENT.format_path_with_params(), request
+
+    @staticmethod
+    def process_response(raw_json: Dict) -> OAuthClientCreateResponse:
+        """
+        Process the API response into an OAuthClientCreateResponse.
+
+        :param raw_json: raw response from the API
+        :returns: the created OAuthClientCreateResponse (includes client_secret)
+        """
+        return OAuthClientCreateResponse(**raw_json)

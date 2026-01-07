@@ -3,20 +3,25 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,
+    OAuthClientCreate,
     OAuthClientGet,
     OAuthClientGetAll,
     OAuthClientGetById,
     OAuthClientPurge,
     OAuthClientUpdate,
+    RoleGet,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.oauth_clients import OAuthClient, OAuthClientResponse
+from pyatlan.model.oauth_clients import OAuthClient, OAuthClientCreateResponse, OAuthClientResponse
+
+if TYPE_CHECKING:
+    from pyatlan.client.aio import AsyncAtlanClient
 
 
 class AsyncOAuthClientClient:
@@ -107,3 +112,53 @@ class AsyncOAuthClientClient:
         """
         endpoint, _ = OAuthClientPurge.prepare_request(client_id)
         await self._client._call_api(endpoint)
+
+    async def _fetch_available_roles(self):
+        """
+        Fetch all available roles (workspace and admin-subrole levels).
+
+        :returns: list of AtlanRole objects
+        """
+        filter_str = OAuthClientCreate.build_roles_filter()
+        endpoint, query_params = RoleGet.prepare_request(
+            limit=100,
+            post_filter=filter_str,
+        )
+        raw_json = await self._client._call_api(endpoint, query_params)
+        response = RoleGet.process_response(raw_json)
+        return response.records or []
+
+    @validate_arguments
+    async def create(
+        self,
+        name: str,
+        role: str,
+        description: Optional[str] = None,
+        persona_qns: Optional[List[str]] = None,
+    ) -> OAuthClientCreateResponse:
+        """
+        Create a new OAuth client with the provided settings.
+
+        :param name: human-readable name for the OAuth client (displayed in UI)
+        :param role: role description to assign to the OAuth client (e.g., 'Admin', 'Member',
+                     'Guest', 'Admins (Connections)'). This is matched against available role
+                     descriptions and the corresponding role name is used in the API payload.
+        :param description: optional explanation of the OAuth client
+        :param persona_qns: qualified names of personas to associate with the OAuth client
+        :returns: the created OAuthClientCreateResponse (includes client_id and client_secret)
+        :raises AtlanError: on any API communication issue
+        :raises ValueError: if the specified role description is not found
+        """
+        # Fetch available roles and resolve the user-provided role name
+        available_roles = await self._fetch_available_roles()
+        resolved_role = OAuthClientCreate.resolve_role_name(role, available_roles)
+
+        # Prepare and execute the request
+        endpoint, request_obj = OAuthClientCreate.prepare_request(
+            display_name=name,
+            role=resolved_role,
+            description=description,
+            persona_qns=persona_qns,
+        )
+        raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
+        return OAuthClientCreate.process_response(raw_json)
