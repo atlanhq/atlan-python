@@ -146,27 +146,27 @@ class MongoDBCrawler(AbstractCrawler):
 
         Note:
             Common authentication issues and solutions:
-            
+
             - **Wrong authSource**: If authentication fails, verify the `auth_db`
               parameter matches the database where your user was created. For
               example, if you created a user in the "myapp" database, set
               `auth_db="myapp"`.
-            
+
             - **Authentication mechanism mismatch**: Atlan requires SCRAM
               authentication for self-managed MongoDB. If you're using an older
               MongoDB version or a different auth mechanism, you may need to
               specify it explicitly with the `auth_mechanism` parameter.
-            
+
             - **SSL/TLS certificate issues**: If you encounter SSL errors with
               self-signed certificates, ensure your MongoDB instance is properly
               configured for SSL, or set `is_ssl=False` for local development.
-            
+
             - **Insufficient privileges**: The MongoDB user must have appropriate
               roles such as `readAnyDatabase` and `clusterMonitor` to extract
               metadata. Create the user with:
-              
+
               .. code-block:: javascript
-              
+
                   db.createUser({
                       user: "atlan_user",
                       pwd: "password",
@@ -195,11 +195,11 @@ class MongoDBCrawler(AbstractCrawler):
             "authSource": auth_db,
             "ssl": is_ssl,
         }
-        
+
         # Add authentication mechanism if specified
         if auth_mechanism:
             extra_config["authMechanism"] = auth_mechanism
-        
+
         local_creds = {
             "authType": "basic",
             "username": username,
