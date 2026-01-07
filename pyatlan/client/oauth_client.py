@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 from pydantic.v1 import validate_arguments
 
@@ -17,10 +17,11 @@ from pyatlan.client.common import (
     RoleGet,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.oauth_clients import OAuthClient, OAuthClientCreateResponse, OAuthClientResponse
-
-if TYPE_CHECKING:
-    from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.oauth_clients import (
+    OAuthClient,
+    OAuthClientCreateResponse,
+    OAuthClientResponse,
+)
 
 
 class OAuthClientClient:
@@ -146,7 +147,7 @@ class OAuthClientClient:
         :param persona_qns: qualified names of personas to associate with the OAuth client
         :returns: the created OAuthClientCreateResponse (includes client_id and client_secret)
         :raises AtlanError: on any API communication issue
-        :raises ValueError: if the specified role description is not found
+        :raises NotFoundError: if the specified role description is not found
         """
         # Fetch available roles and resolve the user-provided role name
         available_roles = self._fetch_available_roles()

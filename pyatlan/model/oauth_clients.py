@@ -6,6 +6,7 @@ from pydantic.v1 import Field
 
 from pyatlan.model.core import AtlanObject
 
+
 class OAuthClientRequest(AtlanObject):
     """Request object for creating an OAuth client."""
 

@@ -12,6 +12,7 @@ from pyatlan.client.constants import (
     GET_OAUTH_CLIENTS,
     UPDATE_OAUTH_CLIENT,
 )
+from pyatlan.errors import ErrorCode
 from pyatlan.model.oauth_clients import (
     OAuthClient,
     OAuthClientCreateResponse,
@@ -182,7 +183,7 @@ class OAuthClientCreate:
         :param role: user-provided role description
         :param available_roles: list of available roles from the API
         :returns: the actual API role name (e.g., '$admin')
-        :raises ValueError: if the role description is not found
+        :raises NotFoundError: if the role description is not found
         """
         role_lower = role.lower().strip()
 
@@ -200,8 +201,8 @@ class OAuthClientCreate:
             return desc_to_name[role_lower]
 
         # No match found - raise error with available descriptions
-        raise ValueError(
-            f"Role '{role}' not found. Available roles: {', '.join(sorted(available_descriptions))}"
+        raise ErrorCode.ROLE_NOT_FOUND_BY_DESCRIPTION.exception_with_parameters(
+            role, ", ".join(sorted(available_descriptions))
         )
 
     @staticmethod
@@ -213,9 +214,7 @@ class OAuthClientCreate:
         """
         import json
 
-        return json.dumps(
-            {"$or": [{"level": "workspace"}, {"level": "admin-subrole"}]}
-        )
+        return json.dumps({"$or": [{"level": "workspace"}, {"level": "admin-subrole"}]})
 
     @staticmethod
     def prepare_request(
