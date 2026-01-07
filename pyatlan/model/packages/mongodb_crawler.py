@@ -23,6 +23,47 @@ class MongoDBCrawler(AbstractCrawler):
     assets in the connection (True) or not (False), default: True
     :param row_limit: maximum number of rows
     that can be returned by a query, default: 10000
+
+    Example:
+        Basic MongoDB connection with SCRAM-SHA-256 authentication::
+
+            from pyatlan.client.atlan import AtlanClient
+            from pyatlan.model.packages import MongoDBCrawler
+
+            client = AtlanClient()
+
+            # Create MongoDB crawler with explicit authentication mechanism
+            crawler = (
+                MongoDBCrawler(
+                    client=client,
+                    connection_name="production-mongodb",
+                    admin_roles=["admin-role-guid"],
+                )
+                .direct(hostname="mongodb.example.com", port=27017)
+                .basic_auth(
+                    username="admin_user",
+                    password="secure_password",
+                    native_host="mongodb.example.com:27017",
+                    default_db="admin",
+                    auth_db="admin",
+                    is_ssl=True,
+                    auth_mechanism="SCRAM-SHA-256",  # Explicitly specify auth mechanism
+                )
+                .include(assets=["production_db", "analytics_db"])
+            )
+
+            # Run the crawler workflow
+            workflow = crawler.to_workflow()
+            response = client.workflow.run(workflow)
+
+    Note:
+        - The `authSource` parameter (default: "admin") specifies the database
+          where the user's credentials are stored.
+        - Common authentication mechanisms include "SCRAM-SHA-1" and "SCRAM-SHA-256".
+          If not specified, MongoDB will negotiate the best available mechanism.
+        - For MongoDB Atlas clusters, ensure SSL is enabled (is_ssl=True).
+        - Ensure the MongoDB user has the necessary roles such as `readAnyDatabase`
+          and `clusterMonitor` for metadata extraction.
     """
 
     _NAME = "mongodb"
@@ -82,28 +123,88 @@ class MongoDBCrawler(AbstractCrawler):
         default_db: str,
         auth_db: str = "admin",
         is_ssl: bool = True,
+        auth_mechanism: Optional[str] = None,
     ) -> MongoDBCrawler:
         """
         Set up the crawler to use basic authentication.
 
-        :param username: through which to access Atlas SQL connection.
-        :param password: through which to access Atlas SQL connection.
-        :param native_host: native host address for the MongoDB connection.
+        :param username: through which to access MongoDB connection.
+        :param password: through which to access MongoDB connection.
+        :param native_host: native host address for the MongoDB connection
+            (e.g., "mongodb.example.com:27017" or "localhost:27017").
         :param default_db: default database to connect to.
-        :param auth_db: authentication database to use (default is `"admin"`).
-        :param is_ssl: whether to use SSL for the connection (default is `True`).
+        :param auth_db: authentication database where user credentials are stored
+            (default is `"admin"`). This should match the database where the
+            MongoDB user was created.
+        :param is_ssl: whether to use SSL/TLS for the connection (default is `True`).
+            Set to `False` for local MongoDB instances or when SSL is not required.
+        :param auth_mechanism: authentication mechanism to use. Common values:
+            - `"SCRAM-SHA-1"`: Legacy SCRAM authentication
+            - `"SCRAM-SHA-256"`: Modern SCRAM authentication (recommended)
+            - `None`: Let MongoDB negotiate the best mechanism (default)
         :returns: crawler, set up to use basic authentication
+
+        Note:
+            Common authentication issues and solutions:
+            
+            - **Wrong authSource**: If authentication fails, verify the `auth_db`
+              parameter matches the database where your user was created. For
+              example, if you created a user in the "myapp" database, set
+              `auth_db="myapp"`.
+            
+            - **Authentication mechanism mismatch**: Atlan requires SCRAM
+              authentication for self-managed MongoDB. If you're using an older
+              MongoDB version or a different auth mechanism, you may need to
+              specify it explicitly with the `auth_mechanism` parameter.
+            
+            - **SSL/TLS certificate issues**: If you encounter SSL errors with
+              self-signed certificates, ensure your MongoDB instance is properly
+              configured for SSL, or set `is_ssl=False` for local development.
+            
+            - **Insufficient privileges**: The MongoDB user must have appropriate
+              roles such as `readAnyDatabase` and `clusterMonitor` to extract
+              metadata. Create the user with:
+              
+              .. code-block:: javascript
+              
+                  db.createUser({
+                      user: "atlan_user",
+                      pwd: "password",
+                      roles: [
+                          { role: "readAnyDatabase", db: "admin" },
+                          { role: "clusterMonitor", db: "admin" }
+                      ]
+                  })
+
+        Example:
+            Basic authentication with explicit SCRAM-SHA-256::
+
+                crawler.basic_auth(
+                    username="my_user",
+                    password="my_password",
+                    native_host="mongodb.example.com:27017",
+                    default_db="myapp",
+                    auth_db="admin",
+                    is_ssl=True,
+                    auth_mechanism="SCRAM-SHA-256"
+                )
         """
+        extra_config = {
+            "native-host": native_host,
+            "default-database": default_db,
+            "authSource": auth_db,
+            "ssl": is_ssl,
+        }
+        
+        # Add authentication mechanism if specified
+        if auth_mechanism:
+            extra_config["authMechanism"] = auth_mechanism
+        
         local_creds = {
             "authType": "basic",
             "username": username,
             "password": password,
-            "extra": {
-                "native-host": native_host,
-                "default-database": default_db,
-                "authsource": auth_db,
-                "ssl": is_ssl,
-            },
+            "extra": extra_config,
         }
         self._credentials_body.update(local_creds)
         return self
