@@ -126,42 +126,27 @@ async def test_oauth_client_get_by_id(
 
 
 @pytest.mark.order(after="test_oauth_client_get_by_id")
-async def test_oauth_client_get_all(
+async def test_oauth_client_get_with_pagination(
     client: AsyncAtlanClient,
     oauth_client_response: OAuthClientCreateResponse,
     persona_qualified_name: str,
 ):
-    """Test retrieving all OAuth clients and validate persona association."""
-    assert oauth_client_response.client_id is not None
-    time.sleep(2)
-
-    response = await client.oauth_client.get_all()
-    assert response is not None
-    assert response.records is not None
-    assert len(response.records) >= 1
-
-    # Find our test client and validate persona
-    found = False
-    for oauth_client in response.records:
-        if oauth_client.client_id == oauth_client_response.client_id:
-            found = True
-            _assert_oauth_client(oauth_client, persona_qn=persona_qualified_name)
-            break
-    assert found, f"OAuth client {oauth_client_response.client_id} not found"
-
-
-@pytest.mark.order(after="test_oauth_client_get_all")
-async def test_oauth_client_get_with_pagination(
-    client: AsyncAtlanClient,
-    oauth_client_response: OAuthClientCreateResponse,
-):
-    """Test retrieving OAuth clients with pagination."""
+    """Test retrieving OAuth clients with pagination and async iteration."""
     assert oauth_client_response.client_id is not None
 
     response = await client.oauth_client.get(limit=10, offset=0, sort="-createdAt")
     assert response is not None
     assert response.total_record is not None
     assert response.total_record >= 1
+
+    # Test async iteration over the paginated response
+    found = False
+    async for oauth_client in response:
+        if oauth_client.client_id == oauth_client_response.client_id:
+            found = True
+            _assert_oauth_client(oauth_client, persona_qn=persona_qualified_name)
+            break
+    assert found, f"OAuth client {oauth_client_response.client_id} not found"
 
 
 @pytest.mark.order(after="test_oauth_client_get_with_pagination")

@@ -16,6 +16,7 @@ from .custom_metadata import AsyncCustomMetadataDict, AsyncCustomMetadataProxy
 from .group import AsyncGroupResponse
 from .keycloak_events import AsyncAdminEventResponse, AsyncKeycloakEventResponse
 from .lineage import AsyncLineageListResults
+from .oauth_client import AsyncOAuthClientListResponse
 from .retranslators import AsyncAtlanTagRetranslator, AsyncBaseRetranslator
 from .search_log import AsyncSearchLogResults
 from .task import AsyncTaskSearchResponse
@@ -37,6 +38,8 @@ __all__ = [
     "AsyncAtlanResponse",
     # Lineage results
     "AsyncLineageListResults",
+    # OAuth client response
+    "AsyncOAuthClientListResponse",
     # Search log results
     "AsyncSearchLogResults",
     # User response

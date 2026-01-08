@@ -10,7 +10,6 @@ from pyatlan.client.common import (
     ApiCaller,
     OAuthClientCreate,
     OAuthClientGet,
-    OAuthClientGetAll,
     OAuthClientGetById,
     OAuthClientPurge,
     OAuthClientUpdate,
@@ -38,28 +37,17 @@ class OAuthClientClient:
             )
         self._client = client
 
-    def get_all(self) -> OAuthClientListResponse:
-        """
-        Retrieves all OAuth clients defined in Atlan.
-
-        :returns: an OAuthClientListResponse containing all OAuth clients
-        :raises AtlanError: on any API communication issue
-        """
-        endpoint, query_params = OAuthClientGetAll.prepare_request()
-        raw_json = self._client._call_api(endpoint, query_params)
-        return OAuthClientGetAll.process_response(raw_json)
-
     @validate_arguments
     def get(
         self,
-        limit: Optional[int] = None,
+        limit: int = 20,
         offset: int = 0,
         sort: Optional[str] = None,
     ) -> OAuthClientListResponse:
         """
         Retrieves OAuth clients defined in Atlan with pagination support.
 
-        :param limit: maximum number of results to be returned
+        :param limit: maximum number of results to be returned per page (default: 20)
         :param offset: starting point for results to return, for paging
         :param sort: property by which to sort the results (e.g., 'createdAt' for descending)
         :returns: an OAuthClientListResponse containing records and pagination info
@@ -67,7 +55,14 @@ class OAuthClientClient:
         """
         endpoint, query_params = OAuthClientGet.prepare_request(limit, offset, sort)
         raw_json = self._client._call_api(endpoint, query_params)
-        return OAuthClientGet.process_response(raw_json)
+        return OAuthClientListResponse(
+            **raw_json,
+            endpoint=endpoint,
+            client=self._client,
+            size=limit,
+            start=offset,
+            sort=sort,
+        )
 
     @validate_arguments
     def get_by_id(self, client_id: str) -> OAuthClientResponse:

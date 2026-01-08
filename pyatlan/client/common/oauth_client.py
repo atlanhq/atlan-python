@@ -16,34 +16,10 @@ from pyatlan.client.constants import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.oauth_client import (
     OAuthClientCreateResponse,
-    OAuthClientListResponse,
     OAuthClientRequest,
     OAuthClientResponse,
 )
 from pyatlan.model.role import AtlanRole
-
-
-class OAuthClientGetAll:
-    """Shared logic for getting all OAuth clients without pagination."""
-
-    @staticmethod
-    def prepare_request() -> tuple:
-        """
-        Prepare the request for getting all OAuth clients.
-
-        :returns: tuple of (endpoint, query_params)
-        """
-        return GET_OAUTH_CLIENTS.format_path_with_params(), None
-
-    @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClientListResponse:
-        """
-        Process the API response into an OAuthClientListResponse object.
-
-        :param raw_json: raw response from the API
-        :returns: OAuthClientListResponse with pagination info and records
-        """
-        return OAuthClientListResponse(**raw_json)
 
 
 class OAuthClientGet:
@@ -51,7 +27,7 @@ class OAuthClientGet:
 
     @staticmethod
     def prepare_request(
-        limit: Optional[int] = None,
+        limit: int = 20,
         offset: int = 0,
         sort: Optional[str] = None,
     ) -> tuple:
@@ -66,23 +42,12 @@ class OAuthClientGet:
         query_params: Dict[str, str] = {
             "count": "true",
             "offset": str(offset),
+            "limit": str(limit),
         }
-        if limit is not None:
-            query_params["limit"] = str(limit)
         if sort is not None:
             query_params["sort"] = sort
 
-        return GET_OAUTH_CLIENTS.format_path_with_params(), query_params
-
-    @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClientListResponse:
-        """
-        Process the API response into an OAuthClientListResponse object.
-
-        :param raw_json: raw response from the API
-        :returns: OAuthClientListResponse with pagination info and records
-        """
-        return OAuthClientListResponse(**raw_json)
+        return GET_OAUTH_CLIENTS, query_params
 
 
 class OAuthClientGetById:
