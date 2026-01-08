@@ -23,7 +23,7 @@ from pyatlan.model.oauth_client import (
 )
 
 
-class OAuthClientClient:
+class OAuthClient:
     """
     This class can be used to manage OAuth client credentials.
     This class does not need to be instantiated directly but can be

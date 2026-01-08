@@ -155,7 +155,9 @@ class OAuthClientListResponse(AtlanObject):
         """Get the current page of OAuth clients."""
         return self.records
 
-    def next_page(self, start: Optional[int] = None, size: Optional[int] = None) -> bool:
+    def next_page(
+        self, start: Optional[int] = None, size: Optional[int] = None
+    ) -> bool:
         """
         Retrieve the next page of results.
 

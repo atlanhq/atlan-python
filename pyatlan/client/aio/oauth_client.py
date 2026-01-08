@@ -18,13 +18,10 @@ from pyatlan.client.common import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.oauth_client import AsyncOAuthClientListResponse
-from pyatlan.model.oauth_client import (
-    OAuthClientCreateResponse,
-    OAuthClientResponse,
-)
+from pyatlan.model.oauth_client import OAuthClientCreateResponse, OAuthClientResponse
 
 
-class AsyncOAuthClientClient:
+class AsyncOAuthClient:
     """
     Async client for managing OAuth client credentials.
     """

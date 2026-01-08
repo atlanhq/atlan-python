@@ -49,7 +49,7 @@ from pyatlan.client.file import FileClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.oauth import OAuthTokenManager
-from pyatlan.client.oauth_client import OAuthClientClient
+from pyatlan.client.oauth_client import OAuthClient
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.client.query import QueryClient
 from pyatlan.client.role import RoleClient
@@ -152,7 +152,7 @@ class AtlanClient(BaseSettings):
     _asset_client: Optional[AssetClient] = PrivateAttr(default=None)
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
-    _oauth_client_client: Optional[OAuthClientClient] = PrivateAttr(default=None)
+    _oauth_client_client: Optional[OAuthClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
     _impersonate_client: Optional[ImpersonationClient] = PrivateAttr(default=None)
     _query_client: Optional[QueryClient] = PrivateAttr(default=None)
@@ -346,9 +346,9 @@ class AtlanClient(BaseSettings):
         return self._token_client
 
     @property
-    def oauth_client(self) -> OAuthClientClient:
+    def oauth_client(self) -> OAuthClient:
         if self._oauth_client_client is None:
-            self._oauth_client_client = OAuthClientClient(client=self)
+            self._oauth_client_client = OAuthClient(client=self)
         return self._oauth_client_client
 
     @property

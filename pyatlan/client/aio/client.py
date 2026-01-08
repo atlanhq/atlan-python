@@ -42,7 +42,7 @@ from pyatlan.client.aio.file import AsyncFileClient
 from pyatlan.client.aio.group import AsyncGroupClient
 from pyatlan.client.aio.impersonate import AsyncImpersonationClient
 from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
-from pyatlan.client.aio.oauth_client import AsyncOAuthClientClient
+from pyatlan.client.aio.oauth_client import AsyncOAuthClient
 from pyatlan.client.aio.open_lineage import AsyncOpenLineageClient
 from pyatlan.client.aio.query import AsyncQueryClient
 from pyatlan.client.aio.role import AsyncRoleClient
@@ -114,9 +114,7 @@ class AsyncAtlanClient(AtlanClient):
     _async_sso_client: Optional[AsyncSSOClient] = PrivateAttr(default=None)
     _async_task_client: Optional[AsyncTaskClient] = PrivateAttr(default=None)
     _async_token_client: Optional[AsyncTokenClient] = PrivateAttr(default=None)
-    _async_oauth_client_client: Optional[AsyncOAuthClientClient] = PrivateAttr(
-        default=None
-    )
+    _async_oauth_client_client: Optional[AsyncOAuthClient] = PrivateAttr(default=None)
     _async_typedef_client: Optional[AsyncTypeDefClient] = PrivateAttr(default=None)
     _async_user_client: Optional[AsyncUserClient] = PrivateAttr(default=None)
     _async_workflow_client: Optional[AsyncWorkflowClient] = PrivateAttr(default=None)
@@ -367,10 +365,10 @@ class AsyncAtlanClient(AtlanClient):
         return self._async_token_client
 
     @property
-    def oauth_client(self) -> AsyncOAuthClientClient:  # type: ignore[override]
+    def oauth_client(self) -> AsyncOAuthClient:  # type: ignore[override]
         """Get async OAuth client client with same API as sync"""
         if self._async_oauth_client_client is None:
-            self._async_oauth_client_client = AsyncOAuthClientClient(self)  # type: ignore[arg-type]
+            self._async_oauth_client_client = AsyncOAuthClient(self)  # type: ignore[arg-type]
         return self._async_oauth_client_client
 
     @property
