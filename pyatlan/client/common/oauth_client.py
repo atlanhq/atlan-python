@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2025 Atlan Pte. Ltd.
+# Copyright 2026 Atlan Pte. Ltd.
 
 from __future__ import annotations
 
+import json
 from typing import Dict, List, Optional
 
 from pyatlan.client.constants import (
@@ -13,9 +14,9 @@ from pyatlan.client.constants import (
     UPDATE_OAUTH_CLIENT,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.oauth_clients import (
-    OAuthClient,
+from pyatlan.model.oauth_client import (
     OAuthClientCreateResponse,
+    OAuthClientListResponse,
     OAuthClientRequest,
     OAuthClientResponse,
 )
@@ -35,14 +36,14 @@ class OAuthClientGetAll:
         return GET_OAUTH_CLIENTS.format_path_with_params(), None
 
     @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClientResponse:
+    def process_response(raw_json: Dict) -> OAuthClientListResponse:
         """
-        Process the API response into an OAuthClientResponse object.
+        Process the API response into an OAuthClientListResponse object.
 
         :param raw_json: raw response from the API
-        :returns: OAuthClientResponse with pagination info and records
+        :returns: OAuthClientListResponse with pagination info and records
         """
-        return OAuthClientResponse(**raw_json)
+        return OAuthClientListResponse(**raw_json)
 
 
 class OAuthClientGet:
@@ -74,14 +75,14 @@ class OAuthClientGet:
         return GET_OAUTH_CLIENTS.format_path_with_params(), query_params
 
     @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClientResponse:
+    def process_response(raw_json: Dict) -> OAuthClientListResponse:
         """
-        Process the API response into an OAuthClientResponse object.
+        Process the API response into an OAuthClientListResponse object.
 
         :param raw_json: raw response from the API
-        :returns: OAuthClientResponse with pagination info and records
+        :returns: OAuthClientListResponse with pagination info and records
         """
-        return OAuthClientResponse(**raw_json)
+        return OAuthClientListResponse(**raw_json)
 
 
 class OAuthClientGetById:
@@ -101,14 +102,14 @@ class OAuthClientGetById:
         return endpoint, None
 
     @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClient:
+    def process_response(raw_json: Dict) -> OAuthClientResponse:
         """
-        Process the API response into an OAuthClient object.
+        Process the API response into an OAuthClientResponse object.
 
         :param raw_json: raw response from the API
-        :returns: OAuthClient object
+        :returns: OAuthClientResponse object
         """
-        return OAuthClient(**raw_json)
+        return OAuthClientResponse(**raw_json)
 
 
 class OAuthClientUpdate:
@@ -141,14 +142,14 @@ class OAuthClientUpdate:
         return endpoint, request_dict
 
     @staticmethod
-    def process_response(raw_json: Dict) -> OAuthClient:
+    def process_response(raw_json: Dict) -> OAuthClientResponse:
         """
-        Process the API response into an OAuthClient.
+        Process the API response into an OAuthClientResponse.
 
         :param raw_json: raw response from the API
-        :returns: the updated OAuthClient
+        :returns: the updated OAuthClientResponse
         """
-        return OAuthClient(**raw_json)
+        return OAuthClientResponse(**raw_json)
 
 
 class OAuthClientPurge:
@@ -212,7 +213,6 @@ class OAuthClientCreate:
 
         :returns: JSON filter string
         """
-        import json
 
         return json.dumps({"$or": [{"level": "workspace"}, {"level": "admin-subrole"}]})
 
@@ -221,7 +221,7 @@ class OAuthClientCreate:
         display_name: str,
         role: str,
         description: Optional[str] = None,
-        persona_qns: Optional[List[str]] = None,
+        persona_qualified_names: Optional[List[str]] = None,
     ) -> tuple:
         """
         Prepare the request for creating an OAuth client.
@@ -232,15 +232,15 @@ class OAuthClientCreate:
         :param display_name: human-readable name for the OAuth client
         :param role: role assigned to the OAuth client (must be the actual API value like '$admin')
         :param description: optional explanation of the OAuth client
-        :param persona_qns: qualified names of personas to associate with the OAuth client
+        :param persona_qualified_names: qualified names of personas to associate with the OAuth client
         :returns: tuple of (endpoint, request_dict)
         """
         request = OAuthClientRequest(
             display_name=display_name,
             description=description,
             role=role,
-            persona_qns=persona_qns,
-        )
+            persona_qualified_names=persona_qualified_names,
+        )  # type: ignore[call-arg]
         return CREATE_OAUTH_CLIENT.format_path_with_params(), request
 
     @staticmethod

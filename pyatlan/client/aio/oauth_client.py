@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2025 Atlan Pte. Ltd.
+# Copyright 2026 Atlan Pte. Ltd.
 
 from __future__ import annotations
 
@@ -18,9 +18,9 @@ from pyatlan.client.common import (
     RoleGet,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.oauth_clients import (
-    OAuthClient,
+from pyatlan.model.oauth_client import (
     OAuthClientCreateResponse,
+    OAuthClientListResponse,
     OAuthClientResponse,
 )
 
@@ -37,11 +37,11 @@ class AsyncOAuthClientClient:
             )
         self._client = client
 
-    async def get_all(self) -> OAuthClientResponse:
+    async def get_all(self) -> OAuthClientListResponse:
         """
         Retrieves all OAuth clients defined in Atlan.
 
-        :returns: an OAuthClientResponse containing all OAuth clients
+        :returns: an OAuthClientListResponse containing all OAuth clients
         :raises AtlanError: on any API communication issue
         """
         endpoint, query_params = OAuthClientGetAll.prepare_request()
@@ -54,14 +54,14 @@ class AsyncOAuthClientClient:
         limit: Optional[int] = None,
         offset: int = 0,
         sort: Optional[str] = None,
-    ) -> OAuthClientResponse:
+    ) -> OAuthClientListResponse:
         """
         Retrieves OAuth clients defined in Atlan with pagination support.
 
         :param limit: maximum number of results to be returned
         :param offset: starting point for results to return, for paging
         :param sort: property by which to sort the results (e.g., 'createdAt' for descending)
-        :returns: an OAuthClientResponse containing records and pagination info
+        :returns: an OAuthClientListResponse containing records and pagination info
         :raises AtlanError: on any API communication issue
         """
         endpoint, query_params = OAuthClientGet.prepare_request(limit, offset, sort)
@@ -69,12 +69,12 @@ class AsyncOAuthClientClient:
         return OAuthClientGet.process_response(raw_json)
 
     @validate_arguments
-    async def get_by_id(self, client_id: str) -> OAuthClient:
+    async def get_by_id(self, client_id: str) -> OAuthClientResponse:
         """
         Retrieves the OAuth client with the specified client ID.
 
         :param client_id: unique client identifier (e.g., 'oauth-client-xxx')
-        :returns: the OAuthClient with the specified client ID
+        :returns: the OAuthClientResponse with the specified client ID
         :raises AtlanError: on any API communication issue
         """
         endpoint, query_params = OAuthClientGetById.prepare_request(client_id)
@@ -87,14 +87,14 @@ class AsyncOAuthClientClient:
         client_id: str,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
-    ) -> OAuthClient:
+    ) -> OAuthClientResponse:
         """
         Update an existing OAuth client with the provided settings.
 
         :param client_id: unique client identifier (e.g., 'oauth-client-xxx')
         :param display_name: human-readable name for the OAuth client
         :param description: optional explanation of the OAuth client
-        :returns: the updated OAuthClient
+        :returns: the updated OAuthClientResponse
         :raises AtlanError: on any API communication issue
         """
         endpoint, request_obj = OAuthClientUpdate.prepare_request(
@@ -135,17 +135,15 @@ class AsyncOAuthClientClient:
         name: str,
         role: str,
         description: Optional[str] = None,
-        persona_qns: Optional[List[str]] = None,
+        persona_qualified_names: Optional[List[str]] = None,
     ) -> OAuthClientCreateResponse:
         """
         Create a new OAuth client with the provided settings.
 
         :param name: human-readable name for the OAuth client (displayed in UI)
-        :param role: role description to assign to the OAuth client (e.g., 'Admin', 'Member',
-                     'Guest', 'Admins (Connections)'). This is matched against available role
-                     descriptions and the corresponding role name is used in the API payload.
+        :param role: role description to assign to the OAuth client (e.g., 'Admin', 'Member').
         :param description: optional explanation of the OAuth client
-        :param persona_qns: qualified names of personas to associate with the OAuth client
+        :param persona_qualified_names: qualified names of personas to associate with the OAuth client
         :returns: the created OAuthClientCreateResponse (includes client_id and client_secret)
         :raises AtlanError: on any API communication issue
         :raises NotFoundError: if the specified role description is not found
@@ -159,7 +157,7 @@ class AsyncOAuthClientClient:
             display_name=name,
             role=resolved_role,
             description=description,
-            persona_qns=persona_qns,
+            persona_qualified_names=persona_qualified_names,
         )
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
         return OAuthClientCreate.process_response(raw_json)
