@@ -10,64 +10,33 @@ from typing import ClassVar, List, Optional, Set
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import DbtJobRun, DbtMetricFilter
+from pyatlan.model.structs import DbtJobRun
 
-from .dbt import Dbt
+from .core.dbt import Dbt
 
 
-class DbtMetric(Dbt):
+class DbtSemanticModel(Dbt):
     """Description"""
 
-    type_name: str = Field(default="DbtMetric", allow_mutation=False)
+    type_name: str = Field(default="DbtSemanticModel", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DbtMetric":
-            raise ValueError("must be DbtMetric")
+        if v != "DbtSemanticModel":
+            raise ValueError("must be DbtSemanticModel")
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtMetric._convenience_properties:
+        if name in DbtSemanticModel._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DBT_METRIC_FILTERS: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricFilters", "dbtMetricFilters"
-    )
-    """
-    Filters applied to the dbt metric.
-    """
-    DBT_METRIC_FILTER: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricFilter", "dbtMetricFilter"
-    )
-    """
-    Top-level filter applied to the entire metric query.
-    """
-    DBT_METRIC_WINDOW: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricWindow", "dbtMetricWindow"
-    )
-    """
-    Time window for cumulative/conversion metrics.
-    """
-    DBT_METRIC_CUMULATIVE_PERIOD_AGG: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricCumulativePeriodAgg", "dbtMetricCumulativePeriodAgg"
-    )
-    """
-    Aggregation function for cumulative metrics within each period.
-    """
-    DBT_METRIC_CONVERSION_CALCULATION: ClassVar[KeywordField] = KeywordField(
-        "dbtMetricConversionCalculation", "dbtMetricConversionCalculation"
-    )
-    """
-    Calculation type for conversion metrics.
-    """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
     )
@@ -182,64 +151,21 @@ class DbtMetric(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
-    METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
-    """
-    Type of the metric.
-    """
-    METRIC_SQL: ClassVar[TextField] = TextField("metricSQL", "metricSQL")
-    """
-    SQL query used to compute the metric.
-    """
-    METRIC_FILTERS: ClassVar[TextField] = TextField("metricFilters", "metricFilters")
-    """
-    Filters to be applied to the metric query.
-    """
-    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
-        "metricTimeGrains", "metricTimeGrains"
-    )
-    """
-    List of time grains to be applied to the metric query.
-    """
-    DQ_IS_PART_OF_CONTRACT: ClassVar[BooleanField] = BooleanField(
-        "dqIsPartOfContract", "dqIsPartOfContract"
-    )
-    """
-    Whether this data quality is part of contract (true) or not (false).
-    """
 
-    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
-        "metricTimestampColumn"
-    )
+    SEMANTIC_ENTITIES: ClassVar[RelationField] = RelationField("semanticEntities")
     """
     TBC
     """
-    ASSETS: ClassVar[RelationField] = RelationField("assets")
+    SEMANTIC_MEASURES: ClassVar[RelationField] = RelationField("semanticMeasures")
     """
     TBC
     """
-    DBT_MODEL: ClassVar[RelationField] = RelationField("dbtModel")
-    """
-    TBC
-    """
-    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField(
-        "metricDimensionColumns"
-    )
-    """
-    TBC
-    """
-    DBT_METRIC_FILTER_COLUMNS: ClassVar[RelationField] = RelationField(
-        "dbtMetricFilterColumns"
-    )
+    SEMANTIC_DIMENSIONS: ClassVar[RelationField] = RelationField("semanticDimensions")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dbt_metric_filters",
-        "dbt_metric_filter",
-        "dbt_metric_window",
-        "dbt_metric_cumulative_period_agg",
-        "dbt_metric_conversion_calculation",
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -259,83 +185,10 @@ class DbtMetric(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
-        "metric_type",
-        "metric_s_q_l",
-        "metric_filters",
-        "metric_time_grains",
-        "dq_is_part_of_contract",
-        "metric_timestamp_column",
-        "assets",
-        "dbt_model",
-        "metric_dimension_columns",
-        "dbt_metric_filter_columns",
+        "semantic_entities",
+        "semantic_measures",
+        "semantic_dimensions",
     ]
-
-    @property
-    def dbt_metric_filters(self) -> Optional[List[DbtMetricFilter]]:
-        return None if self.attributes is None else self.attributes.dbt_metric_filters
-
-    @dbt_metric_filters.setter
-    def dbt_metric_filters(self, dbt_metric_filters: Optional[List[DbtMetricFilter]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_filters = dbt_metric_filters
-
-    @property
-    def dbt_metric_filter(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_metric_filter
-
-    @dbt_metric_filter.setter
-    def dbt_metric_filter(self, dbt_metric_filter: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_filter = dbt_metric_filter
-
-    @property
-    def dbt_metric_window(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dbt_metric_window
-
-    @dbt_metric_window.setter
-    def dbt_metric_window(self, dbt_metric_window: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_window = dbt_metric_window
-
-    @property
-    def dbt_metric_cumulative_period_agg(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_metric_cumulative_period_agg
-        )
-
-    @dbt_metric_cumulative_period_agg.setter
-    def dbt_metric_cumulative_period_agg(
-        self, dbt_metric_cumulative_period_agg: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_cumulative_period_agg = (
-            dbt_metric_cumulative_period_agg
-        )
-
-    @property
-    def dbt_metric_conversion_calculation(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_metric_conversion_calculation
-        )
-
-    @dbt_metric_conversion_calculation.setter
-    def dbt_metric_conversion_calculation(
-        self, dbt_metric_conversion_calculation: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_conversion_calculation = (
-            dbt_metric_conversion_calculation
-        )
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -550,133 +403,38 @@ class DbtMetric(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
-    def metric_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metric_type
+    def semantic_entities(self) -> Optional[List[SemanticEntity]]:
+        return None if self.attributes is None else self.attributes.semantic_entities
 
-    @metric_type.setter
-    def metric_type(self, metric_type: Optional[str]):
+    @semantic_entities.setter
+    def semantic_entities(self, semantic_entities: Optional[List[SemanticEntity]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metric_type = metric_type
+        self.attributes.semantic_entities = semantic_entities
 
     @property
-    def metric_s_q_l(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metric_s_q_l
+    def semantic_measures(self) -> Optional[List[SemanticMeasure]]:
+        return None if self.attributes is None else self.attributes.semantic_measures
 
-    @metric_s_q_l.setter
-    def metric_s_q_l(self, metric_s_q_l: Optional[str]):
+    @semantic_measures.setter
+    def semantic_measures(self, semantic_measures: Optional[List[SemanticMeasure]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metric_s_q_l = metric_s_q_l
+        self.attributes.semantic_measures = semantic_measures
 
     @property
-    def metric_filters(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.metric_filters
+    def semantic_dimensions(self) -> Optional[List[SemanticDimension]]:
+        return None if self.attributes is None else self.attributes.semantic_dimensions
 
-    @metric_filters.setter
-    def metric_filters(self, metric_filters: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metric_filters = metric_filters
-
-    @property
-    def metric_time_grains(self) -> Optional[Set[str]]:
-        return None if self.attributes is None else self.attributes.metric_time_grains
-
-    @metric_time_grains.setter
-    def metric_time_grains(self, metric_time_grains: Optional[Set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metric_time_grains = metric_time_grains
-
-    @property
-    def dq_is_part_of_contract(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.dq_is_part_of_contract
-        )
-
-    @dq_is_part_of_contract.setter
-    def dq_is_part_of_contract(self, dq_is_part_of_contract: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dq_is_part_of_contract = dq_is_part_of_contract
-
-    @property
-    def metric_timestamp_column(self) -> Optional[Column]:
-        return (
-            None if self.attributes is None else self.attributes.metric_timestamp_column
-        )
-
-    @metric_timestamp_column.setter
-    def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metric_timestamp_column = metric_timestamp_column
-
-    @property
-    def assets(self) -> Optional[List[Asset]]:
-        return None if self.attributes is None else self.attributes.assets
-
-    @assets.setter
-    def assets(self, assets: Optional[List[Asset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.assets = assets
-
-    @property
-    def dbt_model(self) -> Optional[DbtModel]:
-        return None if self.attributes is None else self.attributes.dbt_model
-
-    @dbt_model.setter
-    def dbt_model(self, dbt_model: Optional[DbtModel]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_model = dbt_model
-
-    @property
-    def metric_dimension_columns(self) -> Optional[List[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metric_dimension_columns
-        )
-
-    @metric_dimension_columns.setter
-    def metric_dimension_columns(
-        self, metric_dimension_columns: Optional[List[Column]]
+    @semantic_dimensions.setter
+    def semantic_dimensions(
+        self, semantic_dimensions: Optional[List[SemanticDimension]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metric_dimension_columns = metric_dimension_columns
-
-    @property
-    def dbt_metric_filter_columns(self) -> Optional[List[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_metric_filter_columns
-        )
-
-    @dbt_metric_filter_columns.setter
-    def dbt_metric_filter_columns(
-        self, dbt_metric_filter_columns: Optional[List[Column]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
+        self.attributes.semantic_dimensions = semantic_dimensions
 
     class Attributes(Dbt.Attributes):
-        dbt_metric_filters: Optional[List[DbtMetricFilter]] = Field(
-            default=None, description=""
-        )
-        dbt_metric_filter: Optional[str] = Field(default=None, description="")
-        dbt_metric_window: Optional[str] = Field(default=None, description="")
-        dbt_metric_cumulative_period_agg: Optional[str] = Field(
-            default=None, description=""
-        )
-        dbt_metric_conversion_calculation: Optional[str] = Field(
-            default=None, description=""
-        )
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -700,29 +458,18 @@ class DbtMetric(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
-        metric_type: Optional[str] = Field(default=None, description="")
-        metric_s_q_l: Optional[str] = Field(default=None, description="")
-        metric_filters: Optional[str] = Field(default=None, description="")
-        metric_time_grains: Optional[Set[str]] = Field(default=None, description="")
-        dq_is_part_of_contract: Optional[bool] = Field(default=None, description="")
-        metric_timestamp_column: Optional[Column] = Field(
+        semantic_entities: Optional[List[SemanticEntity]] = Field(
             default=None, description=""
         )  # relationship
-        assets: Optional[List[Asset]] = Field(
+        semantic_measures: Optional[List[SemanticMeasure]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_model: Optional[DbtModel] = Field(
-            default=None, description=""
-        )  # relationship
-        metric_dimension_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_metric_filter_columns: Optional[List[Column]] = Field(
+        semantic_dimensions: Optional[List[SemanticDimension]] = Field(
             default=None, description=""
         )  # relationship
 
-    attributes: DbtMetric.Attributes = Field(
-        default_factory=lambda: DbtMetric.Attributes(),
+    attributes: DbtSemanticModel.Attributes = Field(
+        default_factory=lambda: DbtSemanticModel.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -731,6 +478,8 @@ class DbtMetric(Dbt):
     )
 
 
-from .asset import Asset  # noqa: E402, F401
-from .column import Column  # noqa: E402, F401
-from .dbt_model import DbtModel  # noqa: E402, F401
+from .semantic_dimension import SemanticDimension  # noqa: E402, F401
+from .semantic_entity import SemanticEntity  # noqa: E402, F401
+from .semantic_measure import SemanticMeasure  # noqa: E402, F401
+
+DbtSemanticModel.Attributes.update_forward_refs()

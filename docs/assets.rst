@@ -143,11 +143,15 @@ You can interact with all of the following different kinds of assets:
     asset/dataverseentity
     asset/dbt
     asset/dbtcolumnprocess
+    asset/dbtdimension
+    asset/dbtentity
+    asset/dbtmeasure
     asset/dbtmetric
     asset/dbtmodel
     asset/dbtmodelcolumn
     asset/dbtprocess
     asset/dbtseed
+    asset/dbtsemanticmodel
     asset/dbtsource
     asset/dbttag
     asset/dbttest
@@ -357,6 +361,12 @@ You can interact with all of the following different kinds of assets:
     asset/schema
     asset/schemaregistry
     asset/schemaregistrysubject
+    asset/semantic
+    asset/semanticdimension
+    asset/semanticentity
+    asset/semanticfield
+    asset/semanticmeasure
+    asset/semanticmodel
     asset/sigma
     asset/sigmadataelement
     asset/sigmadataelementfield

@@ -21,6 +21,7 @@ __all__ = [
     "Airflow",
     "ADF",
     "BI",
+    "Semantic",
     "FlowDataset",
     "NoSQL",
     "Partial",
@@ -63,9 +64,9 @@ __all__ = [
     "DbtModelColumn",
     "DbtTest",
     "DbtModel",
+    "DbtSeed",
     "DbtMetric",
     "DbtSource",
-    "DbtSeed",
     "FivetranConnector",
     "Anomalo",
     "MonteCarlo",
@@ -224,12 +225,21 @@ __all__ = [
     "Cognos",
     "Superset",
     "Qlik",
+    "SemanticDimension",
+    "SemanticEntity",
+    "SemanticModel",
+    "SemanticField",
+    "SemanticMeasure",
     "Kafka",
     "AzureServiceBus",
     "Cassandra",
     "DynamoDB",
     "MongoDB",
     "DbtTag",
+    "DbtDimension",
+    "DbtMeasure",
+    "DbtSemanticModel",
+    "DbtEntity",
     "S3",
     "ADLS",
     "GCS",
@@ -625,6 +635,7 @@ from .core.s_q_l import SQL
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
+from .core.semantic import Semantic
 from .core.snowflake_a_i_model_context import SnowflakeAIModelContext
 from .core.snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable
@@ -658,7 +669,11 @@ from .dataverse import Dataverse
 from .dataverse_attribute import DataverseAttribute
 from .dataverse_entity import DataverseEntity
 from .dbt_column_process import DbtColumnProcess
+from .dbt_dimension import DbtDimension
+from .dbt_entity import DbtEntity
+from .dbt_measure import DbtMeasure
 from .dbt_process import DbtProcess
+from .dbt_semantic_model import DbtSemanticModel
 from .dbt_tag import DbtTag
 from .domo import Domo
 from .domo_card import DomoCard
@@ -786,6 +801,11 @@ from .sap_erp_function_module import SapErpFunctionModule
 from .sap_erp_table import SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode
 from .sap_erp_view import SapErpView
+from .semantic_dimension import SemanticDimension
+from .semantic_entity import SemanticEntity
+from .semantic_field import SemanticField
+from .semantic_measure import SemanticMeasure
+from .semantic_model import SemanticModel
 from .sigma import Sigma
 from .sigma_data_element import SigmaDataElement
 from .sigma_data_element_field import SigmaDataElementField

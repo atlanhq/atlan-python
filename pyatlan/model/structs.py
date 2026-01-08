@@ -303,6 +303,22 @@ class FormField(AtlanObject):
     form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
 
 
+class DbtInputContext(AtlanObject):
+    """Description"""
+
+    dbt_input_context_name: Optional[str] = Field(default=None, description="")
+    dbt_input_context_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    dbt_input_context_type: Optional[str] = Field(default=None, description="")
+    dbt_input_context_alias: Optional[str] = Field(default=None, description="")
+    dbt_input_context_filter: Optional[str] = Field(default=None, description="")
+    dbt_input_context_offset_window: Optional[str] = Field(default=None, description="")
+    dbt_input_context_offset_to_grain: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
 class AssetSmusMetadataFormDetails(AtlanObject):
     """Description"""
 
@@ -652,6 +668,9 @@ class DataQualityRuleTemplateConfig(AtlanObject):
     dq_rule_template_config_rule_conditions: Optional[str] = Field(
         default=None, description=""
     )
+    dq_rule_template_config_preflight_check: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class AppWorkflowRunStep(AtlanObject):
@@ -774,6 +793,8 @@ BusinessPolicyRule.update_forward_refs()
 ResponseValue.update_forward_refs()
 
 FormField.update_forward_refs()
+
+DbtInputContext.update_forward_refs()
 
 AssetSmusMetadataFormDetails.update_forward_refs()
 

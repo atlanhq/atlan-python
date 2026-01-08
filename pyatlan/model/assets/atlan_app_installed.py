@@ -35,6 +35,12 @@ class AtlanAppInstalled(AtlanApp):
     """
     Current version identifier for the atlan application.
     """
+    ATLAN_APP_CURRENT_VERSION_UUID: ClassVar[KeywordField] = KeywordField(
+        "atlanAppCurrentVersionUUID", "atlanAppCurrentVersionUUID"
+    )
+    """
+    Current version uuid for the atlan application. This is externally exposed information.
+    """
     ATLAN_APP_DEPLOYMENT_CONFIG: ClassVar[KeywordField] = KeywordField(
         "atlanAppDeploymentConfig", "atlanAppDeploymentConfig"
     )
@@ -44,6 +50,7 @@ class AtlanAppInstalled(AtlanApp):
 
     _convenience_properties: ClassVar[List[str]] = [
         "atlan_app_current_version_id",
+        "atlan_app_current_version_u_u_i_d",
         "atlan_app_deployment_config",
     ]
 
@@ -62,6 +69,24 @@ class AtlanAppInstalled(AtlanApp):
         self.attributes.atlan_app_current_version_id = atlan_app_current_version_id
 
     @property
+    def atlan_app_current_version_u_u_i_d(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.atlan_app_current_version_u_u_i_d
+        )
+
+    @atlan_app_current_version_u_u_i_d.setter
+    def atlan_app_current_version_u_u_i_d(
+        self, atlan_app_current_version_u_u_i_d: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_app_current_version_u_u_i_d = (
+            atlan_app_current_version_u_u_i_d
+        )
+
+    @property
     def atlan_app_deployment_config(self) -> Optional[str]:
         return (
             None
@@ -77,6 +102,9 @@ class AtlanAppInstalled(AtlanApp):
 
     class Attributes(AtlanApp.Attributes):
         atlan_app_current_version_id: Optional[int] = Field(
+            default=None, description=""
+        )
+        atlan_app_current_version_u_u_i_d: Optional[str] = Field(
             default=None, description=""
         )
         atlan_app_deployment_config: Optional[str] = Field(default=None, description="")

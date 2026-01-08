@@ -345,6 +345,12 @@ class Connection(Asset, type_name="Connection"):
     """
     Whether to upload to S3, GCP, or another storage location (true) or not (false).
     """
+    CONNECTION_INSIGHTS_VIA_O_AUTH_COOKIE: ClassVar[BooleanField] = BooleanField(
+        "connectionInsightsViaOAuthCookie", "connectionInsightsViaOAuthCookie"
+    )
+    """
+    Whether cookie based OAuth is enabled in Insights for this connection (true) or not (false).
+    """
     OBJECT_STORAGE_UPLOAD_THRESHOLD: ClassVar[NumericField] = NumericField(
         "objectStorageUploadThreshold", "objectStorageUploadThreshold"
     )
@@ -410,6 +416,7 @@ class Connection(Asset, type_name="Connection"):
         "connection_dbt_environments",
         "connection_s_s_o_credential_guid",
         "use_object_storage",
+        "connection_insights_via_o_auth_cookie",
         "object_storage_upload_threshold",
         "vector_embeddings_enabled",
         "vector_embeddings_updated_at",
@@ -839,6 +846,24 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.use_object_storage = use_object_storage
 
     @property
+    def connection_insights_via_o_auth_cookie(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_insights_via_o_auth_cookie
+        )
+
+    @connection_insights_via_o_auth_cookie.setter
+    def connection_insights_via_o_auth_cookie(
+        self, connection_insights_via_o_auth_cookie: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_insights_via_o_auth_cookie = (
+            connection_insights_via_o_auth_cookie
+        )
+
+    @property
     def object_storage_upload_threshold(self) -> Optional[int]:
         return (
             None
@@ -979,6 +1004,9 @@ class Connection(Asset, type_name="Connection"):
             default=None, description=""
         )
         use_object_storage: Optional[bool] = Field(default=None, description="")
+        connection_insights_via_o_auth_cookie: Optional[bool] = Field(
+            default=None, description=""
+        )
         object_storage_upload_threshold: Optional[int] = Field(
             default=None, description=""
         )

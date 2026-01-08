@@ -143,6 +143,7 @@ from .s_q_l import SQL
 from .schema import Schema
 from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
+from .semantic import Semantic
 from .snowflake_a_i_model_context import SnowflakeAIModelContext
 from .snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .snowflake_dynamic_table import SnowflakeDynamicTable
@@ -183,6 +184,7 @@ App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
+Semantic.Attributes.update_forward_refs(**localns)
 FlowDataset.Attributes.update_forward_refs(**localns)
 NoSQL.Attributes.update_forward_refs(**localns)
 Partial.Attributes.update_forward_refs(**localns)
@@ -225,9 +227,9 @@ PartialObject.Attributes.update_forward_refs(**localns)
 DbtModelColumn.Attributes.update_forward_refs(**localns)
 DbtTest.Attributes.update_forward_refs(**localns)
 DbtModel.Attributes.update_forward_refs(**localns)
+DbtSeed.Attributes.update_forward_refs(**localns)
 DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
-DbtSeed.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)

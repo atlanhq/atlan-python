@@ -44,9 +44,10 @@ if TYPE_CHECKING:
     from pyatlan.model.assets import Column
     {% endif %}
     {% if asset_info.name == 'Process' %}
-    from pyatlan.model.assets import Procedure
-    from pyatlan.model.assets import BigqueryRoutine
-    from pyatlan.model.assets import FabricActivity
+    from pyatlan.model.assets import Procedure, BigqueryRoutine, FabricActivity, Function
+    {% endif %}
+    {% if asset_info.name == 'DbtProcess' %}
+    from pyatlan.model.assets import Procedure, BigqueryRoutine, FabricActivity, Function
     {% endif %}
     {% if asset_info.name in asset_info._ASSETS_REQUIRE_ASYNC_CLIENT %}
     from pyatlan.client.aio.client import AsyncAtlanClient

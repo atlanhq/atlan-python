@@ -213,6 +213,10 @@ class DbtColumnProcess(Dbt):
     """
     TBC
     """
+    SQL_FUNCTIONS: ClassVar[RelationField] = RelationField("sqlFunctions")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -273,6 +277,7 @@ class DbtColumnProcess(Dbt):
         "adf_activity",
         "bigquery_routines",
         "spark_jobs",
+        "sql_functions",
         "matillion_component",
         "process",
         "airflow_tasks",
@@ -662,6 +667,16 @@ class DbtColumnProcess(Dbt):
         self.attributes.spark_jobs = spark_jobs
 
     @property
+    def sql_functions(self) -> Optional[List[Function]]:
+        return None if self.attributes is None else self.attributes.sql_functions
+
+    @sql_functions.setter
+    def sql_functions(self, sql_functions: Optional[List[Function]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_functions = sql_functions
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -776,6 +791,9 @@ class DbtColumnProcess(Dbt):
         spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
+        sql_functions: Optional[List[Function]] = Field(
+            default=None, description=""
+        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
@@ -811,6 +829,7 @@ from .core.column_process import ColumnProcess  # noqa: E402, F401
 from .core.fabric_activity import FabricActivity  # noqa: E402, F401
 from .core.fivetran_connector import FivetranConnector  # noqa: E402, F401
 from .core.flow_control_operation import FlowControlOperation  # noqa: E402, F401
+from .core.function import Function  # noqa: E402, F401
 from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401

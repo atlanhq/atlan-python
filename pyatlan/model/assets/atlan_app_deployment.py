@@ -36,6 +36,12 @@ class AtlanAppDeployment(AtlanApp):
     """
     Version identifier for deployment.
     """
+    ATLAN_APP_VERSION_UUID: ClassVar[KeywordField] = KeywordField(
+        "atlanAppVersionUUID", "atlanAppVersionUUID"
+    )
+    """
+    Version uuid for deployment. This is externally exposed information.
+    """
     ATLAN_APP_STATUS: ClassVar[KeywordField] = KeywordField(
         "atlanAppStatus", "atlanAppStatus"
     )
@@ -51,6 +57,7 @@ class AtlanAppDeployment(AtlanApp):
 
     _convenience_properties: ClassVar[List[str]] = [
         "atlan_app_version_id",
+        "atlan_app_version_u_u_i_d",
         "atlan_app_status",
         "atlan_app_operation",
     ]
@@ -64,6 +71,20 @@ class AtlanAppDeployment(AtlanApp):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_app_version_id = atlan_app_version_id
+
+    @property
+    def atlan_app_version_u_u_i_d(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.atlan_app_version_u_u_i_d
+        )
+
+    @atlan_app_version_u_u_i_d.setter
+    def atlan_app_version_u_u_i_d(self, atlan_app_version_u_u_i_d: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_app_version_u_u_i_d = atlan_app_version_u_u_i_d
 
     @property
     def atlan_app_status(self) -> Optional[AtlanAppDeploymentStatus]:
@@ -89,6 +110,7 @@ class AtlanAppDeployment(AtlanApp):
 
     class Attributes(AtlanApp.Attributes):
         atlan_app_version_id: Optional[int] = Field(default=None, description="")
+        atlan_app_version_u_u_i_d: Optional[str] = Field(default=None, description="")
         atlan_app_status: Optional[AtlanAppDeploymentStatus] = Field(
             default=None, description=""
         )
