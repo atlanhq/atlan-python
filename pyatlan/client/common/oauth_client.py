@@ -202,9 +202,9 @@ class OAuthClientCreate:
         """
         request = OAuthClientRequest(
             display_name=display_name,
-            description=description,
+            description=description or "",
             role=role,
-            persona_qualified_names=persona_qualified_names,
+            persona_qualified_names=persona_qualified_names or [],
         )  # type: ignore[call-arg]
         return CREATE_OAUTH_CLIENT.format_path_with_params(), request
 

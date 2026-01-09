@@ -3,7 +3,7 @@
 """Integration tests for OAuth client CRUD operations."""
 
 import time
-from typing import Generator, Optional
+from typing import Generator, List, Optional
 
 import pytest
 
@@ -21,6 +21,10 @@ OAUTH_CLIENT_DESCRIPTION_UPDATED = "Updated integration test OAuth client"
 OAUTH_CLIENT_ROLE = "Admin"  # Role description
 DATA_ASSETS_PERSONA_NAME = "Data Assets"  # Pre-existing persona
 
+# Pagination test constants
+PAGINATION_CLIENT_COUNT = 5
+PAGINATION_CLIENT_NAME_PREFIX = f"{MODULE_NAME}_pagination_client"
+
 
 def delete_oauth_client(client: AtlanClient, client_id: str) -> None:
     """Helper to delete an OAuth client."""
@@ -37,6 +41,41 @@ def persona_qualified_name(client: AtlanClient) -> str:
     persona_qn = personas[0].qualified_name
     assert persona_qn is not None
     return persona_qn
+
+
+@pytest.fixture(scope="module")
+def pagination_oauth_clients(
+    client: AtlanClient,
+) -> Generator[List[OAuthClientCreateResponse], None, None]:
+    """
+    Fixture to create multiple OAuth clients for pagination testing.
+    Creates 5 OAuth clients and yields their responses.
+    Cleans up by deleting all created OAuth clients after tests.
+    """
+    created_clients: List[OAuthClientCreateResponse] = []
+
+    # Create 5 OAuth clients for pagination testing
+    for i in range(PAGINATION_CLIENT_COUNT):
+        response = client.oauth_client.create(
+            name=f"{PAGINATION_CLIENT_NAME_PREFIX}_{i}",
+            role=OAUTH_CLIENT_ROLE,
+            description=f"Pagination test OAuth client {i}",
+        )
+        assert response is not None
+        assert response.client_id is not None
+        created_clients.append(response)
+        # Small delay to ensure distinct createdAt timestamps for sorting
+        time.sleep(0.5)
+
+    yield created_clients
+
+    # Cleanup: delete all created OAuth clients
+    for oauth_client in created_clients:
+        if oauth_client.client_id:
+            try:
+                delete_oauth_client(client, oauth_client.client_id)
+            except Exception:
+                pass  # Ignore cleanup errors
 
 
 @pytest.fixture(scope="module")
@@ -127,25 +166,50 @@ def test_oauth_client_get_by_id(
 @pytest.mark.order(after="test_oauth_client_get_by_id")
 def test_oauth_client_get_with_pagination(
     client: AtlanClient,
-    oauth_client_response: OAuthClientCreateResponse,
-    persona_qualified_name: str,
+    pagination_oauth_clients: List[OAuthClientCreateResponse],
 ):
-    """Test retrieving OAuth clients with pagination and iteration."""
-    assert oauth_client_response.client_id is not None
+    """Test retrieving OAuth clients with pagination and iteration.
 
-    response = client.oauth_client.get(limit=10, offset=0, sort="createdAt")
+    This test creates 5 OAuth clients and uses limit=1 to ensure
+    the pagination logic is properly exercised across multiple API calls.
+    """
+    # Verify we have the expected number of test clients
+    assert len(pagination_oauth_clients) == PAGINATION_CLIENT_COUNT
+
+    # Get the client IDs we created for verification
+    created_client_ids = {c.client_id for c in pagination_oauth_clients}
+
+    # Use limit=1 to force multiple API calls for pagination
+    response = client.oauth_client.get(limit=1, offset=0, sort="createdAt")
     assert response is not None
     assert response.total_record is not None
-    assert response.total_record >= 1
+    # Should have at least our 5 created clients
+    assert response.total_record >= PAGINATION_CLIENT_COUNT
+
+    # Store the initial total record count
+    initial_total = response.total_record
 
     # Test iterating over the paginated response
-    found = False
+    # This should make multiple API calls (one per page with limit=1)
+    found_client_ids: set = set()
+    total_iterated = 0
+
     for oauth_client in response:
-        if oauth_client.client_id == oauth_client_response.client_id:
-            found = True
-            _assert_oauth_client(oauth_client, persona_qn=persona_qualified_name)
-            break
-    assert found, f"OAuth client {oauth_client_response.client_id} not found"
+        total_iterated += 1
+        if oauth_client.client_id in created_client_ids:
+            found_client_ids.add(oauth_client.client_id)
+
+    # Verify we iterated through all records
+    assert total_iterated == initial_total, (
+        f"Expected to iterate through {initial_total} records, "
+        f"but only iterated through {total_iterated}"
+    )
+
+    # Verify we found all our created clients
+    assert found_client_ids == created_client_ids, (
+        f"Expected to find all {PAGINATION_CLIENT_COUNT} created clients. "
+        f"Found: {len(found_client_ids)}, Missing: {created_client_ids - found_client_ids}"
+    )
 
 
 @pytest.mark.order(after="test_oauth_client_get_with_pagination")
