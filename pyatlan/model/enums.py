@@ -2468,6 +2468,16 @@ class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     IN_LIST = "IN_LIST"
     NOT_IN_LIST = "NOT_IN_LIST"
 
+    # Reference list conditions
+    IN_LIST_REFERENCE = "IN_LIST_REFERENCE"
+
+    # Reconciliation conditions
+    ROW_COUNT_RECON = "ROW_COUNT_RECON"
+    AVERAGE_RECON = "AVERAGE_RECON"
+    SUM_RECON = "SUM_RECON"
+    DUPLICATE_COUNT_RECON = "DUPLICATE_COUNT_RECON"
+    UNIQUE_COUNT_RECON = "UNIQUE_COUNT_RECON"
+
 
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
@@ -2738,6 +2748,11 @@ class DataQualityRuleAlertPriority(str, Enum):
     LOW = "LOW"
 
 
+class DataQualityRuleCustomSQLResultType(str, Enum):
+    ROW_COUNT = "ROW_COUNT"
+    NUMERIC_VALUE = "NUMERIC_VALUE"
+
+
 class DataQualityRuleCustomSQLReturnType(str, Enum):
     ROW_COUNT = "ROW_COUNT"
     NUMERIC_VALUE = "NUMERIC_VALUE"
@@ -2763,6 +2778,7 @@ class DataQualityRuleThresholdUnit(str, Enum):
     WEEKS = "WEEKS"
     MONTHS = "MONTHS"
     YEARS = "YEARS"
+    ABSOLUTE = "ABSOLUTE"
 
 
 class DataQualityScheduleType(str, Enum):

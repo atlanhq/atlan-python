@@ -59,6 +59,7 @@ class DataQualityRule(DataQuality):
         threshold_value: int,
         alert_priority: DataQualityRuleAlertPriority,
         dimension: DataQualityDimension,
+        custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
         description: Optional[str] = None,
     ) -> DataQualityRule:
         validate_required_fields(
@@ -94,6 +95,7 @@ class DataQualityRule(DataQuality):
             alert_priority=alert_priority,
             dimension=dimension,
             custom_sql=custom_sql,
+            custom_sql_return_type=custom_sql_return_type,
             description=description,
             column=None,
             threshold_unit=None,
@@ -111,6 +113,7 @@ class DataQualityRule(DataQuality):
         threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
         alert_priority: DataQualityRuleAlertPriority,
+        threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
     ) -> DataQualityRule:
         validate_required_fields(
             [
@@ -140,7 +143,7 @@ class DataQualityRule(DataQuality):
             alert_priority=alert_priority,
             rule_name=None,
             column=None,
-            threshold_unit=None,
+            threshold_unit=threshold_unit,
             dimension=None,
             custom_sql=None,
             description=None,
@@ -249,6 +252,7 @@ class DataQualityRule(DataQuality):
         threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
         dimension: Optional[DataQualityDimension] = None,
         custom_sql: Optional[str] = None,
+        custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
         rule_name: Optional[str] = None,
         description: Optional[str] = None,
         rule_conditions: Optional[str] = None,
@@ -271,6 +275,7 @@ class DataQualityRule(DataQuality):
             .include_on_results(DataQualityRule.DQ_RULE_ALERT_PRIORITY)
             .include_on_results(DataQualityRule.DISPLAY_NAME)
             .include_on_results(DataQualityRule.DQ_RULE_CUSTOM_SQL)
+            .include_on_results(DataQualityRule.DQ_RULE_CUSTOM_SQL_RETURN_TYPE)
             .include_on_results(DataQualityRule.USER_DESCRIPTION)
             .include_on_results(DataQualityRule.DQ_RULE_DIMENSION)
             .include_on_results(DataQualityRule.DQ_RULE_CONFIG_ARGUMENTS)
@@ -289,6 +294,9 @@ class DataQualityRule(DataQuality):
         search_result = results.current_page()[0]
 
         retrieved_custom_sql = search_result.dq_rule_custom_s_q_l  # type: ignore[attr-defined]
+        retrieved_custom_sql_return_type = (
+            search_result.dq_rule_custom_s_q_l_return_type  # type: ignore[attr-defined]
+        )
         retrieved_rule_name = search_result.display_name
         retrieved_dimension = search_result.dq_rule_dimension  # type: ignore[attr-defined]
         retrieved_column = search_result.dq_rule_base_column  # type: ignore[attr-defined]
@@ -376,6 +384,9 @@ class DataQualityRule(DataQuality):
         if custom_sql is not None:
             attr_dq.dq_rule_custom_s_q_l = custom_sql
             attr_dq.display_name = rule_name or retrieved_rule_name
+            attr_dq.dq_rule_custom_s_q_l_return_type = (
+                custom_sql_return_type or retrieved_custom_sql_return_type
+            )
             if description is not None:
                 attr_dq.user_description = description or retrieved_description
 
@@ -1257,6 +1268,7 @@ class DataQualityRule(DataQuality):
             threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
             dimension: Optional[DataQualityDimension] = None,
             custom_sql: Optional[str] = None,
+            custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
             description: Optional[str] = None,
             rule_conditions: Optional[str] = None,
             row_scope_filtering_enabled: Optional[bool] = False,
@@ -1316,6 +1328,8 @@ class DataQualityRule(DataQuality):
             if custom_sql is not None:
                 attr_dq.dq_rule_custom_s_q_l = custom_sql
                 attr_dq.display_name = rule_name
+                if custom_sql_return_type is not None:
+                    attr_dq.dq_rule_custom_s_q_l_return_type = custom_sql_return_type
                 if description is not None:
                     attr_dq.user_description = description
 
