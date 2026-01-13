@@ -676,6 +676,119 @@ class GetByGuid:
 
 class Save:
     @staticmethod
+    def _split_assets_by_tag_semantic(
+        entities: List[Asset],
+    ) -> tuple[List[Asset], List[Asset], List[Asset]]:
+        """
+        Split assets into three groups based on tag semantics:
+        - APPEND/REMOVE semantics (use addOrUpdateClassifications/removeClassifications)
+        - REPLACE or None semantics (use normal classifications with replaceTags)
+        - Assets with no tags
+
+        :param entities: list of assets to split
+        :returns: tuple of (append_remove_assets, replace_assets, no_tag_assets)
+        """
+        append_remove_assets = []
+        replace_assets = []
+        no_tag_assets = []
+
+        for asset in entities:
+            # Check if asset has any tags
+            has_tags = False
+            has_append_or_remove = False
+
+            # Check classifications (normal tags)
+            if hasattr(asset, "classifications") and asset.classifications:
+                has_tags = True
+                for tag in asset.classifications:
+                    if tag.semantic in (SaveSemantic.APPEND, SaveSemantic.REMOVE):
+                        has_append_or_remove = True
+                        break
+
+            # Check add_or_update_classifications
+            if (
+                hasattr(asset, "add_or_update_classifications")
+                and asset.add_or_update_classifications
+            ):
+                has_tags = True
+                for tag in asset.add_or_update_classifications:
+                    if tag.semantic in (SaveSemantic.APPEND, SaveSemantic.REMOVE):
+                        has_append_or_remove = True
+                        break
+
+            # Check remove_classifications
+            if (
+                hasattr(asset, "remove_classifications")
+                and asset.remove_classifications
+            ):
+                has_tags = True
+                for tag in asset.remove_classifications:
+                    if tag.semantic in (SaveSemantic.APPEND, SaveSemantic.REMOVE):
+                        has_append_or_remove = True
+                        break
+
+            # Categorize asset
+            if not has_tags:
+                no_tag_assets.append(asset)
+            elif has_append_or_remove:
+                append_remove_assets.append(asset)
+            else:
+                replace_assets.append(asset)
+
+        return append_remove_assets, replace_assets, no_tag_assets
+
+    @staticmethod
+    def _process_tags_by_semantic(asset: Asset) -> Asset:
+        """
+        Process tags in an asset by moving them to the appropriate lists
+        based on their semantic value.
+
+        :param asset: asset to process
+        :returns: processed asset
+        """
+        # Lists to collect tags by semantic
+        append_tags = []
+        remove_tags = []
+        replace_tags = []
+
+        # Process classifications
+        if hasattr(asset, "classifications") and asset.classifications:
+            for tag in asset.classifications:
+                if tag.semantic == SaveSemantic.APPEND:
+                    append_tags.append(tag)
+                elif tag.semantic == SaveSemantic.REMOVE:
+                    remove_tags.append(tag)
+                else:
+                    # REPLACE or None
+                    replace_tags.append(tag)
+
+        # Process add_or_update_classifications
+        if (
+            hasattr(asset, "add_or_update_classifications")
+            and asset.add_or_update_classifications
+        ):
+            for tag in asset.add_or_update_classifications:
+                if tag.semantic == SaveSemantic.REMOVE:
+                    remove_tags.append(tag)
+                else:
+                    # APPEND or None - both go to add_or_update
+                    append_tags.append(tag)
+
+        # Process remove_classifications
+        if (
+            hasattr(asset, "remove_classifications")
+            and asset.remove_classifications
+        ):
+            remove_tags.extend(asset.remove_classifications)
+
+        # Set the processed tags back on the asset
+        asset.classifications = replace_tags if replace_tags else None
+        asset.add_or_update_classifications = append_tags if append_tags else None
+        asset.remove_classifications = remove_tags if remove_tags else None
+
+        return asset
+
+    @staticmethod
     def prepare_request(
         entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
@@ -712,9 +825,17 @@ class Save:
             raise ValueError(
                 "AtlanClient instance must be provided to validate and flush cm for assets."
             )
-        # Validate and flush entities BEFORE creating the BulkRequest
+
+        # Validate and flush entities BEFORE processing
         Save.validate_and_flush_entities(entities, client)
-        return query_params, BulkRequest[Asset](entities=entities)
+
+        # Process tags by semantic for each asset
+        processed_entities = []
+        for asset in entities:
+            processed_asset = Save._process_tags_by_semantic(asset)
+            processed_entities.append(processed_asset)
+
+        return query_params, BulkRequest[Asset](entities=processed_entities)
 
     @staticmethod
     async def prepare_request_async(
@@ -753,9 +874,17 @@ class Save:
             raise ValueError(
                 "AsyncAtlanClient instance must be provided to validate and flush cm for assets."
             )
-        # Validate and flush entities BEFORE creating the BulkRequest
+
+        # Validate and flush entities BEFORE processing
         await Save.validate_and_flush_entities_async(entities, client)
-        return query_params, BulkRequest[Asset](entities=entities)
+
+        # Process tags by semantic for each asset
+        processed_entities = []
+        for asset in entities:
+            processed_asset = Save._process_tags_by_semantic(asset)
+            processed_entities.append(processed_asset)
+
+        return query_params, BulkRequest[Asset](entities=processed_entities)
 
     @staticmethod
     def validate_and_flush_entities(entities: List[Asset], client: AtlanClient) -> None:

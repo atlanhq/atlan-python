@@ -323,6 +323,17 @@ class AtlanTag(AtlanObject):
     source_tag_attachments: List[SourceTagAttachment] = Field(
         default_factory=list, exclude=True
     )
+    semantic: Optional[SaveSemantic] = Field(
+        default=None,
+        exclude=True,
+        description=(
+            "Semantic for how this Atlan tag should be saved, "
+            "if used in an asset request on which `.save()` is called. "
+            "APPEND: add the tag if it doesn't exist, or update it if it does. "
+            "REMOVE: remove the tag if it exists. "
+            "REPLACE: replace all existing tags on the asset (default behavior)."
+        ),
+    )
 
     attributes: Optional[Dict[str, Any]] = None
     tag_id: Optional[str] = Field(default=None, exclude=True)
@@ -334,6 +345,7 @@ class AtlanTag(AtlanObject):
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
         client: Optional[AtlanClient] = None,
+        semantic: Optional[SaveSemantic] = None,
     ) -> AtlanTag:
         """
         Construct an Atlan tag assignment for a specific entity.
@@ -342,10 +354,11 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) client instance used for translating source-specific details
+        :param semantic: (optional) semantic for how this tag should be saved (APPEND, REMOVE, or REPLACE)
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
-        tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
+        tag = AtlanTag(type_name=atlan_tag_name, semantic=semantic)  # type: ignore[call-arg]
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
@@ -367,6 +380,7 @@ class AtlanTag(AtlanObject):
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
         client: Optional[AsyncAtlanClient] = None,
+        semantic: Optional[SaveSemantic] = None,
     ) -> AtlanTag:
         """
         Async version of AtlanTag.of() for use with AsyncAtlanClient.
@@ -377,10 +391,11 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) async client instance used for translating source-specific details
+        :param semantic: (optional) semantic for how this tag should be saved (APPEND, REMOVE, or REPLACE)
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
-        tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
+        tag = AtlanTag(type_name=atlan_tag_name, semantic=semantic)  # type: ignore[call-arg]
         if entity_guid:
             tag.entity_guid = entity_guid
             tag.entity_status = EntityStatus.ACTIVE
