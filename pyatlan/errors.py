@@ -967,6 +967,13 @@ class ErrorCode(Enum):
         "Verify you have provided a valid DQ rule type.",
         NotFoundError,
     )
+    ROLE_NOT_FOUND_BY_DESCRIPTION = (
+        404,
+        "ATLAN-PYTHON-404-030",
+        "Role '{0}' does not exist. Available roles: {1}",
+        "Verify the role description provided matches one of the available roles.",
+        NotFoundError,
+    )
     CONFLICT_PASSTHROUGH = (
         409,
         "ATLAN-PYTHON-409-000",
