@@ -119,11 +119,11 @@ class TestSaveTagSemanticProcessing:
         # Create an asset with tags having APPEND semantic
         asset = Table()
         asset.classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND
             ),
-            AtlanTag(
-                type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.APPEND  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.APPEND
             ),
         ]
 
@@ -141,8 +141,8 @@ class TestSaveTagSemanticProcessing:
 
         asset = Table()
         asset.classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REMOVE  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REMOVE
             ),
         ]
 
@@ -160,8 +160,8 @@ class TestSaveTagSemanticProcessing:
 
         asset = Table()
         asset.classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REPLACE  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REPLACE
             ),
         ]
 
@@ -179,14 +179,14 @@ class TestSaveTagSemanticProcessing:
 
         asset = Table()
         asset.classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("AppendTag"), semantic=SaveSemantic.APPEND  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("AppendTag"), semantic=SaveSemantic.APPEND
             ),
-            AtlanTag(
-                type_name=AtlanTagName("RemoveTag"), semantic=SaveSemantic.REMOVE  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("RemoveTag"), semantic=SaveSemantic.REMOVE
             ),
-            AtlanTag(
-                type_name=AtlanTagName("ReplaceTag"), semantic=SaveSemantic.REPLACE  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("ReplaceTag"), semantic=SaveSemantic.REPLACE
             ),
         ]
 
@@ -214,7 +214,9 @@ class TestSaveTagSemanticProcessing:
 
         asset = Table()
         asset.classifications = [
-            AtlanTag(type_name=AtlanTagName("Tag1"), semantic=None),  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=None
+            ),
         ]
 
         processed_asset = Save._process_tags_by_semantic(asset)
@@ -231,8 +233,8 @@ class TestSaveTagSemanticProcessing:
 
         asset = Table()
         asset.add_or_update_classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND
             ),
         ]
 
@@ -281,11 +283,11 @@ class TestSaveTagSemanticProcessing:
             name="test_table", connection_qualified_name="test/connection"
         )
         asset.classifications = [
-            AtlanTag(
-                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND
             ),
-            AtlanTag(
-                type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.REMOVE  # type: ignore[call-arg]
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.REMOVE
             ),
         ]
 
