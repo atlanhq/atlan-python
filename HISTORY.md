@@ -1,3 +1,15 @@
+## 8.4.6 (January 13, 2025)
+
+### New Features
+
+- Added support for OAuth client management (`create`, `get`, `get_by_id`, `update`, `purge`).
+- Added optional `field_type` parameter to `SearchableField.has_any_value()`, allowing users to handle cases when text exceeds **5K characters** (the keyword field on an attribute can be empty while the text field on the same attribute is populated).
+
+### QOL Improvements
+
+- Regenerated models with latest typedef definitions.
+- Published `pyatlan` with Chainguard golden image for each new release.
+
 ## 8.4.5 (December 15, 2025)
 
 ### QOL Improvements
