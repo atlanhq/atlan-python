@@ -1331,6 +1331,12 @@ class Asset(Referenceable):
     """
     AWS SMUS Asset MetadataForm details
     """
+    ASSET_UNKNOWN_ATTRIBUTES_HASH_ID: ClassVar[KeywordField] = KeywordField(
+        "assetUnknownAttributesHashId", "assetUnknownAttributesHashId"
+    )
+    """
+    Hash of all unknown or unmapped attributes for this asset, used in Asset Resolution Service (lookup).
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1604,6 +1610,7 @@ class Asset(Referenceable):
         "asset_smus_metadata_form_names",
         "asset_smus_metadata_form_key_value_details",
         "asset_smus_metadata_form_details",
+        "asset_unknown_attributes_hash_id",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -4117,6 +4124,24 @@ class Asset(Referenceable):
         )
 
     @property
+    def asset_unknown_attributes_hash_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_unknown_attributes_hash_id
+        )
+
+    @asset_unknown_attributes_hash_id.setter
+    def asset_unknown_attributes_hash_id(
+        self, asset_unknown_attributes_hash_id: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_unknown_attributes_hash_id = (
+            asset_unknown_attributes_hash_id
+        )
+
+    @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
         return (
             None
@@ -4715,6 +4740,9 @@ class Asset(Referenceable):
         asset_smus_metadata_form_details: Optional[
             List[AssetSmusMetadataFormDetails]
         ] = Field(default=None, description="")
+        asset_unknown_attributes_hash_id: Optional[str] = Field(
+            default=None, description=""
+        )
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

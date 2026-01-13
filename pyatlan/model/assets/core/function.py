@@ -11,6 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    KeywordTextField,
     RelationField,
     TextField,
 )
@@ -86,7 +87,43 @@ class Function(SQL):
     """
     Whether the function must re-compute if there are no underlying changes in the values (false) or not (true).
     """
+    FUNCTION_RUNTIME_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "functionRuntimeVersion",
+        "functionRuntimeVersion.keyword",
+        "functionRuntimeVersion",
+    )
+    """
+    Version of the language runtime used by the function.
+    """
+    FUNCTION_EXTERNAL_ACCESS_INTEGRATIONS: ClassVar[KeywordField] = KeywordField(
+        "functionExternalAccessIntegrations", "functionExternalAccessIntegrations"
+    )
+    """
+    Names of external access integrations used by the function.
+    """
+    FUNCTION_SECRETS: ClassVar[KeywordField] = KeywordField(
+        "functionSecrets", "functionSecrets"
+    )
+    """
+    Secret variables used by the function.
+    """
+    FUNCTION_PACKAGES: ClassVar[KeywordField] = KeywordField(
+        "functionPackages", "functionPackages"
+    )
+    """
+    Packages requested by the function.
+    """
+    FUNCTION_INSTALLED_PACKAGES: ClassVar[KeywordField] = KeywordField(
+        "functionInstalledPackages", "functionInstalledPackages"
+    )
+    """
+    Packages actually installed for the function.
+    """
 
+    SQL_PROCESSES: ClassVar[RelationField] = RelationField("sqlProcesses")
+    """
+    TBC
+    """
     FUNCTION_SCHEMA: ClassVar[RelationField] = RelationField("functionSchema")
     """
     TBC
@@ -102,6 +139,12 @@ class Function(SQL):
         "function_is_d_m_f",
         "function_is_secure",
         "function_is_memoizable",
+        "function_runtime_version",
+        "function_external_access_integrations",
+        "function_secrets",
+        "function_packages",
+        "function_installed_packages",
+        "sql_processes",
         "function_schema",
     ]
 
@@ -198,6 +241,82 @@ class Function(SQL):
         self.attributes.function_is_memoizable = function_is_memoizable
 
     @property
+    def function_runtime_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.function_runtime_version
+        )
+
+    @function_runtime_version.setter
+    def function_runtime_version(self, function_runtime_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_runtime_version = function_runtime_version
+
+    @property
+    def function_external_access_integrations(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.function_external_access_integrations
+        )
+
+    @function_external_access_integrations.setter
+    def function_external_access_integrations(
+        self, function_external_access_integrations: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_external_access_integrations = (
+            function_external_access_integrations
+        )
+
+    @property
+    def function_secrets(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_secrets
+
+    @function_secrets.setter
+    def function_secrets(self, function_secrets: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_secrets = function_secrets
+
+    @property
+    def function_packages(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_packages
+
+    @function_packages.setter
+    def function_packages(self, function_packages: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_packages = function_packages
+
+    @property
+    def function_installed_packages(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.function_installed_packages
+        )
+
+    @function_installed_packages.setter
+    def function_installed_packages(self, function_installed_packages: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_installed_packages = function_installed_packages
+
+    @property
+    def sql_processes(self) -> Optional[List[Process]]:
+        return None if self.attributes is None else self.attributes.sql_processes
+
+    @sql_processes.setter
+    def sql_processes(self, sql_processes: Optional[List[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_processes = sql_processes
+
+    @property
     def function_schema(self) -> Optional[Schema]:
         return None if self.attributes is None else self.attributes.function_schema
 
@@ -217,6 +336,16 @@ class Function(SQL):
         function_is_d_m_f: Optional[bool] = Field(default=None, description="")
         function_is_secure: Optional[bool] = Field(default=None, description="")
         function_is_memoizable: Optional[bool] = Field(default=None, description="")
+        function_runtime_version: Optional[str] = Field(default=None, description="")
+        function_external_access_integrations: Optional[str] = Field(
+            default=None, description=""
+        )
+        function_secrets: Optional[str] = Field(default=None, description="")
+        function_packages: Optional[str] = Field(default=None, description="")
+        function_installed_packages: Optional[str] = Field(default=None, description="")
+        sql_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
         function_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
@@ -231,4 +360,5 @@ class Function(SQL):
     )
 
 
+from .process import Process  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401

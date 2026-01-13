@@ -331,6 +331,7 @@ class AssetInfo:
                 "Procedure",
                 "BigqueryRoutine",
                 "FabricActivity",
+                "Function",
             ):
                 continue
             if not self.is_core_asset and required_asset.is_core_asset:

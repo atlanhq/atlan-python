@@ -18,7 +18,12 @@ from pyatlan.utils import init_guid, validate_required_fields
 from .asset import Asset
 
 if TYPE_CHECKING:
-    from pyatlan.model.assets import BigqueryRoutine, FabricActivity, Procedure
+    from pyatlan.model.assets import (
+        BigqueryRoutine,
+        FabricActivity,
+        Function,
+        Procedure,
+    )
 
 
 class Process(Asset, type_name="Process"):
@@ -146,6 +151,10 @@ class Process(Asset, type_name="Process"):
     """
     TBC
     """
+    SQL_FUNCTIONS: ClassVar[RelationField] = RelationField("sqlFunctions")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -182,6 +191,7 @@ class Process(Asset, type_name="Process"):
         "adf_activity",
         "bigquery_routines",
         "spark_jobs",
+        "sql_functions",
         "matillion_component",
         "airflow_tasks",
         "fivetran_connector",
@@ -342,6 +352,16 @@ class Process(Asset, type_name="Process"):
         self.attributes.spark_jobs = spark_jobs
 
     @property
+    def sql_functions(self) -> Optional[List[Function]]:
+        return None if self.attributes is None else self.attributes.sql_functions
+
+    @sql_functions.setter
+    def sql_functions(self, sql_functions: Optional[List[Function]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_functions = sql_functions
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -418,6 +438,9 @@ class Process(Asset, type_name="Process"):
             default=None, description=""
         )  # relationship
         spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_functions: Optional[List[Function]] = Field(
             default=None, description=""
         )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(

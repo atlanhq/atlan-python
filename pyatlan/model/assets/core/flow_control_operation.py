@@ -37,6 +37,16 @@ class FlowControlOperation(Flow):
     """
     TBC
     """
+    FLOW_CONTROLLED_BY: ClassVar[RelationField] = RelationField("flowControlledBy")
+    """
+    TBC
+    """
+    FLOW_CONTROLLED_OPERATIONS: ClassVar[RelationField] = RelationField(
+        "flowControlledOperations"
+    )
+    """
+    TBC
+    """
     FLOW_DATA_RESULTS: ClassVar[RelationField] = RelationField("flowDataResults")
     """
     TBC
@@ -45,6 +55,8 @@ class FlowControlOperation(Flow):
     _convenience_properties: ClassVar[List[str]] = [
         "flow_successors",
         "flow_predecessors",
+        "flow_controlled_by",
+        "flow_controlled_operations",
         "flow_data_results",
     ]
 
@@ -71,6 +83,32 @@ class FlowControlOperation(Flow):
         self.attributes.flow_predecessors = flow_predecessors
 
     @property
+    def flow_controlled_by(self) -> Optional[FlowControlOperation]:
+        return None if self.attributes is None else self.attributes.flow_controlled_by
+
+    @flow_controlled_by.setter
+    def flow_controlled_by(self, flow_controlled_by: Optional[FlowControlOperation]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_controlled_by = flow_controlled_by
+
+    @property
+    def flow_controlled_operations(self) -> Optional[List[FlowControlOperation]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.flow_controlled_operations
+        )
+
+    @flow_controlled_operations.setter
+    def flow_controlled_operations(
+        self, flow_controlled_operations: Optional[List[FlowControlOperation]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_controlled_operations = flow_controlled_operations
+
+    @property
     def flow_data_results(self) -> Optional[List[Process]]:
         return None if self.attributes is None else self.attributes.flow_data_results
 
@@ -85,6 +123,12 @@ class FlowControlOperation(Flow):
             default=None, description=""
         )  # relationship
         flow_predecessors: Optional[List[FlowControlOperation]] = Field(
+            default=None, description=""
+        )  # relationship
+        flow_controlled_by: Optional[FlowControlOperation] = Field(
+            default=None, description=""
+        )  # relationship
+        flow_controlled_operations: Optional[List[FlowControlOperation]] = Field(
             default=None, description=""
         )  # relationship
         flow_data_results: Optional[List[Process]] = Field(

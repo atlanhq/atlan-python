@@ -17,7 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.model.structs import DbtJobRun
+from pyatlan.model.structs import DbtInputContext, DbtJobRun
 
 from .core.dbt import Dbt
 
@@ -43,6 +43,12 @@ class DbtProcess(Dbt):
     )
     """
     Status of the dbt process job.
+    """
+    DBT_UPSTREAM_CONTEXTS: ClassVar[KeywordField] = KeywordField(
+        "dbtUpstreamContexts", "dbtUpstreamContexts"
+    )
+    """
+    Context for inputs to this Process.
     """
     DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
         "dbtAlias", "dbtAlias.keyword", "dbtAlias"
@@ -213,6 +219,10 @@ class DbtProcess(Dbt):
     """
     TBC
     """
+    SQL_FUNCTIONS: ClassVar[RelationField] = RelationField("sqlFunctions")
+    """
+    TBC
+    """
     MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
     """
     TBC
@@ -236,6 +246,7 @@ class DbtProcess(Dbt):
 
     _convenience_properties: ClassVar[List[str]] = [
         "dbt_process_job_status",
+        "dbt_upstream_contexts",
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -269,6 +280,7 @@ class DbtProcess(Dbt):
         "adf_activity",
         "bigquery_routines",
         "spark_jobs",
+        "sql_functions",
         "matillion_component",
         "airflow_tasks",
         "fivetran_connector",
@@ -287,6 +299,20 @@ class DbtProcess(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_process_job_status = dbt_process_job_status
+
+    @property
+    def dbt_upstream_contexts(self) -> Optional[List[DbtInputContext]]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_upstream_contexts
+        )
+
+    @dbt_upstream_contexts.setter
+    def dbt_upstream_contexts(
+        self, dbt_upstream_contexts: Optional[List[DbtInputContext]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_upstream_contexts = dbt_upstream_contexts
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -653,6 +679,16 @@ class DbtProcess(Dbt):
         self.attributes.spark_jobs = spark_jobs
 
     @property
+    def sql_functions(self) -> Optional[List[Function]]:
+        return None if self.attributes is None else self.attributes.sql_functions
+
+    @sql_functions.setter
+    def sql_functions(self, sql_functions: Optional[List[Function]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_functions = sql_functions
+
+    @property
     def matillion_component(self) -> Optional[MatillionComponent]:
         return None if self.attributes is None else self.attributes.matillion_component
 
@@ -704,6 +740,9 @@ class DbtProcess(Dbt):
 
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(default=None, description="")
+        dbt_upstream_contexts: Optional[List[DbtInputContext]] = Field(
+            default=None, description=""
+        )
         dbt_alias: Optional[str] = Field(default=None, description="")
         dbt_meta: Optional[str] = Field(default=None, description="")
         dbt_unique_id: Optional[str] = Field(default=None, description="")
@@ -755,6 +794,9 @@ class DbtProcess(Dbt):
         spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
+        sql_functions: Optional[List[Function]] = Field(
+            default=None, description=""
+        )  # relationship
         matillion_component: Optional[MatillionComponent] = Field(
             default=None, description=""
         )  # relationship
@@ -789,6 +831,7 @@ from .core.column_process import ColumnProcess  # noqa: E402, F401
 from .core.fabric_activity import FabricActivity  # noqa: E402, F401
 from .core.fivetran_connector import FivetranConnector  # noqa: E402, F401
 from .core.flow_control_operation import FlowControlOperation  # noqa: E402, F401
+from .core.function import Function  # noqa: E402, F401
 from .core.matillion_component import MatillionComponent  # noqa: E402, F401
 from .core.power_b_i_dataflow import PowerBIDataflow  # noqa: E402, F401
 from .core.procedure import Procedure  # noqa: E402, F401
