@@ -771,7 +771,10 @@ class Save:
                 has_replace_semantic = True
             
             # Check if any tags have APPEND/REMOVE semantic
-            if processed_asset.add_or_update_classifications or processed_asset.remove_classifications:
+            if (
+                processed_asset.add_or_update_classifications
+                or processed_asset.remove_classifications
+            ):
                 has_append_or_remove_semantic = True
         
         # Build query parameters based on semantic usage
@@ -838,7 +841,10 @@ class Save:
                 has_replace_semantic = True
             
             # Check if any tags have APPEND/REMOVE semantic
-            if processed_asset.add_or_update_classifications or processed_asset.remove_classifications:
+            if (
+                processed_asset.add_or_update_classifications
+                or processed_asset.remove_classifications
+            ):
                 has_append_or_remove_semantic = True
         
         # Build query parameters based on semantic usage

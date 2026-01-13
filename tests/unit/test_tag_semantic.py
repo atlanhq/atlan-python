@@ -306,13 +306,19 @@ class TestSaveTagSemanticProcessing:
         
         # Check query params - should use appendTags for APPEND/REMOVE semantics
         assert query_params.get("appendTags") is True
-        assert "replaceClassifications" not in query_params or query_params.get("replaceClassifications") is False
+        assert (
+            "replaceClassifications" not in query_params
+            or query_params.get("replaceClassifications") is False
+        )
 
     @patch("pyatlan.client.common.asset.Save.validate_and_flush_entities")
     def test_save_prepare_request_replace_semantic_query_params(
         self, mock_validate, client, mock_tag_cache
     ):
-        """Test that Save.prepare_request sets correct query params for REPLACE semantic."""
+        """
+        Test that Save.prepare_request sets correct query params
+        for REPLACE semantic.
+        """
         from pyatlan.client.common.asset import Save
 
         asset = Table()
@@ -333,7 +339,8 @@ class TestSaveTagSemanticProcessing:
         assert processed_asset.atlan_tags is not None
         assert len(processed_asset.atlan_tags) == 1
         
-        # Check query params - should use replaceClassifications for REPLACE semantic
+        # Check query params - should use replaceClassifications
+        # for REPLACE semantic
         assert query_params.get("replaceClassifications") is True
         assert query_params.get("appendTags") is False
 
@@ -341,7 +348,10 @@ class TestSaveTagSemanticProcessing:
     def test_save_prepare_request_replace_atlan_tags_param(
         self, mock_validate, client, mock_tag_cache
     ):
-        """Test that Save.prepare_request respects replace_atlan_tags parameter."""
+        """
+        Test that Save.prepare_request respects
+        replace_atlan_tags parameter.
+        """
         from pyatlan.client.common.asset import Save
 
         asset = Table()
@@ -353,7 +363,8 @@ class TestSaveTagSemanticProcessing:
             entity=asset, client=client, replace_atlan_tags=True
         )
 
-        # Check query params - should use replaceClassifications when replace_atlan_tags=True
+        # Check query params - should use replaceClassifications
+        # when replace_atlan_tags=True
         assert query_params.get("replaceClassifications") is True
         assert query_params.get("appendTags") is False
 
@@ -361,7 +372,10 @@ class TestSaveTagSemanticProcessing:
     def test_save_prepare_request_append_atlan_tags_param(
         self, mock_validate, client, mock_tag_cache
     ):
-        """Test that Save.prepare_request respects append_atlan_tags parameter."""
+        """
+        Test that Save.prepare_request respects
+        append_atlan_tags parameter.
+        """
         from pyatlan.client.common.asset import Save
 
         asset = Table()
@@ -375,5 +389,8 @@ class TestSaveTagSemanticProcessing:
 
         # Check query params - should use appendTags when append_atlan_tags=True
         assert query_params.get("appendTags") is True
-        assert "replaceClassifications" not in query_params or query_params.get("replaceClassifications") is False
+        assert (
+            "replaceClassifications" not in query_params
+            or query_params.get("replaceClassifications") is False
+        )
 
