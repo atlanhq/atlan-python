@@ -761,28 +761,28 @@ class Save:
         processed_entities = []
         has_replace_semantic = False
         has_append_or_remove_semantic = False
-        
+
         for asset in entities:
             processed_asset = Save._process_tags_by_semantic(asset)
             processed_entities.append(processed_asset)
-            
+
             # Check if any tags have REPLACE semantic (will be in atlan_tags)
             if processed_asset.atlan_tags:
                 has_replace_semantic = True
-            
+
             # Check if any tags have APPEND/REMOVE semantic
             if (
                 processed_asset.add_or_update_classifications
                 or processed_asset.remove_classifications
             ):
                 has_append_or_remove_semantic = True
-        
+
         # Build query parameters based on semantic usage
         query_params = {
             "replaceBusinessAttributes": replace_custom_metadata,
             "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
-        
+
         # When REPLACE semantic is used, use replaceClassifications
         if has_replace_semantic or replace_atlan_tags:
             query_params["replaceClassifications"] = True
@@ -831,28 +831,28 @@ class Save:
         processed_entities = []
         has_replace_semantic = False
         has_append_or_remove_semantic = False
-        
+
         for asset in entities:
             processed_asset = Save._process_tags_by_semantic(asset)
             processed_entities.append(processed_asset)
-            
+
             # Check if any tags have REPLACE semantic (will be in atlan_tags)
             if processed_asset.atlan_tags:
                 has_replace_semantic = True
-            
+
             # Check if any tags have APPEND/REMOVE semantic
             if (
                 processed_asset.add_or_update_classifications
                 or processed_asset.remove_classifications
             ):
                 has_append_or_remove_semantic = True
-        
+
         # Build query parameters based on semantic usage
         query_params = {
             "replaceBusinessAttributes": replace_custom_metadata,
             "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
-        
+
         # When REPLACE semantic is used, use replaceClassifications
         if has_replace_semantic or replace_atlan_tags:
             query_params["replaceClassifications"] = True

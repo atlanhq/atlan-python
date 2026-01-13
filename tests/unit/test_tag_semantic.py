@@ -292,9 +292,7 @@ class TestSaveTagSemanticProcessing:
             ),
         ]
 
-        query_params, bulk_request = Save.prepare_request(
-            entity=asset, client=client
-        )
+        query_params, bulk_request = Save.prepare_request(entity=asset, client=client)
 
         # Check that tags were processed
         processed_asset = bulk_request.entities[0]
@@ -303,7 +301,7 @@ class TestSaveTagSemanticProcessing:
         assert processed_asset.remove_classifications is not None
         assert len(processed_asset.remove_classifications) == 1
         assert processed_asset.atlan_tags is None
-        
+
         # Check query params - should use appendTags for APPEND/REMOVE semantics
         assert query_params.get("appendTags") is True
         assert (
@@ -330,15 +328,13 @@ class TestSaveTagSemanticProcessing:
             ),
         ]
 
-        query_params, bulk_request = Save.prepare_request(
-            entity=asset, client=client
-        )
+        query_params, bulk_request = Save.prepare_request(entity=asset, client=client)
 
         # Check that tags were processed
         processed_asset = bulk_request.entities[0]
         assert processed_asset.atlan_tags is not None
         assert len(processed_asset.atlan_tags) == 1
-        
+
         # Check query params - should use replaceClassifications
         # for REPLACE semantic
         assert query_params.get("replaceClassifications") is True
@@ -393,4 +389,3 @@ class TestSaveTagSemanticProcessing:
             "replaceClassifications" not in query_params
             or query_params.get("replaceClassifications") is False
         )
-
