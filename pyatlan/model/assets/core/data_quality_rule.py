@@ -190,7 +190,7 @@ class DataQualityRule(DataQuality):
 
         asset_for_validation, target_table_asset = (
             DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
-                client, asset, rule_conditions, row_scope_filtering_enabled
+                client, asset, rule_conditions, row_scope_filtering_enabled or False
             )
         )
 
@@ -1135,7 +1135,7 @@ class DataQualityRule(DataQuality):
                         target_table_qualified_name = condition_value.get(
                             "target_table"
                         )
-                except (json.JSONDecodeError, (KeyError, TypeError)):
+                except (json.JSONDecodeError, KeyError, TypeError):
                     pass
 
             qualified_names_to_search = []

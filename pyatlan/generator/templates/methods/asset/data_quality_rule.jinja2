@@ -143,7 +143,7 @@
 
         asset_for_validation, target_table_asset = (
             DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
-                client, asset, rule_conditions, row_scope_filtering_enabled
+                client, asset, rule_conditions, row_scope_filtering_enabled or False
             )
         )
 

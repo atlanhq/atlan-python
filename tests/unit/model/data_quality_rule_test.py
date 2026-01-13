@@ -3,12 +3,14 @@ from unittest.mock import Mock
 
 import pytest
 
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.errors import ErrorCode, InvalidRequestError
 from pyatlan.model.assets import Column, DataQualityRule, Table
 from pyatlan.model.dq_rule_conditions import DQRuleConditionsBuilder
 from pyatlan.model.enums import (
     DataQualityDimension,
     DataQualityRuleAlertPriority,
+    DataQualityRuleCustomSQLReturnType,
     DataQualityRuleStatus,
     DataQualityRuleTemplateConfigRuleConditions,
     DataQualityRuleThresholdCompareOperator,
@@ -287,7 +289,6 @@ def test_column_level_rule_creator_with_missing_parameters_raise_value_error(
         )
 
 
-## Change below
 def test_table_level_rule_creator(mock_client):
     asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
 
@@ -303,6 +304,23 @@ def test_table_level_rule_creator(mock_client):
     assert dq_rule.dq_rule_alert_priority == DataQualityRuleAlertPriority.NORMAL
     assert dq_rule.dq_rule_status == DataQualityRuleStatus.ACTIVE
     assert dq_rule.qualified_name.startswith(f"{DQ_TABLE_QUALIFIED_NAME}/rule/")
+
+
+def test_table_level_rule_creator_with_threshold_unit(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
+
+    dq_rule = DataQualityRule.table_level_rule_creator(
+        client=mock_client,
+        rule_type=DQ_RULE_TYPE_TABLE,
+        asset=asset,
+        threshold_compare_operator=DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
+        threshold_value=DQ_RULE_THRESHOLD_VALUE,
+        alert_priority=DataQualityRuleAlertPriority.NORMAL,
+        threshold_unit=DataQualityRuleThresholdUnit.ABSOLUTE,
+    )
+
+    assert dq_rule.dq_rule_alert_priority == DataQualityRuleAlertPriority.NORMAL
+    assert dq_rule.dq_rule_status == DataQualityRuleStatus.ACTIVE
 
 
 def test_custom_sql_creator(mock_client):
@@ -345,6 +363,27 @@ def test_custom_sql_creator_with_optional_parameters(mock_client):
     assert dq_rule.dq_rule_alert_priority == DataQualityRuleAlertPriority.NORMAL
     assert dq_rule.dq_rule_dimension == DataQualityDimension.COMPLETENESS
     assert dq_rule.user_description == DQ_RULE_DESCRIPTION
+
+
+def test_custom_sql_creator_with_custom_sql_return_type(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
+
+    dq_rule = DataQualityRule.custom_sql_creator(
+        client=mock_client,
+        rule_name=DQ_RULE_NAME,
+        asset=asset,
+        custom_sql=DQ_RULE_CUSTOM_SQL,
+        threshold_compare_operator=DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
+        threshold_value=DQ_RULE_THRESHOLD_VALUE,
+        alert_priority=DataQualityRuleAlertPriority.NORMAL,
+        dimension=DataQualityDimension.COMPLETENESS,
+        custom_sql_return_type=DataQualityRuleCustomSQLReturnType.ROW_COUNT,
+    )
+
+    assert (
+        dq_rule.dq_rule_custom_s_q_l_return_type
+        == DataQualityRuleCustomSQLReturnType.ROW_COUNT
+    )
 
 
 def test_column_level_rule_creator(mock_client):
@@ -390,6 +429,10 @@ def test_column_level_rule_creator_with_row_scope_filtering(mock_client):
     asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
     asset.asset_d_q_row_scope_filter_column_qualified_name = DQ_COLUMN_QUALIFIED_NAME
     column = Column.ref_by_qualified_name(qualified_name=DQ_COLUMN_QUALIFIED_NAME)
+
+    search_results = Mock(spec=IndexSearchResults)
+    search_results.current_page.return_value = [asset]
+    mock_client.asset.search.return_value = search_results
 
     dq_rule = DataQualityRule.column_level_rule_creator(
         client=mock_client,
@@ -593,3 +636,111 @@ def test_validate_template_features_row_scope_filter_column_missing(mock_client)
             threshold_compare_operator=DataQualityRuleThresholdCompareOperator.EQUAL,
             asset=table_asset,
         )
+
+
+def test_fetch_assets_for_row_scope_validation_disabled(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
+
+    asset_for_validation, target_table_asset = (
+        DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+            client=mock_client,
+            base_asset=asset,
+            rule_conditions=None,
+            row_scope_filtering_enabled=False,
+        )
+    )
+
+    assert asset_for_validation == asset
+    assert target_table_asset is None
+
+
+def test_fetch_assets_for_row_scope_validation_with_target_table(mock_client):
+    asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
+    asset.asset_d_q_row_scope_filter_column_qualified_name = DQ_COLUMN_QUALIFIED_NAME
+    target_table = Table.ref_by_qualified_name(
+        qualified_name="target/table/qualified_name"
+    )
+    target_table.asset_d_q_row_scope_filter_column_qualified_name = (
+        DQ_COLUMN_QUALIFIED_NAME
+    )
+
+    search_results = Mock(spec=IndexSearchResults)
+    search_results.current_page.return_value = [asset, target_table]
+    mock_client.asset.search.return_value = search_results
+
+    rule_conditions = (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.ROW_COUNT_RECON,
+            target_table="target/table/qualified_name",
+        )
+        .build()
+    )
+
+    asset_for_validation, target_table_asset = (
+        DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+            client=mock_client,
+            base_asset=asset,
+            rule_conditions=rule_conditions,
+            row_scope_filtering_enabled=True,
+        )
+    )
+
+    assert asset_for_validation == asset
+    assert target_table_asset == target_table
+
+
+def test_dq_condition_in_list_reference():
+    rule_conditions = (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.IN_LIST_REFERENCE,
+            reference_table="reference/table/qualified_name",
+            reference_column="reference/column/qualified_name",
+        )
+        .build()
+    )
+
+    condition = json.loads(rule_conditions)["conditions"][0]
+    assert condition["type"] == "IN_LIST_REFERENCE"
+    assert condition["value"]["reference_table"] == "reference/table/qualified_name"
+    assert condition["value"]["reference_column"] == "reference/column/qualified_name"
+
+
+def test_dq_condition_recon_with_target_table_and_column():
+    rule_conditions = (
+        DQRuleConditionsBuilder()
+        .add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.AVERAGE_RECON,
+            target_table="target/table/qualified_name",
+            target_column="target/column/qualified_name",
+        )
+        .build()
+    )
+
+    condition = json.loads(rule_conditions)["conditions"][0]
+    assert condition["type"] == "AVERAGE_RECON"
+    assert condition["value"]["target_table"] == "target/table/qualified_name"
+    assert condition["value"]["target_column"] == "target/column/qualified_name"
+
+
+def test_dq_condition_missing_required_fields():
+    with pytest.raises(ValueError, match="reference_table is required"):
+        DQRuleConditionsBuilder().add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.IN_LIST_REFERENCE,
+            reference_table=None,
+            reference_column="reference/column/qualified_name",
+        ).build()
+
+    with pytest.raises(ValueError, match="target_table is required"):
+        DQRuleConditionsBuilder().add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.ROW_COUNT_RECON,
+            target_table=None,
+        ).build()
+
+    with pytest.raises(ValueError, match="target_column is required"):
+        DQRuleConditionsBuilder().add_condition(
+            type=DataQualityRuleTemplateConfigRuleConditions.AVERAGE_RECON,
+            target_table="target/table/qualified_name",
+            target_column=None,
+        ).build()
