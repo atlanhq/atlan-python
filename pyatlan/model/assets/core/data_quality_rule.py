@@ -351,7 +351,7 @@ class DataQualityRule(DataQuality):
         validated_threshold_operator = (
             DataQualityRule.Attributes._validate_template_features(
                 retrieved_rule_type,
-                rule_conditions,
+                final_rule_conditions,
                 final_row_scope_filtering_enabled,
                 template_config,
                 threshold_compare_operator or retrieved_threshold_compare_operator,
@@ -376,7 +376,7 @@ class DataQualityRule(DataQuality):
                     or retrieved_threshold_value,
                     dq_rule_threshold_unit=threshold_unit or retrieved_threshold_unit,
                 ),
-                dq_rule_config_rule_conditions=rule_conditions,
+                dq_rule_config_rule_conditions=final_rule_conditions,
             ),
             dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
             dq_rule_alert_priority=alert_priority or retrieved_alert_priority,
