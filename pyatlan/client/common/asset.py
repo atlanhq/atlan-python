@@ -681,15 +681,15 @@ class Save:
     ) -> tuple[List[Asset], List[Asset], List[Asset]]:
         """
         Split assets into three groups based on tag semantics:
-        - APPEND/REMOVE semantics (use addOrUpdateClassifications/
-          removeClassifications)
-        - REPLACE or None semantics (use normal classifications with
-          replaceTags)
+        - APPEND/REMOVE semantics (use addOrUpdateClassifications
+        and removeClassifications)
+        - REPLACE or None semantics (use normal classifications
+        with replaceTags)
         - Assets with no tags
 
         :param entities: list of assets to split
         :returns: tuple of (append_remove_assets, replace_assets,
-                  no_tag_assets)
+        no_tag_assets)
         """
         append_remove_assets = []
         replace_assets = []
