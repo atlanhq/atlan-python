@@ -4,6 +4,7 @@ import pytest
 
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.fields.atlan_fields import (
+    AtlanSearchableFieldType,
     InternalKeywordTextField,
     KeywordField,
     KeywordTextField,
@@ -89,6 +90,31 @@ class TestKeywordTextField:
 
     def test_keyword_field_name(self, sut: KeywordTextField):
         assert sut.keyword_field_name == KEYWORD_FIELD_NAME
+
+    def test_has_any_value_default_uses_keyword_field(self, sut: KeywordTextField):
+        """Test that has_any_value() with no arguments uses keyword field for backwards compatibility."""
+        exists = sut.has_any_value()
+
+        assert isinstance(exists, Exists)
+        assert exists.field == KEYWORD_FIELD_NAME
+
+    def test_has_any_value_with_keyword_field_type(self, sut: KeywordTextField):
+        """Test that has_any_value() with KEYWORD field_type uses keyword field."""
+        exists = sut.has_any_value(field_type=AtlanSearchableFieldType.KEYWORD)
+
+        assert isinstance(exists, Exists)
+        assert exists.field == KEYWORD_FIELD_NAME
+
+    def test_has_any_value_with_text_field_type(self, sut: KeywordTextField):
+        """Test that has_any_value() with TEXT field_type uses text field.
+
+        This is useful when field values may exceed 5K characters, as Elasticsearch
+        does not index .keyword for text exceeding 5K characters.
+        """
+        exists = sut.has_any_value(field_type=AtlanSearchableFieldType.TEXT)
+
+        assert isinstance(exists, Exists)
+        assert exists.field == TEXT_FIELD_NAME
 
 
 class TestInternalKeywordTextField:
