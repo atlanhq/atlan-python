@@ -29,6 +29,25 @@ from pyatlan.model.typedef import AttributeDef
 from pyatlan.utils import ComparisonCategory, is_comparable_type
 
 
+class AtlanSearchableFieldType(str, Enum):
+    """
+    Enum to specify which field index to use when checking for existence of a value
+    in a KeywordTextField. This is particularly useful for the has_any_value() method.
+    """
+
+    KEYWORD = "KEYWORD"
+    """
+    Use the keyword field index (e.g., userDescription.keyword).
+    Note: Elasticsearch does not index .keyword for text exceeding 5K characters.
+    """
+
+    TEXT = "TEXT"
+    """
+    Use the text field index (e.g., userDescription.text or userDescription).
+    This should be used when field values may exceed 5K characters.
+    """
+
+
 class AtlanField(ABC):
     """
     Base enumeration of all attributes that exist in Atlan, so you do not have to remember their
@@ -557,6 +576,26 @@ class KeywordTextField(KeywordField, TextField):
     @property
     def text_field_name(self) -> str:
         return self._text_field_name
+
+    def has_any_value(
+        self, field_type: AtlanSearchableFieldType = AtlanSearchableFieldType.KEYWORD
+    ) -> Query:
+        """
+        Returns a query that will only match assets that have some non-null, non-empty value
+        (no matter what actual value) for the field.
+
+        Note: When text exceeds a particular length (5K characters), the keyword field on an
+        attribute can be empty while the text field on the same attribute is populated.
+        Use field_type=AtlanSearchableFieldType.TEXT to check the text field instead,
+        which is useful when field values may exceed 5K characters.
+
+        :param field_type: which field index to check for existence (KEYWORD or TEXT).
+                          Defaults to KEYWORD for backwards compatibility.
+        :returns: a query that will only match assets that have some non-null, non-empty value for the field
+        """
+        if field_type == AtlanSearchableFieldType.TEXT:
+            return Exists(field=self._text_field_name)
+        return Exists(field=self.elastic_field_name)
 
 
 class InternalKeywordTextField(KeywordTextField):
