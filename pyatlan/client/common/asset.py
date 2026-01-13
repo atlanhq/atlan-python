@@ -743,13 +743,6 @@ class Save:
         :param client: the Atlan client instance for flushing custom metadata
         :returns: tuple of (query_params, bulk_request)
         """
-        query_params = {
-            "replaceTags": replace_atlan_tags,
-            "appendTags": append_atlan_tags,
-            "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttributes": overwrite_custom_metadata,
-        }
-
         entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
@@ -766,9 +759,34 @@ class Save:
 
         # Process tags by semantic for each asset
         processed_entities = []
+        has_replace_semantic = False
+        has_append_or_remove_semantic = False
+        
         for asset in entities:
             processed_asset = Save._process_tags_by_semantic(asset)
             processed_entities.append(processed_asset)
+            
+            # Check if any tags have REPLACE semantic (will be in atlan_tags)
+            if processed_asset.atlan_tags:
+                has_replace_semantic = True
+            
+            # Check if any tags have APPEND/REMOVE semantic
+            if processed_asset.add_or_update_classifications or processed_asset.remove_classifications:
+                has_append_or_remove_semantic = True
+        
+        # Build query parameters based on semantic usage
+        query_params = {
+            "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
+        }
+        
+        # When REPLACE semantic is used, use replaceClassifications
+        if has_replace_semantic or replace_atlan_tags:
+            query_params["replaceClassifications"] = True
+            query_params["appendTags"] = False
+        # When APPEND/REMOVE semantic is used, use appendTags
+        elif has_append_or_remove_semantic or append_atlan_tags:
+            query_params["appendTags"] = True
 
         return query_params, BulkRequest[Asset](entities=processed_entities)
 
@@ -792,13 +810,6 @@ class Save:
         :param client: Optional[AsyncAtlanClient] = None,
         :returns: tuple of (query_params, bulk_request)
         """
-        query_params = {
-            "replaceTags": replace_atlan_tags,
-            "appendTags": append_atlan_tags,
-            "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttributes": overwrite_custom_metadata,
-        }
-
         entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
@@ -815,9 +826,34 @@ class Save:
 
         # Process tags by semantic for each asset
         processed_entities = []
+        has_replace_semantic = False
+        has_append_or_remove_semantic = False
+        
         for asset in entities:
             processed_asset = Save._process_tags_by_semantic(asset)
             processed_entities.append(processed_asset)
+            
+            # Check if any tags have REPLACE semantic (will be in atlan_tags)
+            if processed_asset.atlan_tags:
+                has_replace_semantic = True
+            
+            # Check if any tags have APPEND/REMOVE semantic
+            if processed_asset.add_or_update_classifications or processed_asset.remove_classifications:
+                has_append_or_remove_semantic = True
+        
+        # Build query parameters based on semantic usage
+        query_params = {
+            "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
+        }
+        
+        # When REPLACE semantic is used, use replaceClassifications
+        if has_replace_semantic or replace_atlan_tags:
+            query_params["replaceClassifications"] = True
+            query_params["appendTags"] = False
+        # When APPEND/REMOVE semantic is used, use appendTags
+        elif has_append_or_remove_semantic or append_atlan_tags:
+            query_params["appendTags"] = True
 
         return query_params, BulkRequest[Asset](entities=processed_entities)
 

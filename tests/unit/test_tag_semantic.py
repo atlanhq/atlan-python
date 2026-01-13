@@ -293,7 +293,7 @@ class TestSaveTagSemanticProcessing:
         ]
 
         query_params, bulk_request = Save.prepare_request(
-            entity=asset, client=client, append_atlan_tags=True
+            entity=asset, client=client
         )
 
         # Check that tags were processed
@@ -303,3 +303,77 @@ class TestSaveTagSemanticProcessing:
         assert processed_asset.remove_classifications is not None
         assert len(processed_asset.remove_classifications) == 1
         assert processed_asset.atlan_tags is None
+        
+        # Check query params - should use appendTags for APPEND/REMOVE semantics
+        assert query_params.get("appendTags") is True
+        assert "replaceClassifications" not in query_params or query_params.get("replaceClassifications") is False
+
+    @patch("pyatlan.client.common.asset.Save.validate_and_flush_entities")
+    def test_save_prepare_request_replace_semantic_query_params(
+        self, mock_validate, client, mock_tag_cache
+    ):
+        """Test that Save.prepare_request sets correct query params for REPLACE semantic."""
+        from pyatlan.client.common.asset import Save
+
+        asset = Table()
+        asset.qualified_name = "default/snowflake/db/schema/table"
+        asset.name = "test_table"
+        asset.atlan_tags = [
+            AtlanTag(  # type: ignore[call-arg]
+                type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REPLACE
+            ),
+        ]
+
+        query_params, bulk_request = Save.prepare_request(
+            entity=asset, client=client
+        )
+
+        # Check that tags were processed
+        processed_asset = bulk_request.entities[0]
+        assert processed_asset.atlan_tags is not None
+        assert len(processed_asset.atlan_tags) == 1
+        
+        # Check query params - should use replaceClassifications for REPLACE semantic
+        assert query_params.get("replaceClassifications") is True
+        assert query_params.get("appendTags") is False
+
+    @patch("pyatlan.client.common.asset.Save.validate_and_flush_entities")
+    def test_save_prepare_request_replace_atlan_tags_param(
+        self, mock_validate, client, mock_tag_cache
+    ):
+        """Test that Save.prepare_request respects replace_atlan_tags parameter."""
+        from pyatlan.client.common.asset import Save
+
+        asset = Table()
+        asset.qualified_name = "default/snowflake/db/schema/table"
+        asset.name = "test_table"
+        # Asset without semantic tags
+
+        query_params, bulk_request = Save.prepare_request(
+            entity=asset, client=client, replace_atlan_tags=True
+        )
+
+        # Check query params - should use replaceClassifications when replace_atlan_tags=True
+        assert query_params.get("replaceClassifications") is True
+        assert query_params.get("appendTags") is False
+
+    @patch("pyatlan.client.common.asset.Save.validate_and_flush_entities")
+    def test_save_prepare_request_append_atlan_tags_param(
+        self, mock_validate, client, mock_tag_cache
+    ):
+        """Test that Save.prepare_request respects append_atlan_tags parameter."""
+        from pyatlan.client.common.asset import Save
+
+        asset = Table()
+        asset.qualified_name = "default/snowflake/db/schema/table"
+        asset.name = "test_table"
+        # Asset without semantic tags
+
+        query_params, bulk_request = Save.prepare_request(
+            entity=asset, client=client, append_atlan_tags=True
+        )
+
+        # Check query params - should use appendTags when append_atlan_tags=True
+        assert query_params.get("appendTags") is True
+        assert "replaceClassifications" not in query_params or query_params.get("replaceClassifications") is False
+
