@@ -713,10 +713,7 @@ class Save:
                     append_tags.append(tag)
 
         # Process remove_classifications
-        if (
-            hasattr(asset, "remove_classifications")
-            and asset.remove_classifications
-        ):
+        if hasattr(asset, "remove_classifications") and asset.remove_classifications:
             remove_tags.extend(asset.remove_classifications)
 
         # Set the processed tags back on the asset
