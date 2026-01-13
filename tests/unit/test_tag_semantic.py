@@ -22,11 +22,12 @@ def client():
 
 
 @pytest.fixture()
-def mock_tag_cache(client, monkeypatch):
+def mock_tag_cache(monkeypatch):
     mock_cache = MagicMock()
     mock_cache.get_id_for_name.return_value = "test-tag-id"
     mock_cache.get_source_tags_attr_id.return_value = "sourceTagsAttrId"
-    monkeypatch.setattr(client, "atlan_tag_cache", mock_cache)
+    # Patch at the class level
+    monkeypatch.setattr(AtlanClient, "atlan_tag_cache", mock_cache)
     return mock_cache
 
 
@@ -118,7 +119,7 @@ class TestSaveTagSemanticProcessing:
 
         # Create an asset with tags having APPEND semantic
         asset = Table()
-        asset.classifications = [
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND
             ),
@@ -132,7 +133,7 @@ class TestSaveTagSemanticProcessing:
         # Tags with APPEND semantic should be in add_or_update_classifications
         assert processed_asset.add_or_update_classifications is not None
         assert len(processed_asset.add_or_update_classifications) == 2
-        assert processed_asset.classifications is None
+        assert processed_asset.atlan_tags is None
         assert processed_asset.remove_classifications is None
 
     def test_process_tags_remove_semantic(self):
@@ -140,7 +141,7 @@ class TestSaveTagSemanticProcessing:
         from pyatlan.client.common.asset import Save
 
         asset = Table()
-        asset.classifications = [
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REMOVE
             ),
@@ -151,7 +152,7 @@ class TestSaveTagSemanticProcessing:
         # Tags with REMOVE semantic should be in remove_classifications
         assert processed_asset.remove_classifications is not None
         assert len(processed_asset.remove_classifications) == 1
-        assert processed_asset.classifications is None
+        assert processed_asset.atlan_tags is None
         assert processed_asset.add_or_update_classifications is None
 
     def test_process_tags_replace_semantic(self):
@@ -159,7 +160,7 @@ class TestSaveTagSemanticProcessing:
         from pyatlan.client.common.asset import Save
 
         asset = Table()
-        asset.classifications = [
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REPLACE
             ),
@@ -167,9 +168,9 @@ class TestSaveTagSemanticProcessing:
 
         processed_asset = Save._process_tags_by_semantic(asset)
 
-        # Tags with REPLACE or None semantic should stay in classifications
-        assert processed_asset.classifications is not None
-        assert len(processed_asset.classifications) == 1
+        # Tags with REPLACE or None semantic should stay in atlan_tags
+        assert processed_asset.atlan_tags is not None
+        assert len(processed_asset.atlan_tags) == 1
         assert processed_asset.add_or_update_classifications is None
         assert processed_asset.remove_classifications is None
 
@@ -178,7 +179,7 @@ class TestSaveTagSemanticProcessing:
         from pyatlan.client.common.asset import Save
 
         asset = Table()
-        asset.classifications = [
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("AppendTag"), semantic=SaveSemantic.APPEND
             ),
@@ -204,16 +205,16 @@ class TestSaveTagSemanticProcessing:
         assert len(processed_asset.remove_classifications) == 1
         assert str(processed_asset.remove_classifications[0].type_name) == "RemoveTag"
 
-        assert processed_asset.classifications is not None
-        assert len(processed_asset.classifications) == 1
-        assert str(processed_asset.classifications[0].type_name) == "ReplaceTag"
+        assert processed_asset.atlan_tags is not None
+        assert len(processed_asset.atlan_tags) == 1
+        assert str(processed_asset.atlan_tags[0].type_name) == "ReplaceTag"
 
     def test_process_tags_none_semantic(self):
         """Test processing tags with None semantic (backward compatibility)."""
         from pyatlan.client.common.asset import Save
 
         asset = Table()
-        asset.classifications = [
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("Tag1"), semantic=None
             ),
@@ -222,8 +223,8 @@ class TestSaveTagSemanticProcessing:
         processed_asset = Save._process_tags_by_semantic(asset)
 
         # Tags with None semantic should be treated as REPLACE
-        assert processed_asset.classifications is not None
-        assert len(processed_asset.classifications) == 1
+        assert processed_asset.atlan_tags is not None
+        assert len(processed_asset.atlan_tags) == 1
         assert processed_asset.add_or_update_classifications is None
         assert processed_asset.remove_classifications is None
 
@@ -267,7 +268,7 @@ class TestSaveTagSemanticProcessing:
         processed_asset = Save._process_tags_by_semantic(asset)
 
         # All tag fields should be None
-        assert processed_asset.classifications is None
+        assert processed_asset.atlan_tags is None
         assert processed_asset.add_or_update_classifications is None
         assert processed_asset.remove_classifications is None
 
@@ -278,11 +279,11 @@ class TestSaveTagSemanticProcessing:
         """Test that Save.prepare_request processes tag semantics."""
         from pyatlan.client.common.asset import Save
 
-        # Create assets with different tag semantics
-        asset = Table.creator(
-            name="test_table", connection_qualified_name="test/connection"
-        )
-        asset.classifications = [
+        # Create a simple asset with required fields
+        asset = Table()
+        asset.qualified_name = "default/snowflake/db/schema/table"
+        asset.name = "test_table"
+        asset.atlan_tags = [
             AtlanTag(  # type: ignore[call-arg]
                 type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND
             ),
@@ -301,4 +302,4 @@ class TestSaveTagSemanticProcessing:
         assert len(processed_asset.add_or_update_classifications) == 1
         assert processed_asset.remove_classifications is not None
         assert len(processed_asset.remove_classifications) == 1
-        assert processed_asset.classifications is None
+        assert processed_asset.atlan_tags is None

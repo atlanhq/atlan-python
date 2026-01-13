@@ -689,12 +689,12 @@ class Save:
         remove_tags = []
         replace_tags = []
 
-        # Process classifications
-        if hasattr(asset, "classifications") and asset.classifications:
-            for tag in asset.classifications:
-                if tag.semantic == SaveSemantic.APPEND:
+        # Process atlan_tags
+        if hasattr(asset, "atlan_tags") and asset.atlan_tags:
+            for tag in asset.atlan_tags:
+                if hasattr(tag, "semantic") and tag.semantic == SaveSemantic.APPEND:
                     append_tags.append(tag)
-                elif tag.semantic == SaveSemantic.REMOVE:
+                elif hasattr(tag, "semantic") and tag.semantic == SaveSemantic.REMOVE:
                     remove_tags.append(tag)
                 else:
                     # REPLACE or None
@@ -706,7 +706,7 @@ class Save:
             and asset.add_or_update_classifications
         ):
             for tag in asset.add_or_update_classifications:
-                if tag.semantic == SaveSemantic.REMOVE:
+                if hasattr(tag, "semantic") and tag.semantic == SaveSemantic.REMOVE:
                     remove_tags.append(tag)
                 else:
                     # APPEND or None - both go to add_or_update
@@ -717,7 +717,7 @@ class Save:
             remove_tags.extend(asset.remove_classifications)
 
         # Set the processed tags back on the asset
-        asset.classifications = replace_tags if replace_tags else None
+        asset.atlan_tags = replace_tags if replace_tags else None
         asset.add_or_update_classifications = append_tags if append_tags else None
         asset.remove_classifications = remove_tags if remove_tags else None
 
