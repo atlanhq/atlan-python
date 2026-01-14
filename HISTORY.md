@@ -1,3 +1,14 @@
+## 8.5.0 (January 14, 2025)
+
+### New Features
+
+- Added support for new DQ rule templates.
+
+### Breaking Changes
+
+- `DataQualityRule.table_level_rule_creator()` and `DataQualityRule.column_level_rule_creator()` now accept `rule_type` as a `DataQualityRuleTemplateType` enum instead of `str`.
+- `threshold_compare_operator` is now an optional parameter for `DataQualityRule.table_level_rule_creator()`.
+
 ## 8.4.6 (January 13, 2025)
 
 ### New Features
