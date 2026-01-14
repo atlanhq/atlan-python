@@ -41,7 +41,7 @@
         attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_name=rule_name,
-            rule_type="Custom SQL",
+            rule_type=DataQualityRuleTemplateType.CUSTOM_SQL,
             asset=asset,
             threshold_compare_operator=threshold_compare_operator,
             threshold_value=threshold_value,
@@ -61,7 +61,7 @@
         cls,
         *,
         client: AtlanClient,
-        rule_type: str,
+        rule_type: DataQualityRuleTemplateType,
         asset: Asset,
         threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
@@ -109,7 +109,7 @@
         cls,
         *,
         client: AtlanClient,
-        rule_type: str,
+        rule_type: DataQualityRuleTemplateType,
         asset: Asset,
         column: Asset,
         threshold_value: int,
@@ -139,7 +139,9 @@
                 alert_priority,
             ],
         )
-        template_config = client.dq_template_config_cache.get_template_config(rule_type)
+        template_config = client.dq_template_config_cache.get_template_config(
+            rule_type.value
+        )
 
         asset_for_validation, target_table_asset = (
             DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
@@ -275,16 +277,20 @@
             else None
         )  # type: ignore[attr-defined]
 
-        retrieved_rule_type = retrieved_template_rule_name
-        template_config = client.dq_template_config_cache.get_template_config(
-            retrieved_rule_type
-        )
+        template_config = None
+        if retrieved_template_rule_name:
+            template_config = client.dq_template_config_cache.get_template_config(
+                retrieved_template_rule_name
+            )
 
-        final_rule_conditions = rule_conditions or (
-            search_result.dq_rule_config_arguments.dq_rule_config_rule_conditions  # type: ignore[attr-defined]
-            if search_result.dq_rule_config_arguments is not None  # type: ignore[attr-defined]
-            else None
-        )
+        if rule_conditions:
+            final_rule_conditions = rule_conditions
+        elif search_result.dq_rule_config_arguments is not None:  # type: ignore[attr-defined]
+            final_rule_conditions = (
+                search_result.dq_rule_config_arguments.dq_rule_config_rule_conditions  # type: ignore[attr-defined]
+            )
+        else:
+            final_rule_conditions = None
 
         final_row_scope_filtering_enabled = (
             row_scope_filtering_enabled or retrieved_row_scope_filtering_enabled
@@ -301,17 +307,26 @@
         else:
             target_table_asset = None
 
-        validated_threshold_operator = (
-            DataQualityRule.Attributes._validate_template_features(
-                retrieved_rule_type,
-                final_rule_conditions,
-                final_row_scope_filtering_enabled,
-                template_config,
-                threshold_compare_operator or retrieved_threshold_compare_operator,
-                retrieved_asset,
-                target_table_asset,
-            )
-        )
+        validated_threshold_operator = None
+        if retrieved_template_rule_name and template_config:
+            try:
+                retrieved_rule_type = DataQualityRuleTemplateType(
+                    retrieved_template_rule_name
+                )
+                validated_threshold_operator = (
+                    DataQualityRule.Attributes._validate_template_features(
+                        retrieved_rule_type,
+                        final_rule_conditions,
+                        final_row_scope_filtering_enabled,
+                        template_config,
+                        threshold_compare_operator
+                        or retrieved_threshold_compare_operator,
+                        retrieved_asset,
+                        target_table_asset,
+                    )
+                )
+            except ValueError:
+                pass
 
         final_compare_operator = (
             validated_threshold_operator

@@ -78,7 +78,7 @@
 
         @staticmethod
         def _validate_template_features(
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             rule_conditions: Optional[str],
             row_scope_filtering_enabled: Optional[bool],
             template_config: Optional[dict],
@@ -98,7 +98,7 @@
                 and config.dq_rule_template_config_rule_conditions is None
             ):
                 raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                    rule_type, "rule conditions"
+                    rule_type.value, "rule conditions"
                 )
 
             if row_scope_filtering_enabled:
@@ -107,7 +107,7 @@
                 )
                 if "dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                        rule_type, "row scope filtering"
+                        rule_type.value, "row scope filtering"
                     )
 
                 if asset and not getattr(
@@ -228,7 +228,7 @@
             *,
             client: AtlanClient,
             rule_name: str,
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             asset: Asset,
             threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
             threshold_value: int,
@@ -243,11 +243,13 @@
             row_scope_filtering_enabled: Optional[bool] = False,
         ) -> DataQualityRule.Attributes:
             template_config = client.dq_template_config_cache.get_template_config(
-                rule_type
+                rule_type.value
             )
 
             if template_config is None:
-                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(rule_type)
+                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(
+                    rule_type.value
+                )
 
             template_rule_name = template_config.get("name")
             template_qualified_name = template_config.get("qualified_name")

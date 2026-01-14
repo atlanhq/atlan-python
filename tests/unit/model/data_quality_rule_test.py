@@ -13,6 +13,7 @@ from pyatlan.model.enums import (
     DataQualityRuleCustomSQLReturnType,
     DataQualityRuleStatus,
     DataQualityRuleTemplateConfigRuleConditions,
+    DataQualityRuleTemplateType,
     DataQualityRuleThresholdCompareOperator,
     DataQualityRuleThresholdUnit,
 )
@@ -22,8 +23,6 @@ from tests.unit.model.constants import (
     DQ_RULE_DESCRIPTION,
     DQ_RULE_NAME,
     DQ_RULE_THRESHOLD_VALUE,
-    DQ_RULE_TYPE_COLUMN,
-    DQ_RULE_TYPE_TABLE,
     DQ_TABLE_QUALIFIED_NAME,
 )
 
@@ -51,12 +50,15 @@ def mock_client():
         {"dqRuleRowScopeFilteringEnabled": True}
     )
 
-    client.dq_template_config_cache.get_template_config.return_value = {
-        "name": "Test Template",
-        "qualified_name": "test/template/123",
-        "dimension": DataQualityDimension.COMPLETENESS,
-        "config": config,
-    }
+    def get_template_config(rule_type):
+        return {
+            "name": rule_type,
+            "qualified_name": "test/template/123",
+            "dimension": DataQualityDimension.COMPLETENESS,
+            "config": config,
+        }
+
+    client.dq_template_config_cache.get_template_config = get_template_config
     return client
 
 
@@ -171,7 +173,7 @@ def test_custom_sql_creator_with_missing_parameters_raise_value_error(
             "rule_type is required",
         ),
         (
-            DQ_RULE_TYPE_TABLE,
+            DataQualityRuleTemplateType.ROW_COUNT,
             None,
             DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
             DQ_RULE_THRESHOLD_VALUE,
@@ -179,7 +181,7 @@ def test_custom_sql_creator_with_missing_parameters_raise_value_error(
             "asset is required",
         ),
         (
-            DQ_RULE_TYPE_TABLE,
+            DataQualityRuleTemplateType.ROW_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             None,
             DQ_RULE_THRESHOLD_VALUE,
@@ -187,7 +189,7 @@ def test_custom_sql_creator_with_missing_parameters_raise_value_error(
             "threshold_compare_operator is required",
         ),
         (
-            DQ_RULE_TYPE_TABLE,
+            DataQualityRuleTemplateType.ROW_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
             None,
@@ -195,7 +197,7 @@ def test_custom_sql_creator_with_missing_parameters_raise_value_error(
             "threshold_value is required",
         ),
         (
-            DQ_RULE_TYPE_TABLE,
+            DataQualityRuleTemplateType.ROW_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
             DQ_RULE_THRESHOLD_VALUE,
@@ -236,7 +238,7 @@ def test_table_level_rule_creator_with_missing_parameters_raise_value_error(
             "rule_type is required",
         ),
         (
-            DQ_RULE_TYPE_COLUMN,
+            DataQualityRuleTemplateType.BLANK_COUNT,
             None,
             Column.ref_by_qualified_name(qualified_name=DQ_COLUMN_QUALIFIED_NAME),
             DQ_RULE_THRESHOLD_VALUE,
@@ -244,7 +246,7 @@ def test_table_level_rule_creator_with_missing_parameters_raise_value_error(
             "asset is required",
         ),
         (
-            DQ_RULE_TYPE_COLUMN,
+            DataQualityRuleTemplateType.BLANK_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             None,
             DQ_RULE_THRESHOLD_VALUE,
@@ -252,7 +254,7 @@ def test_table_level_rule_creator_with_missing_parameters_raise_value_error(
             "column is required",
         ),
         (
-            DQ_RULE_TYPE_COLUMN,
+            DataQualityRuleTemplateType.BLANK_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             Column.ref_by_qualified_name(qualified_name=DQ_COLUMN_QUALIFIED_NAME),
             None,
@@ -260,7 +262,7 @@ def test_table_level_rule_creator_with_missing_parameters_raise_value_error(
             "threshold_value is required",
         ),
         (
-            DQ_RULE_TYPE_COLUMN,
+            DataQualityRuleTemplateType.BLANK_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             Column.ref_by_qualified_name(qualified_name=DQ_COLUMN_QUALIFIED_NAME),
             DQ_RULE_THRESHOLD_VALUE,
@@ -294,7 +296,7 @@ def test_table_level_rule_creator(mock_client):
 
     dq_rule = DataQualityRule.table_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_TABLE,
+        rule_type=DataQualityRuleTemplateType.ROW_COUNT,
         asset=asset,
         threshold_compare_operator=DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -311,7 +313,7 @@ def test_table_level_rule_creator_with_threshold_unit(mock_client):
 
     dq_rule = DataQualityRule.table_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_TABLE,
+        rule_type=DataQualityRuleTemplateType.ROW_COUNT,
         asset=asset,
         threshold_compare_operator=DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -392,7 +394,7 @@ def test_column_level_rule_creator(mock_client):
 
     dq_rule = DataQualityRule.column_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_COLUMN,
+        rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
         asset=asset,
         column=column,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -411,7 +413,7 @@ def test_column_level_rule_creator_with_optional_parameters(mock_client):
 
     dq_rule = DataQualityRule.column_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_COLUMN,
+        rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
         asset=asset,
         column=column,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -436,7 +438,7 @@ def test_column_level_rule_creator_with_row_scope_filtering(mock_client):
 
     dq_rule = DataQualityRule.column_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_COLUMN,
+        rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
         asset=asset,
         column=column,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -466,7 +468,7 @@ def test_column_level_rule_creator_with_rule_conditions(mock_client):
 
     dq_rule = DataQualityRule.column_level_rule_creator(
         client=mock_client,
-        rule_type=DQ_RULE_TYPE_COLUMN,
+        rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
         asset=asset,
         column=column,
         threshold_value=DQ_RULE_THRESHOLD_VALUE,
@@ -489,14 +491,15 @@ def test_validate_template_features_rule_conditions_not_supported(mock_client):
     config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
-        "name": "Test Template",
+        "name": "BLANK_COUNT",
         "qualified_name": "test/template/123",
         "config": config,
     }
 
-    mock_client.dq_template_config_cache.get_template_config.return_value = (
-        template_config
-    )
+    def get_template_config(rule_type):
+        return template_config
+
+    mock_client.dq_template_config_cache.get_template_config = get_template_config
 
     rule_conditions = (
         DQRuleConditionsBuilder()
@@ -510,10 +513,10 @@ def test_validate_template_features_rule_conditions_not_supported(mock_client):
 
     with pytest.raises(
         InvalidRequestError,
-        match="Rule type 'Blank Count' does not support rule conditions",
+        match="Rule type 'BLANK_COUNT' does not support rule conditions",
     ):
         DataQualityRule.Attributes._validate_template_features(
-            rule_type="Blank Count",
+            rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
             rule_conditions=rule_conditions,
             row_scope_filtering_enabled=False,
             template_config=template_config,
@@ -529,21 +532,22 @@ def test_validate_template_features_row_scope_filtering_not_supported(mock_clien
     config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
-        "name": "Test Template",
+        "name": "BLANK_COUNT",
         "qualified_name": "test/template/123",
         "config": config,
     }
 
-    mock_client.dq_template_config_cache.get_template_config.return_value = (
-        template_config
-    )
+    def get_template_config(rule_type):
+        return template_config
+
+    mock_client.dq_template_config_cache.get_template_config = get_template_config
 
     with pytest.raises(
         InvalidRequestError,
-        match="Rule type 'Blank Count' does not support row scope filtering",
+        match="Rule type 'BLANK_COUNT' does not support row scope filtering",
     ):
         DataQualityRule.Attributes._validate_template_features(
-            rule_type="Blank Count",
+            rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
             rule_conditions=None,
             row_scope_filtering_enabled=True,
             template_config=template_config,
@@ -575,14 +579,15 @@ def test_validate_template_features_invalid_rule_conditions(mock_client):
     config.dq_rule_template_config_advanced_settings = json.dumps({})
 
     template_config = {
-        "name": "Test Template",
+        "name": "BLANK_COUNT",
         "qualified_name": "test/template/123",
         "config": config,
     }
 
-    mock_client.dq_template_config_cache.get_template_config.return_value = (
-        template_config
-    )
+    def get_template_config(rule_type):
+        return template_config
+
+    mock_client.dq_template_config_cache.get_template_config = get_template_config
 
     unsupported_condition = json.dumps(
         {"conditions": [{"type": "UNSUPPORTED_CONDITION", "value": "test"}]}
@@ -593,7 +598,7 @@ def test_validate_template_features_invalid_rule_conditions(mock_client):
         match="Invalid rule conditions: condition type 'UNSUPPORTED_CONDITION' not supported, allowed: \\['STRING_LENGTH_BETWEEN'\\]",
     ):
         DataQualityRule.Attributes._validate_template_features(
-            rule_type="Test Rule",
+            rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
             rule_conditions=unsupported_condition,
             row_scope_filtering_enabled=False,
             template_config=template_config,
@@ -611,14 +616,15 @@ def test_validate_template_features_row_scope_filter_column_missing(mock_client)
     )
 
     template_config = {
-        "name": "Test Template",
+        "name": "BLANK_COUNT",
         "qualified_name": "test/template/123",
         "config": config,
     }
 
-    mock_client.dq_template_config_cache.get_template_config.return_value = (
-        template_config
-    )
+    def get_template_config(rule_type):
+        return template_config
+
+    mock_client.dq_template_config_cache.get_template_config = get_template_config
 
     table_asset = Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME)
 
@@ -629,7 +635,7 @@ def test_validate_template_features_row_scope_filter_column_missing(mock_client)
         ),
     ):
         DataQualityRule.Attributes._validate_template_features(
-            rule_type="Test Rule",
+            rule_type=DataQualityRuleTemplateType.BLANK_COUNT,
             rule_conditions=None,
             row_scope_filtering_enabled=True,
             template_config=template_config,
