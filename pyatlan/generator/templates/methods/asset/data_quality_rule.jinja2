@@ -63,17 +63,20 @@
         client: AtlanClient,
         rule_type: DataQualityRuleTemplateType,
         asset: Asset,
-        threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
         alert_priority: DataQualityRuleAlertPriority,
+        threshold_compare_operator: Optional[
+            DataQualityRuleThresholdCompareOperator
+        ] = None,
         threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
+        rule_conditions: Optional[str] = None,
+        row_scope_filtering_enabled: Optional[bool] = False,
     ) -> DataQualityRule:
         validate_required_fields(
             [
                 "client",
                 "rule_type",
                 "asset",
-                "threshold_compare_operator",
                 "threshold_value",
                 "alert_priority",
             ],
@@ -81,17 +84,43 @@
                 client,
                 rule_type,
                 asset,
-                threshold_compare_operator,
                 threshold_value,
                 alert_priority,
             ],
+        )
+        template_config = client.dq_template_config_cache.get_template_config(
+            rule_type.value
+        )
+
+        asset_for_validation, target_table_asset = (
+            DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+                client, asset, rule_conditions, row_scope_filtering_enabled or False
+            )
+        )
+
+        validated_threshold_operator = (
+            DataQualityRule.Attributes._validate_template_features(
+                rule_type,
+                rule_conditions,
+                row_scope_filtering_enabled,
+                template_config,
+                threshold_compare_operator,
+                asset_for_validation,
+                target_table_asset,
+            )
+        )
+
+        final_threshold_compare_operator = (
+            validated_threshold_operator
+            or threshold_compare_operator
+            or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
         attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
-            threshold_compare_operator=threshold_compare_operator,
+            threshold_compare_operator=final_threshold_compare_operator,
             threshold_value=threshold_value,
             alert_priority=alert_priority,
             rule_name=None,
@@ -100,6 +129,8 @@
             dimension=None,
             custom_sql=None,
             description=None,
+            rule_conditions=rule_conditions,
+            row_scope_filtering_enabled=row_scope_filtering_enabled,
         )
         return cls(attributes=attributes)
 

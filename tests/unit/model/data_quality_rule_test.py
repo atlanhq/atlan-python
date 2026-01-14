@@ -183,14 +183,6 @@ def test_custom_sql_creator_with_missing_parameters_raise_value_error(
         (
             DataQualityRuleTemplateType.ROW_COUNT,
             Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
-            None,
-            DQ_RULE_THRESHOLD_VALUE,
-            DataQualityRuleAlertPriority.NORMAL,
-            "threshold_compare_operator is required",
-        ),
-        (
-            DataQualityRuleTemplateType.ROW_COUNT,
-            Table.ref_by_qualified_name(qualified_name=DQ_TABLE_QUALIFIED_NAME),
             DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL,
             None,
             DataQualityRuleAlertPriority.NORMAL,
