@@ -32,7 +32,7 @@ class DQTemplateConfigCache:
         """
         Get template configuration for a specific rule type.
 
-        :param rule_type: The display name of the rule type
+        :param rule_type: The name of the rule template
         :returns: Template configuration dict or None if not found
         """
         if not self._initialized:

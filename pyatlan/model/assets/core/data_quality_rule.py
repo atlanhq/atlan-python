@@ -19,6 +19,7 @@ from pyatlan.model.enums import (
     DataQualityRuleAlertPriority,
     DataQualityRuleCustomSQLReturnType,
     DataQualityRuleStatus,
+    DataQualityRuleTemplateType,
     DataQualityRuleThresholdCompareOperator,
     DataQualityRuleThresholdUnit,
     DataQualitySourceSyncStatus,
@@ -59,6 +60,7 @@ class DataQualityRule(DataQuality):
         threshold_value: int,
         alert_priority: DataQualityRuleAlertPriority,
         dimension: DataQualityDimension,
+        custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
         description: Optional[str] = None,
     ) -> DataQualityRule:
         validate_required_fields(
@@ -87,13 +89,14 @@ class DataQualityRule(DataQuality):
         attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_name=rule_name,
-            rule_type="Custom SQL",
+            rule_type=DataQualityRuleTemplateType.CUSTOM_SQL,
             asset=asset,
             threshold_compare_operator=threshold_compare_operator,
             threshold_value=threshold_value,
             alert_priority=alert_priority,
             dimension=dimension,
             custom_sql=custom_sql,
+            custom_sql_return_type=custom_sql_return_type,
             description=description,
             column=None,
             threshold_unit=None,
@@ -106,18 +109,22 @@ class DataQualityRule(DataQuality):
         cls,
         *,
         client: AtlanClient,
-        rule_type: str,
+        rule_type: DataQualityRuleTemplateType,
         asset: Asset,
-        threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
         threshold_value: int,
         alert_priority: DataQualityRuleAlertPriority,
+        threshold_compare_operator: Optional[
+            DataQualityRuleThresholdCompareOperator
+        ] = None,
+        threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
+        rule_conditions: Optional[str] = None,
+        row_scope_filtering_enabled: Optional[bool] = False,
     ) -> DataQualityRule:
         validate_required_fields(
             [
                 "client",
                 "rule_type",
                 "asset",
-                "threshold_compare_operator",
                 "threshold_value",
                 "alert_priority",
             ],
@@ -125,25 +132,53 @@ class DataQualityRule(DataQuality):
                 client,
                 rule_type,
                 asset,
-                threshold_compare_operator,
                 threshold_value,
                 alert_priority,
             ],
+        )
+        template_config = client.dq_template_config_cache.get_template_config(
+            rule_type.value
+        )
+
+        asset_for_validation, target_table_asset = (
+            DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+                client, asset, rule_conditions, row_scope_filtering_enabled or False
+            )
+        )
+
+        validated_threshold_operator = (
+            DataQualityRule.Attributes._validate_template_features(
+                rule_type,
+                rule_conditions,
+                row_scope_filtering_enabled,
+                template_config,
+                threshold_compare_operator,
+                asset_for_validation,
+                target_table_asset,
+            )
+        )
+
+        final_threshold_compare_operator = (
+            validated_threshold_operator
+            or threshold_compare_operator
+            or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
         attributes = DataQualityRule.Attributes.creator(
             client=client,
             rule_type=rule_type,
             asset=asset,
-            threshold_compare_operator=threshold_compare_operator,
+            threshold_compare_operator=final_threshold_compare_operator,
             threshold_value=threshold_value,
             alert_priority=alert_priority,
             rule_name=None,
             column=None,
-            threshold_unit=None,
+            threshold_unit=threshold_unit,
             dimension=None,
             custom_sql=None,
             description=None,
+            rule_conditions=rule_conditions,
+            row_scope_filtering_enabled=row_scope_filtering_enabled,
         )
         return cls(attributes=attributes)
 
@@ -153,7 +188,7 @@ class DataQualityRule(DataQuality):
         cls,
         *,
         client: AtlanClient,
-        rule_type: str,
+        rule_type: DataQualityRuleTemplateType,
         asset: Asset,
         column: Asset,
         threshold_value: int,
@@ -183,22 +218,15 @@ class DataQualityRule(DataQuality):
                 alert_priority,
             ],
         )
-        template_config = client.dq_template_config_cache.get_template_config(rule_type)
+        template_config = client.dq_template_config_cache.get_template_config(
+            rule_type.value
+        )
 
-        asset_for_validation = asset
-        if row_scope_filtering_enabled and asset.qualified_name:
-            from pyatlan.model.fluent_search import FluentSearch
-
-            search_request = (
-                FluentSearch()
-                .where(Asset.QUALIFIED_NAME.eq(asset.qualified_name))
-                .include_on_results(
-                    Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
-                )
-            ).to_request()
-            results = client.asset.search(search_request)
-            if results.count == 1:
-                asset_for_validation = results.current_page()[0]
+        asset_for_validation, target_table_asset = (
+            DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+                client, asset, rule_conditions, row_scope_filtering_enabled or False
+            )
+        )
 
         validated_threshold_operator = (
             DataQualityRule.Attributes._validate_template_features(
@@ -208,6 +236,7 @@ class DataQualityRule(DataQuality):
                 template_config,
                 threshold_compare_operator,
                 asset_for_validation,
+                target_table_asset,
             )
         )
 
@@ -249,6 +278,7 @@ class DataQualityRule(DataQuality):
         threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
         dimension: Optional[DataQualityDimension] = None,
         custom_sql: Optional[str] = None,
+        custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
         rule_name: Optional[str] = None,
         description: Optional[str] = None,
         rule_conditions: Optional[str] = None,
@@ -271,6 +301,7 @@ class DataQualityRule(DataQuality):
             .include_on_results(DataQualityRule.DQ_RULE_ALERT_PRIORITY)
             .include_on_results(DataQualityRule.DISPLAY_NAME)
             .include_on_results(DataQualityRule.DQ_RULE_CUSTOM_SQL)
+            .include_on_results(DataQualityRule.DQ_RULE_CUSTOM_SQL_RETURN_TYPE)
             .include_on_results(DataQualityRule.USER_DESCRIPTION)
             .include_on_results(DataQualityRule.DQ_RULE_DIMENSION)
             .include_on_results(DataQualityRule.DQ_RULE_CONFIG_ARGUMENTS)
@@ -289,6 +320,9 @@ class DataQualityRule(DataQuality):
         search_result = results.current_page()[0]
 
         retrieved_custom_sql = search_result.dq_rule_custom_s_q_l  # type: ignore[attr-defined]
+        retrieved_custom_sql_return_type = (
+            search_result.dq_rule_custom_s_q_l_return_type  # type: ignore[attr-defined]
+        )
         retrieved_rule_name = search_result.display_name
         retrieved_dimension = search_result.dq_rule_dimension  # type: ignore[attr-defined]
         retrieved_column = search_result.dq_rule_base_column  # type: ignore[attr-defined]
@@ -322,20 +356,56 @@ class DataQualityRule(DataQuality):
             else None
         )  # type: ignore[attr-defined]
 
-        retrieved_rule_type = retrieved_template_rule_name
-        template_config = client.dq_template_config_cache.get_template_config(
-            retrieved_rule_type
-        )
-        validated_threshold_operator = (
-            DataQualityRule.Attributes._validate_template_features(
-                retrieved_rule_type,
-                rule_conditions,
-                row_scope_filtering_enabled,
-                template_config,
-                threshold_compare_operator or retrieved_threshold_compare_operator,
-                retrieved_asset,
+        template_config = None
+        if retrieved_template_rule_name:
+            template_config = client.dq_template_config_cache.get_template_config(
+                retrieved_template_rule_name
             )
+
+        if rule_conditions:
+            final_rule_conditions = rule_conditions
+        elif search_result.dq_rule_config_arguments is not None:  # type: ignore[attr-defined]
+            final_rule_conditions = (
+                search_result.dq_rule_config_arguments.dq_rule_config_rule_conditions  # type: ignore[attr-defined]
+            )
+        else:
+            final_rule_conditions = None
+
+        final_row_scope_filtering_enabled = (
+            row_scope_filtering_enabled or retrieved_row_scope_filtering_enabled
         )
+        if retrieved_asset:
+            retrieved_asset, target_table_asset = (
+                DataQualityRule.Attributes._fetch_assets_for_row_scope_validation(
+                    client,
+                    retrieved_asset,
+                    final_rule_conditions,
+                    final_row_scope_filtering_enabled,
+                )
+            )
+        else:
+            target_table_asset = None
+
+        validated_threshold_operator = None
+        if retrieved_template_rule_name and template_config:
+            try:
+                retrieved_rule_type = DataQualityRuleTemplateType(
+                    retrieved_template_rule_name
+                )
+                validated_threshold_operator = (
+                    DataQualityRule.Attributes._validate_template_features(
+                        retrieved_rule_type,
+                        final_rule_conditions,
+                        final_row_scope_filtering_enabled,
+                        template_config,
+                        threshold_compare_operator
+                        or retrieved_threshold_compare_operator,
+                        retrieved_asset,
+                        target_table_asset,
+                    )
+                )
+            except ValueError:
+                pass
 
         final_compare_operator = (
             validated_threshold_operator
@@ -353,12 +423,11 @@ class DataQualityRule(DataQuality):
                     or retrieved_threshold_value,
                     dq_rule_threshold_unit=threshold_unit or retrieved_threshold_unit,
                 ),
-                dq_rule_config_rule_conditions=rule_conditions,
+                dq_rule_config_rule_conditions=final_rule_conditions,
             ),
             dq_rule_base_dataset_qualified_name=retrieved_asset.qualified_name,
             dq_rule_alert_priority=alert_priority or retrieved_alert_priority,
-            dq_rule_row_scope_filtering_enabled=row_scope_filtering_enabled
-            or retrieved_row_scope_filtering_enabled,
+            dq_rule_row_scope_filtering_enabled=final_row_scope_filtering_enabled,
             dq_rule_base_dataset=retrieved_asset,
             qualified_name=qualified_name,
             dq_rule_dimension=dimension or retrieved_dimension,
@@ -376,6 +445,9 @@ class DataQualityRule(DataQuality):
         if custom_sql is not None:
             attr_dq.dq_rule_custom_s_q_l = custom_sql
             attr_dq.display_name = rule_name or retrieved_rule_name
+            attr_dq.dq_rule_custom_s_q_l_return_type = (
+                custom_sql_return_type or retrieved_custom_sql_return_type
+            )
             if description is not None:
                 attr_dq.user_description = description or retrieved_description
 
@@ -1087,6 +1159,62 @@ class DataQualityRule(DataQuality):
         )  # relationship
 
         @staticmethod
+        def _fetch_assets_for_row_scope_validation(
+            client: AtlanClient,
+            base_asset: Asset,
+            rule_conditions: Optional[str],
+            row_scope_filtering_enabled: bool,
+        ) -> tuple[Asset, Optional[Asset]]:
+            asset_for_validation = base_asset
+            target_table_asset = None
+
+            if not row_scope_filtering_enabled:
+                return asset_for_validation, target_table_asset
+
+            # Extract target_table from rule_conditions
+            target_table_qualified_name = None
+            if rule_conditions:
+                try:
+                    rule_conditions_json = json.loads(rule_conditions)
+                    conditions = rule_conditions_json.get("conditions", [])
+                    if conditions:
+                        condition_value = conditions[0].get("value", {})
+                        target_table_qualified_name = condition_value.get(
+                            "target_table"
+                        )
+                except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
+                    pass
+
+            qualified_names_to_search = []
+            if base_asset.qualified_name:
+                qualified_names_to_search.append(base_asset.qualified_name)
+            if target_table_qualified_name:
+                qualified_names_to_search.append(target_table_qualified_name)
+
+            if qualified_names_to_search:
+                from pyatlan.model.fluent_search import FluentSearch
+
+                search_request = (
+                    FluentSearch()
+                    .where(Asset.QUALIFIED_NAME.within(qualified_names_to_search))
+                    .include_on_results(
+                        Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                    )
+                ).to_request()
+                results = client.asset.search(search_request)
+
+                for result in results.current_page():
+                    if result.qualified_name == base_asset.qualified_name:
+                        asset_for_validation = result
+                    elif (
+                        target_table_qualified_name
+                        and result.qualified_name == target_table_qualified_name
+                    ):
+                        target_table_asset = result
+
+            return asset_for_validation, target_table_asset
+
+        @staticmethod
         def _get_template_config_value(
             config_value: str,
             property_name: Optional[str] = None,
@@ -1109,7 +1237,7 @@ class DataQualityRule(DataQuality):
 
         @staticmethod
         def _validate_template_features(
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             rule_conditions: Optional[str],
             row_scope_filtering_enabled: Optional[bool],
             template_config: Optional[dict],
@@ -1117,6 +1245,7 @@ class DataQualityRule(DataQuality):
                 DataQualityRuleThresholdCompareOperator
             ] = None,
             asset: Optional[Asset] = None,
+            target_table_asset: Optional[Asset] = None,
         ) -> Optional[DataQualityRuleThresholdCompareOperator]:
             if not template_config or not template_config.get("config"):
                 return None
@@ -1128,7 +1257,7 @@ class DataQualityRule(DataQuality):
                 and config.dq_rule_template_config_rule_conditions is None
             ):
                 raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                    rule_type, "rule conditions"
+                    rule_type.value, "rule conditions"
                 )
 
             if row_scope_filtering_enabled:
@@ -1137,7 +1266,7 @@ class DataQualityRule(DataQuality):
                 )
                 if "dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                        rule_type, "row scope filtering"
+                        rule_type.value, "row scope filtering"
                     )
 
                 if asset and not getattr(
@@ -1148,6 +1277,16 @@ class DataQualityRule(DataQuality):
                     raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
                         getattr(asset, "qualified_name", "unknown")
                     )
+
+                if target_table_asset:
+                    if not getattr(
+                        target_table_asset,
+                        "asset_d_q_row_scope_filter_column_qualified_name",
+                        None,
+                    ):
+                        raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
+                            getattr(target_table_asset, "qualified_name", "unknown")
+                        )
 
             if rule_conditions:
                 allowed_rule_conditions = (
@@ -1248,7 +1387,7 @@ class DataQualityRule(DataQuality):
             *,
             client: AtlanClient,
             rule_name: str,
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             asset: Asset,
             threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
             threshold_value: int,
@@ -1257,16 +1396,19 @@ class DataQualityRule(DataQuality):
             threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
             dimension: Optional[DataQualityDimension] = None,
             custom_sql: Optional[str] = None,
+            custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
             description: Optional[str] = None,
             rule_conditions: Optional[str] = None,
             row_scope_filtering_enabled: Optional[bool] = False,
         ) -> DataQualityRule.Attributes:
             template_config = client.dq_template_config_cache.get_template_config(
-                rule_type
+                rule_type.value
             )
 
             if template_config is None:
-                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(rule_type)
+                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(
+                    rule_type.value
+                )
 
             template_rule_name = template_config.get("name")
             template_qualified_name = template_config.get("qualified_name")
@@ -1316,6 +1458,8 @@ class DataQualityRule(DataQuality):
             if custom_sql is not None:
                 attr_dq.dq_rule_custom_s_q_l = custom_sql
                 attr_dq.display_name = rule_name
+                if custom_sql_return_type is not None:
+                    attr_dq.dq_rule_custom_s_q_l_return_type = custom_sql_return_type
                 if description is not None:
                     attr_dq.user_description = description
 

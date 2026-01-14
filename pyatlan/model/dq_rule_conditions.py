@@ -22,6 +22,10 @@ class DQCondition(AtlanObject):
     )
     min_value: Optional[int] = Field(default=None, description="")
     max_value: Optional[int] = Field(default=None, description="")
+    reference_table: Optional[str] = Field(default=None, description="")
+    reference_column: Optional[str] = Field(default=None, description="")
+    target_table: Optional[str] = Field(default=None, description="")
+    target_column: Optional[str] = Field(default=None, description="")
 
     def __init__(
         self,
@@ -29,10 +33,22 @@ class DQCondition(AtlanObject):
         value: Optional[Union[str, int, List[str], Dict[str, Any]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
+        reference_table: Optional[str] = None,
+        reference_column: Optional[str] = None,
+        target_table: Optional[str] = None,
+        target_column: Optional[str] = None,
         **kwargs,
     ):
         super().__init__(
-            type=type, value=value, min_value=min_value, max_value=max_value, **kwargs
+            type=type,
+            value=value,
+            min_value=min_value,
+            max_value=max_value,
+            reference_table=reference_table,
+            reference_column=reference_column,
+            target_table=target_table,
+            target_column=target_column,
+            **kwargs,
         )
 
         if (
@@ -60,6 +76,23 @@ class DQCondition(AtlanObject):
                     "min_value, max_value",
                     "min_value <= max_value",
                 )
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.IN_LIST_REFERENCE:
+            validate_required_fields(
+                ["reference_table", "reference_column"],
+                [self.reference_table, self.reference_column],
+            )
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.ROW_COUNT_RECON:
+            validate_required_fields(["target_table"], [self.target_table])
+        elif self.type in [
+            DataQualityRuleTemplateConfigRuleConditions.AVERAGE_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.SUM_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.DUPLICATE_COUNT_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.UNIQUE_COUNT_RECON,
+        ]:
+            validate_required_fields(
+                ["target_table", "target_column"],
+                [self.target_table, self.target_column],
+            )
         else:
             validate_required_fields(["value"], [self.value])
             if self.type in [
@@ -81,6 +114,25 @@ class DQCondition(AtlanObject):
             == DataQualityRuleTemplateConfigRuleConditions.STRING_LENGTH_BETWEEN
         ):
             result["value"] = {"minValue": self.min_value, "maxValue": self.max_value}
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.IN_LIST_REFERENCE:
+            result["value"] = {
+                "reference_table": self.reference_table,
+                "reference_column": self.reference_column,
+            }
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.ROW_COUNT_RECON:
+            result["value"] = {
+                "target_table": self.target_table,
+            }
+        elif self.type in [
+            DataQualityRuleTemplateConfigRuleConditions.AVERAGE_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.SUM_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.DUPLICATE_COUNT_RECON,
+            DataQualityRuleTemplateConfigRuleConditions.UNIQUE_COUNT_RECON,
+        ]:
+            result["value"] = {
+                "target_table": self.target_table,
+                "target_column": self.target_column,
+            }
         else:
             result["value"] = {"value": self.value}
 
@@ -99,6 +151,10 @@ class DQRuleConditionsBuilder:
         value: Optional[Union[str, int, List[str]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
+        reference_table: Optional[str] = None,
+        reference_column: Optional[str] = None,
+        target_table: Optional[str] = None,
+        target_column: Optional[str] = None,
     ) -> DQRuleConditionsBuilder:
         """
         Add a condition to the builder.
@@ -107,11 +163,22 @@ class DQRuleConditionsBuilder:
         :param value: value of type str, int, or list depending on condition type
         :param min_value: minimum value for range-based conditions
         :param max_value: maximum value for range-based conditions
+        :param reference_table: qualified name of the reference table for IN_LIST_REFERENCE condition
+        :param reference_column: qualified name of the reference column for IN_LIST_REFERENCE condition
+        :param target_table: qualified name of the target table for reconciliation conditions
+        :param target_column: qualified name of the target column for reconciliation conditions (except ROW_COUNT_RECON)
         :returns: the builder for method chaining
         """
         self._conditions.append(
             DQCondition(
-                type=type, value=value, min_value=min_value, max_value=max_value
+                type=type,
+                value=value,
+                min_value=min_value,
+                max_value=max_value,
+                reference_table=reference_table,
+                reference_column=reference_column,
+                target_table=target_table,
+                target_column=target_column,
             )
         )
         return self

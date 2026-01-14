@@ -2451,6 +2451,31 @@ class DataQualityRuleThresholdCompareOperator(str, Enum):
     LESS_THAN = "LT"
 
 
+class DataQualityRuleTemplateType(str, Enum):
+    BLANK_COUNT = "BLANK_COUNT"
+    BLANK_PERCENTAGE = "BLANK_PERCENTAGE"
+    NULL_COUNT = "NULL_COUNT"
+    NULL_PERCENTAGE = "NULL_PERCENTAGE"
+    FRESHNESS = "FRESHNESS"
+    AVERAGE = "AVERAGE"
+    MAX_VALUE = "MAX_VALUE"
+    MIN_VALUE = "MIN_VALUE"
+    STANDARD_DEVIATION = "STANDARD_DEVIATION"
+    DUPLICATE_COUNT = "DUPLICATE_COUNT"
+    UNIQUE_COUNT = "UNIQUE_COUNT"
+    ROW_COUNT = "ROW_COUNT"
+    CUSTOM_SQL = "Custom SQL"
+    REGEX_MATCH = "REGEX_MATCH"
+    VALID_STRING_VALUES = "VALID_STRING_VALUES"
+    VALID_STRING_VALUES_REFERENCE = "VALID_STRING_VALUES_REFERENCE"
+    STRING_LENGTH = "STRING_LENGTH"
+    RECON_ROW_COUNT = "RECON_ROW_COUNT"
+    RECON_AVERAGE = "RECON_AVERAGE"
+    RECON_SUM = "RECON_SUM"
+    RECON_DUPLICATE_COUNT = "RECON_DUPLICATE_COUNT"
+    RECON_UNIQUE_COUNT = "RECON_UNIQUE_COUNT"
+
+
 class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     # String Length conditions
     STRING_LENGTH_BETWEEN = "STRING_LENGTH_BETWEEN"
@@ -2467,6 +2492,16 @@ class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     # List conditions
     IN_LIST = "IN_LIST"
     NOT_IN_LIST = "NOT_IN_LIST"
+
+    # Reference list conditions
+    IN_LIST_REFERENCE = "IN_LIST_REFERENCE"
+
+    # Reconciliation conditions
+    ROW_COUNT_RECON = "ROW_COUNT_RECON"
+    AVERAGE_RECON = "AVERAGE_RECON"
+    SUM_RECON = "SUM_RECON"
+    DUPLICATE_COUNT_RECON = "DUPLICATE_COUNT_RECON"
+    UNIQUE_COUNT_RECON = "UNIQUE_COUNT_RECON"
 
 
 # **************************************
@@ -2763,6 +2798,7 @@ class DataQualityRuleThresholdUnit(str, Enum):
     WEEKS = "WEEKS"
     MONTHS = "MONTHS"
     YEARS = "YEARS"
+    ABSOLUTE = "ABSOLUTE"
 
 
 class DataQualityScheduleType(str, Enum):

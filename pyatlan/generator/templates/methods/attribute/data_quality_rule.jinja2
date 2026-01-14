@@ -1,5 +1,61 @@
 
         @staticmethod
+        def _fetch_assets_for_row_scope_validation(
+            client: AtlanClient,
+            base_asset: Asset,
+            rule_conditions: Optional[str],
+            row_scope_filtering_enabled: bool,
+        ) -> tuple[Asset, Optional[Asset]]:
+            asset_for_validation = base_asset
+            target_table_asset = None
+
+            if not row_scope_filtering_enabled:
+                return asset_for_validation, target_table_asset
+
+            # Extract target_table from rule_conditions
+            target_table_qualified_name = None
+            if rule_conditions:
+                try:
+                    rule_conditions_json = json.loads(rule_conditions)
+                    conditions = rule_conditions_json.get("conditions", [])
+                    if conditions:
+                        condition_value = conditions[0].get("value", {})
+                        target_table_qualified_name = condition_value.get(
+                            "target_table"
+                        )
+                except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
+                    pass
+
+            qualified_names_to_search = []
+            if base_asset.qualified_name:
+                qualified_names_to_search.append(base_asset.qualified_name)
+            if target_table_qualified_name:
+                qualified_names_to_search.append(target_table_qualified_name)
+
+            if qualified_names_to_search:
+                from pyatlan.model.fluent_search import FluentSearch
+
+                search_request = (
+                    FluentSearch()
+                    .where(Asset.QUALIFIED_NAME.within(qualified_names_to_search))
+                    .include_on_results(
+                        Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME
+                    )
+                ).to_request()
+                results = client.asset.search(search_request)
+
+                for result in results.current_page():
+                    if result.qualified_name == base_asset.qualified_name:
+                        asset_for_validation = result
+                    elif (
+                        target_table_qualified_name
+                        and result.qualified_name == target_table_qualified_name
+                    ):
+                        target_table_asset = result
+
+            return asset_for_validation, target_table_asset
+
+        @staticmethod
         def _get_template_config_value(
             config_value: str,
             property_name: Optional[str] = None,
@@ -22,7 +78,7 @@
 
         @staticmethod
         def _validate_template_features(
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             rule_conditions: Optional[str],
             row_scope_filtering_enabled: Optional[bool],
             template_config: Optional[dict],
@@ -30,6 +86,7 @@
                 DataQualityRuleThresholdCompareOperator
             ] = None,
             asset: Optional[Asset] = None,
+            target_table_asset: Optional[Asset] = None,
         ) -> Optional[DataQualityRuleThresholdCompareOperator]:
             if not template_config or not template_config.get("config"):
                 return None
@@ -41,7 +98,7 @@
                 and config.dq_rule_template_config_rule_conditions is None
             ):
                 raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                    rule_type, "rule conditions"
+                    rule_type.value, "rule conditions"
                 )
 
             if row_scope_filtering_enabled:
@@ -50,7 +107,7 @@
                 )
                 if "dqRuleRowScopeFilteringEnabled" not in str(advanced_settings):
                     raise ErrorCode.DQ_RULE_TYPE_NOT_SUPPORTED.exception_with_parameters(
-                        rule_type, "row scope filtering"
+                        rule_type.value, "row scope filtering"
                     )
 
                 if asset and not getattr(
@@ -61,6 +118,16 @@
                     raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
                         getattr(asset, "qualified_name", "unknown")
                     )
+
+                if target_table_asset:
+                    if not getattr(
+                        target_table_asset,
+                        "asset_d_q_row_scope_filter_column_qualified_name",
+                        None,
+                    ):
+                        raise ErrorCode.DQ_ROW_SCOPE_FILTER_COLUMN_MISSING.exception_with_parameters(
+                            getattr(target_table_asset, "qualified_name", "unknown")
+                        )
 
             if rule_conditions:
                 allowed_rule_conditions = (
@@ -161,7 +228,7 @@
             *,
             client: AtlanClient,
             rule_name: str,
-            rule_type: str,
+            rule_type: DataQualityRuleTemplateType,
             asset: Asset,
             threshold_compare_operator: DataQualityRuleThresholdCompareOperator,
             threshold_value: int,
@@ -170,16 +237,19 @@
             threshold_unit: Optional[DataQualityRuleThresholdUnit] = None,
             dimension: Optional[DataQualityDimension] = None,
             custom_sql: Optional[str] = None,
+            custom_sql_return_type: Optional[DataQualityRuleCustomSQLReturnType] = None,
             description: Optional[str] = None,
             rule_conditions: Optional[str] = None,
             row_scope_filtering_enabled: Optional[bool] = False,
         ) -> DataQualityRule.Attributes:
             template_config = client.dq_template_config_cache.get_template_config(
-                rule_type
+                rule_type.value
             )
 
             if template_config is None:
-                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(rule_type)
+                raise ErrorCode.DQ_RULE_NOT_FOUND.exception_with_parameters(
+                    rule_type.value
+                )
 
             template_rule_name = template_config.get("name")
             template_qualified_name = template_config.get("qualified_name")
@@ -229,6 +299,8 @@
             if custom_sql is not None:
                 attr_dq.dq_rule_custom_s_q_l = custom_sql
                 attr_dq.display_name = rule_name
+                if custom_sql_return_type is not None:
+                    attr_dq.dq_rule_custom_s_q_l_return_type = custom_sql_return_type
                 if description is not None:
                     attr_dq.user_description = description
 

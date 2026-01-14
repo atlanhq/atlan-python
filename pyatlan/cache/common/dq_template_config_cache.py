@@ -60,7 +60,7 @@ class DQTemplateConfigCacheCommon:
                     "dimension": result.dq_rule_template_dimension,  # type: ignore
                     "config": result.dq_rule_template_config,  # type: ignore
                 }
-                cache[result.display_name] = template_config  # type: ignore
+                cache[result.name] = template_config  # type: ignore
             return True, None
         except Exception as e:
             return False, e
