@@ -2748,11 +2748,6 @@ class DataQualityRuleAlertPriority(str, Enum):
     LOW = "LOW"
 
 
-class DataQualityRuleCustomSQLResultType(str, Enum):
-    ROW_COUNT = "ROW_COUNT"
-    NUMERIC_VALUE = "NUMERIC_VALUE"
-
-
 class DataQualityRuleCustomSQLReturnType(str, Enum):
     ROW_COUNT = "ROW_COUNT"
     NUMERIC_VALUE = "NUMERIC_VALUE"

@@ -1135,7 +1135,7 @@ class DataQualityRule(DataQuality):
                         target_table_qualified_name = condition_value.get(
                             "target_table"
                         )
-                except (json.JSONDecodeError, KeyError, TypeError):
+                except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
                     pass
 
             qualified_names_to_search = []
