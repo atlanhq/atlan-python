@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2022 Atlan Pte. Ltd.
+# Copyright 2026 Atlan Pte. Ltd.
 
 """
 Integration tests for SaveSemantic feature for in-bulk asset tag management.
