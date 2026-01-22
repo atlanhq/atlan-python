@@ -1,0 +1,814 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="PartialField" href="partialfield.html"><link rel="prev" title="ObjectStore" href="objectstore.html">
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.09.25 -->
+        <title>Partial - pyatlan documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pyatlan  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">pyatlan  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../client.html">Atlan Client Interface</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../assets.html">Assets</a><input aria-label="Toggle navigation of Assets" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="adf.html">ADF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adls.html">ADLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adlsaccount.html">ADLSAccount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adlscontainer.html">ADLSContainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adlsobject.html">ADLSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai.html">AI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aiapplication.html">AIApplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aimodel.html">AIModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aimodelversion.html">AIModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apifield.html">APIField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiobject.html">APIObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apipath.html">APIPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiquery.html">APIQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apispec.html">APISpec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aws.html">AWS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accesscontrol.html">AccessControl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adfactivity.html">AdfActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adfdataflow.html">AdfDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adfdataset.html">AdfDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adflinkedservice.html">AdfLinkedservice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adfpipeline.html">AdfPipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="airflow.html">Airflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="airflowdag.html">AirflowDag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="airflowtask.html">AirflowTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplan.html">Anaplan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanapp.html">AnaplanApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplandimension.html">AnaplanDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanlineitem.html">AnaplanLineItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanlist.html">AnaplanList</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanmodel.html">AnaplanModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanmodule.html">AnaplanModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanpage.html">AnaplanPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplansystemdimension.html">AnaplanSystemDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanview.html">AnaplanView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaplanworkspace.html">AnaplanWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalo.html">Anomalo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anomalocheck.html">AnomaloCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appworkflowrun.html">AppWorkflowRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html">Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applicationfield.html">ApplicationField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asset.html">Asset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlanapp.html">AtlanApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlanappdeployment.html">AtlanAppDeployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlanappinstalled.html">AtlanAppInstalled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlasglossary.html">AtlasGlossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlasglossaryterm.html">AtlasGlossaryTerm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authpolicy.html">AuthPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authservice.html">AuthService</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azure.html">Azure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureeventhub.html">AzureEventHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebus.html">AzureServiceBus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebusnamespace.html">AzureServiceBusNamespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebusschema.html">AzureServiceBusSchema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azureservicebustopic.html">AzureServiceBusTopic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bi.html">BI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biprocess.html">BIProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bigqueryroutine.html">BigqueryRoutine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bigquerytag.html">BigqueryTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="businesspolicy.html">BusinessPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="businesspolicyexception.html">BusinessPolicyException</a></li>
+<li class="toctree-l2"><a class="reference internal" href="businesspolicyincident.html">BusinessPolicyIncident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="businesspolicylog.html">BusinessPolicyLog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculationview.html">CalculationView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandra.html">Cassandra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandracolumn.html">CassandraColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandraindex.html">CassandraIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandrakeyspace.html">CassandraKeyspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandratable.html">CassandraTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cassandraview.html">CassandraView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="catalog.html">Catalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognite.html">Cognite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognite3dmodel.html">Cognite3DModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cogniteasset.html">CogniteAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cogniteevent.html">CogniteEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognitefile.html">CogniteFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognitesequence.html">CogniteSequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognitetimeseries.html">CogniteTimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognos.html">Cognos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognoscolumn.html">CognosColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdashboard.html">CognosDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdataset.html">CognosDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosdatasource.html">CognosDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosexploration.html">CognosExploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfile.html">CognosFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosfolder.html">CognosFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosmodule.html">CognosModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognospackage.html">CognosPackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognosreport.html">CognosReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collection.html">Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="column.html">Column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="columnprocess.html">ColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connectionprocess.html">ConnectionProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodb.html">CosmosMongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbaccount.html">CosmosMongoDBAccount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbcollection.html">CosmosMongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmosmongodbdatabase.html">CosmosMongoDBDatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cube.html">Cube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cubedimension.html">CubeDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cubefield.html">CubeField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cubehierarchy.html">CubeHierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom.html">Custom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customentity.html">CustomEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datacontract.html">DataContract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datadomain.html">DataDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datamesh.html">DataMesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataproduct.html">DataProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataquality.html">DataQuality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataqualityrule.html">DataQualityRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataqualityruletemplate.html">DataQualityRuleTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastudio.html">DataStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastudioasset.html">DataStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricks.html">Databricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksexternallocation.html">DatabricksExternalLocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksexternallocationpath.html">DatabricksExternalLocationPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksmetricview.html">DatabricksMetricView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksnotebook.html">DatabricksNotebook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksvolume.html">DatabricksVolume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="databricksvolumepath.html">DatabricksVolumePath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataverse.html">Dataverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataverseattribute.html">DataverseAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataverseentity.html">DataverseEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbt.html">Dbt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtcolumnprocess.html">DbtColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtdimension.html">DbtDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtentity.html">DbtEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtmeasure.html">DbtMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtmetric.html">DbtMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtmodel.html">DbtModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtmodelcolumn.html">DbtModelColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtprocess.html">DbtProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtseed.html">DbtSeed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtsemanticmodel.html">DbtSemanticModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbtsource.html">DbtSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbttag.html">DbtTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentdb.html">DocumentDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentdbcollection.html">DocumentDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentdbdatabase.html">DocumentDBDatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domo.html">Domo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domocard.html">DomoCard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodashboard.html">DomoDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodataset.html">DomoDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domodatasetcolumn.html">DomoDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremio.html">Dremio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiocolumn.html">DremioColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiofolder.html">DremioFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiophysicaldataset.html">DremioPhysicalDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiosource.html">DremioSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiospace.html">DremioSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dremiovirtualdataset.html">DremioVirtualDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodb.html">DynamoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dynamodbtable.html">DynamoDBTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventstore.html">EventStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabric.html">Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricactivity.html">FabricActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricdashboard.html">FabricDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricdatapipeline.html">FabricDataPipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricdataflow.html">FabricDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricdataflowentitycolumn.html">FabricDataflowEntityColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricpage.html">FabricPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricreport.html">FabricReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricsemanticmodel.html">FabricSemanticModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricsemanticmodeltable.html">FabricSemanticModelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricsemanticmodeltablecolumn.html">FabricSemanticModelTableColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricvisual.html">FabricVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabricworkspace.html">FabricWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivetran.html">Fivetran</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fivetranconnector.html">FivetranConnector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowcontroloperation.html">FlowControlOperation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowdataset.html">FlowDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowdatasetoperation.html">FlowDatasetOperation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowfield.html">FlowField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowfieldoperation.html">FlowFieldOperation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowfolder.html">FlowFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowproject.html">FlowProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flowreusableunit.html">FlowReusableUnit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="folder.html">Folder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="form.html">Form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function.html">Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcs.html">GCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcsbucket.html">GCSBucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcsobject.html">GCSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="google.html">Google</a></li>
+<li class="toctree-l2"><a class="reference internal" href="incident.html">Incident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrastructure.html">Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="insight.html">Insight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Kafka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafkaconsumergroup.html">KafkaConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafkatopic.html">KafkaTopic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="link.html">Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="looker.html">Looker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerdashboard.html">LookerDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerexplore.html">LookerExplore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerfield.html">LookerField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerfolder.html">LookerFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerlook.html">LookerLook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookermodel.html">LookerModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerproject.html">LookerProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerquery.html">LookerQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookertile.html">LookerTile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookerview.html">LookerView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcincident.html">MCIncident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmonitor.html">MCMonitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="materialisedview.html">MaterialisedView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matillion.html">Matillion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matillioncomponent.html">MatillionComponent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matilliongroup.html">MatillionGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matillionjob.html">MatillionJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matillionproject.html">MatillionProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metabase.html">Metabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metabasecollection.html">MetabaseCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metabasedashboard.html">MetabaseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metabasequestion.html">MetabaseQuestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metric.html">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategy.html">MicroStrategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategyattribute.html">MicroStrategyAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategycolumn.html">MicroStrategyColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategycube.html">MicroStrategyCube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategydocument.html">MicroStrategyDocument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategydossier.html">MicroStrategyDossier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategyfact.html">MicroStrategyFact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategymetric.html">MicroStrategyMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategyproject.html">MicroStrategyProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategyreport.html">MicroStrategyReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microstrategyvisualization.html">MicroStrategyVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mode.html">Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modechart.html">ModeChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modecollection.html">ModeCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modequery.html">ModeQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modereport.html">ModeReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeworkspace.html">ModeWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelattribute.html">ModelAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelattributeassociation.html">ModelAttributeAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeldatamodel.html">ModelDataModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelentity.html">ModelEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelentityassociation.html">ModelEntityAssociation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelversion.html">ModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mongodb.html">MongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mongodbcollection.html">MongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mongodbdatabase.html">MongoDBDatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multidimensionaldataset.html">MultiDimensionalDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace.html">Namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nosql.html">NoSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebook.html">Notebook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectstore.html">ObjectStore</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Partial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialfield.html">PartialField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialobject.html">PartialObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv01.html">PartialV01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv01field.html">PartialV01Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv01object.html">PartialV01Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv02.html">PartialV02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv02field.html">PartialV02Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partialv02object.html">PartialV02Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="persona.html">Persona</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbi.html">PowerBI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbiapp.html">PowerBIApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbicolumn.html">PowerBIColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbidashboard.html">PowerBIDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbidataflow.html">PowerBIDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbidataflowentitycolumn.html">PowerBIDataflowEntityColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbidataset.html">PowerBIDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbidatasource.html">PowerBIDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbimeasure.html">PowerBIMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbipage.html">PowerBIPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbireport.html">PowerBIReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbitable.html">PowerBITable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbitile.html">PowerBITile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerbiworkspace.html">PowerBIWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preset.html">Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presetchart.html">PresetChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presetdashboard.html">PresetDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presetdataset.html">PresetDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presetworkspace.html">PresetWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedure.html">Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process.html">Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processexecution.html">ProcessExecution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="purpose.html">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlik.html">Qlik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikapp.html">QlikApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikchart.html">QlikChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikcolumn.html">QlikColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikdataset.html">QlikDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qliksheet.html">QlikSheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikspace.html">QlikSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qlikstream.html">QlikStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="query.html">Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksight.html">QuickSight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightanalysis.html">QuickSightAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightanalysisvisual.html">QuickSightAnalysisVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightdashboard.html">QuickSightDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightdashboardvisual.html">QuickSightDashboardVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightdataset.html">QuickSightDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightdatasetfield.html">QuickSightDatasetField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quicksightfolder.html">QuickSightFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html">Readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readmetemplate.html">ReadmeTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redash.html">Redash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redashdashboard.html">RedashDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redashquery.html">RedashQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redashvisualization.html">RedashVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="referenceable.html">Referenceable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="response.html">Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3.html">S3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3bucket.html">S3Bucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3object.html">S3Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3prefix.html">S3Prefix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sap.html">SAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sql.html">SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saas.html">SaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudio.html">SageMakerUnifiedStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudioasset.html">SageMakerUnifiedStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudioassetschema.html">SageMakerUnifiedStudioAssetSchema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudioproject.html">SageMakerUnifiedStudioProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudiopublishedasset.html">SageMakerUnifiedStudioPublishedAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sagemakerunifiedstudiosubscribedasset.html">SageMakerUnifiedStudioSubscribedAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforce.html">Salesforce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforcedashboard.html">SalesforceDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforcefield.html">SalesforceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforceobject.html">SalesforceObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforceorganization.html">SalesforceOrganization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="salesforcereport.html">SalesforceReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpabapprogram.html">SapErpAbapProgram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpcdsview.html">SapErpCdsView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpcolumn.html">SapErpColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpcomponent.html">SapErpComponent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpfunctionmodule.html">SapErpFunctionModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperptable.html">SapErpTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperptransactioncode.html">SapErpTransactionCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saperpview.html">SapErpView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schemaregistry.html">SchemaRegistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schemaregistrysubject.html">SchemaRegistrySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semantic.html">Semantic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semanticdimension.html">SemanticDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semanticentity.html">SemanticEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semanticfield.html">SemanticField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semanticmeasure.html">SemanticMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semanticmodel.html">SemanticModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigma.html">Sigma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmadataelement.html">SigmaDataElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmadataelementfield.html">SigmaDataElementField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmadataset.html">SigmaDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmapage.html">SigmaPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisense.html">Sisense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisensedashboard.html">SisenseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisensedatamodel.html">SisenseDatamodel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisensedatamodeltable.html">SisenseDatamodelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisensefolder.html">SisenseFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sisensewidget.html">SisenseWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakeaimodelcontext.html">SnowflakeAIModelContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakeaimodelversion.html">SnowflakeAIModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakepipe.html">SnowflakePipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakestage.html">SnowflakeStage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflakestream.html">SnowflakeStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflaketag.html">SnowflakeTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="soda.html">Soda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sourcetag.html">SourceTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spark.html">Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sparkjob.html">SparkJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholder.html">Stakeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stakeholdertitle.html">StakeholderTitle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset.html">Superset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supersetchart.html">SupersetChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supersetdashboard.html">SupersetDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supersetdataset.html">SupersetDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table.html">Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tablepartition.html">TablePartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableau.html">Tableau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaucalculatedfield.html">TableauCalculatedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaudashboard.html">TableauDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaudashboardfield.html">TableauDashboardField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaudatasource.html">TableauDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaudatasourcefield.html">TableauDatasourceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableauflow.html">TableauFlow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableaumetric.html">TableauMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableauproject.html">TableauProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableausite.html">TableauSite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableauworkbook.html">TableauWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableauworksheet.html">TableauWorksheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tableauworksheetfield.html">TableauWorksheetField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tagattachment.html">TagAttachment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="task.html">Task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspot.html">Thoughtspot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotcolumn.html">ThoughtspotColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspottable.html">ThoughtspotTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotview.html">ThoughtspotView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoughtspotworksheet.html">ThoughtspotWorksheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view.html">View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflowrun.html">WorkflowRun</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../other_models.html">Other models</a><input aria-label="Toggle navigation of Other models" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/core.html">Core model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/custom_metadata.html">Custom metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/user.html">User</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/role.html">Role</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/keycloak_events.html">Keycloak events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/lineage.html">Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/typedef.html">TypeDef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_model/atlan_image.html">Atlan image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">Error Handling</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../caches.html">Caches</a><input aria-label="Toggle navigation of Caches" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cache/atlan_tag_cache.html">AtlanTagCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cache/custom_metadata_cache.html">CustomMetadataCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cache/enum_cache.html">EnumCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cache/group_cache.html">GroupCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cache/role_cache.html">RoleCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cache/user_cache.html">UserCache</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fields.html">Fields</a><input aria-label="Toggle navigation of Fields" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../field/relation_field.html">RelationField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/searchable_field.html">SearchableField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/boolean_field.html">BooleanField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/keyword_field.html">KeywordField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/text_field.html">TextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/numeric_field.html">NumericField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/numeric_rank_field.html">NumericRankField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/keyword_text_field.html">KeywordTextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/keyword_text_stemmed_field.html">KeywordTextStemmedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../field/custom_metadata_field.html">CustomMetadataField</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../events.html">Events</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/asset/partial.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="partial">
+<span id="id1"></span><h1>Partial<a class="headerlink" href="#partial" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.assets.</span></span><span class="sig-name descname"><span class="pre">Partial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Partial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Partial.Attributes</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">businessAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createdBy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deleteHandler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isIncomplete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationshipAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RelationshipAttributes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EntityStatus</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatedBy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateTime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../other_model/core.html#pyatlan.model.core.AtlanTag" title="pyatlan.model.core.AtlanTag"><span class="pre">AtlanTag</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classificationNames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displayText</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entityStatus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationshipGuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationshipStatus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationshipType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meaningNames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meanings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Meaning</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">customAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scrubbed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pendingTasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uniqueAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">appendRelationshipAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removeRelationshipAttributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addOrUpdateClassifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../other_model/core.html#pyatlan.model.core.AtlanTag" title="pyatlan.model.core.AtlanTag"><span class="pre">AtlanTag</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removeClassifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../other_model/core.html#pyatlan.model.core.AtlanTag" title="pyatlan.model.core.AtlanTag"><span class="pre">AtlanTag</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semantic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SaveSemantic</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immediateUpstream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">LineageRef</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immediateDownstream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">LineageRef</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/assets/core/partial.html#Partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.assets.Partial" title="Link to this definition">¶</a></dt>
+<dd><p>Description</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial.PARTIAL_PARENT_QUALIFIED_NAME">
+<span class="sig-name descname"><span class="pre">PARTIAL_PARENT_QUALIFIED_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Partial.PARTIAL_PARENT_QUALIFIED_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Unique name of the field’s parent asset.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial.PARTIAL_PARENT_TYPE">
+<span class="sig-name descname"><span class="pre">PARTIAL_PARENT_TYPE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Partial.PARTIAL_PARENT_TYPE" title="Link to this definition">¶</a></dt>
+<dd><p>Type of the field’s parent asset.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial.PARTIAL_RESOLVED_TYPE_NAME">
+<span class="sig-name descname"><span class="pre">PARTIAL_RESOLVED_TYPE_NAME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Partial.PARTIAL_RESOLVED_TYPE_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Atlan-mapped type name of this partial asset.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial.PARTIAL_STRUCTURE_JSON">
+<span class="sig-name descname"><span class="pre">PARTIAL_STRUCTURE_JSON</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Partial.PARTIAL_STRUCTURE_JSON" title="Link to this definition">¶</a></dt>
+<dd><p>Complete JSON structure of this partial asset, as a string.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID">
+<span class="sig-name descname"><span class="pre">PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID" title="Link to this definition">¶</a></dt>
+<dd><p>Hash ID of the unknown attributes for this partial asset.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="partialfield.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">PartialField</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="objectstore.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">ObjectStore</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Atlan Pte. Ltd.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Partial</a><ul>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial"><code class="docutils literal notranslate"><span class="pre">Partial</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial.PARTIAL_PARENT_QUALIFIED_NAME"><code class="docutils literal notranslate"><span class="pre">Partial.PARTIAL_PARENT_QUALIFIED_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial.PARTIAL_PARENT_TYPE"><code class="docutils literal notranslate"><span class="pre">Partial.PARTIAL_PARENT_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial.PARTIAL_RESOLVED_TYPE_NAME"><code class="docutils literal notranslate"><span class="pre">Partial.PARTIAL_RESOLVED_TYPE_NAME</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial.PARTIAL_STRUCTURE_JSON"><code class="docutils literal notranslate"><span class="pre">Partial.PARTIAL_STRUCTURE_JSON</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID"><code class="docutils literal notranslate"><span class="pre">Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

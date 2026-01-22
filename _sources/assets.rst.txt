@@ -47,9 +47,13 @@ You can interact with all of the following different kinds of assets:
     asset/anomalo
     asset/anomalocheck
     asset/app
+    asset/appworkflowrun
     asset/application
     asset/applicationfield
     asset/asset
+    asset/atlanapp
+    asset/atlanappdeployment
+    asset/atlanappinstalled
     asset/atlasglossary
     asset/atlasglossarycategory
     asset/atlasglossaryterm
@@ -65,6 +69,7 @@ You can interact with all of the following different kinds of assets:
     asset/bi
     asset/biprocess
     asset/badge
+    asset/bigqueryroutine
     asset/bigquerytag
     asset/businesspolicy
     asset/businesspolicyexception
@@ -117,6 +122,8 @@ You can interact with all of the following different kinds of assets:
     asset/datamesh
     asset/dataproduct
     asset/dataquality
+    asset/dataqualityrule
+    asset/dataqualityruletemplate
     asset/dataset
     asset/datastudio
     asset/datastudioasset
@@ -124,17 +131,27 @@ You can interact with all of the following different kinds of assets:
     asset/databricks
     asset/databricksaimodelcontext
     asset/databricksaimodelversion
+    asset/databricksexternallocation
+    asset/databricksexternallocationpath
+    asset/databricksmetricview
+    asset/databricksnotebook
     asset/databricksunitycatalogtag
+    asset/databricksvolume
+    asset/databricksvolumepath
     asset/dataverse
     asset/dataverseattribute
     asset/dataverseentity
     asset/dbt
     asset/dbtcolumnprocess
+    asset/dbtdimension
+    asset/dbtentity
+    asset/dbtmeasure
     asset/dbtmetric
     asset/dbtmodel
     asset/dbtmodelcolumn
     asset/dbtprocess
     asset/dbtseed
+    asset/dbtsemanticmodel
     asset/dbtsource
     asset/dbttag
     asset/dbttest
@@ -146,12 +163,32 @@ You can interact with all of the following different kinds of assets:
     asset/domodashboard
     asset/domodataset
     asset/domodatasetcolumn
+    asset/dremio
+    asset/dremiocolumn
+    asset/dremiofolder
+    asset/dremiophysicaldataset
+    asset/dremiosource
+    asset/dremiospace
+    asset/dremiovirtualdataset
     asset/dynamodb
     asset/dynamodbglobalsecondaryindex
     asset/dynamodblocalsecondaryindex
     asset/dynamodbsecondaryindex
     asset/dynamodbtable
     asset/eventstore
+    asset/fabric
+    asset/fabricactivity
+    asset/fabricdashboard
+    asset/fabricdatapipeline
+    asset/fabricdataflow
+    asset/fabricdataflowentitycolumn
+    asset/fabricpage
+    asset/fabricreport
+    asset/fabricsemanticmodel
+    asset/fabricsemanticmodeltable
+    asset/fabricsemanticmodeltablecolumn
+    asset/fabricvisual
+    asset/fabricworkspace
     asset/file
     asset/fivetran
     asset/fivetranconnector
@@ -204,6 +241,7 @@ You can interact with all of the following different kinds of assets:
     asset/metric
     asset/microstrategy
     asset/microstrategyattribute
+    asset/microstrategycolumn
     asset/microstrategycube
     asset/microstrategydocument
     asset/microstrategydossier
@@ -232,7 +270,17 @@ You can interact with all of the following different kinds of assets:
     asset/multidimensionaldataset
     asset/namespace
     asset/nosql
+    asset/notebook
     asset/objectstore
+    asset/partial
+    asset/partialfield
+    asset/partialobject
+    asset/partialv01
+    asset/partialv01field
+    asset/partialv01object
+    asset/partialv02
+    asset/partialv02field
+    asset/partialv02object
     asset/persona
     asset/powerbi
     asset/powerbiapp
@@ -260,6 +308,7 @@ You can interact with all of the following different kinds of assets:
     asset/qlik
     asset/qlikapp
     asset/qlikchart
+    asset/qlikcolumn
     asset/qlikdataset
     asset/qliksheet
     asset/qlikspace
@@ -285,9 +334,16 @@ You can interact with all of the following different kinds of assets:
     asset/s3
     asset/s3bucket
     asset/s3object
+    asset/s3prefix
     asset/sap
     asset/sql
     asset/saas
+    asset/sagemakerunifiedstudio
+    asset/sagemakerunifiedstudioasset
+    asset/sagemakerunifiedstudioassetschema
+    asset/sagemakerunifiedstudioproject
+    asset/sagemakerunifiedstudiopublishedasset
+    asset/sagemakerunifiedstudiosubscribedasset
     asset/salesforce
     asset/salesforcedashboard
     asset/salesforcefield
@@ -305,6 +361,12 @@ You can interact with all of the following different kinds of assets:
     asset/schema
     asset/schemaregistry
     asset/schemaregistrysubject
+    asset/semantic
+    asset/semanticdimension
+    asset/semanticentity
+    asset/semanticfield
+    asset/semanticmeasure
+    asset/semanticmodel
     asset/sigma
     asset/sigmadataelement
     asset/sigmadataelementfield
@@ -366,5 +428,3 @@ You can interact with all of the following different kinds of assets:
     asset/view
     asset/workflow
     asset/workflowrun
-    asset/alpha_dqrule
-    asset/alpha_dqruletemplate

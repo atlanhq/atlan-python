@@ -1,22 +1,22 @@
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="../../../../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.09.25 -->
         <title>pyatlan.model.assets.azure_service_bus_topic - pyatlan documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=302659d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
 
 
 <style>
   body {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
   
   }
   @media not print {
@@ -143,14 +143,10 @@
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 <a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
@@ -160,8 +156,7 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
@@ -169,8 +164,7 @@
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
           <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
           <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -178,8 +172,7 @@
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -187,7 +180,6 @@
     <div class="sidebar-container">
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
-  
   
   <span class="sidebar-brand-text">pyatlan  documentation</span>
   
@@ -199,7 +191,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../client.html">Atlan Client Interface</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../assets.html">Assets</a><input aria-label="Toggle navigation of Assets" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/adf.html">ADF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/adls.html">ADLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/adlsaccount.html">ADLSAccount</a></li>
@@ -239,9 +231,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/anomalo.html">Anomalo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/anomalocheck.html">AnomaloCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/app.html">App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/appworkflowrun.html">AppWorkflowRun</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/application.html">Application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/applicationfield.html">ApplicationField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/asset.html">Asset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlanapp.html">AtlanApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlanappdeployment.html">AtlanAppDeployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlanappinstalled.html">AtlanAppInstalled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossary.html">AtlasGlossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/atlasglossaryterm.html">AtlasGlossaryTerm</a></li>
@@ -257,6 +253,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/bigqueryroutine.html">BigqueryRoutine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/bigquerytag.html">BigqueryTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/businesspolicy.html">BusinessPolicy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/businesspolicyexception.html">BusinessPolicyException</a></li>
@@ -309,6 +306,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataquality.html">DataQuality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataqualityrule.html">DataQualityRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataqualityruletemplate.html">DataQualityRuleTemplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/datastudioasset.html">DataStudioAsset</a></li>
@@ -316,17 +315,27 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricks.html">Databricks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksexternallocation.html">DatabricksExternalLocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksexternallocationpath.html">DatabricksExternalLocationPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksmetricview.html">DatabricksMetricView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksnotebook.html">DatabricksNotebook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksvolume.html">DatabricksVolume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/databricksvolumepath.html">DatabricksVolumePath</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataverseattribute.html">DataverseAttribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dataverseentity.html">DataverseEntity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbt.html">Dbt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtcolumnprocess.html">DbtColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtdimension.html">DbtDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtentity.html">DbtEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmeasure.html">DbtMeasure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmetric.html">DbtMetric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmodel.html">DbtModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtmodelcolumn.html">DbtModelColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtprocess.html">DbtProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtseed.html">DbtSeed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsemanticmodel.html">DbtSemanticModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dbttest.html">DbtTest</a></li>
@@ -338,12 +347,32 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodashboard.html">DomoDashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodataset.html">DomoDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/domodatasetcolumn.html">DomoDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremio.html">Dremio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiocolumn.html">DremioColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiofolder.html">DremioFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiophysicaldataset.html">DremioPhysicalDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiosource.html">DremioSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiospace.html">DremioSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/dremiovirtualdataset.html">DremioVirtualDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodb.html">DynamoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/eventstore.html">EventStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabric.html">Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricactivity.html">FabricActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricdashboard.html">FabricDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricdatapipeline.html">FabricDataPipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricdataflow.html">FabricDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricdataflowentitycolumn.html">FabricDataflowEntityColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricpage.html">FabricPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricreport.html">FabricReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricsemanticmodel.html">FabricSemanticModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricsemanticmodeltable.html">FabricSemanticModelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricsemanticmodeltablecolumn.html">FabricSemanticModelTableColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricvisual.html">FabricVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/fabricworkspace.html">FabricWorkspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/fivetran.html">Fivetran</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/fivetranconnector.html">FivetranConnector</a></li>
@@ -396,6 +425,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/metric.html">Metric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategy.html">MicroStrategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategyattribute.html">MicroStrategyAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategycolumn.html">MicroStrategyColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategycube.html">MicroStrategyCube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategydocument.html">MicroStrategyDocument</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/microstrategydossier.html">MicroStrategyDossier</a></li>
@@ -424,7 +454,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/multidimensionaldataset.html">MultiDimensionalDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/namespace.html">Namespace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/nosql.html">NoSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/notebook.html">Notebook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/objectstore.html">ObjectStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partial.html">Partial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialfield.html">PartialField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialobject.html">PartialObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv01.html">PartialV01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv01field.html">PartialV01Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv01object.html">PartialV01Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv02.html">PartialV02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv02field.html">PartialV02Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/partialv02object.html">PartialV02Object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/persona.html">Persona</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbi.html">PowerBI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/powerbiapp.html">PowerBIApp</a></li>
@@ -452,6 +492,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlik.html">Qlik</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikapp.html">QlikApp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikchart.html">QlikChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikcolumn.html">QlikColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikdataset.html">QlikDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qliksheet.html">QlikSheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/qlikspace.html">QlikSpace</a></li>
@@ -477,9 +518,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3.html">S3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3bucket.html">S3Bucket</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3object.html">S3Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/s3prefix.html">S3Prefix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sap.html">SAP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sql.html">SQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/saas.html">SaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudio.html">SageMakerUnifiedStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudioasset.html">SageMakerUnifiedStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudioassetschema.html">SageMakerUnifiedStudioAssetSchema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudioproject.html">SageMakerUnifiedStudioProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudiopublishedasset.html">SageMakerUnifiedStudioPublishedAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/sagemakerunifiedstudiosubscribedasset.html">SageMakerUnifiedStudioSubscribedAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforce.html">Salesforce</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforcedashboard.html">SalesforceDashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/salesforcefield.html">SalesforceField</a></li>
@@ -497,6 +545,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/schema.html">Schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/schemaregistry.html">SchemaRegistry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/schemaregistrysubject.html">SchemaRegistrySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semantic.html">Semantic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semanticdimension.html">SemanticDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semanticentity.html">SemanticEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semanticfield.html">SemanticField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semanticmeasure.html">SemanticMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../asset/semanticmodel.html">SemanticModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigma.html">Sigma</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadataelement.html">SigmaDataElement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/sigmadataelementfield.html">SigmaDataElementField</a></li>
@@ -558,13 +612,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../asset/workflowrun.html">WorkflowRun</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../other_models.html">Other models</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Other models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../other_models.html">Other models</a><input aria-label="Toggle navigation of Other models" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../other_model/core.html">Core model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../other_model/custom_metadata.html">Custom metadata</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../other_model/user.html">User</a></li>
@@ -577,7 +629,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../exceptions.html">Error Handling</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../caches.html">Caches</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Caches</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../caches.html">Caches</a><input aria-label="Toggle navigation of Caches" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../cache/atlan_tag_cache.html">AtlanTagCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../cache/custom_metadata_cache.html">CustomMetadataCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../cache/enum_cache.html">EnumCache</a></li>
@@ -586,7 +638,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../cache/user_cache.html">UserCache</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../fields.html">Fields</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Fields</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../fields.html">Fields</a><input aria-label="Toggle navigation of Fields" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../field/relation_field.html">RelationField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../field/searchable_field.html">SearchableField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../field/boolean_field.html">BooleanField</a></li>
@@ -620,8 +672,7 @@
         </a>
         <div class="content-icon-container">
           <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
               <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -629,8 +680,7 @@
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
@@ -774,8 +824,8 @@
     </aside>
   </div>
 </div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

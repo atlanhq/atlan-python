@@ -1,22 +1,22 @@
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="../../../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 7.4.7 and Furo 2025.09.25 -->
         <title>pyatlan.client.atlan - pyatlan documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=580074bf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
     
 
 
 <style>
   body {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
   
   }
   @media not print {
@@ -143,14 +143,10 @@
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 <a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
@@ -160,8 +156,7 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
@@ -169,8 +164,7 @@
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
           <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
           <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -178,8 +172,7 @@
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -187,7 +180,6 @@
     <div class="sidebar-container">
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
-  
   
   <span class="sidebar-brand-text">pyatlan  documentation</span>
   
@@ -199,7 +191,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../client.html">Atlan Client Interface</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../assets.html">Assets</a><input aria-label="Toggle navigation of Assets" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/adf.html">ADF</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/adls.html">ADLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/adlsaccount.html">ADLSAccount</a></li>
@@ -239,9 +231,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/anomalo.html">Anomalo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/anomalocheck.html">AnomaloCheck</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/app.html">App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/appworkflowrun.html">AppWorkflowRun</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/application.html">Application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/applicationfield.html">ApplicationField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/asset.html">Asset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlanapp.html">AtlanApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlanappdeployment.html">AtlanAppDeployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlanappinstalled.html">AtlanAppInstalled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossary.html">AtlasGlossary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossaryterm.html">AtlasGlossaryTerm</a></li>
@@ -257,6 +253,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/bi.html">BI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/biprocess.html">BIProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/bigqueryroutine.html">BigqueryRoutine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/bigquerytag.html">BigqueryTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/businesspolicy.html">BusinessPolicy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/businesspolicyexception.html">BusinessPolicyException</a></li>
@@ -309,6 +306,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/datamesh.html">DataMesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataproduct.html">DataProduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataquality.html">DataQuality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dataqualityrule.html">DataQualityRule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dataqualityruletemplate.html">DataQualityRuleTemplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataset.html">DataSet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/datastudio.html">DataStudio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/datastudioasset.html">DataStudioAsset</a></li>
@@ -316,17 +315,27 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/databricks.html">Databricks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksaimodelcontext.html">DatabricksAIModelContext</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksaimodelversion.html">DatabricksAIModelVersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksexternallocation.html">DatabricksExternalLocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksexternallocationpath.html">DatabricksExternalLocationPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksmetricview.html">DatabricksMetricView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksnotebook.html">DatabricksNotebook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksunitycatalogtag.html">DatabricksUnityCatalogTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksvolume.html">DatabricksVolume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/databricksvolumepath.html">DatabricksVolumePath</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataverse.html">Dataverse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataverseattribute.html">DataverseAttribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dataverseentity.html">DataverseEntity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbt.html">Dbt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtcolumnprocess.html">DbtColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtdimension.html">DbtDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtentity.html">DbtEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmeasure.html">DbtMeasure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmetric.html">DbtMetric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmodel.html">DbtModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmodelcolumn.html">DbtModelColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtprocess.html">DbtProcess</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtseed.html">DbtSeed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtsemanticmodel.html">DbtSemanticModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtsource.html">DbtSource</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbttag.html">DbtTag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dbttest.html">DbtTest</a></li>
@@ -338,12 +347,32 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/domodashboard.html">DomoDashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/domodataset.html">DomoDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/domodatasetcolumn.html">DomoDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremio.html">Dremio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiocolumn.html">DremioColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiofolder.html">DremioFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiophysicaldataset.html">DremioPhysicalDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiosource.html">DremioSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiospace.html">DremioSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dremiovirtualdataset.html">DremioVirtualDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dynamodb.html">DynamoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dynamodbglobalsecondaryindex.html">DynamoDBGlobalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dynamodblocalsecondaryindex.html">DynamoDBLocalSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dynamodbsecondaryindex.html">DynamoDBSecondaryIndex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/dynamodbtable.html">DynamoDBTable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/eventstore.html">EventStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabric.html">Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricactivity.html">FabricActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricdashboard.html">FabricDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricdatapipeline.html">FabricDataPipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricdataflow.html">FabricDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricdataflowentitycolumn.html">FabricDataflowEntityColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricpage.html">FabricPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricreport.html">FabricReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricsemanticmodel.html">FabricSemanticModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricsemanticmodeltable.html">FabricSemanticModelTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricsemanticmodeltablecolumn.html">FabricSemanticModelTableColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricvisual.html">FabricVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/fabricworkspace.html">FabricWorkspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/file.html">File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/fivetran.html">Fivetran</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/fivetranconnector.html">FivetranConnector</a></li>
@@ -396,6 +425,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/metric.html">Metric</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategy.html">MicroStrategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyattribute.html">MicroStrategyAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategycolumn.html">MicroStrategyColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategycube.html">MicroStrategyCube</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategydocument.html">MicroStrategyDocument</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategydossier.html">MicroStrategyDossier</a></li>
@@ -424,7 +454,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/multidimensionaldataset.html">MultiDimensionalDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/namespace.html">Namespace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/nosql.html">NoSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/notebook.html">Notebook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/objectstore.html">ObjectStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partial.html">Partial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialfield.html">PartialField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialobject.html">PartialObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv01.html">PartialV01</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv01field.html">PartialV01Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv01object.html">PartialV01Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv02.html">PartialV02</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv02field.html">PartialV02Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/partialv02object.html">PartialV02Object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/persona.html">Persona</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbi.html">PowerBI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbiapp.html">PowerBIApp</a></li>
@@ -452,6 +492,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qlik.html">Qlik</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikapp.html">QlikApp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikchart.html">QlikChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikcolumn.html">QlikColumn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikdataset.html">QlikDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qliksheet.html">QlikSheet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikspace.html">QlikSpace</a></li>
@@ -477,9 +518,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/s3.html">S3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/s3bucket.html">S3Bucket</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/s3object.html">S3Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/s3prefix.html">S3Prefix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/sap.html">SAP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/sql.html">SQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/saas.html">SaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudio.html">SageMakerUnifiedStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudioasset.html">SageMakerUnifiedStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudioassetschema.html">SageMakerUnifiedStudioAssetSchema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudioproject.html">SageMakerUnifiedStudioProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudiopublishedasset.html">SageMakerUnifiedStudioPublishedAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sagemakerunifiedstudiosubscribedasset.html">SageMakerUnifiedStudioSubscribedAsset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforce.html">Salesforce</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforcedashboard.html">SalesforceDashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforcefield.html">SalesforceField</a></li>
@@ -497,6 +545,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/schema.html">Schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/schemaregistry.html">SchemaRegistry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/schemaregistrysubject.html">SchemaRegistrySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semantic.html">Semantic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semanticdimension.html">SemanticDimension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semanticentity.html">SemanticEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semanticfield.html">SemanticField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semanticmeasure.html">SemanticMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/semanticmodel.html">SemanticModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/sigma.html">Sigma</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadataelement.html">SigmaDataElement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadataelementfield.html">SigmaDataElementField</a></li>
@@ -558,13 +612,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/view.html">View</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/workflow.html">Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../asset/workflowrun.html">WorkflowRun</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../asset/alpha_dqrule.html">alpha_DQRule</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../asset/alpha_dqruletemplate.html">alpha_DQRuleTemplate</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../other_models.html">Other models</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Other models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../other_models.html">Other models</a><input aria-label="Toggle navigation of Other models" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../other_model/core.html">Core model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../other_model/custom_metadata.html">Custom metadata</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../other_model/user.html">User</a></li>
@@ -577,7 +629,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Error Handling</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../caches.html">Caches</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Caches</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../caches.html">Caches</a><input aria-label="Toggle navigation of Caches" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../cache/atlan_tag_cache.html">AtlanTagCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../cache/custom_metadata_cache.html">CustomMetadataCache</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../cache/enum_cache.html">EnumCache</a></li>
@@ -586,7 +638,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../cache/user_cache.html">UserCache</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fields.html">Fields</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Fields</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fields.html">Fields</a><input aria-label="Toggle navigation of Fields" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../field/relation_field.html">RelationField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../field/searchable_field.html">SearchableField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../field/boolean_field.html">BooleanField</a></li>
@@ -620,8 +672,7 @@
         </a>
         <div class="content-icon-container">
           <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
               <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -629,15 +680,13 @@
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for pyatlan.client.atlan</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
-<span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
-<span class="c1"># Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)</span>
+<span class="c1"># Copyright 2025 Atlan Pte. Ltd.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
@@ -645,8 +694,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">_GeneratorContextManager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_text</span>
@@ -655,17 +704,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urljoin</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">httpx_retries</span><span class="w"> </span><span class="kn">import</span> <span class="n">Retry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.v1</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BaseSettings</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">,</span>
     <span class="n">HttpUrl</span><span class="p">,</span>
     <span class="n">PrivateAttr</span><span class="p">,</span>
     <span class="n">StrictStr</span><span class="p">,</span>
     <span class="n">constr</span><span class="p">,</span>
     <span class="n">validate_arguments</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">requests.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPAdapter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">urllib3.util.retry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Retry</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.atlan_tag_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtlanTagCache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.cache.connection_cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConnectionCache</span>
@@ -679,13 +728,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.admin</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdminClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.asset</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">AssetClient</span><span class="p">,</span> <span class="n">IndexSearchResults</span><span class="p">,</span> <span class="n">LineageListResults</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.audit</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuditClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTP_PREFIX</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">ImpersonateUser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EVENT_STREAM</span><span class="p">,</span> <span class="n">GET_TOKEN</span><span class="p">,</span> <span class="n">PARSE_QUERY</span><span class="p">,</span> <span class="n">UPLOAD_IMAGE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.contract</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContractClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.credential</span><span class="w"> </span><span class="kn">import</span> <span class="n">CredentialClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.file</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.group</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.impersonate</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImpersonationClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.oauth</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuthTokenManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.oauth_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuthClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.open_lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenLineageClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.query</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.role</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoleClient</span>
@@ -693,6 +744,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.sso</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSOClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.token</span><span class="w"> </span><span class="kn">import</span> <span class="n">TokenClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.transport</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyatlanSyncTransport</span>  <span class="c1"># type: ignore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.typedef</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeDefClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.client.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkflowClient</span>
@@ -725,6 +777,7 @@
     <span class="n">APPLICATION_ENCODED_FORM</span><span class="p">,</span>
     <span class="n">AuthorizationFilter</span><span class="p">,</span>
     <span class="n">RequestIdAdapter</span><span class="p">,</span>
+    <span class="n">get_python_version</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">request_id_var</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;request_id&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -747,7 +800,6 @@
     <span class="n">backoff_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span><span class="mi">403</span><span class="p">,</span> <span class="mi">429</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">],</span>
     <span class="n">allowed_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;OPTIONS&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">],</span>
-    <span class="n">raise_on_status</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="c1"># When response.status is in `status_forcelist`</span>
     <span class="c1"># and the &quot;Retry-After&quot; header is present, the retry mechanism</span>
     <span class="c1"># will use the header&#39;s value to delay the next API call.</span>
@@ -762,32 +814,23 @@
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;URL: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">():</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;x-atlan-agent&quot;</span><span class="p">:</span> <span class="s2">&quot;sdk&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;x-atlan-agent-id&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;x-atlan-client-origin&quot;</span><span class="p">:</span> <span class="s2">&quot;product_sdk&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Atlan-PythonSDK/</span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">log_response</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">session</span>
-
-
 <div class="viewcode-block" id="AtlanClient">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AtlanClient</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
     <span class="n">base_url</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;INTERNAL&quot;</span><span class="p">],</span> <span class="n">HttpUrl</span><span class="p">]</span>
-    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">oauth_client_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">oauth_client_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">connect_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">30.0</span>  <span class="c1"># 30 secs</span>
     <span class="n">read_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">900.0</span>  <span class="c1"># 15 mins</span>
     <span class="n">retry</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">DEFAULT_RETRY</span>
+    <span class="n">proxy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">verify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_401_has_retried</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;_401_has_retried&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">_session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_session</span><span class="p">)</span>
+    <span class="n">_session</span><span class="p">:</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
     <span class="n">_request_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
     <span class="n">_user_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_oauth_token_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_workflow_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WorkflowClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_credential_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CredentialClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_admin_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AdminClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -798,6 +841,7 @@
     <span class="n">_asset_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_typedef_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TypeDefClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_token_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TokenClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_oauth_client_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OAuthClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_user_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_impersonate_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImpersonationClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_query_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QueryClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -823,16 +867,106 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
-        <span class="n">adapter</span> <span class="o">=</span> <span class="n">HTTPAdapter</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retry</span><span class="p">)</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">HTTPS_PREFIX</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">HTTP_PREFIX</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_client_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_client_secret</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;API KEY not provided. Using OAuth flow for authentication&quot;</span><span class="p">)</span>
+
+            <span class="n">final_base_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;ATLAN_BASE_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;INTERNAL&quot;</span>
+            <span class="p">)</span>
+            <span class="n">final_oauth_client_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_client_id</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;ATLAN_OAUTH_CLIENT_ID&quot;</span>
+            <span class="p">)</span>
+            <span class="n">final_oauth_client_secret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oauth_client_secret</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;ATLAN_OAUTH_CLIENT_SECRET&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span> <span class="o">=</span> <span class="n">OAuthTokenManager</span><span class="p">(</span>
+                <span class="n">base_url</span><span class="o">=</span><span class="n">final_base_url</span><span class="p">,</span>
+                <span class="n">client_id</span><span class="o">=</span><span class="n">final_oauth_client_id</span><span class="p">,</span>
+                <span class="n">client_secret</span><span class="o">=</span><span class="n">final_oauth_client_secret</span><span class="p">,</span>
+                <span class="n">connect_timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_timeout</span><span class="p">,</span>
+                <span class="n">read_timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_timeout</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}}</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Build proxy/SSL configuration with environment variable fallback</span>
+        <span class="n">transport_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_transport_proxy_config</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># Configure httpx client with custom transport that supports retry and proxy</span>
+        <span class="c1"># Note: We pass proxy/SSL config to the transport, not the client,</span>
+        <span class="c1"># so that retry logic properly respects these settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
+            <span class="n">transport</span><span class="o">=</span><span class="n">PyatlanSyncTransport</span><span class="p">(</span><span class="n">retry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retry</span><span class="p">,</span> <span class="o">**</span><span class="n">transport_kwargs</span><span class="p">),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;x-atlan-agent&quot;</span><span class="p">:</span> <span class="s2">&quot;sdk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;x-atlan-agent-id&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;x-atlan-client-origin&quot;</span><span class="p">:</span> <span class="s2">&quot;product_sdk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;x-atlan-python-version&quot;</span><span class="p">:</span> <span class="n">get_python_version</span><span class="p">(),</span>
+                <span class="s2">&quot;x-atlan-client-type&quot;</span><span class="p">:</span> <span class="s2">&quot;sync&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Atlan-PythonSDK/</span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">event_hooks</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">log_response</span><span class="p">]},</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_401_has_retried</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_transport_proxy_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build proxy and SSL configuration for the transport.</span>
+
+<span class="sd">        When trust_env=True (default), httpx.HTTPTransport automatically respects:</span>
+<span class="sd">        - HTTP_PROXY, HTTPS_PROXY, ALL_PROXY environment variables</span>
+<span class="sd">        - NO_PROXY for exclusions</span>
+<span class="sd">        - SSL_CERT_FILE, REQUESTS_CA_BUNDLE for SSL certificates</span>
+
+<span class="sd">        This method passes explicitly provided values and also handles environment</span>
+<span class="sd">        variables to ensure they work correctly.</span>
+
+<span class="sd">        :param data: Configuration data passed to __init__</span>
+<span class="sd">        :returns: Dictionary of proxy/SSL kwargs for PyatlanSyncTransport</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">transport_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Handle proxy configuration</span>
+        <span class="k">if</span> <span class="s2">&quot;proxy&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">proxy</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span>
+            <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check environment variables for proxy settings</span>
+            <span class="c1"># Note: httpx with trust_env=True should handle this automatically,</span>
+            <span class="c1"># but we explicitly handle it here to ensure it works correctly</span>
+            <span class="n">proxy</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HTTPS_PROXY&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https_proxy&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HTTP_PROXY&quot;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http_proxy&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">proxy</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span>
+                <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy</span>
+
+        <span class="c1"># Handle SSL verification</span>
+        <span class="c1"># Note: We need to explicitly handle SSL_CERT_FILE from env vars</span>
+        <span class="c1"># because httpx&#39;s trust_env handling might not work correctly with relative paths</span>
+        <span class="k">if</span> <span class="s2">&quot;verify&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">verify</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="n">verify</span>
+            <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">verify</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check environment variables and convert relative paths to absolute</span>
+            <span class="n">ssl_cert_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SSL_CERT_FILE&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;REQUESTS_CA_BUNDLE&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">ssl_cert_file</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="n">ssl_cert_file</span>
+                <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssl_cert_file</span>
+        <span class="k">return</span> <span class="n">transport_kwargs</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">admin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdminClient</span><span class="p">:</span>
@@ -899,6 +1033,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span> <span class="o">=</span> <span class="n">TokenClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">oauth_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuthClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_client_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_client_client</span> <span class="o">=</span> <span class="n">OAuthClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_client_client</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">typedef</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefClient</span><span class="p">:</span>
@@ -999,7 +1139,13 @@
 <div class="viewcode-block" id="AtlanClient.from_token_guid">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.from_token_guid">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_token_guid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanClient</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_token_guid</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanClient</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an AtlanClient instance using an API token GUID.</span>
 
@@ -1010,15 +1156,20 @@
 <span class="sd">        4. Returns a new AtlanClient authenticated with the resolved token</span>
 
 <span class="sd">        :param guid: API token GUID to resolve</span>
+<span class="sd">        :param base_url: Optional base URL for the Atlan service(overrides ATLAN_BASE_URL environment variable)</span>
+<span class="sd">        :param client_id: Optional client ID for authentication (overrides CLIENT_ID environment variable)</span>
+<span class="sd">        :param client_secret: Optional client secret for authentication (overrides CLIENT_SECRET environment variable)</span>
 <span class="sd">        :returns: a new client instance authenticated with the resolved token</span>
 <span class="sd">        :raises: ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM: If any step in the token resolution fails</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ATLAN_BASE_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">)</span>
+        <span class="n">final_base_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ATLAN_BASE_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">)</span>
 
         <span class="c1"># Step 1: Initialize base client and get Atlan-Argo credentials</span>
         <span class="c1"># Note: Using empty api_key as we&#39;re bootstrapping authentication</span>
-        <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">client_info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">impersonate</span><span class="o">.</span><span class="n">_get_client_info</span><span class="p">()</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">final_base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">client_info</span> <span class="o">=</span> <span class="n">ImpersonateUser</span><span class="o">.</span><span class="n">get_client_info</span><span class="p">(</span>
+            <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span><span class="o">=</span><span class="n">client_secret</span>
+        <span class="p">)</span>
 
         <span class="c1"># Prepare credentials for Atlan-Argo token request</span>
         <span class="n">argo_credentials</span> <span class="o">=</span> <span class="p">{</span>
@@ -1032,7 +1183,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">raw_json</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_TOKEN</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">argo_credentials</span><span class="p">)</span>
             <span class="n">argo_token</span> <span class="o">=</span> <span class="n">AccessTokenResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
-            <span class="n">temp_argo_client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">argo_token</span><span class="p">)</span>
+            <span class="n">temp_argo_client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">final_base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">argo_token</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">atlan_err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_ESCALATE_WITH_PARAM</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
                 <span class="s2">&quot;Failed to obtain Atlan-Argo token&quot;</span>
@@ -1058,7 +1209,7 @@
             <span class="n">token_api_key</span> <span class="o">=</span> <span class="n">AccessTokenResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span><span class="o">.</span><span class="n">access_token</span>
 
             <span class="c1"># Step 5: Create and return the authenticated client</span>
-            <span class="k">return</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">token_api_key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">final_base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">token_api_key</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">atlan_err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_ESCALATE_WITH_PARAM</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
                 <span class="s2">&quot;Failed to obtain access token for API token&quot;</span>
@@ -1070,8 +1221,9 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_file_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_response</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">download_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">raw_response</span><span class="p">,</span> <span class="n">download_file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">download_file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">raw_response</span><span class="p">:</span>
+                    <span class="n">download_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_DOWNLOAD_FILE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
                 <span class="nb">str</span><span class="p">((</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="s2">&quot;strerror&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">err</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span> <span class="ow">or</span> <span class="n">err</span><span class="p">),</span> <span class="n">file_path</span>
@@ -1090,30 +1242,67 @@
         <span class="n">token</span> <span class="o">=</span> <span class="n">request_id_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;X-Atlan-Request-Id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request_id_var</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">timeout</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Timeout</span><span class="p">(</span>
+                <span class="kc">None</span><span class="p">,</span> <span class="n">connect</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_timeout</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">read_timeout</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">binary_data</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
                     <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                     <span class="n">path</span><span class="p">,</span>
                     <span class="n">data</span><span class="o">=</span><span class="n">binary_data</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">params</span><span class="p">,</span>
-                    <span class="n">timeout</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_timeout</span><span class="p">),</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span> <span class="o">==</span> <span class="n">EVENT_STREAM</span> <span class="ow">and</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span> <span class="o">==</span> <span class="n">EVENT_STREAM</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
                     <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                     <span class="n">path</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">params</span><span class="p">,</span>
-                    <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">timeout</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_timeout</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">download_file_path</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_file_download</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">download_file_path</span><span class="p">)</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="p">)</span> <span class="k">as</span> <span class="n">stream_response</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">download_file_path</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_file_download</span><span class="p">(</span>
+                            <span class="n">stream_response</span><span class="o">.</span><span class="n">iter_raw</span><span class="p">(),</span> <span class="n">download_file_path</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># For event streams, we need to read the content while the stream is open</span>
+                    <span class="c1"># Store the response data and create a mock response object for common processing</span>
+                    <span class="n">content</span> <span class="o">=</span> <span class="n">stream_response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">content</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="c1"># Only process lines for successful responses to avoid errors on error responses</span>
+                    <span class="k">if</span> <span class="n">stream_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">api</span><span class="o">.</span><span class="n">expected_status</span><span class="p">:</span>
+                        <span class="c1"># Reset stream position and get lines</span>
+                        <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">text</span> <span class="k">else</span> <span class="p">[]</span>
+
+                    <span class="n">response_data</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="n">stream_response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                        <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="n">stream_response</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+                        <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+                        <span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="n">lines</span><span class="p">,</span>
+                    <span class="p">}</span>
+
+                    <span class="c1"># Create a simple namespace object to mimic the response interface</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span>
+                        <span class="n">status_code</span><span class="o">=</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;status_code&quot;</span><span class="p">],</span>
+                        <span class="n">headers</span><span class="o">=</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">],</span>
+                        <span class="n">text</span><span class="o">=</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+                        <span class="n">content</span><span class="o">=</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">],</span>
+                        <span class="n">_stream_lines</span><span class="o">=</span><span class="n">response_data</span><span class="p">[</span>
+                            <span class="s2">&quot;lines&quot;</span>
+                        <span class="p">],</span>  <span class="c1"># Store lines for event processing</span>
+                        <span class="n">json</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+                        <span class="k">else</span> <span class="p">{},</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
                     <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                     <span class="n">path</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">params</span><span class="p">,</span>
-                    <span class="n">timeout</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_timeout</span><span class="p">),</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HTTP Status: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
@@ -1154,14 +1343,16 @@
                             <span class="n">response</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="k">if</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span> <span class="o">==</span> <span class="n">EVENT_STREAM</span> <span class="ow">and</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span> <span class="o">==</span> <span class="n">EVENT_STREAM</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">decode_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                                <span class="k">continue</span>
-                            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;data: &quot;</span><span class="p">):</span>
-                                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_DESERIALIZE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                                    <span class="n">line</span>
-                                <span class="p">)</span>
-                            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;data: &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="c1"># Process event stream using stored lines from the streaming response</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">&quot;_stream_lines&quot;</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">_stream_lines</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                                    <span class="k">continue</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;data: &quot;</span><span class="p">):</span>
+                                    <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_DESERIALIZE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                                        <span class="n">line</span>
+                                    <span class="p">)</span>
+                                <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;data: &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
                     <span class="k">if</span> <span class="n">text_response</span><span class="p">:</span>
                         <span class="n">response_</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -1179,10 +1370,7 @@
                         <span class="p">)</span>
                     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;response: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response_</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">response_</span>
-                <span class="k">except</span> <span class="p">(</span>
-                    <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,</span>
-                    <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,</span>
-                <span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
                         <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                     <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
@@ -1229,7 +1417,7 @@
                     <span class="c1"># Retry with impersonation (if _user_id is present)</span>
                     <span class="c1"># on authentication failure (token may have expired)</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_user_id</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="p">)</span>
                         <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_401_has_retried</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                         <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
                         <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">AUTHENTICATION_PASSTHROUGH</span><span class="o">.</span><span class="n">http_error_code</span>
@@ -1280,6 +1468,8 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Call         : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Content-type_ : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span><span class="p">)</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Accept       : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Client-Type  : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;SYNC&quot;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Python-Version: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">get_python_version</span><span class="p">())</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;User-Agent   : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Atlan-PythonSDK/</span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_call_api</span><span class="p">(</span>
@@ -1349,6 +1539,9 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">API</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request_obj</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;Accept&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">consumes</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">produces</span>
         <span class="k">if</span> <span class="n">query_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1382,6 +1575,21 @@
 
 <span class="sd">        returns: HTTP response received after retrying the request with the refreshed token</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="o">.</span><span class="n">invalidate_token</span><span class="p">()</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oauth_token_manager</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">][</span><span class="s2">&quot;authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_401_has_retried</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Successfully refreshed OAuth token after 401.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api_internal</span><span class="p">(</span>
+                <span class="n">api</span><span class="p">,</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">params</span><span class="p">,</span>
+                <span class="n">binary_data</span><span class="o">=</span><span class="n">binary_data</span><span class="p">,</span>
+                <span class="n">download_file_path</span><span class="o">=</span><span class="n">download_file_path</span><span class="p">,</span>
+                <span class="n">text_response</span><span class="o">=</span><span class="n">text_response</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">new_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impersonate</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_id</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2694,18 +2902,25 @@
 
 <div class="viewcode-block" id="AtlanClient.max_retries">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.max_retries">[docs]</a>
-    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">max_retries</span><span class="p">(</span>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>  <span class="c1"># type: ignore[misc,arg-type]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_retries</span><span class="p">(</span>  <span class="c1"># type: ignore[misc]</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">CONNECTION_RETRY</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_GeneratorContextManager</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a context manger that can used to temporarily change parameters used for retrying connnections.</span>
 <span class="sd">        The original Retry information will be restored when the context is exited.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">==</span> <span class="s2">&quot;INTERNAL&quot;</span><span class="p">:</span>
-            <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTP_PREFIX</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTPS_PREFIX</span><span class="p">]</span>
-        <span class="n">current_max</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span>  <span class="c1"># type: ignore[attr-defined]</span>
-        <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>  <span class="c1"># type: ignore[attr-defined]</span>
+        <span class="c1"># Store current transport and create new one with updated retries</span>
+        <span class="n">current_transport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">_transport</span>
+
+        <span class="c1"># Build transport kwargs with current proxy/SSL settings</span>
+        <span class="n">transport_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="p">:</span>
+            <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">transport_kwargs</span><span class="p">[</span><span class="s2">&quot;verify&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify</span>
+
+        <span class="n">new_transport</span> <span class="o">=</span> <span class="n">PyatlanSyncTransport</span><span class="p">(</span><span class="n">retry</span><span class="o">=</span><span class="n">max_retries</span><span class="p">,</span> <span class="o">**</span><span class="n">transport_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">_transport</span> <span class="o">=</span> <span class="n">new_transport</span>
+
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;max_retries set to total: </span><span class="si">%s</span><span class="s2"> force_list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">max_retries</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>
@@ -2715,16 +2930,13 @@
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Entering max_retries&quot;</span><span class="p">)</span>
             <span class="k">yield</span> <span class="kc">None</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Exiting max_retries&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RetryError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">TransportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Exception in max retries&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">current_max</span>  <span class="c1"># type: ignore[attr-defined]</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;max_retries restored to total: </span><span class="si">%s</span><span class="s2"> force_list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">total</span><span class="p">,</span>  <span class="c1"># type: ignore[attr-defined]</span>
-                <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span><span class="o">.</span><span class="n">status_forcelist</span><span class="p">,</span>  <span class="c1"># type: ignore[attr-defined]</span>
-            <span class="p">)</span></div>
+            <span class="c1"># Restore original transport</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">_transport</span> <span class="o">=</span> <span class="n">current_transport</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;max_retries restored </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">retry</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span></div>
 </div>
 
 
@@ -2795,8 +3007,8 @@
     </aside>
   </div>
 </div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>
