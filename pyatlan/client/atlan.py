@@ -111,7 +111,7 @@ LOGGER = get_adapter()
 DEFAULT_RETRY = Retry(
     total=5,
     backoff_factor=1,
-    status_forcelist=[403, 429, 500, 502, 503, 504],
+    status_forcelist=[302, 403, 429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
     # When response.status is in `status_forcelist`
     # and the "Retry-After" header is present, the retry mechanism
