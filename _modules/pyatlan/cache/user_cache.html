@@ -765,13 +765,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_refresh_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
-            <span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+            <span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="n">user</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_all</span><span class="p">()]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">users</span><span class="p">:</span>
                 <span class="k">return</span>
-            <span class="c1"># Process response using shared logic - extract records from response</span>
-            <span class="n">user_list</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="n">records</span> <span class="ow">or</span> <span class="p">[]</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_email_to_id</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">UserCacheCommon</span><span class="o">.</span><span class="n">refresh_cache_data</span><span class="p">(</span><span class="n">user_list</span><span class="p">)</span>
+                <span class="n">UserCacheCommon</span><span class="o">.</span><span class="n">refresh_cache_data</span><span class="p">(</span><span class="n">users</span><span class="p">)</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_id_for_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
