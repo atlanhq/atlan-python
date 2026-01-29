@@ -1,4 +1,16 @@
-## 8.5.0 (January 14, 2025)
+## 8.5.1 (January 29, 2026)
+
+### Bug Fixes
+
+- Fixed iterative pagination in User and Role caches that prevented all records from being properly populated during cache refresh operations.
+
+### QOL Improvements
+
+- Enhanced SDK client retry mechanism to automatically retry HTTP `302` redirect responses, improving reliability when handling temporary redirects.
+- Updated admin integration tests to align with latest backend API changes.
+  
+
+## 8.5.0 (January 14, 2026)
 
 ### New Features
 
@@ -9,7 +21,7 @@
 - `DataQualityRule.table_level_rule_creator()` and `DataQualityRule.column_level_rule_creator()` now accept `rule_type` as a `DataQualityRuleTemplateType` enum instead of `str`.
 - `threshold_compare_operator` is now an optional parameter for `DataQualityRule.table_level_rule_creator()`.
 
-## 8.4.6 (January 13, 2025)
+## 8.4.6 (January 13, 2026)
 
 ### New Features
 
