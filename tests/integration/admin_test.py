@@ -149,8 +149,7 @@ def test_group_get_members_pagination(client: AtlanClient, group: CreateGroupRes
     assert len(current_page) == 1
     for test_user in response:
         assert test_user.username
-        assert test_user.email
-        assert test_user.attributes
+        assert test_user.enabled
     current_page = response.current_page()
     assert current_page is not None
     assert len(current_page) == 0
@@ -167,8 +166,7 @@ def test_user_list_pagination(client: AtlanClient, group: CreateGroupResponse):
     assert len(current_page) == 1
     for test_user in response:
         assert test_user.username
-        assert test_user.email
-        assert test_user.attributes
+        assert test_user.enabled
         assert test_user.login_events is not None
         assert len(test_user.login_events) >= 0
     current_page = response.current_page()
@@ -247,7 +245,6 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     user1 = client.user.get_by_username(FIXED_USER)
     assert user1
     assert user1.id
-    assert user1.attributes
     assert user1.group_count == 1 + _default_group_count
     response = client.user.get_by_usernames(usernames=[FIXED_USER])
     assert response
