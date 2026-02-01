@@ -92,6 +92,9 @@ docker pull registry.atlan.com/public/pyatlan:main-latest
 
 # Version + Python tag
 docker pull registry.atlan.com/public/pyatlan:8.5.1-3.11
+
+# Commit-specific image
+docker pull registry.atlan.com/public/pyatlan:sha-1a064032
 ```
 
 ### Usage
