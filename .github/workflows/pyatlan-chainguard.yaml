@@ -57,6 +57,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Log in to Atlan Harbor Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.atlan.com
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
       - name: Log in to Chainguard Container Registry
         uses: docker/login-action@v3
         with:
@@ -84,7 +91,7 @@ jobs:
             else
               PYTHON_VERSION="${{ github.event.inputs.python_version }}"
             fi
-            
+
             # Set Pyatlan version (reads from pyatlan/version.txt by default)
             # This matches the version in the repository
             if [ -z "${{ github.event.inputs.pyatlan_version }}" ]; then
@@ -94,7 +101,7 @@ jobs:
               PYATLAN_VERSION="${{ github.event.inputs.pyatlan_version }}"
               echo "Using specified pyatlan version: $PYATLAN_VERSION"
             fi
-            
+
             # Handle branch input (if provided, will be used as commit SHA or branch name)
             if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
               echo "Note: Building from branch/commit: ${{ github.event.inputs.pyatlan_branch }}"
@@ -105,7 +112,7 @@ jobs:
           echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
           echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
           echo "PYATLAN_VERSION=$PYATLAN_VERSION" >> $GITHUB_ENV
-          
+
           # Set platforms based on build type
           if [ "$BUILD_TYPE" = "dev" ]; then
             PLATFORMS="linux/amd64"
@@ -113,11 +120,11 @@ jobs:
             PLATFORMS="linux/amd64,linux/arm64"
           fi
           echo "PLATFORMS=$PLATFORMS" >> $GITHUB_ENV
-          
+
           # Generate commit hash for dev builds (for image tagging only)
           COMMIT_HASH=$(git rev-parse --short HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-          
+
           # Set PYATLAN_COMMIT_SHA only if pyatlan_branch input is provided
           # Otherwise, leave empty to let Dockerfile use version tag
           if [ -n "${{ github.event.inputs.pyatlan_branch }}" ]; then
@@ -125,7 +132,7 @@ jobs:
           else
             echo "PYATLAN_COMMIT_SHA=" >> $GITHUB_ENV
           fi
-          
+
           echo "Build parameters:"
           echo "  - Trigger: ${{ github.event_name }}"
           echo "  - Build Type: $BUILD_TYPE"
@@ -150,12 +157,17 @@ jobs:
           if [ "$BUILD_TYPE" = "dev" ]; then
             # Dev: 8.0.0-3.11-commithash
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}-${COMMIT_HASH}"
+            HARBOR_TAGS="registry.atlan.com/public/pyatlan:${IMAGE_TAG}\nregistry.atlan.com/public/pyatlan:sha-${COMMIT_HASH}"
           else
             # Release: 8.0.0-3.11
             IMAGE_TAG="${PYATLAN_VERSION}-${PYTHON_VERSION}"
+            HARBOR_TAGS="registry.atlan.com/public/pyatlan:${IMAGE_TAG}\nregistry.atlan.com/public/pyatlan:main-latest\nregistry.atlan.com/public/pyatlan:main-${PYATLAN_VERSION}\nregistry.atlan.com/public/pyatlan:sha-${COMMIT_HASH}"
           fi
 
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "HARBOR_TAGS<<EOF" >> $GITHUB_ENV
+          echo -e "$HARBOR_TAGS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
           echo "Generated image tag: ghcr.io/atlanhq/pyatlan-chainguard-base:$IMAGE_TAG"
 
@@ -168,6 +180,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/atlanhq/pyatlan-chainguard-base:${{ env.IMAGE_TAG }}
+            ${{ env.HARBOR_TAGS }}
           build-args: |
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYATLAN_VERSION=${{ env.PYATLAN_VERSION }}
