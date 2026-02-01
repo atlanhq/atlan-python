@@ -10,7 +10,7 @@
 [![Downloads](https://img.shields.io/pypi/dm/pyatlan.svg)](https://pypi.org/project/pyatlan/)
 [![Build Status](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-publish.yaml/badge.svg)](https://github.com/atlanhq/atlan-python/actions/workflows/pyatlan-publish.yaml)
 [![Documentation](https://img.shields.io/badge/docs-developer.atlan.com-blue.svg)](https://developer.atlan.com/getting-started/python-sdk/)
-[![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fatlanhq%2Fatlan--python-blue.svg)](https://github.com/atlanhq/atlan-python/pkgs/container/atlan-python)
+[![Docker](https://img.shields.io/badge/docker-harbor-blue.svg)](https://registry.atlan.com/)
 
 ---
 
@@ -84,29 +84,28 @@ uv sync --all-groups
 
 ## 🐳 Docker
 
-### Pre-built Images
-
+### Pre-built Images (Harbor)
 
 ```bash
-# Latest version
-docker pull ghcr.io/atlanhq/atlan-python:latest
+# Latest main image
+docker pull registry.atlan.com/public/pyatlan:main-latest
 
-# Specific version
-docker pull ghcr.io/atlanhq/atlan-python:7.1.3
+# Version + Python tag
+docker pull registry.atlan.com/public/pyatlan:8.5.1-3.11
 ```
 
 ### Usage
 
 ```bash
 # Interactive Python session
-docker run -it --rm ghcr.io/atlanhq/atlan-python:latest
+docker run -it --rm registry.atlan.com/public/pyatlan:main-latest
 
 # Run a script
 docker run -it --rm \
   -v $(pwd):/app \
   -e ATLAN_API_KEY=your_key \
   -e ATLAN_BASE_URL=https://your-tenant.atlan.com \
-  ghcr.io/atlanhq/atlan-python:latest \
+  registry.atlan.com/public/pyatlan:main-latest \
   python your_script.py
 ```
 
