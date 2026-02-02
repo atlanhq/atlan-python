@@ -112,6 +112,16 @@ docker run -it --rm \
   python your_script.py
 ```
 
+## 🔒 Security Scans
+
+### Run Snyk locally (dependencies)
+
+```bash
+uv export --all-extras --no-hashes > snyk-requirements.txt
+snyk test --file=snyk-requirements.txt --severity-threshold=high --skip-unresolved
+rm -f snyk-requirements.txt
+```
+
 ## 🧪 Testing
 
 ### Unit Tests
