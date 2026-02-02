@@ -85,7 +85,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
-          input: uv.lock
+          scan-ref: uv.lock
           scanners: 'vuln'
           version: 'v0.69.0'
           ignore-unfixed: true
@@ -111,7 +111,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
-          input: uv.lock
+          scan-ref: uv.lock
           scanners: 'vuln'
           version: 'v0.69.0'
           ignore-unfixed: true
@@ -180,7 +180,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
-          input: uv.lock
+          scan-ref: uv.lock
           scanners: 'vuln'
           version: 'v0.69.0'
           ignore-unfixed: true
