@@ -114,3 +114,6 @@ asyncio_default_fixture_loop_scope = "module"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.poe.tasks]
+snyk-requirements = "uv export --all-extras --no-hashes > snyk-requirements.txt"

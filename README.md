@@ -117,7 +117,7 @@ docker run -it --rm \
 ### Run Snyk locally (dependencies)
 
 ```bash
-uv export --all-extras --no-hashes > snyk-requirements.txt
+uv run poe snyk-requirements
 snyk test --file=snyk-requirements.txt --severity-threshold=high --skip-unresolved
 rm -f snyk-requirements.txt
 ```
