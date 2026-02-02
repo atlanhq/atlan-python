@@ -215,12 +215,7 @@ typing-extensions==4.14.1
     #   virtualenv
 typing-inspection==0.4.2
     # via pydantic
-urllib3==1.26.20 ; python_full_version < '3.10' or platform_python_implementation == 'PyPy'
-    # via
-    #   requests
-    #   twine
-    #   vcrpy
-urllib3==2.5.0 ; python_full_version >= '3.10' and platform_python_implementation != 'PyPy'
+urllib3==1.26.20
     # via
     #   requests
     #   twine

@@ -27,7 +27,7 @@ repos:
         stages: [manual]
       - id: sync-requirements
         name: sync-requirements
-        entry: bash -c "uv export --all-extras --no-hashes > snyk-requirements.txt"
+        entry: bash -c "uv export --all-extras --no-hashes > requirements.txt"
         language: system
         pass_filenames: false
         files: ^uv.lock$
