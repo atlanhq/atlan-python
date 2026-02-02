@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
+import asyncio
 import logging
-import time
-from typing import Generator, List, NamedTuple, Set
+from typing import AsyncGenerator, List, NamedTuple, Set
 
 import pytest
+import pytest_asyncio
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.aio import AsyncAtlanClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import Table
 from pyatlan.model.core import AtlanTag, AtlanTagName
@@ -31,19 +32,19 @@ class TableInfo(NamedTuple):
     qualified_name: str
 
 
-def find_table_by_name(
-    client: AtlanClient, table_name: str, connector_type: str = "snowflake"
+async def find_table_by_name_async(
+    client: AsyncAtlanClient, table_name: str, connector_type: str = "snowflake"
 ) -> TableInfo:
     """
     Find a table by name using FluentSearch, filtering by connector type.
 
-    :param client: AtlanClient instance
+    :param client: AsyncAtlanClient instance
     :param table_name: name of the table to find
     :param connector_type: connector type to filter by (default: snowflake)
     :returns: TableInfo with name and qualified_name
     :raises ValueError: if table not found
     """
-    results = (
+    results = await (
         FluentSearch()
         .where(FluentSearch.asset_type(Table))
         .where(Table.NAME.eq(table_name))
@@ -51,9 +52,9 @@ def find_table_by_name(
         .include_on_results(Table.NAME)
         .include_on_results(Table.QUALIFIED_NAME)
         .page_size(10)
-    ).execute(client)
+    ).execute_async(client)
 
-    tables = list(results)
+    tables = [asset async for asset in results]
     if not tables:
         raise ValueError(
             f"Table '{table_name}' not found in tenant "
@@ -79,17 +80,19 @@ def find_table_by_name(
     return TableInfo(name=table_name, qualified_name=table.qualified_name)
 
 
-def get_current_tags(client: AtlanClient, qualified_name: str) -> Set[str]:
+async def get_current_tags_async(
+    client: AsyncAtlanClient, qualified_name: str
+) -> Set[str]:
     """Helper to retrieve current tags on an asset."""
-    asset = client.asset.get_by_qualified_name(
+    asset = await client.asset.get_by_qualified_name(
         qualified_name=qualified_name,
         asset_type=Table,
     )
     return {str(t.type_name) for t in (asset.atlan_tags or [])}
 
 
-def remove_tags_from_asset(
-    client: AtlanClient, qualified_name: str, name: str, tag_names: List[str]
+async def remove_tags_from_asset_async(
+    client: AsyncAtlanClient, qualified_name: str, name: str, tag_names: List[str]
 ) -> None:
     """Helper to remove specific tags from an asset."""
     if not tag_names:
@@ -100,40 +103,42 @@ def remove_tags_from_asset(
         for tag in tag_names
     ]
     try:
-        client.asset.save(entity=table)
+        await client.asset.save(entity=table)
     except Exception as e:
         LOGGER.debug(f"Tag removal (may be expected if tag not present): {e}")
 
 
-def remove_all_tags_from_asset(
-    client: AtlanClient, qualified_name: str, name: str
+async def remove_all_tags_from_asset_async(
+    client: AsyncAtlanClient, qualified_name: str, name: str
 ) -> None:
     """Helper to remove ALL tags from an asset (complete cleanup)."""
     try:
-        current_tags = get_current_tags(client, qualified_name)
+        current_tags = await get_current_tags_async(client, qualified_name)
         if current_tags:
             LOGGER.info(f"Removing all tags from {name}: {current_tags}")
-            remove_tags_from_asset(client, qualified_name, name, list(current_tags))
+            await remove_tags_from_asset_async(
+                client, qualified_name, name, list(current_tags)
+            )
     except Exception as e:
         LOGGER.debug(f"Complete tag removal (may be expected): {e}")
 
 
-@pytest.fixture(scope="module")
-def table1(client: AtlanClient) -> TableInfo:
+@pytest_asyncio.fixture(scope="module")
+async def table1(client: AsyncAtlanClient) -> TableInfo:
     """Fixture to find TABLE1 (BUYINGGROUPS) dynamically."""
-    return find_table_by_name(client, TABLE1_NAME)
+    return await find_table_by_name_async(client, TABLE1_NAME)
 
 
-@pytest.fixture(scope="module")
-def table2(client: AtlanClient) -> TableInfo:
+@pytest_asyncio.fixture(scope="module")
+async def table2(client: AsyncAtlanClient) -> TableInfo:
     """Fixture to find TABLE2 (CITIES_ARCHIVE) dynamically."""
-    return find_table_by_name(client, TABLE2_NAME)
+    return await find_table_by_name_async(client, TABLE2_NAME)
 
 
-@pytest.fixture(scope="module", autouse=True)
-def complete_cleanup_before_tests(
-    client: AtlanClient, table1: TableInfo, table2: TableInfo
-) -> Generator[None, None, None]:
+@pytest_asyncio.fixture(scope="module", autouse=True)
+async def complete_cleanup_before_tests(
+    client: AsyncAtlanClient, table1: TableInfo, table2: TableInfo
+) -> AsyncGenerator[None, None]:
     """
     Module-scoped fixture to do a COMPLETE cleanup of ALL tags before any tests run.
     This ensures a clean slate at the start of the test module.
@@ -142,16 +147,16 @@ def complete_cleanup_before_tests(
 
     # Remove ALL tags from both tables
     for table_info in [table1, table2]:
-        remove_all_tags_from_asset(
+        await remove_all_tags_from_asset_async(
             client,
             table_info.qualified_name,
             table_info.name,
         )
-    time.sleep(3)
+    await asyncio.sleep(3)
 
     # Verify cleanup was successful
     for table_info in [table1, table2]:
-        tags = get_current_tags(client, table_info.qualified_name)
+        tags = await get_current_tags_async(client, table_info.qualified_name)
         LOGGER.info(f"After complete cleanup - {table_info.name} tags: {tags}")
 
     yield
@@ -159,36 +164,36 @@ def complete_cleanup_before_tests(
     # Final cleanup after all tests
     LOGGER.info("Final cleanup after all tests...")
     for table_info in [table1, table2]:
-        remove_all_tags_from_asset(
+        await remove_all_tags_from_asset_async(
             client,
             table_info.qualified_name,
             table_info.name,
         )
 
 
-@pytest.fixture(autouse=True)
-def cleanup_tags(
-    client: AtlanClient, table1: TableInfo, table2: TableInfo
-) -> Generator[None, None, None]:
+@pytest_asyncio.fixture(autouse=True)
+async def cleanup_tags(
+    client: AsyncAtlanClient, table1: TableInfo, table2: TableInfo
+) -> AsyncGenerator[None, None]:
     """
     Fixture to ensure test tags are removed before and after each test.
     This maintains a clean state for testing.
     """
     # Cleanup before test - remove our test tags
     for table_info in [table1, table2]:
-        remove_tags_from_asset(
+        await remove_tags_from_asset_async(
             client,
             table_info.qualified_name,
             table_info.name,
             [TAG_ISSUE, TAG_CONFIDENTIAL],
         )
-    time.sleep(2)
+    await asyncio.sleep(2)
 
     yield
 
     # Cleanup after test - remove our test tags
     for table_info in [table1, table2]:
-        remove_tags_from_asset(
+        await remove_tags_from_asset_async(
             client,
             table_info.qualified_name,
             table_info.name,
@@ -197,8 +202,8 @@ def cleanup_tags(
 
 
 @pytest.mark.order(1)
-def test_append_single_tag(
-    client: AtlanClient,
+async def test_append_single_tag(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -213,20 +218,20 @@ def test_append_single_tag(
         ),
     ]
 
-    response = client.asset.save(entity=table)
-    time.sleep(3)
+    response = await client.asset.save(entity=table)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
     assert response.mutated_entities is not None
-    tags = get_current_tags(client, table1.qualified_name)
+    tags = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE in tags
     LOGGER.info(f"APPEND single tag test passed. Tags: {tags}")
 
 
 @pytest.mark.order(after="test_append_single_tag")
-def test_append_multiple_tags(
-    client: AtlanClient,
+async def test_append_multiple_tags(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -245,20 +250,20 @@ def test_append_multiple_tags(
         ),
     ]
 
-    response = client.asset.save(entity=table)
-    time.sleep(3)
+    response = await client.asset.save(entity=table)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
-    tags = get_current_tags(client, table1.qualified_name)
+    tags = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE in tags
     assert TAG_CONFIDENTIAL in tags
     LOGGER.info(f"APPEND multiple tags test passed. Tags: {tags}")
 
 
 @pytest.mark.order(after="test_append_multiple_tags")
-def test_remove_tag_after_append(
-    client: AtlanClient,
+async def test_remove_tag_after_append(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -273,11 +278,11 @@ def test_remove_tag_after_append(
             semantic=SaveSemantic.APPEND,
         ),
     ]
-    client.asset.save(entity=table)
-    time.sleep(3)
+    await client.asset.save(entity=table)
+    await asyncio.sleep(3)
 
     # Verify tag was added
-    tags_after_add = get_current_tags(client, table1.qualified_name)
+    tags_after_add = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE in tags_after_add, "Setup failed: tag not added"
 
     # Remove the tag
@@ -288,19 +293,19 @@ def test_remove_tag_after_append(
             semantic=SaveSemantic.REMOVE,
         ),
     ]
-    response = client.asset.save(entity=table_remove)
-    time.sleep(3)
+    response = await client.asset.save(entity=table_remove)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
-    tags = get_current_tags(client, table1.qualified_name)
+    tags = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE not in tags
     LOGGER.info(f"REMOVE tag test passed. Tags: {tags}")
 
 
 @pytest.mark.order(after="test_remove_tag_after_append")
-def test_replace_all_tags(
-    client: AtlanClient,
+async def test_replace_all_tags(
+    client: AsyncAtlanClient,
     table2: TableInfo,
 ) -> None:
     """
@@ -315,11 +320,11 @@ def test_replace_all_tags(
             semantic=SaveSemantic.APPEND,
         ),
     ]
-    client.asset.save(entity=table)
-    time.sleep(3)
+    await client.asset.save(entity=table)
+    await asyncio.sleep(3)
 
     # Verify tag was added
-    tags_after_add = get_current_tags(client, table2.qualified_name)
+    tags_after_add = await get_current_tags_async(client, table2.qualified_name)
     assert TAG_ISSUE in tags_after_add, "Setup failed: tag not added"
 
     # Replace with Confidential
@@ -332,20 +337,20 @@ def test_replace_all_tags(
             semantic=SaveSemantic.REPLACE,
         ),
     ]
-    response = client.asset.save(entity=table_replace)
-    time.sleep(3)
+    response = await client.asset.save(entity=table_replace)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
-    tags = get_current_tags(client, table2.qualified_name)
+    tags = await get_current_tags_async(client, table2.qualified_name)
     assert TAG_CONFIDENTIAL in tags
     assert TAG_ISSUE not in tags
     LOGGER.info(f"REPLACE tags test passed. Tags: {tags}")
 
 
 @pytest.mark.order(after="test_replace_all_tags")
-def test_append_and_remove_combined(
-    client: AtlanClient,
+async def test_append_and_remove_combined(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -360,11 +365,11 @@ def test_append_and_remove_combined(
             semantic=SaveSemantic.APPEND,
         ),
     ]
-    client.asset.save(entity=table)
-    time.sleep(3)
+    await client.asset.save(entity=table)
+    await asyncio.sleep(3)
 
     # Verify setup
-    tags_after_add = get_current_tags(client, table1.qualified_name)
+    tags_after_add = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_CONFIDENTIAL in tags_after_add, (
         "Setup failed: Confidential tag not added"
     )
@@ -381,20 +386,20 @@ def test_append_and_remove_combined(
             semantic=SaveSemantic.REMOVE,
         ),
     ]
-    response = client.asset.save(entity=table_mixed)
-    time.sleep(3)
+    response = await client.asset.save(entity=table_mixed)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
-    tags = get_current_tags(client, table1.qualified_name)
+    tags = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE in tags
     assert TAG_CONFIDENTIAL not in tags
     LOGGER.info(f"Mixed APPEND/REMOVE test passed. Tags: {tags}")
 
 
 @pytest.mark.order(after="test_append_and_remove_combined")
-def test_bulk_save_with_mixed_semantics_raises_error(
-    client: AtlanClient,
+async def test_bulk_save_with_mixed_semantics_raises_error(
+    client: AsyncAtlanClient,
     table1: TableInfo,
     table2: TableInfo,
 ) -> None:
@@ -425,7 +430,7 @@ def test_bulk_save_with_mixed_semantics_raises_error(
     # This should raise an error because mixing APPEND/REMOVE and REPLACE
     # in the same save() call sets both appendTags=True and replaceTags=True
     with pytest.raises(InvalidRequestError) as exc_info:
-        client.asset.save(entity=[t1, t2])
+        await client.asset.save(entity=[t1, t2])
 
     assert "Only one of" in str(exc_info.value) or "replaceTags" in str(exc_info.value)
     LOGGER.info(
@@ -434,8 +439,8 @@ def test_bulk_save_with_mixed_semantics_raises_error(
 
 
 @pytest.mark.order(after="test_bulk_save_with_mixed_semantics_raises_error")
-def test_mixed_semantics_on_same_asset_raises_error(
-    client: AtlanClient,
+async def test_mixed_semantics_on_same_asset_raises_error(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -459,7 +464,7 @@ def test_mixed_semantics_on_same_asset_raises_error(
     # This WILL raise "Only one of [replaceClassifications, replaceTags, appendTags]" error
     # because SDK sets both appendTags=True and replaceTags=True
     with pytest.raises(InvalidRequestError) as exc_info:
-        client.asset.save(entity=table)
+        await client.asset.save(entity=table)
 
     assert "Only one of" in str(exc_info.value) or "replaceTags" in str(exc_info.value)
     LOGGER.info(
@@ -468,8 +473,8 @@ def test_mixed_semantics_on_same_asset_raises_error(
 
 
 @pytest.mark.order(after="test_mixed_semantics_on_same_asset_raises_error")
-def test_all_three_semantics_raises_error(
-    client: AtlanClient,
+async def test_all_three_semantics_raises_error(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -494,15 +499,15 @@ def test_all_three_semantics_raises_error(
 
     # This should raise an error because both appendTags and replaceTags will be True
     with pytest.raises(InvalidRequestError) as exc_info:
-        client.asset.save(entity=table)
+        await client.asset.save(entity=table)
 
     assert "Only one of" in str(exc_info.value) or "replaceTags" in str(exc_info.value)
     LOGGER.info(f"Expected error raised for mixed semantics: {exc_info.value}")
 
 
 @pytest.mark.order(after="test_all_three_semantics_raises_error")
-def test_backward_compatibility_no_semantic(
-    client: AtlanClient,
+async def test_backward_compatibility_no_semantic(
+    client: AsyncAtlanClient,
     table1: TableInfo,
 ) -> None:
     """
@@ -517,11 +522,11 @@ def test_backward_compatibility_no_semantic(
         ),  # No semantic - backward compatible
     ]
 
-    response = client.asset.save(entity=table, replace_atlan_tags=True)
-    time.sleep(3)
+    response = await client.asset.save(entity=table, replace_atlan_tags=True)
+    await asyncio.sleep(3)
 
     # Verify response and tags
     assert response is not None
-    tags = get_current_tags(client, table1.qualified_name)
+    tags = await get_current_tags_async(client, table1.qualified_name)
     assert TAG_ISSUE in tags
     LOGGER.info(f"Backward compatibility test passed. Tags: {tags}")
