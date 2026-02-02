@@ -1,16 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-
-"""
-Unit tests for SaveSemantic feature for in-bulk asset tag management.
-
-Tests cover:
-1. AtlanTag semantic field behavior
-2. Entity splitting logic based on semantic values
-3. Processing of APPEND/REMOVE tags
-4. Response merging
-"""
-
 from unittest.mock import MagicMock
 
 import pytest
@@ -21,18 +10,12 @@ from pyatlan.model.core import AtlanTag, AtlanTagName
 from pyatlan.model.enums import SaveSemantic
 
 
-# =============================================================================
-# Test 1: AtlanTag semantic field defaults to None (backward compatibility)
-# =============================================================================
 def test_atlan_tag_semantic_defaults_to_none():
     """Verify AtlanTag.semantic defaults to None for backward compatibility."""
     tag = AtlanTag(type_name=AtlanTagName("TestTag"))
     assert tag.semantic is None
 
 
-# =============================================================================
-# Test 2: AtlanTag.of() accepts semantic parameter
-# =============================================================================
 def test_atlan_tag_of_with_semantic():
     """Verify AtlanTag.of() factory method accepts semantic parameter."""
     tag_append = AtlanTag.of(
@@ -53,9 +36,6 @@ def test_atlan_tag_of_with_semantic():
     assert tag_replace.semantic == SaveSemantic.REPLACE
 
 
-# =============================================================================
-# Test 3: Semantic field is excluded from JSON serialization
-# =============================================================================
 def test_atlan_tag_semantic_excluded_from_json():
     """Verify semantic field is excluded from JSON (not sent to API)."""
     tag = AtlanTag(type_name=AtlanTagName("TestTag"), semantic=SaveSemantic.APPEND)
@@ -63,9 +43,6 @@ def test_atlan_tag_semantic_excluded_from_json():
     assert "semantic" not in json_dict
 
 
-# =============================================================================
-# Test 4: has_tags_with_semantic() detects semantic tags
-# =============================================================================
 def test_has_tags_with_semantic_detection():
     """Verify has_tags_with_semantic correctly detects semantic vs non-semantic tags."""
     # Entity with APPEND semantic - should return True
@@ -86,101 +63,44 @@ def test_has_tags_with_semantic_detection():
     assert Save.has_tags_with_semantic([table_empty]) is False
 
 
-# =============================================================================
-# Test 5: Split entities - APPEND/REMOVE goes to append_remove bucket
-# =============================================================================
-def test_split_entities_append_remove_bucket():
-    """Verify APPEND and REMOVE semantic tags go to append_remove bucket."""
+def test_get_semantic_flags():
+    """Verify get_semantic_flags correctly identifies APPEND/REMOVE and REPLACE semantics."""
+    # APPEND only
     table_append = Table()
-    table_append.qualified_name = "table_append"
     table_append.atlan_tags = [
         AtlanTag(type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND)
     ]
+    has_append_remove, has_replace = Save.get_semantic_flags([table_append])
+    assert has_append_remove is True
+    assert has_replace is False
 
-    table_remove = Table()
-    table_remove.qualified_name = "table_remove"
-    table_remove.atlan_tags = [
-        AtlanTag(type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.REMOVE)
-    ]
-
-    append_remove, replace, no_semantic = Save.split_entities_by_tag_semantic(
-        [table_append, table_remove]
-    )
-
-    assert len(append_remove) == 2
-    assert len(replace) == 0
-    assert len(no_semantic) == 0
-
-
-# =============================================================================
-# Test 6: Split entities - REPLACE goes to replace bucket (only if no APPEND/REMOVE)
-# =============================================================================
-def test_split_entities_replace_bucket():
-    """Verify REPLACE semantic tags go to replace bucket when no APPEND/REMOVE present."""
+    # REPLACE only
     table_replace = Table()
-    table_replace.qualified_name = "table_replace"
     table_replace.atlan_tags = [
         AtlanTag(type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.REPLACE)
     ]
+    has_append_remove, has_replace = Save.get_semantic_flags([table_replace])
+    assert has_append_remove is False
+    assert has_replace is True
 
-    append_remove, replace, no_semantic = Save.split_entities_by_tag_semantic(
-        [table_replace]
-    )
-
-    assert len(append_remove) == 0
-    assert len(replace) == 1
-    assert len(no_semantic) == 0
-
-
-# =============================================================================
-# Test 7: Split entities - None semantic goes to no_semantic bucket
-# =============================================================================
-def test_split_entities_no_semantic_bucket():
-    """Verify tags with None semantic (backward compatible) go to no_semantic bucket."""
-    table_none = Table()
-    table_none.qualified_name = "table_none"
-    table_none.atlan_tags = [
-        AtlanTag(type_name=AtlanTagName("Tag1"))  # semantic=None
-    ]
-
-    table_no_tags = Table()
-    table_no_tags.qualified_name = "table_no_tags"
-    table_no_tags.atlan_tags = None
-
-    append_remove, replace, no_semantic = Save.split_entities_by_tag_semantic(
-        [table_none, table_no_tags]
-    )
-
-    assert len(append_remove) == 0
-    assert len(replace) == 0
-    assert len(no_semantic) == 2
-
-
-# =============================================================================
-# Test 8: Split entities - Mixed semantics on same entity (APPEND takes priority)
-# =============================================================================
-def test_split_entities_mixed_semantics_append_priority():
-    """Verify entity with both APPEND and REPLACE goes to append_remove (APPEND priority)."""
+    # Both APPEND and REPLACE
     table_mixed = Table()
-    table_mixed.qualified_name = "table_mixed"
     table_mixed.atlan_tags = [
         AtlanTag(type_name=AtlanTagName("Tag1"), semantic=SaveSemantic.APPEND),
         AtlanTag(type_name=AtlanTagName("Tag2"), semantic=SaveSemantic.REPLACE),
     ]
+    has_append_remove, has_replace = Save.get_semantic_flags([table_mixed])
+    assert has_append_remove is True
+    assert has_replace is True
 
-    append_remove, replace, no_semantic = Save.split_entities_by_tag_semantic(
-        [table_mixed]
-    )
-
-    # APPEND/REMOVE takes priority - entity goes to append_remove bucket
-    assert len(append_remove) == 1
-    assert len(replace) == 0
-    assert len(no_semantic) == 0
+    # No semantic
+    table_none = Table()
+    table_none.atlan_tags = [AtlanTag(type_name=AtlanTagName("Tag1"))]
+    has_append_remove, has_replace = Save.get_semantic_flags([table_none])
+    assert has_append_remove is False
+    assert has_replace is False
 
 
-# =============================================================================
-# Test 9: Process APPEND/REMOVE - tags moved to correct classification fields
-# =============================================================================
 def test_process_asset_append_remove_semantic():
     """Verify APPEND tags go to add_or_update_classifications, REMOVE to remove_classifications."""
     table = Table()
@@ -191,7 +111,7 @@ def test_process_asset_append_remove_semantic():
 
     Save.process_asset_for_append_remove_semantic(table)
 
-    # atlan_tags should be cleared
+    # atlan_tags should be cleared (no REPLACE or None semantic tags to keep)
     assert table.atlan_tags is None
     # APPEND tag should be in add_or_update_classifications
     assert table.add_or_update_classifications is not None
@@ -201,9 +121,61 @@ def test_process_asset_append_remove_semantic():
     assert len(table.remove_classifications) == 1
 
 
-# =============================================================================
-# Test 10: Merge responses combines multiple API responses correctly
-# =============================================================================
+def test_process_asset_keeps_replace_tags():
+    """Verify REPLACE tags remain in atlan_tags after processing."""
+    table = Table()
+    table.atlan_tags = [
+        AtlanTag(type_name=AtlanTagName("AppendTag"), semantic=SaveSemantic.APPEND),
+        AtlanTag(type_name=AtlanTagName("ReplaceTag"), semantic=SaveSemantic.REPLACE),
+    ]
+
+    Save.process_asset_for_append_remove_semantic(table)
+
+    # REPLACE tag should remain in atlan_tags
+    assert table.atlan_tags is not None
+    assert len(table.atlan_tags) == 1
+    assert table.atlan_tags[0].semantic == SaveSemantic.REPLACE
+    # APPEND tag should be in add_or_update_classifications
+    assert table.add_or_update_classifications is not None
+    assert len(table.add_or_update_classifications) == 1
+
+
+def test_process_asset_keeps_none_semantic_tags():
+    """Verify None semantic tags remain in atlan_tags after processing."""
+    table = Table()
+    table.atlan_tags = [
+        AtlanTag(type_name=AtlanTagName("AppendTag"), semantic=SaveSemantic.APPEND),
+        AtlanTag(type_name=AtlanTagName("NoneTag")),  # None semantic
+    ]
+
+    Save.process_asset_for_append_remove_semantic(table)
+
+    # None semantic tag should remain in atlan_tags
+    assert table.atlan_tags is not None
+    assert len(table.atlan_tags) == 1
+    assert table.atlan_tags[0].semantic is None
+    # APPEND tag should be in add_or_update_classifications
+    assert table.add_or_update_classifications is not None
+    assert len(table.add_or_update_classifications) == 1
+
+
+def test_process_asset_only_replace_tags_unchanged():
+    """Verify entity with only REPLACE tags keeps all tags in atlan_tags."""
+    table = Table()
+    table.atlan_tags = [
+        AtlanTag(type_name=AtlanTagName("ReplaceTag"), semantic=SaveSemantic.REPLACE),
+    ]
+
+    Save.process_asset_for_append_remove_semantic(table)
+
+    # REPLACE tag should remain in atlan_tags
+    assert table.atlan_tags is not None
+    assert len(table.atlan_tags) == 1
+    # No classification fields should be set
+    assert table.add_or_update_classifications is None
+    assert table.remove_classifications is None
+
+
 def test_merge_responses():
     """Verify merge_responses correctly combines multiple AssetMutationResponse objects."""
     from pyatlan.model.response import AssetMutationResponse, MutatedEntities
@@ -233,11 +205,6 @@ def test_merge_responses():
     assert len(result.mutated_entities.UPDATE) == 1
 
 
-# =============================================================================
-# API Call Count Tests - Verify correct number of API calls for different semantics
-# =============================================================================
-
-
 def _create_mock_response():
     """Helper to create a mock API response JSON."""
     return {
@@ -265,9 +232,6 @@ def mock_asset_client():
     return client, mock_api_caller._call_api
 
 
-# =============================================================================
-# Test 11: Single APPEND semantic = 1 API call
-# =============================================================================
 def test_api_call_count_single_append(mock_asset_client):
     """Verify single APPEND semantic results in 1 API call."""
     client, mock_call_api = mock_asset_client
@@ -284,9 +248,6 @@ def test_api_call_count_single_append(mock_asset_client):
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 12: Single REMOVE semantic = 1 API call
-# =============================================================================
 def test_api_call_count_single_remove(mock_asset_client):
     """Verify single REMOVE semantic results in 1 API call."""
     client, mock_call_api = mock_asset_client
@@ -303,9 +264,6 @@ def test_api_call_count_single_remove(mock_asset_client):
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 13: Single REPLACE semantic = 1 API call
-# =============================================================================
 def test_api_call_count_single_replace(mock_asset_client):
     """Verify single REPLACE semantic results in 1 API call."""
     client, mock_call_api = mock_asset_client
@@ -322,9 +280,6 @@ def test_api_call_count_single_replace(mock_asset_client):
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 14: APPEND + REMOVE combined on same entity = 1 API call
-# =============================================================================
 def test_api_call_count_append_remove_combined(mock_asset_client):
     """Verify APPEND and REMOVE on same entity results in 1 API call."""
     client, mock_call_api = mock_asset_client
@@ -339,15 +294,12 @@ def test_api_call_count_append_remove_combined(mock_asset_client):
 
     client.save(entity=table)
 
-    # APPEND and REMOVE go in same call (append_atlan_tags=True)
+    # APPEND and REMOVE go in same call (appendTags=True)
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 15: APPEND + REPLACE on different entities = 2 API calls
-# =============================================================================
 def test_api_call_count_append_replace_different_entities(mock_asset_client):
-    """Verify APPEND and REPLACE on different entities = 2 API calls."""
+    """Verify APPEND and REPLACE on different entities results in 1 API call (both flags set)."""
     client, mock_call_api = mock_asset_client
 
     table1 = Table()
@@ -366,13 +318,10 @@ def test_api_call_count_append_replace_different_entities(mock_asset_client):
 
     client.save(entity=[table1, table2])
 
-    # APPEND and REPLACE require separate API calls
-    assert mock_call_api.call_count == 2
+    # SDK makes single API call with both flags set (backend may return error)
+    assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 16: No semantic (None) = 1 API call (backward compatible)
-# =============================================================================
 def test_api_call_count_no_semantic(mock_asset_client):
     """Verify no semantic (None) results in 1 API call via existing path."""
     client, mock_call_api = mock_asset_client
@@ -389,11 +338,8 @@ def test_api_call_count_no_semantic(mock_asset_client):
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 17: APPEND + REPLACE + None semantic = 3 API calls
-# =============================================================================
 def test_api_call_count_all_three_semantics(mock_asset_client):
-    """Verify APPEND, REPLACE, and None semantics on different entities = 3 API calls."""
+    """Verify APPEND, REPLACE, and None semantics results in 1 API call."""
     client, mock_call_api = mock_asset_client
 
     table_append = Table()
@@ -419,13 +365,10 @@ def test_api_call_count_all_three_semantics(mock_asset_client):
 
     client.save(entity=[table_append, table_replace, table_none])
 
-    # Three different semantic paths = 3 API calls
-    assert mock_call_api.call_count == 3
+    # SDK makes single API call (backend may return error if conflicting flags)
+    assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 18: Multiple APPEND entities = 1 API call (batched together)
-# =============================================================================
 def test_api_call_count_multiple_append_batched(mock_asset_client):
     """Verify multiple APPEND entities are batched into 1 API call."""
     client, mock_call_api = mock_asset_client
@@ -446,11 +389,8 @@ def test_api_call_count_multiple_append_batched(mock_asset_client):
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 19: Mixed APPEND/REMOVE/REPLACE on same entity - APPEND/REMOVE prioritized
-# =============================================================================
 def test_api_call_count_mixed_on_same_entity(mock_asset_client):
-    """Verify entity with APPEND+REPLACE goes to append_remove bucket (1 call)."""
+    """Verify entity with APPEND+REPLACE+REMOVE results in 1 API call (both flags set)."""
     client, mock_call_api = mock_asset_client
 
     table = Table()
@@ -464,13 +404,10 @@ def test_api_call_count_mixed_on_same_entity(mock_asset_client):
 
     client.save(entity=table)
 
-    # APPEND/REMOVE takes priority, entity goes to append_remove bucket = 1 call
+    # SDK makes single API call with both appendTags and replaceTags set
     assert mock_call_api.call_count == 1
 
 
-# =============================================================================
-# Test 20: Asset without tags = 1 API call (no semantic processing)
-# =============================================================================
 def test_api_call_count_asset_without_tags(mock_asset_client):
     """Verify asset without tags results in 1 API call (standard save)."""
     client, mock_call_api = mock_asset_client

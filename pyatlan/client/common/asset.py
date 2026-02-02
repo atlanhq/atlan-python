@@ -879,62 +879,26 @@ class Save:
         return False
 
     @staticmethod
-    def split_entities_by_tag_semantic(
-        entities: List[Asset],
-    ) -> tuple[List[Asset], List[Asset], List[Asset]]:
+    def get_semantic_flags(entities: List[Asset]) -> tuple[bool, bool]:
         """
-        Split entities into three groups based on their tag semantics:
-        1. append_remove_entities: assets with APPEND or REMOVE semantic tags
-        2. replace_entities: assets with REPLACE semantic tags
-        3. no_semantic_entities: assets with no tags OR all tags have None semantic
+        Determine which semantic flags should be set based on tags in entities.
 
-        An asset goes into append_remove_entities if ANY of its tags have APPEND or REMOVE semantic.
-        An asset goes into replace_entities if ALL of its tags have REPLACE semantic (and none have APPEND/REMOVE).
-        An asset goes into no_semantic_entities if it has no tags or all tags have None semantic.
-
-        :param entities: list of assets to split
-        :returns: tuple of (append_remove_entities, replace_entities, no_semantic_entities)
+        :param entities: list of assets to check
+        :returns: tuple of (has_append_remove, has_replace)
         """
-        append_remove_entities: List[Asset] = []
-        replace_entities: List[Asset] = []
-        no_semantic_entities: List[Asset] = []
+        has_append_remove = False
+        has_replace = False
 
         for entity in entities:
             if not entity.atlan_tags:
-                # No tags - use existing logic
-                no_semantic_entities.append(entity)
                 continue
-
-            has_append_or_remove = False
-            has_replace = False
-            all_none = True
-
             for tag in entity.atlan_tags:
-                if (
-                    tag.semantic == SaveSemantic.APPEND
-                    or tag.semantic == SaveSemantic.REMOVE
-                ):
-                    has_append_or_remove = True
-                    all_none = False
+                if tag.semantic in (SaveSemantic.APPEND, SaveSemantic.REMOVE):
+                    has_append_remove = True
                 elif tag.semantic == SaveSemantic.REPLACE:
                     has_replace = True
-                    all_none = False
-                # tag.semantic == None doesn't change any flags
 
-            if all_none:
-                # All tags have None semantic - use existing logic
-                no_semantic_entities.append(entity)
-            elif has_append_or_remove:
-                # Has APPEND or REMOVE semantic tags
-                append_remove_entities.append(entity)
-            elif has_replace:
-                # Only has REPLACE semantic tags
-                replace_entities.append(entity)
-            else:
-                # Shouldn't reach here, but default to no_semantic
-                no_semantic_entities.append(entity)
-
-        return append_remove_entities, replace_entities, no_semantic_entities
+        return has_append_remove, has_replace
 
     @staticmethod
     def process_asset_for_append_remove_semantic(entity: Asset) -> Asset:
@@ -942,7 +906,7 @@ class Save:
         Process an asset with APPEND/REMOVE semantic tags.
         Sets add_or_update_classifications for APPEND tags and
         remove_classifications for REMOVE tags.
-        Clears atlan_tags after processing.
+        Keeps REPLACE and None semantic tags in atlan_tags.
 
         :param entity: the asset to process
         :returns: the processed asset
@@ -952,23 +916,24 @@ class Save:
 
         append_tags: List[AtlanTag] = []
         remove_tags: List[AtlanTag] = []
+        remaining_tags: List[AtlanTag] = []
 
         for tag in entity.atlan_tags:
             if tag.semantic == SaveSemantic.APPEND:
                 append_tags.append(tag)
             elif tag.semantic == SaveSemantic.REMOVE:
                 remove_tags.append(tag)
-            # Tags with None or REPLACE semantic are ignored here
-            # REPLACE semantic should not appear in append_remove_entities
+            else:
+                # Keep REPLACE and None semantic tags in atlan_tags
+                remaining_tags.append(tag)
 
         if append_tags:
             entity.add_or_update_classifications = append_tags
         if remove_tags:
             entity.remove_classifications = remove_tags
 
-        # Clear atlan_tags since we've moved them to add_or_update_classifications
-        # and remove_classifications
-        entity.atlan_tags = None
+        # Keep remaining tags (REPLACE and None semantic) in atlan_tags
+        entity.atlan_tags = remaining_tags if remaining_tags else None
 
         return entity
 

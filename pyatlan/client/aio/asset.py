@@ -396,83 +396,45 @@ class AsyncAssetClient:
     ) -> AssetMutationResponse:
         """
         Internal async method to handle saving assets with tag semantic values.
-        Splits entities based on their tag semantics and makes appropriate API calls.
+        Updates query params based on semantics and makes a single API call.
+
+        If entities have APPEND/REMOVE semantic tags → appendTags=True
+        If entities have REPLACE semantic tags → replaceTags=True
+        If both are present → both flags True → backend error (user must make separate calls)
 
         :param entities: list of assets to save
         :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
         :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
-        :returns: merged AssetMutationResponse from all API calls
+        :returns: AssetMutationResponse from the API call
         """
-        # Split entities by tag semantic
-        append_remove_entities, replace_entities, no_semantic_entities = (
-            Save.split_entities_by_tag_semantic(entities)
-        )
+        # Determine which flags to set based on semantics present
+        has_append_remove, has_replace = Save.get_semantic_flags(entities)
 
-        responses: List[AssetMutationResponse] = []
+        # Process entities with APPEND/REMOVE semantic to set classification fields
+        for entity in entities:
+            Save.process_asset_for_append_remove_semantic(entity)
 
-        # Handle APPEND/REMOVE semantic entities
-        if append_remove_entities:
-            # Process each entity to set add_or_update_classifications and remove_classifications
-            for entity in append_remove_entities:
-                Save.process_asset_for_append_remove_semantic(entity)
+        # Validate and flush custom metadata
+        await Save.validate_and_flush_entities_async(entities, self._client)  # type: ignore[arg-type]
 
-            # Validate and flush custom metadata
-            await Save.validate_and_flush_entities_async(
-                append_remove_entities,
-                self._client,  # type: ignore[arg-type]
-            )
+        # Build query params based on semantics
+        # If user mixes APPEND/REMOVE and REPLACE, both flags will be True → backend error
+        query_params = {
+            "replaceTags": has_replace,
+            "appendTags": has_append_remove,
+            "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
+        }
 
-            query_params = {
-                "replaceTags": False,
-                "appendTags": True,
-                "replaceBusinessAttributes": replace_custom_metadata,
-                "overwriteBusinessAttributes": overwrite_custom_metadata,
-            }
-            request = BulkRequest[Asset](entities=append_remove_entities)
-            raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
-            responses.append(Save.process_response(raw_json))
-
-        # Handle REPLACE semantic entities
-        if replace_entities:
-            # Validate and flush custom metadata
-            await Save.validate_and_flush_entities_async(replace_entities, self._client)  # type: ignore[arg-type]
-
-            query_params = {
-                "replaceTags": True,
-                "appendTags": False,
-                "replaceBusinessAttributes": replace_custom_metadata,
-                "overwriteBusinessAttributes": overwrite_custom_metadata,
-            }
-            request = BulkRequest[Asset](entities=replace_entities)
-            raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
-            responses.append(Save.process_response(raw_json))
-
-        # Handle no semantic entities (existing logic)
-        if no_semantic_entities:
-            # Validate and flush custom metadata
-            await Save.validate_and_flush_entities_async(
-                no_semantic_entities,
-                self._client,  # type: ignore[arg-type]
-            )
-
-            query_params = {
-                "replaceTags": False,
-                "appendTags": False,
-                "replaceBusinessAttributes": replace_custom_metadata,
-                "overwriteBusinessAttributes": overwrite_custom_metadata,
-            }
-            request = BulkRequest[Asset](entities=no_semantic_entities)
-            raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
-            responses.append(Save.process_response(raw_json))
-
-        # Merge all responses
-        merged_response = Save.merge_responses(responses)
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
+        response = Save.process_response(raw_json)
 
         # Handle connection waiting for any created connections
-        if connections_created := merged_response.assets_created(Connection):
+        if connections_created := response.assets_created(Connection):
             await self._wait_for_connections_to_be_created(connections_created)
 
-        return merged_response
+        return response
 
     async def _wait_for_connections_to_be_created(self, connections_created):
         guids = Save.get_connection_guids_to_wait_for(connections_created)
