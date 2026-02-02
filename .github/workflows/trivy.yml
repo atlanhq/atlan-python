@@ -1,0 +1,184 @@
+name: Trivy Image and Dependency Scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+  security-events: write
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: pyatlan-trivy:latest
+
+      - name: Trivy image scan (table)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: pyatlan-trivy:latest
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'table'
+          output: 'trivy-image.txt'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
+
+      - name: Show Trivy image table
+        if: always()
+        shell: bash
+        run: |
+          echo "Trivy image scan (table)";
+          if [ -f trivy-image.txt ]; then
+            cat trivy-image.txt;
+          else
+            echo "No trivy-image.txt output found.";
+          fi
+
+      - name: Trivy image scan (SARIF)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: pyatlan-trivy:latest
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-image.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
+
+      - name: Trivy dependency scan (uv.lock, table)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          input: uv.lock
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'table'
+          output: 'trivy-deps.txt'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+
+      - name: Show Trivy dependency table
+        if: always()
+        shell: bash
+        run: |
+          echo "Trivy dependency scan (table)";
+          if [ -f trivy-deps.txt ]; then
+            cat trivy-deps.txt;
+          else
+            echo "No trivy-deps.txt output found.";
+          fi
+
+      - name: Trivy dependency scan (uv.lock, SARIF)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          input: uv.lock
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-deps.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+
+      - name: Upload Trivy image results
+        if: github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-image.sarif'
+          category: 'trivy-image'
+
+      - name: Upload Trivy dependency results
+        if: github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-deps.sarif'
+          category: 'trivy-deps'
+
+      - name: Publish Trivy summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Trivy Image Scan (pyatlan-trivy:latest)";
+            echo "";
+            if [ -f trivy-image.txt ]; then
+              echo '```';
+              cat trivy-image.txt;
+              echo '```';
+            else
+              echo "No image scan output found.";
+            fi
+            echo "";
+            echo "## Trivy Dependency Scan (uv.lock)";
+            echo "";
+            if [ -f trivy-deps.txt ]; then
+              echo '```';
+              cat trivy-deps.txt;
+              echo '```';
+            else
+              echo "No dependency scan output found.";
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail on High/Critical vulnerabilities (image)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: pyatlan-trivy:latest
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
+
+      - name: Fail on High/Critical vulnerabilities (uv.lock)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          input: uv.lock
+          scanners: 'vuln'
+          version: 'v0.69.0'
+          ignore-unfixed: true
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
