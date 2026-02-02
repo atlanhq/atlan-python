@@ -37,7 +37,7 @@ dependencies = [
     "PyYAML~=6.0.3",
     "httpx~=0.28.1",
     "httpx-retries~=0.4.5",
-    "authlib~=1.6.5",
+    "authlib~=1.6.6",
 ]
 
 [project.urls]
@@ -52,6 +52,10 @@ dev = [
     "ruff~=0.14.5",
     "types-setuptools~=80.9.0.20250822",
     "types-Authlib~=1.6.5.20251005",
+    "jaraco-context~=6.1.0",
+    "filelock~=3.20.3; python_version >= '3.10'",
+    "virtualenv~=20.36.1",
+    "urllib3~=2.6.3; python_version >= '3.10'",
     "pytest~=8.4.2",
     "pytest-vcr~=1.0.2",
     "vcrpy~=7.0.0",
@@ -114,3 +118,9 @@ asyncio_default_fixture_loop_scope = "module"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.uv]
+environments = ["python_version >= '3.9' and python_version < '3.14' and platform_python_implementation == 'CPython'"]
+
+[tool.poe.tasks]
+snyk-requirements = "uv export --all-extras --no-hashes > snyk-requirements.txt"
