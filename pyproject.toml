@@ -115,5 +115,8 @@ filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 
+[tool.uv]
+environments = ["python_version >= '3.9' and python_version < '3.14' and platform_python_implementation == 'CPython'"]
+
 [tool.poe.tasks]
 snyk-requirements = "uv export --all-extras --no-hashes > snyk-requirements.txt"
