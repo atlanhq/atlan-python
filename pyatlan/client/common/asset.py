@@ -679,20 +679,20 @@ class Save:
     def _process_atlan_tag_semantics(asset: Asset) -> None:
         """
         Process Atlan tags with semantics and populate appropriate fields.
-        
+
         Tags with APPEND semantic go to add_or_update_classifications.
         Tags with REMOVE semantic go to remove_classifications.
         Tags with REPLACE semantic or None (backward compatibility) stay in atlan_tags.
-        
+
         :param asset: the asset to process
         """
         if not asset.atlan_tags:
             return
-            
+
         append_tags = []
         remove_tags = []
         replace_tags = []
-        
+
         for tag in asset.atlan_tags:
             if tag.semantic == SaveSemantic.APPEND:
                 append_tags.append(tag)
@@ -701,7 +701,7 @@ class Save:
             else:
                 # REPLACE or None (backward compatibility)
                 replace_tags.append(tag)
-        
+
         # Update asset fields based on processed tags
         if append_tags:
             asset.add_or_update_classifications = append_tags
@@ -743,7 +743,7 @@ class Save:
             raise ValueError(
                 "AtlanClient instance must be provided to validate and flush cm for assets."
             )
-        
+
         # Process Atlan tags with semantics for each asset
         has_semantic_tags = False
         has_replace_semantic = False
@@ -753,10 +753,13 @@ class Save:
                 if any(tag.semantic is not None for tag in asset.atlan_tags):
                     has_semantic_tags = True
                     # Check if any tags have REPLACE semantic before processing
-                    if any(tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags):
+                    if any(
+                        tag.semantic == SaveSemantic.REPLACE
+                        for tag in asset.atlan_tags
+                    ):
                         has_replace_semantic = True
                     Save._process_atlan_tag_semantics(asset)
-        
+
         # Determine query parameters based on semantic usage
         if has_semantic_tags:
             # If tags have semantics, override the parameters
@@ -784,7 +787,7 @@ class Save:
                 "replaceBusinessAttributes": replace_custom_metadata,
                 "overwriteBusinessAttributes": overwrite_custom_metadata,
             }
-        
+
         # Validate and flush entities BEFORE creating the BulkRequest
         Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
@@ -819,7 +822,7 @@ class Save:
             raise ValueError(
                 "AsyncAtlanClient instance must be provided to validate and flush cm for assets."
             )
-        
+
         # Process Atlan tags with semantics for each asset
         has_semantic_tags = False
         has_replace_semantic = False
@@ -829,10 +832,13 @@ class Save:
                 if any(tag.semantic is not None for tag in asset.atlan_tags):
                     has_semantic_tags = True
                     # Check if any tags have REPLACE semantic before processing
-                    if any(tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags):
+                    if any(
+                        tag.semantic == SaveSemantic.REPLACE
+                        for tag in asset.atlan_tags
+                    ):
                         has_replace_semantic = True
                     Save._process_atlan_tag_semantics(asset)
-        
+
         # Determine query parameters based on semantic usage
         if has_semantic_tags:
             # If tags have semantics, override the parameters
@@ -860,7 +866,7 @@ class Save:
                 "replaceBusinessAttributes": replace_custom_metadata,
                 "overwriteBusinessAttributes": overwrite_custom_metadata,
             }
-        
+
         # Validate and flush entities BEFORE creating the BulkRequest
         await Save.validate_and_flush_entities_async(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
