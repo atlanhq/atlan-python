@@ -754,8 +754,7 @@ class Save:
                     has_semantic_tags = True
                     # Check if any tags have REPLACE semantic before processing
                     if any(
-                        tag.semantic == SaveSemantic.REPLACE
-                        for tag in asset.atlan_tags
+                        tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags
                     ):
                         has_replace_semantic = True
                     Save._process_atlan_tag_semantics(asset)
@@ -833,8 +832,7 @@ class Save:
                     has_semantic_tags = True
                     # Check if any tags have REPLACE semantic before processing
                     if any(
-                        tag.semantic == SaveSemantic.REPLACE
-                        for tag in asset.atlan_tags
+                        tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags
                     ):
                         has_replace_semantic = True
                     Save._process_atlan_tag_semantics(asset)
