@@ -80,19 +80,19 @@ class AsyncSSOClient:
                 "Atlan group must have a 'name' field populated",
                 sso_alias,
             )
-        
+
         logger.info(
             f"Creating SSO group mapping: {atlan_group.alias} (ID: {atlan_group.id}) "
             f"<-> {sso_group_name} (SSO: {sso_alias})"
         )
-        
+
         await self._check_existing_group_mappings(sso_alias, atlan_group)
         endpoint, request_obj = SSOCreateGroupMapping.prepare_request(
             sso_alias, atlan_group, sso_group_name
         )
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
         result = SSOCreateGroupMapping.process_response(raw_json)
-        
+
         logger.info(f"Successfully created SSO group mapping with ID: {result.id}")
         return result
 
@@ -153,7 +153,7 @@ class AsyncSSOClient:
     async def delete_group_mapping(self, sso_alias: str, group_map_id: str) -> None:
         """
         Deletes an existing Atlan SSO group mapping.
-        
+
         Note: This only deletes the SSO mapping (identity provider mapper).
         If you're experiencing issues with Okta Push Groups failing with
         stale externalId errors, you may need to run the diagnostic script
@@ -165,17 +165,17 @@ class AsyncSSOClient:
         :returns: an empty response (`None`).
         """
         logger.info(f"Deleting SSO group mapping: {group_map_id} (SSO: {sso_alias})")
-        
+
         endpoint, request_obj = SSODeleteGroupMapping.prepare_request(
             sso_alias, group_map_id
         )
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
-        
+
         logger.info(f"Successfully deleted SSO group mapping: {group_map_id}")
         logger.debug(
             "If you're experiencing Okta Push Groups issues with stale externalId, "
             "run: python -m pyatlan.samples.sso.diagnose_orphaned_group_mappings "
             f"--mode diagnose --sso-alias {sso_alias}"
         )
-        
+
         return raw_json
