@@ -171,7 +171,9 @@ def test_diagnose_with_target_group_filter(
     mock_client.sso.get_all_group_mappings.return_value = sample_mappings
 
     # Execute - filter for test_group_1
-    results = diagnostic.diagnose_orphaned_mappings("okta", target_group_name="test_group_1")
+    results = diagnostic.diagnose_orphaned_mappings(
+        "okta", target_group_name="test_group_1"
+    )
 
     # Verify - should only check mappings for test_group_1
     # mapping-1 is valid, mapping-4 is orphaned (both reference test_group_1)
@@ -246,9 +248,7 @@ def test_cleanup_orphaned_mappings_non_interactive(
     assert mock_client.sso.delete_group_mapping.call_count == 2
 
 
-def test_cleanup_no_orphaned_mappings(
-    diagnostic, mock_client, sample_groups
-):
+def test_cleanup_no_orphaned_mappings(diagnostic, mock_client, sample_groups):
     """Test cleanup when there are no orphaned mappings."""
     # Create only valid mappings
     valid_mapping = SSOMapper(

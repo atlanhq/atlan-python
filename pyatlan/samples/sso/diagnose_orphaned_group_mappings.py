@@ -14,7 +14,8 @@ Usage:
     python diagnose_orphaned_group_mappings.py --mode diagnose --sso-alias <sso_alias>
     
     # Diagnose specific group
-    python diagnose_orphaned_group_mappings.py --mode diagnose --sso-alias <sso_alias> --group-name <group_name>
+    python diagnose_orphaned_group_mappings.py --mode diagnose \\
+        --sso-alias <sso_alias> --group-name <group_name>
     
     # Clean up orphaned mappings (interactive)
     python diagnose_orphaned_group_mappings.py --mode cleanup --sso-alias <sso_alias>
@@ -121,7 +122,11 @@ class SSOGroupMappingDiagnostic:
         logger.info("-" * 80)
 
         for mapping in mappings:
-            if not mapping.name or not mapping.config or not mapping.config.group_name:
+            if (
+                not mapping.name
+                or not mapping.config
+                or not mapping.config.group_name
+            ):
                 logger.warning(f"⚠️  Mapping {mapping.id} has incomplete data")
                 suspicious.append(mapping)
                 continue
@@ -296,7 +301,10 @@ def main():
         "--mode",
         required=True,
         choices=["diagnose", "cleanup", "list"],
-        help="Operation mode: diagnose (check for issues), cleanup (remove orphaned mappings), or list (show all mappings)",
+        help=(
+            "Operation mode: diagnose (check for issues), "
+            "cleanup (remove orphaned mappings), or list (show all mappings)"
+        ),
     )
 
     parser.add_argument(
