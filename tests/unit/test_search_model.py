@@ -273,25 +273,23 @@ def test_bool_add_preserves_minimum_should_match():
             Term(field="__traitNames", value="tag1"),
             Term(field="__traitNames", value="tag2"),
         ],
-        minimum_should_match=1
+        minimum_should_match=1,
     )
-    
+
     # Query with filter clauses (like metadata filter)
-    metadata_query = Bool(
-        filter=[Term(field="customMetadataField", value="someValue")]
-    )
-    
+    metadata_query = Bool(filter=[Term(field="customMetadataField", value="someValue")])
+
     # Combine them
     combined = tag_query + metadata_query
-    
+
     # Verify minimum_should_match is preserved
     assert combined.minimum_should_match == 1
     assert combined._min_should_match == 1
-    
+
     # Verify the combined query has both should and filter
     assert len(combined.should) == 2
     assert len(combined.filter) == 1
-    
+
     # Verify the dict representation includes minimum_should_match
     query_dict = combined.to_dict()
     assert "minimum_should_match" in query_dict["bool"]
@@ -303,16 +301,13 @@ def test_bool_add_reverse_order():
     Test that the order of combination doesn't affect minimum_should_match preservation.
     """
     tag_query = Bool(
-        should=[Term(field="__traitNames", value="tag1")],
-        minimum_should_match=1
+        should=[Term(field="__traitNames", value="tag1")], minimum_should_match=1
     )
-    metadata_query = Bool(
-        filter=[Term(field="customMetadataField", value="someValue")]
-    )
-    
+    metadata_query = Bool(filter=[Term(field="customMetadataField", value="someValue")])
+
     # Combine in reverse order
     combined = metadata_query + tag_query
-    
+
     # minimum_should_match should still be preserved
     assert combined.minimum_should_match == 1
     assert combined._min_should_match == 1
@@ -322,17 +317,11 @@ def test_bool_add_max_minimum_should_match():
     """
     Test that when both queries have minimum_should_match, the max value is used.
     """
-    q1 = Bool(
-        should=[Term(field="field1", value="value1")],
-        minimum_should_match=1
-    )
-    q2 = Bool(
-        should=[Term(field="field2", value="value2")],
-        minimum_should_match=2
-    )
-    
+    q1 = Bool(should=[Term(field="field1", value="value1")], minimum_should_match=1)
+    q2 = Bool(should=[Term(field="field2", value="value2")], minimum_should_match=2)
+
     combined = q1 + q2
-    
+
     # Should use the maximum value
     assert combined.minimum_should_match == 2
     assert combined._min_should_match == 2

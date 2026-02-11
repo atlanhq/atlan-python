@@ -618,7 +618,9 @@ class Bool(Query):
                 if q.minimum_should_match is None:
                     q.minimum_should_match = other.minimum_should_match
                 else:
-                    q.minimum_should_match = max(q.minimum_should_match, other.minimum_should_match)
+                    q.minimum_should_match = max(
+                        q.minimum_should_match, other.minimum_should_match
+                    )
         else:
             q.filter.append(other)
         return q
