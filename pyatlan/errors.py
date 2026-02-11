@@ -539,6 +539,24 @@ class ErrorCode(Enum):
         "You can use SSOClient.update_group_mapping() to update the existing group mapping.",
         InvalidRequestError,
     )
+    SSO_GROUP_NOT_FOUND = (
+        404,
+        "ATLAN-PYTHON-404-031",
+        "Atlan group '{0}' (ID: {1}) not found. This may indicate an orphaned SSO group mapping.",
+        "The SSO mapping references a group that no longer exists. "
+        "Run the diagnostic script to identify and clean up orphaned mappings: "
+        "python -m pyatlan.samples.sso.diagnose_orphaned_group_mappings --mode diagnose --sso-alias {2}",
+        NotFoundError,
+    )
+    SSO_MAPPING_VALIDATION_ERROR = (
+        400,
+        "ATLAN-PYTHON-400-059",
+        "SSO mapping validation failed: {0}",
+        "Ensure the Atlan group exists before creating an SSO mapping. "
+        "You may have orphaned mappings that need cleanup. "
+        "Run: python -m pyatlan.samples.sso.diagnose_orphaned_group_mappings --mode diagnose --sso-alias {1}",
+        InvalidRequestError,
+    )
     INVALID_UPLOAD_FILE_PATH = (
         400,
         "ATLAN-PYTHON-400-059",

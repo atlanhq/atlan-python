@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from pydantic.v1 import validate_arguments
@@ -14,6 +15,8 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup
 from pyatlan.model.sso import SSOMapper
+
+logger = logging.getLogger(__name__)
 
 
 class SSOClient:
@@ -55,14 +58,35 @@ class SSOClient:
         :param atlan_group: existing Atlan group.
         :param sso_group_name: name of the SSO group.
         :raises AtlanError: on any error during API invocation.
+        :raises InvalidRequestError: if the group doesn't have required fields or mapping already exists.
         :returns: created SSO group mapping instance.
         """
+        # Validate the group has required fields
+        if not atlan_group.id:
+            raise ErrorCode.SSO_MAPPING_VALIDATION_ERROR.exception_with_parameters(
+                "Atlan group must have an 'id' field populated",
+                sso_alias,
+            )
+        if not atlan_group.name:
+            raise ErrorCode.SSO_MAPPING_VALIDATION_ERROR.exception_with_parameters(
+                "Atlan group must have a 'name' field populated",
+                sso_alias,
+            )
+        
+        logger.info(
+            f"Creating SSO group mapping: {atlan_group.alias} (ID: {atlan_group.id}) "
+            f"<-> {sso_group_name} (SSO: {sso_alias})"
+        )
+        
         self._check_existing_group_mappings(sso_alias, atlan_group)
         endpoint, request_obj = SSOCreateGroupMapping.prepare_request(
             sso_alias, atlan_group, sso_group_name
         )
         raw_json = self._client._call_api(endpoint, request_obj=request_obj)
-        return SSOCreateGroupMapping.process_response(raw_json)
+        result = SSOCreateGroupMapping.process_response(raw_json)
+        
+        logger.info(f"Successfully created SSO group mapping with ID: {result.id}")
+        return result
 
     @validate_arguments
     def update_group_mapping(
@@ -121,14 +145,29 @@ class SSOClient:
     def delete_group_mapping(self, sso_alias: str, group_map_id: str) -> None:
         """
         Deletes an existing Atlan SSO group mapping.
+        
+        Note: This only deletes the SSO mapping (identity provider mapper).
+        If you're experiencing issues with Okta Push Groups failing with
+        stale externalId errors, you may need to run the diagnostic script
+        to identify and clean up orphaned mappings.
 
         :param sso_alias: name of the SSO provider.
         :param group_map_id: existing SSO group map identifier.
         :raises AtlanError: on any error during API invocation.
         :returns: an empty response (`None`).
         """
+        logger.info(f"Deleting SSO group mapping: {group_map_id} (SSO: {sso_alias})")
+        
         endpoint, request_obj = SSODeleteGroupMapping.prepare_request(
             sso_alias, group_map_id
         )
         raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        
+        logger.info(f"Successfully deleted SSO group mapping: {group_map_id}")
+        logger.debug(
+            "If you're experiencing Okta Push Groups issues with stale externalId, "
+            "run: python -m pyatlan.samples.sso.diagnose_orphaned_group_mappings "
+            f"--mode diagnose --sso-alias {sso_alias}"
+        )
+        
         return raw_json
