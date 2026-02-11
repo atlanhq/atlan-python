@@ -12,14 +12,14 @@ with stale externalId errors. This typically happens when:
 Usage:
     # Diagnose orphaned mappings
     python diagnose_orphaned_group_mappings.py --mode diagnose --sso-alias <sso_alias>
-    
+
     # Diagnose specific group
     python diagnose_orphaned_group_mappings.py --mode diagnose \\
         --sso-alias <sso_alias> --group-name <group_name>
-    
+
     # Clean up orphaned mappings (interactive)
     python diagnose_orphaned_group_mappings.py --mode cleanup --sso-alias <sso_alias>
-    
+
     # List all SSO group mappings
     python diagnose_orphaned_group_mappings.py --mode list --sso-alias <sso_alias>
 
