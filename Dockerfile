@@ -92,6 +92,7 @@ RUN uv pip install --system --no-cache \
         lazy-loader~=0.4 \
         nanoid~=2.0.0 \
         authlib~=1.6.0 \
+        cryptography>=46.0.5 \
         httpx-retries~=0.4.0 && \
     # Install pyatlan wheel with --no-deps
     uv pip install --system --no-cache --no-deps /tmp/*.whl && \
