@@ -1,0 +1,26 @@
+name: PyAtlan Scheduled Security Scan
+
+on:
+  schedule:
+    # Every Monday at 09:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scan:
+    uses: atlanhq/.github/.github/workflows/reusable-trivy-scan-scheduled.yml@main
+    with:
+      image_context: '.'
+      dockerfile: './Dockerfile'
+      image_tag: 'pyatlan-scheduled-scan:latest'
+      scan_uv_lock: true
+      uv_lock_path: 'uv.lock'
+      service_name: 'PyAtlan'
+      linear_team_id: ${{ vars.LINEAR_TEAM_ID }}
+      linear_priority: 2
+      registry_login: true
+      registry_url: 'cgr.dev'
+    secrets:
+      LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+      REGISTRY_USERNAME: ${{ secrets.CHAINGUARD_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.CHAINGUARD_PASSWORD }}
