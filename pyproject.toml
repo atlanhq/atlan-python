@@ -50,7 +50,7 @@ Issues = "https://github.com/atlanhq/atlan-python/issues"
 dev = [
     "mypy~=1.18.0",
     "ruff~=0.14.5",
-    "types-setuptools~=80.9.0.20250822",
+    "types-setuptools>=80.9.0.20250822,<81.0.1.0",
     "types-Authlib~=1.6.5.20251005",
     "jaraco-context~=6.1.0",
     "filelock~=3.20.3; python_version >= '3.10'",
