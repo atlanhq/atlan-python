@@ -1,3 +1,14 @@
+## 8.5.2 (February 13, 2026)
+
+### QOL Improvements
+
+- Added Harbor publish along with existing GHCR image publish.
+- Added requirements.txt and pre-commit sync for Snyk dependency scans.
+- Added Trivy image + uv.lock scans for PRs and main.
+- Updated Docker docs to reference Harbor pulls.
+- Added local Snyk scan instructions.
+- Limited uv resolution to CPython and bump urllib3 to fix CVEs.
+  
 ## 8.5.1 (January 29, 2026)
 
 ### Bug Fixes

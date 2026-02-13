@@ -16,7 +16,7 @@ certifi==2025.8.3 ; python_full_version < '3.14' and platform_python_implementat
     #   httpcore
     #   httpx
     #   requests
-cffi==1.17.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+cffi==2.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via cryptography
 cfgv==3.4.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pre-commit
@@ -28,7 +28,7 @@ coverage==7.10.7 ; python_full_version < '3.10' and platform_python_implementati
     # via pytest-cov
 coverage==7.11.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pytest-cov
-cryptography==45.0.6 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+cryptography==46.0.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   authlib
     #   secretstorage
@@ -133,7 +133,7 @@ pluggy==1.6.0 ; python_full_version < '3.14' and platform_python_implementation 
 pre-commit==4.3.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 propcache==0.3.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via yarl
-pycparser==2.22 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+pycparser==2.22 ; python_full_version < '3.14' and implementation_name != 'PyPy' and platform_python_implementation == 'CPython'
     # via cffi
 pydantic==2.12.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
@@ -207,6 +207,7 @@ types-setuptools==80.9.0.20250822 ; python_full_version < '3.14' and platform_py
 typing-extensions==4.14.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   anyio
+    #   cryptography
     #   exceptiongroup
     #   multidict
     #   mypy
