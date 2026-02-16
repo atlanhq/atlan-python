@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "path": "pyproject.toml",
+      "description": "Project dependencies including application-sdk version constraints"
+    }
+  ]
+}
