@@ -13,7 +13,7 @@ from pyatlan.model.assets import AtlasGlossary
 from pyatlan.model.enums import CertificateStatus, DataProductStatus
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import IndexSearchRequest
-from pyatlan_v9.models import DataProduct
+from pyatlan_v9.model import DataProduct
 from tests_v9.unit.model.constants import (
     DATA_DOMAIN_QUALIFIED_NAME,
     DATA_PRODUCT_NAME,

@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import DocumentDBDatabase
+from pyatlan_v9.model import DocumentDBDatabase
 from tests_v9.unit.model.constants import (
     DOCUMENTDB_CONNECTION_QUALIFIED_NAME,
     DOCUMENTDB_CONNECTOR_TYPE,

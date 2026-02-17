@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import ADLSAccount
+from pyatlan_v9.model import ADLSAccount
 from tests_v9.unit.model.constants import (
     ADLS_ACCOUNT_NAME,
     ADLS_CONNECTION_QUALIFIED_NAME,

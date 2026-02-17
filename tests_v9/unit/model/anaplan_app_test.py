@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import AnaplanApp
+from pyatlan_v9.model import AnaplanApp
 from tests_v9.unit.model.constants import (
     ANAPLAN_APP_NAME,
     ANAPLAN_APP_QUALIFIED_NAME,

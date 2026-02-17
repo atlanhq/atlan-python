@@ -8,7 +8,7 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import AirflowTask
+from pyatlan_v9.model import AirflowTask
 from tests_v9.unit.model.constants import (
     AIRFLOW_CONNECTION_QUALIFIED_NAME,
     AIRFLOW_DAG_QUALIFIED_NAME,

@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import Readme, Table
+from pyatlan_v9.model import Readme, Table
 from tests_v9.unit.model.constants import SCHEMA_QUALIFIED_NAME, TABLE_NAME
 
 README_NAME = f"{TABLE_NAME}/readme"

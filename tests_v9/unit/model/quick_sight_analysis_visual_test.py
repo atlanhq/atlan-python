@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import QuickSightAnalysisVisual
+from pyatlan_v9.model import QuickSightAnalysisVisual
 from tests_v9.unit.model.constants import (
     QUICK_SIGHT_ANALYSIS_VISUAL_QUALIFIED_NAME,
     QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,

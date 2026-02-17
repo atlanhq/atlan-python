@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.utils import construct_object_key
-from pyatlan_v9.models import GCSObject
+from pyatlan_v9.model import GCSObject
 from tests_v9.unit.model.constants import (
     GCS_BUCKET_NAME,
     GCS_BUCKET_QUALIFIED_NAME,

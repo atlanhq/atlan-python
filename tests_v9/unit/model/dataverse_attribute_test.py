@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import DataverseAttribute
+from pyatlan_v9.model import DataverseAttribute
 from tests_v9.unit.model.constants import (
     DATAVERSE_ATTRIBUTE_NAME,
     DATAVERSE_ATTRIBUTE_QUALIFIED_NAME,

@@ -8,7 +8,7 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import KafkaTopic
+from pyatlan_v9.model import KafkaTopic
 from tests_v9.unit.model.constants import (
     KAFKA_CONNECTION_QUALIFIED_NAME,
     KAFKA_TOPIC_NAME,

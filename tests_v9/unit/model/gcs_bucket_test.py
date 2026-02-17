@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import GCSBucket
+from pyatlan_v9.model import GCSBucket
 from tests_v9.unit.model.constants import (
     GCS_BUCKET_NAME,
     GCS_CONNECTION_QUALIFIED_NAME,

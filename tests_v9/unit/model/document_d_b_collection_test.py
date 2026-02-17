@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import DocumentDBCollection
+from pyatlan_v9.model import DocumentDBCollection
 from tests_v9.unit.model.constants import (
     DOCUMENTDB_COLLECTION_NAME,
     DOCUMENTDB_COLLECTION_QUALIFIED_NAME,

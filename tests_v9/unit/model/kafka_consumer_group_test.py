@@ -8,7 +8,7 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import KafkaConsumerGroup
+from pyatlan_v9.model import KafkaConsumerGroup
 from tests_v9.unit.model.constants import (
     KAFKA_CONNECTION_QUALIFIED_NAME,
     KAFKA_CONSUMER_GROUP_NAME,

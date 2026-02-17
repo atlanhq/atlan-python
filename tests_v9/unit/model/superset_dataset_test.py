@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import SupersetDataset
+from pyatlan_v9.model import SupersetDataset
 from tests_v9.unit.model.constants import (
     SUPERSET_CONNECTION_QUALIFIED_NAME,
     SUPERSET_CONNECTOR_TYPE,

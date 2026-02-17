@@ -7,7 +7,7 @@ import pytest
 from msgspec import UNSET
 
 from pyatlan.model.utils import construct_object_key
-from pyatlan_v9.models import S3Object
+from pyatlan_v9.model import S3Object
 from tests_v9.unit.model.constants import (
     AWS_ARN,
     BUCKET_NAME,

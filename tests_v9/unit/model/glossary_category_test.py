@@ -8,8 +8,8 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import AtlasGlossary, AtlasGlossaryCategory
-from pyatlan_v9.serde import Serde
+from pyatlan_v9.model import AtlasGlossary, AtlasGlossaryCategory
+from pyatlan_v9.model.serde import Serde
 from tests_v9.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_CATEGORY_QUALIFIED_NAME,
@@ -286,7 +286,7 @@ def test_creator_with_guid():
 
 def test_relationship_fields():
     """Test setting relationship fields on GlossaryCategory."""
-    from pyatlan_v9.models.gtc_related import RelatedAtlasGlossary
+    from pyatlan_v9.model.assets.gtc_related import RelatedAtlasGlossary
 
     category = AtlasGlossaryCategory(
         name=GLOSSARY_CATEGORY_NAME,

@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import SupersetChart
+from pyatlan_v9.model import SupersetChart
 from tests_v9.unit.model.constants import (
     SUPERSET_CHART_NAME,
     SUPERSET_CHART_QUALIFIED_NAME,

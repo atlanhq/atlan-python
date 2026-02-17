@@ -7,7 +7,7 @@ This SDK provides type-safe access to Atlan's Atlas API using msgspec Structs
 with flattened attributes for a more Pythonic developer experience.
 
 Example:
-    from pyatlan_v9.models import Database, Table
+    from pyatlan_v9.model import Database, Table
 
     db = Database(
         name="test_database",
@@ -46,10 +46,3 @@ try:
     )
 except ImportError:
     pass  # lmdb not installed
-
-try:
-    from pyatlan_v9.client import AsyncAtlanClient, AtlanClient
-
-    __all__.extend(["AtlanClient", "AsyncAtlanClient"])
-except ImportError:
-    pass  # httpx or other deps not installed

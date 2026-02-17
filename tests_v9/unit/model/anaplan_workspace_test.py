@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import AnaplanWorkspace
+from pyatlan_v9.model import AnaplanWorkspace
 from tests_v9.unit.model.constants import (
     ANAPLAN_CONNECTION_QUALIFIED_NAME,
     ANAPLAN_CONNECTOR_TYPE,

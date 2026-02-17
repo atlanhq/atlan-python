@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import APIObject
+from pyatlan_v9.model import APIObject
 from tests_v9.unit.model.constants import (
     API_CONNECTION_QUALIFIED_NAME,
     API_CONNECTOR_TYPE,

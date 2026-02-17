@@ -6,6 +6,16 @@
 import random
 from functools import wraps
 
+from pyatlan.utils import (
+    ComparisonCategory,
+    get_base_type,
+    is_comparable_type,
+    list_attributes_to_params,
+    unflatten_custom_metadata,
+    unflatten_custom_metadata_for_entity,
+    validate_type,
+)
+
 
 def init_guid(func):
     """
@@ -45,3 +55,16 @@ def validate_required_fields(field_names: list[str], field_values: list) -> None
             raise ValueError(f"{name} cannot be blank")
         if isinstance(value, list) and len(value) == 0:
             raise ValueError(f"{name} cannot be an empty list")
+
+
+__all__ = [
+    "ComparisonCategory",
+    "get_base_type",
+    "init_guid",
+    "is_comparable_type",
+    "list_attributes_to_params",
+    "unflatten_custom_metadata",
+    "unflatten_custom_metadata_for_entity",
+    "validate_required_fields",
+    "validate_type",
+]

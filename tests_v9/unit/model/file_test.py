@@ -8,8 +8,8 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import File
-from pyatlan_v9.serde import Serde
+from pyatlan_v9.model import File
+from pyatlan_v9.model.serde import Serde
 from tests_v9.unit.model.constants import (
     FILE_CONNECTION_QUALIFIED_NAME,
     FILE_NAME,

@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.enums import BadgeComparisonOperator, BadgeConditionColor
-from pyatlan_v9.models import BadgeCondition
+from pyatlan_v9.model import BadgeCondition
 
 
 @pytest.mark.parametrize(

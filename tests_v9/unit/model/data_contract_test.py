@@ -10,7 +10,7 @@ import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.contract import DataContractSpec
-from pyatlan_v9.models import DataContract
+from pyatlan_v9.model import DataContract
 from tests_v9.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,

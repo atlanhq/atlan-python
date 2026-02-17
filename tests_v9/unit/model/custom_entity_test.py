@@ -8,7 +8,7 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import CustomEntity
+from pyatlan_v9.model import CustomEntity
 from tests_v9.unit.model.constants import (
     CUSTOM_CONNECTION_QUALIFIED_NAME,
     CUSTOM_CONNECTOR_TYPE,
