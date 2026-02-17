@@ -51,7 +51,7 @@ dev = [
     "mypy~=1.18.0",
     "ruff~=0.14.5",
     "types-setuptools~=80.9.0.20250822",
-    "types-Authlib~=1.6.5.20251005",
+    "types-Authlib>=1.6.5.20251005,<1.6.8.0",
     "jaraco-context~=6.1.0",
     "filelock~=3.20.3; python_version >= '3.10'",
     "virtualenv~=20.36.1",
