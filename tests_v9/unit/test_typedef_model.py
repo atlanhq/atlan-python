@@ -1,0 +1,591 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
+
+"""
+Unit tests for pyatlan_v9 typedef models (msgspec.Struct).
+
+Tests ported from tests/unit/test_typedef_model.py — EnumDef, StructDef,
+AtlanTagDef, EntityDef, RelationshipDef, CustomMetadataDef, TypeDefResponse,
+and AttributeDef tests.
+"""
+
+import json
+import random
+from pathlib import Path
+from re import escape
+from unittest.mock import Mock, patch
+
+import msgspec
+import pytest
+
+from pyatlan.cache.enum_cache import EnumCache
+from pyatlan.errors import AtlanError, InvalidRequestError, NotFoundError
+from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
+from pyatlan.model.utils import to_camel_case, to_snake_case
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.model.typedef import (
+    AtlanTagDef,
+    AttributeDef,
+    Cardinality,
+    CustomMetadataDef,
+    EntityDef,
+    EnumDef,
+    RelationshipDef,
+    StructDef,
+    TypeDef,
+    TypeDefResponse,
+    _all_ai_asset_types,
+    _all_domain_types,
+    _all_glossary_types,
+    _all_other_types,
+    _complete_type_list,
+)
+from tests.unit.constants import (
+    APPLICABLE_AI_ASSET_TYPES,
+    APPLICABLE_ASSET_TYPES,
+    APPLICABLE_CONNECTIONS,
+    APPLICABLE_DOMAIN_TYPES,
+    APPLICABLE_DOMAINS,
+    APPLICABLE_ENTITY_TYPES,
+    APPLICABLE_GLOSSARIES,
+    APPLICABLE_GLOSSARY_TYPES,
+    APPLICABLE_OTHER_ASSET_TYPES,
+    TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES,
+    TEST_ENUM_DEF,
+    TEST_STRUCT_DEF,
+)
+
+PARENT_DIR = Path(__file__).parent.parent.parent / "tests" / "unit"
+TYPEDEFS_JSON = PARENT_DIR / "data" / "typedefs.json"
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    """Set required environment variables for client instantiation."""
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+
+
+@pytest.fixture()
+def client():
+    """Create a v9 AtlanClient using env var defaults."""
+    return AtlanClient()
+
+
+@pytest.fixture(scope="module")
+def mock_api_caller():
+    """Create a mock ApiCaller for sub-client testing."""
+    from pyatlan.client.common import ApiCaller
+
+    return Mock(spec=ApiCaller)
+
+
+@pytest.fixture()
+def type_defs():
+    """Load typedefs JSON test data."""
+    with TYPEDEFS_JSON.open() as input_file:
+        return json.load(input_file)
+
+
+def check_type_def_properties(type_def: TypeDef, source: dict):
+    """Verify that common TypeDef properties match the source dict."""
+
+    def check_property(property_name: str):
+        key = to_camel_case(property_name)
+        value = getattr(type_def, property_name)
+        if key in source:
+            assert value == source[key]
+        else:
+            assert value is None
+
+    check_property("create_time")
+    check_property("created_by")
+    check_property("description")
+    check_property("guid")
+    check_property("name")
+    check_property("type_version")
+    check_property("update_time")
+    check_property("updated_by")
+    check_property("version")
+
+
+def check_attribute(model: object, attribute_name: str, source: dict):
+    """Verify that a model attribute matches the source dict."""
+    key = to_camel_case(attribute_name)
+    attribute = getattr(model, attribute_name)
+    if key in source:
+        value = source[key]
+        value = type(attribute)(value)
+        assert attribute == value
+    else:
+        # Since "options" are now initialized with a default factory
+        if attribute_name != "options":
+            assert getattr(model, attribute_name) is None
+
+
+def check_has_attributes(type_def: TypeDef, type_def_json: dict):
+    """Verify that the TypeDef has attributes for all keys in the JSON."""
+    for key in type_def_json:
+        attribute_name = to_snake_case(key)
+        assert hasattr(type_def, attribute_name)
+
+
+class TestEnumDef:
+    @pytest.fixture()
+    def mock_enum_cache(self, client, monkeypatch):
+        """Mock the enum cache on the AtlanClient."""
+        mock_cache = EnumCache(client)
+        monkeypatch.setattr(AtlanClient, "enum_cache", mock_cache)
+        return mock_cache
+
+    def test_create_element_def(self):
+        """Test creating an ElementDef from JSON data."""
+        element_def = msgspec.convert(
+            TEST_ENUM_DEF["elementDefs"][0], EnumDef.ElementDef, strict=False
+        )
+        assert element_def.description == TEST_ENUM_DEF["elementDefs"][0]["description"]
+        assert element_def.value == TEST_ENUM_DEF["elementDefs"][0]["value"]
+        assert element_def.ordinal == TEST_ENUM_DEF["elementDefs"][0]["ordinal"]
+
+    def test_create_enum_def(self):
+        """Test creating an EnumDef from JSON data."""
+        enum_def = msgspec.convert(TEST_ENUM_DEF, EnumDef, strict=False)
+        assert enum_def.category == AtlanTypeCategory.ENUM
+        assert len(enum_def.element_defs) == 5
+        check_type_def_properties(enum_def, TEST_ENUM_DEF)
+
+    def test_enum_defs(self, type_defs):
+        """Test creating EnumDefs from the typedefs JSON fixture."""
+        for enum_def_json in type_defs["enumDefs"]:
+            enum_def = msgspec.convert(enum_def_json, EnumDef, strict=False)
+            assert enum_def.category == AtlanTypeCategory.ENUM
+            check_type_def_properties(enum_def, enum_def_json)
+
+    @pytest.mark.parametrize(
+        "test_name, test_values, error_msg",
+        [
+            [None, ["val1", "val2"], "name is required"],
+            ["my_enum", None, "values is required"],
+        ],
+    )
+    def test_enum_create_method_required_parameters(
+        self, test_name, test_values, error_msg
+    ):
+        """Test that EnumDef.create raises ValueError for missing required params."""
+        with pytest.raises(ValueError) as err:
+            EnumDef.create(name=test_name, values=test_values)
+        assert error_msg in str(err.value)
+
+    def test_create_method(self):
+        """Test creating an EnumDef via the create factory method."""
+        enum = EnumDef.create(name="test-enum", values=["test-val1", "test-val2"])
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 2
+        assert enum.element_defs[0].value == "test-val1"
+        assert enum.element_defs[1].value == "test-val2"
+
+    def test_update_method_enum_not_found(self, client, mock_enum_cache):
+        """Test that EnumDef.update raises NotFoundError when enum not found."""
+        mock_enum_cache._get_by_name = Mock(return_value=None)
+
+        with pytest.raises(
+            NotFoundError,
+            match="ATLAN-PYTHON-404-013 Enumeration with name test-enum does not exist.",
+        ):
+            EnumDef.update(
+                client=client,
+                name="test-enum",
+                values=["test-val1", "test-val2"],
+                replace_existing=False,
+            )
+
+    def test_update_method(self, client, mock_enum_cache):
+        """Test EnumDef.update with various scenarios."""
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [{"value": "test-val0"}],
+        }
+        mock_get_by_name = Mock(
+            return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
+        )
+        mock_enum_cache.get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            client=client,
+            name="test-enum",
+            values=["test-val1", "test-val2"],
+            replace_existing=False,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 3
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+
+        # Test no duplication
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(
+            return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
+        )
+        mock_enum_cache.get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            client=client,
+            name="test-enum",
+            values=["test-val1", "test-val2"],
+            replace_existing=False,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 3
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+
+        # Test with existing values and ordering
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(
+            return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
+        )
+        mock_enum_cache.get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            client=client,
+            name="test-enum",
+            values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=False,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 7
+        assert enum.element_defs[0].value == "test-val0"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "test-val2"
+        # Make sure new ones are always append
+        assert enum.element_defs[3].value == "new1"
+        assert enum.element_defs[4].value == "new2"
+        assert enum.element_defs[5].value == "new3"
+        assert enum.element_defs[6].value == "new4"
+
+        # Test when `replace_existing` is `True`
+        existing_enum = {
+            "name": "test-enum",
+            "elementDefs": [
+                {"value": "test-val0"},
+                {"value": "test-val1"},
+                {"value": "test-val2"},
+            ],
+        }
+        mock_get_by_name = Mock(
+            return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
+        )
+        mock_enum_cache.get_by_name = mock_get_by_name
+        enum = EnumDef.update(
+            client=client,
+            name="test-enum",
+            values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
+            replace_existing=True,
+        )
+        assert enum
+        assert enum.name == "test-enum"
+        assert enum.category == AtlanTypeCategory.ENUM
+        assert enum.element_defs
+        assert len(enum.element_defs) == 6
+        assert enum.element_defs[0].value == "new1"
+        assert enum.element_defs[1].value == "test-val1"
+        assert enum.element_defs[2].value == "new2"
+        assert enum.element_defs[3].value == "test-val2"
+        assert enum.element_defs[4].value == "new3"
+        assert enum.element_defs[5].value == "new4"
+
+
+class TestStuctDef:
+    @pytest.mark.skip("Need get a new version of the typedefs.json file")
+    def test_struct_defs(self, type_defs):
+        """Test creating StructDefs from the typedefs JSON fixture."""
+        for struct_def_json in type_defs["structDefs"]:
+            struct_def = msgspec.convert(struct_def_json, StructDef, strict=False)
+            assert struct_def.category == AtlanTypeCategory.STRUCT
+            check_type_def_properties(struct_def, struct_def_json)
+            for index, attribute_def in enumerate(struct_def.attribute_defs):
+                attribute_defs = struct_def_json["attributeDefs"][index]
+                for key in attribute_def.__struct_fields__:
+                    check_attribute(attribute_def, key, attribute_defs)
+            check_has_attributes(struct_def, struct_def_json)
+
+    def test_create_struct_def(self):
+        """Test creating a StructDef from JSON data."""
+        struct_def = msgspec.convert(TEST_STRUCT_DEF, StructDef, strict=False)
+        assert struct_def.category == AtlanTypeCategory.STRUCT
+        check_type_def_properties(struct_def, TEST_STRUCT_DEF)
+        for index, attribute_def in enumerate(struct_def.attribute_defs):
+            attribute_defs = TEST_STRUCT_DEF["attributeDefs"][index]
+            for key in attribute_def.__struct_fields__:
+                check_attribute(attribute_def, key, attribute_defs)
+
+
+class TestAtlanTagDef:
+    def test_classification_def(self, type_defs):
+        """Test creating AtlanTagDefs from the typedefs JSON fixture."""
+        for classification_def_json in type_defs["classificationDefs"]:
+            classification_def = msgspec.convert(
+                classification_def_json, AtlanTagDef, strict=False
+            )
+            assert classification_def.category == AtlanTypeCategory.CLASSIFICATION
+            check_type_def_properties(classification_def, classification_def_json)
+            check_has_attributes(classification_def, classification_def_json)
+
+
+class TestEntityDef:
+    def test_entity_def(self, type_defs):
+        """Test creating EntityDefs from the typedefs JSON fixture."""
+        for entity_def_json in type_defs["entityDefs"]:
+            entity_def = msgspec.convert(entity_def_json, EntityDef, strict=False)
+            assert entity_def.category == AtlanTypeCategory.ENTITY
+            check_type_def_properties(entity_def, entity_def_json)
+            check_has_attributes(entity_def, entity_def_json)
+
+
+class TestRelationshipDef:
+    def test_relationship_def(self, type_defs):
+        """Test creating RelationshipDefs from the typedefs JSON fixture."""
+        for relationship_def_json in type_defs["relationshipDefs"]:
+            relationship_def = msgspec.convert(
+                relationship_def_json, RelationshipDef, strict=False
+            )
+            assert relationship_def.category == AtlanTypeCategory.RELATIONSHIP
+            check_type_def_properties(relationship_def, relationship_def_json)
+            check_has_attributes(relationship_def, relationship_def_json)
+
+
+class TestCustomMetadataDef:
+    def test_business_metadata_def(self, type_defs):
+        """Test creating CustomMetadataDefs from the typedefs JSON fixture."""
+        for business_metadata_def_json in type_defs["businessMetadataDefs"]:
+            business_metadata_def = msgspec.convert(
+                business_metadata_def_json, CustomMetadataDef, strict=False
+            )
+            assert business_metadata_def.category == AtlanTypeCategory.CUSTOM_METADATA
+            check_type_def_properties(business_metadata_def, business_metadata_def_json)
+            check_has_attributes(business_metadata_def, business_metadata_def_json)
+
+
+class TestTypeDefResponse:
+    def test_type_def_response(self, type_defs):
+        """Test creating a TypeDefResponse from the typedefs JSON fixture."""
+        type_def_response = msgspec.convert(type_defs, TypeDefResponse, strict=False)
+        assert isinstance(type_def_response, TypeDefResponse)
+
+
+class TestAttributeDef:
+    @pytest.fixture()
+    def sut(self, client: AtlanClient) -> AttributeDef:
+        """Create an AttributeDef for testing."""
+        with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            return AttributeDef.create(
+                client=client,
+                display_name="My Count",
+                attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
+            )
+
+    @pytest.mark.parametrize(
+        "attribute, value",
+        [
+            (APPLICABLE_ASSET_TYPES, {"Table"}),
+            (APPLICABLE_GLOSSARY_TYPES, {"AtlasGlossary"}),
+            (APPLICABLE_DOMAIN_TYPES, {"DataDomain", "DataProduct"}),
+            (APPLICABLE_AI_ASSET_TYPES, {"AIApplication", "AIModel"}),
+            (APPLICABLE_OTHER_ASSET_TYPES, {"File"}),
+            (APPLICABLE_ENTITY_TYPES, {"Asset"}),
+        ],
+    )
+    def test_applicable_types_with_no_options_raises_invalid_request_error(
+        self, attribute, value, sut: AttributeDef
+    ):
+        """Test that setting applicable types raises error when options is None."""
+        sut = AttributeDef()
+        # Explicitly setting "None" since options
+        # are now initialized with a default factory
+        sut.options = None
+
+        with pytest.raises(
+            InvalidRequestError,
+            match="ATLAN-PYTHON-400-050 Options is not present in the AttributeDef",
+        ):
+            setattr(sut, attribute, value)
+
+    @pytest.mark.parametrize(
+        "attribute, value, message",
+        TEST_ATTRIBUTE_DEF_APPLICABLE_ASSET_TYPES,
+    )
+    def test_applicable_types_with_invalid_type_raises_invalid_request_error(
+        self, attribute, value, message, sut: AttributeDef
+    ):
+        """Test that setting applicable types with invalid values raises error."""
+        with pytest.raises(InvalidRequestError, match=escape(message)):
+            setattr(sut, attribute, value)
+
+    @pytest.mark.parametrize(
+        "attribute, value",
+        [
+            (APPLICABLE_ASSET_TYPES, {random.choice(list(_complete_type_list))}),
+            (APPLICABLE_GLOSSARY_TYPES, {random.choice(list(_all_glossary_types))}),
+            (APPLICABLE_DOMAIN_TYPES, {random.choice(list(_all_domain_types))}),
+            (APPLICABLE_AI_ASSET_TYPES, {random.choice(list(_all_ai_asset_types))}),
+            (APPLICABLE_OTHER_ASSET_TYPES, {random.choice(list(_all_other_types))}),
+            (APPLICABLE_ENTITY_TYPES, {"Asset"}),
+            (APPLICABLE_CONNECTIONS, {"default/snowflake/1699268171"}),
+            (APPLICABLE_GLOSSARIES, {"8Jdg4PdxcURBBNDt2RZD3"}),
+            (APPLICABLE_DOMAINS, {"default/domain/uuBI8WSqeom1PXs7oo20L/super"}),
+        ],
+    )
+    def test_applicable_types_with_valid_value(
+        self, attribute, value, sut: AttributeDef
+    ):
+        """Test that setting applicable types with valid values works correctly."""
+        setattr(sut, attribute, value)
+        assert getattr(sut, attribute) == value
+        options = sut.options
+        assert getattr(options, attribute) == json.dumps(list(value))
+
+    def test_attribute_create_with_limited_applicability(self, client: AtlanClient):
+        """Test creating AttributeDef with limited applicability kwargs."""
+        applicable_kwargs = dict(
+            applicable_asset_types={"Link"},
+            applicable_other_asset_types={"File"},
+            applicable_glossaries={"8Jdg4PdxcURBBNDt2RZD3"},
+            applicable_glossary_types={"AtlasGlossaryTerm", "AtlasGlossaryCategory"},
+            applicable_domain_types={"DataDomain", "DataProduct"},
+            applicable_connections={
+                "default/snowflake/1699268171",
+                "default/snowflake/16992681799",
+            },
+            applicable_domains={"default/domain/uuBI8WSqeom1PXs7oo20L/super"},
+            applicable_ai_asset_types={"AIModel", "AIApplication"},
+        )
+        attribute_def_with_limited = AttributeDef.create(
+            client=client,
+            display_name="test-attr-def",
+            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            # Optional kwargs that allow limiting
+            # the applicability of an attribute within Atlan
+            **applicable_kwargs,  # type: ignore[arg-type]
+        )
+
+        assert attribute_def_with_limited
+        assert attribute_def_with_limited.options
+        options = attribute_def_with_limited.options
+        for attribute in applicable_kwargs.keys():
+            assert getattr(
+                attribute_def_with_limited, attribute
+            ) == applicable_kwargs.get(attribute)
+            assert getattr(options, attribute) == json.dumps(
+                list(applicable_kwargs.get(attribute))  # type: ignore[arg-type]
+            )
+
+    def test_multi_value_select_setter_condition(self, client: AtlanClient):
+        """Test multi_value_select setter updates cardinality and type_name."""
+        with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Test Attribute",
+                attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            )
+
+            assert attr_def.options is not None
+            assert attr_def.options.multi_value_select is False
+            assert attr_def.cardinality == Cardinality.SINGLE
+            assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+
+            # Test 1: Setting multi_value_select to False should NOT trigger __setattr__ logic
+            attr_def.options.multi_value_select = False
+
+            assert attr_def.cardinality == Cardinality.SINGLE
+            assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+
+            # Test 2: Setting multi_value_select to True should trigger __setattr__ logic
+            attr_def.options.multi_value_select = True
+
+            assert attr_def.cardinality == Cardinality.SET
+            assert (
+                attr_def.type_name
+                == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+            )
+
+    def test_rich_text_attribute_creation(self, client: AtlanClient):
+        """Test that RICH_TEXT attributes are created with correct options."""
+        with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Rich Content",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                description="Test rich text attribute",
+            )
+
+        assert attr_def.display_name == "Rich Content"
+        assert attr_def.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+        assert attr_def.description == "Test rich text attribute"
+        assert attr_def.options
+        assert attr_def.options.is_rich_text is True
+        assert attr_def.options.multi_value_select is False
+
+    def test_rich_text_cannot_be_multi_valued(self, client: AtlanClient):
+        """Test that RICH_TEXT attributes cannot be multi-valued."""
+        with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            with pytest.raises(AtlanError) as exc_info:
+                AttributeDef.create(
+                    client=client,
+                    display_name="Invalid Rich Text",
+                    attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+                    multi_valued=True,
+                )
+
+        error = exc_info.value
+        assert "ATLAN-PYTHON-400-076" in str(error)
+
+    def test_rich_text_options_configuration(self, client: AtlanClient):
+        """Test that RICH_TEXT options are configured correctly."""
+        with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Rich Text Field",
+                attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+            )
+
+        options = attr_def.options
+        assert options is not None
+        # Rich text uses string primitive type
+        assert options.primitive_type == AtlanCustomAttributePrimitiveType.STRING.value
+        # Should have rich text flag enabled
+        assert options.is_rich_text is True
+        # Cannot be multi-valued
+        assert options.multi_value_select is False
+        # Should not have custom_type set (that's for SQL, URL, etc.)
+        assert not hasattr(options, "custom_type") or options.custom_type is None
