@@ -48,7 +48,7 @@ Issues = "https://github.com/atlanhq/atlan-python/issues"
 
 [dependency-groups]
 dev = [
-    "mypy~=1.18.0",
+    "mypy>=1.18,<1.20",
     "ruff~=0.14.5",
     "types-setuptools~=80.9.0.20250822",
     "types-Authlib~=1.6.5.20251005",
