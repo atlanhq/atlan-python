@@ -8,7 +8,7 @@
 
 - Enhanced SDK client retry mechanism to automatically retry HTTP `302` redirect responses, improving reliability when handling temporary redirects.
 - Updated admin integration tests to align with latest backend API changes.
-  
+
 
 ## 8.5.0 (January 14, 2026)
 
