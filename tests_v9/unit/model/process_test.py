@@ -7,7 +7,7 @@ from hashlib import md5
 
 import pytest
 
-from pyatlan_v9.models import Catalog, Process
+from pyatlan_v9.model import Catalog, Process
 
 PROCESS_QUALIFIED_NAME = "default/s3/1678379436102"
 PROCESS_NAME = "DoIt"

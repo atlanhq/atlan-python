@@ -8,8 +8,8 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import Database
-from pyatlan_v9.serde import Serde
+from pyatlan_v9.model import Database
+from pyatlan_v9.model.serde import Serde
 from tests_v9.unit.model.constants import (
     CONNECTION_QUALIFIED_NAME,
     DATABASE_NAME,

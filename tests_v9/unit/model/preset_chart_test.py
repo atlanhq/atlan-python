@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import PresetChart
+from pyatlan_v9.model import PresetChart
 from tests_v9.unit.model.constants import (
     PRESET_CHART_NAME,
     PRESET_CHART_QUALIFIED_NAME,

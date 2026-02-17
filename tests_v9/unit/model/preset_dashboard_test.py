@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import PresetDashboard
+from pyatlan_v9.model import PresetDashboard
 from tests_v9.unit.model.constants import (
     PRESET_CONNECTION_QUALIFIED_NAME,
     PRESET_CONNECTOR_TYPE,

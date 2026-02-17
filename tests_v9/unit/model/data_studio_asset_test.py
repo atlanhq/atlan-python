@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.enums import GoogleDatastudioAssetType
-from pyatlan_v9.models import DataStudioAsset
+from pyatlan_v9.model import DataStudioAsset
 from tests_v9.unit.model.constants import (
     CONNECTOR_NAME,
     DATASTUDIO_CONNECTION_QUALIFIED_NAME,

@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import AzureEventHub
+from pyatlan_v9.model import AzureEventHub
 from tests_v9.unit.model.constants import (
     EVENT_HUB_CONNECTION_QUALIFIED_NAME,
     EVENT_HUB_NAME,

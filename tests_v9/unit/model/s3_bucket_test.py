@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import S3Bucket
+from pyatlan_v9.model import S3Bucket
 from tests_v9.unit.model.constants import (
     AWS_ARN,
     BUCKET_NAME,

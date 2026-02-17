@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import Application
+from pyatlan_v9.model import Application
 from tests_v9.unit.model.constants import (
     APP_CONNECTION_QUALIFIED_NAME,
     APP_CONNECTOR_TYPE,

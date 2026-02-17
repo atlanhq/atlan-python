@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import DataDomain
+from pyatlan_v9.model import DataDomain
 from tests_v9.unit.model.constants import (
     DATA_DOMAIN_NAME,
     DATA_DOMAIN_QUALIFIED_NAME,

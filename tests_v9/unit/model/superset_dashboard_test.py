@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import SupersetDashboard
+from pyatlan_v9.model import SupersetDashboard
 from tests_v9.unit.model.constants import (
     SUPERSET_CONNECTION_QUALIFIED_NAME,
     SUPERSET_CONNECTOR_TYPE,

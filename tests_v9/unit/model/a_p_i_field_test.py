@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.enums import APIQueryParamTypeEnum
-from pyatlan_v9.models import APIField
+from pyatlan_v9.model import APIField
 from tests_v9.unit.model.constants import (
     API_CONNECTION_QUALIFIED_NAME,
     API_CONNECTOR_TYPE,

@@ -8,7 +8,7 @@ import json
 import pytest
 from msgspec import UNSET
 
-from pyatlan_v9.models import PresetWorkspace
+from pyatlan_v9.model import PresetWorkspace
 from tests_v9.unit.model.constants import (
     PRESET_CONNECTION_QUALIFIED_NAME,
     PRESET_CONNECTOR_TYPE,

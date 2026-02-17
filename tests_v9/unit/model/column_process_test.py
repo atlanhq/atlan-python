@@ -7,7 +7,7 @@ from typing import List
 
 import pytest
 
-from pyatlan_v9.models import Column, ColumnProcess, Process
+from pyatlan_v9.model import Column, ColumnProcess, Process
 from tests_v9.unit.model.constants import (
     CP_CONNECTION_QUALIFIED_NAME,
     CP_NAME,

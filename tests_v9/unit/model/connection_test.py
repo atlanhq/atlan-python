@@ -9,9 +9,9 @@ from typing import List, Optional
 import pytest
 from msgspec import UNSET
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
-from pyatlan_v9.client import AtlanClient
-from pyatlan_v9.models import Connection
+from pyatlan_v9.model import Connection
 from tests_v9.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
 
 

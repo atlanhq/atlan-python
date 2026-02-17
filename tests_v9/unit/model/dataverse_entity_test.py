@@ -5,7 +5,7 @@
 
 import pytest
 
-from pyatlan_v9.models import DataverseEntity
+from pyatlan_v9.model import DataverseEntity
 from tests_v9.unit.model.constants import (
     DATAVERSE_CONNECTION_QUALIFIED_NAME,
     DATAVERSE_CONNECTOR_TYPE,

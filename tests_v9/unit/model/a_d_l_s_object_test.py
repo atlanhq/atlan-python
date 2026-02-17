@@ -7,7 +7,7 @@ import pytest
 
 from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import get_parent_qualified_name
-from pyatlan_v9.models import ADLSObject
+from pyatlan_v9.model import ADLSObject
 from tests_v9.unit.model.constants import (
     ADLS_CONNECTION_QUALIFIED_NAME,
     ADLS_CONNECTOR_TYPE,

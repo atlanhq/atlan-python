@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.enums import AIApplicationDevelopmentStage
-from pyatlan_v9.models import AIApplication
+from pyatlan_v9.model import AIApplication
 from tests_v9.unit.model.constants import (
     AI_APPLICATION_DEVELOPMENT_STAGE,
     AI_APPLICATION_DEVELOPMENT_STAGE_UPDATED,

@@ -6,7 +6,7 @@
 import pytest
 
 from pyatlan.model.enums import QuickSightDatasetImportMode
-from pyatlan_v9.models import QuickSightDataset
+from pyatlan_v9.model import QuickSightDataset
 from tests_v9.unit.model.constants import (
     QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,
     QUICK_SIGHT_CONNECTOR_TYPE,
