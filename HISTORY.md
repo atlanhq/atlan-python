@@ -1,3 +1,10 @@
+## 8.5.3 (February 17, 2026)
+
+### QOL Improvements
+
+- Added scheduled Trivy scan with Linear ticket creation.
+- Added Claude Code workflow with /review skill for PR reviews.
+
 ## 8.5.2 (February 13, 2026)
 
 ### QOL Improvements
