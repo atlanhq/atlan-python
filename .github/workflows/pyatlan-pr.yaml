@@ -12,7 +12,45 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-code-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has-code-changes: ${{ steps.filter.outputs.has-code-changes }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect code changes
+        id: filter
+        run: |
+          # For workflow_dispatch, always run everything
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "has-code-changes=true" >> $GITHUB_OUTPUT
+            echo "Manual trigger: running all tests"
+            exit 0
+          fi
+
+          # Get changed files
+          CHANGED=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+
+          # Check if any changed file is actual code (not just CI/docs/config)
+          CODE_CHANGES=$(echo "$CHANGED" | grep -vE '^\.(github|claude|cursor)/|^docs/|^site/|^README|^HISTORY|^LICENSE|^NOTICE|^CODE_OF_CONDUCT|^CONTRIBUTING|^CLAUDE\.md|^\.gitignore|^\.pre-commit|^\.editorconfig|^mkdocs' || true)
+
+          if [ -n "$CODE_CHANGES" ]; then
+            echo "has-code-changes=true" >> $GITHUB_OUTPUT
+            echo "Code changes detected:"
+            echo "$CODE_CHANGES" | head -20
+          else
+            echo "has-code-changes=false" >> $GITHUB_OUTPUT
+            echo "No code changes detected, only CI/docs/config files:"
+            echo "$CHANGED"
+          fi
+
   vulnerability-scan:
+    needs: [check-code-changes]
+    if: needs.check-code-changes.outputs.has-code-changes == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -80,7 +118,8 @@ jobs:
           fi
 
   qa-checks-and-unit-tests:
-    needs: [vulnerability-scan]
+    needs: [check-code-changes, vulnerability-scan]
+    if: needs.check-code-changes.outputs.has-code-changes == 'true'
     runs-on: ubuntu-latest
     outputs:
       files: ${{ steps.distribute-integration-test-files.outputs.files }}
@@ -141,7 +180,8 @@ jobs:
           fi
 
   integration-tests:
-    needs: [vulnerability-scan, qa-checks-and-unit-tests]
+    needs: [check-code-changes, vulnerability-scan, qa-checks-and-unit-tests]
+    if: needs.check-code-changes.outputs.has-code-changes == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -181,10 +221,10 @@ jobs:
 
 
   async-integration-tests:
-    needs: [vulnerability-scan, qa-checks-and-unit-tests, check-aio-changes]
+    needs: [check-code-changes, vulnerability-scan, qa-checks-and-unit-tests, check-aio-changes]
     runs-on: ubuntu-latest
-    # Only run if AIO changes detected or manual trigger
-    if: needs.check-aio-changes.outputs.run-async-tests == 'true'
+    # Only run if code changed AND (AIO changes detected or manual trigger)
+    if: needs.check-code-changes.outputs.has-code-changes == 'true' && needs.check-aio-changes.outputs.run-async-tests == 'true'
     strategy:
       fail-fast: false
       matrix:

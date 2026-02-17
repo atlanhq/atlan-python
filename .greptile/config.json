@@ -1,0 +1,25 @@
+{
+  "strictness": 3,
+  "commentTypes": ["logic", "syntax", "compatibility"],
+  "patternRepositories": ["atlanhq/application-sdk"],
+  "rules": [
+    {
+      "id": "sdk-api-alignment",
+      "rule": "Check if changes to pyatlan align with the application-sdk interfaces. When pyatlan uses SDK base classes (BaseApplication, ClientInterface, HandlerInterface, ActivitiesInterface, WorkflowInterface) or services (ObjectStore, StateStore, SecretStore, EventStore, Reader, Writer), verify usage matches the current SDK API contracts.",
+      "scope": ["pyatlan/**/*.py"],
+      "severity": "high"
+    },
+    {
+      "id": "sdk-version-pinning",
+      "rule": "When atlan-application-sdk version is bumped or dependency constraints change, review the changelog for breaking changes that may affect pyatlan's usage of SDK APIs.",
+      "scope": ["pyproject.toml", "requirements*.txt", "uv.lock"],
+      "severity": "high"
+    },
+    {
+      "id": "test-coverage-for-sdk-integration",
+      "rule": "Changes to code that integrates with application-sdk should include corresponding test updates to catch incompatibilities early.",
+      "scope": ["pyatlan/**/*.py"],
+      "severity": "medium"
+    }
+  ]
+}
