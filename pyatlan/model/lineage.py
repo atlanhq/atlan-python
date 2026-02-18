@@ -7,7 +7,9 @@ from collections import deque
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr, validate_arguments
+from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr
+
+from pyatlan.client.common.validate import validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass

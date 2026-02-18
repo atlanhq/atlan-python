@@ -18,9 +18,10 @@ from pydantic.v1 import (
     StrictInt,
     StrictStr,
     constr,
-    validate_arguments,
     validator,
 )
+
+from pyatlan.client.common.validate import validate_arguments
 from pydantic.v1.config import Extra
 from pydantic.v1.dataclasses import dataclass
 
