@@ -17,7 +17,9 @@ from typing import (
     overload,
 )
 
-from pydantic.v1 import StrictStr, constr, validate_arguments
+from pydantic.v1 import StrictStr, constr
+
+from pyatlan.client.common.validate import validate_arguments
 from tenacity import (
     retry,
     retry_if_exception_type,

@@ -30,8 +30,9 @@ from pydantic.v1 import (
     ValidationError,
     constr,
     parse_obj_as,
-    validate_arguments,
 )
+
+from pyatlan.client.common.validate import validate_arguments
 from tenacity import (
     RetryError,
     retry,

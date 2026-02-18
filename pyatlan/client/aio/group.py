@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic.v1 import parse_obj_as, validate_arguments
+from pydantic.v1 import parse_obj_as
+
+from pyatlan.client.common.validate import validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,

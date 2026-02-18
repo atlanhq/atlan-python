@@ -26,8 +26,9 @@ from pydantic.v1 import (
     PrivateAttr,
     StrictStr,
     constr,
-    validate_arguments,
 )
+
+from pyatlan.client.common.validate import validate_arguments
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache

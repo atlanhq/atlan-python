@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from typing import Any, Dict, Optional
 
-from pydantic.v1 import validate_arguments
+from pyatlan.client.common.validate import validate_arguments
 
 from pyatlan.client.common import (
     ApiCaller,

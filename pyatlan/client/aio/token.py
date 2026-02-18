@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Optional, Set
 
-from pydantic.v1 import validate_arguments
+from pyatlan.client.common.validate import validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,

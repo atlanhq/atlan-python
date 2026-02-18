@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic.v1 import validate_arguments
+from pyatlan.client.common.validate import validate_arguments
 
 from pyatlan.client.aio.atlan import client_connection
 from pyatlan.client.common import (
