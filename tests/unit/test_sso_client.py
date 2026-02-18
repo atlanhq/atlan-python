@@ -7,7 +7,7 @@ from typing import List
 from unittest.mock import Mock
 
 import pytest
-from pydantic.v1 import ValidationError, parse_obj_as
+from pydantic.v1 import parse_obj_as
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.sso import SSOClient
@@ -84,7 +84,7 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 def test_sso_get_group_mapping_wrong_params_raises_validation_error(
     sso_alias, group_map_id, error_msg
 ):
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValueError) as err:
         SSOClient.get_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
     assert error_msg in str(err.value)
 
@@ -99,7 +99,7 @@ def test_sso_get_group_mapping_wrong_params_raises_validation_error(
 def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
     sso_alias, error_msg
 ):
-    with pytest.raises(ValidationError, match=error_msg):
+    with pytest.raises(ValueError, match=error_msg):
         SSOClient.get_all_group_mappings(sso_alias=sso_alias)
 
 
@@ -110,14 +110,14 @@ def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
         ["auth0", None, "sso-group", "none is not an allowed value"],
         ["auth0", "atlan-group", None, "none is not an allowed value"],
         [[123], "atlan-group", "sso-group", "so_alias\n  str type expected"],
-        ["auth0", [123], "sso-group", "atlan_group\n  value is not a valid dict"],
+        ["auth0", [123], "sso-group", "atlan_group\n  instance of AtlanGroup expected"],
         ["auth0", AtlanGroup(), [123], "sso_group_name\n  str type expected"],
     ],
 )
 def test_sso_create_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, sso_group_name, error_msg
 ):
-    with pytest.raises(ValidationError, match=error_msg):
+    with pytest.raises(ValueError, match=error_msg):
         SSOClient.create_group_mapping(
             sso_alias=sso_alias, atlan_group=atlan_group, sso_group_name=sso_group_name
         )
@@ -137,7 +137,7 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
             [123],
             "map-id",
             "sso-group",
-            "atlan_group\n  value is not a valid dict",
+            "atlan_group\n  instance of AtlanGroup expected",
         ],
         [
             "auth0",
@@ -158,7 +158,7 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
 def test_sso_update_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, group_map_id, sso_group_name, error_msg
 ):
-    with pytest.raises(ValidationError, match=error_msg):
+    with pytest.raises(ValueError, match=error_msg):
         SSOClient.update_group_mapping(
             sso_alias=sso_alias,
             atlan_group=atlan_group,
@@ -179,7 +179,7 @@ def test_sso_update_group_mapping_wrong_params_raises_validation_error(
 def test_sso_delete_group_mapping_wrong_params_raises_validation_error(
     sso_alias, group_map_id, error_msg
 ):
-    with pytest.raises(ValidationError, match=error_msg):
+    with pytest.raises(ValueError, match=error_msg):
         SSOClient.delete_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
 
 

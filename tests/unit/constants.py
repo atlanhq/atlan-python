@@ -41,58 +41,58 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None], "none is not an allowed value"),
     ],
     "upsert": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "none is not an allowed value"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "save": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "none is not an allowed value"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "upsert_merging_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "save_merging_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "update_merging_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  instance of Asset expected"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity\n  instance of Asset expected"),
+        ([[None]], "entity\n  instance of Asset expected"),
     ],
     "upsert_replacing_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "save_replacing_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  value is not a valid Asset or List[Asset]"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity -> 0\n  instance of Asset expected"),
+        ([[None]], "entity -> 0\n  none is not an allowed value"),
     ],
     "update_replacing_cm": [
-        ([123], "entity\n  argument of type 'int' is not iterable"),
+        ([123], "entity\n  instance of Asset expected"),
         ([None], "none is not an allowed value"),
-        ([[123]], "entity\n  argument of type 'int' is not iterable"),
-        ([[None]], "'NoneType' is not iterable"),
+        ([[123]], "entity\n  instance of Asset expected"),
+        ([[None]], "entity\n  instance of Asset expected"),
     ],
     "purge_by_guid": [
-        ([int], "guid\n  str type expected"),
+        ([int], "guid\n  value is not a valid str or List[str]"),
         ([None], "none is not an allowed value"),
-        ([[int]], "guid\n  str type expected"),
-        ([[None]], "guid\n  str type expected"),
+        ([[int]], "guid -> 0\n  str type expected"),
+        ([[None]], "guid -> 0\n  none is not an allowed value"),
     ],
     "restore": [
         (["asset-type", [123]], "name\n  str type expected"),
@@ -214,7 +214,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "terms -> 0\n  argument of type 'int' is not iterable",
+            "terms -> 0\n  instance of AtlasGlossaryTerm expected",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -223,7 +223,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "terms -> 0\n  argument of type 'int' is not iterable",
+            "terms -> 0\n  instance of AtlasGlossaryTerm expected",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -232,7 +232,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "terms -> 0\n  argument of type 'int' is not iterable",
+            "terms -> 0\n  instance of AtlasGlossaryTerm expected",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -292,29 +292,29 @@ TEST_ASSET_CLIENT_METHODS = {
 
 TEST_ADMIN_CLIENT_METHODS = {
     "get_keycloak_events": [
-        (["keycloak-req"], "keycloak_request\n  value is not a valid dict"),
+        (["keycloak-req"], "keycloak_request\n  instance of KeycloakEventRequest expected"),
         ([None], "none is not an allowed value"),
     ],
     "get_admin_events": [
-        (["admin-req"], "admin_request\n  value is not a valid dict"),
+        (["admin-req"], "admin_request\n  instance of AdminEventRequest expected"),
         ([None], "none is not an allowed value"),
     ],
 }
 
 TEST_AUDIT_CLIENT_METHODS = {
     "search": [
-        (["audit-search-req"], "criteria\n  value is not a valid dict"),
+        (["audit-search-req"], "criteria\n  instance of AuditSearchRequest expected"),
         ([None], "none is not an allowed value"),
     ],
 }
 
 TEST_GROUP_CLIENT_METHODS = {
     "create": [
-        ("group", "group\n  value is not a valid dict"),
+        ("group", "too many positional arguments"),
         ([None], "none is not an allowed value"),
     ],
     "update": [
-        (["group"], "group\n  value is not a valid dict"),
+        (["group"], "group\n  instance of AtlanGroup expected"),
         ([None], "none is not an allowed value"),
     ],
     "purge": [
@@ -324,14 +324,14 @@ TEST_GROUP_CLIENT_METHODS = {
     "get": [
         (
             [None, None, None, "count", 123],
-            "count\n  value could not be parsed to a boolean",
+            "count\n  value is not a valid boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_all": [
-        (["limit"], "limit\n  value is not a valid integer"),
+        (["limit"], "limit\n  value is not a valid int"),
         ([None], "none is not an allowed value"),
     ],
     "get_by_name": [
@@ -350,21 +350,21 @@ TEST_GROUP_CLIENT_METHODS = {
 
 TEST_ROLE_CLIENT_METHODS = {
     "get": [
-        (["limit", None, None, True, 123], "limit\n  value is not a valid integer"),
+        (["limit", None, None, True, 123], "limit\n  value is not a valid int"),
         ([None, None, None, True, 123], "none is not an allowed value"),
         (
             [123, None, None, "count", 123],
-            "count\n  value could not be parsed to a boolean",
+            "count\n  value is not a valid boolean",
         ),
         ([123, None, None, None, "offset"], "none is not an allowed value"),
-        ([123, None, None, True, "offset"], "offset\n  value is not a valid integer"),
+        ([123, None, None, True, "offset"], "offset\n  value is not a valid int"),
         ([123, None, None, True, None], "none is not an allowed value"),
     ],
 }
 
 TEST_SL_CLIENT_METHODS = {
     "search": [
-        (["search-log-req"], "criteria\n  value is not a valid dict"),
+        (["search-log-req"], "criteria\n  instance of SearchLogRequest expected"),
         ([None], "none is not an allowed value"),
     ],
 }
@@ -373,10 +373,10 @@ TEST_TOKEN_CLIENT_METHODS = {
     "get": [
         (
             [None, None, None, "count", 123],
-            "count\n  value could not be parsed to a boolean",
+            "count\n  value is not a valid boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_by_name": [
@@ -407,22 +407,22 @@ TEST_TYPEDEF_CLIENT_METHODS = {
     "get": [
         (
             ["atlan-type-category"],
-            "type_category\n  value is not a valid enumeration member",
+            "type_category\n  value is not a valid AtlanTypeCategory or List[AtlanTypeCategory]",
         ),
         ([None], "none is not an allowed value"),
     ],
     "create": [
-        (["typedef"], "typedef\n  value is not a valid dict"),
+        (["typedef"], "typedef\n  instance of TypeDef expected"),
         ([None], "none is not an allowed value"),
     ],
     "update": [
-        (["typedef"], "typedef\n  value is not a valid dict"),
+        (["typedef"], "typedef\n  instance of TypeDef expected"),
         ([None], "none is not an allowed value"),
     ],
     "purge": [
         ([[123], "typedef"], "name\n  str type expected"),
         ([None, "typedef"], "none is not an allowed value"),
-        (["name", "typedef"], "typedef_type\n  a class is expected"),
+        (["name", "typedef"], "typedef_type\n  instance of type expected"),
         (["name", None], "none is not an allowed value"),
     ],
 }
@@ -435,7 +435,7 @@ TEST_USER_CLIENT_METHODS = {
     "update": [
         ([[123], "user"], "guid\n  str type expected"),
         ([None], "none is not an allowed value"),
-        (["guid", "user"], "user\n  value is not a valid dict"),
+        (["guid", "user"], "user\n  instance of AtlanUser expected"),
         (["guid", None], "none is not an allowed value"),
     ],
     "change_role": [
@@ -447,14 +447,14 @@ TEST_USER_CLIENT_METHODS = {
     "get": [
         (
             [None, None, None, "count", 123],
-            "count\n  value could not be parsed to a boolean",
+            "count\n  value is not a valid boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_all": [
-        (["limit"], "limit\n  value is not a valid integer"),
+        (["limit"], "limit\n  value is not a valid int"),
         ([None], "none is not an allowed value"),
     ],
     "get_by_email": [
@@ -491,7 +491,7 @@ TEST_USER_CLIENT_METHODS = {
 
 TEST_FILE_CLIENT_METHODS = {
     "generate_presigned_url": [
-        ([123], "request\n  value is not a valid dict"),
+        ([123], "request\n  instance of PresignedURLRequest expected"),
         ([None], "none is not an allowed value"),
     ],
     "upload_file": [
@@ -523,7 +523,7 @@ TEST_FILE_CLIENT_METHODS = {
 
 TEST_WORKFLOW_CLIENT_METHODS = {
     "update": [
-        (["abc"], "value is not a valid dict"),
+        (["abc"], "instance of Workflow expected"),
         ([None], "none is not an allowed value"),
     ],
     "find_by_type": [
@@ -531,7 +531,7 @@ TEST_WORKFLOW_CLIENT_METHODS = {
         ([None], "none is not an allowed value"),
     ],
     "monitor": [
-        (["abc", "test-logger"], "value is not a valid dict"),
+        (["abc", "test-logger"], "instance of WorkflowResponse expected"),
         (
             [
                 WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
@@ -559,7 +559,7 @@ TEST_WORKFLOW_CLIENT_METHODS = {
     "find_schedule_query": [
         ([[123], 10], "saved_query_id\n  str type expected"),
         ([None, 10], "none is not an allowed value"),
-        (["test-query-id", [123]], "max_results\n  value is not a valid integer"),
+        (["test-query-id", [123]], "max_results\n  value is not a valid int"),
         (["test-query-id", None], "none is not an allowed value"),
     ],
     "re_run_schedule_query": [
@@ -567,11 +567,11 @@ TEST_WORKFLOW_CLIENT_METHODS = {
         ([None], "none is not an allowed value"),
     ],
     "find_schedule_query_between": [
-        ([[123], True], "value is not a valid dict"),
+        ([[123], True], "instance of ScheduleQueriesSearchRequest expected"),
         ([None, True], "none is not an allowed value"),
         (
             [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), [123]],
-            "missed\n  value could not be parsed to a boolean",
+            "missed\n  value is not a valid boolean",
         ),
         (
             [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), None],
