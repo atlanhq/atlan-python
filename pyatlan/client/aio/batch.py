@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
-from pyatlan.validate import validate_arguments
+from pyatlan.validate import _is_model_instance, validate_arguments
 
 from pyatlan.client.asset import (
     AssetCreationHandling,
@@ -410,7 +410,7 @@ class AsyncBatch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if isinstance(candidate, AtlasGlossaryTerm):
+        if _is_model_instance(candidate, AtlasGlossaryTerm):
             # trim_to_required for AtlasGlossaryTerm requires anchor
             # which is not include in AssetMutationResponse
             asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
