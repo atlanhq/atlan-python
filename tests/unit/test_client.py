@@ -8,7 +8,6 @@ from unittest.mock import DEFAULT, Mock, call, patch
 
 import httpx
 import pytest
-from pydantic.v1 import ValidationError
 
 from pyatlan.client.asset import (
     AssetClient,
@@ -1980,7 +1979,7 @@ def test_asset_client_missing_glossary_guid_raises_invalid_request_error(
 def test_asset_client_methods_validation_error(client, method, params):
     client_method = getattr(client.asset, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -1989,7 +1988,7 @@ def test_asset_client_methods_validation_error(client, method, params):
 def test_admin_client_methods_validation_error(client, method, params):
     client_method = getattr(client.admin, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -1998,7 +1997,7 @@ def test_admin_client_methods_validation_error(client, method, params):
 def test_audit_client_methods_validation_error(client, method, params):
     client_method = getattr(client.audit, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2007,7 +2006,7 @@ def test_audit_client_methods_validation_error(client, method, params):
 def test_group_client_methods_validation_error(client, method, params):
     client_method = getattr(client.group, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2016,7 +2015,7 @@ def test_group_client_methods_validation_error(client, method, params):
 def test_role_client_methods_validation_error(client, method, params):
     client_method = getattr(client.role, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2025,7 +2024,7 @@ def test_role_client_methods_validation_error(client, method, params):
 def test_search_log_client_methods_validation_error(client, method, params):
     client_method = getattr(client.search_log, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2034,7 +2033,7 @@ def test_search_log_client_methods_validation_error(client, method, params):
 def test_token_client_methods_validation_error(client, method, params):
     client_method = getattr(client.token, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2043,7 +2042,7 @@ def test_token_client_methods_validation_error(client, method, params):
 def test_typedef_client_methods_validation_error(client, method, params):
     client_method = getattr(client.typedef, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2052,7 +2051,7 @@ def test_typedef_client_methods_validation_error(client, method, params):
 def test_user_client_methods_validation_error(client, method, params):
     client_method = getattr(client.user, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             client_method(*param_values)
         assert error_msg in str(err.value)
 

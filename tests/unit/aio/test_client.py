@@ -8,7 +8,6 @@ from unittest.mock import AsyncMock, Mock, call, patch
 
 import pytest
 from httpx import Headers
-from pydantic.v1 import ValidationError
 
 from pyatlan.client.aio.asset import AsyncAssetClient
 from pyatlan.client.aio.batch import AsyncBatch
@@ -2141,7 +2140,7 @@ async def test_asset_client_missing_glossary_guid_raises_invalid_request_error(
 async def test_asset_client_methods_validation_error(client, method, params):
     client_method = getattr(client.asset, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2151,7 +2150,7 @@ async def test_asset_client_methods_validation_error(client, method, params):
 async def test_admin_client_methods_validation_error(client, method, params):
     client_method = getattr(client.admin, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2161,7 +2160,7 @@ async def test_admin_client_methods_validation_error(client, method, params):
 async def test_async_audit_client_methods_validation_error(client, method, params):
     client_method = getattr(client.audit, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2171,7 +2170,7 @@ async def test_async_audit_client_methods_validation_error(client, method, param
 async def test_async_group_client_methods_validation_error(client, method, params):
     client_method = getattr(client.group, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2181,7 +2180,7 @@ async def test_async_group_client_methods_validation_error(client, method, param
 async def test_role_client_methods_validation_error(client, method, params):
     client_method = getattr(client.role, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2191,7 +2190,7 @@ async def test_role_client_methods_validation_error(client, method, params):
 async def test_async_search_log_client_methods_validation_error(client, method, params):
     client_method = getattr(client.search_log, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2201,7 +2200,7 @@ async def test_async_search_log_client_methods_validation_error(client, method, 
 async def test_async_token_client_methods_validation_error(client, method, params):
     client_method = getattr(client.token, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2211,7 +2210,7 @@ async def test_async_token_client_methods_validation_error(client, method, param
 async def test_async_typedef_client_methods_validation_error(client, method, params):
     client_method = getattr(client.typedef, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 
@@ -2221,7 +2220,7 @@ async def test_async_typedef_client_methods_validation_error(client, method, par
 async def test_async_user_client_methods_validation_error(client, method, params):
     client_method = getattr(client.user, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError) as err:
+        with pytest.raises(ValueError) as err:
             await client_method(*param_values)
         assert error_msg in str(err.value)
 

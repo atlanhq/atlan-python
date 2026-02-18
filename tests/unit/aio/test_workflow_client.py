@@ -3,7 +3,6 @@
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-from pydantic.v1 import ValidationError
 
 from pyatlan.client.aio.client import AsyncAtlanClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
@@ -177,7 +176,7 @@ def update_response() -> WorkflowResponse:
 async def test_async_workflow_client_methods_validation_error(method, params):
     client_method = getattr(AsyncAtlanClient().workflow, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValidationError, match=error_msg):
+        with pytest.raises(ValueError, match=error_msg):
             await client_method(*param_values)
 
 

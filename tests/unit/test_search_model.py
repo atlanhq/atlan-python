@@ -5,7 +5,7 @@ from re import escape
 from typing import Dict, Literal, Set, Union
 
 import pytest
-from pydantic.v1 import StrictBool, StrictStr, ValidationError
+from pydantic.v1 import StrictBool, StrictStr
 
 from pyatlan.model.assets import Asset
 from pyatlan.model.audit import AuditSearchRequest
@@ -262,7 +262,7 @@ def test_bool_to_dict_without_optional_fields(
 
 
 def test_dsl_without_query_and_post_filter_raises_validation_error():
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValueError):
         DSL()
 
 
