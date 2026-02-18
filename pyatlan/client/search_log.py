@@ -1,6 +1,6 @@
 from typing import Union
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import ApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode

@@ -6,7 +6,7 @@ import asyncio
 from logging import Logger
 from typing import List, Optional, Union, overload
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,

@@ -72,6 +72,18 @@ def _is_model_instance(value: Any, expected_type: type) -> bool:
         if expected_type.__name__ in pydantic_mro_names:
             return True
 
+    # For unittest.mock.Mock objects with a spec, check the spec class MRO
+    spec_class = getattr(value, "_spec_class", None)
+    if spec_class is not None:
+        try:
+            if issubclass(spec_class, expected_type):
+                return True
+        except TypeError:
+            pass
+        spec_mro_names = {cls.__name__ for cls in spec_class.__mro__}
+        if expected_type.__name__ in spec_mro_names:
+            return True
+
     return False
 
 

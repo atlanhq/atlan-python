@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Union, cast
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode

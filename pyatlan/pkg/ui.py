@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from pydantic.v1 import Extra, StrictStr
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 from pydantic.v1.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (

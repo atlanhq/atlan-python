@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import ApiCaller, RoleGet, RoleGetAll
 from pyatlan.errors import ErrorCode

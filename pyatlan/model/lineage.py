@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic.v1 import Field, StrictBool, StrictInt, StrictStr
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
