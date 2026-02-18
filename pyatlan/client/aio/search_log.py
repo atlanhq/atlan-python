@@ -5,12 +5,11 @@ from __future__ import annotations
 
 from typing import Union, cast
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.search_log import AsyncSearchLogResults
 from pyatlan.model.search_log import SearchLogRequest, SearchLogViewResults
+from pyatlan.validate import validate_arguments
 
 
 class AsyncSearchLogClient:

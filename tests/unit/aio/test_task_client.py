@@ -74,7 +74,10 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [[None, "none is not an allowed value"], ["123", "instance of TaskSearchRequest expected"]],
+    [
+        [None, "none is not an allowed value"],
+        ["123", "instance of TaskSearchRequest expected"],
+    ],
 )
 def test_task_search_wrong_params_raises_validation_error(
     test_request, error_msg, mock_async_api_caller

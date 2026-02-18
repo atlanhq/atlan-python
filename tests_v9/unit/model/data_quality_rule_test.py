@@ -6,7 +6,6 @@ import pytest
 from pyatlan.client.asset import IndexSearchResults
 from pyatlan.errors import ErrorCode, InvalidRequestError
 from pyatlan.model.assets import Column, DataQualityRule, Table
-from pyatlan.model.dq_rule_conditions import DQRuleConditionsBuilder
 from pyatlan.model.enums import (
     DataQualityDimension,
     DataQualityRuleAlertPriority,
@@ -17,7 +16,8 @@ from pyatlan.model.enums import (
     DataQualityRuleThresholdCompareOperator,
     DataQualityRuleThresholdUnit,
 )
-from tests.unit.model.constants import (
+from pyatlan_v9.model.dq_rule_conditions import DQRuleConditionsBuilder
+from tests_v9.unit.model.constants import (
     DQ_COLUMN_QUALIFIED_NAME,
     DQ_RULE_CUSTOM_SQL,
     DQ_RULE_DESCRIPTION,

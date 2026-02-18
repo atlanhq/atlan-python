@@ -3,13 +3,15 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Generator, Union
+import json as json_lib
+from typing import Any, ClassVar, Dict, Generator, List, Union
 
 import msgspec
 
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTaskStatus, AtlanTaskType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextField
+from pyatlan_v9.model.search import DSL
 
 
 class AtlanTask(msgspec.Struct, kw_only=True):
@@ -76,6 +78,30 @@ class AtlanTask(msgspec.Struct, kw_only=True):
     classification_id: Union[str, None] = None
     entity_guid: Union[str, None] = None
     """Unique identifier of the asset the task originated from."""
+
+
+class TaskSearchRequest(msgspec.Struct, kw_only=True):
+    """Class from which to configure and run a search against Atlan's task queue."""
+
+    dsl: DSL
+    attributes: List[str] = msgspec.field(default_factory=list)
+
+    def json(
+        self,
+        by_alias: bool = False,
+        exclude_none: bool = False,
+        exclude_unset: bool = False,
+    ) -> str:
+        """Serialize TaskSearchRequest to JSON string."""
+        d: Dict[str, Any] = {
+            "attributes": self.attributes,
+            "dsl": json_lib.loads(
+                self.dsl.json(by_alias=by_alias, exclude_none=exclude_none)
+            ),
+        }
+        if exclude_none:
+            d = {k: v for k, v in d.items() if v is not None}
+        return json_lib.dumps(d)
 
 
 class TaskSearchResponse:

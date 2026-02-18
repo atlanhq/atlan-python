@@ -292,7 +292,10 @@ TEST_ASSET_CLIENT_METHODS = {
 
 TEST_ADMIN_CLIENT_METHODS = {
     "get_keycloak_events": [
-        (["keycloak-req"], "keycloak_request\n  instance of KeycloakEventRequest expected"),
+        (
+            ["keycloak-req"],
+            "keycloak_request\n  instance of KeycloakEventRequest expected",
+        ),
         ([None], "none is not an allowed value"),
     ],
     "get_admin_events": [

@@ -47,10 +47,10 @@ from pyatlan.model.search import (  # noqa: F401
 )
 from pyatlan_v9.model.aggregation import Aggregation
 
-
 # ---------------------------------------------------------------------------
 # v9-only helpers
 # ---------------------------------------------------------------------------
+
 
 def _serialize_value(v: Any) -> Any:
     """Recursively serialize a value to JSON-compatible types."""
@@ -70,6 +70,7 @@ def _serialize_value(v: Any) -> Any:
 # ---------------------------------------------------------------------------
 # msgspec.Struct models — these are the genuine Pydantic→msgspec migrations
 # ---------------------------------------------------------------------------
+
 
 class DSL(msgspec.Struct, kw_only=True):
     from_: int = msgspec.field(default=0, name="from")
@@ -245,6 +246,7 @@ class IndexSearchRequest(msgspec.Struct, kw_only=True):
 # ---------------------------------------------------------------------------
 # v9-specific with_active_* helpers (use our own validation, not Pydantic's)
 # ---------------------------------------------------------------------------
+
 
 def _validate_name(name: str) -> None:
     """Validate that name is a non-None, non-blank string."""

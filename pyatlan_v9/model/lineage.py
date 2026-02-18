@@ -8,24 +8,20 @@ from typing import Any, Dict, List, Optional, Union
 
 import msgspec
 
-from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
-from pyatlan.utils import validate_type
 
 # ---------------------------------------------------------------------------
 # Re-export plain dataclass / frozen-dataclass classes from legacy.
 # These are NOT Pydantic models — no migration needed.
 # ---------------------------------------------------------------------------
-from pyatlan.model.lineage import (  # noqa: F401
-    DirectedPair,
-    LineageGraph,
-)
-
+from pyatlan.model.lineage import DirectedPair, LineageGraph  # noqa: F401
+from pyatlan.utils import validate_type
 
 # ---------------------------------------------------------------------------
 # msgspec.Struct models — genuine Pydantic → msgspec migrations
 # ---------------------------------------------------------------------------
+
 
 class LineageRelation(msgspec.Struct, kw_only=True):
     from_entity_id: Optional[str] = None
@@ -180,6 +176,7 @@ class LineageListRequest(msgspec.Struct, kw_only=True):
 # Kept in v9 (not re-exported from legacy) because it builds v9
 # EntityFilter / FilterList / LineageListRequest instances.
 # ---------------------------------------------------------------------------
+
 
 class FluentLineage:
     """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan

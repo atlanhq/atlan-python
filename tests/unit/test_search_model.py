@@ -6,7 +6,6 @@ from typing import Dict, Literal, Set, Union
 
 import pytest
 
-
 from pyatlan.model.assets import Asset
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus

@@ -1,0 +1,258 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
+
+"""
+Unit tests for file client — ported from tests/unit/test_file_client.py.
+
+Uses v9 PresignedURLRequest (msgspec) for inputs to client methods. Other file
+operations (upload, download) are tested using the legacy AtlanClient and
+FileClient since they don't depend on model differences.
+"""
+
+import os
+from json import load
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
+
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.common import ApiCaller
+from pyatlan.client.file import FileClient
+from pyatlan.errors import InvalidRequestError
+
+# v9 model for input
+from pyatlan_v9.model.file import PresignedURLRequest
+
+from tests_v9.unit.constants import TEST_FILE_CLIENT_METHODS
+
+# Share test data with legacy tests
+TEST_DATA_DIR = Path(__file__).parent.parent.parent / "tests" / "unit" / "data"
+UPLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests/upload.txt")
+DOWNLOAD_FILE_PATH = str(TEST_DATA_DIR / "file_requests/download.txt")
+
+
+def load_json(respones_dir, filename):
+    with (respones_dir / filename).open() as input_file:
+        return load(input_file)
+
+
+def to_json(model):
+    return model.json(by_alias=True, exclude_none=True)
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://test.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "test-api-key")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
+
+
+@pytest.fixture(scope="module")
+def mock_api_caller():
+    return Mock(spec=ApiCaller)
+
+
+@pytest.fixture(scope="module")
+def s3_presigned_url():
+    return (
+        "https://test-vcluster.amazonaws.com/some-directory/test.png"
+        "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240425T09240"
+    )
+
+
+@pytest.fixture(scope="module")
+def blob_presigned_url():
+    return (
+        "https://test.blob.core.windows.net/objectstore/test.png"
+        "?se=2024-08-12T09%3A45%3A13Z&sig=esqARNUwHUETQOqSCaSCTqD"
+        "Wjg7vTmcK1PLzQ1buMCQ%3D&sp=aw&spr=https&sr=b&sv=2020-04-08"
+    )
+
+
+@pytest.fixture(scope="module")
+def gcs_presigned_url():
+    return (
+        "https://test.storage.googleapis.com/test-vcluster/test.png"
+        "?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=prod"
+        "iam.gserviceaccount.com%2F20240813%2Fauto%2Fstorage%2Fgoog"
+        "4_request&X-Goog-Date=20240893T093902Z&X-Goog-Expires=29&X-"
+        "Goog-Signature=5620d93a7916b150ce87a324d969741112f764b6d9f6"
+    )
+
+
+@pytest.fixture()
+def mock_session():
+    with patch.object(AtlanClient, "_session") as mock_session:
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raw = open(UPLOAD_FILE_PATH, "rb")
+        mock_response.headers = {}
+
+        # Mock the methods our streaming code expects
+        mock_response.read.return_value = b"test content"
+
+        def mock_iter_raw(chunk_size=None):
+            # Use the actual expected content from upload.txt
+            content = b"test data 12345.\n"
+            yield content
+
+        mock_response.iter_raw = mock_iter_raw
+
+        # Use Mock's context manager support
+        mock_session.stream.return_value.__enter__.return_value = mock_response
+        mock_session.stream.return_value.__exit__.return_value = None
+
+        yield mock_session
+    assert os.path.exists(DOWNLOAD_FILE_PATH)
+    os.remove(DOWNLOAD_FILE_PATH)
+
+
+@pytest.fixture()
+def mock_session_invalid():
+    with patch.object(AtlanClient, "_session") as mock_session:
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raw = "not a bytes-like object"
+        mock_response.headers = {}
+
+        # Mock the methods our streaming code expects
+        mock_response.read.return_value = b"test content"
+
+        def mock_iter_raw(chunk_size=None):
+            # Return a generator that will fail during iteration
+            # This simulates a case where the response object is invalid
+            class BadIterator:
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    # Simulate the error that would happen in real scenario
+                    raise AttributeError("'str' object has no attribute 'read'")
+
+            return BadIterator()
+
+        mock_response.iter_raw = mock_iter_raw
+
+        # Use Mock's context manager support
+        mock_session.stream.return_value.__enter__.return_value = mock_response
+        mock_session.stream.return_value.__exit__.return_value = None
+
+        yield mock_session
+    # Don't assert file exists for invalid case since error should prevent creation
+    if os.path.exists(DOWNLOAD_FILE_PATH):
+        os.remove(DOWNLOAD_FILE_PATH)
+
+
+@pytest.mark.parametrize("method, params", TEST_FILE_CLIENT_METHODS.items())
+def test_file_client_methods_validation_error(client, method, params):
+    client_method = getattr(client.files, method)
+    for param_values, error_msg in params:
+        with pytest.raises(ValueError, match=error_msg):
+            client_method(*param_values)
+
+
+@pytest.mark.parametrize(
+    "file_path, expected_error",
+    [
+        [
+            UPLOAD_FILE_PATH,
+            (
+                "ATLAN-PYTHON-400-061 Provided presigned URL's cloud provider "
+                "storage is currently not supported for file uploads."
+            ),
+        ],
+        [
+            "some/invalid/file_path.png",
+            (
+                "ATLAN-PYTHON-400-059 Unable to upload file, "
+                "Error: No such file or directory, Path: some/invalid/file_path.png"
+            ),
+        ],
+    ],
+)
+def test_file_client_upload_file_raises_invalid_request_error(
+    mock_api_caller, file_path, expected_error
+):
+    client = FileClient(client=mock_api_caller)
+
+    with pytest.raises(InvalidRequestError, match=expected_error):
+        client.upload_file(
+            presigned_url="test-url",
+            file_path=file_path,
+        )
+
+
+def test_file_client_download_file_invalid_format_raises_invalid_request_error(
+    client, s3_presigned_url, mock_session_invalid
+):
+    expected_error = (
+        "ATLAN-PYTHON-400-060 Unable to download file, "
+        f"Error: 'str' object has no attribute 'read', Path: {DOWNLOAD_FILE_PATH}"
+    )
+    with pytest.raises(InvalidRequestError, match=expected_error):
+        client.files.download_file(
+            presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
+        )
+
+
+def test_file_client_get_presigned_url(mock_api_caller, s3_presigned_url):
+    mock_api_caller._call_api.side_effect = [{"url": s3_presigned_url}]
+    client = FileClient(mock_api_caller)
+    # Use v9 PresignedURLRequest
+    response = client.generate_presigned_url(
+        request=PresignedURLRequest(
+            key="some-directory/test.png",
+            expiry="60s",
+            method=PresignedURLRequest.Method.GET,
+        )
+    )
+    assert mock_api_caller._call_api.call_count == 1
+    assert response == s3_presigned_url
+    mock_api_caller.reset_mock()
+
+
+@patch.object(AtlanClient, "_call_api_internal", return_value=None)
+def test_file_client_s3_upload_file(mock_call_api_internal, client, s3_presigned_url):
+    client = FileClient(client=client)
+    client.upload_file(presigned_url=s3_presigned_url, file_path=UPLOAD_FILE_PATH)
+
+    assert mock_call_api_internal.call_count == 1
+    mock_call_api_internal.reset_mock()
+
+
+@patch.object(AtlanClient, "_call_api_internal", return_value=None)
+def test_file_client_azure_blob_upload_file(
+    mock_call_api_internal, client, blob_presigned_url
+):
+    client = FileClient(client=client)
+    client.upload_file(presigned_url=blob_presigned_url, file_path=UPLOAD_FILE_PATH)
+
+    assert mock_call_api_internal.call_count == 1
+    mock_call_api_internal.reset_mock()
+
+
+@patch.object(AtlanClient, "_call_api_internal", return_value=None)
+def test_file_client_gcs_upload_file(mock_call_api_internal, client, gcs_presigned_url):
+    client = FileClient(client=client)
+    client.upload_file(presigned_url=gcs_presigned_url, file_path=UPLOAD_FILE_PATH)
+
+    assert mock_call_api_internal.call_count == 1
+    mock_call_api_internal.reset_mock()
+
+
+def test_file_client_download_file(client, s3_presigned_url, mock_session):
+    # Make sure the download file doesn't exist before downloading
+    assert not os.path.exists(DOWNLOAD_FILE_PATH)
+    response = client.files.download_file(
+        presigned_url=s3_presigned_url, file_path=DOWNLOAD_FILE_PATH
+    )
+    assert response == DOWNLOAD_FILE_PATH
+    assert mock_session.stream.call_count == 1
+    # The file should exist after calling the method
+    assert os.path.exists(DOWNLOAD_FILE_PATH)
+    assert open(DOWNLOAD_FILE_PATH, "r").read() == "test data 12345.\n"

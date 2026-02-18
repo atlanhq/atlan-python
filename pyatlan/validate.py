@@ -17,7 +17,7 @@ import functools
 import inspect
 import typing
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 import msgspec
 
@@ -473,9 +473,7 @@ def validate_arguments(
         param_hints = {k: v for k, v in hints.items() if k != "return"}
 
         # Pre-compute PascalCase name (matching Pydantic's convention)
-        pascal_name = "".join(
-            part.capitalize() for part in fn.__name__.split("_")
-        )
+        pascal_name = "".join(part.capitalize() for part in fn.__name__.split("_"))
 
         @functools.wraps(fn)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -484,9 +482,7 @@ def validate_arguments(
             try:
                 bound = sig.bind_partial(*args, **kwargs)
             except TypeError as e:
-                raise ValueError(
-                    f"1 validation error for {pascal_name}\n{e}"
-                ) from None
+                raise ValueError(f"1 validation error for {pascal_name}\n{e}") from None
             bound.apply_defaults()
 
             errors = []
@@ -515,9 +511,7 @@ def validate_arguments(
             if errors:
                 count = len(errors)
                 suffix = "s" if count > 1 else ""
-                lines = [
-                    f"{count} validation error{suffix} for {pascal_name}"
-                ]
+                lines = [f"{count} validation error{suffix} for {pascal_name}"]
                 for field_name, err_msg in errors:
                     if err_msg.startswith("-> "):
                         # List item error: "-> 0\n  actual_error"
@@ -533,9 +527,7 @@ def validate_arguments(
             try:
                 sig.bind(*args, **kwargs)
             except TypeError as e:
-                raise ValueError(
-                    f"1 validation error for {pascal_name}\n{e}"
-                ) from None
+                raise ValueError(f"1 validation error for {pascal_name}\n{e}") from None
 
             # Re-bind with potentially transformed values
             if has_transforms:

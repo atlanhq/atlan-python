@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "interactions": [
+    {
+      "request": {
+        "method": "DELETE",
+        "uri": "https://httpbin.org/delete",
+        "body": "",
+        "headers": {}
+      },
+      "response": {
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "headers": {},
+        "body": {
+          "parsed_json": {
+            "args": {},
+            "data": "",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate",
+              "Host": "httpbin.org",
+              "User-Agent": "python-httpx/0.28.1",
+              "X-Amzn-Trace-Id": "Root=1-6995eef6-62ac7c84064339d166fa5b4f"
+            },
+            "json": null,
+            "origin": "103.172.73.42",
+            "url": "https://httpbin.org/delete"
+          }
+        }
+      }
+    }
+  ]
+}

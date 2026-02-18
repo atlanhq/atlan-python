@@ -25,14 +25,7 @@ from typing import (
 )
 from warnings import warn
 
-from pydantic.v1 import (
-    StrictStr,
-    ValidationError,
-    constr,
-    parse_obj_as,
-)
-
-from pyatlan.validate import _is_model_instance, validate_arguments
+from pydantic.v1 import StrictStr, ValidationError, constr, parse_obj_as
 from tenacity import (
     RetryError,
     retry,
@@ -117,6 +110,7 @@ from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, Range, SortItem
 from pyatlan.utils import API, unflatten_custom_metadata_for_entity
+from pyatlan.validate import _is_model_instance, validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient

@@ -3,11 +3,10 @@
 
 from __future__ import annotations
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, QueryStream
 from pyatlan.errors import ErrorCode
 from pyatlan.model.query import QueryRequest, QueryResponse
+from pyatlan.validate import validate_arguments
 
 
 class AsyncQueryClient:

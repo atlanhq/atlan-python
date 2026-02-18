@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "interactions": [
+    {
+      "request": {
+        "method": "PUT",
+        "uri": "https://httpbin.org/put",
+        "body": "{\"update\":\"value\"}",
+        "headers": {}
+      },
+      "response": {
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "headers": {},
+        "body": {
+          "parsed_json": {
+            "args": {},
+            "data": "{\"update\":\"value\"}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate",
+              "Content-Length": "18",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "User-Agent": "python-httpx/0.28.1",
+              "X-Amzn-Trace-Id": "Root=1-6995eef4-5ba92a573ab8994101a12adf"
+            },
+            "json": {
+              "update": "value"
+            },
+            "origin": "103.172.73.42",
+            "url": "https://httpbin.org/put"
+          }
+        }
+      }
+    }
+  ]
+}

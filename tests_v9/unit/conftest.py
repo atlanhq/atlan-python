@@ -66,6 +66,27 @@ def mock_custom_metadata_cache():
 
 
 @pytest.fixture()
+def mock_tag_cache():
+    """Mock the atlan tag cache on AtlanClient for event testing."""
+    with patch.object(AtlanClient, "atlan_tag_cache") as cache:
+        yield cache
+
+
+@pytest.fixture(autouse=True)
+def patch_vcr_http_response_version_string():
+    """
+    Patch the VCRHTTPResponse class to add a version_string attribute if it doesn't exist.
+
+    This patch is necessary to avoid bumping vcrpy to 7.0.0,
+    which drops support for Python 3.8.
+    """
+    from vcr.stubs import VCRHTTPResponse  # type: ignore[import-untyped]
+
+    if not hasattr(VCRHTTPResponse, "version_string"):
+        VCRHTTPResponse.version_string = None
+
+
+@pytest.fixture()
 def glossary_json():
     """Load glossary test data."""
     return load_json(TEST_DATA_DIR, "glossary.json")

@@ -5,8 +5,6 @@ from __future__ import annotations
 
 from typing import List, Union
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import (
     AsyncApiCaller,
     TypeDefCreate,
@@ -24,6 +22,7 @@ from pyatlan.model.typedef import (
     TypeDef,
     TypeDefResponse,
 )
+from pyatlan.validate import validate_arguments
 
 
 class AsyncTypeDefClient:

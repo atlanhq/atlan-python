@@ -13,7 +13,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     SearchableField,
 )
-from pyatlan.model.search import Exists
+from pyatlan_v9.model.search import Exists
 
 ATLAN_FIELD_NAME = "atlan_field_name"
 ELASTIC_FIELD_NAME = "elastic_field_name"

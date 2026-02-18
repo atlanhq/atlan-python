@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2025 Atlan Pte. Ltd.
+
+"""
+VCR integration tests (YAML serialization) — ported as-is from
+tests/unit/test_base_vcr_yaml.py. No Pydantic/msgspec models involved.
+"""
+
+import httpx
+import pytest
+
+from pyatlan.test_utils.base_vcr import BaseVCR
+
+
+class TestBaseVCRYAML(BaseVCR):
+    """
+    Integration tests to demonstrate VCR.py capabilities
+    by recording and replaying HTTP interactions using
+    HTTPBin (https://httpbin.org) for GET, POST, PUT, and DELETE requests.
+    """
+
+    BASE_URL = "https://httpbin.org"
+
+    @pytest.mark.vcr()
+    def test_httpbin_get(self):
+        """
+        Test a simple GET request to httpbin.
+        """
+        url = f"{self.BASE_URL}/get"
+        response = httpx.get(url, params={"test": "value"})
+
+        assert response.status_code == 200
+        assert response.json()["args"]["test"] == "value"
+
+    @pytest.mark.vcr()
+    def test_httpbin_post(self):
+        """
+        Test a simple POST request to httpbin.
+        """
+        url = f"{self.BASE_URL}/post"
+        payload = {"name": "atlan", "type": "integration-test"}
+        response = httpx.post(url, json=payload)
+
+        assert response.status_code == 200
+        assert response.json()["json"] == payload
+
+    @pytest.mark.vcr()
+    def test_httpbin_put(self):
+        """
+        Test a simple PUT request to httpbin.
+        """
+        url = f"{self.BASE_URL}/put"
+        payload = {"update": "value"}
+        response = httpx.put(url, json=payload)
+
+        assert response.status_code == 200
+        assert response.json()["json"] == payload
+
+    @pytest.mark.vcr()
+    def test_httpbin_delete(self):
+        """
+        Test a simple DELETE request to httpbin.
+        """
+        url = f"{self.BASE_URL}/delete"
+        response = httpx.delete(url)
+
+        assert response.status_code == 200
+        # HTTPBin returns an empty JSON object for DELETE
+        assert response.json()["args"] == {}

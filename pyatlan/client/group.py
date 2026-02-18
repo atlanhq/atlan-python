@@ -2,8 +2,6 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from typing import List, Optional
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import (
     ApiCaller,
     GroupCreate,
@@ -16,6 +14,7 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
 from pyatlan.model.user import UserRequest, UserResponse
+from pyatlan.validate import validate_arguments
 
 
 class GroupClient:

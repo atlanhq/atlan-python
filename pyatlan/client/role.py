@@ -2,11 +2,10 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import ApiCaller, RoleGet, RoleGetAll
 from pyatlan.errors import ErrorCode
 from pyatlan.model.role import RoleResponse
+from pyatlan.validate import validate_arguments
 
 
 class RoleClient:

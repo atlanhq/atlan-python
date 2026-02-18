@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import (
     AdminGetAdminEvents,
     AdminGetKeycloakEvents,
@@ -14,6 +12,7 @@ from pyatlan.model.aio.keycloak_events import (
     AsyncKeycloakEventResponse,
 )
 from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
+from pyatlan.validate import validate_arguments
 
 
 class AsyncAdminClient:

@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import AdminGetAdminEvents, AdminGetKeycloakEvents, ApiCaller
 from pyatlan.errors import ErrorCode
 from pyatlan.model.keycloak_events import (
@@ -11,6 +9,7 @@ from pyatlan.model.keycloak_events import (
     KeycloakEventRequest,
     KeycloakEventResponse,
 )
+from pyatlan.validate import validate_arguments
 
 
 class AdminClient:

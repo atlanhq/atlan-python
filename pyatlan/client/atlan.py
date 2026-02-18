@@ -19,16 +19,7 @@ from warnings import warn
 
 import httpx
 from httpx_retries import Retry
-from pydantic.v1 import (
-    BaseSettings,
-    Field,
-    HttpUrl,
-    PrivateAttr,
-    StrictStr,
-    constr,
-)
-
-from pyatlan.validate import validate_arguments
+from pydantic.v1 import BaseSettings, Field, HttpUrl, PrivateAttr, StrictStr, constr
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache
@@ -93,8 +84,19 @@ from pyatlan.utils import (
     RequestIdAdapter,
     get_python_version,
 )
+from pyatlan.validate import validate_arguments
 
 request_id_var = ContextVar("request_id", default=None)
+
+
+def _is_msgspec_struct(obj: Any) -> bool:
+    """Check if *obj* is a msgspec.Struct instance (without importing msgspec at module level)."""
+    try:
+        import msgspec
+
+        return isinstance(obj, msgspec.Struct)
+    except ImportError:
+        return False
 
 
 def get_adapter() -> logging.LoggerAdapter:
@@ -863,6 +865,12 @@ class AtlanClient(BaseSettings):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif _is_msgspec_struct(request_obj):
+                from pyatlan_v9.model.core import AtlanRequest as V9AtlanRequest
+
+                params["data"] = V9AtlanRequest(
+                    instance=request_obj, client=self
+                ).json()
             else:
                 params["data"] = json.dumps(request_obj)
         return params

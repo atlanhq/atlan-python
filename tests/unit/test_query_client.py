@@ -74,7 +74,10 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [[None, "none is not an allowed value"], ["123", "instance of QueryRequest expected"]],
+    [
+        [None, "none is not an allowed value"],
+        ["123", "instance of QueryRequest expected"],
+    ],
 )
 def test_query_stream_wrong_params_raises_validation_error(
     test_request, error_msg, client: AtlanClient

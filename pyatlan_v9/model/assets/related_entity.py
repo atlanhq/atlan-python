@@ -72,6 +72,10 @@ class RelatedEntity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="ca
     relationship_type: Union[str, UnsetType] = UNSET
     """Type name of the relationship (e.g., "AtlasGlossaryRelatedTerm")."""
 
+    # Relationship-specific attributes (the nested object with typeName + attributes)
+    relationship_attributes: Union[dict[str, Any], None, UnsetType] = UNSET
+    """Attributes of the relationship itself (e.g., description, status, etc.)."""
+
     # Save semantic (not serialized to JSON, used internally)
     semantic: Union[SaveSemantic, UnsetType] = UNSET
     """The save semantic for this relationship (REPLACE, APPEND, REMOVE)."""

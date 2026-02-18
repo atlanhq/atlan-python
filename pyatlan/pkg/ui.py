@@ -4,8 +4,6 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from pydantic.v1 import Extra, StrictStr
-
-from pyatlan.validate import validate_arguments
 from pydantic.v1.json import pydantic_encoder
 
 from pyatlan.pkg.widgets import (
@@ -28,6 +26,7 @@ from pyatlan.pkg.widgets import (
     SingleUser,
     TextInput,
 )
+from pyatlan.validate import validate_arguments
 
 LOGGER = logging.getLogger(__name__)
 

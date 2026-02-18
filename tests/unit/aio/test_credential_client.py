@@ -23,10 +23,16 @@ TEST_INVALID_CREDENTIALS = (
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected"
 )
-TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = "1 validation error for PurgeByGuid\nguid\n  str type expected"
-TEST_INVALID_CRED_TEST_VALIDATION_ERR = "1 validation error for Test\ncredential\n  instance of Credential expected"
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
+    "1 validation error for PurgeByGuid\nguid\n  str type expected"
+)
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
+    "1 validation error for Test\ncredential\n  instance of Credential expected"
+)
 TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  instance of Credential expected"
-TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = "1 validation error for Creator\ncredential\n  instance of Credential expected"
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
+    "1 validation error for Creator\ncredential\n  instance of Credential expected"
+)
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be AsyncApiCaller"
 )
