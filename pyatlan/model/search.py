@@ -612,6 +612,15 @@ class Bool(Query):
                 q.must_not += other.must_not
             if other.filter:
                 q.filter += other.filter
+            # Preserve minimum_should_match when combining queries
+            # If either query has an explicit minimum_should_match, use the higher value
+            if other.minimum_should_match is not None:
+                if q.minimum_should_match is None:
+                    q.minimum_should_match = other.minimum_should_match
+                else:
+                    q.minimum_should_match = max(
+                        q.minimum_should_match, other.minimum_should_match
+                    )
         else:
             q.filter.append(other)
         return q
