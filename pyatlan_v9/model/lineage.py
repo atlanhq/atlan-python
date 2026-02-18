@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import copy
-from collections import deque
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
@@ -15,6 +13,19 @@ from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 from pyatlan.utils import validate_type
 
+# ---------------------------------------------------------------------------
+# Re-export plain dataclass / frozen-dataclass classes from legacy.
+# These are NOT Pydantic models — no migration needed.
+# ---------------------------------------------------------------------------
+from pyatlan.model.lineage import (  # noqa: F401
+    DirectedPair,
+    LineageGraph,
+)
+
+
+# ---------------------------------------------------------------------------
+# msgspec.Struct models — genuine Pydantic → msgspec migrations
+# ---------------------------------------------------------------------------
 
 class LineageRelation(msgspec.Struct, kw_only=True):
     from_entity_id: Optional[str] = None
@@ -25,108 +36,6 @@ class LineageRelation(msgspec.Struct, kw_only=True):
     @property
     def is_full_link(self):
         return self.process_id is not None
-
-
-@dataclass(frozen=True)
-class DirectedPair:
-    process_guid: str
-    target_guid: str
-
-
-@dataclass(frozen=True)
-class LineageGraph:
-    downstream_list: Dict[str, Dict[DirectedPair, None]]
-    upstream_list: Dict[str, Dict[DirectedPair, None]]
-
-    @classmethod
-    def create(cls, relations: List[LineageRelation]) -> "LineageGraph":
-        downstream_list: Dict[str, Dict[DirectedPair, None]] = {}
-        upstream_list: Dict[str, Dict[DirectedPair, None]] = {}
-
-        def add_relation(_relation: LineageRelation):
-            if (
-                _relation.from_entity_id
-                and _relation.process_id
-                and _relation.to_entity_id
-            ):
-                add_edges(
-                    _relation.from_entity_id,
-                    _relation.process_id,
-                    _relation.to_entity_id,
-                )
-
-        def add_edges(source_guid: str, process_guid: str, target_guid: str):
-            if source_guid not in downstream_list:
-                downstream_list[source_guid] = {}
-            if target_guid not in upstream_list:
-                upstream_list[target_guid] = {}
-            downstream_list[source_guid][
-                DirectedPair(process_guid=process_guid, target_guid=target_guid)
-            ] = None
-            upstream_list[target_guid][
-                DirectedPair(process_guid=process_guid, target_guid=source_guid)
-            ] = None
-
-        for relation in relations:
-            if relation.is_full_link:
-                add_relation(relation)
-            else:
-                raise ErrorCode.NO_GRAPH_WITH_PROCESS.exception_with_parameters()
-        return cls(downstream_list=downstream_list, upstream_list=upstream_list)
-
-    @staticmethod
-    def get_asset_guids(
-        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
-    ) -> List[str]:
-        if guid in guids:
-            return list({pair.target_guid: None for pair in guids[guid].keys()}.keys())
-        return []
-
-    @staticmethod
-    def get_process_guids(
-        guid: str, guids: Dict[str, Dict[DirectedPair, None]]
-    ) -> List[str]:
-        if guid in guids:
-            return list({pair.process_guid: None for pair in guids[guid].keys()}.keys())
-        return []
-
-    def get_downstream_asset_guids(self, guid: str) -> List[str]:
-        return LineageGraph.get_asset_guids(guid, self.downstream_list)
-
-    def get_downstream_process_guids(self, guid: str) -> List[str]:
-        return LineageGraph.get_process_guids(guid, self.downstream_list)
-
-    def get_upstream_asset_guids(self, guid: str) -> List[str]:
-        return LineageGraph.get_asset_guids(guid, self.upstream_list)
-
-    def get_upstream_process_guids(self, guid: str) -> List[str]:
-        return LineageGraph.get_process_guids(guid, self.upstream_list)
-
-    def get_all_downstream_asset_guids_dfs(self, guid: str) -> List[str]:
-        visited: Dict[str, None] = {}
-        stack: deque[str] = deque()
-        stack.append(guid)
-        while len(stack) > 0:
-            to_traverse = stack.pop()
-            if to_traverse not in visited:
-                visited[to_traverse] = None
-                for downstream_guid in self.get_downstream_asset_guids(to_traverse):
-                    if downstream_guid not in visited:
-                        stack.append(downstream_guid)
-        return list(visited.keys())
-
-    def get_all_upstream_asset_guids_dfs(self, guid: str) -> List[str]:
-        visited: Dict[str, None] = {}
-        stack: deque[str] = deque()
-        stack.append(guid)
-        while len(stack) > 0:
-            to_traverse = stack.pop()
-            if to_traverse not in visited:
-                visited[to_traverse] = None
-                for upstream_guid in self.get_upstream_asset_guids(to_traverse):
-                    if upstream_guid not in visited:
-                        stack.append(upstream_guid)
-        return list(visited.keys())
 
 
 class LineageResponse(msgspec.Struct, kw_only=True):
@@ -266,6 +175,12 @@ class LineageListRequest(msgspec.Struct, kw_only=True):
         )
 
 
+# ---------------------------------------------------------------------------
+# FluentLineage — plain class that constructs v9 msgspec model objects.
+# Kept in v9 (not re-exported from legacy) because it builds v9
+# EntityFilter / FilterList / LineageListRequest instances.
+# ---------------------------------------------------------------------------
+
 class FluentLineage:
     """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan
     (removing the need to understand the guts of Elastic)."""
@@ -298,31 +213,6 @@ class FluentLineage:
         where_relationships: Optional[Union[List[LineageFilter], LineageFilter]] = None,
         relationships_condition: FilterList.Condition = FilterList.Condition.AND,
     ):
-        """
-        Create a FluentLineage request.
-
-        :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
-        :param depth: number of degrees of separation (hops) across which lineage should be fetched
-        :param direction: direction of lineage to fetch (upstream or downstream)
-        :param size: number of results to retrieve
-        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
-        :param exclude_atlan_tags: whether to include Atlan tags for assets (False) or not (True)
-        :param immediate_neighbors: whether to include immediate neighbors
-        of the starting asset in the response (True), or not (False).
-        :param includes_on_results: attributes to retrieve for each asset in the lineage results
-        :param includes_in_results: assets to include in the results.
-        :param includes_on_relations: attributes to retrieve for each asset related
-        to the assets in the results (for internal use, unchecked!).
-        :param includes_condition: whether the `includes_in_results` criteria
-        should be combined (AND) or any matching is sufficient (OR)
-        :param where_assets: filters to apply on assets.
-        :param assets_condition: whether the `where_assets` criteria
-        should be combined (AND) or any matching is sufficient (OR)
-        :param where_relationships: filters to apply on relationships.
-        :param relationships_condition: whether the `where_relationships` criteria
-        should be combined (AND) or any matching is sufficient (OR)
-        """
-
         self._depth: int = depth
         self._direction: LineageDirection = direction
         self._exclude_atlan_tags: bool = exclude_atlan_tags

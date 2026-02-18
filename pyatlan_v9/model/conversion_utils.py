@@ -43,6 +43,9 @@ def categorize_relationships(
 
         # Handle list of related entities
         if isinstance(value, list):
+            if len(value) == 0:
+                # Empty list means "replace with nothing" (clear the relationship)
+                replace_kwargs[field_name] = []
             for item in value:
                 semantic = getattr(item, "semantic", UNSET)
                 if semantic is UNSET or semantic == SaveSemantic.REPLACE:

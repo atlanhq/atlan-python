@@ -18,6 +18,8 @@ from typing import Any, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.assets.related_entity import SaveSemantic
+
 
 class AtlasClassification(
     msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
@@ -173,6 +175,11 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
+
+    semantic: Union[SaveSemantic, None, UnsetType] = UNSET
+    """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
+    Not serialized to JSON — used internally to control how relationship
+    attributes are categorized during bulk save operations."""
 
     # =========================================================================
     # Compatibility Methods (legacy API surface)

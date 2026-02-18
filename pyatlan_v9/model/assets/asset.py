@@ -18,6 +18,7 @@ from typing import Any, ClassVar, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.assets.related_entity import SaveSemantic
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -667,7 +668,9 @@ class Asset(Referenceable):
     # =========================================================================
 
     @classmethod
-    def ref_by_guid(cls, guid: str, semantic: str = "REPLACE") -> "Asset":
+    def ref_by_guid(
+        cls, guid: str, semantic: "SaveSemantic | str" = SaveSemantic.REPLACE
+    ) -> "Asset":
         """
         Create a minimal reference to this asset type by its GUID.
 
@@ -678,11 +681,13 @@ class Asset(Referenceable):
         Returns:
             Asset reference instance
         """
-        return cls(guid=guid, type_name=cls.__name__)
+        if isinstance(semantic, str):
+            semantic = SaveSemantic(semantic)
+        return cls(guid=guid, type_name=cls.__name__, semantic=semantic)
 
     @classmethod
     def ref_by_qualified_name(
-        cls, qualified_name: str, semantic: str = "REPLACE"
+        cls, qualified_name: str, semantic: "SaveSemantic | str" = SaveSemantic.REPLACE
     ) -> "Asset":
         """
         Create a minimal reference to this asset type by its qualifiedName.
@@ -694,7 +699,9 @@ class Asset(Referenceable):
         Returns:
             Asset reference instance
         """
-        return cls(qualified_name=qualified_name, type_name=cls.__name__)
+        if isinstance(semantic, str):
+            semantic = SaveSemantic(semantic)
+        return cls(qualified_name=qualified_name, type_name=cls.__name__, semantic=semantic)
 
     # =========================================================================
     # Asset Mutation Convenience Methods

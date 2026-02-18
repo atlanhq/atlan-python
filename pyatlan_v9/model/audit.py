@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json as json_lib
 from datetime import datetime
-from enum import Enum
 from typing import Any, Dict, Generator, Iterable, List, Optional, Set, Union
 
 import msgspec
@@ -18,6 +17,11 @@ from pyatlan.model.enums import SortOrder
 from pyatlan_v9.model.aggregation import Aggregation
 from pyatlan_v9.model.search import DSL, Bool, Query, Range, SortItem, Term
 
+# ---------------------------------------------------------------------------
+# Re-export plain Enum from legacy — no migration needed.
+# ---------------------------------------------------------------------------
+from pyatlan.model.audit import AuditActionType  # noqa: F401
+
 TOTAL_COUNT = "totalCount"
 
 ENTITY_AUDITS = "entityAudits"
@@ -27,24 +31,6 @@ ATTRIBUTES = "attributes"
 TYPE_NAME = "type_name"
 
 LATEST_FIRST = [SortItem("created", order=SortOrder.DESCENDING)]
-
-
-class AuditActionType(str, Enum):
-    ENTITY_CREATE = "ENTITY_CREATE"
-    ENTITY_UPDATE = "ENTITY_UPDATE"
-    ENTITY_DELETE = "ENTITY_DELETE"
-    CUSTOM_METADATA_UPDATE = "BUSINESS_ATTRIBUTE_UPDATE"
-    ATLAN_TAG_ADD = "CLASSIFICATION_ADD"
-    PROPAGATED_ATLAN_TAG_ADD = "PROPAGATED_CLASSIFICATION_ADD"
-    ATLAN_TAG_DELETE = "CLASSIFICATION_DELETE"
-    PROPAGATED_ATLAN_TAG_DELETE = "PROPAGATED_CLASSIFICATION_DELETE"
-    ENTITY_IMPORT_CREATE = "ENTITY_IMPORT_CREATE"
-    ENTITY_IMPORT_UPDATE = "ENTITY_IMPORT_UPDATE"
-    ENTITY_IMPORT_DELETE = "ENTITY_IMPORT_DELETE"
-    ATLAN_TAG_UPDATE = "CLASSIFICATION_UPDATE"
-    PROPAGATED_ATLAN_TAG_UPDATE = "PROPAGATED_CLASSIFICATION_UPDATE"
-    TERM_ADD = "TERM_ADD"
-    TERM_DELETE = "TERM_DELETE"
 
 
 class AuditSearchRequest(msgspec.Struct, kw_only=True):
