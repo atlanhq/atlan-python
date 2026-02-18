@@ -12,7 +12,7 @@ from typing import Union
 from msgspec import UNSET, UnsetType
 
 from pyatlan.errors import ErrorCode
-from pyatlan.model.contract import DataContractSpec
+from pyatlan_v9.model.contract import DataContractSpec
 from pyatlan_v9.model.conversion_utils import (
     build_attributes_kwargs,
     build_flat_kwargs,

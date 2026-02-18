@@ -331,6 +331,35 @@ def is_comparable_type(attribute_type: str, to: ComparisonCategory) -> bool:
     return to == ComparisonCategory.STRING
 
 
+def _is_msgspec_cross_type_match(value, _type) -> bool:
+    """
+    Check if *value* is a ``msgspec.Struct`` whose class hierarchy contains a
+    class with the same ``__name__`` as one of the target types.
+
+    This enables v9 ``msgspec.Struct`` models to pass ``validate_type`` checks
+    that validate against their legacy Pydantic counterparts (same class name,
+    different module).  Only triggers for ``msgspec.Struct`` instances.
+    """
+    try:
+        import msgspec
+
+        if not isinstance(value, msgspec.Struct):
+            return False
+    except ImportError:
+        return False
+
+    value_names = {cls.__name__ for cls in type(value).__mro__}
+    if isinstance(_type, tuple):
+        return any(
+            hasattr(t, "__name__") and t.__name__ in value_names
+            for t in _type
+            if t is not None
+        )
+    elif hasattr(_type, "__name__"):
+        return _type.__name__ in value_names
+    return False
+
+
 def validate_type(name: str, _type, value):
     """
     Validate that the given value is of the specified type.
@@ -350,6 +379,11 @@ def validate_type(name: str, _type, value):
     elif _type is None and value is None:
         return
     elif isinstance(value, _type):
+        return
+
+    # Cross-type check: allow msgspec.Struct instances that match by class name
+    # (enables v9 models to pass validation against Pydantic model types)
+    if _is_msgspec_cross_type_match(value, _type):
         return
 
     # Construct the type name string, handling None explicitly

@@ -57,6 +57,7 @@ from pyatlan.client.atlan import (
     CONNECTION_RETRY,
     VERSION,
     AtlanClient,
+    _is_msgspec_struct,
     get_python_version,
 )
 from pyatlan.client.common import ImpersonateUser
@@ -488,6 +489,12 @@ class AsyncAtlanClient(AtlanClient):
                 params["data"] = await async_request.json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif _is_msgspec_struct(request_obj):
+                from pyatlan_v9.model.core import AtlanRequest as V9AtlanRequest
+
+                params["data"] = V9AtlanRequest(
+                    instance=request_obj, client=self
+                ).json()
             else:
                 params["data"] = json.dumps(request_obj)
         return params

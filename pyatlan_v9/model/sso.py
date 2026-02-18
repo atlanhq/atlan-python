@@ -13,7 +13,7 @@ class SSOMapperConfig(msgspec.Struct, kw_only=True, rename="camel"):
 
     sync_mode: Union[str, None] = None
     attributes: Union[str, None] = None
-    group: Union[str, None] = msgspec.field(default=None, name="group")
+    group_name: Union[str, None] = msgspec.field(default=None, name="group")
     """Group name for the mapper."""
     attribute_name: Union[str, None] = msgspec.field(
         default=None, name="attribute.name"

@@ -3,9 +3,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any, ClassVar, Union
 
 import msgspec
+import yaml
 
 from pyatlan.model.enums import CertificateStatus, DataContractStatus
 
@@ -145,3 +146,71 @@ class DataContractSpec(msgspec.Struct, kw_only=True):
     """List of checks to run to verify data quality of the dataset."""
     extra_properties: dict[str, Any] = msgspec.field(default_factory=dict)
     """Extra properties provided in the specification."""
+
+    # -- Alias mappings: YAML key → Python field name ----------------------
+    _ALIAS_TO_FIELD: ClassVar[dict[str, str]] = {
+        "custom_metadata": "custom_metadata_sets",
+    }
+    _COLUMN_ALIAS_TO_FIELD: ClassVar[dict[str, str]] = {
+        "business_name": "display_name",
+    }
+    _TAG_ALIAS_TO_FIELD: ClassVar[dict[str, str]] = {
+        "restrict_propagation_through_lineage": "propagate_through_lineage",
+        "restrict_propagation_through_hierarchy": "propagate_through_hierarchy",
+    }
+
+    @classmethod
+    def _remap_keys(cls, data: dict, mapping: dict[str, str]) -> dict:
+        """Remap aliased YAML keys to Python field names."""
+        return {mapping.get(k, k): v for k, v in data.items()}
+
+    @classmethod
+    def from_yaml(cls, yaml_str: str) -> DataContractSpec:
+        """
+        Create an instance of DataContractSpec from a YAML string.
+
+        :param yaml_str: YAML string to parse.
+        :returns: a DataContractSpec with attributes populated from the YAML data.
+        """
+        data: dict = yaml.safe_load(yaml_str)
+        data = cls._remap_keys(data, cls._ALIAS_TO_FIELD)
+
+        # Convert nested dicts to struct types
+        if "owners" in data and isinstance(data["owners"], dict):
+            data["owners"] = DataContractOwners(**data["owners"])
+        if "certification" in data and isinstance(data["certification"], dict):
+            data["certification"] = DataContractCertification(**data["certification"])
+        if "announcement" in data and isinstance(data["announcement"], dict):
+            data["announcement"] = DataContractAnnouncement(**data["announcement"])
+        if "tags" in data and isinstance(data["tags"], list):
+            data["tags"] = [
+                DCTag(**cls._remap_keys(t, cls._TAG_ALIAS_TO_FIELD))
+                if isinstance(t, dict)
+                else t
+                for t in data["tags"]
+            ]
+        if "columns" in data and isinstance(data["columns"], list):
+            data["columns"] = [
+                DCColumn(**cls._remap_keys(c, cls._COLUMN_ALIAS_TO_FIELD))
+                if isinstance(c, dict)
+                else c
+                for c in data["columns"]
+            ]
+
+        # Collect any extra keys not defined on the struct
+        known_fields = {fi.name for fi in msgspec.structs.fields(cls)}
+        extra = {k: data.pop(k) for k in list(data) if k not in known_fields}
+        spec = cls(**data)
+        if extra:
+            spec.extra_properties = extra
+        return spec
+
+    def to_yaml(self, sort_keys: bool = False) -> str:
+        """
+        Serialize the DataContractSpec to a YAML string.
+
+        :param sort_keys: whether to sort keys in the YAML output.
+        :returns: a YAML string representation of this DataContractSpec.
+        """
+        raw = msgspec.to_builtins(self)
+        return yaml.dump(raw, sort_keys=sort_keys)

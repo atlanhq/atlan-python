@@ -11,7 +11,6 @@ from unittest.mock import create_autospec
 import pytest
 from pydantic.v1 import parse_obj_as
 
-
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import (

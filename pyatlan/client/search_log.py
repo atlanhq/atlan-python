@@ -1,7 +1,5 @@
 from typing import Union
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import ApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.search_log import (
@@ -9,6 +7,7 @@ from pyatlan.model.search_log import (
     SearchLogResults,
     SearchLogViewResults,
 )
+from pyatlan.validate import validate_arguments
 
 
 class SearchLogClient:

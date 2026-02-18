@@ -445,6 +445,9 @@ def _atlas_glossary_term_to_nested(
         "is_a",
         "valid_values_for",
         "valid_values",
+        # Inherited from Referenceable
+        "user_def_relationship_to",
+        "user_def_relationship_from",
     ]
     replace_rels, append_rels, remove_rels = categorize_relationships(
         atlas_glossary_term, rel_fields, AtlasGlossaryTermRelationshipAttributes
@@ -505,6 +508,9 @@ def _atlas_glossary_term_from_nested(
         "is_a",
         "valid_values_for",
         "valid_values",
+        # Inherited from Referenceable
+        "user_def_relationship_to",
+        "user_def_relationship_from",
     ]
     merged_rels = merge_relationships(
         nested.relationship_attributes,

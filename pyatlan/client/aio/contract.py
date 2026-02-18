@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, ContractInit
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
+from pyatlan.validate import validate_arguments
 
 
 class AsyncContractClient:

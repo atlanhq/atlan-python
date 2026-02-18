@@ -12,13 +12,13 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.errors import AtlanError, InvalidRequestError
 from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
-from pyatlan.model.fluent_tasks import FluentTasks
 from pyatlan.model.open_lineage import (
     OpenLineageEvent,
     OpenLineageJob,
     OpenLineageRawEvent,
     OpenLineageRun,
 )
+from pyatlan_v9.model.fluent_tasks import FluentTasks
 
 TEST_DATA_DIR = Path(__file__).parents[4] / "tests" / "unit" / "data"
 OL_EVENT_START = str(TEST_DATA_DIR / "open_lineage_requests/event_start.json")

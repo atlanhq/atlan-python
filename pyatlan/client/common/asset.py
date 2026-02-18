@@ -1710,7 +1710,9 @@ class SearchForAssetWithName:
             if current_page:
                 # Use current page if available
                 assets = [
-                    asset for asset in current_page if _is_model_instance(asset, asset_type)
+                    asset
+                    for asset in current_page
+                    if _is_model_instance(asset, asset_type)
                 ]
             else:
                 # Otherwise, collect from async iterator

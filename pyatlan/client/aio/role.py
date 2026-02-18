@@ -5,11 +5,10 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, RoleGet, RoleGetAll
 from pyatlan.errors import ErrorCode
 from pyatlan.model.role import RoleResponse
+from pyatlan.validate import validate_arguments
 
 
 class AsyncRoleClient:

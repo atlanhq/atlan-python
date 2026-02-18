@@ -20,8 +20,6 @@ from pydantic.v1 import (
     constr,
     validator,
 )
-
-from pyatlan.validate import validate_arguments
 from pydantic.v1.config import Extra
 from pydantic.v1.dataclasses import dataclass
 
@@ -34,6 +32,7 @@ from pyatlan.model.enums import (
     SortOrder,
     UTMTags,
 )
+from pyatlan.validate import validate_arguments
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
 

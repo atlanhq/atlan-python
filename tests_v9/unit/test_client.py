@@ -17,7 +17,6 @@ from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import httpx
-import msgspec
 import pytest
 
 from pyatlan.client.asset import (
@@ -45,23 +44,9 @@ from pyatlan.model.enums import (
     CertificateStatus,
     DataQualityScheduleType,
     LineageDirection,
-    SaveSemantic,
     SortOrder,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-from pyatlan_v9.model.assets.gtc_related import (
-    RelatedAtlasGlossary,
-    RelatedAtlasGlossaryTerm,
-)
-from pyatlan_v9.model.assets.related_entity import SaveSemantic as V9SaveSemantic
-from pyatlan_v9.model.core import Announcement, BulkRequest
-from pyatlan_v9.model.group import GroupRequest
-from pyatlan_v9.model.lineage import LineageListRequest
-from pyatlan_v9.model.response import AssetMutationResponse
-from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttributes
-from pyatlan_v9.model.search_log import SearchLogRequest
-from pyatlan_v9.model.typedef import EnumDef
-from pyatlan_v9.model.user import AtlanUser, UserRequest
 from pyatlan.utils import get_python_version
 from pyatlan.validate import _is_model_instance
 from pyatlan_v9.client.atlan import AtlanClient
@@ -76,6 +61,18 @@ from pyatlan_v9.model.assets import (
     Table,
     View,
 )
+from pyatlan_v9.model.assets.gtc_related import (
+    RelatedAtlasGlossary,
+    RelatedAtlasGlossaryTerm,
+)
+from pyatlan_v9.model.assets.related_entity import SaveSemantic as V9SaveSemantic
+from pyatlan_v9.model.core import Announcement, BulkRequest
+from pyatlan_v9.model.group import GroupRequest
+from pyatlan_v9.model.lineage import LineageListRequest
+from pyatlan_v9.model.response import AssetMutationResponse
+from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttributes
+from pyatlan_v9.model.search_log import SearchLogRequest
+from pyatlan_v9.model.user import AtlanUser, UserRequest
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_ASSET_CLIENT_METHODS,
@@ -2624,9 +2621,7 @@ class TestBulkRequest:
         # Test replace and append (list)
         term1.see_also = [
             RelatedAtlasGlossaryTerm(guid=term2.guid),
-            RelatedAtlasGlossaryTerm(
-                guid=term3.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term3.guid, semantic=V9SaveSemantic.APPEND),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2646,14 +2641,10 @@ class TestBulkRequest:
         # Test replace and append (list) with multiple relationships
         term1.see_also = [
             RelatedAtlasGlossaryTerm(guid=term2.guid),
-            RelatedAtlasGlossaryTerm(
-                guid=term3.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term3.guid, semantic=V9SaveSemantic.APPEND),
         ]
         term1.preferred_to_terms = [
-            RelatedAtlasGlossaryTerm(
-                guid=term3.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term3.guid, semantic=V9SaveSemantic.APPEND),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2675,9 +2666,7 @@ class TestBulkRequest:
 
         # Test append and replace (list)
         term1.see_also = [
-            RelatedAtlasGlossaryTerm(
-                guid=term2.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term2.guid, semantic=V9SaveSemantic.APPEND),
             RelatedAtlasGlossaryTerm(guid=term3.guid),
         ]
         request = BulkRequest(entities=[term1])
@@ -2697,12 +2686,8 @@ class TestBulkRequest:
 
         # Test remove and append (list)
         term1.see_also = [
-            RelatedAtlasGlossaryTerm(
-                guid=term2.guid, semantic=V9SaveSemantic.REMOVE
-            ),
-            RelatedAtlasGlossaryTerm(
-                guid=term3.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term2.guid, semantic=V9SaveSemantic.REMOVE),
+            RelatedAtlasGlossaryTerm(guid=term3.guid, semantic=V9SaveSemantic.APPEND),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2723,12 +2708,8 @@ class TestBulkRequest:
 
         # Test same semantic (list)
         term1.see_also = [
-            RelatedAtlasGlossaryTerm(
-                guid=term2.guid, semantic=V9SaveSemantic.APPEND
-            ),
-            RelatedAtlasGlossaryTerm(
-                guid=term3.guid, semantic=V9SaveSemantic.APPEND
-            ),
+            RelatedAtlasGlossaryTerm(guid=term2.guid, semantic=V9SaveSemantic.APPEND),
+            RelatedAtlasGlossaryTerm(guid=term3.guid, semantic=V9SaveSemantic.APPEND),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)

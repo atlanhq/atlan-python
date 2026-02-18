@@ -8,7 +8,7 @@ from typing import Any, Union
 import msgspec
 
 
-class Credential(msgspec.Struct, kw_only=True):
+class Credential(msgspec.Struct, kw_only=True, omit_defaults=True):
     """Credential used for connectivity to external systems."""
 
     id: Union[str, None] = None

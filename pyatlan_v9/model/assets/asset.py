@@ -701,7 +701,9 @@ class Asset(Referenceable):
         """
         if isinstance(semantic, str):
             semantic = SaveSemantic(semantic)
-        return cls(qualified_name=qualified_name, type_name=cls.__name__, semantic=semantic)
+        return cls(
+            qualified_name=qualified_name, type_name=cls.__name__, semantic=semantic
+        )
 
     # =========================================================================
     # Asset Mutation Convenience Methods

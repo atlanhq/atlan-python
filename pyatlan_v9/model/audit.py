@@ -12,15 +12,15 @@ from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.client.protocol import ApiCaller
 from pyatlan.errors import ErrorCode, NotFoundError
-from pyatlan.model.constants import DELETED_
-from pyatlan.model.enums import SortOrder
-from pyatlan_v9.model.aggregation import Aggregation
-from pyatlan_v9.model.search import DSL, Bool, Query, Range, SortItem, Term
 
 # ---------------------------------------------------------------------------
 # Re-export plain Enum from legacy — no migration needed.
 # ---------------------------------------------------------------------------
 from pyatlan.model.audit import AuditActionType  # noqa: F401
+from pyatlan.model.constants import DELETED_
+from pyatlan.model.enums import SortOrder
+from pyatlan_v9.model.aggregation import Aggregation
+from pyatlan_v9.model.search import DSL, Bool, Query, Range, SortItem, Term
 
 TOTAL_COUNT = "totalCount"
 

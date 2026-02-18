@@ -5,8 +5,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
-from pyatlan.validate import validate_arguments
-
 from pyatlan.client.common import (
     AsyncApiCaller,
     SSOCheckExistingMappings,
@@ -19,6 +17,7 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup
 from pyatlan.model.sso import SSOMapper
+from pyatlan.validate import validate_arguments
 
 if TYPE_CHECKING:
     pass

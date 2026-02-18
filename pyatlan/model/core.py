@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 import msgspec
 import yaml  # type: ignore[import-untyped]
 from pydantic.v1 import BaseModel, Extra, Field, root_validator, validator
-
 from pydantic.v1.json import ENCODERS_BY_TYPE
 
 from pyatlan.model.utils import encoders, to_camel_case
