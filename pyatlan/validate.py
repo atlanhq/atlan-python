@@ -84,6 +84,13 @@ def _is_model_instance(value: Any, expected_type: type) -> bool:
         if expected_type.__name__ in spec_mro_names:
             return True
 
+    # Generic fallback: match by class name in MRO for any class
+    # (handles dataclasses, plain classes, etc. with identical names
+    # across legacy and v9 modules)
+    value_mro_names = {cls.__name__ for cls in type(value).__mro__}
+    if expected_type.__name__ in value_mro_names:
+        return True
+
     return False
 
 

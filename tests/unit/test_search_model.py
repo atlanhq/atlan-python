@@ -5,7 +5,7 @@ from re import escape
 from typing import Dict, Literal, Set, Union
 
 import pytest
-from pydantic.v1 import StrictBool, StrictStr
+
 
 from pyatlan.model.assets import Asset
 from pyatlan.model.audit import AuditSearchRequest
@@ -45,8 +45,8 @@ from tests.unit.model.constants import (
 NOW = datetime.now()
 NOW_TIMESTAMP = int(NOW.timestamp() * 1000)
 VALUES_BY_TYPE: Dict[Union[type, object], Union[str, datetime, object]] = {
-    StrictStr: "abc",
-    StrictBool: True,
+    str: "abc",
+    bool: True,
     datetime: NOW,
     Literal["ACTIVE", "DELETED", "PURGED"]: "ACTIVE",
     float: 1.0,

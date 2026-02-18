@@ -359,10 +359,29 @@ class BulkRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """
     Wrapper for bulk asset API requests.
 
-    Note: The original Pydantic version included a @validator that processed
-    relationship attributes (append/remove semantics). In v9 that processing
-    logic is handled separately outside this struct.
+    In v9, relationship categorization (replace/append/remove semantics) is
+    handled by each entity's ``to_json(nested=True)`` conversion, which calls
+    ``categorize_relationships()`` under the hood.
     """
 
     entities: list[Any]
     """List of asset entities to send to the API in bulk."""
+
+    def to_dict(self) -> dict:
+        """
+        Convert to a dict in the API nested format.
+
+        Each entity is converted to its nested representation (with
+        ``attributes``, ``relationshipAttributes``,
+        ``appendRelationshipAttributes``, ``removeRelationshipAttributes``).
+
+        Returns:
+            Dict suitable for JSON serialization and API submission.
+        """
+        entity_dicts = []
+        for entity in self.entities:
+            if hasattr(entity, "to_json"):
+                entity_dicts.append(json.loads(entity.to_json(nested=True)))
+            else:
+                entity_dicts.append(msgspec.to_builtins(entity))
+        return {"entities": entity_dicts}

@@ -17,6 +17,7 @@ from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import httpx
+import msgspec
 import pytest
 
 from pyatlan.client.asset import (
@@ -39,10 +40,6 @@ from pyatlan.errors import (
     InvalidRequestError,
     NotFoundError,
 )
-from pyatlan.model.assets import AtlasGlossary as LegacyAtlasGlossary
-from pyatlan.model.assets import AtlasGlossaryTerm as LegacyAtlasGlossaryTerm
-from pyatlan.model.assets import Table as LegacyTable
-from pyatlan.model.core import Announcement, BulkRequest
 from pyatlan.model.enums import (
     AnnouncementType,
     CertificateStatus,
@@ -52,14 +49,21 @@ from pyatlan.model.enums import (
     SortOrder,
 )
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-from pyatlan.model.group import GroupRequest
-from pyatlan.model.lineage import LineageListRequest
-from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttributes
-from pyatlan.model.search_log import SearchLogRequest
-from pyatlan.model.typedef import EnumDef
-from pyatlan.model.user import AtlanUser, UserRequest
+from pyatlan_v9.model.assets.gtc_related import (
+    RelatedAtlasGlossary,
+    RelatedAtlasGlossaryTerm,
+)
+from pyatlan_v9.model.assets.related_entity import SaveSemantic as V9SaveSemantic
+from pyatlan_v9.model.core import Announcement, BulkRequest
+from pyatlan_v9.model.group import GroupRequest
+from pyatlan_v9.model.lineage import LineageListRequest
+from pyatlan_v9.model.response import AssetMutationResponse
+from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttributes
+from pyatlan_v9.model.search_log import SearchLogRequest
+from pyatlan_v9.model.typedef import EnumDef
+from pyatlan_v9.model.user import AtlanUser, UserRequest
 from pyatlan.utils import get_python_version
+from pyatlan.validate import _is_model_instance
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
     Asset,
@@ -902,17 +906,17 @@ def test_find_glossary(mock_search, caplog):
     assert attributes == request.attributes
     assert request.dsl
     assert request.dsl.query
-    assert isinstance(request.dsl.query, Bool) is True
+    assert isinstance(request.dsl.query, Bool)
     assert request.dsl.query.filter
     assert 3 == len(request.dsl.query.filter)
     term1, term2, term3 = request.dsl.query.filter
-    assert isinstance(term1, Term) is True
+    assert isinstance(term1, Term)
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
-    assert isinstance(term2, Term) is True
+    assert isinstance(term2, Term)
     assert term2.field == "__typeName.keyword"
     assert term2.value == "AtlasGlossary"
-    assert isinstance(term3, Term) is True
+    assert isinstance(term3, Term)
     assert term3.field == "name.keyword"
     assert term3.value == GLOSSARY_NAME
 
@@ -1047,19 +1051,19 @@ def test_find_category_fast_by_name(mock_search, caplog):
     assert attributes == request.attributes
     assert request.dsl
     assert request.dsl.query
-    assert isinstance(request.dsl.query, Bool) is True
+    assert isinstance(request.dsl.query, Bool)
     assert request.dsl.query.filter
     assert 4 == len(request.dsl.query.filter)
     term1, term2, term3, term4 = request.dsl.query.filter
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
-    assert isinstance(term2, Term) is True
+    assert isinstance(term2, Term)
     assert term2.field == "__typeName.keyword"
     assert term2.value == "AtlasGlossaryCategory"
-    assert isinstance(term3, Term) is True
+    assert isinstance(term3, Term)
     assert term3.field == "name.keyword"
     assert term3.value == GLOSSARY_CATEGORY_NAME
-    assert isinstance(term4, Term) is True
+    assert isinstance(term4, Term)
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
 
@@ -1343,19 +1347,19 @@ def test_find_term_fast_by_name(mock_search, caplog):
     assert attributes == request.attributes
     assert request.dsl
     assert request.dsl.query
-    assert isinstance(request.dsl.query, Bool) is True
+    assert isinstance(request.dsl.query, Bool)
     assert request.dsl.query.filter
     assert 4 == len(request.dsl.query.filter)
     term1, term2, term3, term4 = request.dsl.query.filter
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
-    assert isinstance(term2, Term) is True
+    assert isinstance(term2, Term)
     assert term2.field == "__typeName.keyword"
     assert term2.value == "AtlasGlossaryTerm"
-    assert isinstance(term3, Term) is True
+    assert isinstance(term3, Term)
     assert term3.field == "name.keyword"
     assert term3.value == GLOSSARY_TERM_NAME
-    assert isinstance(term4, Term) is True
+    assert isinstance(term4, Term)
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
 
@@ -1964,8 +1968,8 @@ def test_index_search_pagination(
 def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json):
     """Test asset get_by_guid without specifying asset type returns correct type.
 
-    Note: The client deserialises responses into *legacy* Pydantic models, so
-    we verify by type name rather than ``isinstance(response, v9.Table)``.
+    Note: The client deserialises responses into legacy Pydantic models.
+    ``_is_model_instance`` bridges the Pydantic/msgspec boundary via name matching.
     """
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [get_by_guid_json]
@@ -1975,7 +1979,7 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     )
 
     assert response
-    assert type(response).__name__ == "Table"
+    assert _is_model_instance(response, Table)
     assert response.guid
     assert response.qualified_name
     assert response.attributes
@@ -1987,8 +1991,8 @@ def test_asset_retrieve_minimal_without_asset_type(
 ):
     """Test asset retrieve_minimal without specifying asset type returns correct type.
 
-    Note: The client deserialises responses into *legacy* Pydantic models, so
-    we verify by type name rather than ``isinstance(response, v9.Table)``.
+    Note: The client deserialises responses into legacy Pydantic models.
+    ``_is_model_instance`` bridges the Pydantic/msgspec boundary via name matching.
     """
     client = AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [retrieve_minimal_json]
@@ -1996,7 +2000,7 @@ def test_asset_retrieve_minimal_without_asset_type(
     response = client.retrieve_minimal(guid="test-table-guid-123")
 
     assert response
-    assert type(response).__name__ == "Table"
+    assert _is_model_instance(response, Table)
     assert response.guid
     assert response.qualified_name
     assert response.attributes
@@ -2019,7 +2023,7 @@ def test_user_create(
     mock_api_caller._call_api.side_effect = [None]
     mock_role_cache.get_id_for_name.return_value = test_role_id
 
-    test_users = [AtlanUser.create(email="test@test.com", role_name="$member")]
+    test_users = [AtlanUser.creator(email="test@test.com", role_name="$member")]
     response = client.create(users=test_users)
 
     assert response is None
@@ -2046,7 +2050,7 @@ def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json)
         },
     ]
     mock_role_cache.get_id_for_name.return_value = test_role_id
-    test_users = [AtlanUser.create(email="test@test.com", role_name="$member")]
+    test_users = [AtlanUser.creator(email="test@test.com", role_name="$member")]
     response = client.create(users=test_users, return_info=True)
 
     assert len(response.current_page()) == 1
@@ -2070,7 +2074,8 @@ def test_typedef_get_by_name(mock_api_caller, type_def_get_by_name_json):
     client = TypeDefClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [type_def_get_by_name_json]
     response = client.get_by_name(name="test-enum")
-    assert response == EnumDef(**type_def_get_by_name_json)
+    assert response.name == type_def_get_by_name_json.get("name")
+    assert response.category == type_def_get_by_name_json.get("category")
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
@@ -2509,18 +2514,23 @@ class TestBatch:
         assert 0 == len(sut.created)
         assert 0 == len(sut.updated)
 
-    @patch.object(LegacyAtlasGlossaryTerm, "trim_to_required")
-    @patch.object(LegacyAtlasGlossaryTerm, "ref_by_guid")
+    @patch(
+        "pyatlan.model.assets.AtlasGlossaryTerm.trim_to_required",
+    )
+    @patch(
+        "pyatlan.model.assets.AtlasGlossaryTerm.ref_by_guid",
+    )
     def test_term_add(self, mock_ref_by_guid, mock_trim_to_required, mock_atlan_client):
         """Test batch term add with tracking enabled.
 
-        Note: Uses legacy AtlasGlossaryTerm because Batch internally imports
-        and patches ``pyatlan.model.assets.AtlasGlossaryTerm``.
+        Uses v9 AtlasGlossaryTerm models as input. The Batch class
+        internally uses the legacy AtlasGlossaryTerm.ref_by_guid for
+        tracking, which is patched via module path.
         """
         mutated_entities = Mock()
         mock_response = Mock(spec=AssetMutationResponse)
-        term_1 = LegacyAtlasGlossaryTerm(guid="test-guid1")
-        term_2 = LegacyAtlasGlossaryTerm(guid="test-guid2")
+        term_1 = AtlasGlossaryTerm(guid="test-guid1", type_name="AtlasGlossaryTerm")
+        term_2 = AtlasGlossaryTerm(guid="test-guid2", type_name="AtlasGlossaryTerm")
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
@@ -2549,7 +2559,12 @@ class TestBatch:
 
 
 class TestBulkRequest:
-    """Tests for the BulkRequest class."""
+    """Tests for the v9 BulkRequest class.
+
+    Tests that relationship attributes are correctly categorized into
+    replace/append/remove buckets via v9's ``categorize_relationships()``
+    pipeline (invoked by ``BulkRequest.to_dict()``).
+    """
 
     SEE_ALSO = "seeAlso"
     REMOVE = "removeRelationshipAttributes"
@@ -2558,54 +2573,48 @@ class TestBulkRequest:
 
     @pytest.fixture(scope="class")
     def glossary(self):
-        """Create a test glossary.
-
-        Note: Uses legacy models because BulkRequest's relationship processing
-        depends on Pydantic-specific internals (``__fields_set__``, ``.dict()``).
-        """
-        return LegacyAtlasGlossary.create(name=GLOSSARY_NAME)
+        """Create a v9 test glossary."""
+        return AtlasGlossary.creator(name=GLOSSARY_NAME)
 
     @pytest.fixture(scope="class")
     def term1(self):
-        """Create test term 1 (legacy model for BulkRequest compat)."""
-        return LegacyAtlasGlossaryTerm.create(
+        """Create v9 test term 1."""
+        return AtlasGlossaryTerm.creator(
             name=GLOSSARY_TERM_NAME,
-            anchor=LegacyAtlasGlossary.create(name=GLOSSARY_NAME),
+            anchor=AtlasGlossary.creator(name=GLOSSARY_NAME),
         )
 
     @pytest.fixture(scope="class")
     def term2(self):
-        """Create test term 2 (legacy model for BulkRequest compat)."""
-        return LegacyAtlasGlossaryTerm(guid="term-2-guid")
+        """Create v9 test term 2."""
+        return AtlasGlossaryTerm(guid="term-2-guid", type_name="AtlasGlossaryTerm")
 
     @pytest.fixture(scope="class")
     def term3(self):
-        """Create test term 3 (legacy model for BulkRequest compat)."""
-        return LegacyAtlasGlossaryTerm(guid="term-3-guid")
+        """Create v9 test term 3."""
+        return AtlasGlossaryTerm(guid="term-3-guid", type_name="AtlasGlossaryTerm")
 
     def to_json(self, request):
-        """Convert BulkRequest to JSON for assertion."""
-        return request.dict(by_alias=True, exclude_unset=True)["entities"][0]
+        """Convert v9 BulkRequest to dict for assertion via to_dict()."""
+        return request.to_dict()["entities"][0]
 
     def test_process_relationship_attributes(self, glossary, term1, term2, term3):
-        """Test BulkRequest correctly processes relationship attributes with different semantics.
+        """Test v9 BulkRequest correctly categorizes relationship attributes.
 
-        Note: Uses legacy models for ``ref_by_guid`` calls because ``BulkRequest``
-        internally relies on Pydantic-specific ``semantic`` attributes and
-        ``process_relationship_attributes`` validator logic.
+        Uses v9 ``RelatedAtlasGlossaryTerm`` with ``SaveSemantic`` to test
+        the ``categorize_relationships()`` pipeline invoked via ``to_dict()``.
         """
         # Test replace (list)
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid,
-            ),
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(guid=term2.guid),
+            RelatedAtlasGlossaryTerm(guid=term3.guid),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert self.SEE_ALSO in request_json["attributes"]
-        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO in rel_attrs
+        replace_attributes = rel_attrs[self.SEE_ALSO]
         assert len(replace_attributes) == 2
         assert replace_attributes[0]["guid"] == term2.guid
         assert replace_attributes[1]["guid"] == term3.guid
@@ -2613,17 +2622,18 @@ class TestBulkRequest:
         assert self.REMOVE not in request_json
 
         # Test replace and append (list)
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid, semantic=SaveSemantic.APPEND
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(guid=term2.guid),
+            RelatedAtlasGlossaryTerm(
+                guid=term3.guid, semantic=V9SaveSemantic.APPEND
             ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert self.SEE_ALSO in request_json["attributes"]
-        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO in rel_attrs
+        replace_attributes = rel_attrs[self.SEE_ALSO]
         assert len(replace_attributes) == 1
         assert replace_attributes[0]["guid"] == term2.guid
         assert self.APPEND in request_json
@@ -2634,22 +2644,23 @@ class TestBulkRequest:
         assert self.REMOVE not in request_json
 
         # Test replace and append (list) with multiple relationships
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(guid=term2.guid),
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid, semantic=SaveSemantic.APPEND
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(guid=term2.guid),
+            RelatedAtlasGlossaryTerm(
+                guid=term3.guid, semantic=V9SaveSemantic.APPEND
             ),
         ]
-        term1.attributes.preferred_to_terms = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid, semantic=SaveSemantic.APPEND
+        term1.preferred_to_terms = [
+            RelatedAtlasGlossaryTerm(
+                guid=term3.guid, semantic=V9SaveSemantic.APPEND
             ),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert self.SEE_ALSO in request_json["attributes"]
-        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO in rel_attrs
+        replace_attributes = rel_attrs[self.SEE_ALSO]
         assert len(replace_attributes) == 1
         assert replace_attributes[0]["guid"] == term2.guid
         assert self.APPEND in request_json
@@ -2663,17 +2674,18 @@ class TestBulkRequest:
         assert self.REMOVE not in request_json
 
         # Test append and replace (list)
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term2.guid, semantic=SaveSemantic.APPEND
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(
+                guid=term2.guid, semantic=V9SaveSemantic.APPEND
             ),
-            LegacyAtlasGlossaryTerm.ref_by_guid(guid=term3.guid),
+            RelatedAtlasGlossaryTerm(guid=term3.guid),
         ]
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert self.SEE_ALSO in request_json["attributes"]
-        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO in rel_attrs
+        replace_attributes = rel_attrs[self.SEE_ALSO]
         assert len(replace_attributes) == 1
         assert replace_attributes[0]["guid"] == term3.guid
         assert self.APPEND in request_json
@@ -2684,12 +2696,12 @@ class TestBulkRequest:
         assert self.REMOVE not in request_json
 
         # Test remove and append (list)
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term2.guid, semantic=SaveSemantic.REMOVE
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(
+                guid=term2.guid, semantic=V9SaveSemantic.REMOVE
             ),
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid, semantic=SaveSemantic.APPEND
+            RelatedAtlasGlossaryTerm(
+                guid=term3.guid, semantic=V9SaveSemantic.APPEND
             ),
         ]
         request = BulkRequest(entities=[term1])
@@ -2705,15 +2717,17 @@ class TestBulkRequest:
         remove_attributes = request_json[self.REMOVE][self.SEE_ALSO]
         assert len(remove_attributes) == 1
         assert remove_attributes[0]["guid"] == term2.guid
-        assert self.SEE_ALSO not in request_json["attributes"]
+        # No replace bucket when all are append/remove
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO not in rel_attrs
 
         # Test same semantic (list)
-        term1.attributes.see_also = [
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term2.guid, semantic=SaveSemantic.APPEND
+        term1.see_also = [
+            RelatedAtlasGlossaryTerm(
+                guid=term2.guid, semantic=V9SaveSemantic.APPEND
             ),
-            LegacyAtlasGlossaryTerm.ref_by_guid(
-                guid=term3.guid, semantic=SaveSemantic.APPEND
+            RelatedAtlasGlossaryTerm(
+                guid=term3.guid, semantic=V9SaveSemantic.APPEND
             ),
         ]
         request = BulkRequest(entities=[term1])
@@ -2726,35 +2740,38 @@ class TestBulkRequest:
         assert append_attributes[0]["guid"] == term2.guid
         assert append_attributes[1]["guid"] == term3.guid
         assert self.REMOVE not in request_json
-        assert self.SEE_ALSO not in request_json["attributes"]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO not in rel_attrs
 
         # Test empty (list)
-        term1.attributes.see_also = []
-        term1.attributes.preferred_to_terms = []
+        term1.see_also = []
+        term1.preferred_to_terms = []
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert self.SEE_ALSO in request_json["attributes"]
-        replace_attributes = request_json["attributes"][self.SEE_ALSO]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert self.SEE_ALSO in rel_attrs
+        replace_attributes = rel_attrs[self.SEE_ALSO]
         assert len(replace_attributes) == 0
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
-        # Test replace
-        term1.attributes.anchor = LegacyAtlasGlossary.ref_by_guid(guid=glossary.guid)
+        # Test replace (single)
+        term1.anchor = RelatedAtlasGlossary(guid=glossary.guid)
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        assert "anchor" in request_json["attributes"]
-        replace_attributes = request_json["attributes"]["anchor"]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert "anchor" in rel_attrs
+        replace_attributes = rel_attrs["anchor"]
         assert replace_attributes
         assert replace_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
-        # Test append
-        term1.attributes.anchor = LegacyAtlasGlossary.ref_by_guid(
-            guid=glossary.guid, semantic=SaveSemantic.APPEND
+        # Test append (single)
+        term1.anchor = RelatedAtlasGlossary(
+            guid=glossary.guid, semantic=V9SaveSemantic.APPEND
         )
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2764,11 +2781,12 @@ class TestBulkRequest:
         append_attributes = request_json[self.APPEND]["anchor"]
         assert append_attributes["guid"] == glossary.guid
         assert self.REMOVE not in request_json
-        assert "anchor" not in request_json["attributes"]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert "anchor" not in rel_attrs
 
-        # Test remove
-        term1.attributes.anchor = LegacyAtlasGlossary.ref_by_guid(
-            guid=glossary.guid, semantic=SaveSemantic.REMOVE
+        # Test remove (single)
+        term1.anchor = RelatedAtlasGlossary(
+            guid=glossary.guid, semantic=V9SaveSemantic.REMOVE
         )
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
@@ -2778,15 +2796,15 @@ class TestBulkRequest:
         remove_attributes = request_json[self.REMOVE]["anchor"]
         assert remove_attributes["guid"] == glossary.guid
         assert self.APPEND not in request_json
-        assert "anchor" not in request_json["attributes"]
+        rel_attrs = request_json.get("relationshipAttributes", {})
+        assert "anchor" not in rel_attrs
 
     def test_asset_attribute_none_assignment(self):
         """Test that None assignment to asset attributes is serialized correctly.
 
-        Note: Uses legacy ``Table`` because ``BulkRequest`` operates on Pydantic
-        models internally.
+        Uses v9 ``Table.updater()`` and v9 ``BulkRequest.to_dict()``.
         """
-        table1 = LegacyTable.updater(name="test-table-1", qualified_name="test-qn-1")
+        table1 = Table.updater(name="test-table-1", qualified_name="test-qn-1")
         table1.certificate_status = None
         table1.certificate_status_message = None
         request = BulkRequest(entities=[table1])

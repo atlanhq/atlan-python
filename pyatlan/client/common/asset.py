@@ -112,7 +112,7 @@ class Search:
             criteria
             and criteria.dsl
             and criteria.dsl.query
-            and isinstance(criteria.dsl.query, Bool)
+            and _is_model_instance(criteria.dsl.query, Bool)
         ):
             return
 
@@ -126,7 +126,8 @@ class Search:
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                isinstance(f, (Term, Terms)) and f.field in (type_name_fields)
+                (_is_model_instance(f, Term) or _is_model_instance(f, Terms))
+                and f.field in (type_name_fields)
                 for f in clause or []
             )
 
