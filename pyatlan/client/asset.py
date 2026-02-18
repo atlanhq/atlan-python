@@ -32,7 +32,7 @@ from pydantic.v1 import (
     parse_obj_as,
 )
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 from tenacity import (
     RetryError,
     retry,

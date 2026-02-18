@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from typing import Optional
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import ApiCaller, ContractInit
 from pyatlan.client.constants import CONTRACT_INIT_API

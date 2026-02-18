@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import List, Optional
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import (
     ApiCaller,

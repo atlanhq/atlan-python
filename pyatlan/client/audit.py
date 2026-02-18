@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import ApiCaller, AuditSearch
 from pyatlan.errors import ErrorCode

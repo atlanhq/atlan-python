@@ -4,7 +4,7 @@ from logging import Logger
 from time import sleep
 from typing import List, Optional, Union, overload
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import (
     ApiCaller,

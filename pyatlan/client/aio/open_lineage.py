@@ -3,7 +3,7 @@
 
 from typing import Any, Dict, List, Optional, Union
 
-from pyatlan.client.common.validate import validate_arguments
+from pyatlan.validate import validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,
