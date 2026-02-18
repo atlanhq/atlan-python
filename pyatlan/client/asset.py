@@ -32,7 +32,7 @@ from pydantic.v1 import (
     parse_obj_as,
 )
 
-from pyatlan.validate import validate_arguments
+from pyatlan.validate import _is_model_instance, validate_arguments
 from tenacity import (
     RetryError,
     retry,
@@ -2571,7 +2571,7 @@ class Batch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if isinstance(candidate, AtlasGlossaryTerm):
+        if _is_model_instance(candidate, AtlasGlossaryTerm):
             # trim_to_required for AtlasGlossaryTerm requires anchor
             # which is not include in AssetMutationResponse
             asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))

@@ -6,10 +6,36 @@ import json
 from abc import ABC
 from typing import TYPE_CHECKING
 
+import msgspec
 import yaml  # type: ignore[import-untyped]
 from pydantic.v1 import BaseModel, Extra, Field, root_validator, validator
 
+from pydantic.v1.json import ENCODERS_BY_TYPE
+
 from pyatlan.model.utils import encoders, to_camel_case
+from pyatlan.validate import _is_model_instance
+
+# ---------------------------------------------------------------------------
+# Register msgspec.Struct in Pydantic's JSON encoder so that Pydantic-based
+# models (e.g. BulkRequest, AtlanRequest) can serialise v9 msgspec entities
+# when calling .json().  This enables dual-model compatibility.
+#
+# If the v9 model has its own ``to_json`` method (all v9 assets do), we
+# use it — it produces the correct nested API format with ``attributes``,
+# ``relationshipAttributes``, ``appendRelationshipAttributes``, etc.
+# For simpler structs without custom serialization we fall back to the
+# generic ``msgspec.to_builtins``.
+# ---------------------------------------------------------------------------
+
+
+def _encode_msgspec_struct(obj):
+    if hasattr(obj, "to_json"):
+        return json.loads(obj.to_json(nested=True))
+    return msgspec.to_builtins(obj)
+
+
+if msgspec.Struct not in ENCODERS_BY_TYPE:
+    ENCODERS_BY_TYPE[msgspec.Struct] = _encode_msgspec_struct
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -447,6 +473,12 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     def process_attributes(cls, asset):
         from pyatlan.model.assets import Asset
 
+        # v9 msgspec models handle relationship categorization
+        # in their own serialization pipeline (categorize_relationships),
+        # so return them as-is — the JSON encoder will handle the rest.
+        if isinstance(asset, msgspec.Struct):
+            return asset
+
         if not isinstance(asset, Asset):
             return asset
 
@@ -503,7 +535,7 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         # Process list of relationship attributes
         if attribute_value and isinstance(attribute_value, list):
             for value in attribute_value:
-                if value and isinstance(value, Asset):
+                if value and _is_model_instance(value, Asset):
                     if value.semantic == SaveSemantic.REMOVE:
                         remove_attributes.append(value)
                     elif value.semantic == SaveSemantic.APPEND:
@@ -532,7 +564,7 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
                 exclude_attributes.add(attribute_name)
 
         # Process single relationship attribute
-        elif attribute_value and isinstance(attribute_value, Asset):
+        elif attribute_value and _is_model_instance(attribute_value, Asset):
             if attribute_value.semantic == SaveSemantic.REMOVE:
                 # Add the replace attribute to the set to exclude it
                 # from the "attributes" property in the request payload.

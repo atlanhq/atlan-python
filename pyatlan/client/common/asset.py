@@ -59,6 +59,7 @@ from pyatlan.model.search import (
     with_active_term,
 )
 from pyatlan.utils import unflatten_custom_metadata_for_entity
+from pyatlan.validate import _is_model_instance
 
 if TYPE_CHECKING:
     from pyatlan.client.aio import AsyncAtlanClient
@@ -331,7 +332,7 @@ class FindAssetsByName:
                 assets := [
                     asset
                     for asset in (search_results.current_page() or search_results)
-                    if isinstance(asset, asset_type)
+                    if _is_model_instance(asset, asset_type)
                 ]
             )
         ):
@@ -535,7 +536,7 @@ class GetByQualifiedName:
         """
         if search_results and search_results.current_page():
             first_result = search_results.current_page()[0]
-            if isinstance(first_result, asset_type):
+            if _is_model_instance(first_result, asset_type):
                 return first_result
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -564,7 +565,7 @@ class GetByQualifiedName:
                 asset_type.__name__, qualified_name
             )
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
+        if not _is_model_instance(asset, asset_type):
             raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
                 asset_type.__name__, qualified_name
             )
@@ -644,7 +645,7 @@ class GetByGuid:
         """
         if search_results and search_results.current_page():
             first_result = search_results.current_page()[0]
-            if isinstance(first_result, asset_type):
+            if _is_model_instance(first_result, asset_type):
                 return first_result
             else:
                 raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
@@ -667,7 +668,7 @@ class GetByGuid:
         :raises NotFoundError: if asset not found or wrong type
         """
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if not isinstance(asset, asset_type):
+        if not _is_model_instance(asset, asset_type):
             raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                 guid, asset_type.__name__
             )
@@ -1205,7 +1206,9 @@ class ManageAssetAttributes:
         :param glossary_guid: GUID of the glossary
         :raises AtlanError: if glossary_guid is required but missing
         """
-        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
+        if _is_model_instance(asset, AtlasGlossaryTerm) or _is_model_instance(
+            asset, AtlasGlossaryCategory
+        ):
             if not glossary_guid:
                 raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
                     asset_type_name
@@ -1561,7 +1564,7 @@ class ManageTerms:
         """
         if results and results.current_page():
             first_result = results.current_page()[0]
-            if not isinstance(first_result, asset_type):
+            if not _is_model_instance(first_result, asset_type):
                 if guid is None:
                     raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
                         asset_type.__name__, qualified_name
@@ -1665,7 +1668,7 @@ class SearchForAssetWithName:
                 assets := [
                     asset
                     for asset in (results.current_page() or results)
-                    if isinstance(asset, asset_type)
+                    if _is_model_instance(asset, asset_type)
                 ]
             )
         ):
@@ -1706,13 +1709,13 @@ class SearchForAssetWithName:
             if current_page:
                 # Use current page if available
                 assets = [
-                    asset for asset in current_page if isinstance(asset, asset_type)
+                    asset for asset in current_page if _is_model_instance(asset, asset_type)
                 ]
             else:
                 # Otherwise, collect from async iterator
                 assets = []
                 async for asset in results:
-                    if isinstance(asset, asset_type):
+                    if _is_model_instance(asset, asset_type):
                         assets.append(asset)
 
             if assets:
@@ -1897,7 +1900,7 @@ class GetHierarchy:
         category_dict = {}
 
         for category in filter(
-            lambda a: isinstance(a, AtlasGlossaryCategory), response
+            lambda a: _is_model_instance(a, AtlasGlossaryCategory), response
         ):
             guid = category.guid
             category_dict[guid] = category
@@ -1934,13 +1937,13 @@ class GetHierarchy:
             categories = [
                 asset
                 for asset in response.current_page()
-                if isinstance(asset, AtlasGlossaryCategory)
+                if _is_model_instance(asset, AtlasGlossaryCategory)
             ]
         else:
             # Collect from async iterator
             categories = []
             async for asset in response:
-                if isinstance(asset, AtlasGlossaryCategory):
+                if _is_model_instance(asset, AtlasGlossaryCategory):
                     categories.append(asset)
 
         for category in categories:
