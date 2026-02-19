@@ -53,10 +53,8 @@ from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
-from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject, AtlanRequest, AtlanResponse
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -66,6 +64,8 @@ from pyatlan.utils import (
     get_python_version,
 )
 from pyatlan_v9.client.transport import PyatlanSyncTransport
+from pyatlan_v9.model.atlan_image import AtlanImage
+from pyatlan_v9.model.query import ParsedQuery, QueryParserRequest
 
 request_id_var = ContextVar("request_id", default=None)
 
@@ -657,6 +657,8 @@ class AtlanClient(msgspec.Struct, kw_only=True):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif isinstance(request_obj, msgspec.Struct):
+                params["data"] = msgspec.json.encode(request_obj)
             else:
                 params["data"] = json.dumps(request_obj)
         return params
@@ -736,7 +738,7 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         :raises AtlanError: on any API communication issue
         """
         raw_json = self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
-        return AtlanImage(**raw_json)
+        return msgspec.convert(raw_json, AtlanImage, strict=False)
 
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """
@@ -751,7 +753,7 @@ class AtlanClient(msgspec.Struct, kw_only=True):
             request_obj=query,
             exclude_unset=True,
         )
-        return ParsedQuery(**raw_json)
+        return msgspec.convert(raw_json, ParsedQuery, strict=False)
 
     @contextlib.contextmanager
     def max_retries(

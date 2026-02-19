@@ -13,14 +13,20 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.query import QueryClient
 from pyatlan.errors import ApiError, InvalidRequestError, LogicError
+from pyatlan_v9.client.atlan import AtlanClient
 
 # v9 models
 from pyatlan_v9.model.query import QueryRequest, QueryResponse
 
-QUERY_RESPONSES = Path(__file__).parent.parent.parent / "tests" / "unit" / "data" / "query_responses.txt"
+QUERY_RESPONSES = (
+    Path(__file__).parent.parent.parent
+    / "tests"
+    / "unit"
+    / "data"
+    / "query_responses.txt"
+)
 
 
 @pytest.fixture(autouse=True)
@@ -84,7 +90,10 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [[None, "none is not an allowed value"], ["123", "instance of QueryRequest expected"]],
+    [
+        [None, "none is not an allowed value"],
+        ["123", "instance of QueryRequest expected"],
+    ],
 )
 def test_query_stream_wrong_params_raises_validation_error(
     test_request, error_msg, client: AtlanClient

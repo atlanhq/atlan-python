@@ -16,14 +16,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.file import FileClient
 from pyatlan.errors import InvalidRequestError
+from pyatlan_v9.client.atlan import AtlanClient
 
 # v9 model for input
 from pyatlan_v9.model.file import PresignedURLRequest
-
 from tests_v9.unit.constants import TEST_FILE_CLIENT_METHODS
 
 # Share test data with legacy tests

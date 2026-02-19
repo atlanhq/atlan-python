@@ -11,12 +11,11 @@ that return Related{Type} instances with ``relationship_type`` and
 
 from __future__ import annotations
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
-from msgspec import UNSET, UnsetType
+from msgspec import UNSET
 
 from pyatlan_v9.model.assets.related_entity import RelatedEntity, SaveSemantic
-
 
 # ---------------------------------------------------------------------------
 # Helper: build a Related reference from a relationship + related entity

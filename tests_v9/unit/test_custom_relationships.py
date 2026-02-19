@@ -20,12 +20,8 @@ from pyatlan_v9.model.assets import (
     CustomEntity,
     Table,
 )
-from pyatlan_v9.model.assets.gtc_related import (
-    RelatedAtlasGlossaryCategory,
-    RelatedAtlasGlossaryTerm,
-)
+from pyatlan_v9.model.assets.gtc_related import RelatedAtlasGlossaryTerm
 from pyatlan_v9.model.assets.related_entity import RelatedEntity
-from pyatlan_v9.model.assets.referenceable_related import RelatedReferenceable
 from pyatlan_v9.model.assets.relations import (
     AtlasGlossaryIsARelationship,
     AtlasGlossaryPreferredTerm,
@@ -134,9 +130,7 @@ def test_atlas_glossary_term_categorization_serialization():
         terms_item["relationshipAttributes"]["attributes"]["description"]
         == "Customer related terms"
     )
-    assert (
-        terms_item["relationshipAttributes"]["attributes"]["status"] == "ACTIVE"
-    )
+    assert terms_item["relationshipAttributes"]["attributes"]["status"] == "ACTIVE"
 
 
 def test_atlas_glossary_term_categorization_roundtrip():
@@ -330,9 +324,7 @@ def test_atlas_glossary_valid_value_serialization():
     assert vv_item is not None
     assert vv_item["guid"] == "red-value-guid"
     assert vv_item["relationshipType"] == "AtlasGlossaryValidValue"
-    assert (
-        vv_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryValidValue"
-    )
+    assert vv_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryValidValue"
     assert (
         vv_item["relationshipAttributes"]["attributes"]["description"]
         == "Red color value"
@@ -421,9 +413,7 @@ def test_atlas_glossary_preferred_term_serialization():
     assert pt_item is not None
     assert pt_item["guid"] == "customer-preferred-guid"
     assert pt_item["relationshipType"] == "AtlasGlossaryPreferredTerm"
-    assert (
-        pt_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryPreferredTerm"
-    )
+    assert pt_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryPreferredTerm"
     assert (
         pt_item["relationshipAttributes"]["attributes"]["description"]
         == "Customer is the preferred term"
@@ -486,8 +476,7 @@ def test_atlas_glossary_replacement_term_serialization():
     assert rt_item["guid"] == "new-term-guid"
     assert rt_item["relationshipType"] == "AtlasGlossaryReplacementTerm"
     assert (
-        rt_item["relationshipAttributes"]["typeName"]
-        == "AtlasGlossaryReplacementTerm"
+        rt_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryReplacementTerm"
     )
 
 
@@ -544,9 +533,7 @@ def test_atlas_glossary_translation_serialization():
     assert tt_item is not None
     assert tt_item["guid"] == "cliente-spanish-guid"
     assert tt_item["relationshipType"] == "AtlasGlossaryTranslation"
-    assert (
-        tt_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryTranslation"
-    )
+    assert tt_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryTranslation"
 
 
 # ---------------------------------------------------------------------------
@@ -603,9 +590,7 @@ def test_atlas_glossary_related_term_serialization():
     assert sa_item is not None
     assert sa_item["guid"] == "related-term-guid"
     assert sa_item["relationshipType"] == "AtlasGlossaryRelatedTerm"
-    assert (
-        sa_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryRelatedTerm"
-    )
+    assert sa_item["relationshipAttributes"]["typeName"] == "AtlasGlossaryRelatedTerm"
     assert (
         sa_item["relationshipAttributes"]["attributes"]["description"]
         == "Related term for reference"
@@ -690,9 +675,7 @@ def test_atlas_glossary_synonym_serialization():
     assert syn_item is not None
     assert syn_item["guid"] == "synonym-term-guid"
     assert syn_item["relationshipType"] == "AtlasGlossarySynonym"
-    assert (
-        syn_item["relationshipAttributes"]["typeName"] == "AtlasGlossarySynonym"
-    )
+    assert syn_item["relationshipAttributes"]["typeName"] == "AtlasGlossarySynonym"
 
 
 # ---------------------------------------------------------------------------
@@ -907,9 +890,7 @@ def test_custom_related_entities_builder():
 
 def test_custom_related_entities_serialization():
     """Test serialization of CustomRelatedFromEntitiesCustomRelatedToEntities."""
-    entity = CustomEntity(
-        qualified_name="main-entity@default", name="Main Entity"
-    )
+    entity = CustomEntity(qualified_name="main-entity@default", name="Main Entity")
 
     target_entity = CustomEntity.ref_by_guid("target-entity-guid")
     source_entity = CustomEntity.ref_by_guid("source-entity-guid")
@@ -952,9 +933,7 @@ def test_custom_related_entities_serialization():
 
 def test_custom_related_entities_roundtrip():
     """Test round-trip for CustomRelatedFromEntitiesCustomRelatedToEntities."""
-    entity = CustomEntity(
-        qualified_name="main-entity@default", name="Main Entity"
-    )
+    entity = CustomEntity(qualified_name="main-entity@default", name="Main Entity")
 
     custom_rel = CustomRelatedFromEntitiesCustomRelatedToEntities(
         custom_entity_to_label="relates to", custom_entity_from_label="relates from"
@@ -1087,12 +1066,9 @@ def test_combined_multiple_relationships_on_single_asset():
         == "AtlasGlossaryTermCategorization"
     )
     assert (
-        rel_attrs["classifies"][0]["relationshipType"]
-        == "AtlasGlossaryIsARelationship"
+        rel_attrs["classifies"][0]["relationshipType"] == "AtlasGlossaryIsARelationship"
     )
-    assert (
-        rel_attrs["validValues"][0]["relationshipType"] == "AtlasGlossaryValidValue"
-    )
+    assert rel_attrs["validValues"][0]["relationshipType"] == "AtlasGlossaryValidValue"
     assert (
         rel_attrs["preferredToTerms"][0]["relationshipType"]
         == "AtlasGlossaryPreferredTerm"

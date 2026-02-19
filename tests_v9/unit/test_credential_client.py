@@ -16,19 +16,15 @@ import pytest
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.credential import CredentialClient
 from pyatlan.errors import InvalidRequestError
-from pyatlan.validate import _is_model_instance
 
+# Import legacy models for response fixtures (client returns Pydantic models)
+from pyatlan.model.credential import CredentialResponse as LegacyCredentialResponse
+from pyatlan.validate import _is_model_instance
 from pyatlan_v9.model.credential import (
     Credential,
     CredentialListResponse,
     CredentialResponse,
     CredentialTestResponse,
-)
-
-# Import legacy models for response fixtures (client returns Pydantic models)
-from pyatlan.model.credential import (
-    Credential as LegacyCredential,
-    CredentialResponse as LegacyCredentialResponse,
 )
 
 TEST_MISSING_TOKEN_ID = (
@@ -40,10 +36,16 @@ TEST_INVALID_CREDENTIALS = (
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
     "1 validation error for Get\nguid\n  str type expected"
 )
-TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = "1 validation error for PurgeByGuid\nguid\n  str type expected"
-TEST_INVALID_CRED_TEST_VALIDATION_ERR = "1 validation error for Test\ncredential\n  instance of Credential expected"
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
+    "1 validation error for PurgeByGuid\nguid\n  str type expected"
+)
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
+    "1 validation error for Test\ncredential\n  instance of Credential expected"
+)
 TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  instance of Credential expected"
-TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = "1 validation error for Creator\ncredential\n  instance of Credential expected"
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
+    "1 validation error for Creator\ncredential\n  instance of Credential expected"
+)
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 )

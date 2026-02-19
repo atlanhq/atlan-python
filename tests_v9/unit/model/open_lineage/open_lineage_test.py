@@ -1,24 +1,40 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2024 Atlan Pte. Ltd.
+
+"""
+Unit tests for OpenLineage models using v9 (msgspec) types.
+
+Ported from tests/unit/model/open_lineage/open_lineage_test.py.
+- v9 models are used for construction and serialization tests (test_ol_models).
+- Legacy OpenLineageClient and OpenLineageRawEvent are kept for client
+  interaction tests (the client internally wraps data in legacy Pydantic types).
+"""
+
 import json
-from json import load, loads
+from json import load
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.errors import AtlanError, InvalidRequestError
 from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
-from pyatlan.model.open_lineage import (
+
+# Legacy models kept for client-interaction tests (client returns legacy types)
+from pyatlan.model.open_lineage import OpenLineageEvent as LegacyOpenLineageEvent
+from pyatlan.model.open_lineage import OpenLineageRawEvent as LegacyOpenLineageRawEvent
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.model.fluent_tasks import FluentTasks
+
+# v9 OpenLineage models (msgspec)
+from pyatlan_v9.model.open_lineage import (
     OpenLineageEvent,
     OpenLineageJob,
     OpenLineageRawEvent,
     OpenLineageRun,
 )
-from pyatlan_v9.model.fluent_tasks import FluentTasks
 
 TEST_DATA_DIR = Path(__file__).parents[4] / "tests" / "unit" / "data"
 OL_EVENT_START = str(TEST_DATA_DIR / "open_lineage_requests/event_start.json")
@@ -46,10 +62,6 @@ def load_json(filename):
         return load(input_file)
 
 
-def to_json(model):
-    return loads(model.json(by_alias=True, exclude_unset=True))
-
-
 @pytest.fixture()
 def mock_api_caller():
     mock = Mock(spec=ApiCaller)
@@ -66,7 +78,7 @@ def client():
 
 @pytest.fixture()
 def mock_event_time():
-    with patch("pyatlan.model.open_lineage.event.datetime") as mock_datetime:
+    with patch("pyatlan_v9.model.open_lineage.event.datetime") as mock_datetime:
         mock_datetime_instance = Mock()
         mock_datetime_instance.isoformat.return_value = (
             "2024-10-07T10:23:52.239783+00:00"
@@ -77,7 +89,7 @@ def mock_event_time():
 
 @pytest.fixture()
 def mock_run_id():
-    with patch("pyatlan.model.open_lineage.run.generate_new_uuid") as mock_utils:
+    with patch("pyatlan_v9.model.open_lineage.run.generate_new_uuid") as mock_utils:
         mock_utils.return_value = "01826681-bfaf-7b1a-a5ce-f69f645660d9"
         yield mock_utils
 
@@ -140,7 +152,8 @@ def test_ol_client_send(
     mock_api_caller,
 ):
     mock_api_caller._call_api.return_value = "Event received"
-    test_event = OpenLineageEvent()
+    # Client expects legacy OpenLineageEvent (Pydantic)
+    test_event = LegacyOpenLineageEvent()
     assert (
         OpenLineageClient(client=mock_api_caller).send(
             request=test_event, connector_type=AtlanConnectorType.SPARK
@@ -161,12 +174,15 @@ def test_ol_client_send_when_ol_not_configured(client, mock_session):
         "this connector before you can send events for it."
     )
     with pytest.raises(AtlanError, match=expected_error):
+        # Client expects legacy OpenLineageEvent (Pydantic)
         client.open_lineage.send(
-            request=OpenLineageEvent(), connector_type=AtlanConnectorType.SNOWFLAKE
+            request=LegacyOpenLineageEvent(),
+            connector_type=AtlanConnectorType.SNOWFLAKE,
         )
 
 
 def test_ol_models(mock_run_id, mock_event_time):
+    # Use v9 models for construction
     job = OpenLineageJob.creator(
         connection_name="ol-spark", job_name="dag_123", producer=PRODUCER
     )
@@ -199,12 +215,13 @@ def test_ol_models(mock_run_id, mock_event_time):
         od,
         job.create_output(namespace=NAMESPACE, asset_name="AN.OTHER.VIEW"),
     ]
-    assert to_json(start) == load_json(OL_EVENT_START)
+    # Use v9 to_dict() for serialization
+    assert start.to_dict() == load_json(OL_EVENT_START)
 
     complete = OpenLineageEvent.creator(
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
-    assert to_json(complete) == load_json(OL_EVENT_COMPLETE)
+    assert complete.to_dict() == load_json(OL_EVENT_COMPLETE)
 
 
 @pytest.mark.parametrize(
@@ -222,13 +239,14 @@ def test_ol_raw_events_from_json_files(
     # Load test data from file
     test_data = load_json(test_data_file)
 
-    # Test send method with OpenLineageClient
+    # Test send method with OpenLineageClient (uses legacy internally)
     ol_client = OpenLineageClient(client=mock_api_caller)
     ol_client.send(request=test_data, connector_type=AtlanConnectorType.SPARK)
 
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+        mock_api_caller._call_api.call_args.kwargs["request_obj"],
+        LegacyOpenLineageRawEvent,
     )
     assert (
         mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
@@ -239,14 +257,15 @@ def test_ol_raw_events_from_json_files(
     mock_atlan_client = Mock()
     mock_atlan_client.open_lineage = ol_client
 
-    OpenLineageEvent.emit_raw(
+    LegacyOpenLineageEvent.emit_raw(
         client=mock_atlan_client,
         event=test_data,
         connector_type=AtlanConnectorType.SPARK,
     )
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+        mock_api_caller._call_api.call_args.kwargs["request_obj"],
+        LegacyOpenLineageRawEvent,
     )
     assert (
         mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
@@ -267,13 +286,14 @@ def test_ol_raw_events_from_json_strings(mock_api_caller, test_data_file, input_
     test_data = load_json(test_data_file)
     test_json_string = json.dumps(test_data)
 
-    # Test send method with JSON string
+    # Test send method with JSON string (client uses legacy internally)
     ol_client = OpenLineageClient(client=mock_api_caller)
     ol_client.send(request=test_json_string, connector_type=AtlanConnectorType.SPARK)
 
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+        mock_api_caller._call_api.call_args.kwargs["request_obj"],
+        LegacyOpenLineageRawEvent,
     )
     # When parsing from JSON string, the __root__ should equal the original test_data
     assert (
@@ -285,12 +305,13 @@ def test_ol_raw_events_from_json_strings(mock_api_caller, test_data_file, input_
 def test_ol_raw_events_edge_cases(mock_api_caller):
     ol_client = OpenLineageClient(client=mock_api_caller)
 
-    # Test empty list
+    # Test empty list (client uses legacy internally)
     empty_list = load_json(EMPTY_EVENTS)
     ol_client.send(request=empty_list, connector_type=AtlanConnectorType.SPARK)
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
-        mock_api_caller._call_api.call_args.kwargs["request_obj"], OpenLineageRawEvent
+        mock_api_caller._call_api.call_args.kwargs["request_obj"],
+        LegacyOpenLineageRawEvent,
     )
     assert mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == []
     mock_api_caller.reset_mock()
@@ -303,15 +324,16 @@ def test_ol_raw_events_edge_cases(mock_api_caller):
 
 
 def test_ol_raw_event_model_methods():
+    """Test v9 OpenLineageRawEvent construction and parsing methods."""
     # Test from_dict
     test_dict = {"eventTime": "2025-01-01T00:00:00Z", "eventType": "START"}
     raw_event = OpenLineageRawEvent.from_dict(test_dict)
-    assert raw_event.__root__ == test_dict
+    assert raw_event.data == test_dict
 
     # Test from_json
     test_json = '{"eventTime": "2025-01-01T00:00:00Z", "eventType": "COMPLETE"}'
     raw_event = OpenLineageRawEvent.from_json(test_json)
-    assert raw_event.__root__ == {
+    assert raw_event.data == {
         "eventTime": "2025-01-01T00:00:00Z",
         "eventType": "COMPLETE",
     }
@@ -319,9 +341,9 @@ def test_ol_raw_event_model_methods():
     # Test parse_obj with list
     test_list = [{"eventType": "START"}, {"eventType": "COMPLETE"}]
     raw_event = OpenLineageRawEvent.parse_obj(test_list)
-    assert raw_event.__root__ == test_list
+    assert raw_event.data == test_list
 
     # Test parse_raw with complex JSON
     complex_json = json.dumps(load_json(MULTIPLE_EVENTS))
     raw_event = OpenLineageRawEvent.parse_raw(complex_json)
-    assert raw_event.__root__ == load_json(MULTIPLE_EVENTS)
+    assert raw_event.data == load_json(MULTIPLE_EVENTS)

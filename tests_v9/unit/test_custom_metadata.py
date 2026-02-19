@@ -10,8 +10,8 @@ Key difference: CustomMetadataRequest uses `to_dict()` instead of `__root__`.
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode, NotFoundError
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.custom_metadata import (
     CustomMetadataDict,
     CustomMetadataProxy,

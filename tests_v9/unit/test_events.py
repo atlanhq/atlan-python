@@ -2,11 +2,11 @@
 # Copyright 2025 Atlan Pte. Ltd.
 
 """
-Unit tests for event models using v9 types for assertions.
+Unit tests for event models using v9 msgspec-based AtlanEvent.
 
-Ported from tests/unit/test_events.py. The legacy AtlanEvent is used for
-deserialization (Pydantic handles the discriminated union + Asset type), while
-v9 event payload types are used for isinstance checks via _is_model_instance.
+Ported from tests/unit/test_events.py. All models are now v9 msgspec Structs —
+AtlanEvent.from_dict() handles polymorphic Asset dispatch and payload
+discrimination natively via the v9 type registry.
 """
 
 from json import load, loads
@@ -14,25 +14,22 @@ from pathlib import Path
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.events.atlan_event_handler import is_validation_request, valid_signature
-from pyatlan.validate import _is_model_instance
+from pyatlan_v9.client.atlan import AtlanClient
 
-# Legacy AtlanEvent for deserialization (handles discriminated union)
-from pyatlan.model.events import AtlanEvent
+# v9 asset type for isinstance check
+from pyatlan_v9.model.assets import AtlasGlossaryTerm
 
-# v9 event payload types for type assertions
+# v9 event models (fully msgspec-based)
 from pyatlan_v9.model.events import (
     AssetCreatePayload,
     AssetDeletePayload,
     AssetUpdatePayload,
+    AtlanEvent,
     AtlanTagAddPayload,
     AtlanTagDeletePayload,
     CustomMetadataUpdatePayload,
 )
-
-# v9 asset type for asset isinstance check
-from pyatlan_v9.model.assets import AtlasGlossaryTerm
 
 ACTUAL_JSON = "actual.json"
 VALIDATION_JSON = "validation.json"
@@ -118,10 +115,10 @@ def test_signing_key(actual_json):
 def test_body(actual_json):
     body = loads(actual_json.get("body"))
     assert body
-    atlan_event = AtlanEvent(**body)
+    atlan_event = AtlanEvent.from_dict(body)
     assert atlan_event
     assert atlan_event.payload
-    assert _is_model_instance(atlan_event.payload.asset, AtlasGlossaryTerm)
+    assert isinstance(atlan_event.payload.asset, AtlasGlossaryTerm)
 
 
 def test_atlan_events_deserialization(
@@ -145,5 +142,5 @@ def test_atlan_events_deserialization(
 
     for key, payload_type in _EVENT_TYPES.items():
         data = locals()[key]
-        event = AtlanEvent(**data)
-        assert _is_model_instance(event.payload, payload_type)
+        event = AtlanEvent.from_dict(data)
+        assert isinstance(event.payload, payload_type)

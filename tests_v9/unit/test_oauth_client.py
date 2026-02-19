@@ -24,8 +24,8 @@ from urllib.parse import urlparse
 import httpx
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.oauth import OAuthTokenManager
+from pyatlan_v9.client.atlan import AtlanClient
 
 
 @pytest.fixture

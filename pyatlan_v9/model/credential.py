@@ -8,7 +8,7 @@ from typing import Any, Union
 import msgspec
 
 
-class Credential(msgspec.Struct, kw_only=True, omit_defaults=True):
+class Credential(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     """Credential used for connectivity to external systems."""
 
     id: Union[str, None] = None
@@ -52,7 +52,7 @@ class Credential(msgspec.Struct, kw_only=True, omit_defaults=True):
     """Name of the connector used by the credential."""
 
 
-class CredentialResponse(msgspec.Struct, kw_only=True):
+class CredentialResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from a credential lookup."""
 
     id: Union[str, None] = None
@@ -96,14 +96,14 @@ class CredentialResponse(msgspec.Struct, kw_only=True):
         )
 
 
-class CredentialListResponse(msgspec.Struct, kw_only=True):
+class CredentialListResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response containing a list of CredentialResponse objects."""
 
     records: list[CredentialResponse] = msgspec.field(default_factory=list)
     """List of credential records returned."""
 
 
-class CredentialTestResponse(msgspec.Struct, kw_only=True):
+class CredentialTestResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from testing a credential's connectivity."""
 
     code: Union[int, None] = None

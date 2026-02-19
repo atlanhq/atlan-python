@@ -14,7 +14,6 @@ from pathlib import Path
 from re import escape
 from unittest.mock import Mock
 
-import msgspec
 import pytest
 
 from pyatlan.client.common import ApiCaller
@@ -24,7 +23,7 @@ from pyatlan.validate import _is_model_instance
 
 # v9 models
 from pyatlan_v9.model.group import AtlanGroup
-from pyatlan_v9.model.sso import SSOMapper, SSOMapperConfig
+from pyatlan_v9.model.sso import SSOMapper
 
 TEST_DATA_DIR = Path(__file__).parent.parent.parent / "tests" / "unit" / "data"
 SSO_GET_GROUP_MAPPING_JSON = "get_group_mapping.json"
