@@ -19,16 +19,18 @@ from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.common.audit import LOGGER
 from pyatlan.errors import InvalidRequestError
+
+# Legacy result model — client returns this; needed for patching thresholds
+from pyatlan.model.audit import AuditSearchResults
 from pyatlan.model.enums import SortOrder
 
 # v9 request models (msgspec)
 from pyatlan_v9.model.audit import AuditSearchRequest
 from pyatlan_v9.model.search import DSL, Bool, SortItem, Term
 
-# Legacy result model — client returns this; needed for patching thresholds
-from pyatlan.model.audit import AuditSearchResults
-
-SEARCH_RESPONSES_DIR = Path(__file__).parent.parent.parent / "tests" / "unit" / "data" / "search_responses"
+SEARCH_RESPONSES_DIR = (
+    Path(__file__).parent.parent.parent / "tests" / "unit" / "data" / "search_responses"
+)
 AUDIT_SEARCH_PAGING_JSON = "audit_search_paging.json"
 
 

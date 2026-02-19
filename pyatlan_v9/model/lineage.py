@@ -17,13 +17,14 @@ from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 # ---------------------------------------------------------------------------
 from pyatlan.model.lineage import DirectedPair, LineageGraph  # noqa: F401
 from pyatlan.utils import validate_type
+from pyatlan.validate import validate_arguments
 
 # ---------------------------------------------------------------------------
 # msgspec.Struct models — genuine Pydantic → msgspec migrations
 # ---------------------------------------------------------------------------
 
 
-class LineageRelation(msgspec.Struct, kw_only=True):
+class LineageRelation(msgspec.Struct, kw_only=True, rename="camel"):
     from_entity_id: Optional[str] = None
     to_entity_id: Optional[str] = None
     process_id: Optional[str] = None
@@ -34,7 +35,7 @@ class LineageRelation(msgspec.Struct, kw_only=True):
         return self.process_id is not None
 
 
-class LineageResponse(msgspec.Struct, kw_only=True):
+class LineageResponse(msgspec.Struct, kw_only=True, rename="camel"):
     base_entity_guid: str
     lineage_direction: LineageDirection
     lineage_depth: int
@@ -187,6 +188,7 @@ class FluentLineage:
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
         *,

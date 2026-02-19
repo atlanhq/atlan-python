@@ -2,27 +2,26 @@
 # Copyright 2025 Atlan Pte. Ltd.
 
 """
-Unit tests for packages — ported from tests/unit/test_packages.py.
+Unit tests for v9 packages — uses msgspec-based workflow & credential models.
 
-Package models (SnowflakeCrawler, GlueCrawler, etc.) are legacy Pydantic
-workflow builders that have not been migrated to msgspec.  The ``Asset``
-import is required for ``Asset.CERTIFICATE_STATUS`` and
-``Asset.ANNOUNCEMENT_TYPE`` ClassVar fields used by AssetImport/
-AssetExportBasic/RelationalAssetsBuilder — these ClassVars do not exist
-in the v9 Asset model.
+``Asset.CERTIFICATE_STATUS`` / ``Asset.ANNOUNCEMENT_TYPE`` are
+ClassVar field definitions (not Pydantic models) so they're imported
+from the legacy Asset.
 """
 
+import json
 from json import load, loads
 from pathlib import Path
+from typing import Any
 from unittest.mock import patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.assets.core import Asset
 from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
-from pyatlan.model.packages import (
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.model.assets import Asset
+from pyatlan_v9.model.packages import (
     APITokenConnectionAdmin,
     AssetExportBasic,
     AssetImport,
@@ -48,7 +47,9 @@ from pyatlan.model.packages import (
     TableauCrawler,
 )
 
-PACKAGE_REQUESTS_DIR = Path(__file__).parent / ".." / ".." / "tests" / "unit" / "data" / "package_requests"
+PACKAGE_REQUESTS_DIR = (
+    Path(__file__).parent / ".." / ".." / "tests" / "unit" / "data" / "package_requests"
+)
 SNOWFLAKE_BASIC = "snowflake_basic.json"
 SNOWFLAKE_KEYPAIR = "snowflake_keypair.json"
 SNOWFLAKE_MINER_DEFAULT = "snowflake_miner_default.json"
@@ -127,6 +128,32 @@ class NonSerializable:
 INVALID_REQ_ERROR = "ATLAN-PYTHON-400-014 Unable to translate the provided include/exclude asset filters into JSON"
 
 
+def _normalize_json_value(value: Any) -> Any:
+    """Recursively normalize a value — if a string is valid JSON, parse it."""
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+            return _normalize_json_value(parsed)
+        except (json.JSONDecodeError, ValueError):
+            return value
+    elif isinstance(value, dict):
+        return {k: _normalize_json_value(v) for k, v in value.items()}
+    elif isinstance(value, list):
+        return [_normalize_json_value(item) for item in value]
+    return value
+
+
+def assert_workflow_equal(actual: dict, expected: dict) -> None:
+    """
+    Compare two workflow dicts with deep JSON-string normalization.
+
+    This handles the case where embedded JSON strings (e.g. the ``connection``
+    parameter value) have different key ordering between msgspec and Pydantic
+    serialization, which is semantically identical.
+    """
+    assert _normalize_json_value(actual) == _normalize_json_value(expected)
+
+
 def load_json(filename):
     with (PACKAGE_REQUESTS_DIR / filename).open() as input_file:
         return load(input_file)
@@ -141,8 +168,12 @@ def mock_get_epoch_timestamp():
 
 @pytest.fixture()
 def mock_connection_guid():
-    with patch("pyatlan.utils.random") as mock_random:
+    with (
+        patch("pyatlan.utils.random") as mock_random,
+        patch("pyatlan_v9.utils.random") as mock_random_v9,
+    ):
         mock_random.random.return_value = 123456789
+        mock_random_v9.random.return_value = 123456789
         yield mock_random
 
 
@@ -190,10 +221,8 @@ def test_snowflake_package(mock_package_env, client: AtlanClient):
         .tags(True)
         .to_workflow()
     )
-    request_json = loads(
-        snowflake_with_connection_default.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(SNOWFLAKE_BASIC)
+    request_json = loads(snowflake_with_connection_default.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_BASIC))
 
     snowflake_basic_auth = (
         SnowflakeCrawler(
@@ -216,8 +245,8 @@ def test_snowflake_package(mock_package_env, client: AtlanClient):
         .tags(True)
         .to_workflow()
     )
-    request_json = loads(snowflake_basic_auth.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SNOWFLAKE_BASIC)
+    request_json = loads(snowflake_basic_auth.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_BASIC))
 
     snowflake_keypair_auth = (
         SnowflakeCrawler(
@@ -243,8 +272,8 @@ def test_snowflake_package(mock_package_env, client: AtlanClient):
         .tags(False)
         .to_workflow()
     )
-    request_json = loads(snowflake_keypair_auth.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SNOWFLAKE_KEYPAIR)
+    request_json = loads(snowflake_keypair_auth.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_KEYPAIR))
 
 
 def test_glue_package(mock_package_env, client: AtlanClient):
@@ -265,8 +294,8 @@ def test_glue_package(mock_package_env, client: AtlanClient):
         .exclude(assets=[])
         .to_workflow()
     )
-    request_json = loads(glue_iam_user_auth.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(GLUE_IAM_USER)
+    request_json = loads(glue_iam_user_auth.to_json())
+    assert_workflow_equal(request_json, load_json(GLUE_IAM_USER))
 
 
 def test_tableau_package(mock_package_env, client: AtlanClient):
@@ -291,8 +320,8 @@ def test_tableau_package(mock_package_env, client: AtlanClient):
         .crawl_hidden_fields(False)
         .to_workflow()
     )
-    request_json = loads(tableau_basic_auth.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(TABLEAU_BASIC)
+    request_json = loads(tableau_basic_auth.to_json())
+    assert_workflow_equal(request_json, load_json(TABLEAU_BASIC))
 
     tableau_access_token_auth = (
         TableauCrawler(
@@ -313,10 +342,8 @@ def test_tableau_package(mock_package_env, client: AtlanClient):
         .crawl_hidden_fields(False)
         .to_workflow()
     )
-    request_json = loads(
-        tableau_access_token_auth.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(TABLEAU_ACCESS_TOKEN)
+    request_json = loads(tableau_access_token_auth.to_json())
+    assert_workflow_equal(request_json, load_json(TABLEAU_ACCESS_TOKEN))
 
     tableau_offline = (
         TableauCrawler(
@@ -333,8 +360,8 @@ def test_tableau_package(mock_package_env, client: AtlanClient):
         )
         .to_workflow()
     )
-    request_json = loads(tableau_offline.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(TABLEAU_OFFLINE)
+    request_json = loads(tableau_offline.to_json())
+    assert_workflow_equal(request_json, load_json(TABLEAU_OFFLINE))
 
 
 def test_powerbi_package(mock_package_env, client: AtlanClient):
@@ -358,8 +385,8 @@ def test_powerbi_package(mock_package_env, client: AtlanClient):
         .exclude(workspaces=[])
         .to_workflow()
     )
-    request_json = loads(powerbi_delegated_user.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(POWERBI_DELEGATED_USER)
+    request_json = loads(powerbi_delegated_user.to_json())
+    assert_workflow_equal(request_json, load_json(POWERBI_DELEGATED_USER))
 
     powerbi_service_principal = (
         PowerBICrawler(
@@ -379,10 +406,8 @@ def test_powerbi_package(mock_package_env, client: AtlanClient):
         .exclude(workspaces=[])
         .to_workflow()
     )
-    request_json = loads(
-        powerbi_service_principal.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(POWEBI_SERVICE_PRINCIPAL)
+    request_json = loads(powerbi_service_principal.to_json())
+    assert_workflow_equal(request_json, load_json(POWEBI_SERVICE_PRINCIPAL))
 
 
 def test_confluent_kafka_package(mock_package_env, client: AtlanClient):
@@ -401,8 +426,8 @@ def test_confluent_kafka_package(mock_package_env, client: AtlanClient):
         .exclude(regex="")
         .to_workflow()
     )
-    request_json = loads(conf_kafka_direct.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(CONFLUENT_KAFKA_DIRECT)
+    request_json = loads(conf_kafka_direct.to_json())
+    assert_workflow_equal(request_json, load_json(CONFLUENT_KAFKA_DIRECT))
 
 
 def test_dbt_package(mock_package_env, client: AtlanClient):
@@ -424,8 +449,8 @@ def test_dbt_package(mock_package_env, client: AtlanClient):
         .enrich_materialized_assets(True)
         .to_workflow()
     )
-    request_json = loads(dbt_core.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DBT_CORE)
+    request_json = loads(dbt_core.to_json())
+    assert_workflow_equal(request_json, load_json(DBT_CORE))
 
     dbt_cloud = (
         DbtCrawler(
@@ -447,8 +472,8 @@ def test_dbt_package(mock_package_env, client: AtlanClient):
         .enrich_materialized_assets(False)
         .to_workflow()
     )
-    request_json = loads(dbt_cloud.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DBT_CLOUD)
+    request_json = loads(dbt_cloud.to_json())
+    assert_workflow_equal(request_json, load_json(DBT_CLOUD))
 
 
 def test_sigma_package(mock_package_env, client: AtlanClient):
@@ -466,8 +491,8 @@ def test_sigma_package(mock_package_env, client: AtlanClient):
         .exclude(workbooks=[])
         .to_workflow()
     )
-    request_json = loads(sigma_api_token.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SIGMA_API_TOKEN)
+    request_json = loads(sigma_api_token.to_json())
+    assert_workflow_equal(request_json, load_json(SIGMA_API_TOKEN))
 
 
 def test_sql_server_package(mock_package_env, client: AtlanClient):
@@ -492,8 +517,8 @@ def test_sql_server_package(mock_package_env, client: AtlanClient):
         .exclude(assets={})
         .to_workflow()
     )
-    request_json = loads(sql_server_basic.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SQL_SERVER_BASIC)
+    request_json = loads(sql_server_basic.to_json())
+    assert_workflow_equal(request_json, load_json(SQL_SERVER_BASIC))
 
 
 def test_snowflake_miner_package(mock_package_env):
@@ -504,8 +529,8 @@ def test_snowflake_miner_package(mock_package_env):
         .exclude_users(users=["test-user-1", "test-user-2"])
         .to_workflow()
     )
-    request_json = loads(snowflake_miner_default.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SNOWFLAKE_MINER_DEFAULT)
+    request_json = loads(snowflake_miner_default.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_MINER_DEFAULT))
 
     # With advanced configuration (source)
     snowflake_miner_source = (
@@ -517,8 +542,8 @@ def test_snowflake_miner_package(mock_package_env):
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
     )
-    request_json = loads(snowflake_miner_source.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(SNOWFLAKE_MINER_SOURCE)
+    request_json = loads(snowflake_miner_source.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_MINER_SOURCE))
 
     # With advanced configuration (offline)
     snowflake_miner_s3_offline = (
@@ -537,10 +562,8 @@ def test_snowflake_miner_package(mock_package_env):
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
     )
-    request_json = loads(
-        snowflake_miner_s3_offline.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(SNOWFLAKE_MINER_S3_OFFLINE)
+    request_json = loads(snowflake_miner_s3_offline.to_json())
+    assert_workflow_equal(request_json, load_json(SNOWFLAKE_MINER_S3_OFFLINE))
 
 
 def test_databricks_miner_package(mock_package_env):
@@ -549,28 +572,24 @@ def test_databricks_miner_package(mock_package_env):
         .rest_api()
         .to_workflow()
     )
-    request_json = loads(databricks_miner_rest.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_MINER_REST)
+    request_json = loads(databricks_miner_rest.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_MINER_REST))
 
     databricks_miner_offline = (
         DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
         .offline(bucket_name="test-bucket", bucket_prefix="test-prefix")
         .to_workflow()
     )
-    request_json = loads(
-        databricks_miner_offline.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DATABRICKS_MINER_OFFLINE)
+    request_json = loads(databricks_miner_offline.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_MINER_OFFLINE))
 
     databricks_miner_system_table = (
         DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
         .system_table(warehouse_id="test-warehouse-id")
         .to_workflow()
     )
-    request_json = loads(
-        databricks_miner_system_table.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DATABRICKS_MINER_SYSTEM_TABLE)
+    request_json = loads(databricks_miner_system_table.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_MINER_SYSTEM_TABLE))
 
     databricks_miner_popularity_rest = (
         DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
@@ -582,10 +601,8 @@ def test_databricks_miner_package(mock_package_env):
         )
         .to_workflow()
     )
-    request_json = loads(
-        databricks_miner_popularity_rest.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_REST)
+    request_json = loads(databricks_miner_popularity_rest.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_MINER_POPULARITY_REST))
 
     databricks_miner_popularity_system_table = (
         DatabricksMiner(connection_qualified_name="default/databricks/1234567890")
@@ -599,11 +616,11 @@ def test_databricks_miner_package(mock_package_env):
         )
         .to_workflow()
     )
-    request_json = loads(
-        databricks_miner_popularity_system_table.json(by_alias=True, exclude_none=True)
-    )
+    request_json = loads(databricks_miner_popularity_system_table.to_json())
 
-    assert request_json == load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
+    assert_workflow_equal(
+        request_json, load_json(DATABRICKS_MINER_POPULARITY_SYSTEM_TABLE)
+    )
 
 
 def test_big_query_package(mock_package_env, client: AtlanClient):
@@ -624,8 +641,8 @@ def test_big_query_package(mock_package_env, client: AtlanClient):
         .custom_config(config={"test": True, "feature": 1234})
         .to_workflow()
     )
-    request_json = loads(big_query_direct.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(BIG_QUERY_DIRECT)
+    request_json = loads(big_query_direct.to_json())
+    assert_workflow_equal(request_json, load_json(BIG_QUERY_DIRECT))
 
 
 def test_dynamo_db_package(mock_package_env, client: AtlanClient):
@@ -641,10 +658,8 @@ def test_dynamo_db_package(mock_package_env, client: AtlanClient):
         .exclude_regex(regex=".*_TEST_EXCLUDE")
         .to_workflow()
     )
-    request_json = loads(
-        dynamo_db_direct_iam_user.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DYNAMO_DB_IAM_USER)
+    request_json = loads(dynamo_db_direct_iam_user.to_json())
+    assert_workflow_equal(request_json, load_json(DYNAMO_DB_IAM_USER))
 
     dynamo_db_direct_iam_user_role = (
         DynamoDBCrawler(
@@ -660,10 +675,8 @@ def test_dynamo_db_package(mock_package_env, client: AtlanClient):
         .exclude_regex(regex=".*_TEST_EXCLUDE")
         .to_workflow()
     )
-    request_json = loads(
-        dynamo_db_direct_iam_user_role.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DYNAMO_DB_IAM_USER_ROLE)
+    request_json = loads(dynamo_db_direct_iam_user_role.to_json())
+    assert_workflow_equal(request_json, load_json(DYNAMO_DB_IAM_USER_ROLE))
 
 
 def test_postgres_package(mock_package_env, client: AtlanClient):
@@ -686,8 +699,8 @@ def test_postgres_package(mock_package_env, client: AtlanClient):
         .to_workflow()
     )
 
-    request_json = loads(postgres_direct_basic.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(POSTGRES_DIRECT_BASIC)
+    request_json = loads(postgres_direct_basic.to_json())
+    assert_workflow_equal(request_json, load_json(POSTGRES_DIRECT_BASIC))
 
     postgres_direct_iam_user = (
         PostgresCrawler(
@@ -709,10 +722,8 @@ def test_postgres_package(mock_package_env, client: AtlanClient):
         .to_workflow()
     )
 
-    request_json = loads(
-        postgres_direct_iam_user.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(POSTGRES_DIRECT_IAM_USER)
+    request_json = loads(postgres_direct_iam_user.to_json())
+    assert_workflow_equal(request_json, load_json(POSTGRES_DIRECT_IAM_USER))
 
     postgres_direct_iam_role = (
         PostgresCrawler(
@@ -734,10 +745,8 @@ def test_postgres_package(mock_package_env, client: AtlanClient):
         .to_workflow()
     )
 
-    request_json = loads(
-        postgres_direct_iam_role.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(POSTGRES_DIRECT_IAM_ROLE)
+    request_json = loads(postgres_direct_iam_role.to_json())
+    assert_workflow_equal(request_json, load_json(POSTGRES_DIRECT_IAM_ROLE))
 
     postgres_s3_offline = (
         PostgresCrawler(
@@ -758,8 +767,8 @@ def test_postgres_package(mock_package_env, client: AtlanClient):
         .to_workflow()
     )
 
-    request_json = loads(postgres_s3_offline.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(POSTGRES_S3_OFFLINE)
+    request_json = loads(postgres_s3_offline.to_json())
+    assert_workflow_equal(request_json, load_json(POSTGRES_S3_OFFLINE))
 
 
 def test_mongodb_package(mock_package_env, client: AtlanClient):
@@ -784,8 +793,8 @@ def test_mongodb_package(mock_package_env, client: AtlanClient):
         .to_workflow()
     )
 
-    request_json = loads(mongodb_basic.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(MONGODB_BASIC)
+    request_json = loads(mongodb_basic.to_json())
+    assert_workflow_equal(request_json, load_json(MONGODB_BASIC))
 
 
 def test_connection_delete_package(mock_package_env):
@@ -793,15 +802,15 @@ def test_connection_delete_package(mock_package_env):
     connection_delete_hard = ConnectionDelete(
         qualified_name="default/snowflake/1234567890", purge=True
     ).to_workflow()
-    request_json = loads(connection_delete_hard.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(CONNECTION_DELETE_HARD)
+    request_json = loads(connection_delete_hard.to_json())
+    assert_workflow_equal(request_json, load_json(CONNECTION_DELETE_HARD))
 
     # Without PURGE (soft delete)
     connection_delete_soft = ConnectionDelete(
         qualified_name="default/snowflake/1234567890", purge=False
     ).to_workflow()
-    request_json = loads(connection_delete_soft.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(CONNECTION_DELETE_SOFT)
+    request_json = loads(connection_delete_soft.to_json())
+    assert_workflow_equal(request_json, load_json(CONNECTION_DELETE_SOFT))
 
 
 def test_databricks_crawler(mock_package_env, client: AtlanClient):
@@ -829,8 +838,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         .enable_source_level_filtering(True)
         .to_workflow()
     )
-    request_json = loads(databricks_basic_jdbc.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_BASIC_JDBC)
+    request_json = loads(databricks_basic_jdbc.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_BASIC_JDBC))
 
     databricks_basic_rest = (
         DatabricksCrawler(
@@ -856,8 +865,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         .enable_source_level_filtering(False)
         .to_workflow()
     )
-    request_json = loads(databricks_basic_rest.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_BASIC_REST)
+    request_json = loads(databricks_basic_rest.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_BASIC_REST))
 
     databricks_aws = (
         DatabricksCrawler(
@@ -883,8 +892,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         .enable_source_level_filtering(False)
         .to_workflow()
     )
-    request_json = loads(databricks_aws.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_AWS)
+    request_json = loads(databricks_aws.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_AWS))
 
     databricks_azure = (
         DatabricksCrawler(
@@ -911,8 +920,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         .enable_source_level_filtering(False)
         .to_workflow()
     )
-    request_json = loads(databricks_azure.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_AZURE)
+    request_json = loads(databricks_azure.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_AZURE))
 
     databricks_system_tables = (
         DatabricksCrawler(
@@ -993,10 +1002,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         .enable_incremental_extraction(True)
         .to_workflow()
     )
-    request_json = loads(
-        databricks_system_tables.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(DATABRICKS_SYSTEM_TABLES)
+    request_json = loads(databricks_system_tables.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_SYSTEM_TABLES))
 
     databricks_offline = (
         DatabricksCrawler(
@@ -1016,8 +1023,8 @@ def test_databricks_crawler(mock_package_env, client: AtlanClient):
         )
         .to_workflow()
     )
-    request_json = loads(databricks_offline.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(DATABRICKS_OFFLINE)
+    request_json = loads(databricks_offline.to_json())
+    assert_workflow_equal(request_json, load_json(DATABRICKS_OFFLINE))
 
 
 def test_asset_import(mock_package_env):
@@ -1067,7 +1074,7 @@ def test_asset_import(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(asset_import_s3.json(by_alias=True, exclude_none=True))
+    request_json_s3 = loads(asset_import_s3.to_json())
     assert request_json_s3 == load_json(ASSET_IMPORT_S3)
 
     # Case 2: Importing assets, glossaries, and data products from GCS with advanced configuration
@@ -1115,7 +1122,7 @@ def test_asset_import(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(asset_import_gcs.json(by_alias=True, exclude_none=True))
+    request_json_gcs = loads(asset_import_gcs.to_json())
     assert request_json_gcs == load_json(ASSET_IMPORT_GCS)
 
     # Case 3: Importing assets, glossaries, and data products from Adls with advanced configuration
@@ -1165,7 +1172,7 @@ def test_asset_import(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(asset_import_adls.json(by_alias=True, exclude_none=True))
+    request_json_adls = loads(asset_import_adls.to_json())
     assert request_json_adls == load_json(ASSET_IMPORT_ADLS)
 
     # Case 4: Importing assets, glossaries, and data products from S3 with default configuration
@@ -1195,9 +1202,7 @@ def test_asset_import(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_default = loads(
-        asset_import_default.json(by_alias=True, exclude_none=True)
-    )
+    request_json_default = loads(asset_import_default.to_json())
     assert request_json_default == load_json(ASSET_IMPORT_DEFAULT)
 
 
@@ -1215,9 +1220,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(
-        asset_export_basic_glossaries_only_s3.json(by_alias=True, exclude_none=True)
-    )
+    request_json_s3 = loads(asset_export_basic_glossaries_only_s3.to_json())
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_S3)
 
     # Case 2: Export assets with Products only using s3
@@ -1233,9 +1236,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(
-        asset_export_basic_products_only_s3.json(by_alias=True, exclude_none=True)
-    )
+    request_json_s3 = loads(asset_export_basic_products_only_s3.to_json())
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_S3)
 
     # Case 3: Export assets with Enriched only using s3
@@ -1257,9 +1258,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(
-        asset_export_basic_enriched_only_s3.json(by_alias=True, exclude_none=True)
-    )
+    request_json_s3 = loads(asset_export_basic_enriched_only_s3.to_json())
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_S3)
 
     # Case 4: Export all assets using s3
@@ -1281,9 +1280,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(
-        asset_export_basic_all_assets_s3.json(by_alias=True, exclude_none=True)
-    )
+    request_json_s3 = loads(asset_export_basic_all_assets_s3.to_json())
     assert request_json_s3 == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_S3)
 
     # Case 1: Export assets with glossaries only using adls
@@ -1300,9 +1297,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(
-        asset_export_basic_glossaries_only_adls.json(by_alias=True, exclude_none=True)
-    )
+    request_json_adls = loads(asset_export_basic_glossaries_only_adls.to_json())
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_ADLS)
 
     # Case 2: Export assets with Products only using adls
@@ -1319,9 +1314,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(
-        asset_export_basic_products_only_adls.json(by_alias=True, exclude_none=True)
-    )
+    request_json_adls = loads(asset_export_basic_products_only_adls.to_json())
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_ADLS)
 
     # Case 3: Export assets with Enriched only using adls
@@ -1344,9 +1337,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(
-        asset_export_basic_enriched_only_adls.json(by_alias=True, exclude_none=True)
-    )
+    request_json_adls = loads(asset_export_basic_enriched_only_adls.to_json())
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_ADLS)
 
     # Case 4: Export all assets using adls
@@ -1369,9 +1360,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(
-        asset_export_basic_all_assets_adls.json(by_alias=True, exclude_none=True)
-    )
+    request_json_adls = loads(asset_export_basic_all_assets_adls.to_json())
     assert request_json_adls == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_ADLS)
 
     # Case 1: Export assets with glossaries only using gcs
@@ -1386,9 +1375,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(
-        asset_export_basic_glossaries_only_gcs.json(by_alias=True, exclude_none=True)
-    )
+    request_json_gcs = loads(asset_export_basic_glossaries_only_gcs.to_json())
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_GLOSSARIES_ONLY_GCS)
 
     # Case 2: Export assets with Products only using gcs
@@ -1403,9 +1390,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(
-        asset_export_basic_products_only_gcs.json(by_alias=True, exclude_none=True)
-    )
+    request_json_gcs = loads(asset_export_basic_products_only_gcs.to_json())
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_PRODUCTS_ONLY_GCS)
 
     # Case 3: Export assets with Enriched only using gcs
@@ -1426,9 +1411,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(
-        asset_export_basic_enriched_only_gcs.json(by_alias=True, exclude_none=True)
-    )
+    request_json_gcs = loads(asset_export_basic_enriched_only_gcs.to_json())
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ENRICHED_ONLY_GCS)
 
     # Case 4: Export all assets using gcs
@@ -1449,9 +1432,7 @@ def test_asset_export_basic(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(
-        asset_export_basic_all_assets_gcs.json(by_alias=True, exclude_none=True)
-    )
+    request_json_gcs = loads(asset_export_basic_all_assets_gcs.to_json())
     assert request_json_gcs == load_json(ASSET_EXPORT_BASIC_ALL_ASSETS_GCS)
 
 
@@ -1481,9 +1462,7 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_s3 = loads(
-        relational_assets_builder_s3.json(by_alias=True, exclude_none=True)
-    )
+    request_json_s3 = loads(relational_assets_builder_s3.to_json())
     assert request_json_s3 == load_json(RELATIONAL_ASSETS_BUILDER_S3)
 
     # Case 2: Build/Update relational assets from adls with advanced configuration
@@ -1513,9 +1492,7 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_adls = loads(
-        relational_assets_builder_adls.json(by_alias=True, exclude_none=True)
-    )
+    request_json_adls = loads(relational_assets_builder_adls.to_json())
     assert request_json_adls == load_json(RELATIONAL_ASSETS_BUILDER_ADLS)
 
     # Case 3: Build/Update relational assets from gcs with advanced configuration
@@ -1543,9 +1520,7 @@ def test_relational_assets_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json_gcs = loads(
-        relational_assets_builder_gcs.json(by_alias=True, exclude_none=True)
-    )
+    request_json_gcs = loads(relational_assets_builder_gcs.to_json())
     assert request_json_gcs == load_json(RELATIONAL_ASSETS_BUILDER_GCS)
 
 
@@ -1572,8 +1547,8 @@ def test_oracle_crawler(mock_package_env, client: AtlanClient):
         .source_level_filtering(True)
         .to_workflow()
     )
-    request_json = loads(oracle_crawler_basic.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(ORACLE_CRAWLER_BASIC)
+    request_json = loads(oracle_crawler_basic.to_json())
+    assert_workflow_equal(request_json, load_json(ORACLE_CRAWLER_BASIC))
 
     oracle_crawler_offline = (
         OracleCrawler(
@@ -1586,8 +1561,8 @@ def test_oracle_crawler(mock_package_env, client: AtlanClient):
         .s3(bucket_name="test-bucket", bucket_prefix="test-prefix")
         .to_workflow()
     )
-    request_json = loads(oracle_crawler_offline.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(ORACLE_CRAWLER_OFFLINE)
+    request_json = loads(oracle_crawler_offline.to_json())
+    assert_workflow_equal(request_json, load_json(ORACLE_CRAWLER_OFFLINE))
 
     oracle_crawler_basic_agent = (
         OracleCrawler(
@@ -1616,10 +1591,8 @@ def test_oracle_crawler(mock_package_env, client: AtlanClient):
         .source_level_filtering(False)
         .to_workflow()
     )
-    request_json = loads(
-        oracle_crawler_basic_agent.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(ORACLE_CRAWLER_BASIC_AGENT)
+    request_json = loads(oracle_crawler_basic_agent.to_json())
+    assert_workflow_equal(request_json, load_json(ORACLE_CRAWLER_BASIC_AGENT))
 
     oracle_crawler_kerberos_agent = (
         OracleCrawler(
@@ -1648,10 +1621,8 @@ def test_oracle_crawler(mock_package_env, client: AtlanClient):
         .source_level_filtering(False)
         .to_workflow()
     )
-    request_json = loads(
-        oracle_crawler_kerberos_agent.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(ORACLE_CRAWLER_KERBEROS_AGENT)
+    request_json = loads(oracle_crawler_kerberos_agent.to_json())
+    assert_workflow_equal(request_json, load_json(ORACLE_CRAWLER_KERBEROS_AGENT))
 
 
 def test_lineage_builder(mock_package_env):
@@ -1673,8 +1644,8 @@ def test_lineage_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(lineage_builder_s3.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(LINEAGE_BUILDER_S3)
+    request_json = loads(lineage_builder_s3.to_json())
+    assert_workflow_equal(request_json, load_json(LINEAGE_BUILDER_S3))
 
     lineage_builder_gcs = (
         LineageBuilder()
@@ -1693,8 +1664,8 @@ def test_lineage_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(lineage_builder_gcs.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(LINEAGE_BUILDER_GCS)
+    request_json = loads(lineage_builder_gcs.to_json())
+    assert_workflow_equal(request_json, load_json(LINEAGE_BUILDER_GCS))
 
     lineage_builder_adls = (
         LineageBuilder()
@@ -1715,8 +1686,8 @@ def test_lineage_builder(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(lineage_builder_adls.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(LINEAGE_BUILDER_ADLS)
+    request_json = loads(lineage_builder_adls.to_json())
+    assert_workflow_equal(request_json, load_json(LINEAGE_BUILDER_ADLS))
 
 
 def test_lineage_generator_nt(mock_package_env):
@@ -1729,10 +1700,8 @@ def test_lineage_generator_nt(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(
-        lineage_generator_default.json(by_alias=True, exclude_none=True)
-    )
-    assert request_json == load_json(LINEAGE_GENERATOR_DEFAULT)
+    request_json = loads(lineage_generator_default.to_json())
+    assert_workflow_equal(request_json, load_json(LINEAGE_GENERATOR_DEFAULT))
 
     lineage_generator_full = (
         LineageGenerator().config(
@@ -1758,8 +1727,8 @@ def test_lineage_generator_nt(mock_package_env):
         )
     ).to_workflow()
 
-    request_json = loads(lineage_generator_full.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(LINEAGE_GENERATOR_FULL)
+    request_json = loads(lineage_generator_full.to_json())
+    assert_workflow_equal(request_json, load_json(LINEAGE_GENERATOR_FULL))
 
 
 def test_api_token_connection_admin(mock_package_env):
@@ -1771,8 +1740,8 @@ def test_api_token_connection_admin(mock_package_env):
         )
         .to_workflow()
     )
-    request_json = loads(token_connection_admin.json(by_alias=True, exclude_none=True))
-    assert request_json == load_json(API_TOKEN_CONNECTION_ADMIN)
+    request_json = loads(token_connection_admin.to_json())
+    assert_workflow_equal(request_json, load_json(API_TOKEN_CONNECTION_ADMIN))
 
 
 @pytest.mark.parametrize(

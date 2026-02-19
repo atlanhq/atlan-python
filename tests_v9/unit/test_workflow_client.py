@@ -15,7 +15,6 @@ from unittest.mock import Mock, patch
 import msgspec
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
@@ -26,8 +25,9 @@ from pyatlan.client.constants import (
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan_v9.model.search import Range
 from pyatlan.validate import _is_model_instance
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.model.search import Range
 
 # v9 models
 from pyatlan_v9.model.workflow import (

@@ -50,6 +50,9 @@ class Asset(Referenceable):
     DISPLAY_NAME: ClassVar = None  # Initialized after imports below
     CONNECTOR_NAME: ClassVar = None  # Initialized after imports below
     CONNECTION_NAME: ClassVar = None  # Initialized after imports below
+    ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar = (
+        None  # Initialized after imports below
+    )
 
     # =========================================================================
     # Instance Fields
@@ -743,6 +746,37 @@ class Asset(Referenceable):
         self.certificate_status_message = None
         return self
 
+    def remove_description(self) -> "Asset":
+        """
+        Remove the description from this asset.
+
+        Returns:
+            Self for fluent chaining
+        """
+        self.description = None
+        return self
+
+    def remove_user_description(self) -> "Asset":
+        """
+        Remove the user description from this asset.
+
+        Returns:
+            Self for fluent chaining
+        """
+        self.user_description = None
+        return self
+
+    def remove_owners(self) -> "Asset":
+        """
+        Remove the owners from this asset.
+
+        Returns:
+            Self for fluent chaining
+        """
+        self.owner_groups = None
+        self.owner_users = None
+        return self
+
     def flush_custom_metadata(self, client=None) -> None:
         """
         Flush (clear) all custom metadata on this asset.
@@ -816,6 +850,8 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordField,
     KeywordTextField,
     KeywordTextStemmedField,
+    NumericField,
+    TextField,
 )
 
 Asset.NAME = KeywordTextStemmedField("name", "name.keyword", "name", "name.stemmed")
@@ -825,6 +861,32 @@ Asset.DISPLAY_NAME = KeywordTextField(
 Asset.CONNECTOR_NAME = KeywordField("connectorName", "connectorName")
 Asset.CONNECTION_NAME = KeywordTextField(
     "connectionName", "connectionName", "connectionName.text"
+)
+Asset.DESCRIPTION = KeywordTextField(
+    "description", "description.keyword", "description.text"
+)
+Asset.USER_DESCRIPTION = KeywordTextField(
+    "userDescription", "userDescription.keyword", "userDescription.text"
+)
+Asset.CERTIFICATE_STATUS = KeywordTextField(
+    "certificateStatus", "certificateStatus", "certificateStatus.text"
+)
+Asset.CERTIFICATE_STATUS_MESSAGE = TextField(
+    "certificateStatusMessage", "certificateStatusMessage"
+)
+Asset.ANNOUNCEMENT_TITLE = TextField("announcementTitle", "announcementTitle")
+Asset.ANNOUNCEMENT_MESSAGE = TextField("announcementMessage", "announcementMessage")
+Asset.ANNOUNCEMENT_TYPE = KeywordField("announcementType", "announcementType")
+Asset.ANNOUNCEMENT_UPDATED_AT = NumericField(
+    "announcementUpdatedAt", "announcementUpdatedAt"
+)
+Asset.OWNER_USERS = KeywordField("ownerUsers", "ownerUsers")
+Asset.OWNER_GROUPS = KeywordField("ownerGroups", "ownerGroups")
+Asset.ADMIN_USERS = KeywordField("adminUsers", "adminUsers")
+Asset.ADMIN_GROUPS = KeywordField("adminGroups", "adminGroups")
+Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME = KeywordField(
+    "assetDQRowScopeFilterColumnQualifiedName",
+    "assetDQRowScopeFilterColumnQualifiedName",
 )
 
 

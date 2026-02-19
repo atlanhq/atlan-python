@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.serde import Serde, get_serde
 
 # Use the same test data directory as the original tests
@@ -39,35 +39,35 @@ def load_json(responses_dir: Path, filename: str):
 
 @pytest.fixture()
 def mock_role_cache():
-    """Mock the role cache on AtlanClient for validation testing."""
+    """Mock the role cache on v9 AtlanClient for validation testing."""
     with patch.object(AtlanClient, "role_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_user_cache():
-    """Mock the user cache on AtlanClient for validation testing."""
+    """Mock the user cache on v9 AtlanClient for validation testing."""
     with patch.object(AtlanClient, "user_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_group_cache():
-    """Mock the group cache on AtlanClient for validation testing."""
+    """Mock the group cache on v9 AtlanClient for validation testing."""
     with patch.object(AtlanClient, "group_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_custom_metadata_cache():
-    """Mock the custom metadata cache on AtlanClient for badge testing."""
+    """Mock the custom metadata cache on v9 AtlanClient for badge testing."""
     with patch.object(AtlanClient, "custom_metadata_cache") as cache:
         yield cache
 
 
 @pytest.fixture()
 def mock_tag_cache():
-    """Mock the atlan tag cache on AtlanClient for event testing."""
+    """Mock the atlan tag cache on v9 AtlanClient for event testing."""
     with patch.object(AtlanClient, "atlan_tag_cache") as cache:
         yield cache
 

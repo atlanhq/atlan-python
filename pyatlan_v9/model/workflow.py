@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, Generator, Union
 
 import msgspec
@@ -10,8 +11,26 @@ import msgspec
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanWorkflowPhase
 
+# =============================================================================
+# HELPERS
+# =============================================================================
 
-class PackageParameter(msgspec.Struct, kw_only=True):
+
+def _remove_nones(obj: Any) -> Any:
+    """Recursively remove None values from dicts (for Pydantic exclude_none parity)."""
+    if isinstance(obj, dict):
+        return {k: _remove_nones(v) for k, v in obj.items() if v is not None}
+    if isinstance(obj, list):
+        return [_remove_nones(item) for item in obj]
+    return obj
+
+
+# =============================================================================
+# PACKAGE-RELATED WORKFLOW MODELS (used for building crawler/miner workflows)
+# =============================================================================
+
+
+class PackageParameter(msgspec.Struct, kw_only=True, rename="camel"):
     """Parameter for a workflow package."""
 
     parameter: Union[str, None] = None
@@ -19,7 +38,7 @@ class PackageParameter(msgspec.Struct, kw_only=True):
     body: Union[dict[str, Any], None] = None
 
 
-class WorkflowMetadata(msgspec.Struct, kw_only=True):
+class WorkflowMetadata(msgspec.Struct, kw_only=True, rename="camel"):
     """Metadata for a workflow."""
 
     annotations: Union[dict[str, str], None] = None
@@ -34,7 +53,7 @@ class WorkflowMetadata(msgspec.Struct, kw_only=True):
     uid: Union[str, None] = None
 
 
-class WorkflowTemplateRef(msgspec.Struct, kw_only=True):
+class WorkflowTemplateRef(msgspec.Struct, kw_only=True, rename="camel"):
     """Reference to a workflow template."""
 
     name: Union[str, None] = None
@@ -42,20 +61,20 @@ class WorkflowTemplateRef(msgspec.Struct, kw_only=True):
     cluster_scope: Union[bool, None] = None
 
 
-class NameValuePair(msgspec.Struct, kw_only=True):
+class NameValuePair(msgspec.Struct, kw_only=True, rename="camel"):
     """Simple name-value pair."""
 
     name: Union[str, None] = None
     value: Union[Any, None] = None
 
 
-class WorkflowParameters(msgspec.Struct, kw_only=True):
+class WorkflowParameters(msgspec.Struct, kw_only=True, rename="camel"):
     """Parameters for a workflow."""
 
     parameters: Union[list[NameValuePair], None] = None
 
 
-class WorkflowTask(msgspec.Struct, kw_only=True):
+class WorkflowTask(msgspec.Struct, kw_only=True, rename="camel"):
     """Task within a workflow DAG."""
 
     name: Union[str, None] = None
@@ -63,13 +82,13 @@ class WorkflowTask(msgspec.Struct, kw_only=True):
     template_ref: Union[WorkflowTemplateRef, None] = None
 
 
-class WorkflowDAG(msgspec.Struct, kw_only=True):
+class WorkflowDAG(msgspec.Struct, kw_only=True, rename="camel"):
     """Directed acyclic graph of workflow tasks."""
 
     tasks: Union[list[WorkflowTask], None] = None
 
 
-class WorkflowTemplate(msgspec.Struct, kw_only=True):
+class WorkflowTemplate(msgspec.Struct, kw_only=True, rename="camel"):
     """Template for a workflow."""
 
     name: Union[str, None] = None
@@ -79,7 +98,7 @@ class WorkflowTemplate(msgspec.Struct, kw_only=True):
     dag: Union[WorkflowDAG, None] = None
 
 
-class WorkflowSpec(msgspec.Struct, kw_only=True):
+class WorkflowSpec(msgspec.Struct, kw_only=True, rename="camel"):
     """Specification for a workflow."""
 
     entrypoint: Union[str, None] = None
@@ -89,15 +108,30 @@ class WorkflowSpec(msgspec.Struct, kw_only=True):
     workflow_metadata: Union[WorkflowMetadata, None] = None
 
 
-class Workflow(msgspec.Struct, kw_only=True):
+class Workflow(msgspec.Struct, kw_only=True, rename="camel"):
     """A workflow definition."""
 
     metadata: Union[WorkflowMetadata, None] = None
     spec: Union[WorkflowSpec, None] = None
     payload: list[PackageParameter] = msgspec.field(default_factory=list)
 
+    def to_json(self) -> str:
+        """
+        Serialize to JSON with camelCase keys, excluding None values.
 
-class WorkflowSearchResultStatus(msgspec.Struct, kw_only=True):
+        This matches the legacy Pydantic ``Workflow.json(by_alias=True, exclude_none=True)``.
+        """
+        data = msgspec.to_builtins(self)
+        cleaned = _remove_nones(data)
+        return json.dumps(cleaned)
+
+
+# =============================================================================
+# SEARCH / API RESPONSE MODELS
+# =============================================================================
+
+
+class WorkflowSearchResultStatus(msgspec.Struct, kw_only=True, rename="camel"):
     """Status of a workflow search result."""
 
     artifact_gc_status: Union[dict[str, Any], None] = msgspec.field(
@@ -120,7 +154,7 @@ class WorkflowSearchResultStatus(msgspec.Struct, kw_only=True):
     synchronization: Union[dict[str, Any], None] = None
 
 
-class WorkflowSearchResultDetail(msgspec.Struct, kw_only=True):
+class WorkflowSearchResultDetail(msgspec.Struct, kw_only=True, rename="camel"):
     """Details of a workflow search result."""
 
     api_version: Union[str, None] = None
@@ -130,7 +164,7 @@ class WorkflowSearchResultDetail(msgspec.Struct, kw_only=True):
     status: Union[WorkflowSearchResultStatus, None] = None
 
 
-class WorkflowSearchResult(msgspec.Struct, kw_only=True):
+class WorkflowSearchResult(msgspec.Struct, kw_only=True, rename="camel"):
     """Individual result from a workflow search."""
 
     index: Union[str, None] = msgspec.field(default=None, name="_index")
@@ -159,14 +193,14 @@ class WorkflowSearchResult(msgspec.Struct, kw_only=True):
         )
 
 
-class WorkflowSearchHits(msgspec.Struct, kw_only=True):
+class WorkflowSearchHits(msgspec.Struct, kw_only=True, rename="camel"):
     """Hits from a workflow search."""
 
     total: Union[dict[str, Any], None] = None
     hits: Union[list[WorkflowSearchResult], None] = None
 
 
-class ReRunRequest(msgspec.Struct, kw_only=True):
+class ReRunRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request to re-run a workflow."""
 
     namespace: Union[str, None] = "default"
@@ -174,7 +208,7 @@ class ReRunRequest(msgspec.Struct, kw_only=True):
     resource_name: Union[str, None] = None
 
 
-class WorkflowResponse(msgspec.Struct, kw_only=True):
+class WorkflowResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from a workflow operation."""
 
     metadata: Union[WorkflowMetadata, None] = None
@@ -182,7 +216,7 @@ class WorkflowResponse(msgspec.Struct, kw_only=True):
     payload: list[Any] = msgspec.field(default_factory=list)
 
 
-class WorkflowRunResponse(msgspec.Struct, kw_only=True):
+class WorkflowRunResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from a workflow run operation."""
 
     metadata: Union[WorkflowMetadata, None] = None
@@ -191,7 +225,7 @@ class WorkflowRunResponse(msgspec.Struct, kw_only=True):
     status: Union[WorkflowSearchResultStatus, None] = None
 
 
-class ScheduleQueriesSearchRequest(msgspec.Struct, kw_only=True):
+class ScheduleQueriesSearchRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request for searching schedule queries."""
 
     start_date: str
@@ -200,14 +234,14 @@ class ScheduleQueriesSearchRequest(msgspec.Struct, kw_only=True):
     """End date in ISO 8601 format."""
 
 
-class WorkflowSchedule(msgspec.Struct, kw_only=True):
+class WorkflowSchedule(msgspec.Struct, kw_only=True, rename="camel"):
     """Schedule for a workflow."""
 
     timezone: str
     cron_schedule: str
 
 
-class WorkflowScheduleSpec(msgspec.Struct, kw_only=True):
+class WorkflowScheduleSpec(msgspec.Struct, kw_only=True, rename="camel"):
     """Specification for a workflow schedule."""
 
     schedule: Union[str, None] = None
@@ -219,7 +253,7 @@ class WorkflowScheduleSpec(msgspec.Struct, kw_only=True):
     failed_jobs_history_limit: Union[int, None] = None
 
 
-class WorkflowScheduleStatus(msgspec.Struct, kw_only=True):
+class WorkflowScheduleStatus(msgspec.Struct, kw_only=True, rename="camel"):
     """Status of a workflow schedule."""
 
     active: Union[Any, None] = None
@@ -227,7 +261,7 @@ class WorkflowScheduleStatus(msgspec.Struct, kw_only=True):
     last_scheduled_time: Union[str, None] = None
 
 
-class WorkflowScheduleResponse(msgspec.Struct, kw_only=True):
+class WorkflowScheduleResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from a workflow schedule operation."""
 
     metadata: Union[WorkflowMetadata, None] = None
@@ -236,7 +270,7 @@ class WorkflowScheduleResponse(msgspec.Struct, kw_only=True):
     workflow_metadata: Union[WorkflowMetadata, None] = None
 
 
-class WorkflowSearchResponse(msgspec.Struct, kw_only=True):
+class WorkflowSearchResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response from a workflow search with pagination support."""
 
     took: Union[int, None] = None
@@ -302,16 +336,17 @@ class WorkflowSearchResponse(msgspec.Struct, kw_only=True):
                 break
 
 
-class WorkflowSearchRequest(msgspec.Struct, kw_only=True):
+class WorkflowSearchRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request to search for workflows."""
 
     from_: int = msgspec.field(default=0, name="from")
     """Starting offset for results."""
     size: int = 10
     """Page size for results."""
-    track_total_hits: bool = True
+    # Elasticsearch DSL uses snake_case for these fields
+    track_total_hits: bool = msgspec.field(default=True, name="track_total_hits")
     """Whether to track total hit count."""
-    post_filter: Union[Any, None] = None
+    post_filter: Union[Any, None] = msgspec.field(default=None, name="post_filter")
     """Post-search filter."""
     query: Union[Any, None] = None
     """Search query."""

@@ -206,7 +206,7 @@ class Connection(Asset):
         client.role_cache.validate_idstrs(idstrs=admin_roles or [])
         client.group_cache.validate_aliases(aliases=admin_groups or [])
 
-        return cls(
+        kwargs: dict = dict(
             name=name,
             qualified_name=connector_type.to_qualified_name(),
             connector_name=connector_type.value,
@@ -214,9 +214,12 @@ class Connection(Asset):
             admin_users=set() if admin_users is None else set(admin_users),
             admin_groups=set() if admin_groups is None else set(admin_groups),
             admin_roles=set() if admin_roles is None else set(admin_roles),
-            host=host,
-            port=port,
         )
+        if host is not None:
+            kwargs["host"] = host
+        if port is not None:
+            kwargs["port"] = port
+        return cls(**kwargs)
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "Connection":

@@ -14,8 +14,8 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pyatlan.cache.connection_cache import ConnectionCache, ConnectionName
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import ErrorCode, InvalidRequestError, NotFoundError
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import Connection
 
 
