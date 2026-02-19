@@ -863,6 +863,147 @@ class Save:
         """
         return AssetMutationResponse(**raw_json)
 
+    @staticmethod
+    def has_tags_with_semantic(entities: List[Asset]) -> bool:
+        """
+        Check if any entity has atlan_tags with a semantic value set.
+
+        :param entities: list of assets to check
+        :returns: True if any entity has tags with semantic set
+        """
+        for entity in entities:
+            if entity.atlan_tags:
+                for tag in entity.atlan_tags:
+                    if tag.semantic is not None:
+                        return True
+        return False
+
+    @staticmethod
+    def get_semantic_flags(entities: List[Asset]) -> tuple[bool, bool]:
+        """
+        Determine which semantic flags should be set based on tags in entities.
+
+        :param entities: list of assets to check
+        :returns: tuple of (has_append_remove, has_replace)
+        """
+        has_append_remove = False
+        has_replace = False
+
+        for entity in entities:
+            if not entity.atlan_tags:
+                continue
+            for tag in entity.atlan_tags:
+                if tag.semantic in (SaveSemantic.APPEND, SaveSemantic.REMOVE):
+                    has_append_remove = True
+                elif tag.semantic == SaveSemantic.REPLACE:
+                    has_replace = True
+
+        return has_append_remove, has_replace
+
+    @staticmethod
+    def process_asset_for_append_remove_semantic(entity: Asset) -> Asset:
+        """
+        Process an asset with APPEND/REMOVE semantic tags.
+        Sets add_or_update_classifications for APPEND tags and
+        remove_classifications for REMOVE tags.
+        Keeps REPLACE and None semantic tags in atlan_tags.
+
+        :param entity: the asset to process
+        :returns: the processed asset
+        """
+        if not entity.atlan_tags:
+            return entity
+
+        append_tags: List[AtlanTag] = []
+        remove_tags: List[AtlanTag] = []
+        remaining_tags: List[AtlanTag] = []
+
+        for tag in entity.atlan_tags:
+            if tag.semantic == SaveSemantic.APPEND:
+                append_tags.append(tag)
+            elif tag.semantic == SaveSemantic.REMOVE:
+                remove_tags.append(tag)
+            else:
+                # Keep REPLACE and None semantic tags in atlan_tags
+                remaining_tags.append(tag)
+
+        if append_tags:
+            entity.add_or_update_classifications = append_tags
+        if remove_tags:
+            entity.remove_classifications = remove_tags
+
+        # Keep remaining tags (REPLACE and None semantic) in atlan_tags
+        entity.atlan_tags = remaining_tags if remaining_tags else None
+
+        return entity
+
+    @staticmethod
+    def merge_responses(
+        responses: List[AssetMutationResponse],
+    ) -> AssetMutationResponse:
+        """
+        Merge multiple AssetMutationResponse objects into a single response.
+
+        :param responses: list of responses to merge
+        :returns: merged AssetMutationResponse
+        """
+        from pyatlan.model.response import MutatedEntities
+
+        if not responses:
+            return AssetMutationResponse()
+
+        if len(responses) == 1:
+            return responses[0]
+
+        merged_guid_assignments: Dict[str, str] = {}
+        merged_created: List[Asset] = []
+        merged_updated: List[Asset] = []
+        merged_deleted: List[Asset] = []
+        merged_partial_updated: List[Asset] = []
+
+        for response in responses:
+            if response.guid_assignments:
+                merged_guid_assignments.update(response.guid_assignments)
+            if response.mutated_entities:
+                if response.mutated_entities.CREATE:
+                    merged_created.extend(response.mutated_entities.CREATE)
+                if response.mutated_entities.UPDATE:
+                    merged_updated.extend(response.mutated_entities.UPDATE)
+                if response.mutated_entities.DELETE:
+                    merged_deleted.extend(response.mutated_entities.DELETE)
+                if response.mutated_entities.PARTIAL_UPDATE:
+                    merged_partial_updated.extend(
+                        response.mutated_entities.PARTIAL_UPDATE
+                    )
+            if response.partial_updated_entities:
+                merged_partial_updated.extend(response.partial_updated_entities)
+
+        mutated_entities = MutatedEntities(
+            CREATE=merged_created if merged_created else None,
+            UPDATE=merged_updated if merged_updated else None,
+            DELETE=merged_deleted if merged_deleted else None,
+        )
+        # Set PARTIAL_UPDATE separately due to alias conflict in MutatedEntities
+        if merged_partial_updated:
+            mutated_entities.PARTIAL_UPDATE = merged_partial_updated
+
+        return AssetMutationResponse(
+            guid_assignments=merged_guid_assignments
+            if merged_guid_assignments
+            else None,
+            mutated_entities=mutated_entities
+            if (
+                merged_created
+                or merged_updated
+                or merged_deleted
+                or merged_partial_updated
+            )
+            else None,
+            partial_updated_entities=merged_partial_updated
+            if merged_partial_updated
+            else None,
+        )
+
 
 class UpdateAsset:
     @staticmethod
