@@ -4,12 +4,11 @@ from __future__ import annotations
 
 import logging
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, AuditSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.audit import AsyncAuditSearchResults
 from pyatlan.model.audit import AuditSearchRequest
+from pyatlan.validate import validate_arguments
 
 LOGGER = logging.getLogger(__name__)
 

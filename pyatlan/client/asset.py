@@ -25,13 +25,7 @@ from typing import (
 )
 from warnings import warn
 
-from pydantic.v1 import (
-    StrictStr,
-    ValidationError,
-    constr,
-    parse_obj_as,
-    validate_arguments,
-)
+from pydantic.v1 import StrictStr, ValidationError, constr, parse_obj_as
 from tenacity import (
     RetryError,
     retry,
@@ -116,6 +110,7 @@ from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, Range, SortItem
 from pyatlan.utils import API, unflatten_custom_metadata_for_entity
+from pyatlan.validate import _is_model_instance, validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
@@ -2570,7 +2565,7 @@ class Batch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if isinstance(candidate, AtlasGlossaryTerm):
+        if _is_model_instance(candidate, AtlasGlossaryTerm):
             # trim_to_required for AtlasGlossaryTerm requires anchor
             # which is not include in AssetMutationResponse
             asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))

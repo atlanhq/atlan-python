@@ -1,7 +1,5 @@
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import (
     ApiCaller,
     OpenLineageCreateConnection,
@@ -13,6 +11,7 @@ from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.open_lineage.event import OpenLineageEvent, OpenLineageRawEvent
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.utils import validate_type
+from pyatlan.validate import validate_arguments
 
 
 class OpenLineageClient:

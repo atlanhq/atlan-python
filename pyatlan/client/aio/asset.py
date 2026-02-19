@@ -17,7 +17,7 @@ from typing import (
     overload,
 )
 
-from pydantic.v1 import StrictStr, constr, validate_arguments
+from pydantic.v1 import StrictStr, constr
 from tenacity import (
     retry,
     retry_if_exception_type,
@@ -84,6 +84,7 @@ from pyatlan.model.enums import (
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import IndexSearchRequest, Query
+from pyatlan.validate import validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan.model.search import IndexSearchRequest

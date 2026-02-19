@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import List, Union
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import (
     ApiCaller,
     TypeDefCreate,
@@ -23,6 +21,7 @@ from pyatlan.model.typedef import (
     TypeDef,
     TypeDefResponse,
 )
+from pyatlan.validate import validate_arguments
 
 
 class TypeDefClient:

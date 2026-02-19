@@ -10,7 +10,6 @@ from unittest.mock import create_autospec
 
 import pytest
 from pydantic.v1 import parse_obj_as
-from pydantic.v1.error_wrappers import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError
@@ -789,7 +788,7 @@ def glossary_category_json():
 
 
 def test_wrong_json(glossary_json):
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValueError):
         AtlasGlossaryTerm(**glossary_json)
 
 

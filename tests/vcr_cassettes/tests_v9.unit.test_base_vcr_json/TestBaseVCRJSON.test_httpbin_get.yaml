@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "interactions": [
+    {
+      "request": {
+        "method": "GET",
+        "uri": "https://httpbin.org/get?test=value",
+        "body": "",
+        "headers": {}
+      },
+      "response": {
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "headers": {},
+        "body": {
+          "parsed_json": {
+            "args": {
+              "test": "value"
+            },
+            "headers": {
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate",
+              "Host": "httpbin.org",
+              "User-Agent": "python-httpx/0.28.1",
+              "X-Amzn-Trace-Id": "Root=1-6995eeed-7cf7e76001c9d9552c3b890b"
+            },
+            "origin": "103.172.73.42",
+            "url": "https://httpbin.org/get?test=value"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from typing import List, Optional
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import (
     ApiCaller,
     UserAddToGroups,
@@ -28,6 +26,7 @@ from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest, GroupResponse
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest, UserResponse
+from pyatlan.validate import validate_arguments
 
 
 class UserClient:

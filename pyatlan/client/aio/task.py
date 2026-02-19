@@ -3,12 +3,11 @@
 
 from __future__ import annotations
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import AsyncApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.aio.task import AsyncTaskSearchResponse
 from pyatlan.model.task import TaskSearchRequest
+from pyatlan.validate import validate_arguments
 
 
 class AsyncTaskClient:

@@ -5,7 +5,6 @@ from pathlib import Path
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from pydantic.v1 import ValidationError
 
 from pyatlan.client.aio.task import AsyncTaskClient
 from pyatlan.client.common import AsyncApiCaller
@@ -75,13 +74,16 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [[None, "none is not an allowed value"], ["123", "value is not a valid dict"]],
+    [
+        [None, "none is not an allowed value"],
+        ["123", "instance of TaskSearchRequest expected"],
+    ],
 )
 def test_task_search_wrong_params_raises_validation_error(
     test_request, error_msg, mock_async_api_caller
 ):
     client = AsyncTaskClient(client=mock_async_api_caller)
-    with pytest.raises(ValidationError) as err:
+    with pytest.raises(ValueError) as err:
         client.search(request=test_request)
     assert error_msg in str(err.value)
 

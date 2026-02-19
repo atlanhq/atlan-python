@@ -2,12 +2,11 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from typing import Optional
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import ApiCaller, ContractInit
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
+from pyatlan.validate import validate_arguments
 
 
 class ContractClient:

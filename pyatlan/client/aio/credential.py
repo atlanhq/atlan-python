@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from pydantic.v1 import validate_arguments
-
 from pyatlan.client.common import (
     AsyncApiCaller,
     CredentialCreate,
@@ -23,6 +21,7 @@ from pyatlan.model.credential import (
     CredentialResponse,
     CredentialTestResponse,
 )
+from pyatlan.validate import validate_arguments
 
 if TYPE_CHECKING:
     pass
