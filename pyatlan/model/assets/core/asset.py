@@ -221,6 +221,7 @@ class Asset(Referenceable):
         self.attributes.announcement_type = announcement.announcement_type.value
         self.attributes.announcement_title = announcement.announcement_title
         self.attributes.announcement_message = announcement.announcement_message
+        self.attributes.announcement_expired_at = announcement.announcement_expired_at
 
     def get_announcment(self) -> Optional[Announcement]:
         if self.attributes.announcement_type and self.attributes.announcement_title:
@@ -230,6 +231,7 @@ class Asset(Referenceable):
                 ],
                 announcement_title=self.attributes.announcement_title,
                 announcement_message=self.attributes.announcement_message,
+                announcement_expired_at=self.attributes.announcement_expired_at,
             )
         return None
 
@@ -1445,6 +1447,7 @@ class Asset(Referenceable):
         "announcement_type",
         "announcement_updated_at",
         "announcement_updated_by",
+        "announcement_expired_at",
         "owner_users",
         "owner_groups",
         "admin_users",
@@ -1794,6 +1797,20 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.announcement_updated_by = announcement_updated_by
+
+    @property
+    def announcement_expired_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.announcement_expired_at
+        )
+
+    @announcement_expired_at.setter
+    def announcement_expired_at(self, announcement_expired_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.announcement_expired_at = announcement_expired_at
 
     @property
     def owner_users(self) -> Optional[Set[str]]:
@@ -4407,6 +4424,10 @@ class Asset(Referenceable):
             default=None, description=""
         )
         announcement_updated_by: Optional[str] = Field(default=None, description="")
+        announcement_expired_at: Optional[datetime] = Field(
+            default=None,
+            description="Time at which this announcement expires.",
+        )
         owner_users: Optional[Set[str]] = Field(default=None, description="")
         owner_groups: Optional[Set[str]] = Field(default=None, description="")
         admin_users: Optional[Set[str]] = Field(default=None, description="")
@@ -4820,6 +4841,7 @@ class Asset(Referenceable):
             self.announcement_message = None
             self.announcement_title = None
             self.announcement_type = None
+            self.announcement_expired_at = None
 
     attributes: Asset.Attributes = Field(
         default_factory=lambda: Asset.Attributes(),

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from abc import ABC
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import yaml  # type: ignore[import-untyped]
@@ -271,6 +272,7 @@ class Announcement:
     announcement_title: str
     announcement_type: AnnouncementType
     announcement_message: Optional[str] = Field(default=None)
+    announcement_expired_at: Optional[datetime] = Field(default=None)
 
 
 class AtlanTag(AtlanObject):
