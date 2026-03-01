@@ -676,6 +676,44 @@ class GetByGuid:
 
 class Save:
     @staticmethod
+    def _process_atlan_tag_semantics(asset: Asset) -> None:
+        """
+        Process Atlan tags with semantics and populate appropriate fields.
+
+        Tags with APPEND semantic go to add_or_update_classifications.
+        Tags with REMOVE semantic go to remove_classifications.
+        Tags with REPLACE semantic or None (backward compatibility) stay in atlan_tags.
+
+        :param asset: the asset to process
+        """
+        if not asset.atlan_tags:
+            return
+
+        append_tags = []
+        remove_tags = []
+        replace_tags = []
+
+        for tag in asset.atlan_tags:
+            if tag.semantic == SaveSemantic.APPEND:
+                append_tags.append(tag)
+            elif tag.semantic == SaveSemantic.REMOVE:
+                remove_tags.append(tag)
+            else:
+                # REPLACE or None (backward compatibility)
+                replace_tags.append(tag)
+
+        # Update asset fields based on processed tags
+        if append_tags:
+            asset.add_or_update_classifications = append_tags
+        if remove_tags:
+            asset.remove_classifications = remove_tags
+        if replace_tags:
+            asset.atlan_tags = replace_tags
+        elif append_tags or remove_tags:
+            # If we only have append/remove tags, clear atlan_tags to avoid conflicts
+            asset.atlan_tags = None
+
+    @staticmethod
     def prepare_request(
         entity: Union[Asset, List[Asset]],
         replace_atlan_tags: bool = False,
@@ -695,13 +733,6 @@ class Save:
         :param client: the Atlan client instance for flushing custom metadata
         :returns: tuple of (query_params, bulk_request)
         """
-        query_params = {
-            "replaceTags": replace_atlan_tags,
-            "appendTags": append_atlan_tags,
-            "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttributes": overwrite_custom_metadata,
-        }
-
         entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
@@ -712,6 +743,50 @@ class Save:
             raise ValueError(
                 "AtlanClient instance must be provided to validate and flush cm for assets."
             )
+
+        # Process Atlan tags with semantics for each asset
+        has_semantic_tags = False
+        has_replace_semantic = False
+        for asset in entities:
+            if asset.atlan_tags:
+                # Check if any tags have semantics
+                if any(tag.semantic is not None for tag in asset.atlan_tags):
+                    has_semantic_tags = True
+                    # Check if any tags have REPLACE semantic before processing
+                    if any(
+                        tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags
+                    ):
+                        has_replace_semantic = True
+                    Save._process_atlan_tag_semantics(asset)
+
+        # Determine query parameters based on semantic usage
+        if has_semantic_tags:
+            # If tags have semantics, override the parameters
+            if has_replace_semantic:
+                # If any asset has REPLACE semantic, use replaceTags
+                query_params = {
+                    "replaceTags": True,
+                    "appendTags": False,
+                    "replaceBusinessAttributes": replace_custom_metadata,
+                    "overwriteBusinessAttributes": overwrite_custom_metadata,
+                }
+            else:
+                # If only APPEND/REMOVE semantics, use appendTags
+                query_params = {
+                    "replaceTags": False,
+                    "appendTags": True,
+                    "replaceBusinessAttributes": replace_custom_metadata,
+                    "overwriteBusinessAttributes": overwrite_custom_metadata,
+                }
+        else:
+            # Backward compatibility: use provided parameters
+            query_params = {
+                "replaceTags": replace_atlan_tags,
+                "appendTags": append_atlan_tags,
+                "replaceBusinessAttributes": replace_custom_metadata,
+                "overwriteBusinessAttributes": overwrite_custom_metadata,
+            }
+
         # Validate and flush entities BEFORE creating the BulkRequest
         Save.validate_and_flush_entities(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)
@@ -736,13 +811,6 @@ class Save:
         :param client: Optional[AsyncAtlanClient] = None,
         :returns: tuple of (query_params, bulk_request)
         """
-        query_params = {
-            "replaceTags": replace_atlan_tags,
-            "appendTags": append_atlan_tags,
-            "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttributes": overwrite_custom_metadata,
-        }
-
         entities: List[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
@@ -753,6 +821,50 @@ class Save:
             raise ValueError(
                 "AsyncAtlanClient instance must be provided to validate and flush cm for assets."
             )
+
+        # Process Atlan tags with semantics for each asset
+        has_semantic_tags = False
+        has_replace_semantic = False
+        for asset in entities:
+            if asset.atlan_tags:
+                # Check if any tags have semantics
+                if any(tag.semantic is not None for tag in asset.atlan_tags):
+                    has_semantic_tags = True
+                    # Check if any tags have REPLACE semantic before processing
+                    if any(
+                        tag.semantic == SaveSemantic.REPLACE for tag in asset.atlan_tags
+                    ):
+                        has_replace_semantic = True
+                    Save._process_atlan_tag_semantics(asset)
+
+        # Determine query parameters based on semantic usage
+        if has_semantic_tags:
+            # If tags have semantics, override the parameters
+            if has_replace_semantic:
+                # If any asset has REPLACE semantic, use replaceTags
+                query_params = {
+                    "replaceTags": True,
+                    "appendTags": False,
+                    "replaceBusinessAttributes": replace_custom_metadata,
+                    "overwriteBusinessAttributes": overwrite_custom_metadata,
+                }
+            else:
+                # If only APPEND/REMOVE semantics, use appendTags
+                query_params = {
+                    "replaceTags": False,
+                    "appendTags": True,
+                    "replaceBusinessAttributes": replace_custom_metadata,
+                    "overwriteBusinessAttributes": overwrite_custom_metadata,
+                }
+        else:
+            # Backward compatibility: use provided parameters
+            query_params = {
+                "replaceTags": replace_atlan_tags,
+                "appendTags": append_atlan_tags,
+                "replaceBusinessAttributes": replace_custom_metadata,
+                "overwriteBusinessAttributes": overwrite_custom_metadata,
+            }
+
         # Validate and flush entities BEFORE creating the BulkRequest
         await Save.validate_and_flush_entities_async(entities, client)
         return query_params, BulkRequest[Asset](entities=entities)

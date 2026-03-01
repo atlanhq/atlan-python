@@ -323,6 +323,15 @@ class AtlanTag(AtlanObject):
     source_tag_attachments: List[SourceTagAttachment] = Field(
         default_factory=list, exclude=True
     )
+    semantic: Optional[SaveSemantic] = Field(
+        default=None,
+        exclude=True,
+        description=(
+            "Semantic for how this Atlan tag should be saved, "
+            "if used in an asset request on which `.save()` is called. "
+            "Options are: APPEND (add/update tag), REMOVE (remove tag), or REPLACE (replace all tags)."
+        ),
+    )
 
     attributes: Optional[Dict[str, Any]] = None
     tag_id: Optional[str] = Field(default=None, exclude=True)
@@ -334,6 +343,7 @@ class AtlanTag(AtlanObject):
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
         client: Optional[AtlanClient] = None,
+        semantic: Optional[SaveSemantic] = None,
     ) -> AtlanTag:
         """
         Construct an Atlan tag assignment for a specific entity.
@@ -342,6 +352,7 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) client instance used for translating source-specific details
+        :param semantic: (optional) semantic for how this tag should be saved (APPEND, REMOVE, or REPLACE)
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
@@ -358,6 +369,8 @@ class AtlanTag(AtlanObject):
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]
             tag.source_tag_attachments.append(source_tag_attachment)
+        if semantic is not None:
+            tag.semantic = semantic
         return tag
 
     @classmethod
@@ -367,6 +380,7 @@ class AtlanTag(AtlanObject):
         entity_guid: Optional[str] = None,
         source_tag_attachment: Optional[SourceTagAttachment] = None,
         client: Optional[AsyncAtlanClient] = None,
+        semantic: Optional[SaveSemantic] = None,
     ) -> AtlanTag:
         """
         Async version of AtlanTag.of() for use with AsyncAtlanClient.
@@ -377,6 +391,7 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) async client instance used for translating source-specific details
+        :param semantic: (optional) semantic for how this tag should be saved (APPEND, REMOVE, or REPLACE)
         :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
@@ -393,6 +408,8 @@ class AtlanTag(AtlanObject):
             )
             tag.attributes = {source_tag_attr_id: [source_tag_attachment]}  # type: ignore[dict-item]
             tag.source_tag_attachments.append(source_tag_attachment)
+        if semantic is not None:
+            tag.semantic = semantic
         return tag
 
 
