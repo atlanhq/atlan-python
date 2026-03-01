@@ -53,7 +53,7 @@ dev = [
     "types-setuptools~=80.9.0.20250822",
     "types-Authlib~=1.6.5.20251005",
     "jaraco-context~=6.1.0",
-    "filelock~=3.20.3; python_version >= '3.10'",
+    "filelock>=3.20.3,<3.20.0; python_version >= '3.10'",
     "virtualenv~=20.36.1",
     "urllib3~=2.6.3; python_version >= '3.10'",
     "pytest~=8.4.2",
