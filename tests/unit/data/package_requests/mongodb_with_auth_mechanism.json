@@ -115,7 +115,8 @@
           "native-host": "test-native-host",
           "default-database": "test-default-db",
           "authSource": "test-auth-db",
-          "ssl": false
+          "ssl": false,
+          "authMechanism": "SCRAM-SHA-256"
         },
         "connectorConfigName": "atlan-connectors-mongodb"
       }
