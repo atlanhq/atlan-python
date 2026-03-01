@@ -124,14 +124,14 @@ jobs:
 
       - name: Upload Trivy image results
         if: github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-image.sarif'
           category: 'trivy-image'
 
       - name: Upload Trivy dependency results
         if: github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-deps.sarif'
           category: 'trivy-deps'
