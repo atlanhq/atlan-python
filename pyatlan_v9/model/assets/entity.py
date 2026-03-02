@@ -466,8 +466,9 @@ def _enc_hook(obj: Any) -> Any:
         dt = datetime.datetime.combine(obj, datetime.time.min)
         return int(dt.timestamp() * 1000)
     if isinstance(obj, datetime.datetime):
-        # Convert datetime to timestamp in milliseconds
         return int(obj.timestamp() * 1000)
+    if hasattr(obj, "dict") and hasattr(obj, "__fields__"):
+        return obj.dict(by_alias=True, exclude_none=True)
     raise TypeError(f"Encoding objects of type {type(obj).__name__} is unsupported")
 
 

@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import pytest
 from httpx import Headers
+from msgspec import UNSET
 
 from pyatlan import __version__ as VERSION
 from pyatlan_v9.client.atlan import DEFAULT_RETRY
@@ -222,8 +223,8 @@ def _test_update_certificate(
     )
     assert test_asset.qualified_name
     assert test_asset.name
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status or test_asset.certificate_status is UNSET
+    assert not test_asset.certificate_status_message or test_asset.certificate_status_message is UNSET
     message = "An important message"
     client.asset.update_certificate(
         asset_type=test_asset_type,
@@ -257,8 +258,8 @@ def _test_remove_certificate(
     test_asset = client.asset.get_by_guid(
         guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status or test_asset.certificate_status is UNSET
+    assert not test_asset.certificate_status_message or test_asset.certificate_status_message is UNSET
 
 
 def _test_update_announcement(
@@ -949,8 +950,8 @@ def test_asset_remove_certificate_by_setting_none(
     assert len(db_updated) == 1
     assert db_updated[0].name == database.name
     assert db_updated[0].guid == database.guid
-    assert db_updated[0].certificate_status is None
-    assert db_updated[0].certificate_status_message is None
+    assert not db_updated[0].certificate_status or db_updated[0].certificate_status is UNSET
+    assert not db_updated[0].certificate_status_message or db_updated[0].certificate_status_message is UNSET
 
 
 def test_glossary_term_update_announcement(

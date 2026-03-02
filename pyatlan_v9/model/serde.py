@@ -19,12 +19,12 @@ def _enc_hook(obj: Any) -> Any:
     if isinstance(obj, Enum):
         return obj.value
     if isinstance(obj, datetime.date):
-        # Convert date to timestamp in milliseconds (epoch time)
         dt = datetime.datetime.combine(obj, datetime.time.min)
         return int(dt.timestamp() * 1000)
     if isinstance(obj, datetime.datetime):
-        # Convert datetime to timestamp in milliseconds
         return int(obj.timestamp() * 1000)
+    if hasattr(obj, "dict") and hasattr(obj, "__fields__"):
+        return obj.dict(by_alias=True, exclude_none=True)
     raise NotImplementedError(f"Cannot serialize {type(obj)}")
 
 

@@ -139,6 +139,7 @@ class AtlanClient(msgspec.Struct, kw_only=True):
     _request_params: Any = None
     _401_has_retried: Any = None
     _user_id: Union[str, None] = None
+    _user_client: Any = None
     _oauth_token_manager: Any = None
     _clients: Any = None  # Lazy dict of sub-clients
     _caches: Any = None  # Lazy dict of caches
@@ -352,6 +353,58 @@ class AtlanClient(msgspec.Struct, kw_only=True):
     @property
     def dq_template_config_cache(self) -> DQTemplateConfigCache:
         return self._get_cache("dq_template_config", DQTemplateConfigCache)
+
+    # --- Class methods ---
+
+    @classmethod
+    def from_token_guid(
+        cls,
+        guid: str,
+        base_url: Optional[str] = None,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
+    ) -> "AtlanClient":
+        from pyatlan.client.common.impersonate import ImpersonateUser
+        from pyatlan.client.constants import GET_TOKEN
+        from pyatlan.model.response import AccessTokenResponse
+
+        final_base_url = base_url or os.environ.get("ATLAN_BASE_URL", "INTERNAL")
+        client = cls(base_url=final_base_url, api_key="")
+        client_info = ImpersonateUser.get_client_info(
+            client_id=client_id, client_secret=client_secret
+        )
+        argo_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": client_info.client_id,
+            "client_secret": client_info.client_secret,
+            "scope": "openid",
+        }
+        from pyatlan.errors import AtlanError, ErrorCode
+
+        try:
+            raw_json = client._call_api(GET_TOKEN, request_obj=argo_credentials)
+            argo_token = AccessTokenResponse(**raw_json).access_token
+            temp_argo_client = cls(base_url=final_base_url, api_key=argo_token)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain Atlan-Argo token"
+            ) from atlan_err
+        token_secret = temp_argo_client.impersonate.get_client_secret(client_guid=guid)
+        token_client_id = temp_argo_client.token.get_by_guid(guid=guid).client_id
+        token_credentials = {
+            "grant_type": "client_credentials",
+            "client_id": token_client_id,
+            "client_secret": token_secret,
+            "scope": "openid",
+        }
+        try:
+            raw_json = client._call_api(GET_TOKEN, request_obj=token_credentials)
+            token_api_key = AccessTokenResponse(**raw_json).access_token
+            return cls(base_url=final_base_url, api_key=token_api_key)
+        except AtlanError as atlan_err:
+            raise ErrorCode.UNABLE_TO_ESCALATE_WITH_PARAM.exception_with_parameters(
+                "Failed to obtain access token for API token"
+            ) from atlan_err
 
     # --- Core API methods ---
 
@@ -650,6 +703,9 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         if request_obj is not None:
             if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif hasattr(request_obj, "json") and callable(request_obj.json):
+                # Prefer json() method if available (handles nested serialization properly)
+                params["data"] = request_obj.json(by_alias=True, exclude_none=True)
             elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
                 params["data"] = json.dumps(request_obj.to_dict())
             elif isinstance(request_obj, (msgspec.Struct, dict, list)):

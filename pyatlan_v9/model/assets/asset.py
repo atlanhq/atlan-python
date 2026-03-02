@@ -744,6 +744,23 @@ class Asset(Referenceable):
         self.announcement_message = None
         return self
 
+    def get_announcment(self):
+        """Return an Announcement object for this asset, or None if no announcement is set."""
+        from pyatlan_v9.model.core import Announcement
+        from pyatlan_v9.model.enums import AnnouncementType
+
+        ann_type = self.announcement_type
+        ann_title = self.announcement_title
+        if ann_type and ann_title and ann_type is not UNSET and ann_title is not UNSET:
+            return Announcement(
+                announcement_type=AnnouncementType[str(ann_type).upper()],
+                announcement_title=ann_title,
+                announcement_message=self.announcement_message
+                if self.announcement_message is not UNSET
+                else None,
+            )
+        return None
+
     def remove_certificate(self) -> "Asset":
         """
         Remove the certificate from this asset.
