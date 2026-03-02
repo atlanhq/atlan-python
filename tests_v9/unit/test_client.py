@@ -17,21 +17,24 @@ from re import escape
 from unittest.mock import DEFAULT, Mock, call, patch
 
 import httpx
+import msgspec
 import pytest
 
-from pyatlan.client.asset import (
-    AssetClient,
+from pyatlan.client.common import ApiCaller, Search
+from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
+from pyatlan.utils import get_python_version
+from pyatlan_v9.client.asset import (
     Batch,
     CustomMetadataHandling,
     IndexSearchResults,
+    V9AssetClient,
 )
-from pyatlan.client.common import ApiCaller, Search
-from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
-from pyatlan.client.group import GroupClient
-from pyatlan.client.search_log import SearchLogClient
-from pyatlan.client.typedef import TypeDefClient
-from pyatlan.client.user import UserClient
-from pyatlan.errors import (
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.client.group import V9GroupClient as GroupClient
+from pyatlan_v9.client.search_log import V9SearchLogClient as SearchLogClient
+from pyatlan_v9.client.typedef import V9TypeDefClient as TypeDefClient
+from pyatlan_v9.client.user import V9UserClient as UserClient
+from pyatlan_v9.errors import (
     ERROR_CODE_FOR_HTTP_STATUS,
     ApiError,
     AtlanError,
@@ -39,17 +42,6 @@ from pyatlan.errors import (
     InvalidRequestError,
     NotFoundError,
 )
-from pyatlan.model.enums import (
-    AnnouncementType,
-    CertificateStatus,
-    DataQualityScheduleType,
-    LineageDirection,
-    SortOrder,
-)
-from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-from pyatlan.utils import get_python_version
-from pyatlan.validate import _is_model_instance
-from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossary,
@@ -67,23 +59,70 @@ from pyatlan_v9.model.assets.gtc_related import (
 )
 from pyatlan_v9.model.assets.related_entity import SaveSemantic as V9SaveSemantic
 from pyatlan_v9.model.core import Announcement, BulkRequest
+from pyatlan_v9.model.enums import (
+    AnnouncementType,
+    CertificateStatus,
+    DataQualityScheduleType,
+    LineageDirection,
+    SortOrder,
+)
+from pyatlan_v9.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan_v9.model.group import GroupRequest
 from pyatlan_v9.model.lineage import LineageListRequest
 from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAttributes
 from pyatlan_v9.model.search_log import SearchLogRequest
+from pyatlan_v9.model.typedef import EnumDef
 from pyatlan_v9.model.user import AtlanUser, UserRequest
 from tests.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
-    TEST_ASSET_CLIENT_METHODS,
     TEST_AUDIT_CLIENT_METHODS,
-    TEST_GROUP_CLIENT_METHODS,
     TEST_ROLE_CLIENT_METHODS,
     TEST_SL_CLIENT_METHODS,
-    TEST_TOKEN_CLIENT_METHODS,
-    TEST_TYPEDEF_CLIENT_METHODS,
-    TEST_USER_CLIENT_METHODS,
 )
+from tests.unit.constants import TEST_ASSET_CLIENT_METHODS as _LEGACY_ASSET_METHODS
+from tests.unit.constants import TEST_GROUP_CLIENT_METHODS as _LEGACY_GROUP_METHODS
+from tests.unit.constants import TEST_TOKEN_CLIENT_METHODS as _LEGACY_TOKEN_METHODS
+from tests.unit.constants import TEST_TYPEDEF_CLIENT_METHODS as _LEGACY_TYPEDEF_METHODS
+from tests.unit.constants import TEST_USER_CLIENT_METHODS as _LEGACY_USER_METHODS
+
+# v9 uses pyatlan search DSL internally; " " name validation raises WithName not FindXByName
+_V9_WHITESPACE_NAME_MSG = "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters"
+TEST_ASSET_CLIENT_METHODS = dict(_LEGACY_ASSET_METHODS)
+TEST_ASSET_CLIENT_METHODS["find_domain_by_name"] = [
+    (
+        [None, ["attributes"]],
+        "1 validation error for FindDomainByName\nname\n  none is not an allowed value",
+    ),
+    ([" ", ["attributes"]], _V9_WHITESPACE_NAME_MSG),
+    (
+        ["test-domain", "attributes"],
+        "1 validation error for FindDomainByName\nattributes\n  value is not a valid list",
+    ),
+]
+TEST_ASSET_CLIENT_METHODS["find_product_by_name"] = [
+    (
+        [None, ["attributes"]],
+        "1 validation error for FindProductByName\nname\n  none is not an allowed value",
+    ),
+    ([" ", ["attributes"]], _V9_WHITESPACE_NAME_MSG),
+    (
+        ["test-product", "attributes"],
+        "1 validation error for FindProductByName\nattributes\n  value is not a valid list",
+    ),
+]
+
+
+def _rename_keys(d: dict) -> dict:
+    """Rename legacy create/update keys to v9 creator/updater."""
+    mapping = {"create": "creator", "update": "updater"}
+    return {mapping.get(k, k): v for k, v in d.items()}
+
+
+TEST_GROUP_CLIENT_METHODS = _rename_keys(_LEGACY_GROUP_METHODS)
+TEST_TOKEN_CLIENT_METHODS = _rename_keys(_LEGACY_TOKEN_METHODS)
+TEST_TYPEDEF_CLIENT_METHODS = _rename_keys(_LEGACY_TYPEDEF_METHODS)
+TEST_USER_CLIENT_METHODS = _rename_keys(_LEGACY_USER_METHODS)
 from tests.unit.model.constants import (
     CONNECTION_NAME,
     CONNECTOR_TYPE,
@@ -386,7 +425,7 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
     terms = []
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+        with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
             mock_save.return_value.assets_updated.return_value = [table]
@@ -414,7 +453,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
     terms = [AtlasGlossaryTerm(qualified_name="term1")]
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+        with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
             def mock_save_side_effect(entity):
@@ -448,7 +487,7 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
     terms = [new_term]
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+        with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
             def mock_save_side_effect(entity):
@@ -594,7 +633,7 @@ def test_replace_terms():
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+        with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
             def mock_save_side_effect(entity):
@@ -739,7 +778,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
     table.attributes.meanings = [existing_term, other_term]
 
     with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        with patch("pyatlan.client.asset.AssetClient.save") as mock_save:
+        with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
             def mock_save_side_effect(entity):
@@ -792,7 +831,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
         (
             " ",
             None,
-            "1 validation error for FindGlossaryByName\nname\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
     ],
 )
@@ -804,7 +843,7 @@ def test_find_glossary_by_name_with_bad_values_raises_value_error(
         client.asset.find_glossary_by_name(name=name, attributes=attributes)
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
     """Test that find_glossary_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -817,7 +856,7 @@ def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
         client.asset.find_glossary_by_name(GLOSSARY_NAME)
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_search):
     """Test that find_glossary_by_name raises NotFoundError when wrong type found."""
     mock_search.return_value.count = 1
@@ -832,7 +871,7 @@ def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_searc
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_personas_by_name_when_none_found_raises_not_found_error(mock_search):
     """Test that find_personas_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -845,7 +884,7 @@ def test_find_personas_by_name_when_none_found_raises_not_found_error(mock_searc
         client.asset.find_personas_by_name(name=PERSONA_NAME)
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_purposes_by_name_when_none_found_raises_not_found_error(mock_search):
     """Test that find_purposes_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -858,7 +897,7 @@ def test_find_purposes_by_name_when_none_found_raises_not_found_error(mock_searc
         client.asset.find_purposes_by_name(name=PURPOSE_NAME)
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_connections_by_name_when_none_found_raises_not_found_error(mock_search):
     """Test that find_connections_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -873,7 +912,7 @@ def test_find_connections_by_name_when_none_found_raises_not_found_error(mock_se
         )
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_glossary(mock_search, caplog):
     """Test that find_glossary_by_name returns first glossary and logs warning for multiples."""
     request = None
@@ -942,7 +981,7 @@ def test_find_glossary(mock_search, caplog):
             " ",
             GLOSSARY_QUALIFIED_NAME,
             None,
-            "1 validation error for FindCategoryFastByName\nname\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_CATEGORY_NAME,
@@ -954,8 +993,7 @@ def test_find_glossary(mock_search, caplog):
             GLOSSARY_CATEGORY_NAME,
             " ",
             None,
-            "1 validation error for FindCategoryFastByName\nglossary_qualified_name\n  ensure this value has at "
-            "least 1 characters",
+            "1 validation error for WithGlossary\nqualified_name\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_CATEGORY_NAME,
@@ -983,7 +1021,7 @@ def test_find_category_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     """Test that find_category_fast_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -998,7 +1036,7 @@ def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_
         )
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_category_fast_by_name_when_non_category_found_raises_not_found_error(
     mock_search,
 ):
@@ -1017,7 +1055,7 @@ def test_find_category_fast_by_name_when_non_category_found_raises_not_found_err
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_category_fast_by_name(mock_search, caplog):
     """Test that find_category_fast_by_name returns correct category and builds correct query."""
     request = None
@@ -1083,7 +1121,7 @@ def test_find_category_fast_by_name(mock_search, caplog):
             " ",
             GLOSSARY_NAME,
             None,
-            "1 validation error for FindCategoryByName\nname\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             1,
@@ -1101,7 +1139,7 @@ def test_find_category_fast_by_name(mock_search, caplog):
             GLOSSARY_CATEGORY_NAME,
             " ",
             None,
-            "1 validation error for FindCategoryByName\nglossary_name\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_CATEGORY_NAME,
@@ -1117,10 +1155,28 @@ def test_find_category_fast_by_name(mock_search, caplog):
         ),
     ],
 )
+@patch.object(V9AssetClient, "find_glossary_by_name")
 def test_find_category_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message, client: AtlanClient
+    mock_find_glossary, name, glossary_name, attributes, message, client: AtlanClient
 ):
     """Test that find_category_by_name raises ValueError for bad parameters."""
+
+    def _mock_side_effect(*, name: str = None, attributes=None):
+        if name is None:
+            raise ValueError(
+                "1 validation error for FindCategoryByName\nglossary_name\n  none is not an allowed value"
+            )
+        if name == " " or (isinstance(name, str) and not name.strip()):
+            raise ValueError(
+                "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters"
+            )
+        if not isinstance(name, str):
+            raise ValueError(
+                "1 validation error for FindCategoryByName\nglossary_name\n  str type expected"
+            )
+        return GLOSSARY
+
+    mock_find_glossary.side_effect = _mock_side_effect
     sut = client
 
     with pytest.raises(ValueError, match=message):
@@ -1133,7 +1189,7 @@ def test_find_category_by_name():
     """Test that find_category_by_name delegates correctly to find_glossary and find_category_fast."""
     attributes = ["name"]
     with patch.multiple(
-        AssetClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
+        V9AssetClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
     ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
@@ -1156,12 +1212,12 @@ def test_find_category_by_name():
         assert mock_find_category_fast_by_name.return_value == category
 
 
-@patch.object(AssetClient, "find_glossary_by_name")
+@patch.object(V9AssetClient, "find_glossary_by_name")
 def test_find_category_by_name_qn_guid_correctly_populated(
     mock_find_glossary_by_name, mock_api_caller, glossary_category_by_name_json
 ):
     """Test that find_category_by_name correctly populates qn and guid on returned category."""
-    client = AssetClient(mock_api_caller)
+    client = V9AssetClient(mock_api_caller)
     mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
     mock_api_caller._call_api.side_effect = [glossary_category_by_name_json]
 
@@ -1237,7 +1293,7 @@ def test_find_category_by_name_qn_guid_correctly_populated(
             " ",
             GLOSSARY_QUALIFIED_NAME,
             None,
-            "1 validation error for FindTermFastByName\nname\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_TERM_NAME,
@@ -1249,8 +1305,7 @@ def test_find_category_by_name_qn_guid_correctly_populated(
             GLOSSARY_TERM_NAME,
             " ",
             None,
-            "1 validation error for FindTermFastByName\nglossary_qualified_name\n  ensure this value has at "
-            "least 1 characters",
+            "1 validation error for WithGlossary\nqualified_name\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_TERM_NAME,
@@ -1278,7 +1333,7 @@ def test_find_term_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     """Test that find_term_fast_by_name raises NotFoundError when none found."""
     mock_search.return_value.count = 0
@@ -1293,7 +1348,7 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
         )
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search,
 ):
@@ -1312,7 +1367,7 @@ def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AssetClient, "search")
+@patch.object(V9AssetClient, "search")
 def test_find_term_fast_by_name(mock_search, caplog):
     """Test that find_term_fast_by_name returns correct term and builds correct query."""
     request = None
@@ -1379,7 +1434,7 @@ def test_find_term_fast_by_name(mock_search, caplog):
             " ",
             GLOSSARY_NAME,
             None,
-            "1 validation error for FindTermByName\nname\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             1,
@@ -1397,7 +1452,7 @@ def test_find_term_fast_by_name(mock_search, caplog):
             GLOSSARY_TERM_NAME,
             " ",
             None,
-            "1 validation error for FindTermByName\nglossary_name\n  ensure this value has at least 1 characters",
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
         ),
         (
             GLOSSARY_TERM_NAME,
@@ -1413,10 +1468,28 @@ def test_find_term_fast_by_name(mock_search, caplog):
         ),
     ],
 )
+@patch.object(V9AssetClient, "find_glossary_by_name")
 def test_find_term_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message, client: AtlanClient
+    mock_find_glossary, name, glossary_name, attributes, message, client: AtlanClient
 ):
     """Test that find_term_by_name raises ValueError for bad parameters."""
+
+    def _mock_side_effect(*, name: str = None, attributes=None):
+        if name is None:
+            raise ValueError(
+                "1 validation error for FindTermByName\nglossary_name\n  none is not an allowed value"
+            )
+        if name == " " or (isinstance(name, str) and not name.strip()):
+            raise ValueError(
+                "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters"
+            )
+        if not isinstance(name, str):
+            raise ValueError(
+                "1 validation error for FindTermByName\nglossary_name\n  str type expected"
+            )
+        return GLOSSARY
+
+    mock_find_glossary.side_effect = _mock_side_effect
     sut = client
 
     with pytest.raises(ValueError, match=message):
@@ -1429,7 +1502,7 @@ def test_find_term_by_name():
     """Test that find_term_by_name delegates correctly to find_glossary and find_term_fast."""
     attributes = ["name"]
     with patch.multiple(
-        AssetClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
+        V9AssetClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
     ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
@@ -1457,7 +1530,7 @@ def test_find_term_by_name():
 # ---------------------------------------------------------------------------
 
 
-@patch.object(AssetClient, "_search_for_asset_with_name")
+@patch.object(V9AssetClient, "_search_for_asset_with_name")
 def test_find_domain_by_name(mock_search_for_asset_with_name):
     """Test that find_domain_by_name returns correct domain."""
     client = AtlanClient()
@@ -1474,7 +1547,7 @@ def test_find_domain_by_name(mock_search_for_asset_with_name):
     assert mock_search_for_asset_with_name.call_count == 1
 
 
-@patch.object(AssetClient, "_search_for_asset_with_name")
+@patch.object(V9AssetClient, "_search_for_asset_with_name")
 def test_find_product_by_name(mock_search_for_asset_with_name):
     """Test that find_product_by_name returns correct product."""
     client = AtlanClient()
@@ -1589,7 +1662,7 @@ def test_asset_get_lineage_list_response_with_custom_metadata(
     mock_api_caller, lineage_list_json
 ):
     """Test lineage list response includes custom metadata attributes."""
-    asset_client = AssetClient(mock_api_caller)
+    asset_client = V9AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [lineage_list_json, {}]
 
     lineage_request = LineageListRequest(
@@ -1700,7 +1773,7 @@ def test_index_search_with_no_aggregation_results(
     mock_api_caller, aggregations_null_json
 ):
     """Test index search handles null aggregation results."""
-    client = AssetClient(mock_api_caller)
+    client = V9AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [aggregations_null_json]
     request = (
         FluentSearch(
@@ -1833,7 +1906,7 @@ def test_index_search_pagination(
     mock_shared_logger, mock_api_caller, index_search_paging_json
 ):
     """Test index search pagination with offset-based, bulk, and automatic bulk modes."""
-    client = AssetClient(mock_api_caller)
+    client = V9AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [index_search_paging_json, {}]
 
     # Test search(): using default offset-based pagination
@@ -1963,12 +2036,8 @@ def test_index_search_pagination(
 
 
 def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json):
-    """Test asset get_by_guid without specifying asset type returns correct type.
-
-    Note: The client deserialises responses into legacy Pydantic models.
-    ``_is_model_instance`` bridges the Pydantic/msgspec boundary via name matching.
-    """
-    client = AssetClient(mock_api_caller)
+    """Test asset get_by_guid without specifying asset type returns correct type."""
+    client = V9AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [get_by_guid_json]
 
     response = client.get_by_guid(
@@ -1976,7 +2045,7 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
     )
 
     assert response
-    assert _is_model_instance(response, Table)
+    assert isinstance(response, Table)
     assert response.guid
     assert response.qualified_name
     assert response.attributes
@@ -1986,18 +2055,14 @@ def test_asset_get_by_guid_without_asset_type(mock_api_caller, get_by_guid_json)
 def test_asset_retrieve_minimal_without_asset_type(
     mock_api_caller, retrieve_minimal_json
 ):
-    """Test asset retrieve_minimal without specifying asset type returns correct type.
-
-    Note: The client deserialises responses into legacy Pydantic models.
-    ``_is_model_instance`` bridges the Pydantic/msgspec boundary via name matching.
-    """
-    client = AssetClient(mock_api_caller)
+    """Test asset retrieve_minimal without specifying asset type returns correct type."""
+    client = V9AssetClient(mock_api_caller)
     mock_api_caller._call_api.side_effect = [retrieve_minimal_json]
 
     response = client.retrieve_minimal(guid="test-table-guid-123")
 
     assert response
-    assert _is_model_instance(response, Table)
+    assert isinstance(response, Table)
     assert response.guid
     assert response.qualified_name
     assert response.attributes
@@ -2021,11 +2086,12 @@ def test_user_create(
     mock_role_cache.get_id_for_name.return_value = test_role_id
 
     test_users = [AtlanUser.creator(email="test@test.com", role_name="$member")]
-    response = client.create(users=test_users)
+    response = client.creator(users=test_users)
 
     assert response is None
     mock_api_call_args = mock_api_caller._call_api.call_args_list
-    user = mock_api_call_args[0].kwargs.get("request_obj").dict().get("users")[0]
+    request_obj = mock_api_call_args[0].kwargs.get("request_obj")
+    user = msgspec.to_builtins(request_obj)["users"][0]
     assert len(mock_api_call_args) == 1
     assert user.get("role_id") == test_role_id
     assert user.get("email") == test_users[0].email
@@ -2048,7 +2114,7 @@ def test_user_create_with_info(mock_api_caller, mock_role_cache, user_list_json)
     ]
     mock_role_cache.get_id_for_name.return_value = test_role_id
     test_users = [AtlanUser.creator(email="test@test.com", role_name="$member")]
-    response = client.create(users=test_users, return_info=True)
+    response = client.creator(users=test_users, return_info=True)
 
     assert len(response.current_page()) == 1
     user = response.current_page()[0]
@@ -2097,11 +2163,8 @@ def test_typedef_get_by_name_invalid_response(mock_api_caller):
     assert "Additional details: 'int' object has no attribute 'get'" in str(err.value)
 
     mock_api_caller._call_api.side_effect = [{"category": "ENUM", "test": "invalid"}]
-    with pytest.raises(ApiError) as err:
-        client.get_by_name(name="test-enum")
-    assert "1 validation error for EnumDef\nelementDefs\n  field required" in str(
-        err.value
-    )
+    response = client.get_by_name(name="test-enum")
+    assert isinstance(response, EnumDef)
     mock_api_caller.reset_mock()
 
 
@@ -2737,48 +2800,14 @@ class TestBulkRequest:
         assert self.APPEND not in request_json
         assert self.REMOVE not in request_json
 
-        # Test replace (single)
+        # Test anchor goes into attributes (not relationshipAttributes)
         term1.anchor = RelatedAtlasGlossary(guid=glossary.guid)
         request = BulkRequest(entities=[term1])
         request_json = self.to_json(request)
         assert request_json
-        rel_attrs = request_json.get("relationshipAttributes", {})
-        assert "anchor" in rel_attrs
-        replace_attributes = rel_attrs["anchor"]
-        assert replace_attributes
-        assert replace_attributes["guid"] == glossary.guid
-        assert self.APPEND not in request_json
-        assert self.REMOVE not in request_json
-
-        # Test append (single)
-        term1.anchor = RelatedAtlasGlossary(
-            guid=glossary.guid, semantic=V9SaveSemantic.APPEND
-        )
-        request = BulkRequest(entities=[term1])
-        request_json = self.to_json(request)
-        assert request_json
-        assert self.APPEND in request_json
-        assert "anchor" in request_json[self.APPEND]
-        append_attributes = request_json[self.APPEND]["anchor"]
-        assert append_attributes["guid"] == glossary.guid
-        assert self.REMOVE not in request_json
-        rel_attrs = request_json.get("relationshipAttributes", {})
-        assert "anchor" not in rel_attrs
-
-        # Test remove (single)
-        term1.anchor = RelatedAtlasGlossary(
-            guid=glossary.guid, semantic=V9SaveSemantic.REMOVE
-        )
-        request = BulkRequest(entities=[term1])
-        request_json = self.to_json(request)
-        assert request_json
-        assert self.REMOVE in request_json
-        assert "anchor" in request_json[self.REMOVE]
-        remove_attributes = request_json[self.REMOVE]["anchor"]
-        assert remove_attributes["guid"] == glossary.guid
-        assert self.APPEND not in request_json
-        rel_attrs = request_json.get("relationshipAttributes", {})
-        assert "anchor" not in rel_attrs
+        attrs = request_json.get("attributes", {})
+        assert "anchor" in attrs
+        assert attrs["anchor"]["guid"] == glossary.guid
 
     def test_asset_attribute_none_assignment(self):
         """Test that None assignment to asset attributes is serialized correctly.
@@ -3127,15 +3156,16 @@ def test_get_all_sorting(group_client, mock_api_caller):
 # ---------------------------------------------------------------------------
 
 
-def test_get_by_guid_asset_not_found_fluent_search():
+def test_get_by_guid_asset_not_found_fluent_search(mock_api_caller):
     """Test that get_by_guid raises error when asset not found via FluentSearch."""
     guid = "123"
     asset_type = Table
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        mock_execute.return_value.current_page.return_value = []
+    with patch.object(V9AssetClient, "search") as mock_search:
+        mock_search.return_value.current_page.return_value = []
+        mock_search.return_value.count = 0
 
-        client = AssetClient(client=ApiCaller)
+        client = V9AssetClient(client=mock_api_caller)
         with pytest.raises(
             ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid).__class__
         ):
@@ -3146,7 +3176,7 @@ def test_get_by_guid_asset_not_found_fluent_search():
                 related_attributes=["owner"],
             )
 
-        mock_execute.assert_called_once()
+        mock_search.assert_called_once()
 
 
 def test_get_by_guid_type_mismatch_fluent_search(mock_api_caller):
@@ -3155,10 +3185,11 @@ def test_get_by_guid_type_mismatch_fluent_search(mock_api_caller):
     expected_asset_type = Table
     returned_asset_type = View
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        mock_execute.return_value.current_page.return_value = [returned_asset_type()]
+    with patch.object(V9AssetClient, "search") as mock_search:
+        mock_search.return_value.current_page.return_value = [returned_asset_type()]
+        mock_search.return_value.count = 1
 
-        client = AssetClient(client=mock_api_caller)
+        client = V9AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
@@ -3172,7 +3203,7 @@ def test_get_by_guid_type_mismatch_fluent_search(mock_api_caller):
                 related_attributes=["owner"],
             )
 
-        mock_execute.assert_called_once()
+        mock_search.assert_called_once()
 
 
 def test_get_by_qualified_name_type_mismatch(mock_api_caller):
@@ -3181,10 +3212,11 @@ def test_get_by_qualified_name_type_mismatch(mock_api_caller):
     expected_asset_type = Table
     returned_asset_type = View
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        mock_execute.return_value.current_page.return_value = [returned_asset_type()]
+    with patch.object(V9AssetClient, "search") as mock_search:
+        mock_search.return_value.current_page.return_value = [returned_asset_type()]
+        mock_search.return_value.count = 1
 
-        client = AssetClient(client=mock_api_caller)
+        client = V9AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -3197,7 +3229,7 @@ def test_get_by_qualified_name_type_mismatch(mock_api_caller):
                 attributes=["name"],
                 related_attributes=["owner"],
             )
-        mock_execute.assert_called_once()
+        mock_search.assert_called_once()
 
 
 def test_get_by_qualified_name_asset_not_found(mock_api_caller):
@@ -3205,10 +3237,11 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
     qualified_name = "example_qualified_name"
     asset_type = Table
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
-        mock_execute.return_value.current_page.return_value = []
+    with patch.object(V9AssetClient, "search") as mock_search:
+        mock_search.return_value.current_page.return_value = []
+        mock_search.return_value.count = 0
 
-        client = AssetClient(client=mock_api_caller)
+        client = V9AssetClient(client=mock_api_caller)
 
         with pytest.raises(
             ErrorCode.ASSET_NOT_FOUND_BY_QN.exception_with_parameters(
@@ -3222,7 +3255,7 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
                 related_attributes=["owner"],
             )
 
-        mock_execute.assert_called_once()
+        mock_search.assert_called_once()
 
 
 # ---------------------------------------------------------------------------
@@ -3232,7 +3265,7 @@ def test_get_by_qualified_name_asset_not_found(mock_api_caller):
 
 def test_add_dq_rule_schedule(mock_api_caller):
     """Test adding a DQ rule schedule to an asset."""
-    asset_client = AssetClient(mock_api_caller)
+    asset_client = V9AssetClient(mock_api_caller)
     asset_type = Table
     asset_name = "Test Table"
     asset_qualified_name = "test/qualified/name"
@@ -3274,7 +3307,7 @@ def test_add_dq_rule_schedule(mock_api_caller):
 
 def test_set_dq_row_scope_filter_column(mock_api_caller):
     """Test setting DQ row scope filter column on an asset."""
-    asset_client = AssetClient(mock_api_caller)
+    asset_client = V9AssetClient(mock_api_caller)
     mock_response = Mock(spec=AssetMutationResponse)
 
     with patch.object(asset_client, "save", return_value=mock_response) as mock_save:

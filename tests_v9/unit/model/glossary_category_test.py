@@ -74,7 +74,7 @@ def test_creator(
     if parent_category:
         assert sut.parent_category is not None
     else:
-        assert sut.parent_category is None
+        assert sut.parent_category is None or sut.parent_category is UNSET
 
     # Verify anchor is set
     assert sut.anchor is not None

@@ -45,11 +45,14 @@ class Badge(Asset):
         cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
             set_name=cm_name, attr_name=cm_attribute
         )
+        from pyatlan.model.enums import EntityStatus
+
         return cls(
             name=name,
             qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
             badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
             badge_conditions=badge_conditions,
+            status=EntityStatus.ACTIVE,
         )
 
     @classmethod

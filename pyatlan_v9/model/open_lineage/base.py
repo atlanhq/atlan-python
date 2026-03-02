@@ -23,9 +23,7 @@ class OpenLineageBaseEvent(
     producer: Union[str, None] = None
     """Producer of the event."""
 
-    schema_url: Union[str, None] = msgspec.field(
-        default=None, name="schemaURL"
-    )
+    schema_url: Union[str, None] = msgspec.field(default=None, name="schemaURL")
     """Schema URL for the event."""
 
     def __post_init__(self) -> None:
@@ -49,9 +47,7 @@ class OpenLineageBaseEvent(
         return value
 
 
-class OpenLineageBaseFacet(
-    msgspec.Struct, kw_only=True, omit_defaults=True
-):
+class OpenLineageBaseFacet(msgspec.Struct, kw_only=True, omit_defaults=True):
     """
     Base model for OpenLineage facets.
     """

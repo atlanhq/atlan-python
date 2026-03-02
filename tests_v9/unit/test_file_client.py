@@ -17,9 +17,9 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.file import FileClient
-from pyatlan.errors import InvalidRequestError
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.client.file import V9FileClient as FileClient
+from pyatlan_v9.errors import InvalidRequestError
 
 # v9 model for input
 from pyatlan_v9.model.file import PresignedURLRequest

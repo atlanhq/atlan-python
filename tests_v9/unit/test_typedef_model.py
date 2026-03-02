@@ -19,10 +19,10 @@ import msgspec
 import pytest
 
 from pyatlan.cache.enum_cache import EnumCache
-from pyatlan.errors import AtlanError, InvalidRequestError, NotFoundError
-from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.utils import to_camel_case, to_snake_case
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.errors import AtlanError, InvalidRequestError, NotFoundError
+from pyatlan_v9.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan_v9.model.typedef import (
     AtlanTagDef,
     AttributeDef,
@@ -171,14 +171,14 @@ class TestEnumDef:
     def test_enum_create_method_required_parameters(
         self, test_name, test_values, error_msg
     ):
-        """Test that EnumDef.create raises ValueError for missing required params."""
+        """Test that EnumDef.creator raises ValueError for missing required params."""
         with pytest.raises(ValueError) as err:
-            EnumDef.create(name=test_name, values=test_values)
+            EnumDef.creator(name=test_name, values=test_values)
         assert error_msg in str(err.value)
 
     def test_create_method(self):
         """Test creating an EnumDef via the create factory method."""
-        enum = EnumDef.create(name="test-enum", values=["test-val1", "test-val2"])
+        enum = EnumDef.creator(name="test-enum", values=["test-val1", "test-val2"])
         assert enum
         assert enum.name == "test-enum"
         assert enum.category == AtlanTypeCategory.ENUM
@@ -188,14 +188,14 @@ class TestEnumDef:
         assert enum.element_defs[1].value == "test-val2"
 
     def test_update_method_enum_not_found(self, client, mock_enum_cache):
-        """Test that EnumDef.update raises NotFoundError when enum not found."""
+        """Test that EnumDef.updater raises NotFoundError when enum not found."""
         mock_enum_cache._get_by_name = Mock(return_value=None)
 
         with pytest.raises(
             NotFoundError,
             match="ATLAN-PYTHON-404-013 Enumeration with name test-enum does not exist.",
         ):
-            EnumDef.update(
+            EnumDef.updater(
                 client=client,
                 name="test-enum",
                 values=["test-val1", "test-val2"],
@@ -203,7 +203,7 @@ class TestEnumDef:
             )
 
     def test_update_method(self, client, mock_enum_cache):
-        """Test EnumDef.update with various scenarios."""
+        """Test EnumDef.updater with various scenarios."""
         existing_enum = {
             "name": "test-enum",
             "elementDefs": [{"value": "test-val0"}],
@@ -212,7 +212,7 @@ class TestEnumDef:
             return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
         )
         mock_enum_cache.get_by_name = mock_get_by_name
-        enum = EnumDef.update(
+        enum = EnumDef.updater(
             client=client,
             name="test-enum",
             values=["test-val1", "test-val2"],
@@ -240,7 +240,7 @@ class TestEnumDef:
             return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
         )
         mock_enum_cache.get_by_name = mock_get_by_name
-        enum = EnumDef.update(
+        enum = EnumDef.updater(
             client=client,
             name="test-enum",
             values=["test-val1", "test-val2"],
@@ -268,7 +268,7 @@ class TestEnumDef:
             return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
         )
         mock_enum_cache.get_by_name = mock_get_by_name
-        enum = EnumDef.update(
+        enum = EnumDef.updater(
             client=client,
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
@@ -301,7 +301,7 @@ class TestEnumDef:
             return_value=msgspec.convert(existing_enum, EnumDef, strict=False)
         )
         mock_enum_cache.get_by_name = mock_get_by_name
-        enum = EnumDef.update(
+        enum = EnumDef.updater(
             client=client,
             name="test-enum",
             values=["new1", "test-val1", "new2", "test-val2", "new3", "new4"],
@@ -404,7 +404,7 @@ class TestAttributeDef:
         """Create an AttributeDef for testing."""
         with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
-            return AttributeDef.create(
+            return AttributeDef.creator(
                 client=client,
                 display_name="My Count",
                 attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
@@ -485,7 +485,7 @@ class TestAttributeDef:
             applicable_domains={"default/domain/uuBI8WSqeom1PXs7oo20L/super"},
             applicable_ai_asset_types={"AIModel", "AIApplication"},
         )
-        attribute_def_with_limited = AttributeDef.create(
+        attribute_def_with_limited = AttributeDef.creator(
             client=client,
             display_name="test-attr-def",
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
@@ -510,7 +510,7 @@ class TestAttributeDef:
         with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
 
-            attr_def = AttributeDef.create(
+            attr_def = AttributeDef.creator(
                 client=client,
                 display_name="Test Attribute",
                 attribute_type=AtlanCustomAttributePrimitiveType.STRING,
@@ -540,7 +540,7 @@ class TestAttributeDef:
         """Test that RICH_TEXT attributes are created with correct options."""
         with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
-            attr_def = AttributeDef.create(
+            attr_def = AttributeDef.creator(
                 client=client,
                 display_name="Rich Content",
                 attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
@@ -559,7 +559,7 @@ class TestAttributeDef:
         with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
             with pytest.raises(AtlanError) as exc_info:
-                AttributeDef.create(
+                AttributeDef.creator(
                     client=client,
                     display_name="Invalid Rich Text",
                     attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
@@ -573,7 +573,7 @@ class TestAttributeDef:
         """Test that RICH_TEXT options are configured correctly."""
         with patch("pyatlan_v9.model.typedef._get_all_qualified_names") as mock_get_qa:
             mock_get_qa.return_value = set()
-            attr_def = AttributeDef.create(
+            attr_def = AttributeDef.creator(
                 client=client,
                 display_name="Rich Text Field",
                 attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,

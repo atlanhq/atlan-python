@@ -211,8 +211,8 @@ _all_other_types: OtherAssetTypes = {"File"}
 
 def _get_all_qualified_names(client: AtlanClient, asset_type: str) -> Set[str]:
     """Retrieve all qualified names for assets of the given type."""
-    from pyatlan.model.assets import Asset
-    from pyatlan.model.fluent_search import FluentSearch
+    from pyatlan_v9.model.assets import Asset
+    from pyatlan_v9.model.fluent_search import FluentSearch
 
     request = (
         FluentSearch.select()
@@ -340,7 +340,7 @@ class EnumDef(TypeDef, kw_only=True):
     """Internal use only."""
 
     @staticmethod
-    def create(name: str, values: List[str]) -> EnumDef:
+    def creator(name: str, values: List[str]) -> EnumDef:
         """
         Builds the minimal object necessary to create an enumeration definition.
 
@@ -362,7 +362,7 @@ class EnumDef(TypeDef, kw_only=True):
         )
 
     @staticmethod
-    def update(
+    def updater(
         client: AtlanClient, name: str, values: List[str], replace_existing: bool
     ) -> EnumDef:
         """
@@ -445,10 +445,13 @@ class EnumDef(TypeDef, kw_only=True):
 # =============================================================================
 
 
+_OPTIONS_PARENT_MAP: dict[int, Any] = {}
+
+
 class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
     """Custom metadata attribute definition."""
 
-    class Options(msgspec.Struct, kw_only=True, rename="camel"):
+    class Options(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
         """Extensible options for a custom metadata attribute."""
 
         custom_metadata_version: str = "v2"
@@ -548,20 +551,17 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
         is_rich_text: Union[bool, None] = False
         """Whether this attribute supports rich text formatting."""
 
-        _attr_def: object = msgspec.field(default=None, name="_attrDef")
-        """Internal back-reference to the parent AttributeDef (not serialized)."""
-
         def __setattr__(self, name: str, value: object) -> None:
             super().__setattr__(name, value)
-            if name == "multi_value_select" and value is True and self._attr_def:
-                self._attr_def.cardinality = Cardinality.SET
-                if self._attr_def.type_name and "array<" not in str(
-                    self._attr_def.type_name
-                ):
-                    self._attr_def.type_name = f"array<{self._attr_def.type_name}>"
+            if name == "multi_value_select" and value is True:
+                parent = _OPTIONS_PARENT_MAP.get(id(self))
+                if parent is not None:
+                    parent.cardinality = Cardinality.SET
+                    if parent.type_name and "array<" not in str(parent.type_name):
+                        parent.type_name = f"array<{parent.type_name}>"
 
         @staticmethod
-        def create(
+        def creator(
             attribute_type: AtlanCustomAttributePrimitiveType,
             options_name: Optional[str] = None,
         ) -> AttributeDef.Options:
@@ -656,7 +656,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
     values_max_count: Union[float, None] = None
     """Maximum number of values for this attribute."""
 
-    index_type_es_config: Union[Dict[str, str], None] = msgspec.field(
+    index_type_es_config: Union[Dict[str, Any], None] = msgspec.field(
         default=None, name="indexTypeESConfig"
     )
     """Internal use only."""
@@ -670,9 +670,9 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
     """TBC"""
 
     def __post_init__(self):
-        """Set back-reference from Options to this AttributeDef."""
+        """Register back-reference from Options to this AttributeDef."""
         if self.options is not None:
-            self.options._attr_def = self
+            _OPTIONS_PARENT_MAP[id(self.options)] = self
 
     # --- Convenience property accessors ---
     # These properties read/write from self.options and handle JSON encoding.
@@ -934,7 +934,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
         self.set_applicable_domains(domains)
 
     @staticmethod
-    def create(
+    def creator(
         client: AtlanClient,
         display_name: str,
         attribute_type: AtlanCustomAttributePrimitiveType,
@@ -985,7 +985,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
             )
         attr_def = AttributeDef(
             display_name=display_name,
-            options=AttributeDef.Options.create(
+            options=AttributeDef.Options.creator(
                 attribute_type=attribute_type, options_name=options_name
             ),
             is_new=True,
@@ -1096,8 +1096,8 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
             )
 
         async def _get_all_qualified_names_async(asset_type: str):
-            from pyatlan.model.assets import Asset
-            from pyatlan.model.fluent_search import FluentSearch
+            from pyatlan_v9.model.assets import Asset
+            from pyatlan_v9.model.fluent_search import FluentSearch
 
             request = (
                 FluentSearch.select()
@@ -1113,7 +1113,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
         attr_def = AttributeDef(
             display_name=display_name,
-            options=AttributeDef.Options.create(
+            options=AttributeDef.Options.creator(
                 attribute_type=attribute_type, options_name=options_name
             ),
             is_new=True,
@@ -1258,7 +1258,7 @@ class AtlanTagDef(TypeDef, kw_only=True):
     """TBC"""
 
     @staticmethod
-    def create(
+    def creator(
         name: str,
         color: AtlanTagColor = AtlanTagColor.GRAY,
         icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
@@ -1471,7 +1471,7 @@ class CustomMetadataDef(TypeDef, kw_only=True):
     """Optional properties of the type definition."""
 
     @staticmethod
-    def create(
+    def creator(
         display_name: str, description: Optional[str] = None
     ) -> CustomMetadataDef:
         """
@@ -1500,7 +1500,7 @@ class CustomMetadataDef(TypeDef, kw_only=True):
 # =============================================================================
 
 
-class TypeDefResponse(msgspec.Struct, kw_only=True, rename="camel"):
+class TypeDefResponse(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Response containing all type definitions."""
 
     enum_defs: List[EnumDef] = msgspec.field(default_factory=list)
@@ -1535,7 +1535,7 @@ class TypeDefResponse(msgspec.Struct, kw_only=True, rename="camel"):
         self._reserved_entity_defs = []
         self._custom_entity_defs = []
         self._custom_entity_def_names = set()
-        for entity_def in self.entity_defs:
+        for entity_def in self.entity_defs or []:
             if entity_def.reserved_type:
                 self._reserved_entity_defs.append(entity_def)
             else:

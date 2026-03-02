@@ -4,10 +4,8 @@
 """
 Unit tests for workflow client — ported from tests/unit/test_workflow_client.py.
 
-Uses v9 msgspec.Struct workflow models for fixture construction.
-The WorkflowClient itself still deserializes responses into legacy Pydantic
-models, so ``_is_model_instance`` is used for cross-type assertions and
-``msgspec.to_builtins()`` replaces ``.dict()`` for mock return values.
+Uses v9 msgspec.Struct workflow models. V9WorkflowClient returns v9 msgspec
+models natively, so plain ``isinstance`` is used for type assertions.
 """
 
 from unittest.mock import Mock, patch
@@ -22,12 +20,10 @@ from pyatlan.client.constants import (
     WORKFLOW_INDEX_RUN_SEARCH,
     WORKFLOW_INDEX_SEARCH,
 )
-from pyatlan.client.workflow import WorkflowClient
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import AtlanWorkflowPhase, WorkflowPackage
-from pyatlan.validate import _is_model_instance
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.search import Range
+from pyatlan_v9.client.workflow import V9WorkflowClient as WorkflowClient
+from pyatlan_v9.errors import InvalidRequestError
+from pyatlan_v9.model.enums import AtlanWorkflowPhase, WorkflowPackage
 
 # v9 models
 from pyatlan_v9.model.workflow import (
@@ -76,7 +72,7 @@ def mock_api_caller():
 
 @pytest.fixture()
 def mock_workflow_time_sleep():
-    with patch("pyatlan.client.workflow.sleep") as mock_time_sleep:
+    with patch("pyatlan_v9.client.workflow.sleep") as mock_time_sleep:
         yield mock_time_sleep
 
 
@@ -302,7 +298,7 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     assert client.find_by_type(prefix=WorkflowPackage.FIVETRAN) == []
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
-    assert _is_model_instance(
+    assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
     )
 
@@ -321,24 +317,25 @@ def test_find_runs_by_status_and_time_range(client: WorkflowClient, mock_api_cal
         from_=10,
         size=5,
     )
-    assert _is_model_instance(response, WorkflowSearchResponse)
+    assert isinstance(response, WorkflowSearchResponse)
     mock_api_caller._call_api.assert_called_once()
     request_obj = mock_api_caller._call_api.call_args.kwargs["request_obj"]
-    assert _is_model_instance(request_obj, WorkflowSearchRequest)
+    assert isinstance(request_obj, WorkflowSearchRequest)
     assert request_obj.query
-    range_filters = [
-        clause
-        for clause in request_obj.query.must  # type: ignore
-        if isinstance(clause, Range)
-    ]
+    must_clauses = request_obj.query["bool"]["must"]
+    range_filters = [c for c in must_clauses if "range" in c]
     assert any(
-        rf.field == "status.startedAt" and rf.gte == started_at for rf in range_filters
+        "status.startedAt" in rf["range"]
+        and rf["range"]["status.startedAt"].get("gte") == started_at
+        for rf in range_filters
     )
-    finished_filters = [rf for rf in range_filters if rf.field == "status.finishedAt"]
+    finished_filters = [
+        rf for rf in range_filters if "status.finishedAt" in rf["range"]
+    ]
     assert len(finished_filters) == 1
-    finished_filter = finished_filters[0]
-    assert finished_filter.lte == finished_at
-    assert finished_filter.gte is None
+    finished_filter = finished_filters[0]["range"]["status.finishedAt"]
+    assert finished_filter["lte"] == finished_at
+    assert finished_filter.get("gte") is None
 
 
 def test_find_by_id(
@@ -349,11 +346,11 @@ def test_find_by_id(
 
     assert search_response.hits and search_response.hits.hits
     result = client.find_by_id(id="atlan-snowflake-miner-1714638976")
-    assert _is_model_instance(result, WorkflowSearchResult)
+    assert isinstance(result, WorkflowSearchResult)
     assert result.id == "id"
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
-    assert _is_model_instance(
+    assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
     )
 
@@ -366,11 +363,11 @@ def test_find_run_by_id(
 
     assert search_response and search_response.hits and search_response.hits.hits
     result = client.find_run_by_id(id="atlan-snowflake-miner-1714638976-mzdza")
-    assert _is_model_instance(result, WorkflowSearchResult)
+    assert isinstance(result, WorkflowSearchResult)
     assert result.id == "id"
     mock_api_caller._call_api.assert_called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_RUN_SEARCH
-    assert _is_model_instance(
+    assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"], WorkflowSearchRequest
     )
 
@@ -400,7 +397,7 @@ def test_re_run_when_given_workflowpackage(
     ]
 
     response = client.rerun(WorkflowPackage.FIVETRAN)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 2
     mock_api_caller.reset_mock()
@@ -415,7 +412,7 @@ def test_re_run_when_given_workflowsearchresultdetail(
     mock_api_caller._call_api.return_value = _to_dict(rerun_response)
 
     response = client.rerun(workflow=search_result_detail)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -430,7 +427,7 @@ def test_re_run_when_given_workflowsearchresult(
     mock_api_caller._call_api.return_value = _to_dict(rerun_response)
 
     response = client.rerun(workflow=search_result)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -449,7 +446,7 @@ def test_re_run_when_given_workflowpackage_with_idempotent(
     ]
 
     response = client.rerun(WorkflowPackage.FIVETRAN, idempotent=True)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert response.status.phase == AtlanWorkflowPhase.RUNNING
     assert mock_api_caller._call_api.call_count == 2
@@ -467,7 +464,7 @@ def test_re_run_when_given_workflowsearchresultdetail_with_idempotent(
     mock_api_caller._call_api.return_value = _to_dict(search_response)
 
     response = client.rerun(workflow=search_result_detail, idempotent=True)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert response.status.phase == AtlanWorkflowPhase.RUNNING
     assert mock_api_caller._call_api.call_count == 1
@@ -485,7 +482,7 @@ def test_re_run_when_given_workflowsearchresult_with_idempotent(
     mock_api_caller._call_api.return_value = _to_dict(search_response)
 
     response = client.rerun(workflow=search_result, idempotent=True)
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert response.status.phase == AtlanWorkflowPhase.RUNNING
     assert mock_api_caller._call_api.call_count == 1
@@ -507,7 +504,7 @@ def test_run_when_given_workflow(
             ],
         )
     )
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -527,7 +524,7 @@ def test_run_when_given_workflow_json(
     }
     """
     response = client.run(workflow_json)
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -554,7 +551,7 @@ def test_run_when_given_workflow_with_schedule(
         ),
         workflow_schedule=schedule,
     )
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -575,7 +572,7 @@ def test_run_when_given_workflow_json_with_schedule(
     }
     """
     response = client.run(workflow_json, workflow_schedule=schedule)
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -589,8 +586,8 @@ def test_update_when_given_workflow(
 ):
     mock_api_caller._call_api.return_value = _to_dict(update_response)
     assert search_result.to_workflow()
-    response = client.update(workflow=search_result.to_workflow())
-    assert _is_model_instance(response, WorkflowResponse)
+    response = client.updater(workflow=search_result.to_workflow())
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -605,7 +602,7 @@ def test_workflow_update_owner(
     response = client.update_owner(workflow_name="test-workflow", username="test-owner")
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -621,7 +618,7 @@ def test_workflow_get_runs(
         workflow_phase=AtlanWorkflowPhase.RUNNING,
     )
 
-    assert _is_model_instance(response, WorkflowSearchResponse)
+    assert isinstance(response, WorkflowSearchResponse)
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
 
@@ -634,7 +631,7 @@ def test_workflow_stop(
     mock_api_caller._call_api.return_value = _to_dict(workflow_run_response)
     response = client.stop(workflow_run_id="test-workflow-run-id")
 
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
     assert mock_api_caller._call_api.call_count == 1
     mock_api_caller.reset_mock()
@@ -662,7 +659,7 @@ def test_workflow_add_schedule(
     )
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -676,7 +673,7 @@ def test_workflow_add_schedule(
     )
 
     assert mock_api_caller._call_api.call_count == 2
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -685,7 +682,7 @@ def test_workflow_add_schedule(
     response = client.add_schedule(workflow=search_result, workflow_schedule=schedule)
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -703,7 +700,7 @@ def test_workflow_find_schedule_query_between(
 
     assert mock_api_caller._call_api.call_count == 1
     assert response and len(response) == 1
-    assert _is_model_instance(response[0], WorkflowRunResponse)
+    assert isinstance(response[0], WorkflowRunResponse)
     # Ensure it is called by the correct API endpoint
     assert (
         mock_api_caller._call_api.call_args[0][0].path
@@ -728,7 +725,7 @@ def test_workflow_find_schedule_query_between(
         == SCHEDULE_QUERY_WORKFLOWS_MISSED.path
     )
     assert response and len(response) == 1
-    assert _is_model_instance(response[0], WorkflowRunResponse)
+    assert isinstance(response[0], WorkflowRunResponse)
     mock_api_caller.reset_mock()
 
     # None response
@@ -758,7 +755,7 @@ def test_workflow_find_schedule_query(
 
     assert len(response) == 1
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response[0], WorkflowSearchResult)
+    assert isinstance(response[0], WorkflowSearchResult)
     assert response[0].id == search_result.id
     mock_api_caller.reset_mock()
 
@@ -772,7 +769,7 @@ def test_workflow_rerun_schedule_query_workflow(
     response = client.re_run_schedule_query(schedule_query_id="test-query-id")
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     assert response.metadata.name == "name"
 
 
@@ -790,7 +787,7 @@ def test_workflow_remove_schedule(
     response = client.remove_schedule(workflow=workflow_response)
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -802,7 +799,7 @@ def test_workflow_remove_schedule(
     response = client.remove_schedule(workflow=WorkflowPackage.FIVETRAN)
 
     assert mock_api_caller._call_api.call_count == 2
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -811,7 +808,7 @@ def test_workflow_remove_schedule(
     response = client.remove_schedule(workflow=search_result)
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     assert response.metadata.name == "name"
     mock_api_caller.reset_mock()
 
@@ -829,7 +826,7 @@ def test_workflow_get_all_scheduled_runs(
 
     assert mock_api_caller._call_api.call_count == 1
     assert response and len(response) == 1
-    assert _is_model_instance(response[0], WorkflowScheduleResponse)
+    assert isinstance(response[0], WorkflowScheduleResponse)
     mock_api_caller.reset_mock()
 
 
@@ -845,7 +842,7 @@ def test_workflow_get_scheduled_run(
     response = client.get_scheduled_run(workflow_name="test-workflow")
 
     assert mock_api_caller._call_api.call_count == 1
-    assert _is_model_instance(response, WorkflowScheduleResponse)
+    assert isinstance(response, WorkflowScheduleResponse)
     mock_api_caller.reset_mock()
 
 
@@ -870,7 +867,7 @@ def test_rerun_with_role_cache_api_token_user(
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     mock_api_caller.reset_mock()
 
 
@@ -890,7 +887,7 @@ def test_rerun_with_role_cache_non_api_token_user(
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowRunResponse)
+    assert isinstance(response, WorkflowRunResponse)
     mock_api_caller.reset_mock()
 
 
@@ -915,7 +912,7 @@ def test_run_with_role_cache_api_token_user(
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     mock_api_caller.reset_mock()
 
 
@@ -936,11 +933,11 @@ def test_update_with_role_cache_api_token_user(
         payload=[PackageParameter(parameter="test-param", type="test-type", body={})],
     )
 
-    response = client.update(workflow)
+    response = client.updater(workflow)
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     mock_api_caller.reset_mock()
 
 
@@ -978,7 +975,7 @@ def test_add_schedule_with_role_cache_api_token_user(
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     mock_api_caller.reset_mock()
 
 
@@ -998,5 +995,5 @@ def test_remove_schedule_with_role_cache_api_token_user(
 
     mock_role_cache.is_api_token_user.assert_called_once()
     mock_api_caller._call_api.assert_called_once()
-    assert _is_model_instance(response, WorkflowResponse)
+    assert isinstance(response, WorkflowResponse)
     mock_api_caller.reset_mock()

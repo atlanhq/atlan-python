@@ -7,8 +7,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from pyatlan.model.enums import BadgeComparisonOperator, BadgeConditionColor
 from pyatlan_v9.model import Badge, BadgeCondition
+from pyatlan_v9.model.enums import BadgeComparisonOperator, BadgeConditionColor
 
 CM_ATTRIBUTE_NAME = "dummy"
 CM_SET_NAME = "Monte Carlo"

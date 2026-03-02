@@ -17,10 +17,14 @@ from unittest.mock import patch
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import AssetDeltaHandling, AssetInputHandling, AssetRemovalType
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.assets import Asset
+from pyatlan_v9.model.enums import (
+    AssetDeltaHandling,
+    AssetInputHandling,
+    AssetRemovalType,
+)
 from pyatlan_v9.model.packages import (
     APITokenConnectionAdmin,
     AssetExportBasic,

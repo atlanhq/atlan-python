@@ -8,8 +8,8 @@ from typing import Any, Generator, Protocol, Union
 import msgspec
 
 from pyatlan.errors import ErrorCode
-from pyatlan.model.api_tokens import ApiToken
 from pyatlan.utils import validate_required_fields
+from pyatlan_v9.model.api_tokens import ApiToken
 
 
 class UserAttributes(msgspec.Struct, kw_only=True):
@@ -30,7 +30,7 @@ class UserAttributes(msgspec.Struct, kw_only=True):
     invited_by_name: Union[list[str], None] = None
 
 
-class UserPersona(msgspec.Struct, kw_only=True):
+class UserPersona(msgspec.Struct, kw_only=True, rename="camel"):
     """Persona associated with a user."""
 
     id: Union[str, None] = None
@@ -84,7 +84,7 @@ class UserAdminEvent(msgspec.Struct, kw_only=True):
     auth_details: Union[UserAuthDetails, None] = None
 
 
-class AtlanUser(msgspec.Struct, kw_only=True):
+class AtlanUser(msgspec.Struct, kw_only=True, rename="camel"):
     """Representation of a user in Atlan."""
 
     username: Union[str, None] = None
@@ -202,14 +202,14 @@ class UserRequest(msgspec.Struct, kw_only=True):
         return qp
 
 
-class UserResponse(msgspec.Struct, kw_only=True):
+class UserResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response containing user information with pagination support."""
 
     total_record: Union[int, None] = None
     """Total number of users."""
     filter_record: Union[int, None] = None
     """Number of users in the filtered response."""
-    records: Union[list[AtlanUser], None] = None
+    records: Union[list[AtlanUser], None] = msgspec.field(default_factory=list)
     """Details of each user included in the response."""
 
     # Pagination state (not from JSON — set after construction)
@@ -219,9 +219,9 @@ class UserResponse(msgspec.Struct, kw_only=True):
     _client: Any = None
     _criteria: Any = None
 
-    def current_page(self) -> Union[list[AtlanUser], None]:
+    def current_page(self) -> list[AtlanUser]:
         """Return the current page of user results."""
-        return self.records
+        return self.records or []
 
     def next_page(self, start=None, size=None) -> bool:
         """Advance to the next page of results."""
@@ -254,7 +254,7 @@ class UserResponse(msgspec.Struct, kw_only=True):
     def __iter__(self) -> Generator[AtlanUser, None, None]:  # type: ignore[override]
         """Iterate through all pages of results."""
         while True:
-            yield from self.current_page() or []
+            yield from self.current_page()
             if not self.next_page():
                 break
 

@@ -16,9 +16,12 @@ from __future__ import annotations
 from typing import Any, Union
 
 import msgspec
+import msgspec.structs
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.assets.related_entity import SaveSemantic
+
+_metadata_proxies: dict[Any, Any] = {}
 
 
 class AtlasClassification(
@@ -31,8 +34,8 @@ class AtlasClassification(
     propagation settings and validity periods.
     """
 
-    type_name: Union[str, UnsetType] = UNSET
-    """The name of the classification type."""
+    type_name: Any = UNSET
+    """The name of the classification type (str or AtlanTagName)."""
 
     entity_guid: Union[str, UnsetType] = UNSET
     """The GUID of the entity this classification is assigned to."""
@@ -48,6 +51,9 @@ class AtlasClassification(
 
     validity_periods: Union[list[dict[str, Any]], UnsetType] = UNSET
     """Time periods during which this classification is valid."""
+
+    source_tag_attachments: Union[list[Any], UnsetType] = UNSET
+    """Source tag attachments for this classification."""
 
     attributes: Union[dict[str, Any], UnsetType] = UNSET
     """Custom attributes for this classification."""
@@ -143,6 +149,12 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     classifications: Union[list[AtlasClassification], UnsetType] = UNSET
     """Classifications (tags) assigned to this entity."""
 
+    add_or_update_classifications: Union[list[Any], UnsetType] = UNSET
+    """Classifications to add or update on this entity (used during save)."""
+
+    remove_classifications: Union[list[Any], UnsetType] = UNSET
+    """Classifications to remove from this entity (used during save)."""
+
     classification_names: Union[list[str], UnsetType] = UNSET
     """Simple list of classification type names assigned to this entity."""
 
@@ -184,6 +196,16 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     # =========================================================================
     # Compatibility Methods (legacy API surface)
     # =========================================================================
+
+    @property
+    def atlan_tags(self):
+        """User-friendly alias for classifications."""
+        val = self.classifications
+        return None if val is UNSET else val
+
+    @atlan_tags.setter
+    def atlan_tags(self, value):
+        msgspec.Struct.__setattr__(self, "classifications", value)
 
     @property
     def attributes(self):
@@ -236,6 +258,22 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
         return re.sub(r"_([a-z])_([a-z])_", r"_\1\2_", name)
 
+    @property
+    def _metadata_proxy(self):
+        return _metadata_proxies.get(id(self))
+
+    @_metadata_proxy.setter
+    def _metadata_proxy(self, value):
+        _metadata_proxies[id(self)] = value
+
+    @property
+    def _async_metadata_proxy(self):
+        return _metadata_proxies.get(("async", id(self)))
+
+    @_async_metadata_proxy.setter
+    def _async_metadata_proxy(self, value):
+        _metadata_proxies[("async", id(self))] = value
+
     def __getattr__(self, name: str):
         """Fallback for legacy field name compatibility."""
         if name.startswith("_"):
@@ -259,3 +297,217 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
             msgspec.Struct.__setattr__(self, collapsed, value)
         else:
             msgspec.Struct.__setattr__(self, name, value)
+
+    # =========================================================================
+    # Custom Metadata Methods (required by legacy save pipeline)
+    # =========================================================================
+
+    def flush_custom_metadata(self, client: Any = None) -> None:
+        """Flush custom metadata proxy to business_attributes."""
+        if self._metadata_proxy:
+            msgspec.Struct.__setattr__(
+                self, "business_attributes", self._metadata_proxy.business_attributes
+            )
+
+    async def flush_custom_metadata_async(self, client: Any = None) -> None:
+        """Async version of flush_custom_metadata."""
+        if self._async_metadata_proxy:
+            ba = await self._async_metadata_proxy.business_attributes()
+            msgspec.Struct.__setattr__(self, "business_attributes", ba)
+
+    def _get_business_attributes_or_none(self) -> Any:
+        ba = self.business_attributes
+        return None if ba is UNSET else ba
+
+    def get_custom_metadata(self, client: Any = None, name: str = "") -> Any:
+        """Get custom metadata by name from the proxy."""
+        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
+
+        if not self._metadata_proxy:
+            self._metadata_proxy = CustomMetadataProxy(
+                business_attributes=self._get_business_attributes_or_none(),
+                client=client,
+            )
+        return self._metadata_proxy.get_custom_metadata(name)
+
+    def set_custom_metadata(
+        self, client: Any = None, custom_metadata: Any = None
+    ) -> None:
+        """Set custom metadata via the proxy."""
+        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
+
+        if not self._metadata_proxy:
+            self._metadata_proxy = CustomMetadataProxy(
+                business_attributes=self._get_business_attributes_or_none(),
+                client=client,
+            )
+        self._metadata_proxy.set_custom_metadata(custom_metadata)
+
+    async def get_custom_metadata_async(
+        self, client: Any = None, name: str = ""
+    ) -> Any:
+        """Async version of get_custom_metadata."""
+        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        if not self._async_metadata_proxy:
+            self._async_metadata_proxy = AsyncCustomMetadataProxy(
+                business_attributes=self._get_business_attributes_or_none(),
+                client=client,
+            )
+        return await self._async_metadata_proxy.get_custom_metadata(name)
+
+    async def set_custom_metadata_async(
+        self, client: Any = None, custom_metadata: Any = None
+    ) -> None:
+        """Async version of set_custom_metadata."""
+        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        if not self._async_metadata_proxy:
+            self._async_metadata_proxy = AsyncCustomMetadataProxy(
+                business_attributes=self._get_business_attributes_or_none(),
+                client=client,
+            )
+        await self._async_metadata_proxy.set_custom_metadata(custom_metadata)
+
+    # =========================================================================
+    # Generic Nested Serialization
+    # =========================================================================
+
+    def to_nested_dict(self) -> dict:
+        """
+        Convert this entity to the Atlas API nested format using a generic
+        approach that works for ALL entity types.
+
+        Splits flat fields into top-level entity fields, attributes, and
+        relationship attributes (bucketed by save semantic).
+        """
+
+        flat = msgspec.to_builtins(self, enc_hook=_enc_hook)
+
+        # Dynamically discover relationship fields from the generated
+        # XRelationshipAttributes class in the same module.
+        rel_field_names = _get_relationship_fields(type(self))
+
+        top_level: dict[str, Any] = {}
+        attributes: dict[str, Any] = {}
+        rel_replace: dict[str, Any] = {}
+        rel_append: dict[str, Any] = {}
+        rel_remove: dict[str, Any] = {}
+
+        for key, value in flat.items():
+            if key in _ENTITY_TOP_LEVEL_FIELDS:
+                if key == "semantic":
+                    continue
+                top_level[key] = value
+            elif key in rel_field_names:
+                _bucket_relationship(key, value, rel_replace, rel_append, rel_remove)
+            else:
+                attributes[key] = value
+
+        # Always include typeName — omit_defaults may have dropped it
+        if "typeName" not in top_level and self.type_name is not UNSET:
+            top_level["typeName"] = self.type_name
+
+        result = dict(top_level)
+        if attributes:
+            result["attributes"] = attributes
+        if rel_replace:
+            result["relationshipAttributes"] = rel_replace
+        if rel_append:
+            result["appendRelationshipAttributes"] = rel_append
+        if rel_remove:
+            result["removeRelationshipAttributes"] = rel_remove
+        return result
+
+
+def _enc_hook(obj: Any) -> Any:
+    """Fallback encoder for non-msgspec types used in v9 entities.
+
+    Handles v9-native types that msgspec doesn't know about (AtlanTagName).
+    """
+    from pyatlan_v9.model.core import AtlanTagName
+
+    if type(obj) is AtlanTagName:
+        return str(obj)
+    raise TypeError(f"Encoding objects of type {type(obj).__name__} is unsupported")
+
+
+_ENTITY_TOP_LEVEL_FIELDS = frozenset(
+    f.encode_name for f in msgspec.structs.fields(Entity)
+)
+
+_rel_fields_cache: dict[type, frozenset[str]] = {}
+
+
+def _get_relationship_fields(cls: type) -> frozenset[str]:
+    """
+    Get the set of camelCase relationship field names for an entity type.
+
+    Looks up the generated ``XRelationshipAttributes`` class in the same
+    module and caches the result.
+    """
+    if cls in _rel_fields_cache:
+        return _rel_fields_cache[cls]
+
+    import sys
+
+    rel_names: set[str] = set()
+    # Walk the MRO to collect relationship fields from all parent types
+    for klass in cls.__mro__:
+        mod = sys.modules.get(klass.__module__)
+        if mod is None:
+            continue
+        rel_cls_name = klass.__name__ + "RelationshipAttributes"
+        rel_cls = getattr(mod, rel_cls_name, None)
+        if rel_cls is not None and hasattr(rel_cls, "__struct_fields__"):
+            rel_names.update(f.encode_name for f in msgspec.structs.fields(rel_cls))
+
+    result = frozenset(rel_names)
+    _rel_fields_cache[cls] = result
+    return result
+
+
+def _strip_semantic(item: dict) -> dict:
+    """Remove the internal 'semantic' key from a relationship dict."""
+    item.pop("semantic", None)
+    return item
+
+
+def _bucket_relationship(
+    key: str,
+    value: Any,
+    replace: dict,
+    append: dict,
+    remove: dict,
+) -> None:
+    """Sort a relationship value into replace/append/remove buckets."""
+    if isinstance(value, dict):
+        semantic = value.get("semantic")
+        cleaned = _strip_semantic(value)
+        if semantic == "APPEND":
+            append[key] = cleaned
+        elif semantic == "REMOVE":
+            remove[key] = cleaned
+        else:
+            replace[key] = cleaned
+    elif isinstance(value, list):
+        if len(value) == 0:
+            replace[key] = []
+            return
+        rep, app, rem = [], [], []
+        for item in value:
+            semantic = item.get("semantic") if isinstance(item, dict) else None
+            if isinstance(item, dict):
+                _strip_semantic(item)
+            if semantic == "APPEND":
+                app.append(item)
+            elif semantic == "REMOVE":
+                rem.append(item)
+            else:
+                rep.append(item)
+        if rep:
+            replace[key] = rep
+        if app:
+            append[key] = app
+        if rem:
+            remove[key] = rem

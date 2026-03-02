@@ -146,6 +146,9 @@ class Referenceable(Entity):
     )
     """"""
 
+    depth: Union[int, None, UnsetType] = UNSET
+    """Depth of this asset within lineage (populated by lineage API responses)."""
+
     # =========================================================================
     # Compatibility Properties (legacy API surface)
     # =========================================================================

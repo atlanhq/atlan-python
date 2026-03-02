@@ -3,8 +3,10 @@ from unittest.mock import Mock
 
 import pytest
 
-from pyatlan.errors import ErrorCode, InvalidRequestError
-from pyatlan.model.enums import (
+from pyatlan_v9.errors import ErrorCode, InvalidRequestError
+from pyatlan_v9.model.assets import Column, DataQualityRule, Table
+from pyatlan_v9.model.dq_rule_conditions import DQRuleConditionsBuilder
+from pyatlan_v9.model.enums import (
     DataQualityDimension,
     DataQualityRuleAlertPriority,
     DataQualityRuleCustomSQLReturnType,
@@ -14,8 +16,6 @@ from pyatlan.model.enums import (
     DataQualityRuleThresholdCompareOperator,
     DataQualityRuleThresholdUnit,
 )
-from pyatlan_v9.model.assets import Column, DataQualityRule, Table
-from pyatlan_v9.model.dq_rule_conditions import DQRuleConditionsBuilder
 from tests_v9.unit.model.constants import (
     DQ_COLUMN_QUALIFIED_NAME,
     DQ_RULE_CUSTOM_SQL,

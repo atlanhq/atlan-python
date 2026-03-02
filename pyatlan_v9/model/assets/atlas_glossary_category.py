@@ -13,7 +13,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Any, ClassVar, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -45,6 +45,15 @@ class AtlasGlossaryCategory(Asset):
     Instance of a category in Atlan, an organizational construct for glossary terms.
     """
 
+    ANCHOR: ClassVar[Any] = None
+    PARENT_CATEGORY: ClassVar[Any] = None
+    TERMS: ClassVar[Any] = None
+    CHILDREN_CATEGORIES: ClassVar[Any] = None
+    SHORT_DESCRIPTION: ClassVar[Any] = None
+    LONG_DESCRIPTION: ClassVar[Any] = None
+    ADDITIONAL_ATTRIBUTES: ClassVar[Any] = None
+    CATEGORY_TYPE: ClassVar[Any] = None
+
     # Override type_name with AtlasGlossaryCategory-specific default
     type_name: Union[str, UnsetType] = "AtlasGlossaryCategory"
 
@@ -74,6 +83,10 @@ class AtlasGlossaryCategory(Asset):
     parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET
     """Parent category in which this category is located (or empty if this is a root-level category)."""
 
+    @classmethod
+    def can_be_archived(cls) -> bool:
+        return False
+
     # =========================================================================
     # Convenience Methods
     # =========================================================================
@@ -84,7 +97,9 @@ class AtlasGlossaryCategory(Asset):
         cls,
         *,
         name: str,
-        anchor: "Asset",
+        anchor: "Asset | None" = None,
+        glossary_qualified_name: str | None = None,
+        glossary_guid: str | None = None,
         parent_category: "AtlasGlossaryCategory | None" = None,
     ) -> "AtlasGlossaryCategory":
         """
@@ -92,40 +107,64 @@ class AtlasGlossaryCategory(Asset):
 
         Args:
             name: Simple name of the category
-            anchor: Glossary object in which this category is contained
+            anchor: Glossary object in which this category is contained (mutually exclusive with glossary_qualified_name and glossary_guid)
+            glossary_qualified_name: Qualified name of the glossary (mutually exclusive with anchor and glossary_guid)
+            glossary_guid: GUID of the glossary (mutually exclusive with anchor and glossary_qualified_name)
             parent_category: Optional parent category for this category
 
         Returns:
             New AtlasGlossaryCategory instance
 
         Raises:
-            ValueError: If required parameters are missing
+            ValueError: If required parameters are missing or if multiple glossary identifiers are provided
         """
         validate_required_fields(["name"], [name])
 
-        # Generate qualified name
+        provided_params = [
+            p for p in [anchor, glossary_qualified_name, glossary_guid] if p is not None
+        ]
+        if len(provided_params) == 0:
+            raise ValueError(
+                "One of the following parameters are required: anchor, glossary_qualified_name, glossary_guid"
+            )
+        if len(provided_params) > 1:
+            param_names = []
+            if anchor is not None:
+                param_names.append("anchor")
+            if glossary_qualified_name is not None:
+                param_names.append("glossary_qualified_name")
+            if glossary_guid is not None:
+                param_names.append("glossary_guid")
+            raise ValueError(
+                f"Only one of the following parameters are allowed: {', '.join(param_names)}"
+            )
+
         import uuid
 
         qualified_name = f"{name}@{uuid.uuid4()}"
 
-        # Create anchor reference from provided anchor object
         from msgspec import UNSET as MSGSPEC_UNSET
 
-        if hasattr(anchor, "trim_to_reference") and callable(anchor.trim_to_reference):
-            anchor_ref = anchor.trim_to_reference()
-        else:
-            # Fallback: create RelatedAtlasGlossary from anchor attributes
-            anchor_ref = RelatedAtlasGlossary(
-                guid=anchor.guid
-                if hasattr(anchor, "guid") and anchor.guid is not MSGSPEC_UNSET
-                else None,
-                qualified_name=anchor.qualified_name
-                if hasattr(anchor, "qualified_name")
-                and anchor.qualified_name is not MSGSPEC_UNSET
-                else None,
-            )
+        if anchor is not None:
+            if hasattr(anchor, "trim_to_reference") and callable(
+                anchor.trim_to_reference
+            ):
+                anchor_ref = anchor.trim_to_reference()
+            else:
+                anchor_ref = RelatedAtlasGlossary(
+                    guid=anchor.guid
+                    if hasattr(anchor, "guid") and anchor.guid is not MSGSPEC_UNSET
+                    else None,
+                    qualified_name=anchor.qualified_name
+                    if hasattr(anchor, "qualified_name")
+                    and anchor.qualified_name is not MSGSPEC_UNSET
+                    else None,
+                )
+        elif glossary_qualified_name is not None:
+            anchor_ref = RelatedAtlasGlossary(qualified_name=glossary_qualified_name)
+        else:  # glossary_guid is not None
+            anchor_ref = RelatedAtlasGlossary(guid=glossary_guid)
 
-        # Create parent category reference if provided
         parent_ref = None
         if parent_category is not None:
             if hasattr(parent_category, "trim_to_reference") and callable(
@@ -144,12 +183,14 @@ class AtlasGlossaryCategory(Asset):
                     else None,
                 )
 
-        return cls(
+        kwargs: dict = dict(
             name=name,
             qualified_name=qualified_name,
             anchor=anchor_ref,
-            parent_category=parent_ref,
         )
+        if parent_ref is not None:
+            kwargs["parent_category"] = parent_ref
+        return cls(**kwargs)
 
     @classmethod
     def updater(
@@ -278,6 +319,12 @@ class AtlasGlossaryCategoryAttributes(AssetAttributes):
     category_type: Union[str, None, UnsetType] = UNSET
     """"""
 
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this category is contained."""
+
+    parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET
+    """Parent category in which this category is located (or empty if this is a root-level category)."""
+
 
 class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryCategory-specific relationship attributes for nested API format."""
@@ -285,16 +332,10 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     terms: Union[list[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Terms organized within this category."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this category is contained."""
-
     children_categories: Union[list[RelatedAtlasGlossaryCategory], None, UnsetType] = (
         UNSET
     )
     """Child categories organized within this category."""
-
-    parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET
-    """Parent category in which this category is located (or empty if this is a root-level category)."""
 
 
 class AtlasGlossaryCategoryNested(AssetNested):
@@ -330,9 +371,7 @@ def _atlas_glossary_category_to_nested(
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     rel_fields: list[str] = [
         "terms",
-        "anchor",
         "children_categories",
-        "parent_category",
     ]
     replace_rels, append_rels, remove_rels = categorize_relationships(
         atlas_glossary_category, rel_fields, AtlasGlossaryCategoryRelationshipAttributes
@@ -378,9 +417,7 @@ def _atlas_glossary_category_from_nested(
     # Merge relationships from all three buckets
     rel_fields: list[str] = [
         "terms",
-        "anchor",
         "children_categories",
-        "parent_category",
     ]
     merged_rels = merge_relationships(
         nested.relationship_attributes,
@@ -411,3 +448,24 @@ def _atlas_glossary_category_from_nested_bytes(
     """Convert nested JSON bytes to flat AtlasGlossaryCategory."""
     nested = serde.decode(data, AtlasGlossaryCategoryNested)
     return _atlas_glossary_category_from_nested(nested)
+
+
+# ---------------------------------------------------------------------------
+# Deferred field descriptor initialization
+# ---------------------------------------------------------------------------
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+
+AtlasGlossaryCategory.ANCHOR = KeywordField("anchor", "__glossary")
+AtlasGlossaryCategory.PARENT_CATEGORY = KeywordField(
+    "parentCategory", "__parentCategory"
+)
+AtlasGlossaryCategory.TERMS = RelationField("terms")
+AtlasGlossaryCategory.CHILDREN_CATEGORIES = RelationField("childrenCategories")
+AtlasGlossaryCategory.SHORT_DESCRIPTION = TextField(
+    "shortDescription", "shortDescription"
+)
+AtlasGlossaryCategory.LONG_DESCRIPTION = TextField("longDescription", "longDescription")
+AtlasGlossaryCategory.ADDITIONAL_ATTRIBUTES = KeywordField(
+    "additionalAttributes", "additionalAttributes"
+)
+AtlasGlossaryCategory.CATEGORY_TYPE = KeywordField("categoryType", "categoryType")

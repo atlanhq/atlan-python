@@ -15,17 +15,15 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.common.audit import LOGGER
-from pyatlan.errors import InvalidRequestError
+from pyatlan_v9.client.audit import V9AuditClient as AuditClient
+from pyatlan_v9.errors import InvalidRequestError
 
-# Legacy result model — client returns this; needed for patching thresholds
-from pyatlan.model.audit import AuditSearchResults
-from pyatlan.model.enums import SortOrder
-
+# V9 result model — client returns this; needed for patching thresholds
 # v9 request models (msgspec)
-from pyatlan_v9.model.audit import AuditSearchRequest
+from pyatlan_v9.model.audit import AuditSearchRequest, AuditSearchResults
+from pyatlan_v9.model.enums import SortOrder
 from pyatlan_v9.model.search import DSL, Bool, SortItem, Term
 
 SEARCH_RESPONSES_DIR = (

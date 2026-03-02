@@ -14,7 +14,7 @@ from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, TextFi
 from pyatlan_v9.model.search import DSL
 
 
-class AtlanTask(msgspec.Struct, kw_only=True):
+class AtlanTask(msgspec.Struct, kw_only=True, rename="camel"):
     """Representation of a task in Atlan's task queue."""
 
     TYPE: ClassVar[KeywordField] = KeywordField("type", "__task_type")

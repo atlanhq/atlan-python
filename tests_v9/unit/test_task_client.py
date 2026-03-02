@@ -15,9 +15,9 @@ from unittest.mock import Mock
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.task import TaskClient
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import AtlanTaskStatus, AtlanTaskType
+from pyatlan_v9.client.task import V9TaskClient as TaskClient
+from pyatlan_v9.errors import InvalidRequestError
+from pyatlan_v9.model.enums import AtlanTaskStatus, AtlanTaskType
 
 # v9 models
 from pyatlan_v9.model.fluent_tasks import FluentTasks

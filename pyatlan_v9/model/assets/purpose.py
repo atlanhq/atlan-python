@@ -5,11 +5,19 @@
 
 from __future__ import annotations
 
-from typing import Union
+from typing import TYPE_CHECKING, Any, Optional, Set, Union
+from warnings import warn
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.enums import (
+    AuthPolicyCategory,
+    AuthPolicyResourceCategory,
+    AuthPolicyType,
+    DataAction,
+    PurposeMetadataAction,
+)
 from pyatlan_v9.model.conversion_utils import (
     build_attributes_kwargs,
     build_flat_kwargs,
@@ -22,12 +30,16 @@ from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .asset import Asset, AssetAttributes, AssetNested
+from .auth_policy import AuthPolicy
+
+if TYPE_CHECKING:
+    from pyatlan_v9.client.atlan import AtlanClient
 
 
 class PurposeClassification(msgspec.Struct, kw_only=True, rename="camel"):
     """Classification view used by Purpose to retain source-tag attachments."""
 
-    type_name: Union[str, None] = None
+    type_name: Any = None
     source_tag_attachments: list[SourceTagAttachment] = msgspec.field(
         default_factory=list
     )
@@ -39,7 +51,20 @@ class Purpose(Asset):
     """Purpose asset in Atlan."""
 
     type_name: Union[str, UnsetType] = "Purpose"
-    purpose_classifications: Union[list[str], None, UnsetType] = UNSET
+
+    is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
+    deny_custom_metadata_guids: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_tabs: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_filters: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_types: Union[Set[str], None, UnsetType] = UNSET
+    deny_sidebar_tabs: Union[Set[str], None, UnsetType] = UNSET
+    deny_navigation_pages: Union[Set[str], None, UnsetType] = UNSET
+    default_navigation: Union[str, None, UnsetType] = UNSET
+    display_preferences: Union[Set[str], None, UnsetType] = UNSET
+    channel_link: Union[str, None, UnsetType] = UNSET
+    deny_asset_metadata_types: Union[Set[str], None, UnsetType] = UNSET
+    policies: Union[list[AuthPolicy], None, UnsetType] = UNSET
+    purpose_classifications: Union[list[Any], None, UnsetType] = UNSET
     classifications: Union[list[PurposeClassification], None, UnsetType] = UNSET
 
     @property
@@ -47,7 +72,10 @@ class Purpose(Asset):
         """Expose purpose classifications as AtlanTagName objects for parity."""
         if self.purpose_classifications in (UNSET, None):
             return None
-        return [AtlanTagName(tag) for tag in self.purpose_classifications]
+        return [
+            tag if isinstance(tag, AtlanTagName) else AtlanTagName(str(tag))
+            for tag in self.purpose_classifications
+        ]
 
     @purpose_atlan_tags.setter
     def purpose_atlan_tags(self, value: Union[list[AtlanTagName], None]) -> None:
@@ -70,10 +98,150 @@ class Purpose(Asset):
         )
 
     @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "Purpose":
+    def updater(
+        cls, *, qualified_name: str, name: str, is_enabled: bool = True
+    ) -> "Purpose":
         """Create a Purpose asset for update operations."""
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
+        validate_required_fields(
+            ["qualified_name", "name", "is_enabled"],
+            [qualified_name, name, is_enabled],
+        )
+        return cls(
+            qualified_name=qualified_name,
+            name=name,
+            is_access_control_enabled=is_enabled,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls,
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> "Purpose":
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, is_enabled=is_enabled
+        )
+
+    @classmethod
+    def create_metadata_policy(
+        cls,
+        *,
+        client: "AtlanClient",
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PurposeMetadataAction],
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["client", "name", "purpose_id", "policy_type", "actions"],
+            [client, name, purpose_id, policy_type, actions],
+        )
+        target_found = False
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "metadata"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                for group_name in policy_groups:
+                    if not client.group_cache.get_id_for_name(group_name):
+                        raise ValueError(
+                            f"Provided group name {group_name} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                for username in policy_users:
+                    if not client.user_cache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError("No user or group specified for the policy.")
+
+    @classmethod
+    def create_data_policy(
+        cls,
+        *,
+        client: "AtlanClient",
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["client", "name", "purpose_id", "policy_type"],
+            [client, name, purpose_id, policy_type],
+        )
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "data"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                for group_name in policy_groups:
+                    if not client.group_cache.get_id_for_name(group_name):
+                        raise ValueError(
+                            f"Provided group name {group_name} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                for username in policy_users:
+                    if not client.user_cache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError("No user or group specified for the policy.")
 
     def trim_to_required(self) -> "Purpose":
         """Return only required fields for updates."""
@@ -102,7 +270,18 @@ class Purpose(Asset):
 class PurposeAttributes(AssetAttributes):
     """Purpose-specific nested attributes."""
 
-    purpose_classifications: Union[list[str], None, UnsetType] = UNSET
+    is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
+    deny_custom_metadata_guids: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_tabs: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_filters: Union[Set[str], None, UnsetType] = UNSET
+    deny_asset_types: Union[Set[str], None, UnsetType] = UNSET
+    deny_sidebar_tabs: Union[Set[str], None, UnsetType] = UNSET
+    deny_navigation_pages: Union[Set[str], None, UnsetType] = UNSET
+    default_navigation: Union[str, None, UnsetType] = UNSET
+    display_preferences: Union[Set[str], None, UnsetType] = UNSET
+    channel_link: Union[str, None, UnsetType] = UNSET
+    deny_asset_metadata_types: Union[Set[str], None, UnsetType] = UNSET
+    purpose_classifications: Union[list[Any], None, UnsetType] = UNSET
 
 
 class PurposeNested(AssetNested):

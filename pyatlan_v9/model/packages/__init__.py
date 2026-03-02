@@ -18,9 +18,7 @@ from pyatlan_v9.model.packages.confluent_kafka_crawler import (  # noqa: F401
     ConfluentKafkaCrawler,
 )
 from pyatlan_v9.model.packages.connection_delete import ConnectionDelete  # noqa: F401
-from pyatlan_v9.model.packages.databricks_crawler import (  # noqa: F401
-    DatabricksCrawler,
-)
+from pyatlan_v9.model.packages.databricks_crawler import DatabricksCrawler  # noqa: F401
 from pyatlan_v9.model.packages.databricks_miner import DatabricksMiner  # noqa: F401
 from pyatlan_v9.model.packages.dbt_crawler import DbtCrawler  # noqa: F401
 from pyatlan_v9.model.packages.dynamo_d_b_crawler import DynamoDBCrawler  # noqa: F401

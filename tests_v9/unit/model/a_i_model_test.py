@@ -5,8 +5,8 @@
 
 import pytest
 
-from pyatlan.model.enums import AIModelStatus
 from pyatlan_v9.model import AIModel
+from pyatlan_v9.model.enums import AIModelStatus
 from tests_v9.unit.model.constants import (
     AI_MODEL_NAME,
     AI_MODEL_QUALIFIED_NAME,

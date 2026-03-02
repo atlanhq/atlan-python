@@ -8,7 +8,7 @@ from typing import Type, TypeVar, Union
 
 import msgspec
 
-from pyatlan.model.assets import Asset
+from pyatlan_v9.model.assets import Asset
 
 A = TypeVar("A", bound=Asset)
 

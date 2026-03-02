@@ -30,31 +30,10 @@ from pyatlan.cache.group_cache import GroupCache
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.cache.source_tag_cache import SourceTagCache
 from pyatlan.cache.user_cache import UserCache
-from pyatlan.client.admin import AdminClient
-from pyatlan.client.asset import AssetClient
-from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
-from pyatlan.client.contract import ContractClient
-from pyatlan.client.credential import CredentialClient
-from pyatlan.client.file import FileClient
-from pyatlan.client.group import GroupClient
-from pyatlan.client.impersonate import ImpersonationClient
 from pyatlan.client.oauth import OAuthTokenManager
-from pyatlan.client.oauth_client import OAuthClient
-from pyatlan.client.open_lineage import OpenLineageClient
-from pyatlan.client.query import QueryClient
-from pyatlan.client.role import RoleClient
-from pyatlan.client.search_log import SearchLogClient
-from pyatlan.client.sso import SSOClient
-from pyatlan.client.task import TaskClient
-from pyatlan.client.token import TokenClient
-from pyatlan.client.typedef import TypeDefClient
-from pyatlan.client.user import UserClient
-from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
-from pyatlan.model.core import AtlanObject, AtlanRequest, AtlanResponse
-from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -63,8 +42,29 @@ from pyatlan.utils import (
     RequestIdAdapter,
     get_python_version,
 )
+from pyatlan_v9.client.admin import V9AdminClient
+from pyatlan_v9.client.asset import V9AssetClient
+from pyatlan_v9.client.audit import V9AuditClient
+from pyatlan_v9.client.contract import V9ContractClient
+from pyatlan_v9.client.credential import V9CredentialClient
+from pyatlan_v9.client.file import V9FileClient
+from pyatlan_v9.client.group import V9GroupClient
+from pyatlan_v9.client.impersonate import V9ImpersonationClient
+from pyatlan_v9.client.oauth_client import V9OAuthClient
+from pyatlan_v9.client.open_lineage import V9OpenLineageClient
+from pyatlan_v9.client.query import V9QueryClient
+from pyatlan_v9.client.role import V9RoleClient
+from pyatlan_v9.client.search_log import V9SearchLogClient
+from pyatlan_v9.client.sso import V9SSOClient
+from pyatlan_v9.client.task import V9TaskClient
+from pyatlan_v9.client.token import V9TokenClient
 from pyatlan_v9.client.transport import PyatlanSyncTransport
+from pyatlan_v9.client.typedef import V9TypeDefClient
+from pyatlan_v9.client.user import V9UserClient
+from pyatlan_v9.client.workflow import V9WorkflowClient
 from pyatlan_v9.model.atlan_image import AtlanImage
+from pyatlan_v9.model.core import AtlanRequest, AtlanResponse
+from pyatlan_v9.model.enums import AtlanTypeCategory
 from pyatlan_v9.model.query import ParsedQuery, QueryParserRequest
 
 request_id_var = ContextVar("request_id", default=None)
@@ -240,80 +240,80 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         return self._caches[key]
 
     @property
-    def admin(self) -> AdminClient:
-        return self._get_client("admin", AdminClient)
+    def admin(self) -> V9AdminClient:
+        return self._get_client("admin", V9AdminClient)
 
     @property
-    def audit(self) -> AuditClient:
-        return self._get_client("audit", AuditClient)
+    def audit(self) -> V9AuditClient:
+        return self._get_client("audit", V9AuditClient)
 
     @property
-    def search_log(self) -> SearchLogClient:
-        return self._get_client("search_log", SearchLogClient)
+    def search_log(self) -> V9SearchLogClient:
+        return self._get_client("search_log", V9SearchLogClient)
 
     @property
-    def workflow(self) -> WorkflowClient:
-        return self._get_client("workflow", WorkflowClient)
+    def workflow(self) -> V9WorkflowClient:
+        return self._get_client("workflow", V9WorkflowClient)
 
     @property
-    def credentials(self) -> CredentialClient:
-        return self._get_client("credentials", CredentialClient)
+    def credentials(self) -> V9CredentialClient:
+        return self._get_client("credentials", V9CredentialClient)
 
     @property
-    def group(self) -> GroupClient:
-        return self._get_client("group", GroupClient)
+    def group(self) -> V9GroupClient:
+        return self._get_client("group", V9GroupClient)
 
     @property
-    def role(self) -> RoleClient:
-        return self._get_client("role", RoleClient)
+    def role(self) -> V9RoleClient:
+        return self._get_client("role", V9RoleClient)
 
     @property
-    def asset(self) -> AssetClient:
-        return self._get_client("asset", AssetClient)
+    def asset(self) -> V9AssetClient:
+        return self._get_client("asset", V9AssetClient)
 
     @property
-    def impersonate(self) -> ImpersonationClient:
-        return self._get_client("impersonate", ImpersonationClient)
+    def impersonate(self) -> V9ImpersonationClient:
+        return self._get_client("impersonate", V9ImpersonationClient)
 
     @property
-    def queries(self) -> QueryClient:
-        return self._get_client("queries", QueryClient)
+    def queries(self) -> V9QueryClient:
+        return self._get_client("queries", V9QueryClient)
 
     @property
-    def token(self) -> TokenClient:
-        return self._get_client("token", TokenClient)
+    def token(self) -> V9TokenClient:
+        return self._get_client("token", V9TokenClient)
 
     @property
-    def oauth_client(self) -> OAuthClient:
-        return self._get_client("oauth_client", OAuthClient)
+    def oauth_client(self) -> V9OAuthClient:
+        return self._get_client("oauth_client", V9OAuthClient)
 
     @property
-    def typedef(self) -> TypeDefClient:
-        return self._get_client("typedef", TypeDefClient)
+    def typedef(self) -> V9TypeDefClient:
+        return self._get_client("typedef", V9TypeDefClient)
 
     @property
-    def user(self) -> UserClient:
-        return self._get_client("user", UserClient)
+    def user(self) -> V9UserClient:
+        return self._get_client("user", V9UserClient)
 
     @property
-    def tasks(self) -> TaskClient:
-        return self._get_client("tasks", TaskClient)
+    def tasks(self) -> V9TaskClient:
+        return self._get_client("tasks", V9TaskClient)
 
     @property
-    def sso(self) -> SSOClient:
-        return self._get_client("sso", SSOClient)
+    def sso(self) -> V9SSOClient:
+        return self._get_client("sso", V9SSOClient)
 
     @property
-    def open_lineage(self) -> OpenLineageClient:
-        return self._get_client("open_lineage", OpenLineageClient)
+    def open_lineage(self) -> V9OpenLineageClient:
+        return self._get_client("open_lineage", V9OpenLineageClient)
 
     @property
-    def files(self) -> FileClient:
-        return self._get_client("files", FileClient)
+    def files(self) -> V9FileClient:
+        return self._get_client("files", V9FileClient)
 
     @property
-    def contracts(self) -> ContractClient:
-        return self._get_client("contracts", ContractClient)
+    def contracts(self) -> V9ContractClient:
+        return self._get_client("contracts", V9ContractClient)
 
     # --- Cache properties ---
 
@@ -588,11 +588,10 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         api,
         query_params=None,
         request_obj=None,
-        exclude_unset: bool = True,
         text_response=False,
     ):
         path = self._create_path(api)
-        params = self._create_params(api, query_params, request_obj, exclude_unset)
+        params = self._create_params(api, query_params, request_obj)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return self._call_api_internal(api, path, params, text_response=text_response)
@@ -609,9 +608,7 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
         path = self._create_path(api)
-        params = self._create_params(
-            api, query_params=None, request_obj=None, exclude_unset=True
-        )
+        params = self._create_params(api, query_params=None, request_obj=None)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return self._call_api_internal(api, path, params, binary_data=post_data)
@@ -641,9 +638,7 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         params["headers"].pop("authorization", None)
         return self._call_api_internal(api, path, params, download_file_path=file_path)
 
-    def _create_params(
-        self, api: API, query_params, request_obj, exclude_unset: bool = True
-    ):
+    def _create_params(self, api: API, query_params, request_obj):
         params = copy.deepcopy(self._request_params)
         if self._oauth_token_manager:
             token = self._oauth_token_manager.get_token()
@@ -653,12 +648,12 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         if query_params is not None:
             params["params"] = query_params
         if request_obj is not None:
-            if isinstance(request_obj, AtlanObject):
-                params["data"] = AtlanRequest(instance=request_obj, client=self).json()
-            elif api.consumes == APPLICATION_ENCODED_FORM:
+            if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
-            elif isinstance(request_obj, msgspec.Struct):
-                params["data"] = msgspec.json.encode(request_obj)
+            elif isinstance(request_obj, (msgspec.Struct, dict, list)):
+                params["data"] = AtlanRequest(instance=request_obj, client=self).json()
+            elif hasattr(request_obj, "to_json") and callable(request_obj.to_json):
+                params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             else:
                 params["data"] = json.dumps(request_obj)
         return params
@@ -751,7 +746,6 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         raw_json = self._call_api(
             PARSE_QUERY,
             request_obj=query,
-            exclude_unset=True,
         )
         return msgspec.convert(raw_json, ParsedQuery, strict=False)
 

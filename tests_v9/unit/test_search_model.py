@@ -6,8 +6,8 @@ from typing import Dict, Literal, Set, Union
 
 import pytest
 
-from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan_v9.model.audit import AuditSearchRequest
+from pyatlan_v9.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 from pyatlan_v9.model.search import (
     DSL,
     Bool,

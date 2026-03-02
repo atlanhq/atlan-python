@@ -10,6 +10,7 @@ import pytest
 
 from pyatlan.model.constants import DELETED_
 from pyatlan_v9.model import Purpose
+from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 from pyatlan_v9.model.core import AtlanRequest, AtlanResponse, AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
@@ -195,8 +196,13 @@ def test_asset_tag_name_field_serde_with_translation(client):
     }
 
     translated_dict = AtlanResponse(raw_json=raw_json, client=client).to_dict()
-    purpose_with_translation = Purpose.from_json(msgspec.json.encode(translated_dict))
-    purpose_without_translation = Purpose.from_json(msgspec.json.encode(raw_json))
+
+    def _nested_to_purpose(d: dict) -> Purpose:
+        nested = msgspec.convert(d, PurposeNested)
+        return _purpose_from_nested(nested)
+
+    purpose_with_translation = _nested_to_purpose(translated_dict)
+    purpose_without_translation = _nested_to_purpose(raw_json)
 
     retranslated_with_translated_dict = AtlanRequest(
         instance=purpose_with_translation, client=client
@@ -205,11 +211,11 @@ def test_asset_tag_name_field_serde_with_translation(client):
         instance=purpose_without_translation, client=client
     ).translated
 
-    purpose_with_translation_and_retranslation = Purpose.from_json(
-        msgspec.json.encode(retranslated_with_translated_dict)
+    purpose_with_translation_and_retranslation = _nested_to_purpose(
+        retranslated_with_translated_dict
     )
-    purpose_without_translation_and_retranslation = Purpose.from_json(
-        msgspec.json.encode(retranslated_without_translated_dict)
+    purpose_without_translation_and_retranslation = _nested_to_purpose(
+        retranslated_without_translated_dict
     )
 
     _assert_asset_tags(purpose_with_translation)

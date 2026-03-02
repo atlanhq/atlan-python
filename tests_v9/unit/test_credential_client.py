@@ -4,22 +4,18 @@
 """
 Unit tests for credential client — ported from tests/unit/test_credential_client.py.
 
-Uses v9 Credential (msgspec.Struct) for inputs. The CredentialClient internally
-uses legacy Pydantic models for deserialization, so response assertions use
-_is_model_instance for cross-type compatibility.
+Uses v9 Credential (msgspec.Struct) for inputs and V9CredentialClient which
+returns v9 msgspec models natively.
 """
 
 from unittest.mock import Mock
 
+import msgspec
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.credential import CredentialClient
-from pyatlan.errors import InvalidRequestError
-
-# Import legacy models for response fixtures (client returns Pydantic models)
-from pyatlan.model.credential import CredentialResponse as LegacyCredentialResponse
-from pyatlan.validate import _is_model_instance
+from pyatlan_v9.client.credential import V9CredentialClient as CredentialClient
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.credential import (
     Credential,
     CredentialListResponse,
@@ -62,9 +58,9 @@ def client(mock_api_caller) -> CredentialClient:
 
 
 @pytest.fixture()
-def credential_response() -> LegacyCredentialResponse:
-    """Client returns legacy Pydantic CredentialResponse objects."""
-    return LegacyCredentialResponse(  # type: ignore[call-arg]
+def credential_response() -> CredentialResponse:
+    """Fixture returning a v9 CredentialResponse for mock API results."""
+    return CredentialResponse(
         id="test-id",
         version="1.2.3",
         is_active=True,
@@ -157,20 +153,20 @@ def test_cred_test_update_raises_invalid_request_error(
 def test_cred_get_when_given_guid(
     client: CredentialClient,
     mock_api_caller,
-    credential_response: LegacyCredentialResponse,
+    credential_response: CredentialResponse,
 ):
-    mock_api_caller._call_api.return_value = credential_response.dict()
+    mock_api_caller._call_api.return_value = msgspec.to_builtins(credential_response)
     response = client.get(guid="test-id")
-    assert _is_model_instance(response, CredentialResponse)
+    assert isinstance(response, CredentialResponse)
     cred = response.to_credential()
-    assert _is_model_instance(cred, Credential)
+    assert isinstance(cred, Credential)
     _assert_cred_response(cred, credential_response)
 
 
 def test_cred_get_when_given_wrong_guid(
     client: CredentialClient,
     mock_api_caller,
-    credential_response: LegacyCredentialResponse,
+    credential_response: CredentialResponse,
 ):
     mock_api_caller._call_api.return_value = None
     assert client.get(guid="test-wrong-id") is None
@@ -179,11 +175,11 @@ def test_cred_get_when_given_wrong_guid(
 def test_cred_test_when_given_cred(
     client: CredentialClient,
     mock_api_caller,
-    credential_response: LegacyCredentialResponse,
+    credential_response: CredentialResponse,
 ):
     mock_api_caller._call_api.return_value = {"message": "successful"}
     cred_test_response = client.test(credential=Credential())
-    assert _is_model_instance(cred_test_response, CredentialTestResponse)
+    assert isinstance(cred_test_response, CredentialTestResponse)
     assert cred_test_response.message == "successful"
     assert cred_test_response.code is None
     assert cred_test_response.error is None
@@ -194,16 +190,16 @@ def test_cred_test_when_given_cred(
 def test_cred_test_update_when_given_cred(
     client: CredentialClient,
     mock_api_caller,
-    credential_response: LegacyCredentialResponse,
+    credential_response: CredentialResponse,
 ):
     mock_api_caller._call_api.side_effect = [
         {"message": "successful"},
-        credential_response.dict(),
+        msgspec.to_builtins(credential_response),
     ]
     cred_response = client.test_and_update(
         credential=Credential(id=credential_response.id)
     )
-    assert _is_model_instance(cred_response, CredentialResponse)
+    assert isinstance(cred_response, CredentialResponse)
     cred = cred_response.to_credential()
     _assert_cred_response(cred, credential_response)
 
@@ -224,7 +220,7 @@ def test_cred_get_all_success(
 
     result = client.get_all(filter=test_filter, limit=test_limit, offset=test_offset)
 
-    assert _is_model_instance(result, CredentialListResponse)
+    assert isinstance(result, CredentialListResponse)
     assert len(result.records) == len(test_response["records"])
     for record, expected in zip(result.records, test_response["records"]):
         assert record.id == expected["id"]
@@ -236,7 +232,7 @@ def test_cred_get_all_empty_response(mock_api_caller):
 
     result = client.get_all()
 
-    assert _is_model_instance(result, CredentialListResponse)
+    assert isinstance(result, CredentialListResponse)
     assert len(result.records) == 0
 
 
@@ -286,7 +282,7 @@ def test_cred_get_all_partial_response(mock_api_caller):
 
     result = client.get_all()
 
-    assert _is_model_instance(result, CredentialListResponse)
+    assert isinstance(result, CredentialListResponse)
     assert result.records[0].host is None
     assert result.records[0].id == "cred1"
     assert result.records[0].name == "Test Credential"
@@ -307,7 +303,7 @@ def test_cred_get_all_no_results(mock_api_caller):
 
     result = client.get_all(filter={"name": "nonexistent"})
 
-    assert _is_model_instance(result, CredentialListResponse)
+    assert isinstance(result, CredentialListResponse)
     assert result.records == []
     assert len(result.records) == 0
 
@@ -342,16 +338,16 @@ def test_cred_creator_wrong_params_raises_validation_error(
 )
 def test_creator_success(
     credential_data,
-    credential_response: LegacyCredentialResponse,
+    credential_response: CredentialResponse,
     mock_api_caller,
     client: CredentialClient,
 ):
-    mock_api_caller._call_api.return_value = credential_response.dict()
+    mock_api_caller._call_api.return_value = msgspec.to_builtins(credential_response)
     client = CredentialClient(mock_api_caller)
 
     response = client.creator(credential=credential_data)
 
-    assert _is_model_instance(response, CredentialResponse)
+    assert isinstance(response, CredentialResponse)
     assert credential_data.name == response.name
     assert credential_data.description == response.description
     assert credential_data.port == response.port

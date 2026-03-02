@@ -7,9 +7,9 @@ from unittest.mock import patch
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from pyatlan.model.utils import construct_object_key
+from pyatlan_v9.errors import InvalidRequestError
+from pyatlan_v9.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from pyatlan_v9.utils import (
     ComparisonCategory,
     get_base_type,

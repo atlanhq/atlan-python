@@ -18,14 +18,13 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.open_lineage import OpenLineageClient
-from pyatlan.errors import AtlanError, InvalidRequestError
-from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
 
 # Legacy models kept for client-interaction tests (client returns legacy types)
 from pyatlan.model.open_lineage import OpenLineageEvent as LegacyOpenLineageEvent
-from pyatlan.model.open_lineage import OpenLineageRawEvent as LegacyOpenLineageRawEvent
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.client.open_lineage import V9OpenLineageClient as OpenLineageClient
+from pyatlan_v9.errors import AtlanError, InvalidRequestError
+from pyatlan_v9.model.enums import AtlanConnectorType, OpenLineageEventType
 from pyatlan_v9.model.fluent_tasks import FluentTasks
 
 # v9 OpenLineage models (msgspec)
@@ -152,8 +151,7 @@ def test_ol_client_send(
     mock_api_caller,
 ):
     mock_api_caller._call_api.return_value = "Event received"
-    # Client expects legacy OpenLineageEvent (Pydantic)
-    test_event = LegacyOpenLineageEvent()
+    test_event = OpenLineageEvent()
     assert (
         OpenLineageClient(client=mock_api_caller).send(
             request=test_event, connector_type=AtlanConnectorType.SPARK
@@ -174,9 +172,8 @@ def test_ol_client_send_when_ol_not_configured(client, mock_session):
         "this connector before you can send events for it."
     )
     with pytest.raises(AtlanError, match=expected_error):
-        # Client expects legacy OpenLineageEvent (Pydantic)
         client.open_lineage.send(
-            request=LegacyOpenLineageEvent(),
+            request=OpenLineageEvent(),
             connector_type=AtlanConnectorType.SNOWFLAKE,
         )
 
@@ -239,18 +236,16 @@ def test_ol_raw_events_from_json_files(
     # Load test data from file
     test_data = load_json(test_data_file)
 
-    # Test send method with OpenLineageClient (uses legacy internally)
+    # Test send method with OpenLineageClient (uses v9 types internally)
     ol_client = OpenLineageClient(client=mock_api_caller)
     ol_client.send(request=test_data, connector_type=AtlanConnectorType.SPARK)
 
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"],
-        LegacyOpenLineageRawEvent,
+        OpenLineageRawEvent,
     )
-    assert (
-        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
-    )
+    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].data == test_data
     mock_api_caller.reset_mock()
 
     # Test emit_raw classmethod with AtlanClient mock
@@ -265,11 +260,9 @@ def test_ol_raw_events_from_json_files(
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"],
-        LegacyOpenLineageRawEvent,
+        OpenLineageRawEvent,
     )
-    assert (
-        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
-    )
+    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].data == test_data
     mock_api_caller.reset_mock()
 
 
@@ -286,34 +279,31 @@ def test_ol_raw_events_from_json_strings(mock_api_caller, test_data_file, input_
     test_data = load_json(test_data_file)
     test_json_string = json.dumps(test_data)
 
-    # Test send method with JSON string (client uses legacy internally)
+    # Test send method with JSON string (client uses v9 types internally)
     ol_client = OpenLineageClient(client=mock_api_caller)
     ol_client.send(request=test_json_string, connector_type=AtlanConnectorType.SPARK)
 
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"],
-        LegacyOpenLineageRawEvent,
+        OpenLineageRawEvent,
     )
-    # When parsing from JSON string, the __root__ should equal the original test_data
-    assert (
-        mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == test_data
-    )
+    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].data == test_data
     mock_api_caller.reset_mock()
 
 
 def test_ol_raw_events_edge_cases(mock_api_caller):
     ol_client = OpenLineageClient(client=mock_api_caller)
 
-    # Test empty list (client uses legacy internally)
+    # Test empty list (client uses v9 types internally)
     empty_list = load_json(EMPTY_EVENTS)
     ol_client.send(request=empty_list, connector_type=AtlanConnectorType.SPARK)
     assert mock_api_caller._call_api.call_count == 1
     assert isinstance(
         mock_api_caller._call_api.call_args.kwargs["request_obj"],
-        LegacyOpenLineageRawEvent,
+        OpenLineageRawEvent,
     )
-    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].__root__ == []
+    assert mock_api_caller._call_api.call_args.kwargs["request_obj"].data == []
     mock_api_caller.reset_mock()
 
     # Test custom connector type

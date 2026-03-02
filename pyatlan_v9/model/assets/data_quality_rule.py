@@ -408,7 +408,7 @@ class DataQualityRule(Asset):
         rule_conditions: Optional[str] = None,
         row_scope_filtering_enabled: Optional[bool] = False,
     ) -> "DataQualityRule":
-        from pyatlan.model.fluent_search import FluentSearch
+        from pyatlan_v9.model.fluent_search import FluentSearch
 
         validate_required_fields(
             ["client", "qualified_name"],
@@ -853,7 +853,7 @@ class DataQualityRule(Asset):
             qualified_names_to_search.append(target_table_qualified_name)
 
         if qualified_names_to_search:
-            from pyatlan.model.fluent_search import FluentSearch
+            from pyatlan_v9.model.fluent_search import FluentSearch
 
             search_request = (
                 FluentSearch()

@@ -13,7 +13,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Any, ClassVar, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -45,6 +45,30 @@ class AtlasGlossaryTerm(Asset):
     """
     Instance of a term in Atlan. Terms define concepts in natural language that can be associated with other assets to provide meaning.
     """
+
+    ANCHOR: ClassVar[Any] = None
+    CATEGORIES: ClassVar[Any] = None
+    SHORT_DESCRIPTION: ClassVar[Any] = None
+    LONG_DESCRIPTION: ClassVar[Any] = None
+    EXAMPLES: ClassVar[Any] = None
+    ABBREVIATION: ClassVar[Any] = None
+    USAGE: ClassVar[Any] = None
+    ADDITIONAL_ATTRIBUTES: ClassVar[Any] = None
+    TERM_TYPE: ClassVar[Any] = None
+    VALID_VALUES_FOR: ClassVar[Any] = None
+    VALID_VALUES: ClassVar[Any] = None
+    SEE_ALSO: ClassVar[Any] = None
+    IS_A: ClassVar[Any] = None
+    ANTONYMS: ClassVar[Any] = None
+    ASSIGNED_ENTITIES: ClassVar[Any] = None
+    CLASSIFIES: ClassVar[Any] = None
+    PREFERRED_TO_TERMS: ClassVar[Any] = None
+    PREFERRED_TERMS: ClassVar[Any] = None
+    TRANSLATION_TERMS: ClassVar[Any] = None
+    SYNONYMS: ClassVar[Any] = None
+    REPLACED_BY: ClassVar[Any] = None
+    REPLACEMENT_TERMS: ClassVar[Any] = None
+    TRANSLATED_TERMS: ClassVar[Any] = None
 
     # Override type_name with AtlasGlossaryTerm-specific default
     type_name: Union[str, UnsetType] = "AtlasGlossaryTerm"
@@ -344,15 +368,15 @@ class AtlasGlossaryTermAttributes(AssetAttributes):
     term_type: Union[str, None, UnsetType] = UNSET
     """"""
 
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this term is contained."""
+
 
 class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryTerm-specific relationship attributes for nested API format."""
 
     assigned_entities: Union[list[RelatedReferenceable], None, UnsetType] = UNSET
     """Assets assigned this term."""
-
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this term is contained."""
 
     categories: Union[list[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories within which this term is organized."""
@@ -430,7 +454,6 @@ def _atlas_glossary_term_to_nested(
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     rel_fields: list[str] = [
         "assigned_entities",
-        "anchor",
         "categories",
         "see_also",
         "synonyms",
@@ -493,7 +516,6 @@ def _atlas_glossary_term_from_nested(
     # Merge relationships from all three buckets
     rel_fields: list[str] = [
         "assigned_entities",
-        "anchor",
         "categories",
         "see_also",
         "synonyms",
@@ -541,3 +563,35 @@ def _atlas_glossary_term_from_nested_bytes(
     """Convert nested JSON bytes to flat AtlasGlossaryTerm."""
     nested = serde.decode(data, AtlasGlossaryTermNested)
     return _atlas_glossary_term_from_nested(nested)
+
+
+# ---------------------------------------------------------------------------
+# Deferred field descriptor initialization
+# ---------------------------------------------------------------------------
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField, TextField
+
+AtlasGlossaryTerm.ANCHOR = KeywordField("anchor", "__glossary")
+AtlasGlossaryTerm.CATEGORIES = KeywordField("categories", "__categories")
+AtlasGlossaryTerm.SHORT_DESCRIPTION = TextField("shortDescription", "shortDescription")
+AtlasGlossaryTerm.LONG_DESCRIPTION = TextField("longDescription", "longDescription")
+AtlasGlossaryTerm.EXAMPLES = TextField("examples", "examples")
+AtlasGlossaryTerm.ABBREVIATION = TextField("abbreviation", "abbreviation")
+AtlasGlossaryTerm.USAGE = TextField("usage", "usage")
+AtlasGlossaryTerm.ADDITIONAL_ATTRIBUTES = KeywordField(
+    "additionalAttributes", "additionalAttributes"
+)
+AtlasGlossaryTerm.TERM_TYPE = KeywordField("termType", "termType")
+AtlasGlossaryTerm.VALID_VALUES_FOR = RelationField("validValuesFor")
+AtlasGlossaryTerm.VALID_VALUES = RelationField("validValues")
+AtlasGlossaryTerm.SEE_ALSO = RelationField("seeAlso")
+AtlasGlossaryTerm.IS_A = RelationField("isA")
+AtlasGlossaryTerm.ANTONYMS = RelationField("antonyms")
+AtlasGlossaryTerm.ASSIGNED_ENTITIES = RelationField("assignedEntities")
+AtlasGlossaryTerm.CLASSIFIES = RelationField("classifies")
+AtlasGlossaryTerm.PREFERRED_TO_TERMS = RelationField("preferredToTerms")
+AtlasGlossaryTerm.PREFERRED_TERMS = RelationField("preferredTerms")
+AtlasGlossaryTerm.TRANSLATION_TERMS = RelationField("translationTerms")
+AtlasGlossaryTerm.SYNONYMS = RelationField("synonyms")
+AtlasGlossaryTerm.REPLACED_BY = RelationField("replacedBy")
+AtlasGlossaryTerm.REPLACEMENT_TERMS = RelationField("replacementTerms")
+AtlasGlossaryTerm.TRANSLATED_TERMS = RelationField("translatedTerms")

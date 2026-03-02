@@ -13,9 +13,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pyatlan.client.query import QueryClient
-from pyatlan.errors import ApiError, InvalidRequestError, LogicError
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.client.query import V9QueryClient as QueryClient
+from pyatlan_v9.errors import ApiError, InvalidRequestError, LogicError
 
 # v9 models
 from pyatlan_v9.model.query import QueryRequest, QueryResponse

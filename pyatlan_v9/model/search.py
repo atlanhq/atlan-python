@@ -201,14 +201,12 @@ class IndexSearchRequest(msgspec.Struct, kw_only=True):
                 utm_tags=[UTMTags.PROJECT_SDK_PYTHON],
             )
 
-    def json(
+    def to_dict(
         self,
-        by_alias: bool = False,
-        exclude_none: bool = False,
-        exclude_unset: bool = False,
-    ) -> str:
-        """Serialize IndexSearchRequest to JSON string, matching legacy Pydantic output format."""
-        # Build dict in field-declaration order with alias mapping
+        by_alias: bool = True,
+        exclude_none: bool = True,
+    ) -> Dict[str, Any]:
+        """Serialize IndexSearchRequest to dict, matching legacy Pydantic output format."""
         _ALIAS_MAP = {
             "attributes": "attributes",
             "dsl": "dsl",
@@ -240,7 +238,18 @@ class IndexSearchRequest(msgspec.Struct, kw_only=True):
             d[key] = val
         if exclude_none:
             d = {k: v for k, v in d.items() if v is not None}
-        return json_lib.dumps(d)
+        return d
+
+    def json(
+        self,
+        by_alias: bool = False,
+        exclude_none: bool = False,
+        exclude_unset: bool = False,
+    ) -> str:
+        """Serialize IndexSearchRequest to JSON string, matching legacy Pydantic output format."""
+        return json_lib.dumps(
+            self.to_dict(by_alias=by_alias, exclude_none=exclude_none)
+        )
 
 
 # ---------------------------------------------------------------------------

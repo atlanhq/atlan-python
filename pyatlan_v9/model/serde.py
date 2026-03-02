@@ -3,11 +3,21 @@
 
 from __future__ import annotations
 
+from enum import Enum
 from typing import Any, TypeVar
 
 import msgspec
 
 T = TypeVar("T")
+
+
+def _enc_hook(obj: Any) -> Any:
+    """Handle custom types that msgspec cannot natively encode."""
+    if obj.__class__.__name__ == "AtlanTagName":
+        return str(obj)
+    if isinstance(obj, Enum):
+        return obj.value
+    raise NotImplementedError(f"Cannot serialize {type(obj)}")
 
 
 class Serde:
@@ -18,7 +28,7 @@ class Serde:
     """
 
     def __init__(self) -> None:
-        self._encoder = msgspec.json.Encoder()
+        self._encoder = msgspec.json.Encoder(enc_hook=_enc_hook)
         self._decoders: dict[type[Any], msgspec.json.Decoder[Any]] = {}
 
     def encode(self, obj: Any) -> bytes:

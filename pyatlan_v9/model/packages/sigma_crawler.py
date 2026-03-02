@@ -3,8 +3,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
 
-from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.packages.base.crawler import AbstractCrawler
 from pyatlan_v9.model.workflow import WorkflowMetadata
 

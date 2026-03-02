@@ -4,9 +4,10 @@ from enum import Enum
 from typing import Any, List, Optional
 from warnings import warn
 
-from pyatlan_v9.client.atlan import AtlanClient
 import msgspec
+
 from pyatlan.model.enums import AtlanConnectorType, WorkflowPackage
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.packages.base.crawler import AbstractCrawler
 from pyatlan_v9.model.workflow import WorkflowMetadata
 
@@ -527,4 +528,3 @@ class DatabricksCrawler(AbstractCrawler):
             name=f"{self._PACKAGE_PREFIX}-{self._epoch}",
             namespace="default",
         )
-

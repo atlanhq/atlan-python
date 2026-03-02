@@ -130,9 +130,11 @@ class DataProductsAssetsDSL(msgspec.Struct, kw_only=True):
         )
         inner = DataProductsAssetsDSL(query=search_request)
         # Serialize, excluding sort/size from DSL
+        query_dict = search_request.to_dict()
+        query_dict.pop("requestMetadata", None)
         inner_dict = {
-            "query": search_request.to_dict(),
-            "filter_scrubbed": inner.filter_scrubbed,
+            "query": query_dict,
+            "filterScrubbed": inner.filter_scrubbed,
         }
         # Remove sort and size from the inner DSL
         if "dsl" in inner_dict.get("query", {}):

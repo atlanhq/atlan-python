@@ -9,7 +9,7 @@ tests/unit/test_base_vcr_yaml.py. No Pydantic/msgspec models involved.
 import httpx
 import pytest
 
-from pyatlan.test_utils.base_vcr import BaseVCR
+from pyatlan_v9.test_utils.base_vcr import BaseVCR
 
 
 class TestBaseVCRYAML(BaseVCR):

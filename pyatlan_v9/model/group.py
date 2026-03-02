@@ -11,7 +11,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.utils import validate_required_fields
 
 
-class GroupAttributes(msgspec.Struct, kw_only=True):
+class GroupAttributes(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Detailed attributes of an Atlan group."""
 
     alias: Union[list[str], None] = None
@@ -39,7 +39,7 @@ class GroupAttributes(msgspec.Struct, kw_only=True):
     """Slack channels for this group."""
 
 
-class AtlanGroup(msgspec.Struct, kw_only=True):
+class AtlanGroup(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     """Representation of a group in Atlan."""
 
     alias: Union[str, None] = None
@@ -153,7 +153,7 @@ class GroupRequest(msgspec.Struct, kw_only=True):
         return qp
 
 
-class GroupResponse(msgspec.Struct, kw_only=True):
+class GroupResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response containing group information with pagination support."""
 
     total_record: Union[int, None] = None
@@ -172,9 +172,9 @@ class GroupResponse(msgspec.Struct, kw_only=True):
     _client: Any = None
     _criteria: Any = None
 
-    def current_page(self) -> Union[list[AtlanGroup], None]:
+    def current_page(self) -> list[AtlanGroup]:
         """Return the current page of group results."""
-        return self.records
+        return self.records or []
 
     def next_page(self, start=None, size=None) -> bool:
         """Advance to the next page of results."""
@@ -207,12 +207,12 @@ class GroupResponse(msgspec.Struct, kw_only=True):
     def __iter__(self) -> Generator[AtlanGroup, None, None]:  # type: ignore[override]
         """Iterate through all pages of results."""
         while True:
-            yield from self.current_page() or []
+            yield from self.current_page()
             if not self.next_page():
                 break
 
 
-class CreateGroupRequest(msgspec.Struct, kw_only=True):
+class CreateGroupRequest(msgspec.Struct, kw_only=True, omit_defaults=True):
     """Request to create a group."""
 
     group: AtlanGroup
@@ -229,7 +229,7 @@ class RemoveFromGroupRequest(msgspec.Struct, kw_only=True):
     """List of users (their GUIDs) to remove from the group."""
 
 
-class UserStatus(msgspec.Struct, kw_only=True):
+class UserStatus(msgspec.Struct, kw_only=True, rename="camel"):
     """Status of a user association with a group."""
 
     status: Union[int, None] = None

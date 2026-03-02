@@ -4,9 +4,8 @@
 """
 Unit tests for SSO client — ported from tests/unit/test_sso_client.py.
 
-Uses v9 models for inputs and type assertions. SSOClient returns legacy
-Pydantic models, so _is_model_instance is used for cross-type checks and
-field-level assertions verify correctness.
+Uses v9 models for inputs and type assertions. V9SSOClient returns v9
+msgspec models natively.
 """
 
 from json import load
@@ -17,11 +16,8 @@ from unittest.mock import Mock
 import pytest
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.sso import SSOClient
-from pyatlan.errors import InvalidRequestError
-from pyatlan.validate import _is_model_instance
-
-# v9 models
+from pyatlan_v9.client.sso import V9SSOClient as SSOClient
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.group import AtlanGroup
 from pyatlan_v9.model.sso import SSOMapper
 
@@ -40,7 +36,7 @@ def load_json(respones_dir, filename):
 
 def _assert_sso_mapper_matches_json(response, expected_json):
     """Assert that a response SSOMapper matches expected JSON fields."""
-    assert _is_model_instance(response, SSOMapper)
+    assert isinstance(response, SSOMapper)
     assert response.id == expected_json.get("id")
     assert response.name == expected_json.get("name")
     assert response.identity_provider_mapper == expected_json["identityProviderMapper"]

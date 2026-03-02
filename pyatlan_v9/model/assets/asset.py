@@ -46,13 +46,16 @@ class Asset(Referenceable):
     # Field Descriptors (class-level, for search query building)
     # =========================================================================
 
-    NAME: ClassVar = None  # Initialized after imports below
-    DISPLAY_NAME: ClassVar = None  # Initialized after imports below
-    CONNECTOR_NAME: ClassVar = None  # Initialized after imports below
-    CONNECTION_NAME: ClassVar = None  # Initialized after imports below
-    ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar = (
+    NAME: ClassVar[Any] = None  # Initialized after imports below
+    DISPLAY_NAME: ClassVar[Any] = None  # Initialized after imports below
+    CONNECTOR_NAME: ClassVar[Any] = None  # Initialized after imports below
+    CONNECTION_NAME: ClassVar[Any] = None  # Initialized after imports below
+    ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[Any] = (
         None  # Initialized after imports below
     )
+    USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
+    USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
+    CONNECTION_QUALIFIED_NAME: ClassVar[Any] = None
 
     # =========================================================================
     # Instance Fields
@@ -851,6 +854,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     KeywordTextStemmedField,
     NumericField,
+    RelationField,
     TextField,
 )
 
@@ -887,6 +891,11 @@ Asset.ADMIN_GROUPS = KeywordField("adminGroups", "adminGroups")
 Asset.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME = KeywordField(
     "assetDQRowScopeFilterColumnQualifiedName",
     "assetDQRowScopeFilterColumnQualifiedName",
+)
+Asset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+Asset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+Asset.CONNECTION_QUALIFIED_NAME = KeywordTextField(
+    "connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text"
 )
 
 
@@ -1491,6 +1500,7 @@ class AssetNested(ReferenceableNested):
 def _asset_to_nested(asset: Asset) -> AssetNested:
     """Convert flat Asset to nested format."""
     attrs = AssetAttributes(
+        qualified_name=asset.qualified_name,
         name=asset.name,
         display_name=asset.display_name,
         description=asset.description,
@@ -1737,6 +1747,7 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        qualified_name=attrs.qualified_name,
         name=attrs.name,
         display_name=attrs.display_name,
         description=attrs.description,

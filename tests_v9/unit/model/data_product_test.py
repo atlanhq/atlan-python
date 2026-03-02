@@ -8,12 +8,12 @@ from pathlib import Path
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import CertificateStatus, DataProductStatus
-from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
-from pyatlan.model.search import IndexSearchRequest
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model import DataProduct
 from pyatlan_v9.model.assets import AtlasGlossary
+from pyatlan_v9.model.enums import CertificateStatus, DataProductStatus
+from pyatlan_v9.model.fluent_search import CompoundQuery, FluentSearch
+from pyatlan_v9.model.search import IndexSearchRequest
 from tests_v9.unit.model.constants import (
     DATA_DOMAIN_QUALIFIED_NAME,
     DATA_PRODUCT_NAME,

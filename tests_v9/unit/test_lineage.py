@@ -20,16 +20,6 @@ from unittest.mock import Mock
 import msgspec
 import pytest
 
-from pyatlan.errors import AtlanError, InvalidRequestError
-
-from pyatlan_v9.model.assets import Asset
-from pyatlan.model.enums import (
-    AtlanComparisonOperator,
-    CertificateStatus,
-    EntityStatus,
-    FileType,
-    LineageDirection,
-)
 from pyatlan.model.fields.atlan_fields import (
     AtlanField,
     CustomMetadataField,
@@ -41,7 +31,15 @@ from pyatlan.model.fields.atlan_fields import (
     LineageFilterFieldString,
     SearchableField,
 )
-from pyatlan_v9.model.typedef import AttributeDef
+from pyatlan_v9.errors import AtlanError, InvalidRequestError
+from pyatlan_v9.model.assets import Asset
+from pyatlan_v9.model.enums import (
+    AtlanComparisonOperator,
+    CertificateStatus,
+    EntityStatus,
+    FileType,
+    LineageDirection,
+)
 
 # v9 lineage models
 from pyatlan_v9.model.lineage import (
@@ -52,11 +50,20 @@ from pyatlan_v9.model.lineage import (
     LineageRelation,
     LineageResponse,
 )
+from pyatlan_v9.model.typedef import AttributeDef
 
 TODAY = date.today()
 BASE_GUID = "75474eab-3105-4ef9-9f84-709e386a7d3e"
 BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
-LINEAGE_RESPONSES_DIR = Path(__file__).parent / ".." / ".." / "tests" / "unit" / "data" / "lineage_responses"
+LINEAGE_RESPONSES_DIR = (
+    Path(__file__).parent
+    / ".."
+    / ".."
+    / "tests"
+    / "unit"
+    / "data"
+    / "lineage_responses"
+)
 
 
 @pytest.fixture(scope="session")

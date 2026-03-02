@@ -115,11 +115,15 @@ class Workflow(msgspec.Struct, kw_only=True, rename="camel"):
     spec: Union[WorkflowSpec, None] = None
     payload: list[PackageParameter] = msgspec.field(default_factory=list)
 
-    def to_json(self) -> str:
+    def to_json(self, nested: bool = True) -> str:
         """
         Serialize to JSON with camelCase keys, excluding None values.
 
         This matches the legacy Pydantic ``Workflow.json(by_alias=True, exclude_none=True)``.
+
+        Args:
+            nested: Accepted for API compatibility with the Pydantic encoder
+                hook but has no effect on the output format.
         """
         data = msgspec.to_builtins(self)
         cleaned = _remove_nones(data)

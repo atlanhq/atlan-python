@@ -10,7 +10,7 @@ import msgspec
 from pyatlan.errors import ErrorCode
 
 
-class OAuthClientRequest(msgspec.Struct, kw_only=True):
+class OAuthClientRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request object for creating an OAuth client."""
 
     display_name: str
@@ -25,7 +25,7 @@ class OAuthClientRequest(msgspec.Struct, kw_only=True):
     """Qualified names of personas to associate with the OAuth client."""
 
 
-class OAuthClientCreateResponse(msgspec.Struct, kw_only=True):
+class OAuthClientCreateResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response object returned when creating an OAuth client (includes client secret)."""
 
     id: Union[str, None] = None
@@ -46,7 +46,7 @@ class OAuthClientCreateResponse(msgspec.Struct, kw_only=True):
     """User who created the OAuth client."""
 
 
-class OAuthClientResponse(msgspec.Struct, kw_only=True):
+class OAuthClientResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Represents an OAuth client credential in Atlan."""
 
     id: Union[str, None] = None
@@ -75,7 +75,7 @@ class OAuthClientResponse(msgspec.Struct, kw_only=True):
     """User who last updated the OAuth client."""
 
 
-class OAuthClientListResponse(msgspec.Struct, kw_only=True):
+class OAuthClientListResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response object containing a list of OAuth clients with pagination info."""
 
     total_record: Union[int, None] = None

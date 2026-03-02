@@ -309,8 +309,18 @@ class AuditSearchResults(Iterable):
             return None
 
         try:
+            from pyatlan_v9.client.audit import (
+                _AUDIT_TS_FIELDS,
+                _normalize_ms_timestamps,
+            )
+
             self._entity_audits = [
-                msgspec.convert(audit, EntityAudit) for audit in raw_json[ENTITY_AUDITS]
+                msgspec.convert(
+                    _normalize_ms_timestamps(audit, _AUDIT_TS_FIELDS),
+                    EntityAudit,
+                    strict=False,
+                )
+                for audit in raw_json[ENTITY_AUDITS]
             ]
             if is_bulk_search:
                 self._filter_processed_entities()

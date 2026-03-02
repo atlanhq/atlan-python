@@ -55,12 +55,16 @@ class AtlanTagTranslator(BaseTranslator):
 
     def translate(self, data: dict[str, Any]) -> dict[str, Any]:
         """Translate tag identifiers in-place on a copy of the provided dictionary."""
+        from pyatlan_v9.model.core import AtlanTagName
+
         raw_json = data.copy()
 
         for key in self._CLASSIFICATION_NAMES:
             if key in raw_json:
                 raw_json[key] = [
-                    self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
+                    AtlanTagName(
+                        self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
+                    )
                     for tag_id in raw_json[key]
                 ]
 
@@ -72,7 +76,9 @@ class AtlanTagTranslator(BaseTranslator):
                 if not tag_id:
                     continue
                 tag_name = self.client.atlan_tag_cache.get_name_for_id(tag_id)
-                classification[self._TYPE_NAME] = tag_name if tag_name else DELETED_
+                classification[self._TYPE_NAME] = AtlanTagName(
+                    tag_name if tag_name else DELETED_
+                )
                 classification[self._TAG_ID] = tag_id
 
                 attr_id = self.client.atlan_tag_cache.get_source_tags_attr_id(tag_id)

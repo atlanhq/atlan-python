@@ -13,23 +13,17 @@ delegation. The v9 test uses direct field access on msgspec.Struct asset
 classes (no inner Attributes class pattern).
 """
 
-import json
 from pathlib import Path
 from re import escape
-from typing import List
 
-import msgspec
 import pytest
 
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import (
-    AnnouncementType,
-    CertificateStatus,
-)
 from pyatlan.utils import validate_single_required_field
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.assets.asset import Asset
 from pyatlan_v9.model.assets.readme import Readme
 from pyatlan_v9.model.assets.table import Table
+from pyatlan_v9.model.enums import AnnouncementType, CertificateStatus
 
 SCHEMA_QUALIFIED_NAME = "default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
 TABLE_NAME = "MKT_EXPENSES"
@@ -40,6 +34,7 @@ DATA_DIR = Path(__file__).parent / ".." / ".." / "tests" / "unit" / "data"
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def get_all_subclasses(cls):
     all_subclasses = []
@@ -54,16 +49,14 @@ def _entity_classes():
     return [
         c
         for c in get_all_subclasses(Asset)
-        if not any(
-            x in c.__name__
-            for x in ["Attributes", "Nested", "Relationship"]
-        )
+        if not any(x in c.__name__ for x in ["Attributes", "Nested", "Relationship"])
     ]
 
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def table():
@@ -80,6 +73,7 @@ def table():
 # on all v9 entity subclasses. In legacy, this tests on Asset.Attributes
 # inner classes; in v9, it tests directly on the entity classes.
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize(
     "clazz, method_name, property_names, values",
@@ -151,6 +145,7 @@ def test_field_set_get(clazz, field_name, value):
 # ---------------------------------------------------------------------------
 # Standalone tests — ported directly from legacy
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize(
     "names, values, message",

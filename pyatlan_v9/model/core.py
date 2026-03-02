@@ -380,7 +380,9 @@ class BulkRequest(msgspec.Struct, kw_only=True, rename="camel"):
         """
         entity_dicts = []
         for entity in self.entities:
-            if hasattr(entity, "to_json"):
+            if hasattr(entity, "to_nested_dict"):
+                entity_dicts.append(entity.to_nested_dict())
+            elif hasattr(entity, "to_json"):
                 entity_dicts.append(json.loads(entity.to_json(nested=True)))
             else:
                 entity_dicts.append(msgspec.to_builtins(entity))

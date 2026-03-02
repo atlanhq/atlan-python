@@ -91,7 +91,7 @@ def _type_name_to_module(type_name: str) -> str:
     # or before a capital that follows a lowercase
     s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", type_name)
     snake_case = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
-    return f"pyatlan.models.{snake_case}"
+    return f"pyatlan_v9.model.assets.{snake_case}"
 
 
 def get_type(type_name: str) -> type:
@@ -187,6 +187,40 @@ def to_atlas_format(asset: Asset) -> dict[str, Any]:
     return result
 
 
+_NESTED_BUCKETS = frozenset(
+    ("attributes", "uniqueAttributes", "relationshipAttributes")
+)
+
+
+def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
+    """Flatten one Atlas entity dict, merging ``attributes``,
+    ``uniqueAttributes``, and ``relationshipAttributes`` into the top
+    level.  Nested entity-shaped values (dicts with ``typeName``) are
+    recursively flattened as well.
+    """
+    flattened: dict[str, Any] = {}
+
+    for key, value in data.items():
+        if key in _NESTED_BUCKETS:
+            if isinstance(value, dict):
+                flattened.update(value)
+        else:
+            flattened[key] = value
+
+    for key, value in list(flattened.items()):
+        if isinstance(value, dict) and "typeName" in value:
+            flattened[key] = _flatten_entity_dict(value)
+        elif isinstance(value, list):
+            flattened[key] = [
+                _flatten_entity_dict(item)
+                if isinstance(item, dict) and "typeName" in item
+                else item
+                for item in value
+            ]
+
+    return flattened
+
+
 def from_atlas_format(data: dict[str, Any]) -> Asset:
     """Convert Atlas API format to a flattened msgspec Struct.
 
@@ -202,38 +236,8 @@ def from_atlas_format(data: dict[str, Any]) -> Asset:
     type_name = data.get("typeName", "Asset")
     cls = get_type(type_name)
 
-    # Flatten: merge top-level fields with attributes
-    # Keys stay in camelCase - msgspec's rename="camel" handles conversion
-    flattened: dict[str, Any] = {}
+    flattened = _flatten_entity_dict(data)
 
-    # Copy top-level fields (already in camelCase)
-    for key in (
-        "guid",
-        "typeName",
-        "status",
-        "createdBy",
-        "createTime",
-        "updatedBy",
-        "updateTime",
-        "version",
-        "docId",
-        "superTypeNames",
-        "isIncomplete",
-        "labels",
-        "classifications",
-    ):
-        if key in data:
-            flattened[key] = data[key]
-
-    # Merge attributes (already in camelCase)
-    if data.get("attributes"):
-        flattened.update(data["attributes"])
-
-    # Merge relationshipAttributes (already in camelCase)
-    if data.get("relationshipAttributes"):
-        flattened.update(data["relationshipAttributes"])
-
-    # msgspec.convert with rename="camel" on Asset handles camelCase -> snake_case
     return msgspec.convert(flattened, cls, strict=False)
 
 

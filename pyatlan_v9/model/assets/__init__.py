@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from .access_control import AccessControl
 from .adf import ADF
 from .adf_activity import AdfActivity
 from .adf_dataflow import AdfDataflow
@@ -111,6 +112,7 @@ from .atlan_app_workflow import AtlanAppWorkflow
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
 from .atlas_glossary_term import AtlasGlossaryTerm
+from .auth_policy import AuthPolicy
 from .aws import AWS
 from .azure import Azure
 from .azure_event_consumer_group import AzureEventHubConsumerGroup
@@ -573,6 +575,7 @@ from .partial import Partial
 from .partial_field import PartialField
 from .partial_object import PartialObject
 from .partial_related import RelatedPartial, RelatedPartialField, RelatedPartialObject
+from .persona import Persona
 from .power_bi import PowerBI
 from .power_bi_app import PowerBIApp
 from .power_bi_column import PowerBIColumn
@@ -895,6 +898,7 @@ from .workflow import Workflow
 from .workflow_related import RelatedWorkflow, RelatedWorkflowRun
 
 __all__ = [
+    "AccessControl",
     "ADF",
     "ADLS",
     "ADLSAccount",
@@ -948,6 +952,7 @@ __all__ = [
     "AtlasGlossary",
     "AtlasGlossaryCategory",
     "AtlasGlossaryTerm",
+    "AuthPolicy",
     "Azure",
     "AzureServiceBus",
     "AzureServiceBusNamespace",
@@ -1180,6 +1185,7 @@ __all__ = [
     "Procedure",
     "Process",
     "ProcessExecution",
+    "Persona",
     "Purpose",
     "Qlik",
     "QlikApp",

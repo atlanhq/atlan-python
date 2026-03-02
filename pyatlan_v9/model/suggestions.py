@@ -25,8 +25,8 @@ from pyatlan_v9.model.search import Query
 if TYPE_CHECKING:
     from pyatlan.client.asset import Batch
     from pyatlan.client.atlan import AtlanClient
-    from pyatlan.model.response import AssetMutationResponse
     from pyatlan_v9.model.assets import Asset
+    from pyatlan_v9.model.response import AssetMutationResponse
 
 
 class SuggestionResponse(msgspec.Struct, kw_only=True):
@@ -81,7 +81,7 @@ class SuggestionResponse(msgspec.Struct, kw_only=True):
         """The suggested glossary term asset."""
 
         def __init__(self, count: int, qualified_name: str):
-            from pyatlan.model.assets import AtlasGlossaryTerm
+            from pyatlan_v9.model.assets import AtlasGlossaryTerm
 
             self.count = count
             self.value = AtlasGlossaryTerm.ref_by_qualified_name(qualified_name)
@@ -228,8 +228,8 @@ class Suggestions:
         :param client: connectivity to an Atlan tenant
         :returns: suggestion response with found suggestions
         """
-        from pyatlan.model.assets import Asset
-        from pyatlan.model.fluent_search import FluentSearch
+        from pyatlan_v9.model.assets import Asset
+        from pyatlan_v9.model.fluent_search import FluentSearch
 
         asset_name = ""
         all_types: List[str] = []
@@ -413,14 +413,14 @@ class Suggestions:
     @staticmethod
     def _get_asset_description_field() -> AtlanField:
         """Get the Asset.DESCRIPTION field."""
-        from pyatlan.model.assets import Asset
+        from pyatlan_v9.model.assets import Asset
 
         return Asset.DESCRIPTION
 
     @staticmethod
     def _get_asset_user_description_field() -> AtlanField:
         """Get the Asset.USER_DESCRIPTION field."""
-        from pyatlan.model.assets import Asset
+        from pyatlan_v9.model.assets import Asset
 
         return Asset.USER_DESCRIPTION
 

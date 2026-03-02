@@ -20,15 +20,15 @@ import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan.errors import ErrorCode
-from pyatlan.model.data_mesh import DataProductsAssetsDSL
 from pyatlan.model.enums import DataProductStatus
-from pyatlan.model.search import IndexSearchRequest
 from pyatlan_v9.model.conversion_utils import (
     build_attributes_kwargs,
     build_flat_kwargs,
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
+from pyatlan_v9.model.search import IndexSearchRequest
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields

@@ -5,7 +5,6 @@
 
 import pytest
 
-from pyatlan.model.enums import SortOrder
 from pyatlan.model.fields.atlan_fields import (
     AtlanSearchableFieldType,
     InternalKeywordTextField,
@@ -13,6 +12,7 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     SearchableField,
 )
+from pyatlan_v9.model.enums import SortOrder
 from pyatlan_v9.model.search import Exists
 
 ATLAN_FIELD_NAME = "atlan_field_name"

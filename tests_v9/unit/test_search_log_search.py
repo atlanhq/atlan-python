@@ -17,18 +17,16 @@ import pytest
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.common.search_log import LOGGER
-from pyatlan.client.search_log import SearchLogClient
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import SortOrder
-
-# Legacy result model — client returns this; needed for patching thresholds
-from pyatlan.model.search_log import SearchLogResults
+from pyatlan_v9.client.search_log import V9SearchLogClient as SearchLogClient
+from pyatlan_v9.errors import InvalidRequestError
+from pyatlan_v9.model.enums import SortOrder
 
 # v9 request models (msgspec) — SortItem is re-exported from legacy
 from pyatlan_v9.model.search import SortItem
 
+# V9 result model — client returns this; needed for patching thresholds
 # v9 request model
-from pyatlan_v9.model.search_log import SearchLogRequest
+from pyatlan_v9.model.search_log import SearchLogRequest, SearchLogResults
 
 SEARCH_RESPONSES_DIR = (
     Path(__file__).parent.parent.parent / "tests" / "unit" / "data" / "search_responses"

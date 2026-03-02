@@ -29,7 +29,7 @@ class SSOMapperConfig(msgspec.Struct, kw_only=True, rename="camel"):
     )
 
 
-class SSOMapper(msgspec.Struct, kw_only=True):
+class SSOMapper(msgspec.Struct, kw_only=True, rename="camel"):
     """SSO identity provider mapper."""
 
     id: Union[str, None] = None

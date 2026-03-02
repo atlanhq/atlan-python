@@ -4,14 +4,14 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Union
+from typing import Any, ClassVar, Union
 
 import msgspec
 
 from pyatlan.model.constants import SERVICE_ACCOUNT_
 
 
-class ApiTokenPersona(msgspec.Struct, kw_only=True, frozen=True):
+class ApiTokenPersona(msgspec.Struct, kw_only=True, frozen=True, rename="camel"):
     """Persona linked to an API token."""
 
     guid: Union[str, None] = msgspec.field(default=None, name="id")
@@ -24,7 +24,7 @@ class ApiTokenPersona(msgspec.Struct, kw_only=True, frozen=True):
     """Unique qualified_name of the persona."""
 
 
-class ApiTokenAttributes(msgspec.Struct, kw_only=True):
+class ApiTokenAttributes(msgspec.Struct, kw_only=True, rename="camel"):
     """Detailed characteristics of an API token."""
 
     access_token_lifespan: Union[int, None] = msgspec.field(
@@ -50,18 +50,16 @@ class ApiTokenAttributes(msgspec.Struct, kw_only=True):
     display_name: Union[str, None] = None
     """Human-readable name provided when creating the token."""
 
-    personas: Union[list[Any], None] = msgspec.field(default_factory=list)
+    personas: Union[Any, None] = None
     """Deprecated (now unused): personas associated with the API token."""
 
-    persona_qualified_name: Union[set[ApiTokenPersona], None] = msgspec.field(
-        default_factory=set
-    )
-    """Personas associated with the API token."""
+    persona_qualified_name: Union[Any, None] = None
+    """Personas associated with the API token (may arrive as JSON string from API)."""
 
     purposes: Union[Any, None] = None
     """Possible future placeholder for purposes associated with the token."""
 
-    workspace_permissions: Union[set[str], None] = msgspec.field(default_factory=set)
+    workspace_permissions: Union[Any, None] = None
     """Detailed permissions given to the API token."""
 
     def __post_init__(self) -> None:
@@ -75,9 +73,16 @@ class ApiTokenAttributes(msgspec.Struct, kw_only=True):
             self.persona_qualified_name = {
                 ApiTokenPersona(persona_qualified_name=qn) for qn in persona_qns
             }
+        elif isinstance(self.persona_qualified_name, list):
+            self.persona_qualified_name = {
+                msgspec.convert(item, ApiTokenPersona, strict=False)
+                if isinstance(item, dict)
+                else item
+                for item in self.persona_qualified_name
+            }
 
 
-class ApiToken(msgspec.Struct, kw_only=True):
+class ApiToken(msgspec.Struct, kw_only=True, rename="camel"):
     """Representation of an API token in Atlan."""
 
     guid: Union[str, None] = msgspec.field(default=None, name="id")
@@ -107,11 +112,10 @@ class ApiToken(msgspec.Struct, kw_only=True):
         return SERVICE_ACCOUNT_ + cid if cid else ""
 
 
-class ApiTokenRequest(msgspec.Struct, kw_only=True):
+class ApiTokenRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request to create an API token."""
 
-    # 5 years in seconds (reverted from 13 years due to Keycloak overflow)
-    _MAX_VALIDITY: int = 157680000
+    _MAX_VALIDITY: ClassVar[int] = 157680000
 
     display_name: Union[str, None] = None
     """Human-readable name provided when creating the token."""
@@ -119,10 +123,10 @@ class ApiTokenRequest(msgspec.Struct, kw_only=True):
     description: str = ""
     """Explanation of the token."""
 
-    personas: Union[set[str], None] = None
+    personas: set[str] = msgspec.field(default_factory=set)
     """Deprecated (now unused): GUIDs of personas associated with the token."""
 
-    persona_qualified_names: Union[set[str], None] = None
+    persona_qualified_names: set[str] = msgspec.field(default_factory=set)
     """Unique qualified_names of personas associated with the token."""
 
     validity_seconds: Union[int, None] = None
@@ -135,11 +139,9 @@ class ApiTokenRequest(msgspec.Struct, kw_only=True):
                 self.validity_seconds = self._MAX_VALIDITY
             else:
                 self.validity_seconds = min(self.validity_seconds, self._MAX_VALIDITY)
-        if self.personas is not None and not self.personas:
-            self.personas = set()
 
 
-class ApiTokenResponse(msgspec.Struct, kw_only=True):
+class ApiTokenResponse(msgspec.Struct, kw_only=True, rename="camel"):
     """Response containing API token information."""
 
     total_record: Union[int, None] = None

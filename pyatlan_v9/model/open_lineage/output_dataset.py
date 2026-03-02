@@ -32,9 +32,7 @@ class OpenLineageOutputDataset(OpenLineageDataset):
         List[
             Dict[
                 str,
-                List[
-                    OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields
-                ],
+                List[OpenLineageColumnLineageDatasetFacetFieldsAdditionalInputFields],
             ]
         ],
         None,
@@ -45,9 +43,7 @@ class OpenLineageOutputDataset(OpenLineageDataset):
 
     @staticmethod
     def _get_schema() -> str:
-        return (
-            "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/OutputDataset"
-        )
+        return "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/OutputDataset"
 
     @classmethod
     def creator(

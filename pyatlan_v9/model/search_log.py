@@ -259,10 +259,10 @@ class SearchLogEntry(msgspec.Struct, kw_only=True):
     Instances of this class should be treated as immutable.
     """
 
-    user_agent: str
+    user_agent: str = msgspec.field(name="userAgent")
     host: str
-    ip_address: str
-    user_name: str
+    ip_address: str = msgspec.field(name="ipAddress")
+    user_name: str = msgspec.field(name="userName")
     entity_guids_all: List[str] = msgspec.field(
         default_factory=list, name="entityGuidsAll"
     )
@@ -281,7 +281,7 @@ class SearchLogEntry(msgspec.Struct, kw_only=True):
     entity_type_names_allowed: List[str] = msgspec.field(
         default_factory=list, name="entityTypeNamesAllowed"
     )
-    utm_tags: List[str] = msgspec.field(default_factory=list)
+    utm_tags: List[str] = msgspec.field(default_factory=list, name="utmTags")
     has_result: bool = msgspec.field(default=False, name="hasResult")
     results_count: int = msgspec.field(default=0, name="resultsCount")
     response_time: int = msgspec.field(default=0, name="responseTime")
@@ -417,8 +417,18 @@ class SearchLogResults(Iterable):
             self._log_entries = []
             return None
         try:
+            from pyatlan_v9.client.search_log import (
+                _LOG_TS_FIELDS,
+                _normalize_ms_timestamps_copy,
+            )
+
             self._log_entries = [
-                msgspec.convert(entry, SearchLogEntry) for entry in raw_json["logs"]
+                msgspec.convert(
+                    _normalize_ms_timestamps_copy(entry, _LOG_TS_FIELDS),
+                    SearchLogEntry,
+                    strict=False,
+                )
+                for entry in raw_json["logs"]
             ]
             self._processed_log_entries_count += len(self._log_entries)
             if is_bulk_search:

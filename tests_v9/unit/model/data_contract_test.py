@@ -8,7 +8,7 @@ from typing import Union
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
+from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model import DataContract
 from pyatlan_v9.model.contract import DataContractSpec
 from tests_v9.unit.model.constants import (
