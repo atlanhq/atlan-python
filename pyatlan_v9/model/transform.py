@@ -237,26 +237,8 @@ def from_atlas_format(data: dict[str, Any]) -> Asset:
     cls = get_type(type_name)
 
     flattened = _flatten_entity_dict(data)
-    _convert_nested_entities(flattened)
 
     return msgspec.convert(flattened, cls, strict=False)
-
-
-def _convert_nested_entities(flattened: dict[str, Any]) -> None:
-    """Recursively convert nested entity dicts (with typeName) into asset objects."""
-    for key, value in list(flattened.items()):
-        if isinstance(value, dict) and "typeName" in value:
-            try:
-                flattened[key] = from_atlas_format(value)
-            except Exception:
-                pass
-        elif isinstance(value, list):
-            flattened[key] = [
-                from_atlas_format(item)
-                if isinstance(item, dict) and "typeName" in item
-                else item
-                for item in value
-            ]
 
 
 def from_atlas_json(json_bytes: bytes, type_name: str | None = None) -> Asset:  # noqa: ARG001

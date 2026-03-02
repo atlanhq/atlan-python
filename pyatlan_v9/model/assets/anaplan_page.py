@@ -17,6 +17,7 @@ from typing import Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -80,20 +81,30 @@ class AnaplanPage(Asset):
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, app_qualified_name: str) -> "AnaplanPage":
+    def creator(
+        cls,
+        *,
+        name: str,
+        app_qualified_name: str,
+        connection_qualified_name: Union[str, None, UnsetType] = UNSET,
+    ) -> "AnaplanPage":
         """Create a new AnaplanPage asset."""
         validate_required_fields(
             ["name", "app_qualified_name"], [name, app_qualified_name]
         )
-        fields = app_qualified_name.split("/")
-        connection_qualified_name = (
-            "/".join(fields[:3]) if len(fields) >= 3 else app_qualified_name
-        )
-        connector_name = fields[1] if len(fields) > 1 else None
+        connection_qn: Union[str, None, UnsetType] = UNSET
+        if connection_qualified_name is not UNSET and connection_qualified_name is not None:
+            connector_name = str(
+                AtlanConnectorType.get_connector_name(connection_qualified_name)
+            )
+        else:
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                app_qualified_name, "app_qualified_name", 4
+            )
         return cls(
             name=name,
             qualified_name=f"{app_qualified_name}/{name}",
-            connection_qualified_name=connection_qualified_name,
+            connection_qualified_name=connection_qualified_name or connection_qn,
             connector_name=connector_name,
             anaplan_app_qualified_name=app_qualified_name,
         )

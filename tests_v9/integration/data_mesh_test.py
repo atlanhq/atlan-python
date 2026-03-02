@@ -356,9 +356,10 @@ def test_contract(
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
+    dc_guid = table_data_contract.guid if hasattr(table_data_contract, "guid") else table_data_contract.get("guid")
     assert contract and table_data_contract
     assert table.name and contract.name and table.name in contract.name
-    assert contract.guid == table_data_contract.guid
+    assert contract.guid == dc_guid
     assert contract.data_contract_json
     assert contract.data_contract_version == 1
     assert contract.data_contract_asset_guid == table.guid
@@ -374,9 +375,10 @@ def test_update_contract(
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
+    dc_guid = table_data_contract.guid if hasattr(table_data_contract, "guid") else table_data_contract.get("guid")
     assert table.name and updated_contract and table_data_contract
     assert updated_contract.name and table.name in updated_contract.name
-    assert updated_contract.guid == table_data_contract.guid
+    assert updated_contract.guid == dc_guid
     assert updated_contract.data_contract_asset_guid == table.guid
     assert updated_contract.data_contract_json
     assert updated_contract.data_contract_version == 1

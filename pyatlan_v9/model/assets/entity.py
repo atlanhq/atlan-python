@@ -408,6 +408,16 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
         # XRelationshipAttributes class in the same module.
         rel_field_names = _get_relationship_fields(type(self))
 
+        # Build a map from camelCase field names to original Entity objects
+        # so we can restore typeName that omit_defaults may have dropped.
+        _rel_originals: dict[str, Any] = {}
+        for f in msgspec.structs.fields(type(self)):
+            camel = f.encode_name
+            if camel in rel_field_names:
+                val = getattr(self, f.name, UNSET)
+                if val is not UNSET and val is not None:
+                    _rel_originals[camel] = val
+
         top_level: dict[str, Any] = {}
         attributes: dict[str, Any] = {}
         rel_replace: dict[str, Any] = {}
@@ -420,6 +430,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
                     continue
                 top_level[key] = value
             elif key in rel_field_names:
+                _ensure_type_name(key, value, _rel_originals)
                 _bucket_relationship(key, value, rel_replace, rel_append, rel_remove)
             else:
                 attributes[key] = value
@@ -499,6 +510,39 @@ def _strip_semantic(item: dict) -> dict:
     """Remove the internal 'semantic' key from a relationship dict."""
     item.pop("semantic", None)
     return item
+
+
+def _fixup_ref(d: dict, original: Any) -> None:
+    """Fix a serialized reference dict to match Atlas API expectations.
+
+    - Restores typeName that omit_defaults may have dropped
+    - Wraps qualifiedName in uniqueAttributes for ref_by_qualified_name
+    """
+    if not isinstance(d, dict):
+        return
+    if "typeName" not in d and isinstance(original, Entity) and original.type_name is not UNSET:
+        d["typeName"] = original.type_name
+    qn = d.pop("qualifiedName", None)
+    if qn is not None and "guid" not in d:
+        d["uniqueAttributes"] = {"qualifiedName": qn}
+    elif qn is not None:
+        d.setdefault("uniqueAttributes", {})["qualifiedName"] = qn
+
+
+def _ensure_type_name(
+    key: str, value: Any, originals: dict[str, Any]
+) -> None:
+    """Ensure serialized relationship dicts contain typeName and proper structure."""
+    original = originals.get(key)
+    if original is None:
+        return
+
+    if isinstance(value, dict):
+        _fixup_ref(value, original)
+    elif isinstance(value, list) and isinstance(original, list):
+        for i, item in enumerate(value):
+            if isinstance(item, dict) and i < len(original):
+                _fixup_ref(item, original[i])
 
 
 def _bucket_relationship(

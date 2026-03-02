@@ -244,9 +244,11 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
                 for i, bucket in enumerate(result.buckets):
                     if i < len(raw_buckets):
                         try:
-                            bucket.nested_results = _parse_nested(raw_buckets[i])
-                        except Exception:
-                            pass
+                            nested = _parse_nested(raw_buckets[i])
+                            bucket.nested_results = nested
+                        except Exception as exc:
+                            import sys
+                            print(f"NESTED_PARSE_ERROR: {exc}", file=sys.stderr)
                 parsed[key] = result
             elif "hits" in value:
                 parsed[key] = msgspec.convert(
@@ -272,8 +274,11 @@ def _process_search_response_v9(raw_json: Dict, criteria) -> Dict:
     if "aggregations" in raw_json:
         try:
             aggregations = _parse_aggregations_v9(raw_json["aggregations"])
-        except Exception:
-            pass
+        except Exception as exc:
+            import sys
+            print(f"AGGREGATION_PARSE_ERROR: {exc}", file=sys.stderr)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
 
     approximate_count = raw_json.get("approximateCount", 0)
     return {
@@ -418,12 +423,15 @@ class V9AssetClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
+        import sys
+        print(f"V9_SEARCH_CALLED from {type(self).__name__}", file=sys.stderr)
         endpoint, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = self._client._call_api(
             endpoint,
             request_obj=request_obj,
         )
         response = _process_search_response_v9(raw_json, criteria)
+        print(f"V9_SEARCH_AGGS: {response['aggregations']}", file=sys.stderr)
         if Search._check_for_bulk_search(criteria, response["count"], bulk):
             return self.search(criteria)
         return V9IndexSearchResults(

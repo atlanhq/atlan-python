@@ -74,7 +74,7 @@ def sub_folder(client: AtlanClient, folder: Folder) -> Generator[Folder, None, N
 
 @pytest.fixture(scope="module")
 def query(client: AtlanClient, folder: Folder) -> Generator[Query, None, None]:
-    connection = client.find_connections_by_name(
+    connection = client.asset.find_connections_by_name(
         name=CONNECTION_NAME, connector_type=AtlanConnectorType.SNOWFLAKE
     )
     assert connection and len(connection) == 1 and connection[0].qualified_name
