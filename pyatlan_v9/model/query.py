@@ -26,7 +26,7 @@ class DatabaseColumn(msgspec.Struct, kw_only=True):
     source: Union[str, None] = None
 
 
-class RelationshipEndpoint(msgspec.Struct, kw_only=True):
+class RelationshipEndpoint(msgspec.Struct, kw_only=True, rename="camel"):
     """Endpoint of a lineage relationship in a parsed query."""
 
     id: Union[str, None] = None
@@ -39,7 +39,7 @@ class RelationshipEndpoint(msgspec.Struct, kw_only=True):
     """Name of the parent object."""
 
 
-class ParserError(msgspec.Struct, kw_only=True):
+class ParserError(msgspec.Struct, kw_only=True, rename="camel"):
     """Error encountered during query parsing."""
 
     error_message: Union[str, None] = None
@@ -66,7 +66,7 @@ class QueryRelationship(msgspec.Struct, kw_only=True):
     """Type of procedure."""
 
 
-class DatabaseObject(msgspec.Struct, kw_only=True):
+class DatabaseObject(msgspec.Struct, kw_only=True, rename="camel"):
     """Database object detected in a parsed query."""
 
     display_name: Union[str, None] = None
@@ -139,7 +139,7 @@ class QueryParserRequest(msgspec.Struct, kw_only=True):
         )
 
 
-class QueryRequest(msgspec.Struct, kw_only=True):
+class QueryRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request to run a SQL query."""
 
     sql: str
@@ -159,7 +159,7 @@ class ColumnType(msgspec.Struct, kw_only=True):
     rep: Union[str, None] = None
 
 
-class ColumnDetails(msgspec.Struct, kw_only=True):
+class ColumnDetails(msgspec.Struct, kw_only=True, rename="camel"):
     """Details about a column returned from a query."""
 
     ordinal: Union[int, None] = None
@@ -207,7 +207,7 @@ class AssetDetails(msgspec.Struct, kw_only=True):
     """Simple name of the table."""
 
 
-class QueryDetails(msgspec.Struct, kw_only=True):
+class QueryDetails(msgspec.Struct, kw_only=True, rename="camel"):
     """Details about a query that was run."""
 
     total_rows_streamed: Union[int, None] = None
