@@ -253,6 +253,8 @@ class S3Object(Asset):
             s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
 
+    create_with_prefix = creator_with_prefix
+
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "S3Object":
         """

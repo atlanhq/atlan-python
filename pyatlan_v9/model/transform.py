@@ -162,6 +162,8 @@ def to_atlas_format(asset: Asset) -> dict[str, Any]:
     result: dict[str, Any] = {"typeName": type_name}
     attributes: dict[str, Any] = {}
 
+    # These fields should remain at the top level in Atlas API format
+    # (outside of the 'attributes' object)
     top_level_keys = {
         "guid",
         "typeName",
@@ -171,7 +173,58 @@ def to_atlas_format(asset: Asset) -> dict[str, Any]:
         "updatedBy",
         "updateTime",
         "version",
+        # Metadata fields that should be top-level
+        "meanings",
+        "classifications",
+        "classificationNames",
+        "labels",
+        "businessAttributes",
+        "customAttributes",
+        "pendingTasks",
+        # Special add/remove/update fields
+        "addOrUpdateClassifications",
+        "removeClassifications",
     }
+
+    # Special handling for meanings with semantic
+    # Need to check if meanings have semantic field to determine placement
+    if "meanings" in data and data["meanings"]:
+        meanings_list = data["meanings"]
+        # Group meanings by semantic
+        append_meanings = []
+        remove_meanings = []
+        replace_meanings = []
+
+        for meaning in meanings_list:
+            if isinstance(meaning, dict):
+                semantic = meaning.get("semantic")
+                # Remove semantic from the meaning object before sending to API
+                meaning_copy = {k: v for k, v in meaning.items() if k != "semantic"}
+
+                if semantic == "APPEND":
+                    append_meanings.append(meaning_copy)
+                elif semantic == "REMOVE":
+                    remove_meanings.append(meaning_copy)
+                else:  # REPLACE or no semantic
+                    replace_meanings.append(meaning_copy)
+            else:
+                # Not a dict, just use as-is for REPLACE
+                replace_meanings.append(meaning)
+
+        # Set the appropriate field based on semantic
+        if append_meanings:
+            if "appendRelationshipAttributes" not in result:
+                result["appendRelationshipAttributes"] = {}
+            result["appendRelationshipAttributes"]["meanings"] = append_meanings
+        if remove_meanings:
+            if "removeRelationshipAttributes" not in result:
+                result["removeRelationshipAttributes"] = {}
+            result["removeRelationshipAttributes"]["meanings"] = remove_meanings
+        if replace_meanings:
+            result["meanings"] = replace_meanings
+
+        # Remove meanings from data so it doesn't get added again below
+        data.pop("meanings")
 
     for key, value in data.items():
         if value is None:
@@ -191,6 +244,17 @@ _NESTED_BUCKETS = frozenset(
     ("attributes", "uniqueAttributes", "relationshipAttributes")
 )
 
+_CAMEL_ABBREV_RE = re.compile(r"([A-Z]{2,})(?=[A-Z][a-z]|$)")
+
+
+def _normalize_camel_key(key: str) -> str:
+    """Normalize uppercase abbreviations in camelCase keys for msgspec.
+
+    msgspec's rename="camel" expects apiPathRawUri, not apiPathRawURI.
+    This converts trailing/mid uppercase runs like URI→Uri, DSL→Dsl, DQ→Dq.
+    """
+    return _CAMEL_ABBREV_RE.sub(lambda m: m.group(1).capitalize(), key)
+
 
 def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
     """Flatten one Atlas entity dict, merging ``attributes``,
@@ -203,9 +267,10 @@ def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
     for key, value in data.items():
         if key in _NESTED_BUCKETS:
             if isinstance(value, dict):
-                flattened.update(value)
+                for k, v in value.items():
+                    flattened[_normalize_camel_key(k)] = v
         else:
-            flattened[key] = value
+            flattened[_normalize_camel_key(key)] = value
 
     for key, value in list(flattened.items()):
         if isinstance(value, dict) and "typeName" in value:

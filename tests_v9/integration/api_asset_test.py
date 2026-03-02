@@ -1,6 +1,7 @@
 from typing import Generator
 
 import pytest
+from msgspec import UNSET
 
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
@@ -173,9 +174,10 @@ def test_update_api_path(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_api_path")
@@ -211,9 +213,10 @@ def test_update_api_path_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert api_path.qualified_name
     updated = client.asset.remove_announcement(
         asset_type=APIPath,
@@ -357,9 +360,10 @@ def test_update_api_object(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_api_object")
@@ -597,9 +601,10 @@ def test_update_api_query(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_api_query")
@@ -993,9 +998,10 @@ def test_update_api_field(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_api_field")

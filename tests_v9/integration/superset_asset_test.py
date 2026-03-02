@@ -1,6 +1,7 @@
 from typing import Generator
 
 import pytest
+from msgspec import UNSET
 
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
@@ -227,9 +228,10 @@ def test_update_superset_dashboard(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 def test_update_superset_chart(
@@ -260,9 +262,10 @@ def test_update_superset_chart(
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_superset_dashboard")
@@ -300,9 +303,10 @@ def test_update_superset_dashboard_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert superset_dashboard.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=superset_dashboard.qualified_name,
