@@ -65,7 +65,8 @@ class RelatedDremio(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Dremio"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Dremio"
 
 
 class RelatedDremioSpace(RelatedDremio):
@@ -80,7 +81,8 @@ class RelatedDremioSpace(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioSpace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioSpace"
 
 
 class RelatedDremioSource(RelatedDremio):
@@ -113,7 +115,8 @@ class RelatedDremioSource(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioSource"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioSource"
 
 
 class RelatedDremioFolder(RelatedDremio):
@@ -131,7 +134,8 @@ class RelatedDremioFolder(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioFolder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioFolder"
 
 
 class RelatedDremioPhysicalDataset(RelatedDremio):
@@ -146,7 +150,8 @@ class RelatedDremioPhysicalDataset(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioPhysicalDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioPhysicalDataset"
 
 
 class RelatedDremioVirtualDataset(RelatedDremio):
@@ -161,7 +166,8 @@ class RelatedDremioVirtualDataset(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioVirtualDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioVirtualDataset"
 
 
 class RelatedDremioColumn(RelatedDremio):
@@ -176,4 +182,5 @@ class RelatedDremioColumn(RelatedDremio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DremioColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DremioColumn"

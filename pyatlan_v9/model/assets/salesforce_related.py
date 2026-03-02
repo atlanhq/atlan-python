@@ -46,7 +46,8 @@ class RelatedSalesforce(RelatedSaaS):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Salesforce"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Salesforce"
 
 
 class RelatedSalesforceOrganization(RelatedSalesforce):
@@ -64,7 +65,8 @@ class RelatedSalesforceOrganization(RelatedSalesforce):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SalesforceOrganization"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SalesforceOrganization"
 
 
 class RelatedSalesforceObject(RelatedSalesforce):
@@ -91,7 +93,8 @@ class RelatedSalesforceObject(RelatedSalesforce):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SalesforceObject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SalesforceObject"
 
 
 class RelatedSalesforceField(RelatedSalesforce):
@@ -154,7 +157,8 @@ class RelatedSalesforceField(RelatedSalesforce):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SalesforceField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SalesforceField"
 
 
 class RelatedSalesforceReport(RelatedSalesforce):
@@ -178,7 +182,8 @@ class RelatedSalesforceReport(RelatedSalesforce):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SalesforceReport"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SalesforceReport"
 
 
 class RelatedSalesforceDashboard(RelatedSalesforce):
@@ -202,4 +207,5 @@ class RelatedSalesforceDashboard(RelatedSalesforce):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SalesforceDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SalesforceDashboard"

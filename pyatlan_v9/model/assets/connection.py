@@ -222,6 +222,60 @@ class Connection(Asset):
         return cls(**kwargs)
 
     @classmethod
+    @init_guid
+    async def creator_async(
+        cls,
+        *,
+        client: Any,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[List[str]] = None,
+        admin_groups: Optional[List[str]] = None,
+        admin_roles: Optional[List[str]] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+    ) -> "Connection":
+        """
+        Async version of creator() for creating a new Connection asset.
+
+        :param client: async Atlan client for cache validation
+        :param name: name for the connection
+        :param connector_type: type of connector
+        :param admin_users: list of admin usernames
+        :param admin_groups: list of admin group names
+        :param admin_roles: list of admin role GUIDs
+        :param host: optional hostname
+        :param port: optional port number
+        :returns: the new connection object
+        :raises ValueError: if required parameters are missing or invalid
+        """
+        validate_required_fields(
+            ["client", "name", "connector_type"], [client, name, connector_type]
+        )
+        if not admin_users and not admin_groups and not admin_roles:
+            raise ValueError(
+                "One of admin_user, admin_groups or admin_roles is required"
+            )
+        await client.user_cache.validate_names(names=admin_users or [])
+        await client.role_cache.validate_idstrs(idstrs=admin_roles or [])
+        await client.group_cache.validate_aliases(aliases=admin_groups or [])
+
+        kwargs: dict = dict(
+            name=name,
+            qualified_name=connector_type.to_qualified_name(),
+            connector_name=connector_type.value,
+            category=connector_type.category.value,
+            admin_users=set() if admin_users is None else set(admin_users),
+            admin_groups=set() if admin_groups is None else set(admin_groups),
+            admin_roles=set() if admin_roles is None else set(admin_roles),
+        )
+        if host is not None:
+            kwargs["host"] = host
+        if port is not None:
+            kwargs["port"] = port
+        return cls(**kwargs)
+
+    @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "Connection":
         """
         Create a Connection instance for updating an existing asset.

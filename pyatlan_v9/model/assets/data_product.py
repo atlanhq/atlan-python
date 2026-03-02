@@ -79,7 +79,9 @@ class DataProduct(Asset):
     daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: Union[str, None, UnsetType] = UNSET
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dataProductAssetsDSL"
+    )
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
@@ -201,7 +203,8 @@ class DataProduct(Asset):
         dp_dsl = self.data_product_assets_dsl
         if not dp_dsl:
             raise ErrorCode.MISSING_DATA_PRODUCT_ASSET_DSL.exception_with_parameters()
-        request = IndexSearchRequest(**msgspec.json.decode(dp_dsl).get("query", {}))
+        query_data = msgspec.json.decode(dp_dsl).get("query", {})
+        request = msgspec.convert(query_data, IndexSearchRequest, strict=False)
         return client.asset.search(request)
 
     # =========================================================================
@@ -279,7 +282,9 @@ class DataProductAttributes(AssetAttributes):
     daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: Union[str, None, UnsetType] = UNSET
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dataProductAssetsDSL"
+    )
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
@@ -357,6 +362,7 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         guid=data_product.guid,
         type_name=data_product.type_name,
         status=data_product.status,
+        delete_handler=data_product.delete_handler,
         version=data_product.version,
         create_time=data_product.create_time,
         update_time=data_product.update_time,

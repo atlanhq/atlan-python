@@ -40,7 +40,8 @@ class RelatedSisense(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Sisense"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Sisense"
 
 
 class RelatedSisenseDashboard(RelatedSisense):
@@ -61,7 +62,8 @@ class RelatedSisenseDashboard(RelatedSisense):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SisenseDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SisenseDashboard"
 
 
 class RelatedSisenseDatamodel(RelatedSisense):
@@ -100,7 +102,8 @@ class RelatedSisenseDatamodel(RelatedSisense):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SisenseDatamodel"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SisenseDatamodel"
 
 
 class RelatedSisenseDatamodelTable(RelatedSisense):
@@ -139,7 +142,8 @@ class RelatedSisenseDatamodelTable(RelatedSisense):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SisenseDatamodelTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SisenseDatamodelTable"
 
 
 class RelatedSisenseFolder(RelatedSisense):
@@ -157,7 +161,8 @@ class RelatedSisenseFolder(RelatedSisense):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SisenseFolder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SisenseFolder"
 
 
 class RelatedSisenseWidget(RelatedSisense):
@@ -187,4 +192,5 @@ class RelatedSisenseWidget(RelatedSisense):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SisenseWidget"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SisenseWidget"

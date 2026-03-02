@@ -100,7 +100,8 @@ class RelatedSQL(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SQL"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SQL"
 
 
 class RelatedCalculationView(RelatedSQL):
@@ -130,7 +131,8 @@ class RelatedCalculationView(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CalculationView"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CalculationView"
 
 
 class RelatedColumn(RelatedSQL):
@@ -349,7 +351,8 @@ class RelatedColumn(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Column"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Column"
 
 
 class RelatedDatabase(RelatedSQL):
@@ -367,7 +370,8 @@ class RelatedDatabase(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Database"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Database"
 
 
 class RelatedFunction(RelatedSQL):
@@ -424,7 +428,8 @@ class RelatedFunction(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Function"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Function"
 
 
 class RelatedMaterialisedView(RelatedSQL):
@@ -475,7 +480,8 @@ class RelatedMaterialisedView(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MaterialisedView"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MaterialisedView"
 
 
 class RelatedProcedure(RelatedSQL):
@@ -526,7 +532,8 @@ class RelatedProcedure(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Procedure"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Procedure"
 
 
 class RelatedQuery(RelatedSQL):
@@ -577,7 +584,8 @@ class RelatedQuery(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Query"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Query"
 
 
 class RelatedSchema(RelatedSQL):
@@ -604,7 +612,8 @@ class RelatedSchema(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Schema"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Schema"
 
 
 class RelatedTable(RelatedSQL):
@@ -700,7 +709,8 @@ class RelatedTable(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Table"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Table"
 
 
 class RelatedTablePartition(RelatedSQL):
@@ -760,7 +770,8 @@ class RelatedTablePartition(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TablePartition"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "TablePartition"
 
 
 class RelatedView(RelatedSQL):
@@ -799,4 +810,5 @@ class RelatedView(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "View"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "View"

@@ -144,6 +144,8 @@ class AtlanRequest:
             raw_json = instance
         elif hasattr(instance, "to_json") and callable(instance.to_json):
             raw_json = json.loads(instance.to_json(nested=True))
+        elif hasattr(instance, "to_dict") and callable(instance.to_dict):
+            raw_json = instance.to_dict()
         else:
             raw_json = msgspec.to_builtins(instance)
         self.translated = self._deep_retranslate(raw_json)

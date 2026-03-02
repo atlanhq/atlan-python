@@ -3,12 +3,15 @@
 
 from __future__ import annotations
 
+import json
 from typing import Union
 
 import msgspec
 
 
-class SSOMapperConfig(msgspec.Struct, kw_only=True, rename="camel"):
+class SSOMapperConfig(
+    msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True
+):
     """Configuration for an SSO mapper."""
 
     sync_mode: Union[str, None] = None
@@ -29,7 +32,7 @@ class SSOMapperConfig(msgspec.Struct, kw_only=True, rename="camel"):
     )
 
 
-class SSOMapper(msgspec.Struct, kw_only=True, rename="camel"):
+class SSOMapper(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """SSO identity provider mapper."""
 
     id: Union[str, None] = None
@@ -37,3 +40,7 @@ class SSOMapper(msgspec.Struct, kw_only=True, rename="camel"):
     identity_provider_mapper: str
     identity_provider_alias: str
     config: SSOMapperConfig
+
+    def to_dict(self) -> dict:
+        """Serialize to dict, excluding fields with None/default values."""
+        return json.loads(msgspec.json.encode(self))

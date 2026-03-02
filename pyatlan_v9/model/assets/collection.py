@@ -13,19 +13,25 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Union
+from typing import TYPE_CHECKING, Union
+from uuid import uuid4
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan.errors import ErrorCode
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .asset import Asset, AssetAttributes, AssetNested, AssetRelationshipAttributes
 from .namespace_related import RelatedFolder
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -49,6 +55,31 @@ class Collection(Asset):
 
     children_folders: Union[list[RelatedFolder], None, UnsetType] = UNSET
     """Folders that exist within this namespace."""
+
+    # =========================================================================
+    # Factory Methods
+    # =========================================================================
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, client: "AtlanClient", name: str) -> "Collection":
+        validate_required_fields(["client", "name"], [client, name])
+        return cls(
+            name=name,
+            qualified_name=cls._generate_qualified_name(client),
+        )
+
+    @classmethod
+    def _generate_qualified_name(cls, client: "AtlanClient") -> str:
+        from pyatlan.errors import AtlanError
+
+        try:
+            username = client.user.get_current().username
+            return f"default/collection/{username}/{uuid4()}"
+        except AtlanError as e:
+            raise ErrorCode.UNABLE_TO_GENERATE_QN.exception_with_parameters(
+                cls.__name__, e
+            ) from e
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

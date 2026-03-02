@@ -57,7 +57,8 @@ class RelatedMultiDimensionalDataset(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MultiDimensionalDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MultiDimensionalDataset"
 
 
 class RelatedCube(RelatedMultiDimensionalDataset):
@@ -75,7 +76,8 @@ class RelatedCube(RelatedMultiDimensionalDataset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Cube"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Cube"
 
 
 class RelatedCubeDimension(RelatedMultiDimensionalDataset):
@@ -93,7 +95,8 @@ class RelatedCubeDimension(RelatedMultiDimensionalDataset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CubeDimension"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CubeDimension"
 
 
 class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
@@ -111,7 +114,8 @@ class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CubeHierarchy"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CubeHierarchy"
 
 
 class RelatedCubeField(RelatedMultiDimensionalDataset):
@@ -144,4 +148,5 @@ class RelatedCubeField(RelatedMultiDimensionalDataset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CubeField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CubeField"

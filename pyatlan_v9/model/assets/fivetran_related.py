@@ -42,7 +42,8 @@ class RelatedFivetran(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Fivetran"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Fivetran"
 
 
 class RelatedFivetranConnector(RelatedFivetran):
@@ -183,4 +184,5 @@ class RelatedFivetranConnector(RelatedFivetran):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FivetranConnector"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FivetranConnector"

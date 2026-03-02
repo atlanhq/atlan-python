@@ -55,7 +55,8 @@ class RelatedCassandra(RelatedNoSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Cassandra"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Cassandra"
 
 
 class RelatedCassandraColumn(RelatedCassandra):
@@ -91,7 +92,8 @@ class RelatedCassandraColumn(RelatedCassandra):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CassandraColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CassandraColumn"
 
 
 class RelatedCassandraIndex(RelatedCassandra):
@@ -115,7 +117,8 @@ class RelatedCassandraIndex(RelatedCassandra):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CassandraIndex"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CassandraIndex"
 
 
 class RelatedCassandraKeyspace(RelatedCassandra):
@@ -142,7 +145,8 @@ class RelatedCassandraKeyspace(RelatedCassandra):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CassandraKeyspace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CassandraKeyspace"
 
 
 class RelatedCassandraTable(RelatedCassandra):
@@ -211,7 +215,8 @@ class RelatedCassandraTable(RelatedCassandra):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CassandraTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CassandraTable"
 
 
 class RelatedCassandraView(RelatedCassandra):
@@ -277,4 +282,5 @@ class RelatedCassandraView(RelatedCassandra):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CassandraView"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CassandraView"

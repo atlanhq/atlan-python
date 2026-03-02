@@ -90,6 +90,7 @@ from pyatlan_v9.model.enums import (
     SaveSemantic,
 )
 from pyatlan_v9.model.aggregation import Aggregations
+from pyatlan_v9.model.aio.core import AsyncAtlanRequest
 from pyatlan_v9.model.core import (
     Announcement,
     AssetRequest,
@@ -307,6 +308,15 @@ def _make_bulk_request_payload(entities: list, client) -> dict:
     return retranslated.translated
 
 
+async def _make_bulk_request_payload_async(entities: list, client) -> dict:
+    """Async version: serialize entities into API-ready dict with tag retranslation."""
+    bulk = BulkRequest(entities=entities)
+    request_dict = bulk.to_dict()
+    async_request = AsyncAtlanRequest(instance=request_dict, client=client)
+    await async_request.retranslate()
+    return async_request.translated
+
+
 def _make_asset_request_payload(asset: Asset, client) -> dict:
     """Serialize a single Asset entity into an API-ready dict,
     applying AtlanTag retranslation.
@@ -314,6 +324,14 @@ def _make_asset_request_payload(asset: Asset, client) -> dict:
     asset_dict = {"entity": json.loads(asset.to_json(nested=True))}
     retranslated = AtlanRequest(instance=asset_dict, client=client)
     return retranslated.translated
+
+
+async def _make_asset_request_payload_async(asset: Asset, client) -> dict:
+    """Async version: serialize a single Asset entity into API-ready dict."""
+    asset_dict = {"entity": json.loads(asset.to_json(nested=True))}
+    async_request = AsyncAtlanRequest(instance=asset_dict, client=client)
+    await async_request.retranslate()
+    return async_request.translated
 
 
 # ---------------------------------------------------------------------------
@@ -401,6 +419,44 @@ class V9AsyncAssetClient:
     # Find by name helpers
     # ------------------------------------------------------------------
 
+    def _prepare_fluent_search(
+        self,
+        wheres: List[Query],
+        attributes: Optional[List[str]] = None,
+        related_attributes: Optional[List[str]] = None,
+    ):
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
+        search = FluentSearch()
+        for w in wheres:
+            search = search.where(w)
+        for attr in attributes or []:
+            search = search.include_on_results(attr)
+        for rel_attr in related_attributes or []:
+            search = search.include_on_relations(rel_attr)
+        return search
+
+    def _build_find_request(
+        self,
+        name: str,
+        type_name: str,
+        attributes: Optional[List[str]] = None,
+    ) -> IndexSearchRequest:
+        from pyatlan.model.search import Term
+        from pyatlan_v9.model.search import DSL as V9DSL
+
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name(type_name)
+            + Term.with_name(name)
+        )
+        dsl = V9DSL(query=query)
+        return IndexSearchRequest(
+            dsl=dsl, attributes=attributes, relation_attributes=["name"]
+        )
+
     @validate_arguments
     async def find_personas_by_name(
         self,
@@ -415,7 +471,7 @@ class V9AsyncAssetClient:
         :returns: all personas with that name, if found
         :raises NotFoundError: if no persona with the provided name exists
         """
-        search_request = FindPersonasByName.prepare_request(name, attributes)
+        search_request = self._build_find_request(name, "PERSONA", attributes)
         search_results = await self.search(search_request)
         return FindPersonasByName.process_response(
             search_results, name, allow_multiple=True
@@ -435,7 +491,7 @@ class V9AsyncAssetClient:
         :returns: all purposes with that name, if found
         :raises NotFoundError: if no purpose with the provided name exists
         """
-        search_request = FindPurposesByName.prepare_request(name, attributes)
+        search_request = self._build_find_request(name, "PURPOSE", attributes)
         search_results = await self.search(search_request)
         return FindPurposesByName.process_response(
             search_results, name, allow_multiple=True
@@ -476,11 +532,13 @@ class V9AsyncAssetClient:
         if (normalized_attributes and len(normalized_attributes)) or (
             normalized_related_attributes and len(normalized_related_attributes)
         ):
-            search = GetByQualifiedName.prepare_fluent_search_request(
-                qualified_name,
-                asset_type,
-                normalized_attributes,
-                normalized_related_attributes,
+            search = self._prepare_fluent_search(
+                wheres=[
+                    Asset.QUALIFIED_NAME.eq(qualified_name),
+                    Asset.TYPE_NAME.eq(asset_type.__name__),
+                ],
+                attributes=normalized_attributes,
+                related_attributes=normalized_related_attributes,
             )
             results = await search.execute_async(client=self._client)
             if results and results.current_page():
@@ -533,8 +591,13 @@ class V9AsyncAssetClient:
         if (normalized_attributes and len(normalized_attributes)) or (
             normalized_related_attributes and len(normalized_related_attributes)
         ):
-            search = GetByGuid.prepare_fluent_search_request(
-                guid, asset_type, normalized_attributes, normalized_related_attributes
+            search = self._prepare_fluent_search(
+                wheres=[
+                    Asset.GUID.eq(guid),
+                    Asset.TYPE_NAME.eq(asset_type.__name__),
+                ],
+                attributes=normalized_attributes,
+                related_attributes=normalized_related_attributes,
             )
             results = await search.execute_async(client=self._client)
             if results and results.current_page():
@@ -638,8 +701,10 @@ class V9AsyncAssetClient:
             asset.validate_required()
             await asset.flush_custom_metadata_async(client=self._client)
 
-        request = BulkRequest(entities=entities)
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
+        request_payload = await _make_bulk_request_payload_async(
+            entities, self._client
+        )
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         response = _parse_mutation_response(raw_json)
 
         if connections_created := response.assets_created(Connection):
@@ -766,8 +831,10 @@ class V9AsyncAssetClient:
             asset.validate_required()
             await asset.flush_custom_metadata_async(self._client)
 
-        request = BulkRequest(entities=entities)
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
+        request_payload = await _make_bulk_request_payload_async(
+            entities, self._client
+        )
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         return _parse_mutation_response(raw_json)
 
     @validate_arguments
@@ -910,8 +977,10 @@ class V9AsyncAssetClient:
         for restored in entities:
             await restored.flush_custom_metadata_async(self._client)
 
-        request = BulkRequest(entities=entities)
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
+        request_payload = await _make_bulk_request_payload_async(
+            entities, self._client
+        )
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         return _parse_mutation_response(raw_json)
 
     # ------------------------------------------------------------------
@@ -1436,7 +1505,14 @@ class V9AsyncAssetClient:
         attributes: Optional[List],
         allow_multiple: bool = False,
     ) -> List[A]:
-        search_request = SearchForAssetWithName.build_search_request(query, attributes)
+        from pyatlan_v9.model.search import DSL as V9DSL
+
+        dsl = V9DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes or [],
+            relation_attributes=["name"],
+        )
         results = await self.search(search_request)
         return await SearchForAssetWithName.process_async_search_results(
             results, name, asset_type, allow_multiple
@@ -1450,17 +1526,27 @@ class V9AsyncAssetClient:
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
         ManageTerms.validate_guid_and_qualified_name(guid, qualified_name)
 
         if guid:
-            search_query = ManageTerms.build_fluent_search_by_guid(asset_type, guid)
+            search_query = (
+                FluentSearch()
+                .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
+                .where(asset_type.GUID.eq(guid))
+            )
         else:
             if qualified_name is None:
                 raise ValueError(
                     "qualified_name cannot be None when guid is not provided"
                 )
-            search_query = ManageTerms.build_fluent_search_by_qualified_name(
-                asset_type, qualified_name
+            search_query = (
+                FluentSearch()
+                .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
             )
 
         results = await search_query.execute_async(client=self._client)

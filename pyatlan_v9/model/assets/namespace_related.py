@@ -33,7 +33,8 @@ class RelatedNamespace(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Namespace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Namespace"
 
 
 class RelatedCollection(RelatedNamespace):
@@ -54,7 +55,8 @@ class RelatedCollection(RelatedNamespace):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Collection"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Collection"
 
 
 class RelatedFolder(RelatedNamespace):
@@ -75,4 +77,5 @@ class RelatedFolder(RelatedNamespace):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Folder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Folder"

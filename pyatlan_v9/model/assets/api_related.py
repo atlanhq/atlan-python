@@ -64,7 +64,8 @@ class RelatedAPI(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "API"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "API"
 
 
 class RelatedAPISpec(RelatedAPI):
@@ -103,7 +104,8 @@ class RelatedAPISpec(RelatedAPI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "APISpec"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "APISpec"
 
 
 class RelatedAPIPath(RelatedAPI):
@@ -136,7 +138,8 @@ class RelatedAPIPath(RelatedAPI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "APIPath"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "APIPath"
 
 
 class RelatedAPIField(RelatedAPI):
@@ -160,7 +163,8 @@ class RelatedAPIField(RelatedAPI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "APIField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "APIField"
 
 
 class RelatedAPIObject(RelatedAPI):
@@ -178,7 +182,8 @@ class RelatedAPIObject(RelatedAPI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "APIObject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "APIObject"
 
 
 class RelatedAPIQuery(RelatedAPI):
@@ -202,4 +207,5 @@ class RelatedAPIQuery(RelatedAPI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "APIQuery"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "APIQuery"

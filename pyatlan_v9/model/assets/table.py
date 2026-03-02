@@ -580,3 +580,12 @@ def _table_from_nested_bytes(data: bytes, serde: Serde) -> Table:
     """Convert nested JSON bytes to flat Table."""
     nested = serde.decode(data, TableNested)
     return _table_from_nested(nested)
+
+
+# Deferred class-level field descriptors for search query building
+from pyatlan.model.fields.atlan_fields import NumericField  # noqa: E402
+
+Table.COLUMN_COUNT = NumericField("columnCount", "columnCount")
+Table.ROW_COUNT = NumericField("rowCount", "rowCount")
+Table.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
+Table.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")

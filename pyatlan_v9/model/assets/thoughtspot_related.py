@@ -54,7 +54,8 @@ class RelatedThoughtspot(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Thoughtspot"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Thoughtspot"
 
 
 class RelatedThoughtspotAnswer(RelatedThoughtspot):
@@ -69,7 +70,8 @@ class RelatedThoughtspotAnswer(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotAnswer"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotAnswer"
 
 
 class RelatedThoughtspotDashlet(RelatedThoughtspot):
@@ -90,7 +92,8 @@ class RelatedThoughtspotDashlet(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotDashlet"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotDashlet"
 
 
 class RelatedThoughtspotLiveboard(RelatedThoughtspot):
@@ -105,7 +108,8 @@ class RelatedThoughtspotLiveboard(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotLiveboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotLiveboard"
 
 
 class RelatedThoughtspotTable(RelatedThoughtspot):
@@ -120,7 +124,8 @@ class RelatedThoughtspotTable(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotTable"
 
 
 class RelatedThoughtspotView(RelatedThoughtspot):
@@ -135,7 +140,8 @@ class RelatedThoughtspotView(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotView"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotView"
 
 
 class RelatedThoughtspotWorksheet(RelatedThoughtspot):
@@ -150,7 +156,8 @@ class RelatedThoughtspotWorksheet(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotWorksheet"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotWorksheet"
 
 
 class RelatedThoughtspotColumn(RelatedThoughtspot):
@@ -180,4 +187,5 @@ class RelatedThoughtspotColumn(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ThoughtspotColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ThoughtspotColumn"

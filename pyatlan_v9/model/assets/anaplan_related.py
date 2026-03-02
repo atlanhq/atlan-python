@@ -66,7 +66,8 @@ class RelatedAnaplan(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Anaplan"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Anaplan"
 
 
 class RelatedAnaplanWorkspace(RelatedAnaplan):
@@ -87,7 +88,8 @@ class RelatedAnaplanWorkspace(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanWorkspace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanWorkspace"
 
 
 class RelatedAnaplanApp(RelatedAnaplan):
@@ -102,7 +104,8 @@ class RelatedAnaplanApp(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanApp"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanApp"
 
 
 class RelatedAnaplanPage(RelatedAnaplan):
@@ -126,7 +129,8 @@ class RelatedAnaplanPage(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanPage"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanPage"
 
 
 class RelatedAnaplanModel(RelatedAnaplan):
@@ -141,7 +145,8 @@ class RelatedAnaplanModel(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanModel"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanModel"
 
 
 class RelatedAnaplanModule(RelatedAnaplan):
@@ -156,7 +161,8 @@ class RelatedAnaplanModule(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanModule"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanModule"
 
 
 class RelatedAnaplanList(RelatedAnaplan):
@@ -174,7 +180,8 @@ class RelatedAnaplanList(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanList"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanList"
 
 
 class RelatedAnaplanSystemDimension(RelatedAnaplan):
@@ -189,7 +196,8 @@ class RelatedAnaplanSystemDimension(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanSystemDimension"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanSystemDimension"
 
 
 class RelatedAnaplanDimension(RelatedAnaplan):
@@ -204,7 +212,8 @@ class RelatedAnaplanDimension(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanDimension"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanDimension"
 
 
 class RelatedAnaplanLineItem(RelatedAnaplan):
@@ -222,7 +231,8 @@ class RelatedAnaplanLineItem(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanLineItem"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanLineItem"
 
 
 class RelatedAnaplanView(RelatedAnaplan):
@@ -237,4 +247,5 @@ class RelatedAnaplanView(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AnaplanView"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AnaplanView"

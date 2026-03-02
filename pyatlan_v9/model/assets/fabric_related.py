@@ -56,7 +56,8 @@ class RelatedFabric(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Fabric"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Fabric"
 
 
 class RelatedFabricWorkspace(RelatedFabric):
@@ -71,7 +72,8 @@ class RelatedFabricWorkspace(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricWorkspace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricWorkspace"
 
 
 class RelatedFabricDashboard(RelatedFabric):
@@ -86,7 +88,8 @@ class RelatedFabricDashboard(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricDashboard"
 
 
 class RelatedFabricDataflow(RelatedFabric):
@@ -101,7 +104,8 @@ class RelatedFabricDataflow(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricDataflow"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricDataflow"
 
 
 class RelatedFabricDataflowEntityColumn(RelatedFabric):
@@ -122,7 +126,8 @@ class RelatedFabricDataflowEntityColumn(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricDataflowEntityColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricDataflowEntityColumn"
 
 
 class RelatedFabricDataPipeline(RelatedFabric):
@@ -137,7 +142,8 @@ class RelatedFabricDataPipeline(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricDataPipeline"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricDataPipeline"
 
 
 class RelatedFabricReport(RelatedFabric):
@@ -152,7 +158,8 @@ class RelatedFabricReport(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricReport"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricReport"
 
 
 class RelatedFabricSemanticModel(RelatedFabric):
@@ -167,7 +174,8 @@ class RelatedFabricSemanticModel(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricSemanticModel"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricSemanticModel"
 
 
 class RelatedFabricSemanticModelTable(RelatedFabric):
@@ -185,7 +193,8 @@ class RelatedFabricSemanticModelTable(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricSemanticModelTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricSemanticModelTable"
 
 
 class RelatedFabricSemanticModelTableColumn(RelatedFabric):
@@ -206,7 +215,8 @@ class RelatedFabricSemanticModelTableColumn(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricSemanticModelTableColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricSemanticModelTableColumn"
 
 
 class RelatedFabricPage(RelatedFabric):
@@ -224,7 +234,8 @@ class RelatedFabricPage(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricPage"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricPage"
 
 
 class RelatedFabricActivity(RelatedFabric):
@@ -245,7 +256,8 @@ class RelatedFabricActivity(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricActivity"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricActivity"
 
 
 class RelatedFabricVisual(RelatedFabric):
@@ -269,4 +281,5 @@ class RelatedFabricVisual(RelatedFabric):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FabricVisual"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FabricVisual"

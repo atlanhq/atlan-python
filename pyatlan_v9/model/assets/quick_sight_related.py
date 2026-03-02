@@ -51,7 +51,8 @@ class RelatedQuickSight(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSight"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSight"
 
 
 class RelatedQuickSightDashboardVisual(RelatedQuickSight):
@@ -69,7 +70,8 @@ class RelatedQuickSightDashboardVisual(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightDashboardVisual"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightDashboardVisual"
 
 
 class RelatedQuickSightDataset(RelatedQuickSight):
@@ -90,7 +92,8 @@ class RelatedQuickSightDataset(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightDataset"
 
 
 class RelatedQuickSightDatasetField(RelatedQuickSight):
@@ -111,7 +114,8 @@ class RelatedQuickSightDatasetField(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightDatasetField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightDatasetField"
 
 
 class RelatedQuickSightFolder(RelatedQuickSight):
@@ -132,7 +136,8 @@ class RelatedQuickSightFolder(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightFolder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightFolder"
 
 
 class RelatedQuickSightAnalysis(RelatedQuickSight):
@@ -161,7 +166,8 @@ class RelatedQuickSightAnalysis(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightAnalysis"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightAnalysis"
 
 
 class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
@@ -179,7 +185,8 @@ class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightAnalysisVisual"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightAnalysisVisual"
 
 
 class RelatedQuickSightDashboard(RelatedQuickSight):
@@ -200,4 +207,5 @@ class RelatedQuickSightDashboard(RelatedQuickSight):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "QuickSightDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "QuickSightDashboard"

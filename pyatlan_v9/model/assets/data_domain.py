@@ -238,6 +238,7 @@ def _data_domain_to_nested(data_domain: DataDomain) -> DataDomainNested:
         guid=data_domain.guid,
         type_name=data_domain.type_name,
         status=data_domain.status,
+        delete_handler=data_domain.delete_handler,
         version=data_domain.version,
         create_time=data_domain.create_time,
         update_time=data_domain.update_time,

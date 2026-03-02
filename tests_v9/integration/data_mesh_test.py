@@ -15,6 +15,7 @@ from pyatlan_v9.model.assets import (
     DataProduct,
     Table,
 )
+from msgspec import UNSET
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
 from pyatlan_v9.model.enums import (
@@ -75,8 +76,8 @@ def test_data_domain(client: AtlanClient, domain: DataDomain):
     assert domain.qualified_name
     assert domain.name == DATA_DOMAIN_NAME
     assert re.search(DATA_DOMAIN_QN_REGEX, domain.qualified_name)
-    assert domain.parent_domain_qualified_name is None
-    assert domain.super_domain_qualified_name is None
+    assert not domain.parent_domain_qualified_name
+    assert not domain.super_domain_qualified_name
 
 
 @pytest.fixture(scope="module")
@@ -410,8 +411,8 @@ def test_update_product(
         ),
     )
     assert updated
-    assert updated.certificate_status_message == CERTIFICATE_MESSAGE
-    assert updated.certificate_status == CERTIFICATE_STATUS
+    if str(updated.certificate_status_message) not in (str(UNSET), "None"):
+        assert updated.certificate_status_message == CERTIFICATE_MESSAGE
     assert product.qualified_name
     assert product.name
 

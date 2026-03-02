@@ -39,7 +39,8 @@ class RelatedKafka(RelatedEventStore):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Kafka"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Kafka"
 
 
 class RelatedKafkaTopic(RelatedKafka):
@@ -84,7 +85,8 @@ class RelatedKafkaTopic(RelatedKafka):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "KafkaTopic"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "KafkaTopic"
 
 
 class RelatedKafkaConsumerGroup(RelatedKafka):
@@ -113,7 +115,8 @@ class RelatedKafkaConsumerGroup(RelatedKafka):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "KafkaConsumerGroup"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "KafkaConsumerGroup"
 
 
 class RelatedAzureEventHub(RelatedKafka):
@@ -131,7 +134,8 @@ class RelatedAzureEventHub(RelatedKafka):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureEventHub"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureEventHub"
 
 
 class RelatedAzureEventHubConsumerGroup(RelatedKafka):
@@ -146,4 +150,5 @@ class RelatedAzureEventHubConsumerGroup(RelatedKafka):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureEventHubConsumerGroup"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureEventHubConsumerGroup"

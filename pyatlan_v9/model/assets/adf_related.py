@@ -46,7 +46,8 @@ class RelatedADF(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ADF"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ADF"
 
 
 class RelatedAdfActivity(RelatedADF):
@@ -118,7 +119,8 @@ class RelatedAdfActivity(RelatedADF):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AdfActivity"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AdfActivity"
 
 
 class RelatedAdfDataflow(RelatedADF):
@@ -142,7 +144,8 @@ class RelatedAdfDataflow(RelatedADF):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AdfDataflow"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AdfDataflow"
 
 
 class RelatedAdfDataset(RelatedADF):
@@ -190,7 +193,8 @@ class RelatedAdfDataset(RelatedADF):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AdfDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AdfDataset"
 
 
 class RelatedAdfLinkedservice(RelatedADF):
@@ -250,7 +254,8 @@ class RelatedAdfLinkedservice(RelatedADF):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AdfLinkedservice"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AdfLinkedservice"
 
 
 class RelatedAdfPipeline(RelatedADF):
@@ -274,4 +279,5 @@ class RelatedAdfPipeline(RelatedADF):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AdfPipeline"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AdfPipeline"

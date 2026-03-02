@@ -629,6 +629,12 @@ class Asset(Referenceable):
     )
     """AWS SMUS Asset MetadataForm details"""
 
+    data_contract_latest: Union[Any, None, UnsetType] = UNSET
+    """Latest data contract for this asset."""
+
+    data_contract_latest_certified: Union[Any, None, UnsetType] = UNSET
+    """Latest certified data contract for this asset."""
+
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -896,6 +902,9 @@ Asset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 Asset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 Asset.CONNECTION_QUALIFIED_NAME = KeywordTextField(
     "connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text"
+)
+Asset.SOURCE_READ_RECENT_USER_RECORD_LIST = KeywordField(
+    "sourceReadRecentUserRecordList", "sourceReadRecentUserRecordList"
 )
 
 
@@ -1476,7 +1485,11 @@ class AssetAttributes(ReferenceableAttributes):
 class AssetRelationshipAttributes(ReferenceableRelationshipAttributes):
     """Asset-specific relationship attributes for nested API format."""
 
-    pass
+    data_contract_latest: Union[Any, None, UnsetType] = UNSET
+    """Latest data contract for this asset."""
+
+    data_contract_latest_certified: Union[Any, None, UnsetType] = UNSET
+    """Latest certified data contract for this asset."""
 
 
 class AssetNested(ReferenceableNested):
@@ -1684,7 +1697,10 @@ def _asset_to_nested(asset: Asset) -> AssetNested:
         asset_smus_metadata_form_details=asset.asset_smus_metadata_form_details,
     )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
-    rel_fields: list[str] = []
+    rel_fields: list[str] = [
+        "data_contract_latest",
+        "data_contract_latest_certified",
+    ]
     replace_rels, append_rels, remove_rels = categorize_relationships(
         asset, rel_fields, AssetRelationshipAttributes
     )
@@ -1692,6 +1708,7 @@ def _asset_to_nested(asset: Asset) -> AssetNested:
         guid=asset.guid,
         type_name=asset.type_name,
         status=asset.status,
+        delete_handler=asset.delete_handler,
         version=asset.version,
         create_time=asset.create_time,
         update_time=asset.update_time,
@@ -1719,7 +1736,10 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
     """Convert nested format to flat Asset."""
     attrs = nested.attributes if nested.attributes is not UNSET else AssetAttributes()
     # Merge relationships from all three buckets
-    rel_fields: list[str] = []
+    rel_fields: list[str] = [
+        "data_contract_latest",
+        "data_contract_latest_certified",
+    ]
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
@@ -1731,6 +1751,7 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
+        delete_handler=nested.delete_handler,
         version=nested.version,
         create_time=nested.create_time,
         update_time=nested.update_time,

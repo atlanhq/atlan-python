@@ -40,7 +40,7 @@ async def delete_token_async(
         delete_tokens = [
             token
             for token in tokens
-            if token.display_name and "psdk_async" in token.display_name
+            if token.display_name and "psdkv9_Async" in token.display_name
         ]
         for token in delete_tokens:
             assert token and token.guid

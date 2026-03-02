@@ -86,22 +86,28 @@ class TaskSearchRequest(msgspec.Struct, kw_only=True):
     dsl: DSL
     attributes: List[str] = msgspec.field(default_factory=list)
 
-    def json(
+    def to_dict(
         self,
-        by_alias: bool = False,
-        exclude_none: bool = False,
-        exclude_unset: bool = False,
-    ) -> str:
-        """Serialize TaskSearchRequest to JSON string."""
+        by_alias: bool = True,
+        exclude_none: bool = True,
+    ) -> Dict[str, Any]:
+        """Serialize TaskSearchRequest to dict."""
         d: Dict[str, Any] = {
             "attributes": self.attributes,
-            "dsl": json_lib.loads(
-                self.dsl.json(by_alias=by_alias, exclude_none=exclude_none)
-            ),
+            "dsl": self.dsl.to_dict(by_alias=by_alias, exclude_none=exclude_none),
         }
         if exclude_none:
             d = {k: v for k, v in d.items() if v is not None}
-        return json_lib.dumps(d)
+        return d
+
+    def json(
+        self,
+        by_alias: bool = True,
+        exclude_none: bool = True,
+        exclude_unset: bool = False,
+    ) -> str:
+        """Serialize TaskSearchRequest to JSON string."""
+        return json_lib.dumps(self.to_dict(by_alias=by_alias, exclude_none=exclude_none))
 
 
 class TaskSearchResponse:

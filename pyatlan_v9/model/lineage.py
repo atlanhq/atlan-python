@@ -143,15 +143,27 @@ class LineageListRequest(msgspec.Struct, kw_only=True):
     guid: str
     depth: int = 0
     direction: LineageDirection = LineageDirection.DOWNSTREAM
-    entity_filters: Optional[FilterList] = None
-    entity_traversal_filters: Optional[FilterList] = None
-    relation_attributes: Optional[List[str]] = None
-    relationship_traversal_filters: Optional[FilterList] = None
+    entity_filters: Optional[FilterList] = msgspec.field(
+        default=None, name="entityFilters"
+    )
+    entity_traversal_filters: Optional[FilterList] = msgspec.field(
+        default=None, name="entityTraversalFilters"
+    )
+    relation_attributes: Optional[List[str]] = msgspec.field(
+        default=None, name="relationAttributes"
+    )
+    relationship_traversal_filters: Optional[FilterList] = msgspec.field(
+        default=None, name="relationshipTraversalFilters"
+    )
     attributes: Optional[List[str]] = msgspec.field(default_factory=list)
     offset: Optional[int] = msgspec.field(default=None, name="from")
     size: Optional[int] = None
-    exclude_meanings: Optional[bool] = None
-    exclude_classifications: Optional[bool] = None
+    exclude_meanings: Optional[bool] = msgspec.field(
+        default=None, name="excludeMeanings"
+    )
+    exclude_classifications: Optional[bool] = msgspec.field(
+        default=None, name="excludeClassifications"
+    )
     immediate_neighbors: Optional[bool] = msgspec.field(
         default=None, name="immediateNeighbours"
     )

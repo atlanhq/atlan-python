@@ -56,7 +56,8 @@ class RelatedProcess(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Process"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Process"
 
 
 class RelatedBIProcess(RelatedProcess):
@@ -71,7 +72,8 @@ class RelatedBIProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BIProcess"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "BIProcess"
 
 
 class RelatedColumnProcess(RelatedProcess):
@@ -86,7 +88,8 @@ class RelatedColumnProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ColumnProcess"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ColumnProcess"
 
 
 class RelatedConnectionProcess(RelatedProcess):
@@ -101,4 +104,5 @@ class RelatedConnectionProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ConnectionProcess"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ConnectionProcess"

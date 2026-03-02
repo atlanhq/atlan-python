@@ -91,6 +91,7 @@ from pyatlan_v9.model.enums import (
     DataQualityScheduleType,
     EntityStatus,
     SaveSemantic,
+    SortOrder,
 )
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.utils import unflatten_custom_metadata_for_entity
@@ -200,12 +201,35 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
 
     Each entry is discriminated by its keys: ``buckets`` -> bucket result,
     ``hits`` -> hits result, ``value`` -> metric result.
+    Nested aggregations inside buckets are recursively parsed.
     """
     from pyatlan_v9.model.aggregation import (
+        AggregationBucketDetails,
         AggregationBucketResult,
         AggregationHitsResult,
         AggregationMetricResult,
     )
+
+    def _parse_nested(bucket_dict: dict) -> Optional[Aggregations]:
+        """Parse nested aggregation results inside a bucket."""
+        nested: Dict = {}
+        known_keys = {
+            "key", "doc_count", "key_as_string", "max_matching_length",
+            "to", "to_as_string", "from", "from_as_string",
+        }
+        for k, v in bucket_dict.items():
+            if k in known_keys or not isinstance(v, dict):
+                continue
+            try:
+                if "buckets" in v:
+                    nested[k] = msgspec.convert(v, AggregationBucketResult, strict=False)
+                elif "hits" in v:
+                    nested[k] = msgspec.convert(v, AggregationHitsResult, strict=False)
+                elif "value" in v:
+                    nested[k] = msgspec.convert(v, AggregationMetricResult, strict=False)
+            except Exception:
+                pass
+        return Aggregations(data=nested) if nested else None
 
     parsed: Dict = {}
     for key, value in raw.items():
@@ -213,9 +237,17 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
             continue
         try:
             if "buckets" in value:
-                parsed[key] = msgspec.convert(
+                result = msgspec.convert(
                     value, AggregationBucketResult, strict=False
                 )
+                raw_buckets = value.get("buckets", [])
+                for i, bucket in enumerate(result.buckets):
+                    if i < len(raw_buckets):
+                        try:
+                            bucket.nested_results = _parse_nested(raw_buckets[i])
+                        except Exception:
+                            pass
+                parsed[key] = result
             elif "hits" in value:
                 parsed[key] = msgspec.convert(
                     value, AggregationHitsResult, strict=False
@@ -436,6 +468,44 @@ class V9AssetClient:
     # Find by name helpers
     # ------------------------------------------------------------------
 
+    def _prepare_fluent_search(
+        self,
+        wheres: List[Query],
+        attributes: Optional[List[str]] = None,
+        related_attributes: Optional[List[str]] = None,
+    ):
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
+        search = FluentSearch()
+        for w in wheres:
+            search = search.where(w)
+        for attr in attributes or []:
+            search = search.include_on_results(attr)
+        for rel_attr in related_attributes or []:
+            search = search.include_on_relations(rel_attr)
+        return search
+
+    def _build_find_request(
+        self,
+        name: str,
+        type_name: str,
+        attributes: Optional[List[str]] = None,
+    ) -> IndexSearchRequest:
+        from pyatlan.model.search import Term
+        from pyatlan_v9.model.search import DSL as V9DSL
+
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name(type_name)
+            + Term.with_name(name)
+        )
+        dsl = V9DSL(query=query)
+        return IndexSearchRequest(
+            dsl=dsl, attributes=attributes, relation_attributes=["name"]
+        )
+
     @validate_arguments
     def find_personas_by_name(
         self,
@@ -450,7 +520,7 @@ class V9AssetClient:
         :returns: all personas with that name, if found
         :raises NotFoundError: if no persona with the provided name exists
         """
-        search_request = FindPersonasByName.prepare_request(name, attributes)
+        search_request = self._build_find_request(name, "PERSONA", attributes)
         search_results = self.search(search_request)
         return FindPersonasByName.process_response(
             search_results, name, allow_multiple=True
@@ -470,7 +540,7 @@ class V9AssetClient:
         :returns: all purposes with that name, if found
         :raises NotFoundError: if no purpose with the provided name exists
         """
-        search_request = FindPurposesByName.prepare_request(name, attributes)
+        search_request = self._build_find_request(name, "PURPOSE", attributes)
         search_results = self.search(search_request)
         return FindPurposesByName.process_response(
             search_results, name, allow_multiple=True
@@ -511,11 +581,13 @@ class V9AssetClient:
         if (normalized_attributes and len(normalized_attributes)) or (
             normalized_related_attributes and len(normalized_related_attributes)
         ):
-            search = GetByQualifiedName.prepare_fluent_search_request(
-                qualified_name,
-                asset_type,
-                normalized_attributes,
-                normalized_related_attributes,
+            search = self._prepare_fluent_search(
+                wheres=[
+                    Asset.QUALIFIED_NAME.eq(qualified_name),
+                    Asset.TYPE_NAME.eq(asset_type.__name__),
+                ],
+                attributes=normalized_attributes,
+                related_attributes=normalized_related_attributes,
             )
             results = self.search(search.to_request())
             if results and results.current_page():
@@ -568,8 +640,13 @@ class V9AssetClient:
         if (normalized_attributes and len(normalized_attributes)) or (
             normalized_related_attributes and len(normalized_related_attributes)
         ):
-            search = GetByGuid.prepare_fluent_search_request(
-                guid, asset_type, normalized_attributes, normalized_related_attributes
+            search = self._prepare_fluent_search(
+                wheres=[
+                    Asset.GUID.eq(guid),
+                    Asset.TYPE_NAME.eq(asset_type.__name__),
+                ],
+                attributes=normalized_attributes,
+                related_attributes=normalized_related_attributes,
             )
             results = self.search(search.to_request())
             if results and results.current_page():
@@ -1500,7 +1577,14 @@ class V9AssetClient:
         attributes: Optional[List],
         allow_multiple: bool = False,
     ) -> List[A]:
-        search_request = SearchForAssetWithName.build_search_request(query, attributes)
+        from pyatlan_v9.model.search import DSL as V9DSL
+
+        dsl = V9DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes or [],
+            relation_attributes=["name"],
+        )
         results = self.search(search_request)
         return SearchForAssetWithName.process_search_results(
             results, name, asset_type, allow_multiple
@@ -1514,17 +1598,27 @@ class V9AssetClient:
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
         ManageTerms.validate_guid_and_qualified_name(guid, qualified_name)
 
         if guid:
-            search_query = ManageTerms.build_fluent_search_by_guid(asset_type, guid)
+            search_query = (
+                FluentSearch()
+                .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
+                .where(asset_type.GUID.eq(guid))
+            )
         else:
             if qualified_name is None:
                 raise ValueError(
                     "qualified_name cannot be None when guid is not provided"
                 )
-            search_query = ManageTerms.build_fluent_search_by_qualified_name(
-                asset_type, qualified_name
+            search_query = (
+                FluentSearch()
+                .select()
+                .where(Asset.TYPE_NAME.eq(asset_type.__name__))
+                .where(asset_type.QUALIFIED_NAME.eq(qualified_name))
             )
 
         results = search_query.execute(client=self._client)
@@ -1832,21 +1926,34 @@ class V9AssetClient:
         related_attributes: Optional[List[Union[AtlanField, str]]] = None,
     ) -> CategoryHierarchy:
         """
-        Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
-        or breadth_first order. Both return an ordered list of Glossary objects.
-        Note: by default, each category will have a minimal set of information (name, GUID, qualifiedName). If you
-        want additional details about each category, specify the attributes you want in the attributes parameter
-        of this method.
+        Retrieve category hierarchy in this Glossary, in a traversable form.
 
         :param glossary: the glossary to retrieve the category hierarchy for
         :param attributes: attributes to retrieve for each category in the hierarchy
         :param related_attributes: attributes to retrieve for each related asset in the hierarchy
         :returns: a traversable category hierarchy
         """
+        from pyatlan.model.search import Term as SearchTerm
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
         GetHierarchy.validate_glossary(glossary)
-        request = GetHierarchy.prepare_search_request(
-            glossary, attributes, related_attributes
+        if attributes is None:
+            attributes = []
+        if related_attributes is None:
+            related_attributes = []
+        search = (
+            FluentSearch.select()
+            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
+            .where(SearchTerm.with_type_name("AtlasGlossaryCategory"))
+            .include_on_results(AtlasGlossaryCategory.PARENT_CATEGORY)
+            .page_size(20)
+            .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
         )
+        for field in attributes:
+            search = search.include_on_results(field)
+        for field in related_attributes:
+            search = search.include_on_relations(field)
+        request = search.to_request()
         response = self.search(request)
         return GetHierarchy.process_search_results(response, glossary)
 

@@ -53,7 +53,8 @@ class RelatedResource(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Resource"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Resource"
 
 
 class Related__internal(RelatedResource):
@@ -68,7 +69,8 @@ class Related__internal(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "__internal"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "__internal"
 
 
 class RelatedBadge(RelatedResource):
@@ -89,7 +91,8 @@ class RelatedBadge(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Badge"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Badge"
 
 
 class RelatedFile(RelatedResource):
@@ -110,7 +113,8 @@ class RelatedFile(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "File"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "File"
 
 
 class RelatedLink(RelatedResource):
@@ -131,7 +135,8 @@ class RelatedLink(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Link"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Link"
 
 
 class RelatedReadme(RelatedResource):
@@ -146,7 +151,8 @@ class RelatedReadme(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Readme"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Readme"
 
 
 class RelatedReadmeTemplate(RelatedResource):
@@ -167,4 +173,5 @@ class RelatedReadmeTemplate(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ReadmeTemplate"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ReadmeTemplate"

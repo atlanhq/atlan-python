@@ -47,7 +47,8 @@ class RelatedAzureServiceBus(RelatedEventStore):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureServiceBus"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureServiceBus"
 
 
 class RelatedAzureServiceBusNamespace(RelatedAzureServiceBus):
@@ -62,7 +63,8 @@ class RelatedAzureServiceBusNamespace(RelatedAzureServiceBus):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureServiceBusNamespace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureServiceBusNamespace"
 
 
 class RelatedAzureServiceBusSchema(RelatedAzureServiceBus):
@@ -77,7 +79,8 @@ class RelatedAzureServiceBusSchema(RelatedAzureServiceBus):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureServiceBusSchema"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureServiceBusSchema"
 
 
 class RelatedAzureServiceBusTopic(RelatedAzureServiceBus):
@@ -92,4 +95,5 @@ class RelatedAzureServiceBusTopic(RelatedAzureServiceBus):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AzureServiceBusTopic"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AzureServiceBusTopic"

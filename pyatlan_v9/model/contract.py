@@ -11,7 +11,7 @@ import yaml
 from pyatlan.model.enums import CertificateStatus, DataContractStatus
 
 
-class InitRequest(msgspec.Struct, kw_only=True):
+class InitRequest(msgspec.Struct, kw_only=True, rename="camel"):
     """Request to initialize a data contract."""
 
     asset_type: Union[str, None] = None
@@ -107,6 +107,10 @@ class DCColumn(msgspec.Struct, kw_only=True):
     """Minimum length for a string to be considered valid."""
     unique: Union[Any, None] = None
     """When true, this column must have unique values."""
+    tags: list = msgspec.field(default_factory=list)
+    """Atlan tags for this column."""
+    terms: list[str] = msgspec.field(default_factory=list)
+    """Glossary terms assigned to this column."""
 
 
 class DataContractSpec(msgspec.Struct, kw_only=True):
@@ -190,8 +194,21 @@ class DataContractSpec(msgspec.Struct, kw_only=True):
                 for t in data["tags"]
             ]
         if "columns" in data and isinstance(data["columns"], list):
+            # Filter out invalid fields from column dicts
+            column_known_fields = {fi.name for fi in msgspec.structs.fields(DCColumn)}
+            # Also include the encoded names (business_name maps to display_name)
+            column_known_fields.update({"business_name"})
+
             data["columns"] = [
-                DCColumn(**cls._remap_keys(c, cls._COLUMN_ALIAS_TO_FIELD))
+                DCColumn(
+                    **{
+                        k: v
+                        for k, v in cls._remap_keys(
+                            c, cls._COLUMN_ALIAS_TO_FIELD
+                        ).items()
+                        if k in column_known_fields
+                    }
+                )
                 if isinstance(c, dict)
                 else c
                 for c in data["columns"]

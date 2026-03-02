@@ -72,7 +72,8 @@ class RelatedCognos(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Cognos"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Cognos"
 
 
 class RelatedCognosDashboard(RelatedCognos):
@@ -87,7 +88,8 @@ class RelatedCognosDashboard(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosDashboard"
 
 
 class RelatedCognosDatasource(RelatedCognos):
@@ -105,7 +107,8 @@ class RelatedCognosDatasource(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosDatasource"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosDatasource"
 
 
 class RelatedCognosExploration(RelatedCognos):
@@ -120,7 +123,8 @@ class RelatedCognosExploration(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosExploration"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosExploration"
 
 
 class RelatedCognosFile(RelatedCognos):
@@ -135,7 +139,8 @@ class RelatedCognosFile(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosFile"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosFile"
 
 
 class RelatedCognosFolder(RelatedCognos):
@@ -156,7 +161,8 @@ class RelatedCognosFolder(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosFolder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosFolder"
 
 
 class RelatedCognosModule(RelatedCognos):
@@ -171,7 +177,8 @@ class RelatedCognosModule(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosModule"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosModule"
 
 
 class RelatedCognosPackage(RelatedCognos):
@@ -186,7 +193,8 @@ class RelatedCognosPackage(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosPackage"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosPackage"
 
 
 class RelatedCognosReport(RelatedCognos):
@@ -201,7 +209,8 @@ class RelatedCognosReport(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosReport"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosReport"
 
 
 class RelatedCognosColumn(RelatedCognos):
@@ -225,7 +234,8 @@ class RelatedCognosColumn(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosColumn"
 
 
 class RelatedCognosDataset(RelatedCognos):
@@ -240,4 +250,5 @@ class RelatedCognosDataset(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CognosDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CognosDataset"

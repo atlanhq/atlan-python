@@ -13,11 +13,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AIDatasetType, AtlanConnectorType
 from pyatlan.utils import to_camel_case
 from pyatlan_v9.model.conversion_utils import (
     build_attributes_kwargs,
@@ -26,11 +26,13 @@ from pyatlan_v9.model.conversion_utils import (
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import get_type
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .ai_related import RelatedAIApplication, RelatedAIModelVersion
 from .asset import Asset, AssetAttributes, AssetNested, AssetRelationshipAttributes
+from .process import Process
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -111,6 +113,64 @@ class AIModel(Asset):
             owner_groups=owner_groups if owner_groups is not None else UNSET,
             owner_users=owner_users if owner_users is not None else UNSET,
         )
+
+    @classmethod
+    def processes_creator(
+        cls,
+        ai_model: "AIModel",
+        dataset_dict: Dict[AIDatasetType, list],
+    ) -> List[Process]:
+        """
+        Create Process assets representing AI model lineage with dataset assets.
+        """
+        if not ai_model.guid or not ai_model.name:
+            raise ValueError("AI model must have both guid and name attributes")
+
+        process_list: List[Process] = []
+        for dataset_type, assets in dataset_dict.items():
+            for asset in assets:
+                asset_cls = get_type(getattr(asset, "type_name", "Asset"))
+                asset_guid = getattr(asset, "guid", None)
+                asset_name = getattr(asset, "name", None)
+                if not asset_guid or not asset_name:
+                    continue
+
+                if dataset_type == AIDatasetType.OUTPUT:
+                    process_name = f"{ai_model.name} -> {asset_name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
+                        outputs=[asset_cls.ref_by_guid(guid=asset_guid)],
+                        extra_hash_params={dataset_type.value},
+                    )
+                else:
+                    process_name = f"{asset_name} -> {ai_model.name}"
+                    process_created = Process.creator(
+                        name=process_name,
+                        connection_qualified_name="default/ai/dataset",
+                        inputs=[asset_cls.ref_by_guid(guid=asset_guid)],
+                        outputs=[AIModel.ref_by_guid(guid=ai_model.guid)],
+                        extra_hash_params={dataset_type.value},
+                    )
+
+                process_created.ai_dataset_type = dataset_type
+                process_list.append(process_created)
+
+        return process_list
+
+    @classmethod
+    def processes_batch_save(
+        cls, client: Any, process_list: List[Process]
+    ) -> List[Any]:
+        """
+        Save Process assets in batches to reduce API payload size.
+        """
+        batch_size = 20
+        responses: List[Any] = []
+        for i in range(0, len(process_list), batch_size):
+            responses.append(client.asset.save(process_list[i : i + batch_size]))
+        return responses
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "AIModel":

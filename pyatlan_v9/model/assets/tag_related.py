@@ -45,7 +45,8 @@ class RelatedTag(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Tag"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Tag"
 
 
 class RelatedTagAttachment(RelatedTag):
@@ -66,7 +67,8 @@ class RelatedTagAttachment(RelatedTag):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "TagAttachment"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "TagAttachment"
 
 
 class RelatedSourceTag(RelatedTag):
@@ -84,4 +86,5 @@ class RelatedSourceTag(RelatedTag):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SourceTag"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SourceTag"

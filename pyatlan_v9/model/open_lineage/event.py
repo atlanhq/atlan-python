@@ -19,6 +19,7 @@ from pyatlan_v9.model.open_lineage.run import OpenLineageRun
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 
 
 class OpenLineageRawEvent:
@@ -125,6 +126,17 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         :raises AtlanError: on any API communication issues
         """
         return client.open_lineage.send(
+            request=self, connector_type=AtlanConnectorType.SPARK
+        )
+
+    async def emit_async(self, client: "AsyncAtlanClient") -> None:
+        """
+        Asynchronously send the OpenLineage event to Atlan to be processed.
+
+        :param client: async connectivity to an Atlan tenant
+        :raises AtlanError: on any API communication issues
+        """
+        return await client.open_lineage.send(
             request=self, connector_type=AtlanConnectorType.SPARK
         )
 

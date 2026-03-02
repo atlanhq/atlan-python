@@ -11,7 +11,11 @@ from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.client.workflow import V9WorkflowClient as WorkflowClient
 from pyatlan_v9.model.assets import Connection
 from pyatlan_v9.model.credential import Credential, CredentialResponse
-from pyatlan_v9.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
+from pyatlan_v9.model.enums import (
+    AtlanConnectorType,
+    AtlanWorkflowPhase,
+    WorkflowPackage,
+)
 from pyatlan_v9.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan_v9.model.workflow import WorkflowResponse, WorkflowSchedule
 from tests_v9.integration.client import TestId, delete_asset
@@ -179,7 +183,7 @@ def test_workflow_get_runs_and_stop(client: AtlanClient, workflow: WorkflowRespo
     )
     assert runs_status
     workflow_run_status = runs_status.current_page()[0]  # type: ignore
-    start_time = workflow_run_status.source.status.startedAt  # type: ignore
+    start_time = workflow_run_status.source.status.started_at  # type: ignore
     start_datetime = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")  # type: ignore
     start_datetime = start_datetime.replace(tzinfo=timezone.utc)
     current_time = datetime.now(timezone.utc)

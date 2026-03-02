@@ -54,7 +54,8 @@ class RelatedDynamoDB(RelatedNoSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DynamoDB"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DynamoDB"
 
 
 class RelatedDynamoDBTable(RelatedDynamoDB):
@@ -75,7 +76,8 @@ class RelatedDynamoDBTable(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DynamoDBTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DynamoDBTable"
 
 
 class RelatedDynamoDBSecondaryIndex(RelatedDynamoDB):
@@ -93,7 +95,8 @@ class RelatedDynamoDBSecondaryIndex(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DynamoDBSecondaryIndex"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DynamoDBSecondaryIndex"
 
 
 class RelatedDynamoDBGlobalSecondaryIndex(RelatedDynamoDB):
@@ -108,7 +111,8 @@ class RelatedDynamoDBGlobalSecondaryIndex(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DynamoDBGlobalSecondaryIndex"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DynamoDBGlobalSecondaryIndex"
 
 
 class RelatedDynamoDBLocalSecondaryIndex(RelatedDynamoDB):
@@ -123,4 +127,5 @@ class RelatedDynamoDBLocalSecondaryIndex(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DynamoDBLocalSecondaryIndex"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DynamoDBLocalSecondaryIndex"

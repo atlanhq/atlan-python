@@ -41,7 +41,8 @@ class RelatedRedash(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Redash"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Redash"
 
 
 class RelatedRedashVisualization(RelatedRedash):
@@ -65,7 +66,8 @@ class RelatedRedashVisualization(RelatedRedash):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "RedashVisualization"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "RedashVisualization"
 
 
 class RelatedRedashDashboard(RelatedRedash):
@@ -83,7 +85,8 @@ class RelatedRedashDashboard(RelatedRedash):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "RedashDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "RedashDashboard"
 
 
 class RelatedRedashQuery(RelatedRedash):
@@ -116,4 +119,5 @@ class RelatedRedashQuery(RelatedRedash):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "RedashQuery"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "RedashQuery"

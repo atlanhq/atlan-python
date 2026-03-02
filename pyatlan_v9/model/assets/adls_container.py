@@ -117,11 +117,13 @@ class ADLSContainer(Asset):
                 else adls_account_qualified_name
             )
 
+        adls_account_name = adls_account_qualified_name.rsplit("/", 1)[-1]
         qualified_name = f"{adls_account_qualified_name}/{name}"
         return cls(
             name=name,
             qualified_name=qualified_name,
             adls_account_qualified_name=adls_account_qualified_name,
+            adls_account_name=adls_account_name,
             connector_name=connector_name,
             connection_qualified_name=connection_qualified_name,
         )

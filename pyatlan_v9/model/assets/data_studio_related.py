@@ -33,7 +33,8 @@ class RelatedDataStudio(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataStudio"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DataStudio"
 
 
 class RelatedDataStudioAsset(RelatedDataStudio):
@@ -60,4 +61,5 @@ class RelatedDataStudioAsset(RelatedDataStudio):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataStudioAsset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DataStudioAsset"

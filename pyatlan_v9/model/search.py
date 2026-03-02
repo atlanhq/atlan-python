@@ -58,6 +58,8 @@ def _serialize_value(v: Any) -> Any:
         return None
     if hasattr(v, "to_dict") and callable(v.to_dict):
         return v.to_dict()
+    if hasattr(v, "__root__"):
+        return _serialize_value(v.__root__)
     if isinstance(v, dict):
         return {k: _serialize_value(val) for k, val in v.items()}
     if isinstance(v, list):
@@ -112,13 +114,12 @@ class DSL(msgspec.Struct, kw_only=True):
             elif self.req_class_name == "IndexSearchRequest":
                 self.sort.append(SortItem(sort_by_guid))
 
-    def json(
+    def to_dict(
         self,
-        by_alias: bool = False,
-        exclude_none: bool = False,
-        exclude_unset: bool = False,
-    ) -> str:
-        """Serialize DSL to JSON string, matching legacy Pydantic output format."""
+        by_alias: bool = True,
+        exclude_none: bool = True,
+    ) -> Dict[str, Any]:
+        """Serialize DSL to a dict, matching legacy Pydantic output format."""
         d: Dict[str, Any] = {}
         d["from" if by_alias else "from_"] = self.from_
         d["size"] = self.size
@@ -129,7 +130,18 @@ class DSL(msgspec.Struct, kw_only=True):
         d["sort"] = _serialize_value(self.sort)
         if exclude_none:
             d = {k: v for k, v in d.items() if v is not None}
-        return json_lib.dumps(d)
+        return d
+
+    def json(
+        self,
+        by_alias: bool = False,
+        exclude_none: bool = False,
+        exclude_unset: bool = False,
+    ) -> str:
+        """Serialize DSL to JSON string, matching legacy Pydantic output format."""
+        return json_lib.dumps(
+            self.to_dict(by_alias=by_alias, exclude_none=exclude_none)
+        )
 
 
 class IndexSearchRequestMetadata(msgspec.Struct, kw_only=True):

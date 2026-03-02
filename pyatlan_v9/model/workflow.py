@@ -104,7 +104,7 @@ class WorkflowSpec(msgspec.Struct, kw_only=True, rename="camel"):
     entrypoint: Union[str, None] = None
     arguments: Union[Any, None] = None
     templates: Union[list[WorkflowTemplate], None] = None
-    workflow_template_ref: Union[dict[str, str], None] = None
+    workflow_template_ref: Union[WorkflowTemplateRef, None] = None
     workflow_metadata: Union[WorkflowMetadata, None] = None
 
 
@@ -359,3 +359,8 @@ class WorkflowSearchRequest(msgspec.Struct, kw_only=True, rename="camel"):
     source: Union[WorkflowSearchResultDetail, None] = msgspec.field(
         default=None, name="_source"
     )
+
+    def to_dict(self) -> dict:
+        """Serialize to dict, excluding None values to avoid sending
+        ``"_source": null`` which Elasticsearch rejects."""
+        return _remove_nones(msgspec.to_builtins(self))

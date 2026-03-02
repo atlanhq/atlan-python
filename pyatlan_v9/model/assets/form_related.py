@@ -39,7 +39,8 @@ class RelatedForm(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Form"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Form"
 
 
 class RelatedResponse(RelatedForm):
@@ -63,4 +64,5 @@ class RelatedResponse(RelatedForm):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Response"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Response"

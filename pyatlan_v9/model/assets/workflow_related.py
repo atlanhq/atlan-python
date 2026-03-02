@@ -60,7 +60,8 @@ class RelatedWorkflow(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Workflow"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Workflow"
 
 
 class RelatedWorkflowRun(RelatedWorkflow):
@@ -108,4 +109,5 @@ class RelatedWorkflowRun(RelatedWorkflow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "WorkflowRun"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "WorkflowRun"

@@ -25,7 +25,7 @@ class TestId:
 
     @classmethod
     def make_unique(cls, input: str):
-        return f"psdk_{input}_{cls.session_id}"
+        return f"psdkv9_{input}_{cls.session_id}"
 
 
 @pytest.fixture(scope="module")

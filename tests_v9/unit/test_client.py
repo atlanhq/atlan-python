@@ -392,7 +392,7 @@ def test_append_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute")
 def test_append_terms_asset_retrieval_errors(
     mock_execute,
     guid,
@@ -424,7 +424,7 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
 
     terms = []
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+    with patch("pyatlan_v9.model.fluent_search.FluentSearch.execute") as mock_execute:
         with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
@@ -452,7 +452,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
 
     terms = [AtlasGlossaryTerm(qualified_name="term1")]
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+    with patch("pyatlan_v9.model.fluent_search.FluentSearch.execute") as mock_execute:
         with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
@@ -486,7 +486,7 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
     new_term = AtlasGlossaryTerm(qualified_name="new_term")
     terms = [new_term]
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+    with patch("pyatlan_v9.model.fluent_search.FluentSearch.execute") as mock_execute:
         with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
@@ -597,7 +597,7 @@ def test_replace_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute")
 def test_replace_terms_asset_retrieval_errors(
     mock_execute,
     guid,
@@ -632,7 +632,7 @@ def test_replace_terms():
 
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+    with patch("pyatlan_v9.model.fluent_search.FluentSearch.execute") as mock_execute:
         with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 
@@ -739,7 +739,7 @@ def test_remove_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute")
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute")
 def test_remove_terms_asset_retrieval_errors(
     mock_execute,
     guid,
@@ -777,7 +777,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
     )
     table.attributes.meanings = [existing_term, other_term]
 
-    with patch("pyatlan.model.fluent_search.FluentSearch.execute") as mock_execute:
+    with patch("pyatlan_v9.model.fluent_search.FluentSearch.execute") as mock_execute:
         with patch.object(V9AssetClient, "save") as mock_save:
             mock_execute.return_value.current_page = lambda: [table]
 

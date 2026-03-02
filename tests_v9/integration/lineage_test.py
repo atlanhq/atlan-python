@@ -494,7 +494,7 @@ def test_fetch_lineage_start_list_detailed(
     assert isinstance(results[0], Table)
     assert results[0].depth == 0
     assert results[0].guid == table.guid
-    assert results[0].immediate_upstream is None
+    assert not results[0].immediate_upstream
     assert results[0].immediate_downstream and len(results[0].immediate_downstream) == 1
     assert results[0].immediate_downstream[0].guid == mview.guid
     assert isinstance(results[1], Process)

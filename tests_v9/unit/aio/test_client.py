@@ -374,7 +374,7 @@ async def test_append_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
 @pytest.mark.asyncio
 async def test_append_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -407,7 +407,7 @@ async def test_append_with_valid_guid_and_no_terms_returns_asset():
     terms = []
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
     ) as mock_aexecute:
         with patch(
             "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
@@ -447,7 +447,7 @@ async def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_g
     terms = [AtlasGlossaryTerm(qualified_name="term1")]
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
     ) as mock_aexecute:
         with patch(
             "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
@@ -490,7 +490,7 @@ async def test_append_with_valid_guid_when_terms_present_returns_asset_with_comb
     terms = [new_term]
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
     ) as mock_aexecute:
         with patch(
             "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
@@ -604,7 +604,7 @@ async def test_replace_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
 @pytest.mark.asyncio
 async def test_replace_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -640,7 +640,7 @@ async def test_replace_terms():
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
     ) as mock_aexecute:
         with patch(
             "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
@@ -750,7 +750,7 @@ async def test_remove_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
 @pytest.mark.asyncio
 async def test_remove_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -789,7 +789,7 @@ async def test_remove_with_valid_guid_when_terms_present_returns_asset_with_term
     table.attributes.meanings = [existing_term, other_term]
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
     ) as mock_aexecute:
         with patch(
             "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
@@ -2458,7 +2458,7 @@ class TestBatch:
 
         # Mock FluentSearch.execute_async to return our mock results
         with patch(
-            "pyatlan.model.fluent_search.FluentSearch.execute_async",
+            "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
             new_callable=AsyncMock,
         ) as mock_aexecute:
             mock_aexecute.return_value = mock_search_results
@@ -2558,7 +2558,7 @@ class TestBatch:
         )  # Empty iterator for the async for loop
 
         with patch(
-            "pyatlan.model.fluent_search.FluentSearch.execute_async",
+            "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
             new_callable=AsyncMock,
         ) as mock_aexecute:
             mock_aexecute.return_value = mock_search_results
@@ -2603,7 +2603,7 @@ class TestBatch:
 
         # Mock FluentSearch.execute_async to return our mock results
         with patch(
-            "pyatlan.model.fluent_search.FluentSearch.execute_async",
+            "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
             new_callable=AsyncMock,
         ) as mock_aexecute:
             mock_aexecute.return_value = mock_search_results
@@ -2818,7 +2818,7 @@ async def test_get_by_guid_asset_not_found_fluent_search(mock_async_api_caller):
     asset_type = Table
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async"
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async"
     ) as mock_aexecute:
         # Mock the async search results - current_page() should return list directly, not coroutine
         mock_results = AsyncMock()
@@ -2846,7 +2846,7 @@ async def test_get_by_guid_type_mismatch_fluent_search(mock_async_api_caller):
     returned_asset_type = View
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async"
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async"
     ) as mock_aexecute:
         # Mock the async search results - current_page() should return list directly, not coroutine
         mock_results = AsyncMock()
@@ -2880,7 +2880,7 @@ async def test_get_by_qualified_name_type_mismatch(
     returned_asset_type = View
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async"
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async"
     ) as mock_aexecute:
         # Mock the async search results - current_page() should return list directly, not coroutine
         mock_results = AsyncMock()
@@ -2910,7 +2910,7 @@ async def test_get_by_qualified_name_asset_not_found(mock_async_api_caller):
     asset_type = Table
 
     with patch(
-        "pyatlan.model.fluent_search.FluentSearch.execute_async"
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async"
     ) as mock_aexecute:
         # Mock the async search results - current_page() should return list directly, not coroutine
         mock_results = AsyncMock()

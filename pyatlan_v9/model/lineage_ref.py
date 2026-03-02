@@ -8,7 +8,7 @@ from typing import Union
 import msgspec
 
 
-class LineageRef(msgspec.Struct, kw_only=True):
+class LineageRef(msgspec.Struct, kw_only=True, rename="camel"):
     """Reference to an asset within a lineage result."""
 
     qualified_name: Union[str, None] = None

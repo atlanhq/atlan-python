@@ -650,10 +650,26 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         if request_obj is not None:
             if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
+                params["data"] = json.dumps(request_obj.to_dict())
             elif isinstance(request_obj, (msgspec.Struct, dict, list)):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif hasattr(request_obj, "to_json") and callable(request_obj.to_json):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
+            elif hasattr(request_obj, "dict") and callable(request_obj.dict):
+                # Pydantic v1 models (old pyatlan models)
+                params["data"] = json.dumps(
+                    request_obj.dict(by_alias=True, exclude_none=True)
+                )
+            elif hasattr(request_obj, "model_dump") and callable(
+                request_obj.model_dump
+            ):
+                # Pydantic v2 models
+                params["data"] = json.dumps(
+                    request_obj.model_dump(by_alias=True, exclude_none=True)
+                )
+            elif hasattr(request_obj, "__root__"):
+                params["data"] = json.dumps(request_obj.__root__)
             else:
                 params["data"] = json.dumps(request_obj)
         return params
@@ -734,6 +750,17 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         """
         raw_json = self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
         return msgspec.convert(raw_json, AtlanImage, strict=False)
+
+    def search(self, criteria):
+        """Search assets. Delegates to asset.search()."""
+        from warnings import warn
+
+        warn(
+            "This method is deprecated, please use 'asset.search' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.asset.search(criteria=criteria)
 
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """

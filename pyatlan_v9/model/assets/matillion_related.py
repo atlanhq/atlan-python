@@ -42,7 +42,8 @@ class RelatedMatillion(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Matillion"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Matillion"
 
 
 class RelatedMatillionGroup(RelatedMatillion):
@@ -60,7 +61,8 @@ class RelatedMatillionGroup(RelatedMatillion):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MatillionGroup"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MatillionGroup"
 
 
 class RelatedMatillionProject(RelatedMatillion):
@@ -90,7 +92,8 @@ class RelatedMatillionProject(RelatedMatillion):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MatillionProject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MatillionProject"
 
 
 class RelatedMatillionJob(RelatedMatillion):
@@ -123,7 +126,8 @@ class RelatedMatillionJob(RelatedMatillion):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MatillionJob"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MatillionJob"
 
 
 class RelatedMatillionComponent(RelatedMatillion):
@@ -162,4 +166,5 @@ class RelatedMatillionComponent(RelatedMatillion):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MatillionComponent"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MatillionComponent"

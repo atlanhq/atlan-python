@@ -40,7 +40,8 @@ class RelatedSemantic(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Semantic"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Semantic"
 
 
 class RelatedSemanticModel(RelatedSemantic):
@@ -55,7 +56,8 @@ class RelatedSemanticModel(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SemanticModel"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SemanticModel"
 
 
 class RelatedSemanticField(RelatedSemantic):
@@ -76,7 +78,8 @@ class RelatedSemanticField(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SemanticField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SemanticField"
 
 
 class RelatedSemanticMeasure(RelatedSemantic):
@@ -91,7 +94,8 @@ class RelatedSemanticMeasure(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SemanticMeasure"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SemanticMeasure"
 
 
 class RelatedSemanticDimension(RelatedSemantic):
@@ -106,7 +110,8 @@ class RelatedSemanticDimension(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SemanticDimension"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SemanticDimension"
 
 
 class RelatedSemanticEntity(RelatedSemantic):
@@ -121,4 +126,5 @@ class RelatedSemanticEntity(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SemanticEntity"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SemanticEntity"

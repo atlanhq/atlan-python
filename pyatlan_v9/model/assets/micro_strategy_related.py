@@ -75,7 +75,8 @@ class RelatedMicroStrategy(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategy"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategy"
 
 
 class RelatedMicroStrategyProject(RelatedMicroStrategy):
@@ -90,7 +91,8 @@ class RelatedMicroStrategyProject(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyProject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyProject"
 
 
 class RelatedMicroStrategyDocument(RelatedMicroStrategy):
@@ -105,7 +107,8 @@ class RelatedMicroStrategyDocument(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyDocument"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyDocument"
 
 
 class RelatedMicroStrategyReport(RelatedMicroStrategy):
@@ -123,7 +126,8 @@ class RelatedMicroStrategyReport(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyReport"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyReport"
 
 
 class RelatedMicroStrategyCube(RelatedMicroStrategy):
@@ -144,7 +148,8 @@ class RelatedMicroStrategyCube(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyCube"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyCube"
 
 
 class RelatedMicroStrategyDossier(RelatedMicroStrategy):
@@ -162,7 +167,8 @@ class RelatedMicroStrategyDossier(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyDossier"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyDossier"
 
 
 class RelatedMicroStrategyFact(RelatedMicroStrategy):
@@ -180,7 +186,8 @@ class RelatedMicroStrategyFact(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyFact"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyFact"
 
 
 class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
@@ -198,7 +205,8 @@ class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyAttribute"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyAttribute"
 
 
 class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
@@ -222,7 +230,8 @@ class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyVisualization"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyVisualization"
 
 
 class RelatedMicroStrategyMetric(RelatedMicroStrategy):
@@ -260,7 +269,8 @@ class RelatedMicroStrategyMetric(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyMetric"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyMetric"
 
 
 class RelatedMicroStrategyColumn(RelatedMicroStrategy):
@@ -311,4 +321,5 @@ class RelatedMicroStrategyColumn(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MicroStrategyColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MicroStrategyColumn"

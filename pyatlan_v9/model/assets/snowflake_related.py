@@ -42,7 +42,8 @@ class RelatedSnowflake(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Snowflake"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Snowflake"
 
 
 class RelatedSnowflakeDynamicTable(RelatedSnowflake):
@@ -60,7 +61,8 @@ class RelatedSnowflakeDynamicTable(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeDynamicTable"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeDynamicTable"
 
 
 class RelatedSnowflakePipe(RelatedSnowflake):
@@ -84,7 +86,8 @@ class RelatedSnowflakePipe(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakePipe"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakePipe"
 
 
 class RelatedSnowflakeStage(RelatedSnowflake):
@@ -111,7 +114,8 @@ class RelatedSnowflakeStage(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeStage"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeStage"
 
 
 class RelatedSnowflakeStream(RelatedSnowflake):
@@ -141,7 +145,8 @@ class RelatedSnowflakeStream(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeStream"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeStream"
 
 
 class RelatedSnowflakeTag(RelatedSnowflake):
@@ -156,7 +161,8 @@ class RelatedSnowflakeTag(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeTag"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeTag"
 
 
 class RelatedSnowflakeAIModelContext(RelatedSnowflake):
@@ -171,7 +177,8 @@ class RelatedSnowflakeAIModelContext(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeAIModelContext"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeAIModelContext"
 
 
 class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
@@ -201,4 +208,5 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SnowflakeAIModelVersion"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SnowflakeAIModelVersion"

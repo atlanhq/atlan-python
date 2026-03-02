@@ -45,7 +45,8 @@ class RelatedDomo(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Domo"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Domo"
 
 
 class RelatedDomoCard(RelatedDomo):
@@ -69,7 +70,8 @@ class RelatedDomoCard(RelatedDomo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DomoCard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DomoCard"
 
 
 class RelatedDomoDashboard(RelatedDomo):
@@ -87,7 +89,8 @@ class RelatedDomoDashboard(RelatedDomo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DomoDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DomoDashboard"
 
 
 class RelatedDomoDataset(RelatedDomo):
@@ -117,7 +120,8 @@ class RelatedDomoDataset(RelatedDomo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DomoDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DomoDataset"
 
 
 class RelatedDomoDatasetColumn(RelatedDomo):
@@ -144,4 +148,5 @@ class RelatedDomoDatasetColumn(RelatedDomo):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DomoDatasetColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DomoDatasetColumn"

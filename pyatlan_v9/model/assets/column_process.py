@@ -93,11 +93,18 @@ class ColumnProcess(Asset):
         if isinstance(value, RelatedCatalog):
             return value
         guid = getattr(value, "guid", UNSET)
+        type_name = getattr(value, "type_name", UNSET)
         if guid is not UNSET and guid:
-            return RelatedCatalog(guid=guid)
+            kwargs: dict[str, Any] = {"guid": guid}
+            if type_name is not UNSET and type_name:
+                kwargs["type_name"] = type_name
+            return RelatedCatalog(**kwargs)
         qualified_name = getattr(value, "qualified_name", UNSET)
         if qualified_name is not UNSET and qualified_name:
-            return RelatedCatalog(unique_attributes={"qualifiedName": qualified_name})
+            kwargs = {"unique_attributes": {"qualifiedName": qualified_name}}
+            if type_name is not UNSET and type_name:
+                kwargs["type_name"] = type_name
+            return RelatedCatalog(**kwargs)
         return RelatedCatalog()
 
     @staticmethod
@@ -106,11 +113,18 @@ class ColumnProcess(Asset):
         if isinstance(value, RelatedProcess):
             return value
         guid = getattr(value, "guid", UNSET)
+        type_name = getattr(value, "type_name", UNSET)
         if guid is not UNSET and guid:
-            return RelatedProcess(guid=guid)
+            kwargs: dict[str, Any] = {"guid": guid}
+            if type_name is not UNSET and type_name:
+                kwargs["type_name"] = type_name
+            return RelatedProcess(**kwargs)
         qualified_name = getattr(value, "qualified_name", UNSET)
         if qualified_name is not UNSET and qualified_name:
-            return RelatedProcess(unique_attributes={"qualifiedName": qualified_name})
+            kwargs = {"unique_attributes": {"qualifiedName": qualified_name}}
+            if type_name is not UNSET and type_name:
+                kwargs["type_name"] = type_name
+            return RelatedProcess(**kwargs)
         return RelatedProcess()
 
     @staticmethod

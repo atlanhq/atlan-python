@@ -55,7 +55,8 @@ class RelatedAtlasGlossary(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlasGlossary"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AtlasGlossary"
 
 
 class RelatedAtlasGlossaryCategory(RelatedAsset):
@@ -82,7 +83,8 @@ class RelatedAtlasGlossaryCategory(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlasGlossaryCategory"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AtlasGlossaryCategory"
 
 
 class RelatedAtlasGlossaryTerm(RelatedAsset):
@@ -118,4 +120,5 @@ class RelatedAtlasGlossaryTerm(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "AtlasGlossaryTerm"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "AtlasGlossaryTerm"

@@ -220,6 +220,7 @@ def _data_contract_to_nested(data_contract: DataContract) -> DataContractNested:
         guid=data_contract.guid,
         type_name=data_contract.type_name,
         status=data_contract.status,
+        delete_handler=data_contract.delete_handler,
         version=data_contract.version,
         create_time=data_contract.create_time,
         update_time=data_contract.update_time,

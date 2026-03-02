@@ -83,7 +83,8 @@ class RelatedModel(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Model"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Model"
 
 
 class RelatedModelDataModel(RelatedModel):
@@ -104,7 +105,8 @@ class RelatedModelDataModel(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelDataModel"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelDataModel"
 
 
 class RelatedModelVersion(RelatedModel):
@@ -122,7 +124,8 @@ class RelatedModelVersion(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelVersion"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelVersion"
 
 
 class RelatedModelEntity(RelatedModel):
@@ -149,7 +152,8 @@ class RelatedModelEntity(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelEntity"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelEntity"
 
 
 class RelatedModelEntityAssociation(RelatedModel):
@@ -194,7 +198,8 @@ class RelatedModelEntityAssociation(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelEntityAssociation"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelEntityAssociation"
 
 
 class RelatedModelAttribute(RelatedModel):
@@ -233,7 +238,8 @@ class RelatedModelAttribute(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelAttribute"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelAttribute"
 
 
 class RelatedModelAttributeAssociation(RelatedModel):
@@ -257,4 +263,5 @@ class RelatedModelAttributeAssociation(RelatedModel):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModelAttributeAssociation"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModelAttributeAssociation"

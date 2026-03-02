@@ -37,7 +37,8 @@ class RelatedDocumentDB(RelatedNoSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DocumentDB"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DocumentDB"
 
 
 class RelatedDocumentDBCollection(RelatedDocumentDB):
@@ -88,7 +89,8 @@ class RelatedDocumentDBCollection(RelatedDocumentDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DocumentDBCollection"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DocumentDBCollection"
 
 
 class RelatedDocumentDBDatabase(RelatedDocumentDB):
@@ -106,4 +108,5 @@ class RelatedDocumentDBDatabase(RelatedDocumentDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DocumentDBDatabase"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DocumentDBDatabase"

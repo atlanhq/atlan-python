@@ -85,7 +85,8 @@ class RelatedFlow(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Flow"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Flow"
 
 
 class RelatedFlowProject(RelatedFlow):
@@ -100,7 +101,8 @@ class RelatedFlowProject(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowProject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowProject"
 
 
 class RelatedFlowFolder(RelatedFlow):
@@ -115,7 +117,8 @@ class RelatedFlowFolder(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowFolder"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowFolder"
 
 
 class RelatedFlowControlOperation(RelatedFlow):
@@ -130,7 +133,8 @@ class RelatedFlowControlOperation(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowControlOperation"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowControlOperation"
 
 
 class RelatedFlowReusableUnit(RelatedFlow):
@@ -151,7 +155,8 @@ class RelatedFlowReusableUnit(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowReusableUnit"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowReusableUnit"
 
 
 class RelatedFlowDatasetOperation(RelatedFlow):
@@ -166,7 +171,8 @@ class RelatedFlowDatasetOperation(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowDatasetOperation"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowDatasetOperation"
 
 
 class RelatedFlowFieldOperation(RelatedFlow):
@@ -181,7 +187,8 @@ class RelatedFlowFieldOperation(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowFieldOperation"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowFieldOperation"
 
 
 class RelatedFlowDataset(RelatedFlow):
@@ -208,7 +215,8 @@ class RelatedFlowDataset(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowDataset"
 
 
 class RelatedFlowField(RelatedFlow):
@@ -235,4 +243,5 @@ class RelatedFlowField(RelatedFlow):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "FlowField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "FlowField"

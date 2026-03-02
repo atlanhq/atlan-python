@@ -82,11 +82,16 @@ def _update_ai_application(client, ai_application: AIApplication):
     assert updated_response.mutated_entities.UPDATE[0]
     updated_response = updated_response.mutated_entities.UPDATE[0]
     assert updated_response.qualified_name
-    assert updated_response.name == AI_APPLICATION_NAME
-    assert updated_response.connector_name == "ai"
-    assert updated_response.ai_application_version == AI_APPLICATION_VERSION
+    refreshed = client.asset.get_by_qualified_name(
+        qualified_name=updated_response.qualified_name,
+        asset_type=AIApplication,
+    )
+    assert refreshed
+    assert refreshed.name == AI_APPLICATION_NAME
+    assert refreshed.connector_name == "ai"
+    assert refreshed.ai_application_version == AI_APPLICATION_VERSION
     assert (
-        updated_response.ai_application_development_stage
+        refreshed.ai_application_development_stage
         == AIApplicationDevelopmentStage.DEVELOPMENT
     )
 
@@ -101,9 +106,14 @@ def _update_ai_model(client, ai_model: AIModel):
     assert updated_response.mutated_entities.UPDATE[0]
     updated_response = updated_response.mutated_entities.UPDATE[0]
     assert updated_response.qualified_name
-    assert updated_response.name == AI_MODEL_NAME
-    assert updated_response.connector_name == "ai"
-    assert updated_response.ai_model_version == "2.1"
+    refreshed = client.asset.get_by_qualified_name(
+        qualified_name=updated_response.qualified_name,
+        asset_type=AIModel,
+    )
+    assert refreshed
+    assert refreshed.name == AI_MODEL_NAME
+    assert refreshed.connector_name == "ai"
+    assert refreshed.ai_model_version == "2.1"
 
 
 def test_update_ai_assets(

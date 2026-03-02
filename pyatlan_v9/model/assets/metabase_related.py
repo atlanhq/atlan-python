@@ -44,7 +44,8 @@ class RelatedMetabase(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Metabase"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Metabase"
 
 
 class RelatedMetabaseCollection(RelatedMetabase):
@@ -71,7 +72,8 @@ class RelatedMetabaseCollection(RelatedMetabase):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MetabaseCollection"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MetabaseCollection"
 
 
 class RelatedMetabaseDashboard(RelatedMetabase):
@@ -89,7 +91,8 @@ class RelatedMetabaseDashboard(RelatedMetabase):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MetabaseDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MetabaseDashboard"
 
 
 class RelatedMetabaseQuestion(RelatedMetabase):
@@ -113,4 +116,5 @@ class RelatedMetabaseQuestion(RelatedMetabase):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "MetabaseQuestion"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "MetabaseQuestion"

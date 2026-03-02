@@ -43,7 +43,8 @@ class RelatedSuperset(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Superset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Superset"
 
 
 class RelatedSupersetChart(RelatedSuperset):
@@ -64,7 +65,8 @@ class RelatedSupersetChart(RelatedSuperset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SupersetChart"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SupersetChart"
 
 
 class RelatedSupersetDashboard(RelatedSuperset):
@@ -97,7 +99,8 @@ class RelatedSupersetDashboard(RelatedSuperset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SupersetDashboard"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SupersetDashboard"
 
 
 class RelatedSupersetDataset(RelatedSuperset):
@@ -121,4 +124,5 @@ class RelatedSupersetDataset(RelatedSuperset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SupersetDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SupersetDataset"

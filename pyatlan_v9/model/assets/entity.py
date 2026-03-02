@@ -155,7 +155,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     remove_classifications: Union[list[Any], UnsetType] = UNSET
     """Classifications to remove from this entity (used during save)."""
 
-    classification_names: Union[list[str], UnsetType] = UNSET
+    classification_names: Union[list, UnsetType] = UNSET
     """Simple list of classification type names assigned to this entity."""
 
     # Meanings - typed for better validation
@@ -184,6 +184,9 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
     provenance_type: Union[int, UnsetType] = UNSET
     """Provenance type identifier for this entity."""
+
+    delete_handler: Union[str, None, UnsetType] = UNSET
+    """Details on the handler used for deletion of the asset."""
 
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
@@ -251,12 +254,29 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
         Map legacy field names to v9 field names.
 
         Legacy Pydantic models used different snake_case conventions for
-        some fields (e.g., asset_d_q_schedule_time_zone vs asset_dq_schedule_time_zone).
-        This collapses single-letter segments: _d_q_ -> _dq_
+        some fields (e.g., asset_d_q_schedule_time_zone vs asset_dq_schedule_time_zone,
+        data_product_assets_d_s_l vs data_product_assets_dsl).
+        This collapses consecutive single-letter segments into groups.
         """
-        import re
-
-        return re.sub(r"_([a-z])_([a-z])_", r"_\1\2_", name)
+        parts = name.split("_")
+        result: list[str] = []
+        i = 0
+        while i < len(parts):
+            if len(parts[i]) == 1 and parts[i].isalpha():
+                group = parts[i]
+                while (
+                    i + 1 < len(parts)
+                    and len(parts[i + 1]) == 1
+                    and parts[i + 1].isalpha()
+                ):
+                    i += 1
+                    group += parts[i]
+                result.append(group)
+            else:
+                result.append(parts[i])
+            i += 1
+        collapsed = "_".join(result)
+        return collapsed if collapsed != name else name
 
     @property
     def _metadata_proxy(self):
@@ -425,10 +445,18 @@ def _enc_hook(obj: Any) -> Any:
 
     Handles v9-native types that msgspec doesn't know about (AtlanTagName).
     """
+    import datetime
     from pyatlan_v9.model.core import AtlanTagName
 
     if type(obj) is AtlanTagName:
         return str(obj)
+    if isinstance(obj, datetime.date):
+        # Convert date to timestamp in milliseconds (epoch time)
+        dt = datetime.datetime.combine(obj, datetime.time.min)
+        return int(dt.timestamp() * 1000)
+    if isinstance(obj, datetime.datetime):
+        # Convert datetime to timestamp in milliseconds
+        return int(obj.timestamp() * 1000)
     raise TypeError(f"Encoding objects of type {type(obj).__name__} is unsupported")
 
 

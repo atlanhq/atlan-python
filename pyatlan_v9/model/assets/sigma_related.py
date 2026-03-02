@@ -59,7 +59,8 @@ class RelatedSigma(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Sigma"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Sigma"
 
 
 class RelatedSigmaDataElement(RelatedSigma):
@@ -83,7 +84,8 @@ class RelatedSigmaDataElement(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaDataElement"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaDataElement"
 
 
 class RelatedSigmaDataElementField(RelatedSigma):
@@ -104,7 +106,8 @@ class RelatedSigmaDataElementField(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaDataElementField"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaDataElementField"
 
 
 class RelatedSigmaDataset(RelatedSigma):
@@ -122,7 +125,8 @@ class RelatedSigmaDataset(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaDataset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaDataset"
 
 
 class RelatedSigmaDatasetColumn(RelatedSigma):
@@ -143,7 +147,8 @@ class RelatedSigmaDatasetColumn(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaDatasetColumn"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaDatasetColumn"
 
 
 class RelatedSigmaPage(RelatedSigma):
@@ -161,7 +166,8 @@ class RelatedSigmaPage(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaPage"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaPage"
 
 
 class RelatedSigmaWorkbook(RelatedSigma):
@@ -179,4 +185,5 @@ class RelatedSigmaWorkbook(RelatedSigma):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SigmaWorkbook"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SigmaWorkbook"

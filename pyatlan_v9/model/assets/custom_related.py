@@ -33,7 +33,8 @@ class RelatedCustom(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Custom"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Custom"
 
 
 class RelatedCustomEntity(RelatedCustom):
@@ -51,4 +52,5 @@ class RelatedCustomEntity(RelatedCustom):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "CustomEntity"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "CustomEntity"

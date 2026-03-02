@@ -31,6 +31,7 @@ from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
+from pyatlan_v9.model.lineage_ref import LineageRef
 from pyatlan_v9.model.serde import Serde, get_serde
 
 from .entity import Entity
@@ -149,6 +150,20 @@ class Referenceable(Entity):
     depth: Union[int, None, UnsetType] = UNSET
     """Depth of this asset within lineage (populated by lineage API responses)."""
 
+    immediate_upstream: Union[list[LineageRef], None] = None
+    """Assets immediately upstream in lineage (populated when immediateNeighbours=True)."""
+
+    immediate_downstream: Union[list[LineageRef], None] = None
+    """Assets immediately downstream in lineage (populated when immediateNeighbours=True)."""
+
+    @classmethod
+    def can_be_archived(cls) -> bool:
+        """
+        Indicates if an asset can be archived via the asset.delete_by_guid method.
+        :returns: True if archiving is supported
+        """
+        return True
+
     # =========================================================================
     # Compatibility Properties (legacy API surface)
     # =========================================================================
@@ -253,6 +268,7 @@ class ReferenceableNested(
     guid: Union[Any, UnsetType] = UNSET
     type_name: Union[Any, UnsetType] = UNSET
     status: Union[Any, UnsetType] = UNSET
+    delete_handler: Union[Any, UnsetType] = UNSET
     version: Union[Any, UnsetType] = UNSET
     create_time: Union[Any, UnsetType] = UNSET
     update_time: Union[Any, UnsetType] = UNSET
@@ -303,6 +319,7 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         guid=referenceable.guid,
         type_name=referenceable.type_name,
         status=referenceable.status,
+        delete_handler=referenceable.delete_handler,
         version=referenceable.version,
         create_time=referenceable.create_time,
         update_time=referenceable.update_time,
@@ -346,6 +363,7 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
+        delete_handler=nested.delete_handler,
         version=nested.version,
         create_time=nested.create_time,
         update_time=nested.update_time,

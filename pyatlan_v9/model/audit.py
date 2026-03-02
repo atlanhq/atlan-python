@@ -53,13 +53,12 @@ class AuditSearchRequest(msgspec.Struct, kw_only=True):
                 sort=self.dsl.sort,
             )
 
-    def json(
+    def to_dict(
         self,
-        by_alias: bool = False,
-        exclude_none: bool = False,
-        exclude_unset: bool = False,
-    ) -> str:
-        """Serialize AuditSearchRequest to JSON string."""
+        by_alias: bool = True,
+        exclude_none: bool = True,
+    ) -> Dict[str, Any]:
+        """Serialize AuditSearchRequest to a dict suitable for JSON serialization."""
         d: Dict[str, Any] = {
             "attributes": self.attributes,
             "dsl": json_lib.loads(
@@ -68,7 +67,18 @@ class AuditSearchRequest(msgspec.Struct, kw_only=True):
         }
         if exclude_none:
             d = {k: v for k, v in d.items() if v is not None}
-        return json_lib.dumps(d)
+        return d
+
+    def json(
+        self,
+        by_alias: bool = False,
+        exclude_none: bool = False,
+        exclude_unset: bool = False,
+    ) -> str:
+        """Serialize AuditSearchRequest to JSON string."""
+        return json_lib.dumps(
+            self.to_dict(by_alias=by_alias, exclude_none=exclude_none)
+        )
 
     @classmethod
     def by_guid(
@@ -184,7 +194,7 @@ class CustomMetadataAttributesAuditDetail(msgspec.Struct, kw_only=True):
         return not self.attributes or len(self.attributes) == 0
 
 
-class EntityAudit(msgspec.Struct, kw_only=True):
+class EntityAudit(msgspec.Struct, kw_only=True, rename="camel"):
     """
     Detailed entry in the audit log. These objects should be treated as immutable.
     """
@@ -203,6 +213,20 @@ class EntityAudit(msgspec.Struct, kw_only=True):
     detail: Optional[Any] = None
     entity_detail: Optional[Any] = None
     headers: Optional[Dict[str, str]] = None
+
+    def __post_init__(self):
+        from pyatlan_v9.model.transform import from_atlas_format
+
+        if isinstance(self.detail, dict) and "typeName" in self.detail:
+            try:
+                self.detail = from_atlas_format(self.detail)
+            except Exception:
+                pass
+        if isinstance(self.entity_detail, dict) and "typeName" in self.entity_detail:
+            try:
+                self.entity_detail = from_atlas_format(self.entity_detail)
+            except Exception:
+                pass
 
 
 class AuditSearchResults(Iterable):

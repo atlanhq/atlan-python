@@ -372,6 +372,8 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
         if request_obj is not None:
             if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
+                params["data"] = json.dumps(request_obj.to_dict())
             elif isinstance(request_obj, (msgspec.Struct, dict, list)):
                 async_request = AsyncAtlanRequest(
                     instance=request_obj, client=self  # type: ignore[arg-type]
@@ -382,6 +384,8 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
                     instance=request_obj, client=self  # type: ignore[arg-type]
                 )
                 params["data"] = await async_request.json()
+            elif hasattr(request_obj, "__root__"):
+                params["data"] = json.dumps(request_obj.__root__)
             else:
                 params["data"] = json.dumps(request_obj)
         return params
@@ -745,6 +749,17 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
         """
         raw_json = await self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
         return msgspec.convert(raw_json, AtlanImage, strict=False)
+
+    async def search(self, criteria):
+        """Search assets. Delegates to asset.search()."""
+        from warnings import warn
+
+        warn(
+            "This method is deprecated, please use 'asset.search' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return await self.asset.search(criteria=criteria)
 
     async def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """

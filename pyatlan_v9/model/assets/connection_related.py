@@ -143,4 +143,5 @@ class RelatedConnection(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Connection"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Connection"

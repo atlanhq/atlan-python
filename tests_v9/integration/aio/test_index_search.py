@@ -404,7 +404,7 @@ async def _assert_search_results(
 async def test_search_pagination(mock_logger, client: AsyncAtlanClient):
     # Avoid testing on integration tests objects
     exclude_sdk_terms = [
-        Asset.NAME.wildcard("psdk_*"),
+        Asset.NAME.wildcard("psdkv9_*"),
         Asset.NAME.wildcard("jsdk_*"),
         Asset.NAME.wildcard("gsdk_*"),
     ]

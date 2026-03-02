@@ -67,7 +67,8 @@ class RelatedMode(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Mode"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Mode"
 
 
 class RelatedModeCollection(RelatedMode):
@@ -88,7 +89,8 @@ class RelatedModeCollection(RelatedMode):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModeCollection"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModeCollection"
 
 
 class RelatedModeQuery(RelatedMode):
@@ -109,7 +111,8 @@ class RelatedModeQuery(RelatedMode):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModeQuery"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModeQuery"
 
 
 class RelatedModeReport(RelatedMode):
@@ -148,7 +151,8 @@ class RelatedModeReport(RelatedMode):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModeReport"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModeReport"
 
 
 class RelatedModeWorkspace(RelatedMode):
@@ -166,7 +170,8 @@ class RelatedModeWorkspace(RelatedMode):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModeWorkspace"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModeWorkspace"
 
 
 class RelatedModeChart(RelatedMode):
@@ -184,4 +189,5 @@ class RelatedModeChart(RelatedMode):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ModeChart"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ModeChart"

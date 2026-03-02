@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import datetime
 from enum import Enum
 from typing import Any, TypeVar
 
@@ -17,6 +18,13 @@ def _enc_hook(obj: Any) -> Any:
         return str(obj)
     if isinstance(obj, Enum):
         return obj.value
+    if isinstance(obj, datetime.date):
+        # Convert date to timestamp in milliseconds (epoch time)
+        dt = datetime.datetime.combine(obj, datetime.time.min)
+        return int(dt.timestamp() * 1000)
+    if isinstance(obj, datetime.datetime):
+        # Convert datetime to timestamp in milliseconds
+        return int(obj.timestamp() * 1000)
     raise NotImplementedError(f"Cannot serialize {type(obj)}")
 
 

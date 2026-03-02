@@ -33,7 +33,8 @@ class RelatedSoda(RelatedDataQuality):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Soda"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Soda"
 
 
 class RelatedSodaCheck(RelatedSoda):
@@ -66,4 +67,5 @@ class RelatedSodaCheck(RelatedSoda):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SodaCheck"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SodaCheck"

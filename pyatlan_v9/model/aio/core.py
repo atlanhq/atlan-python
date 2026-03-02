@@ -24,11 +24,21 @@ if TYPE_CHECKING:
 
 def _enc_hook(obj: Any) -> Any:
     """Handle custom types that msgspec cannot natively encode."""
+    import datetime
+
     if isinstance(obj, AtlanTagName):
         return str(obj)
     from enum import Enum
+
     if isinstance(obj, Enum):
         return obj.value
+    if isinstance(obj, datetime.date):
+        # Convert date to timestamp in milliseconds (epoch time)
+        dt = datetime.datetime.combine(obj, datetime.time.min)
+        return int(dt.timestamp() * 1000)
+    if isinstance(obj, datetime.datetime):
+        # Convert datetime to timestamp in milliseconds
+        return int(obj.timestamp() * 1000)
     raise NotImplementedError(f"Cannot serialize {type(obj)}")
 
 
@@ -57,8 +67,7 @@ class AsyncAtlanResponse:
                 if translator.applies_to(data):
                     data = await translator.translate(data)
             return {
-                key: await self._deep_translate(value)
-                for key, value in data.items()
+                key: await self._deep_translate(value) for key, value in data.items()
             }
         elif isinstance(data, list):
             return [await self._deep_translate(item) for item in data]
@@ -89,6 +98,8 @@ class AsyncAtlanRequest:
             parsed = self.instance
         elif hasattr(self.instance, "to_json") and callable(self.instance.to_json):
             parsed = json_lib.loads(self.instance.to_json(nested=True))
+        elif hasattr(self.instance, "to_dict") and callable(self.instance.to_dict):
+            parsed = self.instance.to_dict()
         else:
             parsed = msgspec.to_builtins(self.instance, enc_hook=_enc_hook)
 
@@ -101,8 +112,7 @@ class AsyncAtlanRequest:
                 if retranslator.applies_to(data):
                     data = await retranslator.retranslate(data)
             return {
-                key: await self._deep_retranslate(value)
-                for key, value in data.items()
+                key: await self._deep_retranslate(value) for key, value in data.items()
             }
         elif isinstance(data, list):
             return [await self._deep_retranslate(item) for item in data]

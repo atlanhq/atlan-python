@@ -604,7 +604,8 @@ class RelatedAsset(RelatedReferenceable):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Asset"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Asset"
 
 
 class RelatedDataSet(RelatedAsset):
@@ -619,7 +620,8 @@ class RelatedDataSet(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "DataSet"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "DataSet"
 
 
 class RelatedInfrastructure(RelatedAsset):
@@ -634,7 +636,8 @@ class RelatedInfrastructure(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Infrastructure"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Infrastructure"
 
 
 class RelatedProcessExecution(RelatedAsset):
@@ -649,7 +652,8 @@ class RelatedProcessExecution(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "ProcessExecution"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "ProcessExecution"
 
 
 class RelatedIncident(RelatedAsset):
@@ -667,4 +671,5 @@ class RelatedIncident(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "Incident"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "Incident"

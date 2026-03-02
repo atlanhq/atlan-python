@@ -289,7 +289,7 @@ class TestTable:
         popularity.record_query_count = 2
         popularity.record_total_user_count = 3
         popularity.record_compute_cost_unit = SourceCostUnitType.BYTES
-        popularity.record_last_timestamp = datetime.datetime.now()
+        popularity.record_last_timestamp = datetime.date.today()
         popularity.record_query_duration = 4
         popularity.record_warehouse = "there"
         return popularity

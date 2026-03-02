@@ -39,7 +39,8 @@ class RelatedSchemaRegistry(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SchemaRegistry"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SchemaRegistry"
 
 
 class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
@@ -76,4 +77,5 @@ class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "SchemaRegistrySubject"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "SchemaRegistrySubject"

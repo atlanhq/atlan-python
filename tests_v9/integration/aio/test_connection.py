@@ -52,7 +52,7 @@ async def custom_connection(
 
 async def test_custom_connection(custom_connection: Connection):
     assert custom_connection.name == MODULE_NAME
-    assert custom_connection.connector_name == f"{MODULE_NAME}_type"
+    assert custom_connection.connector_name == f"{MODULE_NAME.lower()}_type"
     assert custom_connection.qualified_name
     assert custom_connection.category == AtlanConnectionCategory.API
 
@@ -68,4 +68,4 @@ async def test_custom_connection_qualified_name(
     )
     assert found
     assert found.name == MODULE_NAME
-    assert found.connector_name == f"{MODULE_NAME}_type"
+    assert found.connector_name == f"{MODULE_NAME.lower()}_type"

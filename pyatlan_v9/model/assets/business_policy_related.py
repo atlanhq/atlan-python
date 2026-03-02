@@ -68,7 +68,8 @@ class RelatedBusinessPolicy(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BusinessPolicy"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "BusinessPolicy"
 
 
 class RelatedBusinessPolicyException(RelatedBusinessPolicy):
@@ -95,7 +96,8 @@ class RelatedBusinessPolicyException(RelatedBusinessPolicy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BusinessPolicyException"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "BusinessPolicyException"
 
 
 class RelatedBusinessPolicyIncident(RelatedBusinessPolicy):
@@ -121,7 +123,8 @@ class RelatedBusinessPolicyIncident(RelatedBusinessPolicy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BusinessPolicyIncident"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "BusinessPolicyIncident"
 
 
 class RelatedBusinessPolicyLog(RelatedBusinessPolicy):
@@ -154,4 +157,5 @@ class RelatedBusinessPolicyLog(RelatedBusinessPolicy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        self.type_name = "BusinessPolicyLog"
+        if self.type_name is UNSET or self.type_name is None:
+            self.type_name = "BusinessPolicyLog"

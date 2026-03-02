@@ -133,11 +133,16 @@ def test_update_application_again(
         name=application.name,
     )
     assert updated
-    assert not updated.certificate_status
-    assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    refreshed = client.asset.get_by_qualified_name(
+        asset_type=Application,
+        qualified_name=application.qualified_name,
+    )
+    assert refreshed
+    assert not refreshed.certificate_status
+    assert not refreshed.certificate_status_message
+    assert refreshed.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert refreshed.announcement_title == ANNOUNCEMENT_TITLE
+    assert refreshed.announcement_message == ANNOUNCEMENT_MESSAGE
     assert application.qualified_name
     updated = client.asset.remove_announcement(
         asset_type=Application,
@@ -145,9 +150,14 @@ def test_update_application_again(
         name=application.name,
     )
     assert updated
-    assert not updated.announcement_type
-    assert not updated.announcement_title
-    assert not updated.announcement_message
+    refreshed = client.asset.get_by_qualified_name(
+        asset_type=Application,
+        qualified_name=application.qualified_name,
+    )
+    assert refreshed
+    assert not refreshed.announcement_type
+    assert not refreshed.announcement_title
+    assert not refreshed.announcement_message
 
 
 @pytest.mark.order(after="test_update_application_again")
