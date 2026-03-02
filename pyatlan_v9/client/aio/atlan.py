@@ -92,7 +92,7 @@ DEFAULT_RETRY = Retry(
 VERSION = read_text("pyatlan", "version.txt").strip()
 
 
-def _log_response(response, *args, **kwargs):
+async def _log_response(response, *args, **kwargs):
     LOGGER.debug("HTTP Status: %s", response.status_code)
     LOGGER.debug("URL: %s", response.request.url)
 
