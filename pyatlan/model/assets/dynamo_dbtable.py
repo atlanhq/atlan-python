@@ -347,6 +347,10 @@ class DynamoDBTable(Table):
     """
     TBC
     """
+    DYNAMO_DB_COLUMNS: ClassVar[RelationField] = RelationField("dynamoDBColumns")
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "dynamo_dbtable_g_s_i_count",
@@ -404,6 +408,7 @@ class DynamoDBTable(Table):
         "no_s_q_l_schema_definition",
         "dynamo_d_b_local_secondary_indexes",
         "dynamo_d_b_global_secondary_indexes",
+        "dynamo_d_b_columns",
     ]
 
     @property
@@ -1068,6 +1073,25 @@ class DynamoDBTable(Table):
             dynamo_d_b_global_secondary_indexes
         )
 
+    @property
+    def dynamo_d_b_columns(
+        self,
+    ) -> Optional[List[DynamoDBAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_columns
+        )
+
+    @dynamo_d_b_columns.setter
+    def dynamo_d_b_columns(
+        self,
+        dynamo_d_b_columns: Optional[List[DynamoDBAttribute]],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dynamo_d_b_columns = dynamo_d_b_columns
+
     class Attributes(Table.Attributes):
         dynamo_dbtable_g_s_i_count: Optional[int] = Field(default=None, description="")
         dynamo_dbtable_l_s_i_count: Optional[int] = Field(default=None, description="")
@@ -1144,6 +1168,9 @@ class DynamoDBTable(Table):
         dynamo_d_b_global_secondary_indexes: Optional[
             List[DynamoDBGlobalSecondaryIndex]
         ] = Field(default=None, description="")  # relationship
+        dynamo_d_b_columns: Optional[List[DynamoDBAttribute]] = Field(
+            default=None, description=""
+        )  # relationship
 
     attributes: DynamoDBTable.Attributes = Field(
         default_factory=lambda: DynamoDBTable.Attributes(),
@@ -1155,6 +1182,7 @@ class DynamoDBTable(Table):
     )
 
 
+from .dynamo_d_b_attribute import DynamoDBAttribute  # noqa: E402, F401
 from .dynamo_d_b_global_secondary_index import (
     DynamoDBGlobalSecondaryIndex,  # noqa: E402, F401
 )

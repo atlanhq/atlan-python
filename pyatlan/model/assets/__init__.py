@@ -430,6 +430,7 @@ __PYATLAN_ASSETS__ = {
     "azure_event_hub_consumer_group": ["AzureEventHubConsumerGroup"],
     "dynamo_d_b_local_secondary_index": ["DynamoDBLocalSecondaryIndex"],
     "dynamo_d_b_global_secondary_index": ["DynamoDBGlobalSecondaryIndex"],
+    "dynamo_d_b_attribute": ["DynamoDBAttribute"],
 }
 
 lazy_loader = lazy.attach(__name__, submod_attrs=__PYATLAN_ASSETS__)
