@@ -70,6 +70,7 @@ class SSOClient:
         sso_alias: str,
         atlan_group: AtlanGroup,
         group_map_id: str,
+        group_map_name: str,
         sso_group_name: str,
     ) -> SSOMapper:
         """
@@ -78,12 +79,13 @@ class SSOClient:
         :param sso_alias: name of the SSO provider.
         :param atlan_group: existing Atlan group.
         :param group_map_id: existing SSO group map identifier.
+        :param group_map_name: existing SSO group map name.
         :param sso_group_name: new SSO group name.
         :raises AtlanError: on any error during API invocation.
         :returns: updated SSO group mapping instance.
         """
         endpoint, request_obj = SSOUpdateGroupMapping.prepare_request(
-            sso_alias, atlan_group, group_map_id, sso_group_name
+            sso_alias, atlan_group, group_map_id, group_map_name, sso_group_name
         )
         raw_json = self._client._call_api(endpoint, request_obj=request_obj)
         return SSOUpdateGroupMapping.process_response(raw_json)

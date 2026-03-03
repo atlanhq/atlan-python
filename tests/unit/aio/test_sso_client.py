@@ -274,6 +274,7 @@ async def test_sso_update_group_mapping(
         sso_alias="auth0",
         atlan_group=AtlanGroup(),
         group_map_id="group-map-id",
+        group_map_name="group-map-name",
         sso_group_name="sso-group",
     )
     assert response == SSOMapper(**update_group_mapping_json)

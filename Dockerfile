@@ -118,11 +118,11 @@ try:
     import pyatlan
     print(f"✅ PyAtlan imported successfully")
     print(f"Installed version: {pyatlan.__version__}")
-    
+
     # Try importing AtlanClient
     from pyatlan.client.atlan import AtlanClient
     print(f"✅ AtlanClient imported successfully")
-    
+
     # Version validation (skip if 'latest' was requested)
     if expected_version != "latest" and expected_version != "unknown":
         if pyatlan.__version__ != expected_version:
@@ -134,9 +134,9 @@ try:
             print("✅ Version verified")
     else:
         print("✅ Version validation skipped (latest or unknown)")
-        
+
     print("=== Build verification passed ===")
-    
+
 except ImportError as e:
     print(f"❌ Import error: {e}")
     sys.exit(1)
