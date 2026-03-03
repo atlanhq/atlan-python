@@ -1159,17 +1159,66 @@ class ModifyAtlanTags:
         return [AtlasGlossaryTerm.ANCHOR]  # type: ignore[arg-type]
 
     @staticmethod
-    def process_save_response(response, asset_type: Type[A], updated_asset):
+    def process_save_response(response, asset_type: Type[A], updated_asset: A) -> A:
         """
         Process the save response to extract the updated asset.
 
         :param response: AssetMutationResponse from save operation
         :param asset_type: type of asset that was updated
         :param updated_asset: the asset updater that was saved
-        :returns: the updated asset or the updater if no assets found
+        :returns: the updated asset with guid properly set
         """
+        import logging
+
+        LOGGER = logging.getLogger(__name__)
+
         if assets := response.assets_updated(asset_type=asset_type):
+            LOGGER.debug(f"Found {len(assets)} updated assets in response")
             return assets[0]
+
+        LOGGER.debug(
+            f"No assets in assets_updated, checking guid_assignments and mutated_entities"
+        )
+
+        # If no assets in response, try to get guid from guid_assignments or mutated_entities
+        result_guid = None
+
+        # Check guid_assignments first (maps temp ID to actual GUID)
+        if response.guid_assignments:
+            LOGGER.debug(f"guid_assignments: {response.guid_assignments}")
+            # Get the first guid assignment (usually for the asset we just updated)
+            for temp_id, guid in response.guid_assignments.items():
+                if guid:
+                    result_guid = guid
+                    LOGGER.debug(f"Found guid from guid_assignments: {result_guid}")
+                    break
+
+        # If still no guid, check mutated_entities.UPDATE for any entity with a guid
+        if (
+            not result_guid
+            and response.mutated_entities
+            and response.mutated_entities.UPDATE
+        ):
+            LOGGER.debug(
+                f"Checking mutated_entities.UPDATE ({len(response.mutated_entities.UPDATE)} entities)"
+            )
+            for entity in response.mutated_entities.UPDATE:
+                if hasattr(entity, "guid") and entity.guid:
+                    from msgspec import UnsetType
+
+                    if not isinstance(entity.guid, UnsetType):
+                        result_guid = entity.guid
+                        LOGGER.debug(f"Found guid from mutated_entities: {result_guid}")
+                        break
+
+        # If we found a guid, set it on the updated_asset
+        if result_guid:
+            LOGGER.debug(f"Setting guid={result_guid} on updated_asset")
+            updated_asset.guid = result_guid
+        else:
+            LOGGER.warning(f"No guid found in response for {asset_type.__name__}")
+
+        LOGGER.debug(f"Returning updated_asset with guid={updated_asset.guid}")
         return updated_asset
 
 
@@ -1616,10 +1665,49 @@ class ManageTerms:
         :param response: AssetMutationResponse from save operation
         :param asset_type: type of asset that was updated
         :param updated_asset: the asset updater that was saved
-        :returns: the updated asset or the updater if no assets found
+        :returns: the updated asset with guid properly set
         """
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
+
+        # If no assets in response, try to get guid from various sources
+        result_guid = None
+
+        # Check guid_assignments first (maps temp ID to actual GUID)
+        if response.guid_assignments:
+            for temp_id, guid in response.guid_assignments.items():
+                if guid:
+                    result_guid = guid
+                    break
+
+        # If still no guid, check mutated_entities.UPDATE
+        if (
+            not result_guid
+            and response.mutated_entities
+            and response.mutated_entities.UPDATE
+        ):
+            for entity in response.mutated_entities.UPDATE:
+                if hasattr(entity, "guid") and entity.guid:
+                    from msgspec import UnsetType
+
+                    if not isinstance(entity.guid, UnsetType):
+                        result_guid = entity.guid
+                        break
+
+        # If still no guid, check partial_updated_entities
+        if not result_guid and response.partial_updated_entities:
+            for entity in response.partial_updated_entities:
+                if hasattr(entity, "guid") and entity.guid:
+                    from msgspec import UnsetType
+
+                    if not isinstance(entity.guid, UnsetType):
+                        result_guid = entity.guid
+                        break
+
+        # Set the guid if we found one
+        if result_guid:
+            updated_asset.guid = result_guid
+
         return updated_asset
 
 

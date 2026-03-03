@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from typing import Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -48,7 +49,9 @@ class QuickSightFolder(Asset):
     # Override type_name with QuickSightFolder-specific default
     type_name: Union[str, UnsetType] = "QuickSightFolder"
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_folder_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightFolderType"
+    )
     """Type of this folder, for example: SHARED."""
 
     quick_sight_folder_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
@@ -75,16 +78,6 @@ class QuickSightFolder(Asset):
         UNSET
     )
     """"""
-
-    @property
-    def quick_sight_folder_type(self) -> Union[str, None, UnsetType]:
-        """Alias for quick_sight_type to preserve SDK field parity."""
-        return self.quick_sight_type
-
-    @quick_sight_folder_type.setter
-    def quick_sight_folder_type(self, value: Union[str, None, UnsetType]) -> None:
-        """Alias setter for quick_sight_type."""
-        self.quick_sight_type = value
 
     # =========================================================================
     # Convenience Methods
@@ -113,7 +106,7 @@ class QuickSightFolder(Asset):
             qualified_name=qualified_name,
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_type=quick_sight_folder_type
+            quick_sight_folder_type=quick_sight_folder_type
             if quick_sight_folder_type is not None
             else UNSET,
         )
@@ -181,7 +174,9 @@ class QuickSightFolder(Asset):
 class QuickSightFolderAttributes(AssetAttributes):
     """QuickSightFolder-specific attributes for nested API format."""
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_folder_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightFolderType"
+    )
     """Type of this folder, for example: SHARED."""
 
     quick_sight_folder_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET

@@ -57,9 +57,32 @@ def _serialize_value(v: Any) -> Any:
     if v is None:
         return None
     if hasattr(v, "to_dict") and callable(v.to_dict):
-        return v.to_dict()
+        # Recursively serialize the result of to_dict() in case it contains nested objects
+        result = v.to_dict()
+        if isinstance(result, dict):
+            return {k: _serialize_value(val) for k, val in result.items()}
+        elif isinstance(result, list):
+            return [_serialize_value(item) for item in result]
+        return result
+    # Handle Pydantic __root__ models (unwrap before dict serialization)
     if hasattr(v, "__root__"):
         return _serialize_value(v.__root__)
+    # Handle Pydantic v1 models (legacy pyatlan models like Bool, Term, etc.)
+    if hasattr(v, "dict") and callable(v.dict):
+        result = v.dict(by_alias=True, exclude_none=True)
+        if isinstance(result, dict):
+            return {k: _serialize_value(val) for k, val in result.items()}
+        elif isinstance(result, list):
+            return [_serialize_value(item) for item in result]
+        return result
+    # Handle Pydantic v2 models
+    if hasattr(v, "model_dump") and callable(v.model_dump):
+        result = v.model_dump(by_alias=True, exclude_none=True)
+        if isinstance(result, dict):
+            return {k: _serialize_value(val) for k, val in result.items()}
+        elif isinstance(result, list):
+            return [_serialize_value(item) for item in result]
+        return result
     if isinstance(v, dict):
         return {k: _serialize_value(val) for k, val in v.items()}
     if isinstance(v, list):

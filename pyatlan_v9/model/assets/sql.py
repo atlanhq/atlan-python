@@ -336,3 +336,30 @@ def _sql_from_nested_bytes(data: bytes, serde: Serde) -> SQL:
     """Convert nested JSON bytes to flat SQL."""
     nested = serde.decode(data, SQLNested)
     return _sql_from_nested(nested)
+
+
+# ---------------------------------------------------------------------------
+# SQL field descriptors (for search queries)
+# ---------------------------------------------------------------------------
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+)
+
+SQL.QUERY_COUNT = NumericField("queryCount", "queryCount")
+SQL.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+SQL.DATABASE_NAME = KeywordTextField(
+    "databaseName", "databaseName.keyword", "databaseName"
+)
+SQL.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
+SQL.SCHEMA_NAME = KeywordTextField(
+    "schemaName", "schemaName.keyword", "schemaName"
+)
+SQL.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
+SQL.IS_PROFILED = BooleanField("isProfiled", "isProfiled")

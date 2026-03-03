@@ -223,8 +223,8 @@ def _test_update_certificate(
     )
     assert test_asset.qualified_name
     assert test_asset.name
-    assert not test_asset.certificate_status or test_asset.certificate_status is UNSET
-    assert not test_asset.certificate_status_message or test_asset.certificate_status_message is UNSET
+    assert test_asset.certificate_status is None
+    assert test_asset.certificate_status_message is None
     message = "An important message"
     client.asset.update_certificate(
         asset_type=test_asset_type,
@@ -258,8 +258,8 @@ def _test_remove_certificate(
     test_asset = client.asset.get_by_guid(
         guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
-    assert not test_asset.certificate_status or test_asset.certificate_status is UNSET
-    assert not test_asset.certificate_status_message or test_asset.certificate_status_message is UNSET
+    assert test_asset.certificate_status is None
+    assert test_asset.certificate_status_message is None
 
 
 def _test_update_announcement(
@@ -315,6 +315,8 @@ def test_append_terms_with_guid(
             guid=database.guid, asset_type=Database, terms=[term1]
         )
     )
+    # Wait for indexing before fetching
+    time.sleep(2)
     database = client.asset.get_by_guid(
         guid=database.guid, asset_type=Database, ignore_relationships=False
     )
@@ -950,8 +952,8 @@ def test_asset_remove_certificate_by_setting_none(
     assert len(db_updated) == 1
     assert db_updated[0].name == database.name
     assert db_updated[0].guid == database.guid
-    assert not db_updated[0].certificate_status or db_updated[0].certificate_status is UNSET
-    assert not db_updated[0].certificate_status_message or db_updated[0].certificate_status_message is UNSET
+    assert db_updated[0].certificate_status is None
+    assert db_updated[0].certificate_status_message is None
 
 
 def test_glossary_term_update_announcement(

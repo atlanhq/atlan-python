@@ -4,6 +4,8 @@ from typing import Generator
 
 import pytest
 
+from msgspec import UNSET
+
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import Connection, S3Bucket, S3Object
 from pyatlan_v9.model.core import Announcement
@@ -122,7 +124,7 @@ def _assert_bucket(bucket, with_name=False):
     assert bucket.name == BUCKET_NAME
     assert bucket.connector_name == AtlanConnectorType.S3.value
     if with_name:
-        assert bucket.aws_arn is None
+        assert not bucket.aws_arn or bucket.aws_arn is UNSET
     else:
         assert bucket.aws_arn == BUCKET_ARN
 
@@ -136,11 +138,11 @@ def _assert_object(s3object, bucket, with_name=False):
     assert s3object.s3_bucket_name == bucket.name
     assert s3object.s3_bucket_qualified_name == bucket.qualified_name
     if with_name:
-        assert s3object.aws_arn is None
+        assert not s3object.aws_arn or s3object.aws_arn is UNSET
         assert s3object.s3_object_key == f"{OBJECT_PREFIX}/{OBJECT_NAME}"
     else:
         assert s3object.aws_arn == OBJECT_ARN
-        assert s3object.s3_object_key is None
+        assert not s3object.s3_object_key or s3object.s3_object_key is UNSET
 
 
 def _assert_update_bucket(client, bucket, with_name=False):
@@ -173,7 +175,7 @@ def _assert_update_bucket(client, bucket, with_name=False):
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     if with_name:
-        assert bucket.aws_arn is None
+        assert not bucket.aws_arn or bucket.aws_arn is UNSET
     else:
         assert bucket.aws_arn == BUCKET_ARN
 
@@ -194,7 +196,7 @@ def _assert_retrieve_bucket(client, bucket, s3object, with_name=False):
     assert isinstance(b.objects[0], S3Object)
     assert b.objects[0].guid == s3object.guid
     if with_name:
-        assert b.aws_arn is None
+        assert not b.aws_arn or b.aws_arn is UNSET
     else:
         assert b.aws_arn == BUCKET_ARN
 
@@ -224,7 +226,7 @@ def _assert_update_bucket_again(client, bucket, with_name=False):
     assert not updated.announcement_title
     assert not updated.announcement_message
     if with_name:
-        assert bucket.aws_arn is None
+        assert not bucket.aws_arn or bucket.aws_arn is UNSET
     else:
         assert bucket.aws_arn == BUCKET_ARN
 

@@ -481,3 +481,26 @@ def _schema__from_nested_bytes(data: bytes, serde: Serde) -> Schema:
     """Convert nested JSON bytes to flat Schema."""
     nested = serde.decode(data, SchemaNested)
     return _schema__from_nested(nested)
+
+
+# ---------------------------------------------------------------------------
+# Schema field descriptors (inherited from SQL in legacy, set explicitly here)
+# ---------------------------------------------------------------------------
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+)
+
+Schema.DATABASE_NAME = KeywordTextField(
+    "databaseName", "databaseName.keyword", "databaseName"
+)
+Schema.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
+Schema.SCHEMA_NAME = KeywordTextField(
+    "schemaName", "schemaName.keyword", "schemaName"
+)
+Schema.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)

@@ -189,6 +189,38 @@ class Query(Asset):
             parent_qualified_name=parent_qn,
         )
 
+    @classmethod
+    def updater(
+        cls,
+        *,
+        name: str,
+        qualified_name: str,
+        collection_qualified_name: str,
+        parent_qualified_name: str,
+    ) -> "Query":
+        from pyatlan.utils import validate_required_fields
+
+        validate_required_fields(
+            ["name", "collection_qualified_name", "parent_qualified_name"],
+            [name, collection_qualified_name, parent_qualified_name],
+        )
+        if collection_qualified_name == parent_qualified_name:
+            from pyatlan_v9.model.assets import Collection
+
+            parent = Collection.ref_by_qualified_name(collection_qualified_name)
+        else:
+            from pyatlan_v9.model.assets import Folder
+
+            parent = Folder.ref_by_qualified_name(parent_qualified_name)
+
+        return Query(
+            qualified_name=qualified_name,
+            name=name,
+            parent=parent,
+            collection_qualified_name=collection_qualified_name,
+            parent_qualified_name=parent_qualified_name,
+        )
+
     def with_raw_query(self, schema_qualified_name: str, query: str):
         from base64 import b64encode
         from json import dumps

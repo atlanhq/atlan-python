@@ -94,6 +94,7 @@ class Purpose(Asset):
             qualified_name=name,
             display_name=name,
             description="",
+            is_access_control_enabled=True,
             purpose_classifications=[str(tag) for tag in atlan_tags],
         )
 

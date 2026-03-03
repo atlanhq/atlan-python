@@ -86,14 +86,14 @@ class AnaplanPage(Asset):
         *,
         name: str,
         app_qualified_name: str,
-        connection_qualified_name: Union[str, None, UnsetType] = UNSET,
+        connection_qualified_name: str | None = None,
     ) -> "AnaplanPage":
         """Create a new AnaplanPage asset."""
         validate_required_fields(
             ["name", "app_qualified_name"], [name, app_qualified_name]
         )
         connection_qn: Union[str, None, UnsetType] = UNSET
-        if connection_qualified_name is not UNSET and connection_qualified_name is not None:
+        if connection_qualified_name is not None:
             connector_name = str(
                 AtlanConnectorType.get_connector_name(connection_qualified_name)
             )

@@ -374,7 +374,9 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
                 params["data"] = request_obj
             elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
                 params["data"] = json.dumps(request_obj.to_dict())
-            elif isinstance(request_obj, (msgspec.Struct, dict, list)):
+            elif isinstance(request_obj, (dict, list)):
+                params["data"] = json.dumps(request_obj)
+            elif isinstance(request_obj, msgspec.Struct):
                 async_request = AsyncAtlanRequest(
                     instance=request_obj, client=self  # type: ignore[arg-type]
                 )

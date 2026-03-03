@@ -97,7 +97,7 @@ class AtlasGlossaryTerm(Asset):
     assigned_entities: Union[list[RelatedReferenceable], None, UnsetType] = UNSET
     """Assets assigned this term."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = None
     """Glossary in which this term is contained."""
 
     categories: Union[list[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
@@ -368,7 +368,7 @@ class AtlasGlossaryTermAttributes(AssetAttributes):
     term_type: Union[str, None, UnsetType] = UNSET
     """"""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = None
     """Glossary in which this term is contained."""
 
 

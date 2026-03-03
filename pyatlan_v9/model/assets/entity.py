@@ -49,6 +49,12 @@ class AtlasClassification(
     remove_propagations_on_entity_delete: Union[bool, UnsetType] = UNSET
     """Whether to remove propagated classifications when the entity is deleted."""
 
+    restrict_propagation_through_lineage: Union[bool, UnsetType] = UNSET
+    """Whether to avoid propagating through lineage (True) or do propagate through lineage (False)."""
+
+    restrict_propagation_through_hierarchy: Union[bool, UnsetType] = UNSET
+    """Whether to prevent this classification from propagating through hierarchy (True) or allow it (False)."""
+
     validity_periods: Union[list[dict[str, Any]], UnsetType] = UNSET
     """Time periods during which this classification is valid."""
 
@@ -69,6 +75,9 @@ class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="c
 
     term_guid: Union[str, UnsetType] = UNSET
     """The GUID of the assigned glossary term."""
+
+    guid_raw: Union[str, UnsetType] = msgspec.field(default=UNSET, name="guid")
+    """Raw GUID field used by some Atlas responses for term assignments."""
 
     relation_guid: Union[str, UnsetType] = UNSET
     """The GUID of the relationship between entity and term."""
@@ -96,6 +105,19 @@ class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="c
 
     status: Union[str, UnsetType] = UNSET
     """Status of the assignment (DISCOVERED, PROPOSED, IMPORTED, VALIDATED, DEPRECATED, OBSOLETE, OTHER)."""
+
+    @property
+    def guid(self) -> Union[str, None]:
+        """Backward-compatible alias for term_guid."""
+        if self.term_guid is not UNSET:
+            return self.term_guid
+        if self.guid_raw is not UNSET:
+            return self.guid_raw
+        return None
+
+    @guid.setter
+    def guid(self, value: Union[str, None]) -> None:
+        self.term_guid = UNSET if value is None else value
 
 
 class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
@@ -155,15 +177,15 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     remove_classifications: Union[list[Any], UnsetType] = UNSET
     """Classifications to remove from this entity (used during save)."""
 
-    classification_names: Union[list, UnsetType] = UNSET
+    classification_names: Union[list, None, UnsetType] = None
     """Simple list of classification type names assigned to this entity."""
 
     # Meanings - typed for better validation
-    meanings: Union[list[TermAssignment], UnsetType] = UNSET
+    meanings: Union[list[TermAssignment], None, UnsetType] = None
     """Glossary term assignments for this entity."""
 
     # Labels
-    labels: Union[list[str], UnsetType] = UNSET
+    labels: Union[list[str], None, UnsetType] = None
     """Simple string labels attached to this entity."""
 
     # Additional metadata
@@ -173,7 +195,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     custom_attributes: Union[dict[str, str], UnsetType] = UNSET
     """Custom key-value pairs for this entity."""
 
-    pending_tasks: Union[list[str], UnsetType] = UNSET
+    pending_tasks: Union[list[str], None, UnsetType] = None
     """Identifiers of pending tasks for this entity."""
 
     proxy: Union[bool, UnsetType] = UNSET
@@ -521,7 +543,11 @@ def _fixup_ref(d: dict, original: Any) -> None:
     """
     if not isinstance(d, dict):
         return
-    if "typeName" not in d and isinstance(original, Entity) and original.type_name is not UNSET:
+    if (
+        "typeName" not in d
+        and isinstance(original, Entity)
+        and original.type_name is not UNSET
+    ):
         d["typeName"] = original.type_name
     qn = d.pop("qualifiedName", None)
     if qn is not None and "guid" not in d:
@@ -530,9 +556,7 @@ def _fixup_ref(d: dict, original: Any) -> None:
         d.setdefault("uniqueAttributes", {})["qualifiedName"] = qn
 
 
-def _ensure_type_name(
-    key: str, value: Any, originals: dict[str, Any]
-) -> None:
+def _ensure_type_name(key: str, value: Any, originals: dict[str, Any]) -> None:
     """Ensure serialized relationship dicts contain typeName and proper structure."""
     original = originals.get(key)
     if original is None:

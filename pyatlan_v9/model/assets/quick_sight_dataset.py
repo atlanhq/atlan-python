@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from typing import Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from pyatlan_v9.model.conversion_utils import (
@@ -44,7 +45,9 @@ class QuickSightDataset(Asset):
     # Override type_name with QuickSightDataset-specific default
     type_name: Union[str, UnsetType] = "QuickSightDataset"
 
-    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightDatasetImportMode"
+    )
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
     quick_sight_column_count: Union[int, None, UnsetType] = UNSET
@@ -68,18 +71,6 @@ class QuickSightDataset(Asset):
         list[RelatedQuickSightDatasetField], None, UnsetType
     ] = UNSET
     """Fields that exist within this dataset."""
-
-    @property
-    def quick_sight_dataset_import_mode(self) -> Union[str, None, UnsetType]:
-        """Alias for quick_sight_import_mode to preserve SDK field parity."""
-        return self.quick_sight_import_mode
-
-    @quick_sight_dataset_import_mode.setter
-    def quick_sight_dataset_import_mode(
-        self, value: Union[str, None, UnsetType]
-    ) -> None:
-        """Alias setter for quick_sight_import_mode."""
-        self.quick_sight_import_mode = value
 
     # =========================================================================
     # Convenience Methods
@@ -117,7 +108,7 @@ class QuickSightDataset(Asset):
             qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_import_mode=quick_sight_dataset_import_mode
+            quick_sight_dataset_import_mode=quick_sight_dataset_import_mode
             if quick_sight_dataset_import_mode is not None
             else UNSET,
             quick_sight_dataset_folders=folder_refs,
@@ -186,7 +177,9 @@ class QuickSightDataset(Asset):
 class QuickSightDatasetAttributes(AssetAttributes):
     """QuickSightDataset-specific attributes for nested API format."""
 
-    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightDatasetImportMode"
+    )
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
     quick_sight_column_count: Union[int, None, UnsetType] = UNSET

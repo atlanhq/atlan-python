@@ -17,6 +17,7 @@ from typing import Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -81,16 +82,27 @@ class AnaplanLineItem(Asset):
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, module_qualified_name: str) -> "AnaplanLineItem":
+    def creator(
+        cls,
+        *,
+        name: str,
+        module_qualified_name: str,
+        connection_qualified_name: str | None = None,
+    ) -> "AnaplanLineItem":
         """Create a new AnaplanLineItem asset."""
         validate_required_fields(
             ["name", "module_qualified_name"], [name, module_qualified_name]
         )
         fields = module_qualified_name.split("/")
-        connection_qualified_name = (
-            "/".join(fields[:3]) if len(fields) >= 3 else module_qualified_name
-        )
-        connector_name = fields[1] if len(fields) > 1 else None
+        connection_qn: Union[str, None, UnsetType] = UNSET
+        if connection_qualified_name is not None:
+            connector_name = str(
+                AtlanConnectorType.get_connector_name(connection_qualified_name)
+            )
+        else:
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                module_qualified_name, "module_qualified_name", 6
+            )
         workspace_qualified_name = "/".join(fields[:4]) if len(fields) >= 4 else UNSET
         workspace_name = fields[3] if len(fields) > 3 else UNSET
         model_qualified_name = "/".join(fields[:5]) if len(fields) >= 5 else UNSET
@@ -99,7 +111,7 @@ class AnaplanLineItem(Asset):
         return cls(
             name=name,
             qualified_name=f"{module_qualified_name}/{name}",
-            connection_qualified_name=connection_qualified_name,
+            connection_qualified_name=connection_qualified_name or connection_qn,
             connector_name=connector_name,
             anaplan_workspace_qualified_name=workspace_qualified_name,
             anaplan_workspace_name=workspace_name,

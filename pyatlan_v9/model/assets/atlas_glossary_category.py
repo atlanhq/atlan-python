@@ -72,7 +72,7 @@ class AtlasGlossaryCategory(Asset):
     terms: Union[list[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Terms organized within this category."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = None
     """Glossary in which this category is contained."""
 
     children_categories: Union[list[RelatedAtlasGlossaryCategory], None, UnsetType] = (
@@ -319,7 +319,7 @@ class AtlasGlossaryCategoryAttributes(AssetAttributes):
     category_type: Union[str, None, UnsetType] = UNSET
     """"""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = None
     """Glossary in which this category is contained."""
 
     parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET

@@ -17,6 +17,7 @@ from typing import Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -78,20 +79,30 @@ class AnaplanModule(Asset):
 
     @classmethod
     @init_guid
-    def creator(cls, *, name: str, model_qualified_name: str) -> "AnaplanModule":
+    def creator(
+        cls,
+        *,
+        name: str,
+        model_qualified_name: str,
+        connection_qualified_name: str | None = None,
+    ) -> "AnaplanModule":
         """Create a new AnaplanModule asset."""
         validate_required_fields(
             ["name", "model_qualified_name"], [name, model_qualified_name]
         )
-        parts = model_qualified_name.split("/")
-        connection_qualified_name = (
-            "/".join(parts[:3]) if len(parts) >= 3 else model_qualified_name
-        )
-        connector_name = parts[1] if len(parts) > 1 else None
+        connection_qn: Union[str, None, UnsetType] = UNSET
+        if connection_qualified_name is not None:
+            connector_name = str(
+                AtlanConnectorType.get_connector_name(connection_qualified_name)
+            )
+        else:
+            connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                model_qualified_name, "model_qualified_name", 5
+            )
         return cls(
             name=name,
             qualified_name=f"{model_qualified_name}/{name}",
-            connection_qualified_name=connection_qualified_name,
+            connection_qualified_name=connection_qualified_name or connection_qn,
             connector_name=connector_name,
             anaplan_model_qualified_name=model_qualified_name,
         )

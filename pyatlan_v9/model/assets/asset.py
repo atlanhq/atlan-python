@@ -82,10 +82,10 @@ class Asset(Referenceable):
     tenant_id: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan workspace in which this asset exists."""
 
-    certificate_status: Union[str, None, UnsetType] = UNSET
+    certificate_status: Union[str, None, UnsetType] = None
     """Status of this asset's certification."""
 
-    certificate_status_message: Union[str, None, UnsetType] = UNSET
+    certificate_status_message: Union[str, None, UnsetType] = None
     """Human-readable descriptive message used to provide further detail to certificateStatus."""
 
     certificate_updated_by: Union[str, None, UnsetType] = UNSET
@@ -109,10 +109,10 @@ class Asset(Referenceable):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
-    owner_users: Union[list[str], None, UnsetType] = UNSET
+    owner_users: Union[set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
-    owner_groups: Union[list[str], None, UnsetType] = UNSET
+    owner_groups: Union[set[str], None, UnsetType] = UNSET
     """List of groups who own this asset."""
 
     admin_users: Union[set[str], None, UnsetType] = UNSET
@@ -951,10 +951,10 @@ class AssetAttributes(ReferenceableAttributes):
     tenant_id: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan workspace in which this asset exists."""
 
-    certificate_status: Union[str, None, UnsetType] = UNSET
+    certificate_status: Union[str, None, UnsetType] = None
     """Status of this asset's certification."""
 
-    certificate_status_message: Union[str, None, UnsetType] = UNSET
+    certificate_status_message: Union[str, None, UnsetType] = None
     """Human-readable descriptive message used to provide further detail to certificateStatus."""
 
     certificate_updated_by: Union[str, None, UnsetType] = UNSET
@@ -978,10 +978,10 @@ class AssetAttributes(ReferenceableAttributes):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
-    owner_users: Union[list[str], None, UnsetType] = UNSET
+    owner_users: Union[set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
-    owner_groups: Union[list[str], None, UnsetType] = UNSET
+    owner_groups: Union[set[str], None, UnsetType] = UNSET
     """List of groups who own this asset."""
 
     admin_users: Union[set[str], None, UnsetType] = UNSET

@@ -47,7 +47,6 @@ from pyatlan.client.common import (
     GetLineageList,
     ManageCustomMetadata,
     ManageTerms,
-
     PurgeByGuid,
     RemoveAnnouncement,
     RemoveCertificate,
@@ -135,14 +134,26 @@ LOGGER = logging.getLogger(__name__)
 A = TypeVar("A", bound=Asset)
 
 
+def _custom_metadata_payload(custom_metadata_request: Any) -> Any:
+    """Normalize custom metadata request wrappers to raw payload dictionaries."""
+    if hasattr(custom_metadata_request, "to_dict") and callable(
+        custom_metadata_request.to_dict
+    ):
+        return custom_metadata_request.to_dict()
+    root_payload = getattr(custom_metadata_request, "__root__", None)
+    if root_payload is not None:
+        return root_payload
+    if hasattr(custom_metadata_request, "dict") and callable(custom_metadata_request.dict):
+        return custom_metadata_request.dict(by_alias=True, exclude_none=True)
+    return custom_metadata_request
+
+
 # ---------------------------------------------------------------------------
 # v9-native response helpers (raw JSON -> v9 msgspec assets)
 # ---------------------------------------------------------------------------
 
 
-def _parse_entities_v9(
-    entities: List[Dict], criteria=None
-) -> list:
+def _parse_entities_v9(entities: List[Dict], criteria=None) -> list:
     """Parse raw entity dicts into v9 msgspec assets.
 
     Applies custom-metadata unflattening (if *criteria* carries an
@@ -165,19 +176,13 @@ def _parse_mutation_response(raw_json: Dict) -> AssetMutationResponse:
     if me_raw := raw_json.get("mutatedEntities"):
         mutated = MutatedEntities(
             CREATE=(
-                _parse_entities_v9(me_raw["CREATE"])
-                if me_raw.get("CREATE")
-                else None
+                _parse_entities_v9(me_raw["CREATE"]) if me_raw.get("CREATE") else None
             ),
             UPDATE=(
-                _parse_entities_v9(me_raw["UPDATE"])
-                if me_raw.get("UPDATE")
-                else None
+                _parse_entities_v9(me_raw["UPDATE"]) if me_raw.get("UPDATE") else None
             ),
             DELETE=(
-                _parse_entities_v9(me_raw["DELETE"])
-                if me_raw.get("DELETE")
-                else None
+                _parse_entities_v9(me_raw["DELETE"]) if me_raw.get("DELETE") else None
             ),
             PARTIAL_UPDATE=(
                 _parse_entities_v9(me_raw["PARTIAL_UPDATE"])
@@ -211,22 +216,40 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
     )
 
     def _parse_nested(bucket_dict: dict) -> Optional[Aggregations]:
-        """Parse nested aggregation results inside a bucket."""
+        """Parse nested aggregation results inside a bucket, recursively."""
         nested: Dict = {}
         known_keys = {
-            "key", "doc_count", "key_as_string", "max_matching_length",
-            "to", "to_as_string", "from", "from_as_string",
+            "key",
+            "doc_count",
+            "key_as_string",
+            "max_matching_length",
+            "to",
+            "to_as_string",
+            "from",
+            "from_as_string",
         }
         for k, v in bucket_dict.items():
             if k in known_keys or not isinstance(v, dict):
                 continue
             try:
                 if "buckets" in v:
-                    nested[k] = msgspec.convert(v, AggregationBucketResult, strict=False)
+                    result = msgspec.convert(v, AggregationBucketResult, strict=False)
+                    raw_inner_buckets = v.get("buckets", [])
+                    for i, inner_bucket in enumerate(result.buckets):
+                        if i < len(raw_inner_buckets):
+                            try:
+                                inner_bucket.nested_results = _parse_nested(
+                                    raw_inner_buckets[i]
+                                )
+                            except Exception:
+                                pass
+                    nested[k] = result
                 elif "hits" in v:
                     nested[k] = msgspec.convert(v, AggregationHitsResult, strict=False)
                 elif "value" in v:
-                    nested[k] = msgspec.convert(v, AggregationMetricResult, strict=False)
+                    nested[k] = msgspec.convert(
+                        v, AggregationMetricResult, strict=False
+                    )
             except Exception:
                 pass
         return Aggregations(data=nested) if nested else None
@@ -237,18 +260,14 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
             continue
         try:
             if "buckets" in value:
-                result = msgspec.convert(
-                    value, AggregationBucketResult, strict=False
-                )
+                result = msgspec.convert(value, AggregationBucketResult, strict=False)
                 raw_buckets = value.get("buckets", [])
                 for i, bucket in enumerate(result.buckets):
                     if i < len(raw_buckets):
                         try:
-                            nested = _parse_nested(raw_buckets[i])
-                            bucket.nested_results = nested
-                        except Exception as exc:
-                            import sys
-                            print(f"NESTED_PARSE_ERROR: {exc}", file=sys.stderr)
+                            bucket.nested_results = _parse_nested(raw_buckets[i])
+                        except Exception:
+                            pass
                 parsed[key] = result
             elif "hits" in value:
                 parsed[key] = msgspec.convert(
@@ -274,11 +293,8 @@ def _process_search_response_v9(raw_json: Dict, criteria) -> Dict:
     if "aggregations" in raw_json:
         try:
             aggregations = _parse_aggregations_v9(raw_json["aggregations"])
-        except Exception as exc:
-            import sys
-            print(f"AGGREGATION_PARSE_ERROR: {exc}", file=sys.stderr)
-            import traceback
-            traceback.print_exc(file=sys.stderr)
+        except Exception:
+            pass
 
     approximate_count = raw_json.get("approximateCount", 0)
     return {
@@ -288,9 +304,7 @@ def _process_search_response_v9(raw_json: Dict, criteria) -> Dict:
     }
 
 
-def _process_lineage_response_v9(
-    raw_json: Dict, lineage_request
-) -> Dict:
+def _process_lineage_response_v9(raw_json: Dict, lineage_request) -> Dict:
     """Process a lineage list API response into v9 msgspec assets."""
     if "entities" in raw_json:
         assets = _parse_entities_v9(raw_json["entities"], lineage_request)
@@ -310,7 +324,17 @@ def _process_get_response_v9(
     v9 msgspec asset via ``from_atlas_format``, and validates the result
     type.
     """
+    import logging
+
+    LOGGER = logging.getLogger(__name__)
+
     entity = raw_json["entity"]
+
+    # DEBUG: Log what we received from API
+    LOGGER.debug(f"Entity keys from API: {entity.keys()}")
+    LOGGER.debug(f"Has meanings: {'meanings' in entity}")
+    if "meanings" in entity:
+        LOGGER.debug(f"Meanings value: {entity['meanings']}")
 
     if not by_guid and entity.get("typeName") != asset_type.__name__:
         raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -323,6 +347,14 @@ def _process_get_response_v9(
 
     asset = from_atlas_format(entity)
     asset.is_incomplete = False
+
+    # DEBUG: Log what we got after deserialization
+    LOGGER.debug(
+        f"After deserialization, meanings: {asset.meanings if hasattr(asset, 'meanings') else 'NO ATTR'}"
+    )
+    LOGGER.debug(
+        f"After deserialization, assigned_terms: {asset.assigned_terms if hasattr(asset, 'assigned_terms') else 'NO ATTR'}"
+    )
 
     if not isinstance(asset, asset_type):
         if by_guid:
@@ -355,29 +387,81 @@ class V9LineageListResults(LineageListResults):
         self._assets = _parse_entities_v9(entities, self._criteria)
 
 
-def _make_bulk_request_payload(
-    entities: List[Asset], client: "AtlanClient"
-) -> dict:
+def _make_bulk_request_payload(entities: List[Asset], client: "AtlanClient") -> dict:
     """
     Serialize a list of Asset entities into an API-ready dict,
     applying AtlanTag retranslation (human names -> internal IDs).
     """
     bulk = BulkRequest(entities=entities)
     request_dict = bulk.to_dict()
+    for entity in request_dict.get("entities", []):
+        _normalize_meanings_for_mutation(entity)
     retranslated = AtlanRequest(instance=request_dict, client=client)
     return retranslated.translated
 
 
-def _make_asset_request_payload(
-    asset: Asset, client: "AtlanClient"
-) -> dict:
+def _make_asset_request_payload(asset: Asset, client: "AtlanClient") -> dict:
     """
     Serialize a single Asset entity into an API-ready dict,
     applying AtlanTag retranslation.
     """
     asset_dict = {"entity": json.loads(asset.to_json(nested=True))}
+    _normalize_meanings_for_mutation(asset_dict["entity"])
     retranslated = AtlanRequest(instance=asset_dict, client=client)
     return retranslated.translated
+
+
+def _normalize_meanings_for_mutation(entity: dict[str, Any]) -> None:
+    """
+    Normalize term assignment payloads for mutation APIs.
+
+    Legacy API payloads send term links under `attributes.meanings`.
+    v9 nested serialization exposes `meanings` as a top-level field, so
+    move it into attributes before submission to preserve parity.
+    """
+    if "meanings" not in entity:
+        return
+    meanings = entity.pop("meanings")
+    if not isinstance(meanings, list):
+        meanings = [meanings]
+
+    replace_meanings: list[dict[str, Any]] = []
+    append_meanings: list[dict[str, Any]] = []
+    remove_meanings: list[dict[str, Any]] = []
+
+    for meaning in meanings:
+        if not isinstance(meaning, dict):
+            replace_meanings.append(meaning)
+            continue
+        semantic = meaning.get("semantic")
+        normalized = {k: v for k, v in meaning.items() if k != "semantic"}
+        if semantic == "APPEND":
+            append_meanings.append(normalized)
+        elif semantic == "REMOVE":
+            remove_meanings.append(normalized)
+        else:
+            replace_meanings.append(normalized)
+
+    if append_meanings:
+        append_rels = entity.get("appendRelationshipAttributes")
+        if not isinstance(append_rels, dict):
+            append_rels = {}
+        append_rels["meanings"] = append_meanings
+        entity["appendRelationshipAttributes"] = append_rels
+
+    if remove_meanings:
+        remove_rels = entity.get("removeRelationshipAttributes")
+        if not isinstance(remove_rels, dict):
+            remove_rels = {}
+        remove_rels["meanings"] = remove_meanings
+        entity["removeRelationshipAttributes"] = remove_rels
+
+    if replace_meanings or (not append_meanings and not remove_meanings):
+        attrs = entity.get("attributes")
+        if not isinstance(attrs, dict):
+            attrs = {}
+        attrs["meanings"] = replace_meanings
+        entity["attributes"] = attrs
 
 
 # ---------------------------------------------------------------------------
@@ -423,15 +507,12 @@ class V9AssetClient:
         :raises AtlanError: on any API communication issue
         :returns: the results of the search
         """
-        import sys
-        print(f"V9_SEARCH_CALLED from {type(self).__name__}", file=sys.stderr)
         endpoint, request_obj = Search.prepare_request(criteria, bulk)
         raw_json = self._client._call_api(
             endpoint,
             request_obj=request_obj,
         )
         response = _process_search_response_v9(raw_json, criteria)
-        print(f"V9_SEARCH_AGGS: {response['aggregations']}", file=sys.stderr)
         if Search._check_for_bulk_search(criteria, response["count"], bulk):
             return self.search(criteria)
         return V9IndexSearchResults(
@@ -670,9 +751,7 @@ class V9AssetClient:
             guid, min_ext_info, ignore_relationships
         )
         raw_json = self._client._call_api(endpoint_path, query_params)
-        return _process_get_response_v9(
-            raw_json, guid, asset_type, by_guid=True
-        )
+        return _process_get_response_v9(raw_json, guid, asset_type, by_guid=True)
 
     @validate_arguments
     def retrieve_minimal(
@@ -1538,7 +1617,8 @@ class V9AssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        self._client._call_api(endpoint, None, payload)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
@@ -1554,7 +1634,8 @@ class V9AssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        self._client._call_api(endpoint, None, payload)
 
     @validate_arguments
     def remove_custom_metadata(self, guid: str, cm_name: str):
@@ -1571,7 +1652,8 @@ class V9AssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        self._client._call_api(endpoint, None, payload)
 
     # ------------------------------------------------------------------
     # Terms management
@@ -1636,7 +1718,20 @@ class V9AssetClient:
         updated_asset = asset_type.updater(
             qualified_name=first_result.qualified_name, name=first_result.name
         )
-        processed_terms = ManageTerms.process_terms_with_semantic(terms, save_semantic)
+        processed_terms: list[AtlasGlossaryTerm] = []
+        for term in terms:
+            if getattr(term, "guid", None):
+                processed_terms.append(
+                    AtlasGlossaryTerm.ref_by_guid(
+                        guid=term.guid, semantic=save_semantic
+                    )
+                )
+            elif getattr(term, "qualified_name", None):
+                processed_terms.append(
+                    AtlasGlossaryTerm.ref_by_qualified_name(
+                        qualified_name=term.qualified_name, semantic=save_semantic
+                    )
+                )
         updated_asset.assigned_terms = processed_terms
         response = self.save(entity=updated_asset)
         return ManageTerms.process_save_response(response, asset_type, updated_asset)

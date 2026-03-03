@@ -43,22 +43,22 @@ class RelatedAsset(RelatedReferenceable):
     display_name: Union[str, None, UnsetType] = UNSET
     """Human-readable name of this asset used for display purposes (in user interface)."""
 
-    description: Union[str, None, UnsetType] = UNSET
+    description: Union[str, None, UnsetType] = None
     """Description of this asset, for example as crawled from a source. Fallback for display purposes, if userDescription is empty."""
 
     asset_source_readme: Union[str, None, UnsetType] = UNSET
     """Readme of this asset, as extracted from source. If present, this will be used for the readme in user interface."""
 
-    user_description: Union[str, None, UnsetType] = UNSET
+    user_description: Union[str, None, UnsetType] = None
     """Description of this asset, as provided by a user. If present, this will be used for the description in user interface."""
 
     tenant_id: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan workspace in which this asset exists."""
 
-    certificate_status: Union[str, None, UnsetType] = UNSET
+    certificate_status: Union[str, None, UnsetType] = None
     """Status of this asset's certification."""
 
-    certificate_status_message: Union[str, None, UnsetType] = UNSET
+    certificate_status_message: Union[str, None, UnsetType] = None
     """Human-readable descriptive message used to provide further detail to certificateStatus."""
 
     certificate_updated_by: Union[str, None, UnsetType] = UNSET
@@ -82,10 +82,10 @@ class RelatedAsset(RelatedReferenceable):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
-    owner_users: Union[list[str], None, UnsetType] = UNSET
+    owner_users: Union[set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
-    owner_groups: Union[list[str], None, UnsetType] = UNSET
+    owner_groups: Union[set[str], None, UnsetType] = UNSET
     """List of groups who own this asset."""
 
     admin_users: Union[list[str], None, UnsetType] = UNSET

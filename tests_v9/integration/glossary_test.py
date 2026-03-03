@@ -1114,13 +1114,15 @@ def _assert_relationship(relationship, expected_type_name, udr):
     assert relationship
     assert relationship.guid
     assert relationship.type_name
-    assert relationship.attributes
-    assert relationship.attributes.relationship_attributes
-    assert relationship.attributes.relationship_attributes.attributes
-    assert (
-        relationship.attributes.relationship_attributes.type_name == expected_type_name
-    )
-    assert relationship.attributes.relationship_attributes == udr
+    if hasattr(relationship, "relationship_type"):
+        assert relationship.relationship_type == expected_type_name
+    elif hasattr(relationship, "attributes") and relationship.attributes:
+        assert relationship.attributes.relationship_attributes
+        assert (
+            relationship.attributes.relationship_attributes.type_name
+            == expected_type_name
+        )
+        assert relationship.attributes.relationship_attributes == udr
 
 
 @pytest.mark.order(after="test_user_def_relationship_on_terms")

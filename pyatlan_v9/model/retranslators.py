@@ -67,7 +67,7 @@ class AtlanTagRetranslator(BaseRetranslator):
         translated = data.copy()
 
         for key in self._CLASSIFICATION_NAMES:
-            if key in translated:
+            if key in translated and translated[key] is not None:
                 translated[key] = [
                     self.client.atlan_tag_cache.get_id_for_name(str(name)) or DELETED_
                     for name in translated[key]

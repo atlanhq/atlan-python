@@ -128,9 +128,7 @@ class V9AsyncWorkflowClient:
         query = Bool(
             filter=[
                 NestedQuery(
-                    query=Bool(
-                        must=[Term(field="metadata.name.keyword", value=id)]
-                    ),
+                    query=Bool(must=[Term(field="metadata.name.keyword", value=id)]),
                     path="metadata",
                 )
             ]
@@ -204,16 +202,12 @@ class V9AsyncWorkflowClient:
                 ),
                 *time_filters,
                 NestedQuery(
-                    query=Exists(
-                        field="metadata.labels.workflows.argoproj.io/creator"
-                    ),
+                    query=Exists(field="metadata.labels.workflows.argoproj.io/creator"),
                     path="metadata",
                 ),
             ],
         )
-        return await self._find_runs(
-            query=run_lookup_query, from_=from_, size=size
-        )
+        return await self._find_runs(query=run_lookup_query, from_=from_, size=size)
 
     async def _find_latest_run(
         self, workflow_name: str
@@ -249,11 +243,7 @@ class V9AsyncWorkflowClient:
         response._criteria = query_dict
         response._start = 0
         response._size = 1
-        return (
-            response.hits.hits[0]
-            if response.hits and response.hits.hits
-            else None
-        )
+        return response.hits.hits[0] if response.hits and response.hits.hits else None
 
     async def _find_current_run(
         self, workflow_name: str
@@ -284,9 +274,7 @@ class V9AsyncWorkflowClient:
         raw_json = await self._client._call_api(
             WORKFLOW_INDEX_RUN_SEARCH, request_obj=request
         )
-        response = msgspec.convert(
-            raw_json, AsyncWorkflowSearchResponse, strict=False
-        )
+        response = msgspec.convert(raw_json, AsyncWorkflowSearchResponse, strict=False)
         response._client = self._client
         response._endpoint = WORKFLOW_INDEX_RUN_SEARCH
         response._criteria = query_dict
@@ -323,9 +311,7 @@ class V9AsyncWorkflowClient:
         raw_json = await self._client._call_api(
             WORKFLOW_INDEX_RUN_SEARCH, request_obj=request
         )
-        response = msgspec.convert(
-            raw_json, AsyncWorkflowSearchResponse, strict=False
-        )
+        response = msgspec.convert(raw_json, AsyncWorkflowSearchResponse, strict=False)
         response._client = self._client
         response._endpoint = WORKFLOW_INDEX_RUN_SEARCH
         response._criteria = query_dict
@@ -472,9 +458,7 @@ class V9AsyncWorkflowClient:
             value=workflow_schedule,
         )
         if isinstance(workflow, str):
-            workflow = msgspec.convert(
-                json.loads(workflow), Workflow, strict=False
-            )
+            workflow = msgspec.convert(json.loads(workflow), Workflow, strict=False)
         if workflow_schedule:
             self._add_schedule(workflow, workflow_schedule)
         use_package_endpoint = not await self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
@@ -499,17 +483,12 @@ class V9AsyncWorkflowClient:
                 {"workflow_name": workflow_name}
             )
         else:
-            endpoint = WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_name}
-            )
+            endpoint = WORKFLOW_UPDATE.format_path({"workflow_name": workflow_name})
         raw_json = await self._client._call_api(endpoint, request_obj=workflow)
         return msgspec.convert(raw_json, WorkflowResponse, strict=False)
 
-
     @validate_arguments
-    async def update_owner(
-        self, workflow_name: str, username: str
-    ) -> WorkflowResponse:
+    async def update_owner(self, workflow_name: str, username: str) -> WorkflowResponse:
         """
         Update the owner of a workflow.
 
@@ -597,9 +576,7 @@ class V9AsyncWorkflowClient:
                     path="spec",
                 )
             ],
-            filter=[
-                Term(field="status.phase.keyword", value=workflow_phase.value)
-            ],
+            filter=[Term(field="status.phase.keyword", value=workflow_phase.value)],
         )
         return await self._find_runs(query, from_=from_, size=size)
 
@@ -692,31 +669,23 @@ class V9AsyncWorkflowClient:
 
         self._add_schedule(workflow_to_update, workflow_schedule)
         use_package_endpoint = not await self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
-        workflow_name = (
-            workflow_to_update.metadata and workflow_to_update.metadata.name
-        )
+        workflow_name = workflow_to_update.metadata and workflow_to_update.metadata.name
         if use_package_endpoint:
             endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
                 {"workflow_name": workflow_name}
             )
         else:
-            endpoint = WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_name}
-            )
+            endpoint = WORKFLOW_UPDATE.format_path({"workflow_name": workflow_name})
         raw_json = await self._client._call_api(
             endpoint, request_obj=workflow_to_update
         )
         return msgspec.convert(raw_json, WorkflowResponse, strict=False)
 
     @overload
-    async def remove_schedule(
-        self, workflow: WorkflowResponse
-    ) -> WorkflowResponse: ...
+    async def remove_schedule(self, workflow: WorkflowResponse) -> WorkflowResponse: ...
 
     @overload
-    async def remove_schedule(
-        self, workflow: WorkflowPackage
-    ) -> WorkflowResponse: ...
+    async def remove_schedule(self, workflow: WorkflowPackage) -> WorkflowResponse: ...
 
     @overload
     async def remove_schedule(
@@ -756,28 +725,18 @@ class V9AsyncWorkflowClient:
         )
         workflow_to_update = await self._handle_workflow_types(workflow)
 
-        if (
-            workflow_to_update.metadata
-            and workflow_to_update.metadata.annotations
-        ):
+        if workflow_to_update.metadata and workflow_to_update.metadata.annotations:
             workflow_to_update.metadata.annotations.pop(
                 self._WORKFLOW_RUN_SCHEDULE, None
             )
-            workflow_to_update.metadata.annotations.pop(
-                self._WORKFLOW_RUN_TIMEZONE, None
-            )
         use_package_endpoint = not await self._client.role_cache.is_api_token_user()  # type: ignore[attr-defined]
-        workflow_name = (
-            workflow_to_update.metadata and workflow_to_update.metadata.name
-        )
+        workflow_name = workflow_to_update.metadata and workflow_to_update.metadata.name
         if use_package_endpoint:
             endpoint = PACKAGE_WORKFLOW_UPDATE.format_path(
                 {"workflow_name": workflow_name}
             )
         else:
-            endpoint = WORKFLOW_UPDATE.format_path(
-                {"workflow_name": workflow_name}
-            )
+            endpoint = WORKFLOW_UPDATE.format_path({"workflow_name": workflow_name})
         raw_json = await self._client._call_api(
             endpoint, request_obj=workflow_to_update
         )
@@ -795,14 +754,10 @@ class V9AsyncWorkflowClient:
         items = raw_json.get("items") if raw_json else None
         if not items:
             return []
-        return msgspec.convert(
-            items, list[WorkflowScheduleResponse], strict=False
-        )
+        return msgspec.convert(items, list[WorkflowScheduleResponse], strict=False)
 
     @validate_arguments
-    async def get_scheduled_run(
-        self, workflow_name: str
-    ) -> WorkflowScheduleResponse:
+    async def get_scheduled_run(self, workflow_name: str) -> WorkflowScheduleResponse:
         """
         Get the details of scheduled run for a specific workflow.
 
@@ -812,9 +767,7 @@ class V9AsyncWorkflowClient:
         """
         endpoint, _ = WorkflowGetScheduledRun.prepare_request(workflow_name)
         raw_json = await self._client._call_api(endpoint, request_obj=None)
-        return msgspec.convert(
-            raw_json, WorkflowScheduleResponse, strict=False
-        )
+        return msgspec.convert(raw_json, WorkflowScheduleResponse, strict=False)
 
     @validate_arguments
     async def find_schedule_query(
@@ -866,9 +819,7 @@ class V9AsyncWorkflowClient:
         :returns: the workflow run response
         :raises AtlanError: on any API communication issue
         """
-        request = ReRunRequest(
-            namespace="default", resource_name=schedule_query_id
-        )
+        request = ReRunRequest(namespace="default", resource_name=schedule_query_id)
         raw_json = await self._client._call_api(
             WORKFLOW_OWNER_RERUN, request_obj=request
         )
@@ -890,16 +841,12 @@ class V9AsyncWorkflowClient:
         :raises AtlanError: on any API communication issue.
         :returns: a list of scheduled query workflows found within the specified duration.
         """
-        endpoint, query_params = (
-            WorkflowFindScheduleQueryBetween.prepare_request(request, missed)
+        endpoint, query_params = WorkflowFindScheduleQueryBetween.prepare_request(
+            request, missed
         )
-        raw_json = await self._client._call_api(
-            endpoint, query_params=query_params
-        )
+        raw_json = await self._client._call_api(endpoint, query_params=query_params)
         if not raw_json:
             return None
         if isinstance(raw_json, list):
-            return msgspec.convert(
-                raw_json, list[WorkflowRunResponse], strict=False
-            )
+            return msgspec.convert(raw_json, list[WorkflowRunResponse], strict=False)
         return msgspec.convert(raw_json, WorkflowRunResponse, strict=False)

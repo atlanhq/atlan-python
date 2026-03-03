@@ -708,7 +708,9 @@ class AtlanClient(msgspec.Struct, kw_only=True):
                 params["data"] = request_obj.json(by_alias=True, exclude_none=True)
             elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
                 params["data"] = json.dumps(request_obj.to_dict())
-            elif isinstance(request_obj, (msgspec.Struct, dict, list)):
+            elif isinstance(request_obj, (dict, list)):
+                params["data"] = json.dumps(request_obj)
+            elif isinstance(request_obj, msgspec.Struct):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif hasattr(request_obj, "to_json") and callable(request_obj.to_json):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
@@ -831,6 +833,34 @@ class AtlanClient(msgspec.Struct, kw_only=True):
             request_obj=query,
         )
         return msgspec.convert(raw_json, ParsedQuery, strict=False)
+
+    def save(
+        self,
+        entity: Union["Asset", List["Asset"]],  # type: ignore[name-defined]
+        replace_atlan_tags: bool = False,
+        replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
+        append_atlan_tags: bool = False,
+    ) -> "AssetMutationResponse":  # type: ignore[name-defined]
+        """
+        Convenience method that delegates to asset.save().
+        If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.
+
+        :param entity: one or more assets to save
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
+        :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
+        :param append_atlan_tags: whether to add/update/remove AtlanTags during an update (True) or not (False)
+        :returns: the result of the save
+        :raises AtlanError: on any API communication issue
+        """
+        return self.asset.save(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            replace_custom_metadata=replace_custom_metadata,
+            overwrite_custom_metadata=overwrite_custom_metadata,
+            append_atlan_tags=append_atlan_tags,
+        )
 
     @contextlib.contextmanager
     def max_retries(

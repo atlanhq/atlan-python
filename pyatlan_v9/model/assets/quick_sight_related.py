@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -84,7 +85,9 @@ class RelatedQuickSightDataset(RelatedQuickSight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QuickSightDataset" so it serializes correctly
 
-    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightDatasetImportMode"
+    )
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
     quick_sight_column_count: Union[int, None, UnsetType] = UNSET
@@ -106,7 +109,9 @@ class RelatedQuickSightDatasetField(RelatedQuickSight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QuickSightDatasetField" so it serializes correctly
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_field_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightDatasetFieldType"
+    )
     """Datatype of this field, for example: STRING, INTEGER, etc."""
 
     quick_sight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -128,7 +133,9 @@ class RelatedQuickSightFolder(RelatedQuickSight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QuickSightFolder" so it serializes correctly
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_folder_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="quickSightFolderType"
+    )
     """Type of this folder, for example: SHARED."""
 
     quick_sight_folder_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET

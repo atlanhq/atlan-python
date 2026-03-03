@@ -120,6 +120,20 @@ A = TypeVar("A", bound=Asset)
 # ---------------------------------------------------------------------------
 
 
+def _custom_metadata_payload(custom_metadata_request):
+    """Normalize custom metadata request wrappers to raw payload dictionaries."""
+    if hasattr(custom_metadata_request, "to_dict") and callable(
+        custom_metadata_request.to_dict
+    ):
+        return custom_metadata_request.to_dict()
+    root_payload = getattr(custom_metadata_request, "__root__", None)
+    if root_payload is not None:
+        return root_payload
+    if hasattr(custom_metadata_request, "dict") and callable(custom_metadata_request.dict):
+        return custom_metadata_request.dict(by_alias=True, exclude_none=True)
+    return custom_metadata_request
+
+
 def _parse_entities_v9(entities: list, criteria=None) -> list:
     """Parse raw entity dicts into v9 msgspec assets."""
     attributes = getattr(criteria, "attributes", None)
@@ -1457,7 +1471,8 @@ class V9AsyncAssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        await self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        await self._client._call_api(endpoint, None, payload)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def replace_custom_metadata(
@@ -1474,7 +1489,8 @@ class V9AsyncAssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        await self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        await self._client._call_api(endpoint, None, payload)
 
     @validate_arguments
     async def remove_custom_metadata(self, guid: str, cm_name: str):
@@ -1491,7 +1507,8 @@ class V9AsyncAssetClient:
         endpoint = ManageCustomMetadata.get_api_endpoint(
             guid, custom_metadata_request.custom_metadata_set_id
         )
-        await self._client._call_api(endpoint, None, custom_metadata_request)
+        payload = _custom_metadata_payload(custom_metadata_request)
+        await self._client._call_api(endpoint, None, payload)
 
     # ------------------------------------------------------------------
     # Terms management
