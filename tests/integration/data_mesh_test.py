@@ -410,8 +410,9 @@ def test_update_product(
         ),
     )
     assert updated
-    assert updated.certificate_status_message == CERTIFICATE_MESSAGE
-    assert updated.certificate_status == CERTIFICATE_STATUS
+    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert updated.announcement_title == ANNOUNCEMENT_TITLE
+    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert product.qualified_name
     assert product.name
 
