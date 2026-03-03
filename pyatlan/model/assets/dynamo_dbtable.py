@@ -1077,11 +1077,7 @@ class DynamoDBTable(Table):
     def dynamo_d_b_columns(
         self,
     ) -> Optional[List[DynamoDBAttribute]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dynamo_d_b_columns
-        )
+        return None if self.attributes is None else self.attributes.dynamo_d_b_columns
 
     @dynamo_d_b_columns.setter
     def dynamo_d_b_columns(

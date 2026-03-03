@@ -135,7 +135,9 @@ class DynamoDBAttribute(Column):
     @property
     def dynamo_d_b_partition_key(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.dynamo_d_b_partition_key
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_partition_key
         )
 
     @dynamo_d_b_partition_key.setter
@@ -224,9 +226,7 @@ class DynamoDBAttribute(Column):
         dynamo_d_b_write_capacity_units: Optional[int] = Field(
             default=None, description=""
         )
-        no_s_q_l_schema_definition: Optional[str] = Field(
-            default=None, description=""
-        )
+        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
         dynamo_dbtable: Optional[DynamoDBTable] = Field(
             default=None, description=""
         )  # relationship

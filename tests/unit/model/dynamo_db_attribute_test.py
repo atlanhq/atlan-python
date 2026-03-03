@@ -1,6 +1,6 @@
 import pytest
 
-from pyatlan.model.assets import DynamoDBAttribute, DynamoDBTable
+from pyatlan.model.assets import DynamoDBAttribute
 
 DYNAMODB_CONNECTOR_TYPE = "dynamodb"
 DYNAMODB_CONNECTION_QUALIFIED_NAME = "default/dynamodb/1709471234"
@@ -19,7 +19,12 @@ DYNAMODB_ATTRIBUTE_QUALIFIED_NAME = (
     [
         (None, DYNAMODB_TABLE_QUALIFIED_NAME, 1, "name is required"),
         (DYNAMODB_ATTRIBUTE_NAME, None, 1, "parent_qualified_name is required"),
-        (DYNAMODB_ATTRIBUTE_NAME, DYNAMODB_TABLE_QUALIFIED_NAME, None, "order is required"),
+        (
+            DYNAMODB_ATTRIBUTE_NAME,
+            DYNAMODB_TABLE_QUALIFIED_NAME,
+            None,
+            "order is required",
+        ),
         (
             DYNAMODB_ATTRIBUTE_NAME,
             DYNAMODB_CONNECTION_QUALIFIED_NAME,
