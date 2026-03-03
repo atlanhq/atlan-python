@@ -31,6 +31,12 @@ ANNOUNCEMENT_TITLE = "Python SDK testing."
 ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 
+def _assert_announcement_cleared(updated):
+    assert updated.announcement_type in (UNSET, None, "")
+    assert updated.announcement_title in (UNSET, None, "")
+    assert updated.announcement_message in (UNSET, None, "")
+
+
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
     result = create_connection(
@@ -248,9 +254,7 @@ def test_update_gcs_object_again(
         name=gcs_object.name,
     )
     assert updated
-    assert not updated.announcement_type
-    assert not updated.announcement_title
-    assert not updated.announcement_message
+    _assert_announcement_cleared(updated)
 
 
 @pytest.mark.order(after="test_update_gcs_object_again")

@@ -223,8 +223,8 @@ def _test_update_certificate(
     )
     assert test_asset.qualified_name
     assert test_asset.name
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status
+    assert not test_asset.certificate_status_message
     message = "An important message"
     client.asset.update_certificate(
         asset_type=test_asset_type,
@@ -258,8 +258,8 @@ def _test_remove_certificate(
     test_asset = client.asset.get_by_guid(
         guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status
+    assert not test_asset.certificate_status_message
 
 
 def _test_update_announcement(
@@ -598,7 +598,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
     # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
     result = client.asset.get_by_guid(
@@ -613,8 +613,8 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
     # These are not returned by the `GET_ENTITY_BY_GUID` API
-    assert result.anchor.description is None
-    assert result.anchor.user_description is None
+    assert not result.anchor.description
+    assert not result.anchor.user_description
 
     # Should call IndexSearch API without any relationship attributes
     result = client.asset.get_by_guid(
@@ -631,7 +631,7 @@ def test_get_by_guid_with_fs(client: AtlanClient, term: AtlasGlossaryTerm):
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
     # Should call IndexSearch API
     result = client.asset.get_by_guid(
@@ -671,7 +671,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
     # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
     result = client.asset.get_by_qualified_name(
@@ -688,8 +688,8 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
     # These are not returned by the `GET_ENTITY_BY_GUID` API
-    assert result.anchor.description is None
-    assert result.anchor.user_description is None
+    assert not result.anchor.description
+    assert not result.anchor.user_description
 
     # Should call IndexSearch API without any relationship attributes
     result = client.asset.get_by_qualified_name(
@@ -706,7 +706,7 @@ def test_get_by_qualified_name_with_fs(client: AtlanClient, term: AtlasGlossaryT
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
     # Should call IndexSearch API
     result = client.asset.get_by_qualified_name(
@@ -794,7 +794,7 @@ def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert response
     assert response.current_page() and len(response.current_page()) == 1
     assert response.current_page()[0].guid == term1.guid
-    assert response.current_page()[0].classification_names is None
+    assert not response.current_page()[0].classification_names
 
     request = IndexSearchRequest(
         dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=True
@@ -952,8 +952,8 @@ def test_asset_remove_certificate_by_setting_none(
     assert len(db_updated) == 1
     assert db_updated[0].name == database.name
     assert db_updated[0].guid == database.guid
-    assert db_updated[0].certificate_status is None
-    assert db_updated[0].certificate_status_message is None
+    assert not db_updated[0].certificate_status
+    assert not db_updated[0].certificate_status_message
 
 
 def test_glossary_term_update_announcement(
@@ -1275,8 +1275,8 @@ def test_search_log_most_recent_viewers(
     if not isinstance(response, SearchLogViewResults):
         pytest.fail(f"Failed to retrieve most recent viewers of : {sl_glossary.name}")
     viewers = response.user_views
-    assert response.asset_views is None
-    if viewers is not None:
+    assert not response.asset_views
+    if viewers:
         assert len(viewers) == 1
         for viewer in viewers:
             assert viewer.username
@@ -1294,7 +1294,7 @@ def test_search_log_most_recent_viewers(
     assert response.count == 0
     assert response.user_views is not None
     assert len(response.user_views) == 0
-    assert response.asset_views is None
+    assert not response.asset_views
 
 
 @pytest.mark.order(after="test_search_log_most_recent_viewers")
@@ -1306,7 +1306,7 @@ def test_search_log_most_viewed_assets(
     def _assert_most_viewed_assets(
         details: Optional[List[AssetViews]],
     ):
-        if details is not None:
+        if details:
             assert len(details) > 0
             for detail in details:
                 assert detail.guid
@@ -1317,14 +1317,14 @@ def test_search_log_most_viewed_assets(
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets")
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
     request = SearchLogRequest.most_viewed_assets(max_assets=10, by_different_user=True)
     response = client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets (by_different_user)")
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
     # Test exclude users
@@ -1338,7 +1338,7 @@ def test_search_log_most_viewed_assets(
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets")
     assert response.count < prev_count
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
 
@@ -1371,8 +1371,8 @@ def test_search_log_views_by_guid(
     assert log_entries[0].failed is False
     assert log_entries[0].request_dsl
     assert log_entries[0].request_dsl_text
-    assert log_entries[0].request_attributes is None
-    assert log_entries[0].request_relation_attributes is None
+    assert not log_entries[0].request_attributes
+    assert not log_entries[0].request_relation_attributes
 
     # Test exclude users
     assert current_user.username

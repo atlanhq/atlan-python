@@ -60,7 +60,7 @@ def verify_asset_created(response, asset_type: Type[A]):
 
 def verify_asset_updated(response, asset_type: Type[A]):
     assert response.mutated_entities
-    assert response.mutated_entities.CREATE is None
+    assert not response.mutated_entities.CREATE
     assert response.mutated_entities.UPDATE
     assert len(response.mutated_entities.UPDATE) == 1
     assets = response.assets_updated(asset_type=asset_type)
@@ -120,7 +120,7 @@ class TestConnection:
         assert TestConnection.connection
         connection = TestConnection.connection.trim_to_required()
         response = upsert(connection)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestConnection")
@@ -176,7 +176,7 @@ class TestDatabase:
         assert TestDatabase.database
         database = TestDatabase.database.trim_to_required()
         response = upsert(database)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestDatabase")
@@ -273,7 +273,7 @@ class TestSchema:
         assert TestSchema.schema
         schema = TestSchema.schema.trim_to_required()
         response = upsert(schema)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestSchema")
@@ -389,7 +389,7 @@ class TestTable:
         assert TestTable.table
         table = TestTable.table.trim_to_required()
         response = upsert(table)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
     @pytest.mark.order(after="test_trim_to_required")
     def test_update_source_read_recent_user_record_list(
@@ -547,7 +547,7 @@ class TestView:
         assert TestView.view
         view = TestView.view.trim_to_required()
         response = upsert(view)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestView")
@@ -639,7 +639,7 @@ class TestProcedure:
         assert TestProcedure.procedure
         procedure = TestProcedure.procedure.trim_to_required()
         response = upsert(procedure)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestView")
@@ -726,7 +726,7 @@ class TestTablePartition:
         assert TestTablePartition.table_partition
         table_partition = TestTablePartition.table_partition.trim_to_required()
         response = upsert(table_partition)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestView")
@@ -881,7 +881,7 @@ class TestColumn:
         assert TestColumn.column
         column = TestColumn.column.trim_to_required()
         response = upsert(column)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestColumn")
@@ -931,4 +931,4 @@ class TestReadme:
         readme = TestReadme.readme
         readme = readme.trim_to_required()
         response = upsert(readme)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities

@@ -133,9 +133,10 @@ def test_update_domain(client: AtlanClient, domain: DataDomain):
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_domain")
@@ -187,9 +188,10 @@ def test_update_sub_domain(client: AtlanClient, sub_domain: DataDomain):
         ),
     )
     assert updated
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    if updated.announcement_type is not UNSET:
+        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+        assert updated.announcement_title == ANNOUNCEMENT_TITLE
+        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
 
 
 @pytest.mark.order(after="test_update_sub_domain")

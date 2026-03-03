@@ -129,8 +129,8 @@ async def update_certificate_async(
     )
     assert test_asset.qualified_name
     assert test_asset.name
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status
+    assert not test_asset.certificate_status_message
     message = "An important message"
     await client.asset.update_certificate(
         asset_type=test_asset_type,
@@ -165,8 +165,8 @@ async def remove_certificate_async(
     test_asset = await client.asset.get_by_guid(
         guid=test_asset.guid, asset_type=test_asset_type, ignore_relationships=False
     )
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status
+    assert not test_asset.certificate_status_message
 
 
 async def update_announcement_async(

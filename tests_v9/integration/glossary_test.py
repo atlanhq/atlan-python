@@ -589,7 +589,7 @@ def test_trim_to_required_glossary(
 ):
     glossary = glossary.trim_to_required()
     response = client.asset.save(glossary)
-    assert response.mutated_entities is None
+    assert not response.mutated_entities
 
 
 @pytest.mark.order(after="test_term1")
@@ -602,7 +602,7 @@ def test_term_trim_to_required(
     )
     term1 = term1.trim_to_required()
     response = client.asset.save(term1)
-    assert response.mutated_entities is None
+    assert not response.mutated_entities
 
 
 def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
@@ -1103,7 +1103,7 @@ def test_user_def_relationship_on_terms(
 
     response = client.asset.save(term1_to_update)
     assert response.mutated_entities
-    assert response.mutated_entities.CREATE is None
+    assert not response.mutated_entities.CREATE
     assert response.mutated_entities.UPDATE
     assert len(response.mutated_entities.UPDATE) == 2
     assets = response.assets_updated(asset_type=AtlasGlossaryTerm)

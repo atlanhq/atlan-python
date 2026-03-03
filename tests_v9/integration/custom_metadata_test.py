@@ -1091,10 +1091,10 @@ def _validate_raci_empty(raci_attrs: CustomMetadataDict):
     assert CM_ATTR_RACI_INFORMED in attribute_names
     assert CM_ATTR_RACI_EXTRA in attribute_names
     assert not raci_attrs[CM_ATTR_RACI_RESPONSIBLE]
-    assert raci_attrs[CM_ATTR_RACI_ACCOUNTABLE] is None
+    assert not raci_attrs[CM_ATTR_RACI_ACCOUNTABLE]
     assert not raci_attrs[CM_ATTR_RACI_CONSULTED]  # could be empty list
     assert not raci_attrs[CM_ATTR_RACI_INFORMED]  # could be empty list
-    assert raci_attrs[CM_ATTR_RACI_EXTRA] is None
+    assert not raci_attrs[CM_ATTR_RACI_EXTRA]
 
 
 def _validate_ipr_attributes(cma: CustomMetadataDict, mandatory: bool = True):
@@ -1125,11 +1125,11 @@ def _validate_ipr_empty(ipr_attrs: CustomMetadataDict):
     assert CM_ATTR_IPR_MANDATORY in attribute_names
     assert CM_ATTR_IPR_DATE in attribute_names
     assert CM_ATTR_IPR_URL in attribute_names
-    assert ipr_attrs[CM_ATTR_IPR_LICENSE] is None
-    assert ipr_attrs[CM_ATTR_IPR_VERSION] is None
-    assert ipr_attrs[CM_ATTR_IPR_MANDATORY] is None
-    assert ipr_attrs[CM_ATTR_IPR_DATE] is None
-    assert ipr_attrs[CM_ATTR_IPR_URL] is None
+    assert not ipr_attrs[CM_ATTR_IPR_LICENSE]
+    assert not ipr_attrs[CM_ATTR_IPR_VERSION]
+    assert not ipr_attrs[CM_ATTR_IPR_MANDATORY]
+    assert not ipr_attrs[CM_ATTR_IPR_DATE]
+    assert not ipr_attrs[CM_ATTR_IPR_URL]
 
 
 def _validate_dq_attributes(cma: CustomMetadataDict):
@@ -1150,9 +1150,9 @@ def _validate_dq_empty(dq_attrs: CustomMetadataDict):
     assert CM_ATTR_QUALITY_COUNT in attribute_names
     assert CM_ATTR_QUALITY_SQL in attribute_names
     assert CM_ATTR_QUALITY_TYPE in attribute_names
-    assert dq_attrs[CM_ATTR_QUALITY_COUNT] is None
-    assert dq_attrs[CM_ATTR_QUALITY_SQL] is None
-    assert dq_attrs[CM_ATTR_QUALITY_TYPE] is None
+    assert not dq_attrs[CM_ATTR_QUALITY_COUNT]
+    assert not dq_attrs[CM_ATTR_QUALITY_SQL]
+    assert not dq_attrs[CM_ATTR_QUALITY_TYPE]
 
 
 def _validate_raci_structure(

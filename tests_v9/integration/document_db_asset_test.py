@@ -55,7 +55,7 @@ class TestConnection:
         assert TestConnection.connection
         connection = TestConnection.connection.trim_to_required()
         response = upsert(connection)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestConnection")
@@ -112,7 +112,7 @@ class TestDatabase:
         assert TestDatabase.database
         database = TestDatabase.database.trim_to_required()
         response = upsert(database)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities
 
 
 @pytest.mark.order(after="TestDatabase")
@@ -173,4 +173,4 @@ class TestCollection:
         assert TestCollection.collection
         collection = TestCollection.collection.trim_to_required()
         response = upsert(collection)
-        assert response.mutated_entities is None
+        assert not response.mutated_entities

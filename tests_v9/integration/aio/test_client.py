@@ -624,7 +624,7 @@ async def test_get_by_guid_with_fs(client: AsyncAtlanClient, term: AtlasGlossary
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
     # Should call `GET_ENTITY_BY_GUID` API with `ignore_relationships=False`
     result = await client.asset.get_by_guid(
@@ -639,8 +639,8 @@ async def test_get_by_guid_with_fs(client: AsyncAtlanClient, term: AtlasGlossary
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     assert result.anchor
     # These are not returned by the `GET_ENTITY_BY_GUID` API
-    assert result.anchor.description is None
-    assert result.anchor.user_description is None
+    assert not result.anchor.description
+    assert not result.anchor.user_description
 
 
 async def test_get_by_qualified_name_with_fs(
@@ -660,7 +660,7 @@ async def test_get_by_qualified_name_with_fs(
     assert result.description == f"{TEST_SYSTEM_DESCRIPTION} Term"
     assert result.user_description == f"{TEST_USER_DESCRIPTION} Term"
     # Ensure no relationship attributes are present
-    assert result.anchor is None
+    assert not result.anchor
 
 
 async def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
@@ -743,7 +743,7 @@ async def test_include_atlan_tag_names(
     assert response
     assert response.current_page() and len(response.current_page()) == 1
     assert response.current_page()[0].guid == term1.guid
-    assert response.current_page()[0].classification_names is None
+    assert not response.current_page()[0].classification_names
 
     request = IndexSearchRequest(
         dsl=DSL(query=query), exclude_atlan_tags=True, include_atlan_tag_names=True
@@ -908,8 +908,8 @@ async def test_asset_remove_certificate_by_setting_none(
     test_asset = await client.asset.get_by_guid(
         guid=glossary.guid, asset_type=AtlasGlossary, ignore_relationships=False
     )
-    assert test_asset.certificate_status is None
-    assert test_asset.certificate_status_message is None
+    assert not test_asset.certificate_status
+    assert not test_asset.certificate_status_message
 
 
 async def test_glossary_term_update_announcement(
@@ -1185,8 +1185,8 @@ async def test_search_log_most_recent_viewers(
     if not isinstance(response, SearchLogViewResults):
         pytest.fail(f"Failed to retrieve most recent viewers of : {sl_glossary.name}")
     viewers = response.user_views
-    assert response.asset_views is None
-    if viewers is not None:
+    assert not response.asset_views
+    if viewers:
         assert len(viewers) == 1
         for viewer in viewers:
             assert viewer.username
@@ -1204,7 +1204,7 @@ async def test_search_log_most_recent_viewers(
     assert response.count == 0
     assert response.user_views is not None
     assert len(response.user_views) == 0
-    assert response.asset_views is None
+    assert not response.asset_views
 
 
 @pytest.mark.order(after="test_search_log_most_recent_viewers")
@@ -1227,14 +1227,14 @@ async def test_search_log_most_viewed_assets(
     response = await client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets")
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
     request = SearchLogRequest.most_viewed_assets(max_assets=10, by_different_user=True)
     response = await client.search_log.search(request)
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets (by_different_user)")
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
     # Test exclude users
@@ -1248,7 +1248,7 @@ async def test_search_log_most_viewed_assets(
     if not isinstance(response, SearchLogViewResults):
         pytest.fail("Failed to retrieve most viewed assets")
     assert response.count < prev_count
-    assert response.user_views is None
+    assert not response.user_views
     _assert_most_viewed_assets(response.asset_views)
 
 
@@ -1283,8 +1283,8 @@ async def test_search_log_views_by_guid(
     assert log_entries[0].failed is False
     assert log_entries[0].request_dsl
     assert log_entries[0].request_dsl_text
-    assert log_entries[0].request_attributes is None
-    assert log_entries[0].request_relation_attributes is None
+    assert not log_entries[0].request_attributes
+    assert not log_entries[0].request_relation_attributes
 
     # Test exclude users
     assert current_user.username

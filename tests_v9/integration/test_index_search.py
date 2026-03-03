@@ -60,7 +60,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_classifications_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
     "with_connector_name": AtlanConnectorType.SNOWFLAKE,
-    "with_create_time_as_timestamp": 1665727666701,
+    "with_create_time_as_timestamp": datetime.fromtimestamp(1665727666701 / 1000),
     "with_created_by": "bryan",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
     "with_guid": "b95eed37-fe38-48d7-8240-0c3390ef4e48",
@@ -76,7 +76,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_state": "ACTIVE",
     "with_super_type_names": "SQL",
     "with_type_name": "Schema",
-    "with_update_time_as_timestamp": 1665723703029,
+    "with_update_time_as_timestamp": datetime.fromtimestamp(1665723703029 / 1000),
     "with_certificate_status": CertificateStatus.VERIFIED,
 }
 
@@ -378,7 +378,7 @@ def _assert_search_results(results, expected_sorts, size, TOTAL_ASSETS, bulk=Fal
     assert counter == TOTAL_ASSETS
     assert results
     assert results._bulk is bulk
-    assert results.aggregations is None
+    assert not results.aggregations
     assert results._criteria.dsl.sort == expected_sorts
 
 
@@ -741,7 +741,7 @@ def test_nested_bucket_aggregation(client: AtlanClient):
                 assert bucket.key
                 assert bucket.doc_count
                 # Make sure it's not nested further
-                assert bucket.nested_results is None
+                assert not bucket.nested_results
 
 
 def test_aggregation_source_value(client: AtlanClient):
@@ -831,7 +831,7 @@ def test_index_search_with_no_aggregation_results(client: AtlanClient):
 
     assert response
     assert response.count == 0
-    assert response.aggregations is None
+    assert not response.aggregations
 
 
 def test_default_sorting(client: AtlanClient):

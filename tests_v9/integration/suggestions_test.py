@@ -915,7 +915,7 @@ def test_apply_t2c1(
     one = response.mutated_entities.UPDATE[0]
     assert one and one.owner_groups == {owner_group.name}
     # System description should be untouched (still empty)
-    assert one.description is None
+    assert not one.description
     assert one.user_description == DESCRIPTION
     assert one.atlan_tags and len(one.atlan_tags) == 1
     assert one.atlan_tags[0].type_name == AtlanTagName(ATLAN_TAG_NAME2)
@@ -941,10 +941,10 @@ def test_apply_v2c1(
         response.mutated_entities.UPDATE and len(response.mutated_entities.UPDATE) == 1
     )
     one = response.mutated_entities.UPDATE[0]
-    assert one and one.owner_groups == set()
+    assert one and not one.owner_groups
     # System description should be untouched (still empty)
-    assert one.description is None
-    assert one.meanings == []
+    assert not one.description
+    assert not one.meanings
     # System description should be applied to user description
     assert one.user_description == SYSTEM_DESCRIPTION
     assert one.atlan_tags and len(one.atlan_tags) == 2

@@ -350,9 +350,9 @@ def test_credentials(client: AtlanClient, create_credentials: Credential):
     assert create_credentials.connector_type == "event"
     assert create_credentials.host == "test-host"
     assert create_credentials.port == 123
-    assert create_credentials.extras is None
-    assert create_credentials.level is None
-    assert create_credentials.metadata is None
+    assert not create_credentials.extras
+    assert not create_credentials.level
+    assert not create_credentials.metadata
 
 
 def test_get_all_credentials(client: AtlanClient):

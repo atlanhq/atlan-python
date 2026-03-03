@@ -59,6 +59,12 @@ API_FIELD_IS_OBJECT_REFERENCE = True
 API_FIELD_REFERENCE_OBJECT_NAME = f"{MODULE_NAME}-api-object-reference"
 
 
+def _assert_announcement_cleared(updated):
+    assert updated.announcement_type in (UNSET, None, "")
+    assert updated.announcement_title in (UNSET, None, "")
+    assert updated.announcement_message in (UNSET, None, "")
+
+
 @pytest.fixture(scope="module")
 def connection(client: AtlanClient) -> Generator[Connection, None, None]:
     result = create_connection(
@@ -224,9 +230,7 @@ def test_update_api_path_again(
         name=api_path.name,
     )
     assert updated
-    assert not updated.announcement_type
-    assert not updated.announcement_title
-    assert not updated.announcement_message
+    _assert_announcement_cleared(updated)
 
 
 @pytest.mark.order(after="test_update_api_path_again")

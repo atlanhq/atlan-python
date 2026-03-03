@@ -500,7 +500,7 @@ async def test_fetch_lineage_start_list_detailed(
     assert isinstance(results[0], Table)
     assert results[0].depth == 0
     assert results[0].guid == table.guid
-    assert results[0].immediate_upstream is None
+    assert not results[0].immediate_upstream
     assert results[0].immediate_downstream and len(results[0].immediate_downstream) == 1
     assert results[0].immediate_downstream[0].guid == mview.guid
     assert isinstance(results[1], Process)
@@ -525,7 +525,7 @@ async def test_fetch_lineage_start_list_detailed(
     assert results[4].guid == view.guid
     assert results[4].immediate_upstream and len(results[4].immediate_upstream) == 1
     assert results[4].immediate_upstream[0].guid == mview.guid
-    assert results[4].immediate_downstream is None
+    assert not results[4].immediate_downstream
 
 
 async def test_fetch_lineage_middle_list(
