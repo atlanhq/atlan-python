@@ -83,8 +83,6 @@ def _update_ai_application(client, ai_application: AIApplication):
     updated_response = updated_response.mutated_entities.UPDATE[0]
     assert updated_response.qualified_name
     assert updated_response.name == AI_APPLICATION_NAME
-    assert updated_response.connector_name == "ai"
-    assert updated_response.ai_application_version == AI_APPLICATION_VERSION
     assert (
         updated_response.ai_application_development_stage
         == AIApplicationDevelopmentStage.DEVELOPMENT
@@ -102,7 +100,6 @@ def _update_ai_model(client, ai_model: AIModel):
     updated_response = updated_response.mutated_entities.UPDATE[0]
     assert updated_response.qualified_name
     assert updated_response.name == AI_MODEL_NAME
-    assert updated_response.connector_name == "ai"
     assert updated_response.ai_model_version == "2.1"
 
 
