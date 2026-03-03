@@ -3,6 +3,7 @@ import logging
 import time
 from typing import Callable, List, Optional, Type
 
+import msgspec
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
@@ -282,17 +283,16 @@ class TestTable:
 
     @pytest.fixture(scope="module")
     def popularity_insight(self):
-        popularity = PopularityInsights()
-        popularity.record_user = "ernest"
-        popularity.record_query_count = 1
-        popularity.record_compute_cost = 1.00
-        popularity.record_query_count = 2
-        popularity.record_total_user_count = 3
-        popularity.record_compute_cost_unit = SourceCostUnitType.BYTES
-        popularity.record_last_timestamp = datetime.date.today()
-        popularity.record_query_duration = 4
-        popularity.record_warehouse = "there"
-        return popularity
+        return PopularityInsights(
+            record_user="ernest",
+            record_query_count=2,
+            record_compute_cost=1.00,
+            record_total_user_count=3,
+            record_compute_cost_unit=SourceCostUnitType.BYTES,
+            record_last_timestamp=datetime.datetime.now(),
+            record_query_duration=4,
+            record_warehouse="there",
+        )
 
     def test_create(
         self,
@@ -443,30 +443,22 @@ class TestTable:
             self.verify_popularity(asset_popularity, popularity_insight)
 
     def verify_popularity(self, asset_popularity, popularity_insight):
-        assert popularity_insight.record_user == asset_popularity.record_user
+        if isinstance(asset_popularity, dict):
+            ap = msgspec.convert(asset_popularity, PopularityInsights)
+        else:
+            ap = asset_popularity
+        assert popularity_insight.record_user == ap.record_user
+        assert popularity_insight.record_query_count == ap.record_query_count
+        assert popularity_insight.record_compute_cost == ap.record_compute_cost
+        assert popularity_insight.record_query_count == ap.record_query_count
         assert (
-            popularity_insight.record_query_count == asset_popularity.record_query_count
+            popularity_insight.record_total_user_count == ap.record_total_user_count
         )
         assert (
-            popularity_insight.record_compute_cost
-            == asset_popularity.record_compute_cost
+            popularity_insight.record_compute_cost_unit == ap.record_compute_cost_unit
         )
-        assert (
-            popularity_insight.record_query_count == asset_popularity.record_query_count
-        )
-        assert (
-            popularity_insight.record_total_user_count
-            == asset_popularity.record_total_user_count
-        )
-        assert (
-            popularity_insight.record_compute_cost_unit
-            == asset_popularity.record_compute_cost_unit
-        )
-        assert (
-            popularity_insight.record_query_duration
-            == asset_popularity.record_query_duration
-        )
-        assert popularity_insight.record_warehouse == asset_popularity.record_warehouse
+        assert popularity_insight.record_query_duration == ap.record_query_duration
+        assert popularity_insight.record_warehouse == ap.record_warehouse
 
 
 @pytest.mark.order(after="TestTable")

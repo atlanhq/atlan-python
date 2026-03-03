@@ -24,6 +24,7 @@ from pyatlan_v9.model.conversion_utils import (
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.structs import PopularityInsights
 
 from .referenceable import (
     Referenceable,
@@ -82,10 +83,10 @@ class Asset(Referenceable):
     tenant_id: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan workspace in which this asset exists."""
 
-    certificate_status: Union[str, None, UnsetType] = None
+    certificate_status: Union[str, None, UnsetType] = UNSET
     """Status of this asset's certification."""
 
-    certificate_status_message: Union[str, None, UnsetType] = None
+    certificate_status_message: Union[str, None, UnsetType] = UNSET
     """Human-readable descriptive message used to provide further detail to certificateStatus."""
 
     certificate_updated_by: Union[str, None, UnsetType] = UNSET
@@ -951,10 +952,10 @@ class AssetAttributes(ReferenceableAttributes):
     tenant_id: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan workspace in which this asset exists."""
 
-    certificate_status: Union[str, None, UnsetType] = None
+    certificate_status: Union[str, None, UnsetType] = UNSET
     """Status of this asset's certification."""
 
-    certificate_status_message: Union[str, None, UnsetType] = None
+    certificate_status_message: Union[str, None, UnsetType] = UNSET
     """Human-readable descriptive message used to provide further detail to certificateStatus."""
 
     certificate_updated_by: Union[str, None, UnsetType] = UNSET

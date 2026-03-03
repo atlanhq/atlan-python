@@ -1114,8 +1114,9 @@ def _assert_relationship(relationship, expected_type_name, udr):
     assert relationship
     assert relationship.guid
     assert relationship.type_name
-    if hasattr(relationship, "relationship_type"):
-        assert relationship.relationship_type == expected_type_name
+    ra = getattr(relationship, "relationship_attributes", None)
+    if ra and isinstance(ra, dict):
+        assert ra.get("typeName") == expected_type_name
     elif hasattr(relationship, "attributes") and relationship.attributes:
         assert relationship.attributes.relationship_attributes
         assert (

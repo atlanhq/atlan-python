@@ -565,20 +565,16 @@ class PopularityInsights(msgspec.Struct, kw_only=True, rename="camel", frozen=Fa
     record_compute_cost: Union[float, None] = None
     record_max_compute_cost: Union[float, None] = None
     record_compute_cost_unit: Union[SourceCostUnitType, None] = None
-    record_last_timestamp: Union[int, date, datetime, None] = None
-    """Timestamp in epoch milliseconds, or date/datetime object that will be converted"""
+    record_last_timestamp: Union[int, None] = None
+    """Timestamp in epoch milliseconds."""
     record_warehouse: Union[str, None] = None
 
     def __post_init__(self):
         """Convert date/datetime to epoch milliseconds if needed."""
-        if isinstance(self.record_last_timestamp, (date, datetime)):
-            if isinstance(self.record_last_timestamp, date) and not isinstance(
-                self.record_last_timestamp, datetime
-            ):
-                dt = datetime.combine(self.record_last_timestamp, datetime.min.time())
-            else:
-                dt = self.record_last_timestamp
-            # Convert to epoch milliseconds
+        if isinstance(self.record_last_timestamp, datetime):
+            self.record_last_timestamp = int(self.record_last_timestamp.timestamp() * 1000)
+        elif isinstance(self.record_last_timestamp, date):
+            dt = datetime.combine(self.record_last_timestamp, datetime.min.time())
             self.record_last_timestamp = int(dt.timestamp() * 1000)
 
 
