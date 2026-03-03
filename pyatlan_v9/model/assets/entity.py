@@ -177,15 +177,15 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     remove_classifications: Union[list[Any], UnsetType] = UNSET
     """Classifications to remove from this entity (used during save)."""
 
-    classification_names: Union[list, None, UnsetType] = None
+    classification_names: Union[list, None, UnsetType] = UNSET
     """Simple list of classification type names assigned to this entity."""
 
     # Meanings - typed for better validation
-    meanings: Union[list[TermAssignment], None, UnsetType] = None
+    meanings: Union[list[TermAssignment], None, UnsetType] = UNSET
     """Glossary term assignments for this entity."""
 
     # Labels
-    labels: Union[list[str], None, UnsetType] = None
+    labels: Union[list[str], None, UnsetType] = UNSET
     """Simple string labels attached to this entity."""
 
     # Additional metadata
@@ -195,7 +195,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     custom_attributes: Union[dict[str, str], UnsetType] = UNSET
     """Custom key-value pairs for this entity."""
 
-    pending_tasks: Union[list[str], None, UnsetType] = None
+    pending_tasks: Union[list[str], None, UnsetType] = UNSET
     """Identifiers of pending tasks for this entity."""
 
     proxy: Union[bool, UnsetType] = UNSET

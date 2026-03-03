@@ -193,13 +193,20 @@ class Procedure(Asset):
         )
 
     @classmethod
-    def updater(cls, *, qualified_name: str, name: str, definition: str) -> "Procedure":
+    def updater(
+        cls,
+        *,
+        qualified_name: str,
+        name: str,
+        definition: str = "",
+    ) -> "Procedure":
         validate_required_fields(
-            ["qualified_name", "name", "definition"],
-            [qualified_name, name, definition],
+            ["qualified_name", "name"],
+            [qualified_name, name],
         )
         proc = cls(qualified_name=qualified_name, name=name)
-        proc.definition = definition
+        if definition:
+            proc.definition = definition
         return proc
 
     def trim_to_required(self) -> "Procedure":
