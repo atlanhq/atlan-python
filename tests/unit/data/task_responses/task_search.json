@@ -12,11 +12,11 @@
         "parameters": {
           "relationshipGuid": null,
           "entityGuid": "test-guid-2",
-          "classificationVertexId": "901280"
+          "classificationVertexId": "901280",
+          "__task_classificationTypeName": "test-classification-type-name"
         },
         "attemptCount": 0,
         "status": "COMPLETE",
-        "classificationId": "901280",
         "entityGuid": "test-guid-2"
       }
     ],

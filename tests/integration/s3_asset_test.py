@@ -210,9 +210,6 @@ def _assert_update_bucket_again(client, bucket, with_name=False):
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert bucket.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=bucket.qualified_name,

@@ -92,6 +92,7 @@ class SSOUpdateGroupMapping:
         sso_alias: str,
         atlan_group: AtlanGroup,
         group_map_id: str,
+        group_map_name: str,
         sso_group_name: str,
     ) -> tuple:
         """
@@ -100,6 +101,7 @@ class SSOUpdateGroupMapping:
         :param sso_alias: name of the SSO provider
         :param atlan_group: existing Atlan group
         :param group_map_id: existing SSO group map identifier
+        :param group_map_name: existing SSO group map name
         :param sso_group_name: new SSO group name
         :returns: tuple of (endpoint, request_obj)
         """
@@ -111,9 +113,9 @@ class SSOUpdateGroupMapping:
             attribute_value=sso_group_name,
         )  # type: ignore[call-arg]
 
-        # NOTE: Updates don't require a group map name; group map ID works fine
         group_mapper = SSOMapper(
             id=group_map_id,
+            name=group_map_name,
             config=group_mapper_config,
             identity_provider_alias=sso_alias,
             identity_provider_mapper=IDP_GROUP_MAPPER,

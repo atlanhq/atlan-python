@@ -108,7 +108,7 @@ async def test_task_search(
     assert task.created_by
     assert task.updated_time
     assert task.parameters
-    assert task.classification_id
+    assert task.parameters.get("__task_classificationTypeName")
     assert task.attempt_count is not None and task.attempt_count >= 0
     assert task.entity_guid == snowflake_column.guid
     assert task.type == AtlanTaskType.CLASSIFICATION_PROPAGATION_ADD

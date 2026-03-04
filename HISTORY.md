@@ -15,7 +15,7 @@
 - Updated Docker docs to reference Harbor pulls.
 - Added local Snyk scan instructions.
 - Limited uv resolution to CPython and bump urllib3 to fix CVEs.
-  
+
 ## 8.5.1 (January 29, 2026)
 
 ### Bug Fixes
@@ -26,7 +26,7 @@
 
 - Enhanced SDK client retry mechanism to automatically retry HTTP `302` redirect responses, improving reliability when handling temporary redirects.
 - Updated admin integration tests to align with latest backend API changes.
-  
+
 
 ## 8.5.0 (January 14, 2026)
 

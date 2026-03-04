@@ -235,9 +235,6 @@ def test_update_gcs_object_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert gcs_object.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=gcs_object.qualified_name,

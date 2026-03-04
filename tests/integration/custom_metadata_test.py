@@ -441,6 +441,7 @@ def cm_dq(
 @pytest.fixture(scope="module")
 def cm_sql(
     client: AtlanClient,
+    term: AtlasGlossaryTerm,
 ) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.create(
@@ -458,6 +459,10 @@ def cm_sql(
         locked=False,
     )
     yield cm
+    # Remove CM_SQL data from the term before purging the definition.
+    # test_save_merging_cm writes CM_SQL onto the term; without this cleanup
+    # Atlas rejects the typedef purge with ConflictError "has references".
+    client.asset.remove_custom_metadata(term.guid, cm_name=CM_SQL)
     wait_for_successful_custometadatadef_purge(CM_SQL, client=client)
 
 

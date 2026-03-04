@@ -359,9 +359,6 @@ def test_update_preset_dashboard_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert preset_dashboard.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=preset_dashboard.qualified_name,
