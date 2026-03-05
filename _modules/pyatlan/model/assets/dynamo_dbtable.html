@@ -1036,6 +1036,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DYNAMO_DB_COLUMNS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s2">&quot;dynamoDBColumns&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;dynamo_dbtable_g_s_i_count&quot;</span><span class="p">,</span>
@@ -1093,6 +1097,7 @@
         <span class="s2">&quot;no_s_q_l_schema_definition&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dynamo_d_b_local_secondary_indexes&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dynamo_d_b_global_secondary_indexes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dynamo_d_b_columns&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -1757,6 +1762,21 @@
             <span class="n">dynamo_d_b_global_secondary_indexes</span>
         <span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dynamo_d_b_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DynamoDBAttribute</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dynamo_d_b_columns</span>
+
+    <span class="nd">@dynamo_d_b_columns</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dynamo_d_b_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dynamo_d_b_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DynamoDBAttribute</span><span class="p">]],</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">dynamo_d_b_columns</span> <span class="o">=</span> <span class="n">dynamo_d_b_columns</span>
+
     <span class="k">class</span><span class="w"> </span><span class="nc">Attributes</span><span class="p">(</span><span class="n">Table</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">dynamo_dbtable_g_s_i_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">dynamo_dbtable_l_s_i_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -1833,6 +1853,9 @@
         <span class="n">dynamo_d_b_global_secondary_indexes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">List</span><span class="p">[</span><span class="n">DynamoDBGlobalSecondaryIndex</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># relationship</span>
+        <span class="n">dynamo_d_b_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DynamoDBAttribute</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>  <span class="c1"># relationship</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="n">DynamoDBTable</span><span class="o">.</span><span class="n">Attributes</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DynamoDBTable</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
@@ -1845,6 +1868,7 @@
 
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.dynamo_d_b_attribute</span><span class="w"> </span><span class="kn">import</span> <span class="n">DynamoDBAttribute</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.dynamo_d_b_global_secondary_index</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DynamoDBGlobalSecondaryIndex</span><span class="p">,</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="p">)</span>
