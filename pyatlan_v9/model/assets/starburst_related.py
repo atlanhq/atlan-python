@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -33,13 +35,13 @@ class RelatedStarburst(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Starburst" so it serializes correctly
 
-    starburst_data_product_name: str | None | UnsetType = UNSET
+    starburst_data_product_name: Union[str, None, UnsetType] = UNSET
     """Name of the Starburst Data Product that contains this asset."""
 
-    starburst_dataset_qualified_name: str | None | UnsetType = UNSET
+    starburst_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Starburst Dataset that contains this asset, or this asset's own qualified name if it is a Dataset."""
 
-    starburst_dataset_name: str | None | UnsetType = UNSET
+    starburst_dataset_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Starburst Dataset that contains this asset, or this asset's own name if it is a Dataset."""
 
     def __post_init__(self) -> None:
@@ -57,13 +59,13 @@ class RelatedStarburstDataset(RelatedStarburst):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "StarburstDataset" so it serializes correctly
 
-    starburst_is_materialized: bool | None | UnsetType = UNSET
+    starburst_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this dataset is a materialized view."""
 
-    starburst_sql_qualified_name: str | None | UnsetType = UNSET
+    starburst_sql_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the corresponding SQL View or MaterialisedView. Enables cross-stream lookup between the Data Product perspective and the SQL perspective of the same underlying view."""
 
-    starburst_view_definition: str | None | UnsetType = UNSET
+    starburst_view_definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of the underlying view or materialized view."""
 
     def __post_init__(self) -> None:
@@ -81,7 +83,7 @@ class RelatedStarburstDatasetColumn(RelatedStarburst):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "StarburstDatasetColumn" so it serializes correctly
 
-    starburst_sql_column_qualified_name: str | None | UnsetType = UNSET
+    starburst_sql_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the corresponding SQL Column. Enables cross-stream lookup between the Data Product perspective and the SQL perspective of the same underlying column."""
 
     def __post_init__(self) -> None:

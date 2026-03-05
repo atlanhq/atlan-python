@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -48,10 +50,10 @@ class RelatedCollection(RelatedNamespace):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Collection" so it serializes correctly
 
-    icon: str | None | UnsetType = UNSET
+    icon: Union[str, None, UnsetType] = UNSET
     """Image used to represent this collection."""
 
-    icon_type: str | None | UnsetType = UNSET
+    icon_type: Union[str, None, UnsetType] = UNSET
     """Type of image used to represent the collection (for example, an emoji)."""
 
     def __post_init__(self) -> None:
@@ -69,10 +71,10 @@ class RelatedFolder(RelatedNamespace):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Folder" so it serializes correctly
 
-    parent_qualified_name: str | None | UnsetType = UNSET
+    parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder or collection in which this folder exists."""
 
-    collection_qualified_name: str | None | UnsetType = UNSET
+    collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the collection in which this folder exists."""
 
     def __post_init__(self) -> None:

@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -33,13 +33,13 @@ class RelatedReferenceable(RelatedEntity):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Referenceable" so it serializes correctly
 
-    qualified_name: str | None | UnsetType = UNSET
+    qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name for this asset. This is typically a concatenation of the asset's name onto its parent's qualifiedName. This must be unique across all assets of the same type."""
 
-    replicated_from: list[dict[str, Any]] | None | UnsetType = UNSET
+    replicated_from: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Unused. List of servers where this entity is replicated from."""
 
-    replicated_to: list[dict[str, Any]] | None | UnsetType = UNSET
+    replicated_to: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Unused. List of servers where this entity is replicated to."""
 
     def __post_init__(self) -> None:

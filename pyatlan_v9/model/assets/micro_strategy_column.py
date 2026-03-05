@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -131,177 +131,187 @@ class MicroStrategyColumn(Asset):
 
     type_name: Union[str, UnsetType] = "MicroStrategyColumn"
 
-    micro_strategy_column_id: str | None | UnsetType = UNSET
+    micro_strategy_column_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the column in MicroStrategy."""
 
-    micro_strategy_column_type: str | None | UnsetType = UNSET
+    micro_strategy_column_type: Union[str, None, UnsetType] = UNSET
     """Type of the column (Eg attribute_column, fact_column, metric_column etc)."""
 
-    micro_strategy_data_type: str | None | UnsetType = UNSET
+    micro_strategy_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the column."""
 
-    micro_strategy_column_attribute_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_attribute_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Attribute in which this column exists."""
 
-    micro_strategy_column_fact_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_fact_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Fact in which this column exists."""
 
-    micro_strategy_column_metric_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_metric_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Metric in which this column exists."""
 
-    micro_strategy_column_cube_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_cube_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Cube in which this column exists."""
 
-    micro_strategy_column_report_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_report_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Report in which this column exists."""
 
-    micro_strategy_column_dossier_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_dossier_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Dossier in which this column exists."""
 
-    micro_strategy_column_document_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_document_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Document in which this column exists."""
 
-    micro_strategy_parent_name: str | None | UnsetType = UNSET
+    micro_strategy_parent_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent asset."""
 
-    micro_strategy_column_expression: str | None | UnsetType = UNSET
+    micro_strategy_column_expression: Union[str, None, UnsetType] = UNSET
     """Expression or formula used to define this column."""
 
-    micro_strategy_project_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset exists."""
 
-    micro_strategy_project_name: str | None | UnsetType = UNSET
+    micro_strategy_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project in which this asset exists."""
 
-    micro_strategy_cube_qualified_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_cube_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the cubes related to this asset."""
 
-    micro_strategy_cube_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_cube_names: Union[List[str], None, UnsetType] = UNSET
     """Simple names of the cubes related to this asset."""
 
-    micro_strategy_report_qualified_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_report_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the reports related to this asset."""
 
-    micro_strategy_report_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_report_names: Union[List[str], None, UnsetType] = UNSET
     """Simple names of the reports related to this asset."""
 
-    micro_strategy_is_certified: bool | None | UnsetType = UNSET
+    micro_strategy_is_certified: Union[bool, None, UnsetType] = UNSET
     """Whether the asset is certified in MicroStrategy (true) or not (false)."""
 
-    micro_strategy_certified_by: str | None | UnsetType = UNSET
+    micro_strategy_certified_by: Union[str, None, UnsetType] = UNSET
     """User who certified this asset, in MicroStrategy."""
 
-    micro_strategy_certified_at: int | None | UnsetType = UNSET
+    micro_strategy_certified_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) this asset was certified in MicroStrategy, in milliseconds."""
 
-    micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
+    micro_strategy_location: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Location of this asset in MicroStrategy."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    micro_strategy_attribute: RelatedMicroStrategyAttribute | None | UnsetType = UNSET
+    micro_strategy_attribute: Union[RelatedMicroStrategyAttribute, None, UnsetType] = (
+        UNSET
+    )
     """Attribute containing the column."""
 
-    micro_strategy_cube: RelatedMicroStrategyCube | None | UnsetType = UNSET
+    micro_strategy_cube: Union[RelatedMicroStrategyCube, None, UnsetType] = UNSET
     """Cube containing the column."""
 
-    micro_strategy_document: RelatedMicroStrategyDocument | None | UnsetType = UNSET
+    micro_strategy_document: Union[RelatedMicroStrategyDocument, None, UnsetType] = (
+        UNSET
+    )
     """Document containing the column."""
 
-    micro_strategy_dossier: RelatedMicroStrategyDossier | None | UnsetType = UNSET
+    micro_strategy_dossier: Union[RelatedMicroStrategyDossier, None, UnsetType] = UNSET
     """Dossier containing the column."""
 
-    micro_strategy_fact: RelatedMicroStrategyFact | None | UnsetType = UNSET
+    micro_strategy_fact: Union[RelatedMicroStrategyFact, None, UnsetType] = UNSET
     """Fact containing the column."""
 
-    micro_strategy_metric: RelatedMicroStrategyMetric | None | UnsetType = UNSET
+    micro_strategy_metric: Union[RelatedMicroStrategyMetric, None, UnsetType] = UNSET
     """Metric containing the column."""
 
-    micro_strategy_report: RelatedMicroStrategyReport | None | UnsetType = UNSET
+    micro_strategy_report: Union[RelatedMicroStrategyReport, None, UnsetType] = UNSET
     """Report containing the column."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -372,204 +382,214 @@ class MicroStrategyColumn(Asset):
 class MicroStrategyColumnAttributes(AssetAttributes):
     """MicroStrategyColumn-specific attributes for nested API format."""
 
-    micro_strategy_column_id: str | None | UnsetType = UNSET
+    micro_strategy_column_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the column in MicroStrategy."""
 
-    micro_strategy_column_type: str | None | UnsetType = UNSET
+    micro_strategy_column_type: Union[str, None, UnsetType] = UNSET
     """Type of the column (Eg attribute_column, fact_column, metric_column etc)."""
 
-    micro_strategy_data_type: str | None | UnsetType = UNSET
+    micro_strategy_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the column."""
 
-    micro_strategy_column_attribute_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_attribute_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Attribute in which this column exists."""
 
-    micro_strategy_column_fact_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_fact_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Fact in which this column exists."""
 
-    micro_strategy_column_metric_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_metric_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Metric in which this column exists."""
 
-    micro_strategy_column_cube_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_cube_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Cube in which this column exists."""
 
-    micro_strategy_column_report_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_report_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Report in which this column exists."""
 
-    micro_strategy_column_dossier_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_dossier_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Dossier in which this column exists."""
 
-    micro_strategy_column_document_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_column_document_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the Document in which this column exists."""
 
-    micro_strategy_parent_name: str | None | UnsetType = UNSET
+    micro_strategy_parent_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent asset."""
 
-    micro_strategy_column_expression: str | None | UnsetType = UNSET
+    micro_strategy_column_expression: Union[str, None, UnsetType] = UNSET
     """Expression or formula used to define this column."""
 
-    micro_strategy_project_qualified_name: str | None | UnsetType = UNSET
+    micro_strategy_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset exists."""
 
-    micro_strategy_project_name: str | None | UnsetType = UNSET
+    micro_strategy_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project in which this asset exists."""
 
-    micro_strategy_cube_qualified_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_cube_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the cubes related to this asset."""
 
-    micro_strategy_cube_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_cube_names: Union[List[str], None, UnsetType] = UNSET
     """Simple names of the cubes related to this asset."""
 
-    micro_strategy_report_qualified_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_report_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the reports related to this asset."""
 
-    micro_strategy_report_names: list[str] | None | UnsetType = UNSET
+    micro_strategy_report_names: Union[List[str], None, UnsetType] = UNSET
     """Simple names of the reports related to this asset."""
 
-    micro_strategy_is_certified: bool | None | UnsetType = UNSET
+    micro_strategy_is_certified: Union[bool, None, UnsetType] = UNSET
     """Whether the asset is certified in MicroStrategy (true) or not (false)."""
 
-    micro_strategy_certified_by: str | None | UnsetType = UNSET
+    micro_strategy_certified_by: Union[str, None, UnsetType] = UNSET
     """User who certified this asset, in MicroStrategy."""
 
-    micro_strategy_certified_at: int | None | UnsetType = UNSET
+    micro_strategy_certified_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) this asset was certified in MicroStrategy, in milliseconds."""
 
-    micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
+    micro_strategy_location: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Location of this asset in MicroStrategy."""
 
 
 class MicroStrategyColumnRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyColumn-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    micro_strategy_attribute: RelatedMicroStrategyAttribute | None | UnsetType = UNSET
+    micro_strategy_attribute: Union[RelatedMicroStrategyAttribute, None, UnsetType] = (
+        UNSET
+    )
     """Attribute containing the column."""
 
-    micro_strategy_cube: RelatedMicroStrategyCube | None | UnsetType = UNSET
+    micro_strategy_cube: Union[RelatedMicroStrategyCube, None, UnsetType] = UNSET
     """Cube containing the column."""
 
-    micro_strategy_document: RelatedMicroStrategyDocument | None | UnsetType = UNSET
+    micro_strategy_document: Union[RelatedMicroStrategyDocument, None, UnsetType] = (
+        UNSET
+    )
     """Document containing the column."""
 
-    micro_strategy_dossier: RelatedMicroStrategyDossier | None | UnsetType = UNSET
+    micro_strategy_dossier: Union[RelatedMicroStrategyDossier, None, UnsetType] = UNSET
     """Dossier containing the column."""
 
-    micro_strategy_fact: RelatedMicroStrategyFact | None | UnsetType = UNSET
+    micro_strategy_fact: Union[RelatedMicroStrategyFact, None, UnsetType] = UNSET
     """Fact containing the column."""
 
-    micro_strategy_metric: RelatedMicroStrategyMetric | None | UnsetType = UNSET
+    micro_strategy_metric: Union[RelatedMicroStrategyMetric, None, UnsetType] = UNSET
     """Metric containing the column."""
 
-    micro_strategy_report: RelatedMicroStrategyReport | None | UnsetType = UNSET
+    micro_strategy_report: Union[RelatedMicroStrategyReport, None, UnsetType] = UNSET
     """Report containing the column."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class MicroStrategyColumnNested(AssetNested):
     """MicroStrategyColumn in nested API format for high-performance serialization."""
 
-    attributes: MicroStrategyColumnAttributes | UnsetType = UNSET
-    relationship_attributes: MicroStrategyColumnRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    append_relationship_attributes: (
-        MicroStrategyColumnRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        MicroStrategyColumnRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[MicroStrategyColumnAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        MicroStrategyColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        MicroStrategyColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        MicroStrategyColumnRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_MICRO_STRATEGY_COLUMN_REL_FIELDS: list[str] = [
+_MICRO_STRATEGY_COLUMN_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

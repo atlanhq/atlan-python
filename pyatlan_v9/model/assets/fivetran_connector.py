@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -134,234 +134,240 @@ class FivetranConnector(Asset):
 
     type_name: Union[str, UnsetType] = "FivetranConnector"
 
-    fivetran_last_sync_id: str | None | UnsetType = UNSET
+    fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
 
-    fivetran_last_sync_started_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
 
-    fivetran_last_sync_finished_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
 
-    fivetran_last_sync_reason: str | None | UnsetType = UNSET
+    fivetran_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
 
-    fivetran_last_sync_task_type: str | None | UnsetType = UNSET
+    fivetran_last_sync_task_type: Union[str, None, UnsetType] = UNSET
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
-    fivetran_last_sync_rescheduled_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
 
-    fivetran_last_sync_tables_synced: int | None | UnsetType = UNSET
+    fivetran_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
     """Number of tables synced in the latest sync on Fivetran"""
 
-    fivetran_last_sync_extract_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_extract_time_seconds: Union[float, None, UnsetType] = UNSET
     """Extract time in seconds in the latest sync on fivetran"""
 
-    fivetran_last_sync_extract_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_extract_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Extracted data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_load_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_load_time_seconds: Union[float, None, UnsetType] = UNSET
     """Load time in seconds in the latest sync on Fivetran"""
 
-    fivetran_last_sync_load_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_load_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Loaded data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_process_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_process_time_seconds: Union[float, None, UnsetType] = UNSET
     """Process time in seconds in the latest sync on Fivetran"""
 
-    fivetran_last_sync_process_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_process_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Process volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_total_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_total_time_seconds: Union[float, None, UnsetType] = UNSET
     """Total sync time in seconds in the latest sync on Fivetran"""
 
-    fivetran_name: str | None | UnsetType = UNSET
+    fivetran_name: Union[str, None, UnsetType] = UNSET
     """Connector name added by the user on Fivetran"""
 
-    fivetran_type: str | None | UnsetType = UNSET
+    fivetran_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_url: str | None | UnsetType = msgspec.field(
+    fivetran_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranURL"
     )
     """URL to open the connector details on Fivetran"""
 
-    fivetran_destination_name: str | None | UnsetType = UNSET
+    fivetran_destination_name: Union[str, None, UnsetType] = UNSET
     """Destination name added by the user on Fivetran"""
 
-    fivetran_destination_type: str | None | UnsetType = UNSET
+    fivetran_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_destination_url: str | None | UnsetType = msgspec.field(
+    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranDestinationURL"
     )
     """URL to open the destination details on Fivetran"""
 
-    fivetran_sync_setup_on: int | None | UnsetType = UNSET
+    fivetran_sync_setup_on: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
 
-    fivetran_sync_frequency: str | None | UnsetType = UNSET
+    fivetran_sync_frequency: Union[str, None, UnsetType] = UNSET
     """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
 
-    fivetran_sync_paused: bool | None | UnsetType = UNSET
+    fivetran_sync_paused: Union[bool, None, UnsetType] = UNSET
     """Boolean to indicate whether the sync for this connector is paused or not"""
 
-    fivetran_sync_setup_user_full_name: str | None | UnsetType = UNSET
+    fivetran_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
     """Full name of the user who setup the connector on Fivetran"""
 
-    fivetran_sync_setup_user_email: str | None | UnsetType = UNSET
+    fivetran_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
     """Email ID of the user who setpu the connector on Fivetran"""
 
-    fivetran_monthly_active_rows_free: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
     """Free Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_paid: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
     """Paid Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_total: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_change_percentage_free: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_free: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_paid: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_paid: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_total: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_total: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_free_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_free_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_monthly_active_rows_paid_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_paid_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_monthly_active_rows_total_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_total_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
-    fivetran_total_tables_synced: int | None | UnsetType = UNSET
+    fivetran_total_tables_synced: Union[int, None, UnsetType] = UNSET
     """Total number of tables synced by this connector"""
 
-    fivetran_connector_top_tables_by_mar: str | None | UnsetType = msgspec.field(
+    fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorTopTablesByMAR"
     )
     """Total five tables sorted by MAR synced by this connector"""
 
-    fivetran_usage_cost: float | None | UnsetType = UNSET
+    fivetran_usage_cost: Union[float, None, UnsetType] = UNSET
     """Total usage cost by this destination"""
 
-    fivetran_credits_used: float | None | UnsetType = UNSET
+    fivetran_credits_used: Union[float, None, UnsetType] = UNSET
     """Total credits used by this destination"""
 
-    fivetran_workflow_name: str | None | UnsetType = UNSET
+    fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the atlan fivetran workflow that updated this asset"""
 
-    fivetran_last_sync_status: str | None | UnsetType = UNSET
+    fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
-    fivetran_last_sync_records_updated: int | None | UnsetType = UNSET
+    fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
     """Number of records updated in the latest sync on Fivetran"""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    processes: list[RelatedProcess] | None | UnsetType = UNSET
+    processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes related to this Fivetran connector"""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -424,259 +430,267 @@ class FivetranConnector(Asset):
 class FivetranConnectorAttributes(AssetAttributes):
     """FivetranConnector-specific attributes for nested API format."""
 
-    fivetran_last_sync_id: str | None | UnsetType = UNSET
+    fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
 
-    fivetran_last_sync_started_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
 
-    fivetran_last_sync_finished_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
 
-    fivetran_last_sync_reason: str | None | UnsetType = UNSET
+    fivetran_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
 
-    fivetran_last_sync_task_type: str | None | UnsetType = UNSET
+    fivetran_last_sync_task_type: Union[str, None, UnsetType] = UNSET
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
-    fivetran_last_sync_rescheduled_at: int | None | UnsetType = UNSET
+    fivetran_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
 
-    fivetran_last_sync_tables_synced: int | None | UnsetType = UNSET
+    fivetran_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
     """Number of tables synced in the latest sync on Fivetran"""
 
-    fivetran_last_sync_extract_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_extract_time_seconds: Union[float, None, UnsetType] = UNSET
     """Extract time in seconds in the latest sync on fivetran"""
 
-    fivetran_last_sync_extract_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_extract_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Extracted data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_load_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_load_time_seconds: Union[float, None, UnsetType] = UNSET
     """Load time in seconds in the latest sync on Fivetran"""
 
-    fivetran_last_sync_load_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_load_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Loaded data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_process_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_process_time_seconds: Union[float, None, UnsetType] = UNSET
     """Process time in seconds in the latest sync on Fivetran"""
 
-    fivetran_last_sync_process_volume_megabytes: float | None | UnsetType = UNSET
+    fivetran_last_sync_process_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Process volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_last_sync_total_time_seconds: float | None | UnsetType = UNSET
+    fivetran_last_sync_total_time_seconds: Union[float, None, UnsetType] = UNSET
     """Total sync time in seconds in the latest sync on Fivetran"""
 
-    fivetran_name: str | None | UnsetType = UNSET
+    fivetran_name: Union[str, None, UnsetType] = UNSET
     """Connector name added by the user on Fivetran"""
 
-    fivetran_type: str | None | UnsetType = UNSET
+    fivetran_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_url: str | None | UnsetType = msgspec.field(
+    fivetran_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranURL"
     )
     """URL to open the connector details on Fivetran"""
 
-    fivetran_destination_name: str | None | UnsetType = UNSET
+    fivetran_destination_name: Union[str, None, UnsetType] = UNSET
     """Destination name added by the user on Fivetran"""
 
-    fivetran_destination_type: str | None | UnsetType = UNSET
+    fivetran_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_destination_url: str | None | UnsetType = msgspec.field(
+    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranDestinationURL"
     )
     """URL to open the destination details on Fivetran"""
 
-    fivetran_sync_setup_on: int | None | UnsetType = UNSET
+    fivetran_sync_setup_on: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
 
-    fivetran_sync_frequency: str | None | UnsetType = UNSET
+    fivetran_sync_frequency: Union[str, None, UnsetType] = UNSET
     """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
 
-    fivetran_sync_paused: bool | None | UnsetType = UNSET
+    fivetran_sync_paused: Union[bool, None, UnsetType] = UNSET
     """Boolean to indicate whether the sync for this connector is paused or not"""
 
-    fivetran_sync_setup_user_full_name: str | None | UnsetType = UNSET
+    fivetran_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
     """Full name of the user who setup the connector on Fivetran"""
 
-    fivetran_sync_setup_user_email: str | None | UnsetType = UNSET
+    fivetran_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
     """Email ID of the user who setpu the connector on Fivetran"""
 
-    fivetran_monthly_active_rows_free: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
     """Free Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_paid: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
     """Paid Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_total: int | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_change_percentage_free: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_free: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_paid: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_paid: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_total: float | None | UnsetType = (
-        UNSET
-    )
+    fivetran_monthly_active_rows_change_percentage_total: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_free_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_free_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_monthly_active_rows_paid_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_paid_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_monthly_active_rows_total_percentage_of_account: (
-        float | None | UnsetType
-    ) = UNSET
+    fivetran_monthly_active_rows_total_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
-    fivetran_total_tables_synced: int | None | UnsetType = UNSET
+    fivetran_total_tables_synced: Union[int, None, UnsetType] = UNSET
     """Total number of tables synced by this connector"""
 
-    fivetran_connector_top_tables_by_mar: str | None | UnsetType = msgspec.field(
+    fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="fivetranConnectorTopTablesByMAR"
     )
     """Total five tables sorted by MAR synced by this connector"""
 
-    fivetran_usage_cost: float | None | UnsetType = UNSET
+    fivetran_usage_cost: Union[float, None, UnsetType] = UNSET
     """Total usage cost by this destination"""
 
-    fivetran_credits_used: float | None | UnsetType = UNSET
+    fivetran_credits_used: Union[float, None, UnsetType] = UNSET
     """Total credits used by this destination"""
 
-    fivetran_workflow_name: str | None | UnsetType = UNSET
+    fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the atlan fivetran workflow that updated this asset"""
 
-    fivetran_last_sync_status: str | None | UnsetType = UNSET
+    fivetran_last_sync_status: Union[str, None, UnsetType] = UNSET
     """Status of the latest sync on Fivetran."""
 
-    fivetran_last_sync_records_updated: int | None | UnsetType = UNSET
+    fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
     """Number of records updated in the latest sync on Fivetran"""
 
 
 class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
     """FivetranConnector-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    processes: list[RelatedProcess] | None | UnsetType = UNSET
+    processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes related to this Fivetran connector"""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class FivetranConnectorNested(AssetNested):
     """FivetranConnector in nested API format for high-performance serialization."""
 
-    attributes: FivetranConnectorAttributes | UnsetType = UNSET
-    relationship_attributes: FivetranConnectorRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: (
-        FivetranConnectorRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        FivetranConnectorRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[FivetranConnectorAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        FivetranConnectorRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        FivetranConnectorRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FivetranConnectorRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_FIVETRAN_CONNECTOR_REL_FIELDS: list[str] = [
+_FIVETRAN_CONNECTOR_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

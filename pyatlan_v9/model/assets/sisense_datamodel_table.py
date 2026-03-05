@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -104,120 +104,126 @@ class SisenseDatamodelTable(Asset):
 
     type_name: Union[str, UnsetType] = "SisenseDatamodelTable"
 
-    sisense_datamodel_qualified_name: str | None | UnsetType = UNSET
+    sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 
-    sisense_column_count: int | None | UnsetType = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this datamodel table."""
 
-    sisense_type: str | None | UnsetType = UNSET
+    sisense_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables."""
 
-    sisense_datamodel_table_expression: str | None | UnsetType = UNSET
+    sisense_datamodel_table_expression: Union[str, None, UnsetType] = UNSET
     """SQL expression of this datamodel table."""
 
-    sisense_is_materialized: bool | None | UnsetType = UNSET
+    sisense_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is materialised (true) or not (false)."""
 
-    sisense_is_hidden: bool | None | UnsetType = UNSET
+    sisense_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is hidden in Sisense (true) or not (false)."""
 
-    sisense_schedule: str | None | UnsetType = UNSET
+    sisense_schedule: Union[str, None, UnsetType] = UNSET
     """JSON specifying the refresh schedule of this datamodel table."""
 
-    sisense_live_query_settings: str | None | UnsetType = UNSET
+    sisense_live_query_settings: Union[str, None, UnsetType] = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    sisense_datamodel: RelatedSisenseDatamodel | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    sisense_datamodel: Union[RelatedSisenseDatamodel, None, UnsetType] = UNSET
     """Datamodel in which this datamodel table exists."""
 
-    sisense_widgets: list[RelatedSisenseWidget] | None | UnsetType = UNSET
+    sisense_widgets: Union[List[RelatedSisenseWidget], None, UnsetType] = UNSET
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -286,147 +292,153 @@ class SisenseDatamodelTable(Asset):
 class SisenseDatamodelTableAttributes(AssetAttributes):
     """SisenseDatamodelTable-specific attributes for nested API format."""
 
-    sisense_datamodel_qualified_name: str | None | UnsetType = UNSET
+    sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 
-    sisense_column_count: int | None | UnsetType = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this datamodel table."""
 
-    sisense_type: str | None | UnsetType = UNSET
+    sisense_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables."""
 
-    sisense_datamodel_table_expression: str | None | UnsetType = UNSET
+    sisense_datamodel_table_expression: Union[str, None, UnsetType] = UNSET
     """SQL expression of this datamodel table."""
 
-    sisense_is_materialized: bool | None | UnsetType = UNSET
+    sisense_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is materialised (true) or not (false)."""
 
-    sisense_is_hidden: bool | None | UnsetType = UNSET
+    sisense_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is hidden in Sisense (true) or not (false)."""
 
-    sisense_schedule: str | None | UnsetType = UNSET
+    sisense_schedule: Union[str, None, UnsetType] = UNSET
     """JSON specifying the refresh schedule of this datamodel table."""
 
-    sisense_live_query_settings: str | None | UnsetType = UNSET
+    sisense_live_query_settings: Union[str, None, UnsetType] = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
 
 
 class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseDatamodelTable-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    sisense_datamodel: RelatedSisenseDatamodel | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    sisense_datamodel: Union[RelatedSisenseDatamodel, None, UnsetType] = UNSET
     """Datamodel in which this datamodel table exists."""
 
-    sisense_widgets: list[RelatedSisenseWidget] | None | UnsetType = UNSET
+    sisense_widgets: Union[List[RelatedSisenseWidget], None, UnsetType] = UNSET
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class SisenseDatamodelTableNested(AssetNested):
     """SisenseDatamodelTable in nested API format for high-performance serialization."""
 
-    attributes: SisenseDatamodelTableAttributes | UnsetType = UNSET
-    relationship_attributes: SisenseDatamodelTableRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    append_relationship_attributes: (
-        SisenseDatamodelTableRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        SisenseDatamodelTableRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[SisenseDatamodelTableAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SisenseDatamodelTableRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SisenseDatamodelTableRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SisenseDatamodelTableRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_SISENSE_DATAMODEL_TABLE_REL_FIELDS: list[str] = [
+_SISENSE_DATAMODEL_TABLE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

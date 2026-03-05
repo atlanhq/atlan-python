@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -51,10 +53,10 @@ class RelatedSisenseDashboard(RelatedSisense):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SisenseDashboard" so it serializes correctly
 
-    sisense_dashboard_folder_qualified_name: str | None | UnsetType = UNSET
+    sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_widget_count: int | None | UnsetType = UNSET
+    sisense_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     def __post_init__(self) -> None:
@@ -72,28 +74,28 @@ class RelatedSisenseDatamodel(RelatedSisense):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SisenseDatamodel" so it serializes correctly
 
-    sisense_table_count: int | None | UnsetType = UNSET
+    sisense_table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this datamodel."""
 
-    sisense_datamodel_server: str | None | UnsetType = UNSET
+    sisense_datamodel_server: Union[str, None, UnsetType] = UNSET
     """Hostname of the server on which this datamodel was created."""
 
-    sisense_revision: str | None | UnsetType = UNSET
+    sisense_revision: Union[str, None, UnsetType] = UNSET
     """Revision of this datamodel."""
 
-    sisense_last_build_time: int | None | UnsetType = UNSET
+    sisense_last_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built, in milliseconds."""
 
-    sisense_last_successful_build_time: int | None | UnsetType = UNSET
+    sisense_last_successful_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built successfully, in milliseconds."""
 
-    sisense_last_publish_time: int | None | UnsetType = UNSET
+    sisense_last_publish_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last published, in milliseconds."""
 
-    sisense_datamodel_type: str | None | UnsetType = UNSET
+    sisense_datamodel_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel, for example: 'extract' or 'custom'."""
 
-    sisense_datamodel_relation_type: str | None | UnsetType = UNSET
+    sisense_datamodel_relation_type: Union[str, None, UnsetType] = UNSET
     """Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default."""
 
     def __post_init__(self) -> None:
@@ -111,28 +113,28 @@ class RelatedSisenseDatamodelTable(RelatedSisense):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SisenseDatamodelTable" so it serializes correctly
 
-    sisense_datamodel_qualified_name: str | None | UnsetType = UNSET
+    sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 
-    sisense_column_count: int | None | UnsetType = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this datamodel table."""
 
-    sisense_type: str | None | UnsetType = UNSET
+    sisense_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables."""
 
-    sisense_datamodel_table_expression: str | None | UnsetType = UNSET
+    sisense_datamodel_table_expression: Union[str, None, UnsetType] = UNSET
     """SQL expression of this datamodel table."""
 
-    sisense_is_materialized: bool | None | UnsetType = UNSET
+    sisense_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is materialised (true) or not (false)."""
 
-    sisense_is_hidden: bool | None | UnsetType = UNSET
+    sisense_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is hidden in Sisense (true) or not (false)."""
 
-    sisense_schedule: str | None | UnsetType = UNSET
+    sisense_schedule: Union[str, None, UnsetType] = UNSET
     """JSON specifying the refresh schedule of this datamodel table."""
 
-    sisense_live_query_settings: str | None | UnsetType = UNSET
+    sisense_live_query_settings: Union[str, None, UnsetType] = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
 
     def __post_init__(self) -> None:
@@ -150,7 +152,7 @@ class RelatedSisenseFolder(RelatedSisense):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SisenseFolder" so it serializes correctly
 
-    sisense_folder_parent_folder_qualified_name: str | None | UnsetType = UNSET
+    sisense_folder_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder in which this folder exists."""
 
     def __post_init__(self) -> None:
@@ -168,19 +170,19 @@ class RelatedSisenseWidget(RelatedSisense):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SisenseWidget" so it serializes correctly
 
-    sisense_column_count: int | None | UnsetType = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 
-    sisense_sub_type: str | None | UnsetType = UNSET
+    sisense_sub_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this widget."""
 
-    sisense_size: str | None | UnsetType = UNSET
+    sisense_size: Union[str, None, UnsetType] = UNSET
     """Size of this widget."""
 
-    sisense_widget_dashboard_qualified_name: str | None | UnsetType = UNSET
+    sisense_widget_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dashboard in which this widget exists."""
 
-    sisense_widget_folder_qualified_name: str | None | UnsetType = UNSET
+    sisense_widget_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this widget exists."""
 
     def __post_init__(self) -> None:

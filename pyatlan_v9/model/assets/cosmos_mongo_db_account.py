@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -112,186 +112,192 @@ class CosmosMongoDBAccount(Asset):
 
     type_name: Union[str, UnsetType] = "CosmosMongoDBAccount"
 
-    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_instance_id: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountInstanceId"
     )
     """The unique identifier for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_database_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBDatabaseCount"
     )
     """Number of databases in this Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_type: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountType"
     )
     """The type of the Cosmos MongoDB account, such as RU or VCORE."""
 
-    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountSubscriptionId"
+    cosmos_mongo_db_account_subscription_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountSubscriptionId")
     )
     """The ID of the subscription to which the Cosmos MongoDB account belongs."""
 
-    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_resource_group: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountResourceGroup"
     )
     """The resource group that contains the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint"
+    cosmos_mongo_db_account_document_endpoint: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint")
     )
     """The Document Endpoint URL for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_mongo_endpoint: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountMongoEndpoint"
     )
     """The MongoDB connection endpoint for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = (
+    cosmos_mongo_db_account_public_network_access: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
     )
     """The status of public network access for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = (
+    cosmos_mongo_db_account_enable_automatic_failover: Union[bool, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
     )
     """Indicates whether automatic failover is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = (
-        msgspec.field(
-            default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
-        )
+    cosmos_mongo_db_account_enable_multiple_write_locations: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
     )
     """Indicates whether multiple write locations are enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = (
-        msgspec.field(
-            default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
-        )
+    cosmos_mongo_db_account_enable_partition_key_monitor: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
     )
     """Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_is_virtual_network_filter_enabled: (
-        bool | None | UnsetType
-    ) = msgspec.field(
+    cosmos_mongo_db_account_is_virtual_network_filter_enabled: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled"
     )
     """Indicates whether the virtual network filter is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy"
+    cosmos_mongo_db_account_consistency_policy: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy")
     )
     """The consistency policy configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountLocations"
+    cosmos_mongo_db_account_locations: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountLocations")
     )
     """The locations where the Cosmos MongoDB account is available."""
 
-    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = (
+    cosmos_mongo_db_account_read_locations: Union[List[str], None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
     )
     """The read locations configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = (
+    cosmos_mongo_db_account_write_locations: Union[List[str], None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
     )
     """The write locations configured for the Cosmos MongoDB account."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
-    )
+    cosmos_mongo_db_databases: Union[
+        List[RelatedCosmosMongoDBDatabase], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
     """Databases that exist within this account."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -354,93 +360,93 @@ class CosmosMongoDBAccount(Asset):
 class CosmosMongoDBAccountAttributes(AssetAttributes):
     """CosmosMongoDBAccount-specific attributes for nested API format."""
 
-    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_instance_id: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountInstanceId"
     )
     """The unique identifier for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_database_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBDatabaseCount"
     )
     """Number of databases in this Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_type: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountType"
     )
     """The type of the Cosmos MongoDB account, such as RU or VCORE."""
 
-    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountSubscriptionId"
+    cosmos_mongo_db_account_subscription_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountSubscriptionId")
     )
     """The ID of the subscription to which the Cosmos MongoDB account belongs."""
 
-    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_resource_group: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountResourceGroup"
     )
     """The resource group that contains the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint"
+    cosmos_mongo_db_account_document_endpoint: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint")
     )
     """The Document Endpoint URL for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(
+    cosmos_mongo_db_account_mongo_endpoint: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountMongoEndpoint"
     )
     """The MongoDB connection endpoint for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = (
+    cosmos_mongo_db_account_public_network_access: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
     )
     """The status of public network access for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = (
+    cosmos_mongo_db_account_enable_automatic_failover: Union[bool, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
     )
     """Indicates whether automatic failover is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = (
-        msgspec.field(
-            default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
-        )
+    cosmos_mongo_db_account_enable_multiple_write_locations: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
     )
     """Indicates whether multiple write locations are enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = (
-        msgspec.field(
-            default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
-        )
+    cosmos_mongo_db_account_enable_partition_key_monitor: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
     )
     """Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_is_virtual_network_filter_enabled: (
-        bool | None | UnsetType
-    ) = msgspec.field(
+    cosmos_mongo_db_account_is_virtual_network_filter_enabled: Union[
+        bool, None, UnsetType
+    ] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled"
     )
     """Indicates whether the virtual network filter is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy"
+    cosmos_mongo_db_account_consistency_policy: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy")
     )
     """The consistency policy configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountLocations"
+    cosmos_mongo_db_account_locations: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountLocations")
     )
     """The locations where the Cosmos MongoDB account is available."""
 
-    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = (
+    cosmos_mongo_db_account_read_locations: Union[List[str], None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
     )
     """The read locations configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = (
+    cosmos_mongo_db_account_write_locations: Union[List[str], None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
     )
     """The write locations configured for the Cosmos MongoDB account."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
@@ -449,118 +455,124 @@ class CosmosMongoDBAccountAttributes(AssetAttributes):
 class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBAccount-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
-    )
+    cosmos_mongo_db_databases: Union[
+        List[RelatedCosmosMongoDBDatabase], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
     """Databases that exist within this account."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class CosmosMongoDBAccountNested(AssetNested):
     """CosmosMongoDBAccount in nested API format for high-performance serialization."""
 
-    attributes: CosmosMongoDBAccountAttributes | UnsetType = UNSET
-    relationship_attributes: CosmosMongoDBAccountRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    append_relationship_attributes: (
-        CosmosMongoDBAccountRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        CosmosMongoDBAccountRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[CosmosMongoDBAccountAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        CosmosMongoDBAccountRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        CosmosMongoDBAccountRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CosmosMongoDBAccountRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS: list[str] = [
+_COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

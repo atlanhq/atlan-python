@@ -13,7 +13,7 @@ the minimal set of fields needed to identify and reference another entity.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -52,11 +52,11 @@ class RelatedEntity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="ca
     type_name: Union[str, UnsetType] = UNSET
     """The type name of the related entity."""
 
-    unique_attributes: Union[dict[str, Any], UnsetType] = UNSET
+    unique_attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Unique attributes that can identify this entity (e.g., qualifiedName)."""
 
     # Relationship-specific attributes
-    relationship_attributes: Union[dict[str, Any], None, UnsetType] = UNSET
+    relationship_attributes: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Attributes of the relationship itself (e.g., description, status, etc.)."""
 
     # Display and status

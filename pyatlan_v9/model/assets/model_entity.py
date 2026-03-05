@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -126,179 +126,191 @@ class ModelEntity(Asset):
 
     type_name: Union[str, UnsetType] = "ModelEntity"
 
-    model_entity_attribute_count: int | None | UnsetType = UNSET
+    model_entity_attribute_count: Union[int, None, UnsetType] = UNSET
     """Number of attributes in the entity."""
 
-    model_entity_subject_area: str | None | UnsetType = UNSET
+    model_entity_subject_area: Union[str, None, UnsetType] = UNSET
     """Subject area of the entity."""
 
-    model_entity_generalization_name: str | None | UnsetType = UNSET
+    model_entity_generalization_name: Union[str, None, UnsetType] = UNSET
     """Name of the general entity."""
 
-    model_entity_generalization_qualified_name: str | None | UnsetType = UNSET
+    model_entity_generalization_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the general entity."""
 
-    model_name: str | None | UnsetType = UNSET
+    model_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_qualified_name: str | None | UnsetType = UNSET
+    model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_domain: str | None | UnsetType = UNSET
+    model_domain: Union[str, None, UnsetType] = UNSET
     """Model domain in which this asset exists."""
 
-    model_namespace: str | None | UnsetType = UNSET
+    model_namespace: Union[str, None, UnsetType] = UNSET
     """Model namespace in which this asset exists."""
 
-    model_version_name: str | None | UnsetType = UNSET
+    model_version_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_version_agnostic_qualified_name: str | None | UnsetType = UNSET
+    model_version_agnostic_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent in which this asset exists, irrespective of the version (always implies the latest version)."""
 
-    model_version_qualified_name: str | None | UnsetType = UNSET
+    model_version_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_entity_name: str | None | UnsetType = UNSET
+    model_entity_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_entity_qualified_name: str | None | UnsetType = UNSET
+    model_entity_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_type: str | None | UnsetType = UNSET
+    model_type: Union[str, None, UnsetType] = UNSET
     """Type of the model asset (conceptual, logical, physical)."""
 
-    model_system_date: int | None | UnsetType = UNSET
+    model_system_date: Union[int, None, UnsetType] = UNSET
     """System date for the asset."""
 
-    model_business_date: int | None | UnsetType = UNSET
+    model_business_date: Union[int, None, UnsetType] = UNSET
     """Business date for the asset."""
 
-    model_expired_at_system_date: int | None | UnsetType = UNSET
+    model_expired_at_system_date: Union[int, None, UnsetType] = UNSET
     """System expiration date for the asset."""
 
-    model_expired_at_business_date: int | None | UnsetType = UNSET
+    model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_versions: list[RelatedModelVersion] | None | UnsetType = UNSET
+    model_versions: Union[List[RelatedModelVersion], None, UnsetType] = UNSET
     """Data model version(s) in which this entity exists."""
 
-    model_entity_mapped_to_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_entity_mapped_to_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities to which this entity is mapped."""
 
-    model_entity_mapped_from_entities: list[RelatedModelEntity] | None | UnsetType = (
-        UNSET
-    )
+    model_entity_mapped_from_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities from which this entity is mapped."""
 
-    model_entity_implemented_by_assets: list[RelatedCatalog] | None | UnsetType = UNSET
+    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = (
+        UNSET
+    )
     """Assets that implement this entity."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_entity_specialization_entities: (
-        list[RelatedModelEntity] | None | UnsetType
-    ) = UNSET
+    model_entity_specialization_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Specialized entities derived from the general entity."""
 
-    model_entity_generalization_entity: RelatedModelEntity | None | UnsetType = UNSET
+    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = (
+        UNSET
+    )
     """General entity, representing shared characteristics of specialized entities."""
 
-    model_entity_related_from_entities: (
-        list[RelatedModelEntityAssociation] | None | UnsetType
-    ) = UNSET
+    model_entity_related_from_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association from which this entity is related."""
 
-    model_entity_related_to_entities: (
-        list[RelatedModelEntityAssociation] | None | UnsetType
-    ) = UNSET
+    model_entity_related_to_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association to which this entity is related."""
 
-    model_entity_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_entity_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Individual attributes that make up the entity."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -365,204 +377,216 @@ class ModelEntity(Asset):
 class ModelEntityAttributes(AssetAttributes):
     """ModelEntity-specific attributes for nested API format."""
 
-    model_entity_attribute_count: int | None | UnsetType = UNSET
+    model_entity_attribute_count: Union[int, None, UnsetType] = UNSET
     """Number of attributes in the entity."""
 
-    model_entity_subject_area: str | None | UnsetType = UNSET
+    model_entity_subject_area: Union[str, None, UnsetType] = UNSET
     """Subject area of the entity."""
 
-    model_entity_generalization_name: str | None | UnsetType = UNSET
+    model_entity_generalization_name: Union[str, None, UnsetType] = UNSET
     """Name of the general entity."""
 
-    model_entity_generalization_qualified_name: str | None | UnsetType = UNSET
+    model_entity_generalization_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the general entity."""
 
-    model_name: str | None | UnsetType = UNSET
+    model_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_qualified_name: str | None | UnsetType = UNSET
+    model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_domain: str | None | UnsetType = UNSET
+    model_domain: Union[str, None, UnsetType] = UNSET
     """Model domain in which this asset exists."""
 
-    model_namespace: str | None | UnsetType = UNSET
+    model_namespace: Union[str, None, UnsetType] = UNSET
     """Model namespace in which this asset exists."""
 
-    model_version_name: str | None | UnsetType = UNSET
+    model_version_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_version_agnostic_qualified_name: str | None | UnsetType = UNSET
+    model_version_agnostic_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent in which this asset exists, irrespective of the version (always implies the latest version)."""
 
-    model_version_qualified_name: str | None | UnsetType = UNSET
+    model_version_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_entity_name: str | None | UnsetType = UNSET
+    model_entity_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_entity_qualified_name: str | None | UnsetType = UNSET
+    model_entity_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_type: str | None | UnsetType = UNSET
+    model_type: Union[str, None, UnsetType] = UNSET
     """Type of the model asset (conceptual, logical, physical)."""
 
-    model_system_date: int | None | UnsetType = UNSET
+    model_system_date: Union[int, None, UnsetType] = UNSET
     """System date for the asset."""
 
-    model_business_date: int | None | UnsetType = UNSET
+    model_business_date: Union[int, None, UnsetType] = UNSET
     """Business date for the asset."""
 
-    model_expired_at_system_date: int | None | UnsetType = UNSET
+    model_expired_at_system_date: Union[int, None, UnsetType] = UNSET
     """System expiration date for the asset."""
 
-    model_expired_at_business_date: int | None | UnsetType = UNSET
+    model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
 
 class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     """ModelEntity-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_versions: list[RelatedModelVersion] | None | UnsetType = UNSET
+    model_versions: Union[List[RelatedModelVersion], None, UnsetType] = UNSET
     """Data model version(s) in which this entity exists."""
 
-    model_entity_mapped_to_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_entity_mapped_to_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities to which this entity is mapped."""
 
-    model_entity_mapped_from_entities: list[RelatedModelEntity] | None | UnsetType = (
-        UNSET
-    )
+    model_entity_mapped_from_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities from which this entity is mapped."""
 
-    model_entity_implemented_by_assets: list[RelatedCatalog] | None | UnsetType = UNSET
+    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = (
+        UNSET
+    )
     """Assets that implement this entity."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_entity_specialization_entities: (
-        list[RelatedModelEntity] | None | UnsetType
-    ) = UNSET
+    model_entity_specialization_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Specialized entities derived from the general entity."""
 
-    model_entity_generalization_entity: RelatedModelEntity | None | UnsetType = UNSET
+    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = (
+        UNSET
+    )
     """General entity, representing shared characteristics of specialized entities."""
 
-    model_entity_related_from_entities: (
-        list[RelatedModelEntityAssociation] | None | UnsetType
-    ) = UNSET
+    model_entity_related_from_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association from which this entity is related."""
 
-    model_entity_related_to_entities: (
-        list[RelatedModelEntityAssociation] | None | UnsetType
-    ) = UNSET
+    model_entity_related_to_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association to which this entity is related."""
 
-    model_entity_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_entity_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Individual attributes that make up the entity."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class ModelEntityNested(AssetNested):
     """ModelEntity in nested API format for high-performance serialization."""
 
-    attributes: ModelEntityAttributes | UnsetType = UNSET
-    relationship_attributes: ModelEntityRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ModelEntityRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    remove_relationship_attributes: ModelEntityRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    attributes: Union[ModelEntityAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[ModelEntityRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        ModelEntityRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ModelEntityRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_MODEL_ENTITY_REL_FIELDS: list[str] = [
+_MODEL_ENTITY_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -39,25 +41,25 @@ class RelatedSAP(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SAP" so it serializes correctly
 
-    sap_technical_name: str | None | UnsetType = UNSET
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
 
-    sap_logical_name: str | None | UnsetType = UNSET
+    sap_logical_name: Union[str, None, UnsetType] = UNSET
     """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
 
-    sap_package_name: str | None | UnsetType = UNSET
+    sap_package_name: Union[str, None, UnsetType] = UNSET
     """Name of the SAP package, representing a logical grouping of related SAP data objects."""
 
-    sap_component_name: str | None | UnsetType = UNSET
+    sap_component_name: Union[str, None, UnsetType] = UNSET
     """Name of the SAP component, representing a specific functional area in SAP."""
 
-    sap_data_type: str | None | UnsetType = UNSET
+    sap_data_type: Union[str, None, UnsetType] = UNSET
     """SAP-specific data types"""
 
-    sap_field_count: int | None | UnsetType = UNSET
+    sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
 
-    sap_field_order: int | None | UnsetType = UNSET
+    sap_field_order: Union[int, None, UnsetType] = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
 
     def __post_init__(self) -> None:
@@ -90,10 +92,10 @@ class RelatedSapErpView(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpView" so it serializes correctly
 
-    sap_type: str | None | UnsetType = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_definition: str | None | UnsetType = UNSET
+    sap_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View"""
 
     def __post_init__(self) -> None:
@@ -111,13 +113,13 @@ class RelatedSapErpCdsView(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpCdsView" so it serializes correctly
 
-    sap_technical_name: str | None | UnsetType = UNSET
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
     """The technical database view name of the SAP ERP CDS View."""
 
-    sap_source_name: str | None | UnsetType = UNSET
+    sap_source_name: Union[str, None, UnsetType] = UNSET
     """The source name of the SAP ERP CDS View Definition."""
 
-    sap_source_type: str | None | UnsetType = UNSET
+    sap_source_type: Union[str, None, UnsetType] = UNSET
     """The source type of the SAP ERP CDS View Definition."""
 
     def __post_init__(self) -> None:
@@ -135,49 +137,49 @@ class RelatedSapErpColumn(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpColumn" so it serializes correctly
 
-    sap_data_element: str | None | UnsetType = UNSET
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_logical_data_type: str | None | UnsetType = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column"""
 
-    sap_length: str | None | UnsetType = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_decimals: str | None | UnsetType = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_is_primary: bool | None | UnsetType = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_is_foreign: bool | None | UnsetType = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_is_mandatory: bool | None | UnsetType = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
-    sap_erp_table_name: str | None | UnsetType = UNSET
+    sap_erp_table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP ERP table in which this column asset exists."""
 
-    sap_erp_table_qualified_name: str | None | UnsetType = UNSET
+    sap_erp_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP table in which this SQL asset exists."""
 
-    sap_erp_view_name: str | None | UnsetType = UNSET
+    sap_erp_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP ERP view in which this column asset exists."""
 
-    sap_erp_view_qualified_name: str | None | UnsetType = UNSET
+    sap_erp_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP view in which this column asset exists."""
 
-    sap_erp_cds_view_name: str | None | UnsetType = UNSET
+    sap_erp_cds_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_cds_view_qualified_name: str | None | UnsetType = UNSET
+    sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_check_table_name: str | None | UnsetType = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_check_table_qualified_name: str | None | UnsetType = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     def __post_init__(self) -> None:
@@ -210,29 +212,31 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpFunctionModule" so it serializes correctly
 
-    sap_group: str | None | UnsetType = UNSET
+    sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
-    sap_erp_function_module_import_params: list[dict[str, str]] | None | UnsetType = (
-        UNSET
-    )
+    sap_erp_function_module_import_params: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_import_params_count: int | None | UnsetType = UNSET
+    sap_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_module_export_params: list[dict[str, str]] | None | UnsetType = (
-        UNSET
-    )
+    sap_erp_function_module_export_params: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_export_params_count: int | None | UnsetType = UNSET
+    sap_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_exception_list: list[dict[str, str]] | None | UnsetType = UNSET
+    sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
+        UNSET
+    )
     """List of exceptions raised by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_exception_list_count: int | None | UnsetType = UNSET
+    sap_erp_function_exception_list_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Exceptions in a given SAP ERP Function Module."""
 
     def __post_init__(self) -> None:
@@ -250,10 +254,10 @@ class RelatedSapErpTable(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpTable" so it serializes correctly
 
-    sap_erp_table_type: str | None | UnsetType = UNSET
+    sap_erp_table_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP table."""
 
-    sap_erp_table_delivery_class: str | None | UnsetType = UNSET
+    sap_erp_table_delivery_class: Union[str, None, UnsetType] = UNSET
     """Defines the delivery class of the SAP ERP table, determining how the table's data is transported and managed during system updates."""
 
     def __post_init__(self) -> None:
@@ -271,7 +275,7 @@ class RelatedSapErpAbapProgram(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpAbapProgram" so it serializes correctly
 
-    sap_erp_abap_program_type: str | None | UnsetType = UNSET
+    sap_erp_abap_program_type: Union[str, None, UnsetType] = UNSET
     """Specifies the type of ABAP program in SAP ERP (e.g., Report, Module Pool, Function Group)."""
 
     def __post_init__(self) -> None:

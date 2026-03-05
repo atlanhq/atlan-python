@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -47,61 +47,61 @@ class RelatedDbt(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Dbt" so it serializes correctly
 
-    dbt_alias: str | None | UnsetType = UNSET
+    dbt_alias: Union[str, None, UnsetType] = UNSET
     """Alias of this asset in dbt."""
 
-    dbt_meta: str | None | UnsetType = UNSET
+    dbt_meta: Union[str, None, UnsetType] = UNSET
     """Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object."""
 
-    dbt_unique_id: str | None | UnsetType = UNSET
+    dbt_unique_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of this asset in dbt."""
 
-    dbt_account_name: str | None | UnsetType = UNSET
+    dbt_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account in which this asset exists in dbt."""
 
-    dbt_project_name: str | None | UnsetType = UNSET
+    dbt_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which this asset exists in dbt."""
 
-    dbt_package_name: str | None | UnsetType = UNSET
+    dbt_package_name: Union[str, None, UnsetType] = UNSET
     """Name of the package in which this asset exists in dbt."""
 
-    dbt_job_name: str | None | UnsetType = UNSET
+    dbt_job_name: Union[str, None, UnsetType] = UNSET
     """Name of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule: str | None | UnsetType = UNSET
+    dbt_job_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_status: str | None | UnsetType = UNSET
+    dbt_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule_cron_humanized: str | None | UnsetType = UNSET
+    dbt_job_schedule_cron_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable cron schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_last_run: int | None | UnsetType = UNSET
+    dbt_job_last_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds."""
 
-    dbt_job_next_run: int | None | UnsetType = UNSET
+    dbt_job_next_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds."""
 
-    dbt_job_next_run_humanized: str | None | UnsetType = UNSET
+    dbt_job_next_run_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable time at which the job that materialized this asset in dbt will next run."""
 
-    dbt_environment_name: str | None | UnsetType = UNSET
+    dbt_environment_name: Union[str, None, UnsetType] = UNSET
     """Name of the environment in which this asset exists in dbt."""
 
-    dbt_environment_dbt_version: str | None | UnsetType = UNSET
+    dbt_environment_dbt_version: Union[str, None, UnsetType] = UNSET
     """Version of dbt used in the environment."""
 
-    dbt_tags: list[str] | None | UnsetType = UNSET
+    dbt_tags: Union[List[str], None, UnsetType] = UNSET
     """List of tags attached to this asset in dbt."""
 
-    dbt_connection_context: str | None | UnsetType = UNSET
+    dbt_connection_context: Union[str, None, UnsetType] = UNSET
     """Connection context for this asset in dbt."""
 
-    dbt_semantic_layer_proxy_url: str | None | UnsetType = UNSET
+    dbt_semantic_layer_proxy_url: Union[str, None, UnsetType] = UNSET
     """URL of the semantic layer proxy for this asset in dbt."""
 
-    dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
+    dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
     def __post_init__(self) -> None:
@@ -134,10 +134,10 @@ class RelatedDbtDimension(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtDimension" so it serializes correctly
 
-    dbt_semantic_model_qualified_name: str | None | UnsetType = UNSET
+    dbt_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dbt semantic model this dimension belongs to."""
 
-    dbt_semantic_field_time_granularity: str | None | UnsetType = UNSET
+    dbt_semantic_field_time_granularity: Union[str, None, UnsetType] = UNSET
     """Time granularity for time dimensions only (day/week/month/quarter/year)."""
 
     def __post_init__(self) -> None:
@@ -155,7 +155,7 @@ class RelatedDbtMeasure(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtMeasure" so it serializes correctly
 
-    dbt_semantic_model_qualified_name: str | None | UnsetType = UNSET
+    dbt_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dbt semantic model this measure belongs to."""
 
     def __post_init__(self) -> None:
@@ -173,7 +173,7 @@ class RelatedDbtEntity(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtEntity" so it serializes correctly
 
-    dbt_semantic_model_qualified_name: str | None | UnsetType = UNSET
+    dbt_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dbt semantic model this entity belongs to."""
 
     def __post_init__(self) -> None:
@@ -191,45 +191,47 @@ class RelatedDbtModel(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtModel" so it serializes correctly
 
-    dbt_status: str | None | UnsetType = UNSET
+    dbt_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt model."""
 
-    dbt_error: str | None | UnsetType = UNSET
+    dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtRawSQL")
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtRawSQL"
+    )
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: str | None | UnsetType = msgspec.field(
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dbtCompiledSQL"
     )
     """Compiled SQL of the dbt model."""
 
-    dbt_stats: str | None | UnsetType = UNSET
+    dbt_stats: Union[str, None, UnsetType] = UNSET
     """Statistics of the dbt model."""
 
-    dbt_materialization_type: str | None | UnsetType = UNSET
+    dbt_materialization_type: Union[str, None, UnsetType] = UNSET
     """Type of materialization used for the dbt model."""
 
-    dbt_model_compile_started_at: int | None | UnsetType = UNSET
+    dbt_model_compile_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation started."""
 
-    dbt_model_compile_completed_at: int | None | UnsetType = UNSET
+    dbt_model_compile_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation completed."""
 
-    dbt_model_execute_started_at: int | None | UnsetType = UNSET
+    dbt_model_execute_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution started."""
 
-    dbt_model_execute_completed_at: int | None | UnsetType = UNSET
+    dbt_model_execute_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution completed."""
 
-    dbt_model_execution_time: float | None | UnsetType = UNSET
+    dbt_model_execution_time: Union[float, None, UnsetType] = UNSET
     """Execution time of the dbt model."""
 
-    dbt_model_run_generated_at: int | None | UnsetType = UNSET
+    dbt_model_run_generated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model run was generated."""
 
-    dbt_model_run_elapsed_time: float | None | UnsetType = UNSET
+    dbt_model_run_elapsed_time: Union[float, None, UnsetType] = UNSET
     """Elapsed time of the dbt model run."""
 
     def __post_init__(self) -> None:
@@ -247,32 +249,32 @@ class RelatedDbtTest(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtTest" so it serializes correctly
 
-    dbt_test_status: str | None | UnsetType = UNSET
+    dbt_test_status: Union[str, None, UnsetType] = UNSET
     """Details of the results of the test. For errors, it reads "ERROR"."""
 
-    dbt_test_state: str | None | UnsetType = UNSET
+    dbt_test_state: Union[str, None, UnsetType] = UNSET
     """Test results. Can be one of, in order of severity, "error", "fail", "warn", "pass"."""
 
-    dbt_test_error: str | None | UnsetType = UNSET
+    dbt_test_error: Union[str, None, UnsetType] = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: str | None | UnsetType = msgspec.field(
+    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dbtTestRawSQL"
     )
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: str | None | UnsetType = msgspec.field(
+    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dbtTestCompiledSQL"
     )
     """Compiled SQL of the test."""
 
-    dbt_test_raw_code: str | None | UnsetType = UNSET
+    dbt_test_raw_code: Union[str, None, UnsetType] = UNSET
     """Raw code of the test (when the test is defined using Python)."""
 
-    dbt_test_compiled_code: str | None | UnsetType = UNSET
+    dbt_test_compiled_code: Union[str, None, UnsetType] = UNSET
     """Compiled code of the test (when the test is defined using Python)."""
 
-    dbt_test_language: str | None | UnsetType = UNSET
+    dbt_test_language: Union[str, None, UnsetType] = UNSET
     """Language in which the test is written, for example: SQL or Python."""
 
     def __post_init__(self) -> None:
@@ -290,10 +292,10 @@ class RelatedDbtSource(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtSource" so it serializes correctly
 
-    dbt_state: str | None | UnsetType = UNSET
+    dbt_state: Union[str, None, UnsetType] = UNSET
     """State of the dbt source."""
 
-    dbt_freshness_criteria: str | None | UnsetType = UNSET
+    dbt_freshness_criteria: Union[str, None, UnsetType] = UNSET
     """Freshness criteria for the dbt source."""
 
     def __post_init__(self) -> None:
@@ -311,19 +313,19 @@ class RelatedDbtMetric(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtMetric" so it serializes correctly
 
-    dbt_metric_filters: list[dict[str, Any]] | None | UnsetType = UNSET
+    dbt_metric_filters: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Filters applied to the dbt metric."""
 
-    dbt_metric_filter: str | None | UnsetType = UNSET
+    dbt_metric_filter: Union[str, None, UnsetType] = UNSET
     """Top-level filter applied to the entire metric query."""
 
-    dbt_metric_window: str | None | UnsetType = UNSET
+    dbt_metric_window: Union[str, None, UnsetType] = UNSET
     """Time window for cumulative/conversion metrics."""
 
-    dbt_metric_cumulative_period_agg: str | None | UnsetType = UNSET
+    dbt_metric_cumulative_period_agg: Union[str, None, UnsetType] = UNSET
     """Aggregation function for cumulative metrics within each period."""
 
-    dbt_metric_conversion_calculation: str | None | UnsetType = UNSET
+    dbt_metric_conversion_calculation: Union[str, None, UnsetType] = UNSET
     """Calculation type for conversion metrics."""
 
     def __post_init__(self) -> None:
@@ -341,13 +343,13 @@ class RelatedDbtModelColumn(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtModelColumn" so it serializes correctly
 
-    dbt_model_qualified_name: str | None | UnsetType = UNSET
+    dbt_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dbt model this column belongs to."""
 
-    dbt_model_column_data_type: str | None | UnsetType = UNSET
+    dbt_model_column_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the dbt model column."""
 
-    dbt_model_column_order: int | None | UnsetType = UNSET
+    dbt_model_column_order: Union[int, None, UnsetType] = UNSET
     """Order of the column in the dbt model."""
 
     def __post_init__(self) -> None:
@@ -365,10 +367,10 @@ class RelatedDbtProcess(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtProcess" so it serializes correctly
 
-    dbt_process_job_status: str | None | UnsetType = UNSET
+    dbt_process_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt process job."""
 
-    dbt_upstream_contexts: list[dict[str, Any]] | None | UnsetType = UNSET
+    dbt_upstream_contexts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Context for inputs to this Process."""
 
     def __post_init__(self) -> None:
@@ -386,7 +388,7 @@ class RelatedDbtColumnProcess(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtColumnProcess" so it serializes correctly
 
-    dbt_column_process_job_status: str | None | UnsetType = UNSET
+    dbt_column_process_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt column process job."""
 
     def __post_init__(self) -> None:
@@ -419,10 +421,10 @@ class RelatedDbtSeed(RelatedDbt):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DbtSeed" so it serializes correctly
 
-    dbt_seed_file_path: str | None | UnsetType = UNSET
+    dbt_seed_file_path: Union[str, None, UnsetType] = UNSET
     """File path of the dbt seed."""
 
-    dbt_seed_stats: str | None | UnsetType = UNSET
+    dbt_seed_stats: Union[str, None, UnsetType] = UNSET
     """Statistics of the dbt seed."""
 
     def __post_init__(self) -> None:

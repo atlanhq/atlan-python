@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -85,87 +85,91 @@ class Google(Asset):
 
     type_name: Union[str, UnsetType] = "Google"
 
-    google_service: str | None | UnsetType = UNSET
+    google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
-    google_project_name: str | None | UnsetType = UNSET
+    google_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which the asset exists."""
 
-    google_project_id: str | None | UnsetType = UNSET
+    google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    cloud_project_number: int | None | UnsetType = UNSET
+    cloud_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
-    google_location: str | None | UnsetType = UNSET
+    google_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Google."""
 
-    google_location_type: str | None | UnsetType = UNSET
+    google_location_type: Union[str, None, UnsetType] = UNSET
     """Type of location of this asset in Google."""
 
-    google_labels: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_labels: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of labels that have been applied to the asset in Google."""
 
-    google_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of tags that have been applied to the asset in Google."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -226,108 +230,116 @@ class Google(Asset):
 class GoogleAttributes(AssetAttributes):
     """Google-specific attributes for nested API format."""
 
-    google_service: str | None | UnsetType = UNSET
+    google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
-    google_project_name: str | None | UnsetType = UNSET
+    google_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which the asset exists."""
 
-    google_project_id: str | None | UnsetType = UNSET
+    google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    cloud_project_number: int | None | UnsetType = UNSET
+    cloud_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
-    google_location: str | None | UnsetType = UNSET
+    google_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Google."""
 
-    google_location_type: str | None | UnsetType = UNSET
+    google_location_type: Union[str, None, UnsetType] = UNSET
     """Type of location of this asset in Google."""
 
-    google_labels: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_labels: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of labels that have been applied to the asset in Google."""
 
-    google_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of tags that have been applied to the asset in Google."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
 
 class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     """Google-specific relationship attributes for nested API format."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
 
 class GoogleNested(AssetNested):
     """Google in nested API format for high-performance serialization."""
 
-    attributes: GoogleAttributes | UnsetType = UNSET
-    relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[GoogleAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_GOOGLE_REL_FIELDS: list[str] = [
+_GOOGLE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "anomalo_checks",
     "application",

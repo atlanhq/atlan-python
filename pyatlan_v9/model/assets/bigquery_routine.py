@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -144,228 +144,234 @@ class BigqueryRoutine(Asset):
 
     type_name: Union[str, UnsetType] = "BigqueryRoutine"
 
-    bigquery_type: str | None | UnsetType = UNSET
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: list[str] | None | UnsetType = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: str | None | UnsetType = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: str | None | UnsetType = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: str | None | UnsetType = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
-    definition: str | None | UnsetType = UNSET
+    definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of the procedure."""
 
-    sql_language: str | None | UnsetType = UNSET
+    sql_language: Union[str, None, UnsetType] = UNSET
     """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
 
-    sql_runtime_version: str | None | UnsetType = UNSET
+    sql_runtime_version: Union[str, None, UnsetType] = UNSET
     """Version of the language runtime used by the procedure."""
 
-    sql_owner_role_type: str | None | UnsetType = UNSET
+    sql_owner_role_type: Union[str, None, UnsetType] = UNSET
     """Type of role that owns the procedure."""
 
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
+    sql_arguments: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of procedure arguments with name and type information."""
 
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
+    sql_procedure_return: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information about the procedure's return type."""
 
-    sql_external_access_integrations: str | None | UnsetType = UNSET
+    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
     """Names of external access integrations used by the procedure."""
 
-    sql_secrets: str | None | UnsetType = UNSET
+    sql_secrets: Union[str, None, UnsetType] = UNSET
     """Secret variables used by the procedure."""
 
-    sql_packages: str | None | UnsetType = UNSET
+    sql_packages: Union[str, None, UnsetType] = UNSET
     """Packages requested by the procedure."""
 
-    sql_installed_packages: str | None | UnsetType = UNSET
+    sql_installed_packages: Union[str, None, UnsetType] = UNSET
     """Packages actually installed for the procedure."""
 
-    sql_schema_id: str | None | UnsetType = UNSET
+    sql_schema_id: Union[str, None, UnsetType] = UNSET
     """Internal ID for the schema containing the procedure."""
 
-    sql_catalog_id: str | None | UnsetType = UNSET
+    sql_catalog_id: Union[str, None, UnsetType] = UNSET
     """Internal ID for the database containing the procedure."""
 
-    query_count: int | None | UnsetType = UNSET
+    query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
-    query_user_count: int | None | UnsetType = UNSET
+    query_user_count: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have queried this asset."""
 
-    query_user_map: dict[str, int] | None | UnsetType = UNSET
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
     """Map of unique users who have queried this asset to the number of times they have queried it."""
 
-    query_count_updated_at: int | None | UnsetType = UNSET
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the query count was last updated, in milliseconds."""
 
-    database_name: str | None | UnsetType = UNSET
+    database_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    database_qualified_name: str | None | UnsetType = UNSET
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    schema_name: str | None | UnsetType = UNSET
+    schema_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    schema_qualified_name: str | None | UnsetType = UNSET
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    table_name: str | None | UnsetType = UNSET
+    table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    table_qualified_name: str | None | UnsetType = UNSET
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    view_name: str | None | UnsetType = UNSET
+    view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    view_qualified_name: str | None | UnsetType = UNSET
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    calculation_view_name: str | None | UnsetType = UNSET
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    calculation_view_qualified_name: str | None | UnsetType = UNSET
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    is_profiled: bool | None | UnsetType = UNSET
+    is_profiled: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has been profiled (true) or not (false)."""
 
-    last_profiled_at: int | None | UnsetType = UNSET
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
-    sql_is_secure: bool | None | UnsetType = UNSET
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
 
-    sql_dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """Assets related to the model."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this asset."""
 
-    dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlDBTSources"
     )
     """Sources related to this asset."""
 
-    dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    snowflake_semantic_logical_tables: (
-        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
-    ) = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
+    """Schema in which this stored procedure exists."""
+
+    sql_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes that utilize this procedure."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -428,253 +434,261 @@ class BigqueryRoutine(Asset):
 class BigqueryRoutineAttributes(AssetAttributes):
     """BigqueryRoutine-specific attributes for nested API format."""
 
-    bigquery_type: str | None | UnsetType = UNSET
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: list[str] | None | UnsetType = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: str | None | UnsetType = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: str | None | UnsetType = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: str | None | UnsetType = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
-    definition: str | None | UnsetType = UNSET
+    definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of the procedure."""
 
-    sql_language: str | None | UnsetType = UNSET
+    sql_language: Union[str, None, UnsetType] = UNSET
     """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
 
-    sql_runtime_version: str | None | UnsetType = UNSET
+    sql_runtime_version: Union[str, None, UnsetType] = UNSET
     """Version of the language runtime used by the procedure."""
 
-    sql_owner_role_type: str | None | UnsetType = UNSET
+    sql_owner_role_type: Union[str, None, UnsetType] = UNSET
     """Type of role that owns the procedure."""
 
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
+    sql_arguments: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of procedure arguments with name and type information."""
 
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
+    sql_procedure_return: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information about the procedure's return type."""
 
-    sql_external_access_integrations: str | None | UnsetType = UNSET
+    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
     """Names of external access integrations used by the procedure."""
 
-    sql_secrets: str | None | UnsetType = UNSET
+    sql_secrets: Union[str, None, UnsetType] = UNSET
     """Secret variables used by the procedure."""
 
-    sql_packages: str | None | UnsetType = UNSET
+    sql_packages: Union[str, None, UnsetType] = UNSET
     """Packages requested by the procedure."""
 
-    sql_installed_packages: str | None | UnsetType = UNSET
+    sql_installed_packages: Union[str, None, UnsetType] = UNSET
     """Packages actually installed for the procedure."""
 
-    sql_schema_id: str | None | UnsetType = UNSET
+    sql_schema_id: Union[str, None, UnsetType] = UNSET
     """Internal ID for the schema containing the procedure."""
 
-    sql_catalog_id: str | None | UnsetType = UNSET
+    sql_catalog_id: Union[str, None, UnsetType] = UNSET
     """Internal ID for the database containing the procedure."""
 
-    query_count: int | None | UnsetType = UNSET
+    query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
-    query_user_count: int | None | UnsetType = UNSET
+    query_user_count: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have queried this asset."""
 
-    query_user_map: dict[str, int] | None | UnsetType = UNSET
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
     """Map of unique users who have queried this asset to the number of times they have queried it."""
 
-    query_count_updated_at: int | None | UnsetType = UNSET
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the query count was last updated, in milliseconds."""
 
-    database_name: str | None | UnsetType = UNSET
+    database_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    database_qualified_name: str | None | UnsetType = UNSET
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    schema_name: str | None | UnsetType = UNSET
+    schema_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    schema_qualified_name: str | None | UnsetType = UNSET
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    table_name: str | None | UnsetType = UNSET
+    table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    table_qualified_name: str | None | UnsetType = UNSET
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    view_name: str | None | UnsetType = UNSET
+    view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    view_qualified_name: str | None | UnsetType = UNSET
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    calculation_view_name: str | None | UnsetType = UNSET
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    calculation_view_qualified_name: str | None | UnsetType = UNSET
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    is_profiled: bool | None | UnsetType = UNSET
+    is_profiled: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has been profiled (true) or not (false)."""
 
-    last_profiled_at: int | None | UnsetType = UNSET
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
-    sql_is_secure: bool | None | UnsetType = UNSET
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
 
 class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
     """BigqueryRoutine-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
 
-    sql_dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """Assets related to the model."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this asset."""
 
-    dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlDBTSources"
     )
     """Sources related to this asset."""
 
-    dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    snowflake_semantic_logical_tables: (
-        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
-    ) = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
+    """Schema in which this stored procedure exists."""
+
+    sql_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
+    """Processes that utilize this procedure."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class BigqueryRoutineNested(AssetNested):
     """BigqueryRoutine in nested API format for high-performance serialization."""
 
-    attributes: BigqueryRoutineAttributes | UnsetType = UNSET
-    relationship_attributes: BigqueryRoutineRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: (
-        BigqueryRoutineRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        BigqueryRoutineRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[BigqueryRoutineAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[BigqueryRoutineRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        BigqueryRoutineRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        BigqueryRoutineRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_BIGQUERY_ROUTINE_REL_FIELDS: list[str] = [
+_BIGQUERY_ROUTINE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -118,150 +118,158 @@ class TableauDatasourceField(Asset):
 
     type_name: Union[str, UnsetType] = "TableauDatasourceField"
 
-    site_qualified_name: str | None | UnsetType = UNSET
+    site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this datasource field exists."""
 
-    project_qualified_name: str | None | UnsetType = UNSET
+    project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this datasource field exists."""
 
-    top_level_project_qualified_name: str | None | UnsetType = UNSET
+    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level project in which this datasource field exists."""
 
-    workbook_qualified_name: str | None | UnsetType = UNSET
+    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workbook in which this datasource field exists."""
 
-    datasource_qualified_name: str | None | UnsetType = UNSET
+    datasource_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datasource in which this datasource field exists."""
 
-    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    project_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of top-level projects and their nested child projects."""
 
-    fully_qualified_name: str | None | UnsetType = UNSET
+    fully_qualified_name: Union[str, None, UnsetType] = UNSET
     """Name used internally in Tableau to uniquely identify this field."""
 
-    tableau_datasource_field_data_category: str | None | UnsetType = UNSET
+    tableau_datasource_field_data_category: Union[str, None, UnsetType] = UNSET
     """Data category of this field."""
 
-    tableau_datasource_field_role: str | None | UnsetType = UNSET
+    tableau_datasource_field_role: Union[str, None, UnsetType] = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_datasource_field_data_type: str | None | UnsetType = UNSET
+    tableau_datasource_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field."""
 
-    upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_tables: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Tables upstream to this datasource field."""
 
-    tableau_datasource_field_formula: str | None | UnsetType = UNSET
+    tableau_datasource_field_formula: Union[str, None, UnsetType] = UNSET
     """Formula for this field."""
 
-    tableau_datasource_field_bin_size: str | None | UnsetType = UNSET
+    tableau_datasource_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Columns upstream to this field."""
 
-    upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Fields upstream to this field."""
 
-    datasource_field_type: str | None | UnsetType = UNSET
+    datasource_field_type: Union[str, None, UnsetType] = UNSET
     """Type of this datasource field."""
 
-    tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
+    tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    datasource: RelatedTableauDatasource | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    datasource: Union[RelatedTableauDatasource, None, UnsetType] = UNSET
     """Datasource in which this field exists."""
 
-    worksheets: list[RelatedTableauWorksheet] | None | UnsetType = UNSET
+    worksheets: Union[List[RelatedTableauWorksheet], None, UnsetType] = UNSET
     """Worksheets that use this datasource field."""
 
-    tableau_worksheet_field: RelatedTableauWorksheetField | None | UnsetType = UNSET
+    tableau_worksheet_field: Union[RelatedTableauWorksheetField, None, UnsetType] = (
+        UNSET
+    )
     """Worksheet fields that use this datasource field."""
 
     def __post_init__(self) -> None:
@@ -332,177 +340,185 @@ class TableauDatasourceField(Asset):
 class TableauDatasourceFieldAttributes(AssetAttributes):
     """TableauDatasourceField-specific attributes for nested API format."""
 
-    site_qualified_name: str | None | UnsetType = UNSET
+    site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this datasource field exists."""
 
-    project_qualified_name: str | None | UnsetType = UNSET
+    project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this datasource field exists."""
 
-    top_level_project_qualified_name: str | None | UnsetType = UNSET
+    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level project in which this datasource field exists."""
 
-    workbook_qualified_name: str | None | UnsetType = UNSET
+    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workbook in which this datasource field exists."""
 
-    datasource_qualified_name: str | None | UnsetType = UNSET
+    datasource_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datasource in which this datasource field exists."""
 
-    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    project_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of top-level projects and their nested child projects."""
 
-    fully_qualified_name: str | None | UnsetType = UNSET
+    fully_qualified_name: Union[str, None, UnsetType] = UNSET
     """Name used internally in Tableau to uniquely identify this field."""
 
-    tableau_datasource_field_data_category: str | None | UnsetType = UNSET
+    tableau_datasource_field_data_category: Union[str, None, UnsetType] = UNSET
     """Data category of this field."""
 
-    tableau_datasource_field_role: str | None | UnsetType = UNSET
+    tableau_datasource_field_role: Union[str, None, UnsetType] = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_datasource_field_data_type: str | None | UnsetType = UNSET
+    tableau_datasource_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field."""
 
-    upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_tables: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Tables upstream to this datasource field."""
 
-    tableau_datasource_field_formula: str | None | UnsetType = UNSET
+    tableau_datasource_field_formula: Union[str, None, UnsetType] = UNSET
     """Formula for this field."""
 
-    tableau_datasource_field_bin_size: str | None | UnsetType = UNSET
+    tableau_datasource_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Columns upstream to this field."""
 
-    upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
+    upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Fields upstream to this field."""
 
-    datasource_field_type: str | None | UnsetType = UNSET
+    datasource_field_type: Union[str, None, UnsetType] = UNSET
     """Type of this datasource field."""
 
-    tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
+    tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
 
 class TableauDatasourceFieldRelationshipAttributes(AssetRelationshipAttributes):
     """TableauDatasourceField-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    datasource: RelatedTableauDatasource | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    datasource: Union[RelatedTableauDatasource, None, UnsetType] = UNSET
     """Datasource in which this field exists."""
 
-    worksheets: list[RelatedTableauWorksheet] | None | UnsetType = UNSET
+    worksheets: Union[List[RelatedTableauWorksheet], None, UnsetType] = UNSET
     """Worksheets that use this datasource field."""
 
-    tableau_worksheet_field: RelatedTableauWorksheetField | None | UnsetType = UNSET
+    tableau_worksheet_field: Union[RelatedTableauWorksheetField, None, UnsetType] = (
+        UNSET
+    )
     """Worksheet fields that use this datasource field."""
 
 
 class TableauDatasourceFieldNested(AssetNested):
     """TableauDatasourceField in nested API format for high-performance serialization."""
 
-    attributes: TableauDatasourceFieldAttributes | UnsetType = UNSET
-    relationship_attributes: (
-        TableauDatasourceFieldRelationshipAttributes | UnsetType
-    ) = UNSET
-    append_relationship_attributes: (
-        TableauDatasourceFieldRelationshipAttributes | UnsetType
-    ) = UNSET
-    remove_relationship_attributes: (
-        TableauDatasourceFieldRelationshipAttributes | UnsetType
-    ) = UNSET
+    attributes: Union[TableauDatasourceFieldAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        TableauDatasourceFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        TableauDatasourceFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        TableauDatasourceFieldRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_TABLEAU_DATASOURCE_FIELD_REL_FIELDS: list[str] = [
+_TABLEAU_DATASOURCE_FIELD_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -35,16 +37,16 @@ class RelatedS3(RelatedObjectStore):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "S3" so it serializes correctly
 
-    s3_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="s3ETag")
+    s3_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="s3ETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    s3_encryption: str | None | UnsetType = UNSET
+    s3_encryption: Union[str, None, UnsetType] = UNSET
     """"""
 
-    s3_parent_prefix_qualified_name: str | None | UnsetType = UNSET
+    s3_parent_prefix_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent prefix in which this asset exists."""
 
-    s3_prefix_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    s3_prefix_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of prefix assets with qualified name and name representing the complete prefix hierarchy path for this asset, from immediate parent to root prefix."""
 
     def __post_init__(self) -> None:
@@ -62,10 +64,10 @@ class RelatedS3Bucket(RelatedS3):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "S3Bucket" so it serializes correctly
 
-    s3_object_count: int | None | UnsetType = UNSET
+    s3_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects within the bucket."""
 
-    s3_bucket_versioning_enabled: bool | None | UnsetType = UNSET
+    s3_bucket_versioning_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether versioning is enabled for the bucket (true) or not (false)."""
 
     def __post_init__(self) -> None:
@@ -83,40 +85,40 @@ class RelatedS3Object(RelatedS3):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "S3Object" so it serializes correctly
 
-    s3_object_last_modified_time: int | None | UnsetType = UNSET
+    s3_object_last_modified_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified."""
 
-    s3_bucket_name: str | None | UnsetType = UNSET
+    s3_bucket_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the bucket in which this object exists."""
 
-    s3_bucket_qualified_name: str | None | UnsetType = UNSET
+    s3_bucket_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the bucket in which this object exists."""
 
-    s3_object_size: int | None | UnsetType = UNSET
+    s3_object_size: Union[int, None, UnsetType] = UNSET
     """Object size in bytes."""
 
-    s3_object_storage_class: str | None | UnsetType = UNSET
+    s3_object_storage_class: Union[str, None, UnsetType] = UNSET
     """Storage class used for storing this object, for example: standard, intelligent-tiering, glacier, etc."""
 
-    s3_object_key: str | None | UnsetType = UNSET
+    s3_object_key: Union[str, None, UnsetType] = UNSET
     """Unique identity of this object in an S3 bucket. This is usually the concatenation of any prefix (folder) in the S3 bucket with the name of the object (file) itself."""
 
-    s3_object_content_type: str | None | UnsetType = UNSET
+    s3_object_content_type: Union[str, None, UnsetType] = UNSET
     """Type of content in this object, for example: text/plain, application/json, etc."""
 
-    s3_object_content_disposition: str | None | UnsetType = UNSET
+    s3_object_content_disposition: Union[str, None, UnsetType] = UNSET
     """Information about how this object's content should be presented."""
 
-    s3_object_version_id: str | None | UnsetType = UNSET
+    s3_object_version_id: Union[str, None, UnsetType] = UNSET
     """Version of this object. This is only applicable when versioning is enabled on the bucket in which this object exists."""
 
-    s3_object_lock_retain_until: int | None | UnsetType = UNSET
+    s3_object_lock_retain_until: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when the object lock retention will expire."""
 
-    s3_object_lock_mode: str | None | UnsetType = UNSET
+    s3_object_lock_mode: Union[str, None, UnsetType] = UNSET
     """Mode of the object lock retention."""
 
-    s3_object_lock_legal_hold_enabled: bool | None | UnsetType = UNSET
+    s3_object_lock_legal_hold_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether the object lock legal hold is enabled (true) or not (false)."""
 
     def __post_init__(self) -> None:
@@ -134,16 +136,16 @@ class RelatedS3Prefix(RelatedS3):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "S3Prefix" so it serializes correctly
 
-    s3_bucket_name: str | None | UnsetType = UNSET
+    s3_bucket_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the bucket in which this prefix exists."""
 
-    s3_bucket_qualified_name: str | None | UnsetType = UNSET
+    s3_bucket_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the bucket in which this prefix exists."""
 
-    s3_prefix_count: int | None | UnsetType = UNSET
+    s3_prefix_count: Union[int, None, UnsetType] = UNSET
     """Number of prefixes immediately contained within the prefix."""
 
-    s3_object_count: int | None | UnsetType = UNSET
+    s3_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects immediately contained within the prefix."""
 
     def __post_init__(self) -> None:

@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,13 +45,13 @@ class RelatedFabric(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Fabric" so it serializes correctly
 
-    fabric_column_count: int | None | UnsetType = UNSET
+    fabric_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this asset."""
 
-    fabric_data_type: str | None | UnsetType = UNSET
+    fabric_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this asset."""
 
-    fabric_ordinal: int | None | UnsetType = UNSET
+    fabric_ordinal: Union[int, None, UnsetType] = UNSET
     """Order/position of this asset within its parent."""
 
     def __post_init__(self) -> None:
@@ -112,10 +114,10 @@ class RelatedFabricDataflowEntityColumn(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricDataflowEntityColumn" so it serializes correctly
 
-    fabric_dataflow_qualified_name: str | None | UnsetType = UNSET
+    fabric_dataflow_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric dataflow that contains this asset."""
 
-    fabric_dataflow_name: str | None | UnsetType = UNSET
+    fabric_dataflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the Fabric dataflow that contains this asset."""
 
     def __post_init__(self) -> None:
@@ -178,7 +180,7 @@ class RelatedFabricSemanticModelTable(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricSemanticModelTable" so it serializes correctly
 
-    fabric_semantic_model_qualified_name: str | None | UnsetType = UNSET
+    fabric_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model that contains this asset."""
 
     def __post_init__(self) -> None:
@@ -196,10 +198,10 @@ class RelatedFabricSemanticModelTableColumn(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricSemanticModelTableColumn" so it serializes correctly
 
-    fabric_semantic_model_table_qualified_name: str | None | UnsetType = UNSET
+    fabric_semantic_model_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model table that contains this asset."""
 
-    fabric_semantic_model_table_name: str | None | UnsetType = UNSET
+    fabric_semantic_model_table_name: Union[str, None, UnsetType] = UNSET
     """Name of the Fabric semantic model table that contains this asset."""
 
     def __post_init__(self) -> None:
@@ -217,7 +219,7 @@ class RelatedFabricPage(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricPage" so it serializes correctly
 
-    fabric_report_qualified_name: str | None | UnsetType = UNSET
+    fabric_report_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric report that contains this asset."""
 
     def __post_init__(self) -> None:
@@ -235,10 +237,10 @@ class RelatedFabricActivity(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricActivity" so it serializes correctly
 
-    fabric_data_pipeline_qualified_name: str | None | UnsetType = UNSET
+    fabric_data_pipeline_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric data pipeline that contains this asset."""
 
-    fabric_activity_type: str | None | UnsetType = UNSET
+    fabric_activity_type: Union[str, None, UnsetType] = UNSET
     """Type of activity."""
 
     def __post_init__(self) -> None:
@@ -256,13 +258,13 @@ class RelatedFabricVisual(RelatedFabric):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FabricVisual" so it serializes correctly
 
-    fabric_page_qualified_name: str | None | UnsetType = UNSET
+    fabric_page_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric page that contains this asset."""
 
-    fabric_page_name: str | None | UnsetType = UNSET
+    fabric_page_name: Union[str, None, UnsetType] = UNSET
     """Name of the Fabric page that contains this asset."""
 
-    fabric_visual_type: str | None | UnsetType = UNSET
+    fabric_visual_type: Union[str, None, UnsetType] = UNSET
     """Type of visual."""
 
     def __post_init__(self) -> None:

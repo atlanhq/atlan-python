@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -37,28 +39,28 @@ class RelatedDremio(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Dremio" so it serializes correctly
 
-    dremio_id: str | None | UnsetType = UNSET
+    dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 
-    dremio_space_qualified_name: str | None | UnsetType = UNSET
+    dremio_space_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Space containing this asset."""
 
-    dremio_space_name: str | None | UnsetType = UNSET
+    dremio_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Space containing this asset."""
 
-    dremio_source_qualified_name: str | None | UnsetType = UNSET
+    dremio_source_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Source containing this asset."""
 
-    dremio_source_name: str | None | UnsetType = UNSET
+    dremio_source_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Source containing this asset."""
 
-    dremio_parent_folder_qualified_name: str | None | UnsetType = UNSET
+    dremio_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the immediate parent folder containing this asset."""
 
-    dremio_folder_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    dremio_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
-    dremio_labels: list[str] | None | UnsetType = UNSET
+    dremio_labels: Union[List[str], None, UnsetType] = UNSET
     """Dremio Labels associated with this asset."""
 
     def __post_init__(self) -> None:
@@ -91,22 +93,22 @@ class RelatedDremioSource(RelatedDremio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DremioSource" so it serializes correctly
 
-    dremio_source_type: str | None | UnsetType = UNSET
+    dremio_source_type: Union[str, None, UnsetType] = UNSET
     """Type of external source."""
 
-    dremio_source_connection_configs: dict[str, str] | None | UnsetType = UNSET
+    dremio_source_connection_configs: Union[Dict[str, str], None, UnsetType] = UNSET
     """Configuration parameters for connecting to the external source."""
 
-    dremio_source_acceleration_settings: dict[str, str] | None | UnsetType = UNSET
+    dremio_source_acceleration_settings: Union[Dict[str, str], None, UnsetType] = UNSET
     """Default acceleration settings for datasets in this source."""
 
-    dremio_source_metadata_policies: dict[str, str] | None | UnsetType = UNSET
+    dremio_source_metadata_policies: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata refresh and caching policies."""
 
-    dremio_source_health_status: str | None | UnsetType = UNSET
+    dremio_source_health_status: Union[str, None, UnsetType] = UNSET
     """Current health status of the source connection."""
 
-    dremio_source_health_status_message: str | None | UnsetType = UNSET
+    dremio_source_health_status_message: Union[str, None, UnsetType] = UNSET
     """Current health status message of the source connection."""
 
     def __post_init__(self) -> None:
@@ -124,7 +126,7 @@ class RelatedDremioFolder(RelatedDremio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DremioFolder" so it serializes correctly
 
-    dremio_parent_asset_type: str | None | UnsetType = UNSET
+    dremio_parent_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of top level asset that contains this folder."""
 
     def __post_init__(self) -> None:

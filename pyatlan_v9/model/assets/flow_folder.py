@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -95,108 +95,112 @@ class FlowFolder(Asset):
 
     type_name: Union[str, UnsetType] = "FlowFolder"
 
-    flow_started_at: int | None | UnsetType = UNSET
+    flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 
-    flow_finished_at: int | None | UnsetType = UNSET
+    flow_finished_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration finished."""
 
-    flow_status: str | None | UnsetType = UNSET
+    flow_status: Union[str, None, UnsetType] = UNSET
     """Overall status of this point in the data processing or orchestration."""
 
-    flow_schedule: str | None | UnsetType = UNSET
+    flow_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for this point in the data processing or orchestration."""
 
-    flow_project_name: str | None | UnsetType = UNSET
+    flow_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project in which this asset is contained."""
 
-    flow_project_qualified_name: str | None | UnsetType = UNSET
+    flow_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset is contained."""
 
-    flow_folder_name: str | None | UnsetType = UNSET
+    flow_folder_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the folder in which this asset is contained."""
 
-    flow_folder_qualified_name: str | None | UnsetType = UNSET
+    flow_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this asset is contained."""
 
-    flow_reusable_unit_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_reusable_unit_qualified_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_id: str | None | UnsetType = UNSET
+    flow_id: Union[str, None, UnsetType] = UNSET
     """Unique ID for this flow asset, which will remain constant throughout the lifecycle of the asset."""
 
-    flow_run_id: str | None | UnsetType = UNSET
+    flow_run_id: Union[str, None, UnsetType] = UNSET
     """Unique ID of the flow run, which could change on subsequent runs of the same flow."""
 
-    flow_error_message: str | None | UnsetType = UNSET
+    flow_error_message: Union[str, None, UnsetType] = UNSET
     """Optional error message of the flow run."""
 
-    flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
+    flow_input_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Input parameters for the flow run."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    flow_sub_folders: list[RelatedFlowFolder] | None | UnsetType = UNSET
+    flow_sub_folders: Union[List[RelatedFlowFolder], None, UnsetType] = UNSET
     """Child (sub) folders contained within the folder."""
 
-    flow_parent_folder: RelatedFlowFolder | None | UnsetType = UNSET
+    flow_parent_folder: Union[RelatedFlowFolder, None, UnsetType] = UNSET
     """Parent folder containing the sub-folders."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -263,129 +267,137 @@ class FlowFolder(Asset):
 class FlowFolderAttributes(AssetAttributes):
     """FlowFolder-specific attributes for nested API format."""
 
-    flow_started_at: int | None | UnsetType = UNSET
+    flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 
-    flow_finished_at: int | None | UnsetType = UNSET
+    flow_finished_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration finished."""
 
-    flow_status: str | None | UnsetType = UNSET
+    flow_status: Union[str, None, UnsetType] = UNSET
     """Overall status of this point in the data processing or orchestration."""
 
-    flow_schedule: str | None | UnsetType = UNSET
+    flow_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for this point in the data processing or orchestration."""
 
-    flow_project_name: str | None | UnsetType = UNSET
+    flow_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project in which this asset is contained."""
 
-    flow_project_qualified_name: str | None | UnsetType = UNSET
+    flow_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset is contained."""
 
-    flow_folder_name: str | None | UnsetType = UNSET
+    flow_folder_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the folder in which this asset is contained."""
 
-    flow_folder_qualified_name: str | None | UnsetType = UNSET
+    flow_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this asset is contained."""
 
-    flow_reusable_unit_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_reusable_unit_qualified_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_id: str | None | UnsetType = UNSET
+    flow_id: Union[str, None, UnsetType] = UNSET
     """Unique ID for this flow asset, which will remain constant throughout the lifecycle of the asset."""
 
-    flow_run_id: str | None | UnsetType = UNSET
+    flow_run_id: Union[str, None, UnsetType] = UNSET
     """Unique ID of the flow run, which could change on subsequent runs of the same flow."""
 
-    flow_error_message: str | None | UnsetType = UNSET
+    flow_error_message: Union[str, None, UnsetType] = UNSET
     """Optional error message of the flow run."""
 
-    flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
+    flow_input_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Input parameters for the flow run."""
 
 
 class FlowFolderRelationshipAttributes(AssetRelationshipAttributes):
     """FlowFolder-specific relationship attributes for nested API format."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    flow_sub_folders: list[RelatedFlowFolder] | None | UnsetType = UNSET
+    flow_sub_folders: Union[List[RelatedFlowFolder], None, UnsetType] = UNSET
     """Child (sub) folders contained within the folder."""
 
-    flow_parent_folder: RelatedFlowFolder | None | UnsetType = UNSET
+    flow_parent_folder: Union[RelatedFlowFolder, None, UnsetType] = UNSET
     """Parent folder containing the sub-folders."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
 
 class FlowFolderNested(AssetNested):
     """FlowFolder in nested API format for high-performance serialization."""
 
-    attributes: FlowFolderAttributes | UnsetType = UNSET
-    relationship_attributes: FlowFolderRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: FlowFolderRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: FlowFolderRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[FlowFolderAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[FlowFolderRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        FlowFolderRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FlowFolderRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_FLOW_FOLDER_REL_FIELDS: list[str] = [
+_FLOW_FOLDER_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "anomalo_checks",
     "application",

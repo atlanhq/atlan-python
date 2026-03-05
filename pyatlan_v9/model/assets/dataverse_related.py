@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -33,13 +35,13 @@ class RelatedDataverse(RelatedSaaS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Dataverse" so it serializes correctly
 
-    dataverse_is_custom: bool | None | UnsetType = UNSET
+    dataverse_is_custom: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity is custom built."""
 
-    dataverse_is_customizable: bool | None | UnsetType = UNSET
+    dataverse_is_customizable: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity is customizable."""
 
-    dataverse_is_audit_enabled: bool | None | UnsetType = UNSET
+    dataverse_is_audit_enabled: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
 
     def __post_init__(self) -> None:
@@ -57,10 +59,10 @@ class RelatedDataverseEntity(RelatedDataverse):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataverseEntity" so it serializes correctly
 
-    dataverse_entity_schema_name: str | None | UnsetType = UNSET
+    dataverse_entity_schema_name: Union[str, None, UnsetType] = UNSET
     """Schema Name of the DataverseEntity."""
 
-    dataverse_entity_table_type: str | None | UnsetType = UNSET
+    dataverse_entity_table_type: Union[str, None, UnsetType] = UNSET
     """Table Type of the DataverseEntity."""
 
     def __post_init__(self) -> None:
@@ -78,19 +80,19 @@ class RelatedDataverseAttribute(RelatedDataverse):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataverseAttribute" so it serializes correctly
 
-    dataverse_entity_qualified_name: str | None | UnsetType = UNSET
+    dataverse_entity_qualified_name: Union[str, None, UnsetType] = UNSET
     """Entity Qualified Name of the DataverseAttribute."""
 
-    dataverse_attribute_schema_name: str | None | UnsetType = UNSET
+    dataverse_attribute_schema_name: Union[str, None, UnsetType] = UNSET
     """Schema Name of the DataverseAttribute."""
 
-    dataverse_attribute_type: str | None | UnsetType = UNSET
+    dataverse_attribute_type: Union[str, None, UnsetType] = UNSET
     """Type of the DataverseAttribute."""
 
-    dataverse_attribute_is_primary_id: bool | None | UnsetType = UNSET
+    dataverse_attribute_is_primary_id: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseAttribute is the primary key."""
 
-    dataverse_attribute_is_searchable: bool | None | UnsetType = UNSET
+    dataverse_attribute_is_searchable: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseAttribute is searchable."""
 
     def __post_init__(self) -> None:

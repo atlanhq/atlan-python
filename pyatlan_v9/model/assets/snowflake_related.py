@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -58,7 +60,7 @@ class RelatedSnowflakeDynamicTable(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeDynamicTable" so it serializes correctly
 
-    definition: str | None | UnsetType = UNSET
+    definition: Union[str, None, UnsetType] = UNSET
     """SQL statements used to define the dynamic table."""
 
     def __post_init__(self) -> None:
@@ -76,13 +78,13 @@ class RelatedSnowflakePipe(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakePipe" so it serializes correctly
 
-    definition: str | None | UnsetType = UNSET
+    definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of this pipe."""
 
-    snowflake_is_auto_ingest_enabled: bool | None | UnsetType = UNSET
+    snowflake_is_auto_ingest_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether auto-ingest is enabled for this pipe (true) or not (false)."""
 
-    snowflake_pipe_notification_channel_name: str | None | UnsetType = UNSET
+    snowflake_pipe_notification_channel_name: Union[str, None, UnsetType] = UNSET
     """Name of the notification channel for this pipe."""
 
     def __post_init__(self) -> None:
@@ -100,16 +102,16 @@ class RelatedSnowflakeStage(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStage" so it serializes correctly
 
-    snowflake_external_location: str | None | UnsetType = UNSET
+    snowflake_external_location: Union[str, None, UnsetType] = UNSET
     """The URL or cloud storage path specifying the external location where the stage data files are stored. This is NULL for internal stages."""
 
-    snowflake_external_location_region: str | None | UnsetType = UNSET
+    snowflake_external_location_region: Union[str, None, UnsetType] = UNSET
     """The geographic region identifier where the external stage is located in cloud storage. This is NULL for internal stages."""
 
-    snowflake_storage_integration: str | None | UnsetType = UNSET
+    snowflake_storage_integration: Union[str, None, UnsetType] = UNSET
     """The name of the storage integration associated with the stage; NULL for internal stages or stages that do not use a storage integration."""
 
-    snowflake_type: str | None | UnsetType = UNSET
+    snowflake_type: Union[str, None, UnsetType] = UNSET
     """Categorization of the stage type in Snowflake, which can be 'Internal Named' or 'External Named', indicating whether the stage storage is within Snowflake or in external cloud storage."""
 
     def __post_init__(self) -> None:
@@ -127,19 +129,19 @@ class RelatedSnowflakeStream(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStream" so it serializes correctly
 
-    snowflake_type: str | None | UnsetType = UNSET
+    snowflake_type: Union[str, None, UnsetType] = UNSET
     """Type of this stream, for example: standard, append-only, insert-only, etc."""
 
-    snowflake_source_type: str | None | UnsetType = UNSET
+    snowflake_source_type: Union[str, None, UnsetType] = UNSET
     """Type of the source of this stream."""
 
-    snowflake_mode: str | None | UnsetType = UNSET
+    snowflake_mode: Union[str, None, UnsetType] = UNSET
     """Mode of this stream."""
 
-    snowflake_is_stale: bool | None | UnsetType = UNSET
+    snowflake_is_stale: Union[bool, None, UnsetType] = UNSET
     """Whether this stream is stale (true) or not (false)."""
 
-    snowflake_stale_after: int | None | UnsetType = UNSET
+    snowflake_stale_after: Union[int, None, UnsetType] = UNSET
     """Time (epoch) after which this stream will be stale, in milliseconds."""
 
     def __post_init__(self) -> None:
@@ -187,19 +189,19 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeAIModelVersion" so it serializes correctly
 
-    snowflake_name: str | None | UnsetType = UNSET
+    snowflake_name: Union[str, None, UnsetType] = UNSET
     """Version part of the model name."""
 
-    snowflake_type: str | None | UnsetType = UNSET
+    snowflake_type: Union[str, None, UnsetType] = UNSET
     """The type of the model version."""
 
-    snowflake_aliases: list[str] | None | UnsetType = UNSET
+    snowflake_aliases: Union[List[str], None, UnsetType] = UNSET
     """The aliases for the model version."""
 
-    snowflake_metrics: dict[str, str] | None | UnsetType = UNSET
+    snowflake_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metrics for an individual experiment."""
 
-    snowflake_functions: list[str] | None | UnsetType = UNSET
+    snowflake_functions: Union[List[str], None, UnsetType] = UNSET
     """Functions used in the model version."""
 
     def __post_init__(self) -> None:
@@ -217,7 +219,7 @@ class RelatedSnowflakeSemanticView(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeSemanticView" so it serializes correctly
 
-    snowflake_definition: str | None | UnsetType = UNSET
+    snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
 
     def __post_init__(self) -> None:
@@ -235,19 +237,19 @@ class RelatedSnowflakeSemanticLogicalTable(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeSemanticLogicalTable" so it serializes correctly
 
-    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this logical table exists."""
 
-    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the semantic view in which this logical table exists."""
 
-    snowflake_semantic_table_primary_keys: list[str] | None | UnsetType = UNSET
+    snowflake_semantic_table_primary_keys: Union[List[str], None, UnsetType] = UNSET
     """Comma separated list of primary key columns for the logical table."""
 
-    snowflake_semantic_table_unique_keys: list[str] | None | UnsetType = UNSET
+    snowflake_semantic_table_unique_keys: Union[List[str], None, UnsetType] = UNSET
     """Unique key columns for the logical table."""
 
-    snowflake_semantic_table_distinct_ranges: list[str] | None | UnsetType = UNSET
+    snowflake_semantic_table_distinct_ranges: Union[List[str], None, UnsetType] = UNSET
     """Distinct ranges defined for the logical table."""
 
     def __post_init__(self) -> None:
@@ -265,16 +267,16 @@ class RelatedSnowflakeSemanticFact(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeSemanticFact" so it serializes correctly
 
-    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this fact exists."""
 
-    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the semantic view in which this fact exists."""
 
-    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the logical table in which this fact exists."""
 
-    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the logical table in which this fact exists."""
 
     def __post_init__(self) -> None:
@@ -292,16 +294,16 @@ class RelatedSnowflakeSemanticDimension(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeSemanticDimension" so it serializes correctly
 
-    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this dimension exists."""
 
-    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the semantic view in which this dimension exists."""
 
-    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the logical table in which this dimension exists."""
 
-    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the logical table in which this dimension exists."""
 
     def __post_init__(self) -> None:
@@ -319,25 +321,25 @@ class RelatedSnowflakeSemanticMetric(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeSemanticMetric" so it serializes correctly
 
-    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this metric exists."""
 
-    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    snowflake_semantic_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the semantic view in which this metric exists."""
 
-    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the logical table in which this metric exists."""
 
-    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    snowflake_semantic_table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the logical table in which this metric exists."""
 
-    snowflake_metric_additive_dimensions: list[str] | None | UnsetType = UNSET
+    snowflake_metric_additive_dimensions: Union[List[str], None, UnsetType] = UNSET
     """Dimensions over which the metric can be additively aggregated."""
 
-    snowflake_metric_non_additive_dimensions: list[str] | None | UnsetType = UNSET
+    snowflake_metric_non_additive_dimensions: Union[List[str], None, UnsetType] = UNSET
     """Dimensions over which the metric cannot be additively aggregated."""
 
-    snowflake_metric_using_relationships: list[str] | None | UnsetType = UNSET
+    snowflake_metric_using_relationships: Union[List[str], None, UnsetType] = UNSET
     """Relationships used by the metric for cross-table computation."""
 
     def __post_init__(self) -> None:

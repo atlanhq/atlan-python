@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -36,22 +38,22 @@ class RelatedSageMakerUnifiedStudio(RelatedSaaS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudio" so it serializes correctly
 
-    smus_domain_name: str | None | UnsetType = UNSET
+    smus_domain_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain."""
 
-    smus_domain_id: str | None | UnsetType = UNSET
+    smus_domain_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio domain."""
 
-    smus_domain_unit_name: str | None | UnsetType = UNSET
+    smus_domain_unit_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain unit."""
 
-    smus_domain_unit_id: str | None | UnsetType = UNSET
+    smus_domain_unit_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio domain unit."""
 
-    smus_project_id: str | None | UnsetType = UNSET
+    smus_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project."""
 
-    smus_owning_project_id: str | None | UnsetType = UNSET
+    smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
 
     def __post_init__(self) -> None:
@@ -69,16 +71,16 @@ class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudioProject" so it serializes correctly
 
-    smus_project_status: str | None | UnsetType = UNSET
+    smus_project_status: Union[str, None, UnsetType] = UNSET
     """Status of the SageMaker Unified Studio project."""
 
-    smus_project_profile_name: str | None | UnsetType = UNSET
+    smus_project_profile_name: Union[str, None, UnsetType] = UNSET
     """Name of the profile of the SageMaker Unified Studio project."""
 
-    smus_project_role_arn: str | None | UnsetType = UNSET
+    smus_project_role_arn: Union[str, None, UnsetType] = UNSET
     """Amazon IAM role ARN of the SageMaker Unified Studio project."""
 
-    smus_project_s3_location: str | None | UnsetType = UNSET
+    smus_project_s3_location: Union[str, None, UnsetType] = UNSET
     """Amazon S3 location of the SageMaker Unified Studio project."""
 
     def __post_init__(self) -> None:
@@ -96,19 +98,19 @@ class RelatedSageMakerUnifiedStudioAsset(RelatedSageMakerUnifiedStudio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudioAsset" so it serializes correctly
 
-    smus_asset_summary: str | None | UnsetType = UNSET
+    smus_asset_summary: Union[str, None, UnsetType] = UNSET
     """Summary text for the asset in SageMaker Unified Studio."""
 
-    smus_asset_technical_name: str | None | UnsetType = UNSET
+    smus_asset_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical name for the asset in SageMaker Unified Studio."""
 
-    smus_asset_type: str | None | UnsetType = UNSET
+    smus_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of asset in SageMaker Unified Studio."""
 
-    smus_asset_revision: str | None | UnsetType = UNSET
+    smus_asset_revision: Union[str, None, UnsetType] = UNSET
     """Latest published version of the asset in SageMaker Unified Studio."""
 
-    smus_asset_source_identifier: str | None | UnsetType = UNSET
+    smus_asset_source_identifier: Union[str, None, UnsetType] = UNSET
     """Unique source identifier for the asset in SageMaker Unified Studio."""
 
     def __post_init__(self) -> None:
@@ -126,7 +128,7 @@ class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio)
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudioPublishedAsset" so it serializes correctly
 
-    smus_published_asset_subscriptions_count: int | None | UnsetType = UNSET
+    smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
 
     def __post_init__(self) -> None:
@@ -144,28 +146,28 @@ class RelatedSageMakerUnifiedStudioSubscribedAsset(RelatedSageMakerUnifiedStudio
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudioSubscribedAsset" so it serializes correctly
 
-    smus_subscribed_asset_project_name: str | None | UnsetType = UNSET
+    smus_subscribed_asset_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio project from which this asset is subscribed."""
 
-    smus_subscribed_asset_requestor_name: str | None | UnsetType = UNSET
+    smus_subscribed_asset_requestor_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who requested access to this subscribed asset."""
 
-    smus_subscribed_asset_request_reason: str | None | UnsetType = UNSET
+    smus_subscribed_asset_request_reason: Union[str, None, UnsetType] = UNSET
     """Reason provided by the requestor for this subscribed asset."""
 
-    smus_subscribed_asset_request_date: int | None | UnsetType = UNSET
+    smus_subscribed_asset_request_date: Union[int, None, UnsetType] = UNSET
     """Date when the subscription request was submitted."""
 
-    smus_subscribed_asset_approver_name: str | None | UnsetType = UNSET
+    smus_subscribed_asset_approver_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who approved the subscription request."""
 
-    smus_subscribed_asset_approved_reason: str | None | UnsetType = UNSET
+    smus_subscribed_asset_approved_reason: Union[str, None, UnsetType] = UNSET
     """Reason provided by the approver for approving the subscription."""
 
-    smus_subscribed_asset_approval_date: int | None | UnsetType = UNSET
+    smus_subscribed_asset_approval_date: Union[int, None, UnsetType] = UNSET
     """Date when the subscription request was approved."""
 
-    smus_subscribed_asset_column_access_info: str | None | UnsetType = UNSET
+    smus_subscribed_asset_column_access_info: Union[str, None, UnsetType] = UNSET
     """Number of Columns provided access grant for this subscribed asset (for example: 3 out of 23)."""
 
     def __post_init__(self) -> None:
@@ -183,13 +185,13 @@ class RelatedSageMakerUnifiedStudioAssetSchema(RelatedSageMakerUnifiedStudio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerUnifiedStudioAssetSchema" so it serializes correctly
 
-    smus_data_type: str | None | UnsetType = UNSET
+    smus_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the schema/column."""
 
-    smus_asset_qualified_name: str | None | UnsetType = UNSET
+    smus_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Atlan SageMaker Unified Studio published/subscribed asset that contains this schema."""
 
-    smus_asset_name: str | None | UnsetType = UNSET
+    smus_asset_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Atlan SageMaker Unified Studio published/subscribed asset that contains this schema."""
 
     def __post_init__(self) -> None:

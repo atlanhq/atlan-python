@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -36,10 +38,10 @@ class RelatedADF(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ADF" so it serializes correctly
 
-    adf_factory_name: str | None | UnsetType = UNSET
+    adf_factory_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the factory in which this asset exists."""
 
-    adf_asset_folder_path: str | None | UnsetType = UNSET
+    adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
     def __post_init__(self) -> None:
@@ -57,61 +59,61 @@ class RelatedAdfActivity(RelatedADF):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AdfActivity" so it serializes correctly
 
-    adf_activity_type: str | None | UnsetType = UNSET
+    adf_activity_type: Union[str, None, UnsetType] = UNSET
     """The type of the ADF activity."""
 
-    adf_activity_preceding_dependency: list[str] | None | UnsetType = UNSET
+    adf_activity_preceding_dependency: Union[List[str], None, UnsetType] = UNSET
     """The list of ADF activities on which this ADF activity depends on."""
 
-    adf_activity_policy_timeout: str | None | UnsetType = UNSET
+    adf_activity_policy_timeout: Union[str, None, UnsetType] = UNSET
     """The timout defined for the ADF activity."""
 
-    adf_activity_polict_retry_interval: int | None | UnsetType = UNSET
+    adf_activity_polict_retry_interval: Union[int, None, UnsetType] = UNSET
     """The retry interval in seconds for the ADF activity."""
 
-    adf_activity_state: str | None | UnsetType = UNSET
+    adf_activity_state: Union[str, None, UnsetType] = UNSET
     """Defines the state (Active or Inactive) of an ADF activity whether it is active or not."""
 
-    adf_activity_sources: list[str] | None | UnsetType = UNSET
+    adf_activity_sources: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sources for the ADF activity."""
 
-    adf_activity_sinks: list[str] | None | UnsetType = UNSET
+    adf_activity_sinks: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sinks for the ADF activity."""
 
-    adf_activity_source_type: str | None | UnsetType = UNSET
+    adf_activity_source_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the source of the ADF activtity."""
 
-    adf_activity_sink_type: str | None | UnsetType = UNSET
+    adf_activity_sink_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the sink of the ADF activtity."""
 
-    adf_activity_runs: list[dict[str, str]] | None | UnsetType = UNSET
+    adf_activity_runs: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of objects of activity runs for a particular activity."""
 
-    adf_activity_notebook_path: str | None | UnsetType = UNSET
+    adf_activity_notebook_path: Union[str, None, UnsetType] = UNSET
     """Defines the path of the notebook in the databricks notebook activity."""
 
-    adf_activity_main_class_name: str | None | UnsetType = UNSET
+    adf_activity_main_class_name: Union[str, None, UnsetType] = UNSET
     """Defines the main class of the databricks spark activity."""
 
-    adf_activity_python_file_path: str | None | UnsetType = UNSET
+    adf_activity_python_file_path: Union[str, None, UnsetType] = UNSET
     """Defines the python file path for databricks python activity."""
 
-    adf_activity_first_row_only: bool | None | UnsetType = UNSET
+    adf_activity_first_row_only: Union[bool, None, UnsetType] = UNSET
     """Indicates whether to import only first row only or not in Lookup activity."""
 
-    adf_activity_batch_count: int | None | UnsetType = UNSET
+    adf_activity_batch_count: Union[int, None, UnsetType] = UNSET
     """Defines the batch count of activity to runs in ForEach activity."""
 
-    adf_activity_is_sequential: bool | None | UnsetType = UNSET
+    adf_activity_is_sequential: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the activity processing is sequential or not inside the ForEach activity."""
 
-    adf_activity_sub_activities: list[str] | None | UnsetType = UNSET
+    adf_activity_sub_activities: Union[List[str], None, UnsetType] = UNSET
     """The list of activities to be run inside a ForEach activity."""
 
-    adf_activity_reference_dataflow: str | None | UnsetType = UNSET
+    adf_activity_reference_dataflow: Union[str, None, UnsetType] = UNSET
     """Defines the dataflow that is to be used in dataflow activity."""
 
-    adf_pipeline_qualified_name: str | None | UnsetType = UNSET
+    adf_pipeline_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the pipeline in which this activity exists."""
 
     def __post_init__(self) -> None:
@@ -129,13 +131,13 @@ class RelatedAdfDataflow(RelatedADF):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AdfDataflow" so it serializes correctly
 
-    adf_dataflow_sources: list[str] | None | UnsetType = UNSET
+    adf_dataflow_sources: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sources for this dataflow."""
 
-    adf_dataflow_sinks: list[str] | None | UnsetType = UNSET
+    adf_dataflow_sinks: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sinks for this dataflow."""
 
-    adf_dataflow_script: str | None | UnsetType = UNSET
+    adf_dataflow_script: Union[str, None, UnsetType] = UNSET
     """The gererated script for the dataflow."""
 
     def __post_init__(self) -> None:
@@ -153,37 +155,37 @@ class RelatedAdfDataset(RelatedADF):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AdfDataset" so it serializes correctly
 
-    adf_dataset_type: str | None | UnsetType = UNSET
+    adf_dataset_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the dataset."""
 
-    adf_dataset_annotations: list[str] | None | UnsetType = UNSET
+    adf_dataset_annotations: Union[List[str], None, UnsetType] = UNSET
     """The list of annotation assigned to a dataset."""
 
-    adf_dataset_linked_service: str | None | UnsetType = UNSET
+    adf_dataset_linked_service: Union[str, None, UnsetType] = UNSET
     """Defines the name of the linked service used to create this dataset."""
 
-    adf_dataset_collection_name: str | None | UnsetType = UNSET
+    adf_dataset_collection_name: Union[str, None, UnsetType] = UNSET
     """Defines the name collection in the cosmos dataset."""
 
-    adf_dataset_storage_type: str | None | UnsetType = UNSET
+    adf_dataset_storage_type: Union[str, None, UnsetType] = UNSET
     """Defines the storage type of storage file system dataset."""
 
-    adf_dataset_file_name: str | None | UnsetType = UNSET
+    adf_dataset_file_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the file in the storage file system dataset."""
 
-    adf_dataset_file_folder_path: str | None | UnsetType = UNSET
+    adf_dataset_file_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path of the file in the storage file system dataset."""
 
-    adf_dataset_container_name: str | None | UnsetType = UNSET
+    adf_dataset_container_name: Union[str, None, UnsetType] = UNSET
     """Defines the container or bucket name in the storage file system dataset."""
 
-    adf_dataset_schema_name: str | None | UnsetType = UNSET
+    adf_dataset_schema_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the schema used in the snowflake, mssql, azure sql database type of dataset."""
 
-    adf_dataset_table_name: str | None | UnsetType = UNSET
+    adf_dataset_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the table used in the snowflake, mssql, azure sql database type of dataset."""
 
-    adf_dataset_database_name: str | None | UnsetType = UNSET
+    adf_dataset_database_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the database used in the azure delta lake type of dataset."""
 
     def __post_init__(self) -> None:
@@ -201,49 +203,49 @@ class RelatedAdfLinkedservice(RelatedADF):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AdfLinkedservice" so it serializes correctly
 
-    adf_linkedservice_type: str | None | UnsetType = UNSET
+    adf_linkedservice_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the linked service."""
 
-    adf_linkedservice_annotations: list[str] | None | UnsetType = UNSET
+    adf_linkedservice_annotations: Union[List[str], None, UnsetType] = UNSET
     """The list of annotation assigned to a linked service."""
 
-    adf_linkedservice_account_name: str | None | UnsetType = UNSET
+    adf_linkedservice_account_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the account used in the cosmos linked service."""
 
-    adf_linkedservice_database_name: str | None | UnsetType = UNSET
+    adf_linkedservice_database_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the database used in the cosmos, snowflake linked service."""
 
-    adf_linkedservice_version_above: bool | None | UnsetType = UNSET
+    adf_linkedservice_version_above: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the service version is above 3.2 or not in the cosmos linked service."""
 
-    adf_linkedservice_version: str | None | UnsetType = UNSET
+    adf_linkedservice_version: Union[str, None, UnsetType] = UNSET
     """Defines the version of the linked service in the cosmos linked service."""
 
-    adf_linkedservice_azure_cloud_type: str | None | UnsetType = UNSET
+    adf_linkedservice_azure_cloud_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of cloud being used in the ADLS linked service."""
 
-    adf_linkedservice_credential_type: str | None | UnsetType = UNSET
+    adf_linkedservice_credential_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of credential, authentication being used in the ADLS, snowflake, azure sql linked service."""
 
-    adf_linkedservice_tenant: str | None | UnsetType = UNSET
+    adf_linkedservice_tenant: Union[str, None, UnsetType] = UNSET
     """Defines the tenant of cloud being used in the ADLS linked service."""
 
-    adf_linkedservice_domain_endpoint: str | None | UnsetType = UNSET
+    adf_linkedservice_domain_endpoint: Union[str, None, UnsetType] = UNSET
     """Defines the url, domain, account_identifier, server in the ADLS, Azure databricks delta lake, snowflake, azure sql linked service."""
 
-    adf_linkedservice_cluster_id: str | None | UnsetType = UNSET
+    adf_linkedservice_cluster_id: Union[str, None, UnsetType] = UNSET
     """Defines the cluster id in the Azure databricks delta lake linked service."""
 
-    adf_linkedservice_resource_id: str | None | UnsetType = UNSET
+    adf_linkedservice_resource_id: Union[str, None, UnsetType] = UNSET
     """Defines the resource id in the Azure databricks delta lake linked service."""
 
-    adf_linkedservice_user_name: str | None | UnsetType = UNSET
+    adf_linkedservice_user_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the db user in the snowflake linked service."""
 
-    adf_linkedservice_warehouse_name: str | None | UnsetType = UNSET
+    adf_linkedservice_warehouse_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the warehouse in the snowflake linked service."""
 
-    adf_linkedservice_role_name: str | None | UnsetType = UNSET
+    adf_linkedservice_role_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the role in the snowflake linked service."""
 
     def __post_init__(self) -> None:
@@ -261,13 +263,13 @@ class RelatedAdfPipeline(RelatedADF):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AdfPipeline" so it serializes correctly
 
-    adf_pipeline_activity_count: int | None | UnsetType = UNSET
+    adf_pipeline_activity_count: Union[int, None, UnsetType] = UNSET
     """Defines the count of activities in the pipline."""
 
-    adf_pipeline_runs: list[dict[str, str]] | None | UnsetType = UNSET
+    adf_pipeline_runs: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of objects of pipeline runs for a particular pipeline."""
 
-    adf_pipeline_annotations: list[str] | None | UnsetType = UNSET
+    adf_pipeline_annotations: Union[List[str], None, UnsetType] = UNSET
     """The list of annotation assigned to a pipeline."""
 
     def __post_init__(self) -> None:

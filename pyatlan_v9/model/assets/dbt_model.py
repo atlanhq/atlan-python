@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -133,203 +133,211 @@ class DbtModel(Asset):
 
     type_name: Union[str, UnsetType] = "DbtModel"
 
-    dbt_status: str | None | UnsetType = UNSET
+    dbt_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt model."""
 
-    dbt_error: str | None | UnsetType = UNSET
+    dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtRawSQL")
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtRawSQL"
+    )
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: str | None | UnsetType = msgspec.field(
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dbtCompiledSQL"
     )
     """Compiled SQL of the dbt model."""
 
-    dbt_stats: str | None | UnsetType = UNSET
+    dbt_stats: Union[str, None, UnsetType] = UNSET
     """Statistics of the dbt model."""
 
-    dbt_materialization_type: str | None | UnsetType = UNSET
+    dbt_materialization_type: Union[str, None, UnsetType] = UNSET
     """Type of materialization used for the dbt model."""
 
-    dbt_model_compile_started_at: int | None | UnsetType = UNSET
+    dbt_model_compile_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation started."""
 
-    dbt_model_compile_completed_at: int | None | UnsetType = UNSET
+    dbt_model_compile_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation completed."""
 
-    dbt_model_execute_started_at: int | None | UnsetType = UNSET
+    dbt_model_execute_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution started."""
 
-    dbt_model_execute_completed_at: int | None | UnsetType = UNSET
+    dbt_model_execute_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution completed."""
 
-    dbt_model_execution_time: float | None | UnsetType = UNSET
+    dbt_model_execution_time: Union[float, None, UnsetType] = UNSET
     """Execution time of the dbt model."""
 
-    dbt_model_run_generated_at: int | None | UnsetType = UNSET
+    dbt_model_run_generated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model run was generated."""
 
-    dbt_model_run_elapsed_time: float | None | UnsetType = UNSET
+    dbt_model_run_elapsed_time: Union[float, None, UnsetType] = UNSET
     """Elapsed time of the dbt model run."""
 
-    dbt_alias: str | None | UnsetType = UNSET
+    dbt_alias: Union[str, None, UnsetType] = UNSET
     """Alias of this asset in dbt."""
 
-    dbt_meta: str | None | UnsetType = UNSET
+    dbt_meta: Union[str, None, UnsetType] = UNSET
     """Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object."""
 
-    dbt_unique_id: str | None | UnsetType = UNSET
+    dbt_unique_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of this asset in dbt."""
 
-    dbt_account_name: str | None | UnsetType = UNSET
+    dbt_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account in which this asset exists in dbt."""
 
-    dbt_project_name: str | None | UnsetType = UNSET
+    dbt_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which this asset exists in dbt."""
 
-    dbt_package_name: str | None | UnsetType = UNSET
+    dbt_package_name: Union[str, None, UnsetType] = UNSET
     """Name of the package in which this asset exists in dbt."""
 
-    dbt_job_name: str | None | UnsetType = UNSET
+    dbt_job_name: Union[str, None, UnsetType] = UNSET
     """Name of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule: str | None | UnsetType = UNSET
+    dbt_job_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_status: str | None | UnsetType = UNSET
+    dbt_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule_cron_humanized: str | None | UnsetType = UNSET
+    dbt_job_schedule_cron_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable cron schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_last_run: int | None | UnsetType = UNSET
+    dbt_job_last_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds."""
 
-    dbt_job_next_run: int | None | UnsetType = UNSET
+    dbt_job_next_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds."""
 
-    dbt_job_next_run_humanized: str | None | UnsetType = UNSET
+    dbt_job_next_run_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable time at which the job that materialized this asset in dbt will next run."""
 
-    dbt_environment_name: str | None | UnsetType = UNSET
+    dbt_environment_name: Union[str, None, UnsetType] = UNSET
     """Name of the environment in which this asset exists in dbt."""
 
-    dbt_environment_dbt_version: str | None | UnsetType = UNSET
+    dbt_environment_dbt_version: Union[str, None, UnsetType] = UNSET
     """Version of dbt used in the environment."""
 
-    dbt_tags: list[str] | None | UnsetType = UNSET
+    dbt_tags: Union[List[str], None, UnsetType] = UNSET
     """List of tags attached to this asset in dbt."""
 
-    dbt_connection_context: str | None | UnsetType = UNSET
+    dbt_connection_context: Union[str, None, UnsetType] = UNSET
     """Connection context for this asset in dbt."""
 
-    dbt_semantic_layer_proxy_url: str | None | UnsetType = UNSET
+    dbt_semantic_layer_proxy_url: Union[str, None, UnsetType] = UNSET
     """URL of the semantic layer proxy for this asset in dbt."""
 
-    dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
+    dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    sql_asset: RelatedSQL | None | UnsetType = UNSET
+    sql_asset: Union[RelatedSQL, None, UnsetType] = UNSET
     """(Deprecated) Assets related to the model."""
 
-    dbt_model_sql_assets: list[RelatedSQL] | None | UnsetType = UNSET
+    dbt_model_sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Model containing the assets."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this model."""
 
-    dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
+    dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
     """Metrics that exist within this model."""
 
-    dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """Columns that exist within this dbt model."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -396,224 +404,236 @@ class DbtModel(Asset):
 class DbtModelAttributes(AssetAttributes):
     """DbtModel-specific attributes for nested API format."""
 
-    dbt_status: str | None | UnsetType = UNSET
+    dbt_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt model."""
 
-    dbt_error: str | None | UnsetType = UNSET
+    dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtRawSQL")
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtRawSQL"
+    )
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: str | None | UnsetType = msgspec.field(
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dbtCompiledSQL"
     )
     """Compiled SQL of the dbt model."""
 
-    dbt_stats: str | None | UnsetType = UNSET
+    dbt_stats: Union[str, None, UnsetType] = UNSET
     """Statistics of the dbt model."""
 
-    dbt_materialization_type: str | None | UnsetType = UNSET
+    dbt_materialization_type: Union[str, None, UnsetType] = UNSET
     """Type of materialization used for the dbt model."""
 
-    dbt_model_compile_started_at: int | None | UnsetType = UNSET
+    dbt_model_compile_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation started."""
 
-    dbt_model_compile_completed_at: int | None | UnsetType = UNSET
+    dbt_model_compile_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model compilation completed."""
 
-    dbt_model_execute_started_at: int | None | UnsetType = UNSET
+    dbt_model_execute_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution started."""
 
-    dbt_model_execute_completed_at: int | None | UnsetType = UNSET
+    dbt_model_execute_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model execution completed."""
 
-    dbt_model_execution_time: float | None | UnsetType = UNSET
+    dbt_model_execution_time: Union[float, None, UnsetType] = UNSET
     """Execution time of the dbt model."""
 
-    dbt_model_run_generated_at: int | None | UnsetType = UNSET
+    dbt_model_run_generated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the dbt model run was generated."""
 
-    dbt_model_run_elapsed_time: float | None | UnsetType = UNSET
+    dbt_model_run_elapsed_time: Union[float, None, UnsetType] = UNSET
     """Elapsed time of the dbt model run."""
 
-    dbt_alias: str | None | UnsetType = UNSET
+    dbt_alias: Union[str, None, UnsetType] = UNSET
     """Alias of this asset in dbt."""
 
-    dbt_meta: str | None | UnsetType = UNSET
+    dbt_meta: Union[str, None, UnsetType] = UNSET
     """Metadata for this asset in dbt, specifically everything under the 'meta' key in the dbt object."""
 
-    dbt_unique_id: str | None | UnsetType = UNSET
+    dbt_unique_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of this asset in dbt."""
 
-    dbt_account_name: str | None | UnsetType = UNSET
+    dbt_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account in which this asset exists in dbt."""
 
-    dbt_project_name: str | None | UnsetType = UNSET
+    dbt_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which this asset exists in dbt."""
 
-    dbt_package_name: str | None | UnsetType = UNSET
+    dbt_package_name: Union[str, None, UnsetType] = UNSET
     """Name of the package in which this asset exists in dbt."""
 
-    dbt_job_name: str | None | UnsetType = UNSET
+    dbt_job_name: Union[str, None, UnsetType] = UNSET
     """Name of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule: str | None | UnsetType = UNSET
+    dbt_job_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_status: str | None | UnsetType = UNSET
+    dbt_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the job that materialized this asset in dbt."""
 
-    dbt_job_schedule_cron_humanized: str | None | UnsetType = UNSET
+    dbt_job_schedule_cron_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable cron schedule of the job that materialized this asset in dbt."""
 
-    dbt_job_last_run: int | None | UnsetType = UNSET
+    dbt_job_last_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt last ran, in milliseconds."""
 
-    dbt_job_next_run: int | None | UnsetType = UNSET
+    dbt_job_next_run: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the job that materialized this asset in dbt will next run, in milliseconds."""
 
-    dbt_job_next_run_humanized: str | None | UnsetType = UNSET
+    dbt_job_next_run_humanized: Union[str, None, UnsetType] = UNSET
     """Human-readable time at which the job that materialized this asset in dbt will next run."""
 
-    dbt_environment_name: str | None | UnsetType = UNSET
+    dbt_environment_name: Union[str, None, UnsetType] = UNSET
     """Name of the environment in which this asset exists in dbt."""
 
-    dbt_environment_dbt_version: str | None | UnsetType = UNSET
+    dbt_environment_dbt_version: Union[str, None, UnsetType] = UNSET
     """Version of dbt used in the environment."""
 
-    dbt_tags: list[str] | None | UnsetType = UNSET
+    dbt_tags: Union[List[str], None, UnsetType] = UNSET
     """List of tags attached to this asset in dbt."""
 
-    dbt_connection_context: str | None | UnsetType = UNSET
+    dbt_connection_context: Union[str, None, UnsetType] = UNSET
     """Connection context for this asset in dbt."""
 
-    dbt_semantic_layer_proxy_url: str | None | UnsetType = UNSET
+    dbt_semantic_layer_proxy_url: Union[str, None, UnsetType] = UNSET
     """URL of the semantic layer proxy for this asset in dbt."""
 
-    dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
+    dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
 
 class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     """DbtModel-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    sql_asset: RelatedSQL | None | UnsetType = UNSET
+    sql_asset: Union[RelatedSQL, None, UnsetType] = UNSET
     """(Deprecated) Assets related to the model."""
 
-    dbt_model_sql_assets: list[RelatedSQL] | None | UnsetType = UNSET
+    dbt_model_sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Model containing the assets."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this model."""
 
-    dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
+    dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
     """Metrics that exist within this model."""
 
-    dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """Columns that exist within this dbt model."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class DbtModelNested(AssetNested):
     """DbtModel in nested API format for high-performance serialization."""
 
-    attributes: DbtModelAttributes | UnsetType = UNSET
-    relationship_attributes: DbtModelRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DbtModelRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DbtModelRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[DbtModelAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_DBT_MODEL_REL_FIELDS: list[str] = [
+_DBT_MODEL_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

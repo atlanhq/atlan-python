@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedEventStore
@@ -34,13 +36,13 @@ class RelatedAzureServiceBus(RelatedEventStore):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AzureServiceBus" so it serializes correctly
 
-    azure_service_bus_namespace_qualified_name: str | None | UnsetType = UNSET
+    azure_service_bus_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AzureServiceBus Namespace in which this asset exists."""
 
-    azure_service_bus_namespace_name: str | None | UnsetType = UNSET
+    azure_service_bus_namespace_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the AzureServiceBus Namespace in which this asset exists."""
 
-    azure_service_bus_schema_qualified_name: str | None | UnsetType = UNSET
+    azure_service_bus_schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AzureServiceBus Schema in which this asset exists."""
 
     def __post_init__(self) -> None:

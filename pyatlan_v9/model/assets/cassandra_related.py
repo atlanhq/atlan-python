@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -37,19 +39,19 @@ class RelatedCassandra(RelatedNoSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Cassandra" so it serializes correctly
 
-    cassandra_keyspace_name: str | None | UnsetType = UNSET
+    cassandra_keyspace_name: Union[str, None, UnsetType] = UNSET
     """Name of the keyspace for the Cassandra asset."""
 
-    cassandra_table_name: str | None | UnsetType = UNSET
+    cassandra_table_name: Union[str, None, UnsetType] = UNSET
     """Name of the table for the Cassandra asset."""
 
-    cassandra_view_name: str | None | UnsetType = UNSET
+    cassandra_view_name: Union[str, None, UnsetType] = UNSET
     """Name of view for Cassandra asset"""
 
-    cassandra_table_qualified_name: str | None | UnsetType = UNSET
+    cassandra_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of table for Cassandra asset"""
 
-    cassandra_view_qualified_name: str | None | UnsetType = UNSET
+    cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
     def __post_init__(self) -> None:
@@ -67,25 +69,25 @@ class RelatedCassandraColumn(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraColumn" so it serializes correctly
 
-    cassandra_column_clustering_order: str | None | UnsetType = UNSET
+    cassandra_column_clustering_order: Union[str, None, UnsetType] = UNSET
     """Clustering order of the CassandraColumn."""
 
-    cassandra_column_is_partition_key: bool | None | UnsetType = UNSET
+    cassandra_column_is_partition_key: Union[bool, None, UnsetType] = UNSET
     """Is the CassandraColumn partition key."""
 
-    cassandra_column_is_clustering_key: bool | None | UnsetType = UNSET
+    cassandra_column_is_clustering_key: Union[bool, None, UnsetType] = UNSET
     """Is the CassandraColumn clustering key."""
 
-    cassandra_column_kind: str | None | UnsetType = UNSET
+    cassandra_column_kind: Union[str, None, UnsetType] = UNSET
     """Kind of CassandraColumn (e.g. partition key, clustering column, etc)."""
 
-    cassandra_column_position: int | None | UnsetType = UNSET
+    cassandra_column_position: Union[int, None, UnsetType] = UNSET
     """Position of the CassandraColumn."""
 
-    cassandra_column_type: str | None | UnsetType = UNSET
+    cassandra_column_type: Union[str, None, UnsetType] = UNSET
     """Type of the CassandraColumn."""
 
-    cassandra_column_is_static: bool | None | UnsetType = UNSET
+    cassandra_column_is_static: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the CassandraColumn is static."""
 
     def __post_init__(self) -> None:
@@ -103,13 +105,13 @@ class RelatedCassandraIndex(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraIndex" so it serializes correctly
 
-    cassandra_index_kind: str | None | UnsetType = UNSET
+    cassandra_index_kind: Union[str, None, UnsetType] = UNSET
     """Kind of index (e.g. COMPOSITES)."""
 
-    cassandra_index_options: dict[str, str] | None | UnsetType = UNSET
+    cassandra_index_options: Union[Dict[str, str], None, UnsetType] = UNSET
     """Options for the index."""
 
-    cassandra_index_query: str | None | UnsetType = UNSET
+    cassandra_index_query: Union[str, None, UnsetType] = UNSET
     """Query used to create the index."""
 
     def __post_init__(self) -> None:
@@ -127,16 +129,16 @@ class RelatedCassandraKeyspace(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraKeyspace" so it serializes correctly
 
-    cassandra_keyspace_durable_writes: bool | None | UnsetType = UNSET
+    cassandra_keyspace_durable_writes: Union[bool, None, UnsetType] = UNSET
     """Indicates whether durable writes are enabled for the CassandraKeyspace."""
 
-    cassandra_keyspace_replication: dict[str, str] | None | UnsetType = UNSET
+    cassandra_keyspace_replication: Union[Dict[str, str], None, UnsetType] = UNSET
     """Replication class for the CassandraKeyspace."""
 
-    cassandra_keyspace_virtual: bool | None | UnsetType = UNSET
+    cassandra_keyspace_virtual: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the CassandraKeyspace is virtual."""
 
-    cassandra_keyspace_query: str | None | UnsetType = UNSET
+    cassandra_keyspace_query: Union[str, None, UnsetType] = UNSET
     """Query associated with the CassandraKeyspace."""
 
     def __post_init__(self) -> None:
@@ -154,68 +156,68 @@ class RelatedCassandraTable(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraTable" so it serializes correctly
 
-    cassandra_table_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
-        default=UNSET, name="cassandraTableBloomFilterFPChance"
+    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
     )
     """Bloom filter false positive chance for the CassandraTable."""
 
-    cassandra_table_caching: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_caching: Union[Dict[str, str], None, UnsetType] = UNSET
     """Caching behavior in Cassandra."""
 
-    cassandra_table_comment: str | None | UnsetType = UNSET
+    cassandra_table_comment: Union[str, None, UnsetType] = UNSET
     """Comment describing the CassandraTable's purpose or usage in Cassandra."""
 
-    cassandra_table_compaction: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compaction: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compaction used for the CassandraTable in Cassandra."""
 
-    cassandra_table_compression: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compression: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: float | None | UnsetType = msgspec.field(
+    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableCRCCheckChance"
     )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: float | None | UnsetType = (
+    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
     )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: int | None | UnsetType = msgspec.field(
+    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableDefaultTTL"
     )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
-    cassandra_table_flags: list[str] | None | UnsetType = UNSET
+    cassandra_table_flags: Union[List[str], None, UnsetType] = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableGCGraceSeconds"
     )
     """Grace period for garbage collection in the CassandraTable."""
 
-    cassandra_table_id: str | None | UnsetType = UNSET
+    cassandra_table_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the CassandraTable."""
 
-    cassandra_table_max_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_max_index_interval: Union[int, None, UnsetType] = UNSET
     """Maximum index interval for the CassandraTable."""
 
-    cassandra_table_memtable_flush_period_in_ms: int | None | UnsetType = UNSET
+    cassandra_table_memtable_flush_period_in_ms: Union[int, None, UnsetType] = UNSET
     """Memtable flush period for the CassandraTable (in milliseconds)."""
 
-    cassandra_table_min_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_min_index_interval: Union[int, None, UnsetType] = UNSET
     """Minimum index interval for the CassandraTable."""
 
-    cassandra_table_read_repair_chance: float | None | UnsetType = UNSET
+    cassandra_table_read_repair_chance: Union[float, None, UnsetType] = UNSET
     """Read repair chance for the CassandraTable."""
 
-    cassandra_table_speculative_retry: str | None | UnsetType = UNSET
+    cassandra_table_speculative_retry: Union[str, None, UnsetType] = UNSET
     """Speculative retry setting for the CassandraTable."""
 
-    cassandra_table_virtual: bool | None | UnsetType = UNSET
+    cassandra_table_virtual: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the CassandraTable is virtual."""
 
-    cassandra_table_query: str | None | UnsetType = UNSET
+    cassandra_table_query: Union[str, None, UnsetType] = UNSET
     """Query used to create the CassandraTable in Cassandra."""
 
     def __post_init__(self) -> None:
@@ -233,67 +235,67 @@ class RelatedCassandraView(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraView" so it serializes correctly
 
-    cassandra_view_table_id: str | None | UnsetType = UNSET
+    cassandra_view_table_id: Union[str, None, UnsetType] = UNSET
     """ID of the base table in the CassandraView."""
 
-    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
-        default=UNSET, name="cassandraViewBloomFilterFPChance"
+    cassandra_view_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraViewBloomFilterFPChance")
     )
     """False positive chance for the Bloom filter in the CassandraView."""
 
-    cassandra_view_caching: dict[str, str] | None | UnsetType = UNSET
+    cassandra_view_caching: Union[Dict[str, str], None, UnsetType] = UNSET
     """Caching configuration in the CassandraView."""
 
-    cassandra_view_comment: str | None | UnsetType = UNSET
+    cassandra_view_comment: Union[str, None, UnsetType] = UNSET
     """Comment describing the CassandraView."""
 
-    cassandra_view_compaction: dict[str, str] | None | UnsetType = UNSET
+    cassandra_view_compaction: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compaction for the CassandraView."""
 
-    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(
+    cassandra_view_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraViewCRCCheckChance"
     )
     """CRC check chance for the CassandraView."""
 
-    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = (
+    cassandra_view_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
     )
     """DC-local read repair chance for the CassandraView."""
 
-    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(
+    cassandra_view_default_ttl: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraViewDefaultTTL"
     )
     """Default time-to-live (TTL) for the CassandraView."""
 
-    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+    cassandra_view_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraViewGCGraceSeconds"
     )
     """Grace period for garbage collection in the CassandraView."""
 
-    cassandra_view_include_all_columns: bool | None | UnsetType = UNSET
+    cassandra_view_include_all_columns: Union[bool, None, UnsetType] = UNSET
     """Whether to include all columns in the CassandraView."""
 
-    cassandra_view_max_index_interval: int | None | UnsetType = UNSET
+    cassandra_view_max_index_interval: Union[int, None, UnsetType] = UNSET
     """Maximum index interval for the CassandraView."""
 
-    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(
-        default=UNSET, name="cassandraViewMembtableFlushPeriodInMS"
+    cassandra_view_membtable_flush_period_in_ms: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraViewMembtableFlushPeriodInMS")
     )
     """Memtable flush period (in milliseconds) for the CassandraView."""
 
-    cassandra_view_min_index_interval: int | None | UnsetType = UNSET
+    cassandra_view_min_index_interval: Union[int, None, UnsetType] = UNSET
     """Minimum index interval for the CassandraView."""
 
-    cassandra_view_read_repair_interval: int | None | UnsetType = UNSET
+    cassandra_view_read_repair_interval: Union[int, None, UnsetType] = UNSET
     """Read repair interval for the CassandraView."""
 
-    cassandra_view_query: str | None | UnsetType = UNSET
+    cassandra_view_query: Union[str, None, UnsetType] = UNSET
     """Query used in the CassandraView."""
 
-    cassandra_view_where_clause: str | None | UnsetType = UNSET
+    cassandra_view_where_clause: Union[str, None, UnsetType] = UNSET
     """Where clause used for the CassandraView query."""
 
-    cassandra_view_speculative_retry: str | None | UnsetType = UNSET
+    cassandra_view_speculative_retry: Union[str, None, UnsetType] = UNSET
     """SpeculativeRetry setting for the CassandraView."""
 
     def __post_init__(self) -> None:

@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -35,37 +37,37 @@ class RelatedAI(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AI" so it serializes correctly
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
     )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIFairnessConfig"
     )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIBiasMitigationConfig"
     )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
-        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
     )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAITransparencyConfig"
     )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIAccountabilityConfig"
     )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
@@ -85,10 +87,10 @@ class RelatedAIApplication(RelatedAI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AIApplication" so it serializes correctly
 
-    ai_application_version: str | None | UnsetType = UNSET
+    ai_application_version: Union[str, None, UnsetType] = UNSET
     """Version of the AI application"""
 
-    ai_application_development_stage: str | None | UnsetType = UNSET
+    ai_application_development_stage: Union[str, None, UnsetType] = UNSET
     """Development stage of the AI application"""
 
     def __post_init__(self) -> None:
@@ -106,15 +108,15 @@ class RelatedAIModel(RelatedAI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AIModel" so it serializes correctly
 
-    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(
+    ai_model_datasets_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="aiModelDatasetsDSL"
     )
     """Search DSL used to define which assets/datasets are part of the AI model."""
 
-    ai_model_status: str | None | UnsetType = UNSET
+    ai_model_status: Union[str, None, UnsetType] = UNSET
     """Status of the AI model."""
 
-    ai_model_version: str | None | UnsetType = UNSET
+    ai_model_version: Union[str, None, UnsetType] = UNSET
     """Version of the AI model."""
 
     def __post_init__(self) -> None:

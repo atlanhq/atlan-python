@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -32,19 +34,19 @@ class RelatedSpark(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Spark" so it serializes correctly
 
-    spark_run_version: str | None | UnsetType = UNSET
+    spark_run_version: Union[str, None, UnsetType] = UNSET
     """Spark Version for the Spark Job run eg. 3.4.1"""
 
-    spark_run_open_lineage_version: str | None | UnsetType = UNSET
+    spark_run_open_lineage_version: Union[str, None, UnsetType] = UNSET
     """OpenLineage Version of the Spark Job run eg. 1.1.0"""
 
-    spark_run_start_time: int | None | UnsetType = UNSET
+    spark_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the Spark Job eg. 1695673598218"""
 
-    spark_run_end_time: int | None | UnsetType = UNSET
+    spark_run_end_time: Union[int, None, UnsetType] = UNSET
     """End time of the Spark Job eg. 1695673598218"""
 
-    spark_run_open_lineage_state: str | None | UnsetType = UNSET
+    spark_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """OpenLineage state of the Spark Job run eg. COMPLETE"""
 
     def __post_init__(self) -> None:
@@ -62,10 +64,10 @@ class RelatedSparkJob(RelatedSpark):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SparkJob" so it serializes correctly
 
-    spark_app_name: str | None | UnsetType = UNSET
+    spark_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the Spark app containing this Spark Job For eg. extract_raw_data"""
 
-    spark_master: str | None | UnsetType = UNSET
+    spark_master: Union[str, None, UnsetType] = UNSET
     """The Spark master URL eg. local, local[4], or spark://master:7077"""
 
     def __post_init__(self) -> None:

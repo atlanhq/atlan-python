@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -98,7 +100,7 @@ class RelatedNoSQL(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "NoSQL" so it serializes correctly
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""

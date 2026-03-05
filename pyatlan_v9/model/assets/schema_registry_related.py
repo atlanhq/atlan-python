@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -32,10 +34,10 @@ class RelatedSchemaRegistry(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SchemaRegistry" so it serializes correctly
 
-    schema_registry_schema_type: str | None | UnsetType = UNSET
+    schema_registry_schema_type: Union[str, None, UnsetType] = UNSET
     """Type of language or specification used to define the schema, for example: JSON, Protobuf, etc."""
 
-    schema_registry_schema_id: str | None | UnsetType = UNSET
+    schema_registry_schema_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for schema definition set by the schema registry."""
 
     def __post_init__(self) -> None:
@@ -53,24 +55,26 @@ class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SchemaRegistrySubject" so it serializes correctly
 
-    schema_registry_subject_base_name: str | None | UnsetType = UNSET
+    schema_registry_subject_base_name: Union[str, None, UnsetType] = UNSET
     """Base name of the subject, without -key, -value prefixes."""
 
-    schema_registry_subject_is_key_schema: bool | None | UnsetType = UNSET
+    schema_registry_subject_is_key_schema: Union[bool, None, UnsetType] = UNSET
     """Whether the subject is a schema for the keys of the messages (true) or not (false)."""
 
-    schema_registry_subject_schema_compatibility: str | None | UnsetType = UNSET
+    schema_registry_subject_schema_compatibility: Union[str, None, UnsetType] = UNSET
     """Compatibility of the schema across versions."""
 
-    schema_registry_subject_latest_schema_version: str | None | UnsetType = UNSET
+    schema_registry_subject_latest_schema_version: Union[str, None, UnsetType] = UNSET
     """Latest schema version of the subject."""
 
-    schema_registry_subject_latest_schema_definition: str | None | UnsetType = UNSET
+    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Definition of the latest schema in the subject."""
 
-    schema_registry_subject_governing_asset_qualified_names: (
-        list[str] | None | UnsetType
-    ) = UNSET
+    schema_registry_subject_governing_asset_qualified_names: Union[
+        List[str], None, UnsetType
+    ] = UNSET
     """List of asset qualified names that this subject is governing/validating."""
 
     def __post_init__(self) -> None:

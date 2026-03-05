@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .data_quality_related import RelatedDataQuality
@@ -47,22 +49,22 @@ class RelatedSodaCheck(RelatedSoda):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SodaCheck" so it serializes correctly
 
-    soda_id: str | None | UnsetType = UNSET
+    soda_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_evaluation_status: str | None | UnsetType = UNSET
+    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
-    soda_check_definition: str | None | UnsetType = UNSET
+    soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_last_scan_at: int | None | UnsetType = UNSET
+    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_incident_count: int | None | UnsetType = UNSET
+    soda_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_linked_asset_qualified_name: str | None | UnsetType = UNSET
+    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     def __post_init__(self) -> None:

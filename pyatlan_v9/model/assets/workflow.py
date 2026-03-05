@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -85,87 +85,91 @@ class Workflow(Asset):
 
     type_name: Union[str, UnsetType] = "Workflow"
 
-    workflow_template_guid: str | None | UnsetType = UNSET
+    workflow_template_guid: Union[str, None, UnsetType] = UNSET
     """GUID of the workflow template from which this workflow was created."""
 
-    workflow_type: str | None | UnsetType = UNSET
+    workflow_type: Union[str, None, UnsetType] = UNSET
     """Type of the workflow."""
 
-    workflow_action_choices: list[str] | None | UnsetType = UNSET
+    workflow_action_choices: Union[List[str], None, UnsetType] = UNSET
     """List of workflow action choices."""
 
-    workflow_config: str | None | UnsetType = UNSET
+    workflow_config: Union[str, None, UnsetType] = UNSET
     """Details of the workflow."""
 
-    workflow_status: str | None | UnsetType = UNSET
+    workflow_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    workflow_run_expires_in: str | None | UnsetType = UNSET
+    workflow_run_expires_in: Union[str, None, UnsetType] = UNSET
     """Time duration after which a run of this workflow will expire."""
 
-    workflow_created_by: str | None | UnsetType = UNSET
+    workflow_created_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who created this workflow."""
 
-    workflow_updated_by: str | None | UnsetType = UNSET
+    workflow_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this workflow."""
 
-    workflow_deleted_at: int | None | UnsetType = UNSET
+    workflow_deleted_at: Union[int, None, UnsetType] = UNSET
     """Deletion time of this workflow."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -226,108 +230,116 @@ class Workflow(Asset):
 class WorkflowAttributes(AssetAttributes):
     """Workflow-specific attributes for nested API format."""
 
-    workflow_template_guid: str | None | UnsetType = UNSET
+    workflow_template_guid: Union[str, None, UnsetType] = UNSET
     """GUID of the workflow template from which this workflow was created."""
 
-    workflow_type: str | None | UnsetType = UNSET
+    workflow_type: Union[str, None, UnsetType] = UNSET
     """Type of the workflow."""
 
-    workflow_action_choices: list[str] | None | UnsetType = UNSET
+    workflow_action_choices: Union[List[str], None, UnsetType] = UNSET
     """List of workflow action choices."""
 
-    workflow_config: str | None | UnsetType = UNSET
+    workflow_config: Union[str, None, UnsetType] = UNSET
     """Details of the workflow."""
 
-    workflow_status: str | None | UnsetType = UNSET
+    workflow_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    workflow_run_expires_in: str | None | UnsetType = UNSET
+    workflow_run_expires_in: Union[str, None, UnsetType] = UNSET
     """Time duration after which a run of this workflow will expire."""
 
-    workflow_created_by: str | None | UnsetType = UNSET
+    workflow_created_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who created this workflow."""
 
-    workflow_updated_by: str | None | UnsetType = UNSET
+    workflow_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this workflow."""
 
-    workflow_deleted_at: int | None | UnsetType = UNSET
+    workflow_deleted_at: Union[int, None, UnsetType] = UNSET
     """Deletion time of this workflow."""
 
 
 class WorkflowRelationshipAttributes(AssetRelationshipAttributes):
     """Workflow-specific relationship attributes for nested API format."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
 
 class WorkflowNested(AssetNested):
     """Workflow in nested API format for high-performance serialization."""
 
-    attributes: WorkflowAttributes | UnsetType = UNSET
-    relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[WorkflowAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[WorkflowRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[WorkflowRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[WorkflowRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_WORKFLOW_REL_FIELDS: list[str] = [
+_WORKFLOW_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "anomalo_checks",
     "application",

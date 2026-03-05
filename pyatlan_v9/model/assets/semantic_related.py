@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -66,25 +68,25 @@ class RelatedSemanticField(RelatedSemantic):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SemanticField" so it serializes correctly
 
-    semantic_expression: str | None | UnsetType = UNSET
+    semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 
-    semantic_type: str | None | UnsetType = UNSET
+    semantic_type: Union[str, None, UnsetType] = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
 
-    semantic_synonyms: list[str] | None | UnsetType = UNSET
+    semantic_synonyms: Union[List[str], None, UnsetType] = UNSET
     """Alternative names or terms for the semantic field."""
 
-    semantic_sample_values: list[str] | None | UnsetType = UNSET
+    semantic_sample_values: Union[List[str], None, UnsetType] = UNSET
     """Sample values for the semantic field."""
 
-    semantic_access_modifier: str | None | UnsetType = UNSET
+    semantic_access_modifier: Union[str, None, UnsetType] = UNSET
     """Access level for the semantic field (e.g., public_access/private_access)."""
 
-    semantic_data_type: str | None | UnsetType = UNSET
+    semantic_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the semantic field."""
 
-    semantic_labels: list[str] | None | UnsetType = UNSET
+    semantic_labels: Union[List[str], None, UnsetType] = UNSET
     """Labels associated with the semantic field."""
 
     def __post_init__(self) -> None:

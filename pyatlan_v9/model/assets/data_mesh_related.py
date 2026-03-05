@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import List, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -36,10 +38,10 @@ class RelatedDataMesh(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataMesh" so it serializes correctly
 
-    parent_domain_qualified_name: str | None | UnsetType = UNSET
+    parent_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent domain in which this asset exists."""
 
-    super_domain_qualified_name: str | None | UnsetType = UNSET
+    super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
 
     def __post_init__(self) -> None:
@@ -87,57 +89,57 @@ class RelatedDataProduct(RelatedDataMesh):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataProduct" so it serializes correctly
 
-    data_product_status: str | None | UnsetType = UNSET
+    data_product_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product."""
 
-    daap_status: str | None | UnsetType = UNSET
+    daap_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product."""
 
-    data_product_criticality: str | None | UnsetType = UNSET
+    data_product_criticality: Union[str, None, UnsetType] = UNSET
     """Criticality of this data product."""
 
-    daap_criticality: str | None | UnsetType = UNSET
+    daap_criticality: Union[str, None, UnsetType] = UNSET
     """Criticality of this data product."""
 
-    data_product_sensitivity: str | None | UnsetType = UNSET
+    data_product_sensitivity: Union[str, None, UnsetType] = UNSET
     """Information sensitivity of this data product."""
 
-    daap_sensitivity: str | None | UnsetType = UNSET
+    daap_sensitivity: Union[str, None, UnsetType] = UNSET
     """Information sensitivity of this data product."""
 
-    data_product_visibility: str | None | UnsetType = UNSET
+    data_product_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    daap_visibility: str | None | UnsetType = UNSET
+    daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: str | None | UnsetType = msgspec.field(
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dataProductAssetsDSL"
     )
     """Search DSL used to define which assets are part of this data product."""
 
-    data_product_assets_playbook_filter: str | None | UnsetType = UNSET
+    data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
     """Playbook filter to define which assets are part of this data product."""
 
-    data_product_score_value: float | None | UnsetType = UNSET
+    data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_mesh_score_updated_at: int | None | UnsetType = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
-    daap_visibility_users: list[str] | None | UnsetType = UNSET
+    daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
     """list of users for product visibility control"""
 
-    daap_visibility_groups: list[str] | None | UnsetType = UNSET
+    daap_visibility_groups: Union[List[str], None, UnsetType] = UNSET
     """list of groups for product visibility control"""
 
-    daap_output_port_guids: list[str] | None | UnsetType = UNSET
+    daap_output_port_guids: Union[List[str], None, UnsetType] = UNSET
     """Output ports guids for this data product."""
 
-    daap_input_port_guids: list[str] | None | UnsetType = UNSET
+    daap_input_port_guids: Union[List[str], None, UnsetType] = UNSET
     """Input ports guids for this data product."""
 
-    daap_lineage_status: str | None | UnsetType = UNSET
+    daap_lineage_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product lineage."""
 
     def __post_init__(self) -> None:
@@ -155,10 +157,10 @@ class RelatedStakeholder(RelatedDataMesh):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Stakeholder" so it serializes correctly
 
-    stakeholder_domain_qualified_name: str | None | UnsetType = UNSET
+    stakeholder_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """"""
 
-    stakeholder_title_guid: str | None | UnsetType = UNSET
+    stakeholder_title_guid: Union[str, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:

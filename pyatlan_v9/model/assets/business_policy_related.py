@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -37,38 +37,38 @@ class RelatedBusinessPolicy(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BusinessPolicy" so it serializes correctly
 
-    business_policy_type: str | None | UnsetType = UNSET
+    business_policy_type: Union[str, None, UnsetType] = UNSET
     """Type of business policy"""
 
-    business_policy_long_description: str | None | UnsetType = UNSET
+    business_policy_long_description: Union[str, None, UnsetType] = UNSET
     """Body of the business policy, a long readme like document"""
 
-    business_policy_valid_till: int | None | UnsetType = UNSET
+    business_policy_valid_till: Union[int, None, UnsetType] = UNSET
     """Validity end date of the policy"""
 
-    business_policy_valid_from: int | None | UnsetType = UNSET
+    business_policy_valid_from: Union[int, None, UnsetType] = UNSET
     """Validity start date of the policy"""
 
-    business_policy_version: int | None | UnsetType = UNSET
+    business_policy_version: Union[int, None, UnsetType] = UNSET
     """Version of the policy"""
 
-    business_policy_review_period: str | None | UnsetType = UNSET
+    business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: str | None | UnsetType = msgspec.field(
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicyFilterDSL"
     )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
-    business_policy_base_parent_guid: str | None | UnsetType = UNSET
+    business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: str | None | UnsetType = msgspec.field(
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicySelectedApprovalWF"
     )
     """Selected approval workflow id for business policy"""
 
-    business_policy_rules: list[dict[str, Any]] | None | UnsetType = UNSET
+    business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of rules applied to this business policy."""
 
     def __post_init__(self) -> None:
@@ -86,16 +86,16 @@ class RelatedBusinessPolicyException(RelatedBusinessPolicy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BusinessPolicyException" so it serializes correctly
 
-    business_policy_exception_users: list[str] | None | UnsetType = UNSET
+    business_policy_exception_users: Union[List[str], None, UnsetType] = UNSET
     """List of users who are part of this exception"""
 
-    business_policy_exception_groups: list[str] | None | UnsetType = UNSET
+    business_policy_exception_groups: Union[List[str], None, UnsetType] = UNSET
     """List of groups who are part of this exception"""
 
-    business_policy_qualified_name: str | None | UnsetType = UNSET
+    business_policy_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the business policy through which this asset is accessible."""
 
-    business_policy_exception_filter_dsl: str | None | UnsetType = msgspec.field(
+    business_policy_exception_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicyExceptionFilterDSL"
     )
     """Business Policy Exception Filter ES DSL to denote the associate asset/s involved."""
@@ -115,15 +115,15 @@ class RelatedBusinessPolicyIncident(RelatedBusinessPolicy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BusinessPolicyIncident" so it serializes correctly
 
-    business_policy_incident_noncompliant_count: int | None | UnsetType = UNSET
+    business_policy_incident_noncompliant_count: Union[int, None, UnsetType] = UNSET
     """count of noncompliant assets in the incident"""
 
-    business_policy_incident_related_policy_guids: list[str] | None | UnsetType = (
+    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = (
         msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
     )
     """policy ids related to this incident"""
 
-    business_policy_incident_filter_dsl: str | None | UnsetType = msgspec.field(
+    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicyIncidentFilterDSL"
     )
     """Filter ES DSL to denote the associate asset/s involved."""
@@ -143,22 +143,22 @@ class RelatedBusinessPolicyLog(RelatedBusinessPolicy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BusinessPolicyLog" so it serializes correctly
 
-    business_policy_id: str | None | UnsetType = UNSET
+    business_policy_id: Union[str, None, UnsetType] = UNSET
     """business policy guid for which log are created"""
 
-    business_policy_log_policy_type: str | None | UnsetType = UNSET
+    business_policy_log_policy_type: Union[str, None, UnsetType] = UNSET
     """business policy type for which log are created"""
 
-    governed_assets_count: int | None | UnsetType = UNSET
+    governed_assets_count: Union[int, None, UnsetType] = UNSET
     """number of governed assets in the policy"""
 
-    non_governed_assets_count: int | None | UnsetType = UNSET
+    non_governed_assets_count: Union[int, None, UnsetType] = UNSET
     """number of non governed assets in the policy"""
 
-    compliant_assets_count: int | None | UnsetType = UNSET
+    compliant_assets_count: Union[int, None, UnsetType] = UNSET
     """number of compliant assets in the policy"""
 
-    non_compliant_assets_count: int | None | UnsetType = UNSET
+    non_compliant_assets_count: Union[int, None, UnsetType] = UNSET
     """number of non compliant assets in the policy"""
 
     def __post_init__(self) -> None:

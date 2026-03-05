@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -37,10 +37,10 @@ class RelatedIceberg(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Iceberg" so it serializes correctly
 
-    iceberg_parent_namespace_qualified_name: str | None | UnsetType = UNSET
+    iceberg_parent_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent namespace in which this asset exists."""
 
-    iceberg_namespace_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    iceberg_namespace_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of namespace assets with qualified name and name representing the complete namespace hierarchy path for this asset, from immediate parent to root namespace."""
 
     def __post_init__(self) -> None:
@@ -58,19 +58,19 @@ class RelatedIcebergCatalog(RelatedIceberg):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "IcebergCatalog" so it serializes correctly
 
-    iceberg_catalog_type: str | None | UnsetType = UNSET
+    iceberg_catalog_type: Union[str, None, UnsetType] = UNSET
     """Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest')."""
 
-    iceberg_uri: str | None | UnsetType = UNSET
+    iceberg_uri: Union[str, None, UnsetType] = UNSET
     """URI of the Iceberg catalog."""
 
-    iceberg_warehouse: str | None | UnsetType = UNSET
+    iceberg_warehouse: Union[str, None, UnsetType] = UNSET
     """Warehouse associated with this Iceberg catalog."""
 
-    iceberg_scope: str | None | UnsetType = UNSET
+    iceberg_scope: Union[str, None, UnsetType] = UNSET
     """Scope of the Iceberg catalog."""
 
-    iceberg_catalog_properties: dict[str, str] | None | UnsetType = UNSET
+    iceberg_catalog_properties: Union[Dict[str, str], None, UnsetType] = UNSET
     """Properties of the Iceberg catalog."""
 
     def __post_init__(self) -> None:
@@ -103,19 +103,19 @@ class RelatedIcebergTable(RelatedIceberg):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "IcebergTable" so it serializes correctly
 
-    iceberg_current_snapshot_id: int | None | UnsetType = UNSET
+    iceberg_current_snapshot_id: Union[int, None, UnsetType] = UNSET
     """Current snapshot identifier for this Iceberg table."""
 
-    iceberg_format_version: int | None | UnsetType = UNSET
+    iceberg_format_version: Union[int, None, UnsetType] = UNSET
     """Iceberg format version of the table."""
 
-    iceberg_table_properties: dict[str, str] | None | UnsetType = UNSET
+    iceberg_table_properties: Union[Dict[str, str], None, UnsetType] = UNSET
     """Properties of the Iceberg table."""
 
-    iceberg_table_partitions: list[dict[str, Any]] | None | UnsetType = UNSET
+    iceberg_table_partitions: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Partition information for the Iceberg table."""
 
-    iceberg_snapshots: list[dict[str, str]] | None | UnsetType = UNSET
+    iceberg_snapshots: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Snapshot information for the Iceberg table."""
 
     def __post_init__(self) -> None:

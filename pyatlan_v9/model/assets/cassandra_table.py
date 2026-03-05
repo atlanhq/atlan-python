@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -126,183 +126,189 @@ class CassandraTable(Asset):
 
     type_name: Union[str, UnsetType] = "CassandraTable"
 
-    cassandra_table_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
-        default=UNSET, name="cassandraTableBloomFilterFPChance"
+    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
     )
     """Bloom filter false positive chance for the CassandraTable."""
 
-    cassandra_table_caching: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_caching: Union[Dict[str, str], None, UnsetType] = UNSET
     """Caching behavior in Cassandra."""
 
-    cassandra_table_comment: str | None | UnsetType = UNSET
+    cassandra_table_comment: Union[str, None, UnsetType] = UNSET
     """Comment describing the CassandraTable's purpose or usage in Cassandra."""
 
-    cassandra_table_compaction: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compaction: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compaction used for the CassandraTable in Cassandra."""
 
-    cassandra_table_compression: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compression: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: float | None | UnsetType = msgspec.field(
+    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableCRCCheckChance"
     )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: float | None | UnsetType = (
+    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
     )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: int | None | UnsetType = msgspec.field(
+    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableDefaultTTL"
     )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
-    cassandra_table_flags: list[str] | None | UnsetType = UNSET
+    cassandra_table_flags: Union[List[str], None, UnsetType] = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableGCGraceSeconds"
     )
     """Grace period for garbage collection in the CassandraTable."""
 
-    cassandra_table_id: str | None | UnsetType = UNSET
+    cassandra_table_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the CassandraTable."""
 
-    cassandra_table_max_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_max_index_interval: Union[int, None, UnsetType] = UNSET
     """Maximum index interval for the CassandraTable."""
 
-    cassandra_table_memtable_flush_period_in_ms: int | None | UnsetType = UNSET
+    cassandra_table_memtable_flush_period_in_ms: Union[int, None, UnsetType] = UNSET
     """Memtable flush period for the CassandraTable (in milliseconds)."""
 
-    cassandra_table_min_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_min_index_interval: Union[int, None, UnsetType] = UNSET
     """Minimum index interval for the CassandraTable."""
 
-    cassandra_table_read_repair_chance: float | None | UnsetType = UNSET
+    cassandra_table_read_repair_chance: Union[float, None, UnsetType] = UNSET
     """Read repair chance for the CassandraTable."""
 
-    cassandra_table_speculative_retry: str | None | UnsetType = UNSET
+    cassandra_table_speculative_retry: Union[str, None, UnsetType] = UNSET
     """Speculative retry setting for the CassandraTable."""
 
-    cassandra_table_virtual: bool | None | UnsetType = UNSET
+    cassandra_table_virtual: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the CassandraTable is virtual."""
 
-    cassandra_table_query: str | None | UnsetType = UNSET
+    cassandra_table_query: Union[str, None, UnsetType] = UNSET
     """Query used to create the CassandraTable in Cassandra."""
 
-    cassandra_keyspace_name: str | None | UnsetType = UNSET
+    cassandra_keyspace_name: Union[str, None, UnsetType] = UNSET
     """Name of the keyspace for the Cassandra asset."""
 
-    cassandra_table_name: str | None | UnsetType = UNSET
+    cassandra_table_name: Union[str, None, UnsetType] = UNSET
     """Name of the table for the Cassandra asset."""
 
-    cassandra_view_name: str | None | UnsetType = UNSET
+    cassandra_view_name: Union[str, None, UnsetType] = UNSET
     """Name of view for Cassandra asset"""
 
-    cassandra_table_qualified_name: str | None | UnsetType = UNSET
+    cassandra_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of table for Cassandra asset"""
 
-    cassandra_view_qualified_name: str | None | UnsetType = UNSET
+    cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cassandra_columns: list[RelatedCassandraColumn] | None | UnsetType = UNSET
+    cassandra_columns: Union[List[RelatedCassandraColumn], None, UnsetType] = UNSET
     """Indidivual columns contained in the table."""
 
-    cassandra_indexes: list[RelatedCassandraIndex] | None | UnsetType = UNSET
+    cassandra_indexes: Union[List[RelatedCassandraIndex], None, UnsetType] = UNSET
     """Individual indexes contained within the table."""
 
-    cassandra_keyspace: RelatedCassandraKeyspace | None | UnsetType = UNSET
+    cassandra_keyspace: Union[RelatedCassandraKeyspace, None, UnsetType] = UNSET
     """Keyspace containing the table."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -369,86 +375,86 @@ class CassandraTable(Asset):
 class CassandraTableAttributes(AssetAttributes):
     """CassandraTable-specific attributes for nested API format."""
 
-    cassandra_table_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
-        default=UNSET, name="cassandraTableBloomFilterFPChance"
+    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
     )
     """Bloom filter false positive chance for the CassandraTable."""
 
-    cassandra_table_caching: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_caching: Union[Dict[str, str], None, UnsetType] = UNSET
     """Caching behavior in Cassandra."""
 
-    cassandra_table_comment: str | None | UnsetType = UNSET
+    cassandra_table_comment: Union[str, None, UnsetType] = UNSET
     """Comment describing the CassandraTable's purpose or usage in Cassandra."""
 
-    cassandra_table_compaction: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compaction: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compaction used for the CassandraTable in Cassandra."""
 
-    cassandra_table_compression: dict[str, str] | None | UnsetType = UNSET
+    cassandra_table_compression: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: float | None | UnsetType = msgspec.field(
+    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableCRCCheckChance"
     )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: float | None | UnsetType = (
+    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
     )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: int | None | UnsetType = msgspec.field(
+    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableDefaultTTL"
     )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
-    cassandra_table_flags: list[str] | None | UnsetType = UNSET
+    cassandra_table_flags: Union[List[str], None, UnsetType] = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="cassandraTableGCGraceSeconds"
     )
     """Grace period for garbage collection in the CassandraTable."""
 
-    cassandra_table_id: str | None | UnsetType = UNSET
+    cassandra_table_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the CassandraTable."""
 
-    cassandra_table_max_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_max_index_interval: Union[int, None, UnsetType] = UNSET
     """Maximum index interval for the CassandraTable."""
 
-    cassandra_table_memtable_flush_period_in_ms: int | None | UnsetType = UNSET
+    cassandra_table_memtable_flush_period_in_ms: Union[int, None, UnsetType] = UNSET
     """Memtable flush period for the CassandraTable (in milliseconds)."""
 
-    cassandra_table_min_index_interval: int | None | UnsetType = UNSET
+    cassandra_table_min_index_interval: Union[int, None, UnsetType] = UNSET
     """Minimum index interval for the CassandraTable."""
 
-    cassandra_table_read_repair_chance: float | None | UnsetType = UNSET
+    cassandra_table_read_repair_chance: Union[float, None, UnsetType] = UNSET
     """Read repair chance for the CassandraTable."""
 
-    cassandra_table_speculative_retry: str | None | UnsetType = UNSET
+    cassandra_table_speculative_retry: Union[str, None, UnsetType] = UNSET
     """Speculative retry setting for the CassandraTable."""
 
-    cassandra_table_virtual: bool | None | UnsetType = UNSET
+    cassandra_table_virtual: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the CassandraTable is virtual."""
 
-    cassandra_table_query: str | None | UnsetType = UNSET
+    cassandra_table_query: Union[str, None, UnsetType] = UNSET
     """Query used to create the CassandraTable in Cassandra."""
 
-    cassandra_keyspace_name: str | None | UnsetType = UNSET
+    cassandra_keyspace_name: Union[str, None, UnsetType] = UNSET
     """Name of the keyspace for the Cassandra asset."""
 
-    cassandra_table_name: str | None | UnsetType = UNSET
+    cassandra_table_name: Union[str, None, UnsetType] = UNSET
     """Name of the table for the Cassandra asset."""
 
-    cassandra_view_name: str | None | UnsetType = UNSET
+    cassandra_view_name: Union[str, None, UnsetType] = UNSET
     """Name of view for Cassandra asset"""
 
-    cassandra_table_qualified_name: str | None | UnsetType = UNSET
+    cassandra_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of table for Cassandra asset"""
 
-    cassandra_view_qualified_name: str | None | UnsetType = UNSET
+    cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
@@ -457,120 +463,128 @@ class CassandraTableAttributes(AssetAttributes):
 class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraTable-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cassandra_columns: list[RelatedCassandraColumn] | None | UnsetType = UNSET
+    cassandra_columns: Union[List[RelatedCassandraColumn], None, UnsetType] = UNSET
     """Indidivual columns contained in the table."""
 
-    cassandra_indexes: list[RelatedCassandraIndex] | None | UnsetType = UNSET
+    cassandra_indexes: Union[List[RelatedCassandraIndex], None, UnsetType] = UNSET
     """Individual indexes contained within the table."""
 
-    cassandra_keyspace: RelatedCassandraKeyspace | None | UnsetType = UNSET
+    cassandra_keyspace: Union[RelatedCassandraKeyspace, None, UnsetType] = UNSET
     """Keyspace containing the table."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class CassandraTableNested(AssetNested):
     """CassandraTable in nested API format for high-performance serialization."""
 
-    attributes: CassandraTableAttributes | UnsetType = UNSET
-    relationship_attributes: CassandraTableRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CassandraTableRelationshipAttributes | UnsetType = (
+    attributes: Union[CassandraTableAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CassandraTableRelationshipAttributes, UnsetType] = (
         UNSET
     )
-    remove_relationship_attributes: CassandraTableRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    append_relationship_attributes: Union[
+        CassandraTableRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CassandraTableRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_CASSANDRA_TABLE_REL_FIELDS: list[str] = [
+_CASSANDRA_TABLE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

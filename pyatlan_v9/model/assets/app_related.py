@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -33,7 +35,7 @@ class RelatedApp(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "App" so it serializes correctly
 
-    app_id: str | None | UnsetType = UNSET
+    app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
     def __post_init__(self) -> None:
@@ -66,7 +68,7 @@ class RelatedApplicationField(RelatedApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ApplicationField" so it serializes correctly
 
-    application_parent_qualified_name: str | None | UnsetType = UNSET
+    application_parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent Application asset that contains this ApplicationField asset."""
 
     def __post_init__(self) -> None:

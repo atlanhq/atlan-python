@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -32,128 +34,128 @@ class RelatedConnection(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Connection" so it serializes correctly
 
-    category: str | None | UnsetType = UNSET
+    category: Union[str, None, UnsetType] = UNSET
     """Type of connection, for example WAREHOUSE, RDBMS, etc."""
 
-    sub_category: str | None | UnsetType = UNSET
+    sub_category: Union[str, None, UnsetType] = UNSET
     """Subcategory of this connection."""
 
-    host: str | None | UnsetType = UNSET
+    host: Union[str, None, UnsetType] = UNSET
     """Host name of this connection's source."""
 
-    port: int | None | UnsetType = UNSET
+    port: Union[int, None, UnsetType] = UNSET
     """Port number to this connection's source."""
 
-    allow_query: bool | None | UnsetType = UNSET
+    allow_query: Union[bool, None, UnsetType] = UNSET
     """Whether using this connection to run queries on the source is allowed (true) or not (false)."""
 
-    allow_query_preview: bool | None | UnsetType = UNSET
+    allow_query_preview: Union[bool, None, UnsetType] = UNSET
     """Whether using this connection to run preview queries on the source is allowed (true) or not (false)."""
 
-    query_preview_config: dict[str, str] | None | UnsetType = UNSET
+    query_preview_config: Union[Dict[str, str], None, UnsetType] = UNSET
     """Configuration for preview queries."""
 
-    connection_workflow_configuration: dict[str, str] | None | UnsetType = UNSET
+    connection_workflow_configuration: Union[Dict[str, str], None, UnsetType] = UNSET
     """Configuration for a workflow run."""
 
-    query_config: str | None | UnsetType = UNSET
+    query_config: Union[str, None, UnsetType] = UNSET
     """Query config for this connection."""
 
-    credential_strategy: str | None | UnsetType = UNSET
+    credential_strategy: Union[str, None, UnsetType] = UNSET
     """Credential strategy to use for this connection for queries."""
 
-    preview_credential_strategy: str | None | UnsetType = UNSET
+    preview_credential_strategy: Union[str, None, UnsetType] = UNSET
     """Credential strategy to use for this connection for preview queries."""
 
-    policy_strategy: str | None | UnsetType = UNSET
+    policy_strategy: Union[str, None, UnsetType] = UNSET
     """Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten, applicable for stream api call made from insight screen"""
 
-    policy_strategy_for_sample_preview: str | None | UnsetType = UNSET
+    policy_strategy_for_sample_preview: Union[str, None, UnsetType] = UNSET
     """Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten. policyStrategyForSamplePreview config is applicable for sample preview call from assets screen"""
 
-    query_username_strategy: str | None | UnsetType = UNSET
+    query_username_strategy: Union[str, None, UnsetType] = UNSET
     """Username strategy to use for this connection for queries."""
 
-    row_limit: int | None | UnsetType = UNSET
+    row_limit: Union[int, None, UnsetType] = UNSET
     """Maximum number of rows that can be returned for the source."""
 
-    query_timeout: int | None | UnsetType = UNSET
+    query_timeout: Union[int, None, UnsetType] = UNSET
     """Maximum time a query should be allowed to run before timing out."""
 
-    default_credential_guid: str | None | UnsetType = UNSET
+    default_credential_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier (GUID) for the default credentials to use for this connection."""
 
-    connection_dq_credential_guid: str | None | UnsetType = msgspec.field(
+    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="connectionDQCredentialGuid"
     )
     """Unique identifier (GUID) for the data quality credentials to use for this connection."""
 
-    connection_is_dq_enabled: bool | None | UnsetType = msgspec.field(
+    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="connectionIsDQEnabled"
     )
     """Whether data quality is enabled for this connection (true) or not (false)."""
 
-    connection_dq_environment_setup_status: str | None | UnsetType = msgspec.field(
+    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="connectionDQEnvironmentSetupStatus"
     )
     """Status of the data quality environment setup for this connection."""
 
-    connection_dq_environment_setup_error_message: str | None | UnsetType = (
+    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
     )
     """Error message if data quality environment setup failed for this connection."""
 
-    connection_dq_environment_setup_status_updated_at: int | None | UnsetType = (
+    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = (
         msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
     )
     """Timestamp when the data quality environment setup status was last updated."""
 
-    connection_dq_environment_source_database_name: str | None | UnsetType = (
+    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
     )
     """Name of the database in the source environment for data quality."""
 
-    connector_icon: str | None | UnsetType = UNSET
+    connector_icon: Union[str, None, UnsetType] = UNSET
     """Unused. Only the value of connectorType impacts icons."""
 
-    connector_image: str | None | UnsetType = UNSET
+    connector_image: Union[str, None, UnsetType] = UNSET
     """Unused. Only the value of connectorType impacts icons."""
 
-    source_logo: str | None | UnsetType = UNSET
+    source_logo: Union[str, None, UnsetType] = UNSET
     """Unused. Only the value of connectorType impacts icons."""
 
-    is_sample_data_preview_enabled: bool | None | UnsetType = UNSET
+    is_sample_data_preview_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether sample data can be previewed for this connection (true) or not (false)."""
 
-    popularity_insights_timeframe: int | None | UnsetType = UNSET
+    popularity_insights_timeframe: Union[int, None, UnsetType] = UNSET
     """Number of days over which popularity is calculated, for example 30 days."""
 
-    has_popularity_insights: bool | None | UnsetType = UNSET
+    has_popularity_insights: Union[bool, None, UnsetType] = UNSET
     """Whether this connection has popularity insights (true) or not (false)."""
 
-    connection_dbt_environments: list[str] | None | UnsetType = UNSET
+    connection_dbt_environments: Union[List[str], None, UnsetType] = UNSET
     """"""
 
-    connection_sso_credential_guid: str | None | UnsetType = msgspec.field(
+    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="connectionSSOCredentialGuid"
     )
     """Unique identifier (GUID) for the SSO credentials to use for this connection."""
 
-    use_object_storage: bool | None | UnsetType = UNSET
+    use_object_storage: Union[bool, None, UnsetType] = UNSET
     """Whether to upload to S3, GCP, or another storage location (true) or not (false)."""
 
-    connection_insights_via_oauth_cookie: bool | None | UnsetType = msgspec.field(
+    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="connectionInsightsViaOAuthCookie"
     )
     """Whether cookie based OAuth is enabled in Insights for this connection (true) or not (false)."""
 
-    object_storage_upload_threshold: int | None | UnsetType = UNSET
+    object_storage_upload_threshold: Union[int, None, UnsetType] = UNSET
     """Number of rows after which results should be uploaded to storage."""
 
-    vector_embeddings_enabled: bool | None | UnsetType = UNSET
+    vector_embeddings_enabled: Union[bool, None, UnsetType] = UNSET
     """"""
 
-    vector_embeddings_updated_at: int | None | UnsetType = UNSET
+    vector_embeddings_updated_at: Union[int, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:

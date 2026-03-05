@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -110,144 +110,150 @@ class AppWorkflowRun(Asset):
 
     type_name: Union[str, UnsetType] = "AppWorkflowRun"
 
-    app_workflow_run_label: str | None | UnsetType = UNSET
+    app_workflow_run_label: Union[str, None, UnsetType] = UNSET
     """Root name for the workflow run."""
 
-    app_workflow_run_status: str | None | UnsetType = UNSET
+    app_workflow_run_status: Union[str, None, UnsetType] = UNSET
     """Overall execution status of the entire workflow run."""
 
-    app_workflow_run_started_at: int | None | UnsetType = UNSET
+    app_workflow_run_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run began execution."""
 
-    app_workflow_run_started_by: str | None | UnsetType = UNSET
+    app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
-    app_workflow_run_completed_at: int | None | UnsetType = UNSET
+    app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
-    app_workflow_run_outputs: dict[str, str] | None | UnsetType = UNSET
+    app_workflow_run_outputs: Union[Dict[str, str], None, UnsetType] = UNSET
     """Final results produced by the workflow run."""
 
-    app_workflow_run_steps: list[dict[str, Any]] | None | UnsetType = UNSET
+    app_workflow_run_steps: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Collection of individual workflow steps in this run."""
 
-    app_workflow_run_app_qualified_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_workflow_qualified_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent workflow."""
 
-    app_workflow_run_app_workflow_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent workflow."""
 
-    app_workflow_run_app_workflow_slug: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the parent workflow."""
 
-    app_workflow_run_app_workflow_version: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the parent workflow."""
 
-    app_workflow_run_temporal_run_id: str | None | UnsetType = UNSET
+    app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
 
-    app_workflow_run_is_test_run: bool | None | UnsetType = UNSET
+    app_workflow_run_is_test_run: Union[bool, None, UnsetType] = UNSET
     """Whether the workflow run is a test run."""
 
-    app_workflow_run_dag: str | None | UnsetType = UNSET
+    app_workflow_run_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow run (escaped JSON string)."""
 
-    app_workflow_run_error_handling: dict[str, Any] | None | UnsetType = UNSET
+    app_workflow_run_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow run."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    atlan_app_workflow: RelatedAtlanAppWorkflow | None | UnsetType = UNSET
+    atlan_app_workflow: Union[RelatedAtlanAppWorkflow, None, UnsetType] = UNSET
     """The workflow that contains the workflow run."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -308,169 +314,177 @@ class AppWorkflowRun(Asset):
 class AppWorkflowRunAttributes(AssetAttributes):
     """AppWorkflowRun-specific attributes for nested API format."""
 
-    app_workflow_run_label: str | None | UnsetType = UNSET
+    app_workflow_run_label: Union[str, None, UnsetType] = UNSET
     """Root name for the workflow run."""
 
-    app_workflow_run_status: str | None | UnsetType = UNSET
+    app_workflow_run_status: Union[str, None, UnsetType] = UNSET
     """Overall execution status of the entire workflow run."""
 
-    app_workflow_run_started_at: int | None | UnsetType = UNSET
+    app_workflow_run_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run began execution."""
 
-    app_workflow_run_started_by: str | None | UnsetType = UNSET
+    app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
-    app_workflow_run_completed_at: int | None | UnsetType = UNSET
+    app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
-    app_workflow_run_outputs: dict[str, str] | None | UnsetType = UNSET
+    app_workflow_run_outputs: Union[Dict[str, str], None, UnsetType] = UNSET
     """Final results produced by the workflow run."""
 
-    app_workflow_run_steps: list[dict[str, Any]] | None | UnsetType = UNSET
+    app_workflow_run_steps: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Collection of individual workflow steps in this run."""
 
-    app_workflow_run_app_qualified_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_workflow_qualified_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent workflow."""
 
-    app_workflow_run_app_workflow_name: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent workflow."""
 
-    app_workflow_run_app_workflow_slug: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the parent workflow."""
 
-    app_workflow_run_app_workflow_version: str | None | UnsetType = UNSET
+    app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the parent workflow."""
 
-    app_workflow_run_temporal_run_id: str | None | UnsetType = UNSET
+    app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
 
-    app_workflow_run_is_test_run: bool | None | UnsetType = UNSET
+    app_workflow_run_is_test_run: Union[bool, None, UnsetType] = UNSET
     """Whether the workflow run is a test run."""
 
-    app_workflow_run_dag: str | None | UnsetType = UNSET
+    app_workflow_run_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow run (escaped JSON string)."""
 
-    app_workflow_run_error_handling: dict[str, Any] | None | UnsetType = UNSET
+    app_workflow_run_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow run."""
 
 
 class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     """AppWorkflowRun-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    atlan_app_workflow: RelatedAtlanAppWorkflow | None | UnsetType = UNSET
+    atlan_app_workflow: Union[RelatedAtlanAppWorkflow, None, UnsetType] = UNSET
     """The workflow that contains the workflow run."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class AppWorkflowRunNested(AssetNested):
     """AppWorkflowRun in nested API format for high-performance serialization."""
 
-    attributes: AppWorkflowRunAttributes | UnsetType = UNSET
-    relationship_attributes: AppWorkflowRunRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AppWorkflowRunRelationshipAttributes | UnsetType = (
+    attributes: Union[AppWorkflowRunAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[AppWorkflowRunRelationshipAttributes, UnsetType] = (
         UNSET
     )
-    remove_relationship_attributes: AppWorkflowRunRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    append_relationship_attributes: Union[
+        AppWorkflowRunRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AppWorkflowRunRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_APP_WORKFLOW_RUN_REL_FIELDS: list[str] = [
+_APP_WORKFLOW_RUN_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

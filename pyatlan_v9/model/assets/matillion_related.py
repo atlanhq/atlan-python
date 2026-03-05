@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -35,7 +37,7 @@ class RelatedMatillion(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Matillion" so it serializes correctly
 
-    matillion_version: str | None | UnsetType = UNSET
+    matillion_version: Union[str, None, UnsetType] = UNSET
     """Current point in time state of a project."""
 
     def __post_init__(self) -> None:
@@ -53,7 +55,7 @@ class RelatedMatillionGroup(RelatedMatillion):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MatillionGroup" so it serializes correctly
 
-    matillion_project_count: int | None | UnsetType = UNSET
+    matillion_project_count: Union[int, None, UnsetType] = UNSET
     """Number of projects within the group."""
 
     def __post_init__(self) -> None:
@@ -71,19 +73,19 @@ class RelatedMatillionProject(RelatedMatillion):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MatillionProject" so it serializes correctly
 
-    matillion_versions: list[str] | None | UnsetType = UNSET
+    matillion_versions: Union[List[str], None, UnsetType] = UNSET
     """List of versions in the project."""
 
-    matillion_environments: list[str] | None | UnsetType = UNSET
+    matillion_environments: Union[List[str], None, UnsetType] = UNSET
     """List of environments in the project."""
 
-    matillion_project_job_count: int | None | UnsetType = UNSET
+    matillion_project_job_count: Union[int, None, UnsetType] = UNSET
     """Number of jobs in the project."""
 
-    matillion_group_name: str | None | UnsetType = UNSET
+    matillion_group_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Matillion group to which the project belongs."""
 
-    matillion_group_qualified_name: str | None | UnsetType = UNSET
+    matillion_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Matillion group to which the project belongs."""
 
     def __post_init__(self) -> None:
@@ -101,22 +103,22 @@ class RelatedMatillionJob(RelatedMatillion):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MatillionJob" so it serializes correctly
 
-    matillion_job_type: str | None | UnsetType = UNSET
+    matillion_job_type: Union[str, None, UnsetType] = UNSET
     """Type of the job, for example: orchestration or transformation."""
 
-    matillion_job_path: str | None | UnsetType = UNSET
+    matillion_job_path: Union[str, None, UnsetType] = UNSET
     """Path of the job within the project. Jobs can be managed at multiple folder levels within a project."""
 
-    matillion_job_component_count: int | None | UnsetType = UNSET
+    matillion_job_component_count: Union[int, None, UnsetType] = UNSET
     """Number of components within the job."""
 
-    matillion_job_schedule: str | None | UnsetType = UNSET
+    matillion_job_schedule: Union[str, None, UnsetType] = UNSET
     """How the job is scheduled, for example: weekly or monthly."""
 
-    matillion_project_name: str | None | UnsetType = UNSET
+    matillion_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project to which the job belongs."""
 
-    matillion_project_qualified_name: str | None | UnsetType = UNSET
+    matillion_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project to which the job belongs."""
 
     def __post_init__(self) -> None:
@@ -134,28 +136,28 @@ class RelatedMatillionComponent(RelatedMatillion):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MatillionComponent" so it serializes correctly
 
-    matillion_component_id: str | None | UnsetType = UNSET
+    matillion_component_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the component in Matillion."""
 
-    matillion_component_implementation_id: str | None | UnsetType = UNSET
+    matillion_component_implementation_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the type of the component in Matillion."""
 
-    matillion_component_linked_job: dict[str, str] | None | UnsetType = UNSET
+    matillion_component_linked_job: Union[Dict[str, str], None, UnsetType] = UNSET
     """Job details of the job to which the component internally links."""
 
-    matillion_component_last_run_status: str | None | UnsetType = UNSET
+    matillion_component_last_run_status: Union[str, None, UnsetType] = UNSET
     """Latest run status of the component within a job."""
 
-    matillion_component_last_five_run_status: str | None | UnsetType = UNSET
+    matillion_component_last_five_run_status: Union[str, None, UnsetType] = UNSET
     """Last five run statuses of the component within a job."""
 
-    matillion_component_sqls: list[str] | None | UnsetType = UNSET
+    matillion_component_sqls: Union[List[str], None, UnsetType] = UNSET
     """SQL queries used by the component."""
 
-    matillion_job_name: str | None | UnsetType = UNSET
+    matillion_job_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the job to which the component belongs."""
 
-    matillion_job_qualified_name: str | None | UnsetType = UNSET
+    matillion_job_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the job to which the component belongs."""
 
     def __post_init__(self) -> None:

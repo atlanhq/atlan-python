@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -36,16 +38,16 @@ class RelatedPreset(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Preset" so it serializes correctly
 
-    preset_workspace_id: int | None | UnsetType = UNSET
+    preset_workspace_id: Union[int, None, UnsetType] = UNSET
     """Identifier of the workspace in which this asset exists, in Preset."""
 
-    preset_workspace_qualified_name: str | None | UnsetType = UNSET
+    preset_workspace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workspace in which this asset exists."""
 
-    preset_dashboard_id: int | None | UnsetType = UNSET
+    preset_dashboard_id: Union[int, None, UnsetType] = UNSET
     """Identifier of the dashboard in which this asset exists, in Preset."""
 
-    preset_dashboard_qualified_name: str | None | UnsetType = UNSET
+    preset_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dashboard in which this asset exists."""
 
     def __post_init__(self) -> None:
@@ -63,10 +65,10 @@ class RelatedPresetChart(RelatedPreset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PresetChart" so it serializes correctly
 
-    preset_chart_description_markdown: str | None | UnsetType = UNSET
+    preset_chart_description_markdown: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_chart_form_data: dict[str, str] | None | UnsetType = UNSET
+    preset_chart_form_data: Union[Dict[str, str], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -84,26 +86,26 @@ class RelatedPresetDashboard(RelatedPreset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PresetDashboard" so it serializes correctly
 
-    preset_dashboard_changed_by_name: str | None | UnsetType = UNSET
+    preset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(
+    preset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="presetDashboardChangedByURL"
     )
     """"""
 
-    preset_dashboard_is_managed_externally: bool | None | UnsetType = UNSET
+    preset_dashboard_is_managed_externally: Union[bool, None, UnsetType] = UNSET
     """"""
 
-    preset_dashboard_is_published: bool | None | UnsetType = UNSET
+    preset_dashboard_is_published: Union[bool, None, UnsetType] = UNSET
     """"""
 
-    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(
+    preset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="presetDashboardThumbnailURL"
     )
     """"""
 
-    preset_dashboard_chart_count: int | None | UnsetType = UNSET
+    preset_dashboard_chart_count: Union[int, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -121,13 +123,13 @@ class RelatedPresetDataset(RelatedPreset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PresetDataset" so it serializes correctly
 
-    preset_dataset_datasource_name: str | None | UnsetType = UNSET
+    preset_dataset_datasource_name: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_dataset_id: int | None | UnsetType = UNSET
+    preset_dataset_id: Union[int, None, UnsetType] = UNSET
     """"""
 
-    preset_dataset_type: str | None | UnsetType = UNSET
+    preset_dataset_type: Union[str, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -145,31 +147,31 @@ class RelatedPresetWorkspace(RelatedPreset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PresetWorkspace" so it serializes correctly
 
-    preset_workspace_public_dashboards_allowed: bool | None | UnsetType = UNSET
+    preset_workspace_public_dashboards_allowed: Union[bool, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_cluster_id: int | None | UnsetType = UNSET
+    preset_workspace_cluster_id: Union[int, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_deployment_id: int | None | UnsetType = UNSET
+    preset_workspace_deployment_id: Union[int, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_hostname: str | None | UnsetType = UNSET
+    preset_workspace_hostname: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_is_in_maintenance_mode: bool | None | UnsetType = UNSET
+    preset_workspace_is_in_maintenance_mode: Union[bool, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_region: str | None | UnsetType = UNSET
+    preset_workspace_region: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_status: str | None | UnsetType = UNSET
+    preset_workspace_status: Union[str, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_dashboard_count: int | None | UnsetType = UNSET
+    preset_workspace_dashboard_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    preset_workspace_dataset_count: int | None | UnsetType = UNSET
+    preset_workspace_dataset_count: Union[int, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:

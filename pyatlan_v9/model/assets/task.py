@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -90,102 +90,106 @@ class Task(Asset):
 
     type_name: Union[str, UnsetType] = "Task"
 
-    task_recipient: str | None | UnsetType = UNSET
+    task_recipient: Union[str, None, UnsetType] = UNSET
     """Recipient of the task."""
 
-    task_type: str | None | UnsetType = UNSET
+    task_type: Union[str, None, UnsetType] = UNSET
     """Type of task."""
 
-    task_requestor: str | None | UnsetType = UNSET
+    task_requestor: Union[str, None, UnsetType] = UNSET
     """Requestor of the task."""
 
-    task_is_read: bool | None | UnsetType = UNSET
+    task_is_read: Union[bool, None, UnsetType] = UNSET
     """Flag to make task read/unread."""
 
-    task_requestor_comment: str | None | UnsetType = UNSET
+    task_requestor_comment: Union[str, None, UnsetType] = UNSET
     """Comment of requestor for the task."""
 
-    task_related_asset_guid: str | None | UnsetType = UNSET
+    task_related_asset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the asset to preview."""
 
-    task_proposals: str | None | UnsetType = UNSET
+    task_proposals: Union[str, None, UnsetType] = UNSET
     """Contains the payload that is proposed to the task."""
 
-    task_expires_at: int | None | UnsetType = UNSET
+    task_expires_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the task expires."""
 
-    task_actions: list[dict[str, Any]] | None | UnsetType = UNSET
+    task_actions: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of actions associated with this task."""
 
-    task_execution_comment: str | None | UnsetType = UNSET
+    task_execution_comment: Union[str, None, UnsetType] = UNSET
     """Comment for the action executed by user."""
 
-    task_execution_action: str | None | UnsetType = UNSET
+    task_execution_action: Union[str, None, UnsetType] = UNSET
     """Action executed by the recipient."""
 
-    task_integration_config: str | None | UnsetType = UNSET
+    task_integration_config: Union[str, None, UnsetType] = UNSET
     """Contains external integration config for the task."""
 
-    task_created_by: str | None | UnsetType = UNSET
+    task_created_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who created this task."""
 
-    task_updated_by: str | None | UnsetType = UNSET
+    task_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this task."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -246,123 +250,127 @@ class Task(Asset):
 class TaskAttributes(AssetAttributes):
     """Task-specific attributes for nested API format."""
 
-    task_recipient: str | None | UnsetType = UNSET
+    task_recipient: Union[str, None, UnsetType] = UNSET
     """Recipient of the task."""
 
-    task_type: str | None | UnsetType = UNSET
+    task_type: Union[str, None, UnsetType] = UNSET
     """Type of task."""
 
-    task_requestor: str | None | UnsetType = UNSET
+    task_requestor: Union[str, None, UnsetType] = UNSET
     """Requestor of the task."""
 
-    task_is_read: bool | None | UnsetType = UNSET
+    task_is_read: Union[bool, None, UnsetType] = UNSET
     """Flag to make task read/unread."""
 
-    task_requestor_comment: str | None | UnsetType = UNSET
+    task_requestor_comment: Union[str, None, UnsetType] = UNSET
     """Comment of requestor for the task."""
 
-    task_related_asset_guid: str | None | UnsetType = UNSET
+    task_related_asset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the asset to preview."""
 
-    task_proposals: str | None | UnsetType = UNSET
+    task_proposals: Union[str, None, UnsetType] = UNSET
     """Contains the payload that is proposed to the task."""
 
-    task_expires_at: int | None | UnsetType = UNSET
+    task_expires_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the task expires."""
 
-    task_actions: list[dict[str, Any]] | None | UnsetType = UNSET
+    task_actions: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of actions associated with this task."""
 
-    task_execution_comment: str | None | UnsetType = UNSET
+    task_execution_comment: Union[str, None, UnsetType] = UNSET
     """Comment for the action executed by user."""
 
-    task_execution_action: str | None | UnsetType = UNSET
+    task_execution_action: Union[str, None, UnsetType] = UNSET
     """Action executed by the recipient."""
 
-    task_integration_config: str | None | UnsetType = UNSET
+    task_integration_config: Union[str, None, UnsetType] = UNSET
     """Contains external integration config for the task."""
 
-    task_created_by: str | None | UnsetType = UNSET
+    task_created_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who created this task."""
 
-    task_updated_by: str | None | UnsetType = UNSET
+    task_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this task."""
 
 
 class TaskRelationshipAttributes(AssetRelationshipAttributes):
     """Task-specific relationship attributes for nested API format."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
 
 class TaskNested(AssetNested):
     """Task in nested API format for high-performance serialization."""
 
-    attributes: TaskAttributes | UnsetType = UNSET
-    relationship_attributes: TaskRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TaskRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TaskRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[TaskAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_TASK_REL_FIELDS: list[str] = [
+_TASK_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "anomalo_checks",
     "application",

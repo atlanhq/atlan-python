@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .data_quality_related import RelatedDataQuality
@@ -47,37 +49,37 @@ class RelatedAnomaloCheck(RelatedAnomalo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AnomaloCheck" so it serializes correctly
 
-    anomalo_check_linked_asset_qualified_name: str | None | UnsetType = UNSET
+    anomalo_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check"""
 
-    anomalo_check_category_type: str | None | UnsetType = UNSET
+    anomalo_check_category_type: Union[str, None, UnsetType] = UNSET
     """Category type of the check in Anomalo"""
 
-    anomalo_check_type: str | None | UnsetType = UNSET
+    anomalo_check_type: Union[str, None, UnsetType] = UNSET
     """Type of check in Anomalo"""
 
-    anomalo_check_priority_level: str | None | UnsetType = UNSET
+    anomalo_check_priority_level: Union[str, None, UnsetType] = UNSET
     """Priority level of the check in Anomalo"""
 
-    anomalo_check_is_system_added: bool | None | UnsetType = UNSET
+    anomalo_check_is_system_added: Union[bool, None, UnsetType] = UNSET
     """Flag to indicate if the check is an out of the box available check"""
 
-    anomalo_check_status: str | None | UnsetType = UNSET
+    anomalo_check_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Anomalo"""
 
-    anomalo_check_status_image_url: str | None | UnsetType = UNSET
+    anomalo_check_status_image_url: Union[str, None, UnsetType] = UNSET
     """Image URL for the status of the check in Anomalo"""
 
-    anomalo_check_last_run_completed_at: int | None | UnsetType = UNSET
+    anomalo_check_last_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the check was last run"""
 
-    anomalo_check_last_run_evaluated_message: str | None | UnsetType = UNSET
+    anomalo_check_last_run_evaluated_message: Union[str, None, UnsetType] = UNSET
     """Evaluated message of the latest check run."""
 
-    anomalo_check_last_run_url: str | None | UnsetType = UNSET
+    anomalo_check_last_run_url: Union[str, None, UnsetType] = UNSET
     """URL to the latest check run."""
 
-    anomalo_check_historic_run_status: str | None | UnsetType = UNSET
+    anomalo_check_historic_run_status: Union[str, None, UnsetType] = UNSET
     """Historic run status of the check in Anomalo"""
 
     def __post_init__(self) -> None:

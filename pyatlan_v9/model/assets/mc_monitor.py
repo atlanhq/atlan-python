@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -118,165 +118,171 @@ class MCMonitor(Asset):
 
     type_name: Union[str, UnsetType] = "MCMonitor"
 
-    mc_monitor_id: str | None | UnsetType = UNSET
+    mc_monitor_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for this monitor, from Monte Carlo."""
 
-    mc_monitor_status: str | None | UnsetType = UNSET
+    mc_monitor_status: Union[str, None, UnsetType] = UNSET
     """Status of this monitor."""
 
-    mc_monitor_type: str | None | UnsetType = UNSET
+    mc_monitor_type: Union[str, None, UnsetType] = UNSET
     """Type of this monitor, for example: field health (stats) or dimension tracking (categories)."""
 
-    mc_monitor_warehouse: str | None | UnsetType = UNSET
+    mc_monitor_warehouse: Union[str, None, UnsetType] = UNSET
     """Name of the warehouse for this monitor."""
 
-    mc_monitor_schedule_type: str | None | UnsetType = UNSET
+    mc_monitor_schedule_type: Union[str, None, UnsetType] = UNSET
     """Type of schedule for this monitor, for example: fixed or dynamic."""
 
-    mc_monitor_namespace: str | None | UnsetType = UNSET
+    mc_monitor_namespace: Union[str, None, UnsetType] = UNSET
     """Namespace of this monitor."""
 
-    mc_monitor_rule_type: str | None | UnsetType = UNSET
+    mc_monitor_rule_type: Union[str, None, UnsetType] = UNSET
     """Type of rule for this monitor."""
 
-    mc_monitor_rule_custom_sql: str | None | UnsetType = UNSET
+    mc_monitor_rule_custom_sql: Union[str, None, UnsetType] = UNSET
     """SQL code for custom SQL rules."""
 
-    mc_monitor_rule_schedule_config: dict[str, Any] | None | UnsetType = UNSET
+    mc_monitor_rule_schedule_config: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Schedule details for the rule."""
 
-    mc_monitor_rule_schedule_config_humanized: str | None | UnsetType = UNSET
+    mc_monitor_rule_schedule_config_humanized: Union[str, None, UnsetType] = UNSET
     """Readable description of the schedule for the rule."""
 
-    mc_monitor_alert_condition: str | None | UnsetType = UNSET
+    mc_monitor_alert_condition: Union[str, None, UnsetType] = UNSET
     """Condition on which the monitor produces an alert."""
 
-    mc_monitor_rule_next_execution_time: int | None | UnsetType = UNSET
+    mc_monitor_rule_next_execution_time: Union[int, None, UnsetType] = UNSET
     """Time at which the next execution of the rule should occur."""
 
-    mc_monitor_rule_previous_execution_time: int | None | UnsetType = UNSET
+    mc_monitor_rule_previous_execution_time: Union[int, None, UnsetType] = UNSET
     """Time at which the previous execution of the rule occurred."""
 
-    mc_monitor_rule_comparisons: list[dict[str, Any]] | None | UnsetType = UNSET
+    mc_monitor_rule_comparisons: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Comparison logic used for the rule."""
 
-    mc_monitor_rule_is_snoozed: bool | None | UnsetType = UNSET
+    mc_monitor_rule_is_snoozed: Union[bool, None, UnsetType] = UNSET
     """Whether the rule is currently snoozed (true) or not (false)."""
 
-    mc_monitor_breach_rate: float | None | UnsetType = UNSET
+    mc_monitor_breach_rate: Union[float, None, UnsetType] = UNSET
     """Rate at which this monitor is breached."""
 
-    mc_monitor_incident_count: int | None | UnsetType = UNSET
+    mc_monitor_incident_count: Union[int, None, UnsetType] = UNSET
     """Number of incidents associated with this monitor."""
 
-    mc_monitor_alert_count: int | None | UnsetType = UNSET
+    mc_monitor_alert_count: Union[int, None, UnsetType] = UNSET
     """Number of alerts associated with this monitor."""
 
-    mc_monitor_priority: str | None | UnsetType = UNSET
+    mc_monitor_priority: Union[str, None, UnsetType] = UNSET
     """Priority of this monitor."""
 
-    mc_monitor_is_ootb: bool | None | UnsetType = UNSET
+    mc_monitor_is_ootb: Union[bool, None, UnsetType] = UNSET
     """Whether the monitor is OOTB or not"""
 
-    mc_monitor_notification_channels: list[str] | None | UnsetType = UNSET
+    mc_monitor_notification_channels: Union[List[str], None, UnsetType] = UNSET
     """Channels through which notifications are sent for this monitor (e.g., email, slack, webhook)."""
 
-    mc_labels: list[str] | None | UnsetType = UNSET
+    mc_labels: Union[List[str], None, UnsetType] = UNSET
     """List of labels for this Monte Carlo asset."""
 
-    mc_asset_qualified_names: list[str] | None | UnsetType = UNSET
+    mc_asset_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of unique names of assets that are part of this Monte Carlo asset."""
 
-    dq_is_part_of_contract: bool | None | UnsetType = UNSET
+    dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """Incidents that exist within this monitor."""
 
-    mc_monitor_assets: list[RelatedAsset] | None | UnsetType = UNSET
+    mc_monitor_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Assets impacted by this monitor."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -337,186 +343,196 @@ class MCMonitor(Asset):
 class MCMonitorAttributes(AssetAttributes):
     """MCMonitor-specific attributes for nested API format."""
 
-    mc_monitor_id: str | None | UnsetType = UNSET
+    mc_monitor_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for this monitor, from Monte Carlo."""
 
-    mc_monitor_status: str | None | UnsetType = UNSET
+    mc_monitor_status: Union[str, None, UnsetType] = UNSET
     """Status of this monitor."""
 
-    mc_monitor_type: str | None | UnsetType = UNSET
+    mc_monitor_type: Union[str, None, UnsetType] = UNSET
     """Type of this monitor, for example: field health (stats) or dimension tracking (categories)."""
 
-    mc_monitor_warehouse: str | None | UnsetType = UNSET
+    mc_monitor_warehouse: Union[str, None, UnsetType] = UNSET
     """Name of the warehouse for this monitor."""
 
-    mc_monitor_schedule_type: str | None | UnsetType = UNSET
+    mc_monitor_schedule_type: Union[str, None, UnsetType] = UNSET
     """Type of schedule for this monitor, for example: fixed or dynamic."""
 
-    mc_monitor_namespace: str | None | UnsetType = UNSET
+    mc_monitor_namespace: Union[str, None, UnsetType] = UNSET
     """Namespace of this monitor."""
 
-    mc_monitor_rule_type: str | None | UnsetType = UNSET
+    mc_monitor_rule_type: Union[str, None, UnsetType] = UNSET
     """Type of rule for this monitor."""
 
-    mc_monitor_rule_custom_sql: str | None | UnsetType = UNSET
+    mc_monitor_rule_custom_sql: Union[str, None, UnsetType] = UNSET
     """SQL code for custom SQL rules."""
 
-    mc_monitor_rule_schedule_config: dict[str, Any] | None | UnsetType = UNSET
+    mc_monitor_rule_schedule_config: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Schedule details for the rule."""
 
-    mc_monitor_rule_schedule_config_humanized: str | None | UnsetType = UNSET
+    mc_monitor_rule_schedule_config_humanized: Union[str, None, UnsetType] = UNSET
     """Readable description of the schedule for the rule."""
 
-    mc_monitor_alert_condition: str | None | UnsetType = UNSET
+    mc_monitor_alert_condition: Union[str, None, UnsetType] = UNSET
     """Condition on which the monitor produces an alert."""
 
-    mc_monitor_rule_next_execution_time: int | None | UnsetType = UNSET
+    mc_monitor_rule_next_execution_time: Union[int, None, UnsetType] = UNSET
     """Time at which the next execution of the rule should occur."""
 
-    mc_monitor_rule_previous_execution_time: int | None | UnsetType = UNSET
+    mc_monitor_rule_previous_execution_time: Union[int, None, UnsetType] = UNSET
     """Time at which the previous execution of the rule occurred."""
 
-    mc_monitor_rule_comparisons: list[dict[str, Any]] | None | UnsetType = UNSET
+    mc_monitor_rule_comparisons: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Comparison logic used for the rule."""
 
-    mc_monitor_rule_is_snoozed: bool | None | UnsetType = UNSET
+    mc_monitor_rule_is_snoozed: Union[bool, None, UnsetType] = UNSET
     """Whether the rule is currently snoozed (true) or not (false)."""
 
-    mc_monitor_breach_rate: float | None | UnsetType = UNSET
+    mc_monitor_breach_rate: Union[float, None, UnsetType] = UNSET
     """Rate at which this monitor is breached."""
 
-    mc_monitor_incident_count: int | None | UnsetType = UNSET
+    mc_monitor_incident_count: Union[int, None, UnsetType] = UNSET
     """Number of incidents associated with this monitor."""
 
-    mc_monitor_alert_count: int | None | UnsetType = UNSET
+    mc_monitor_alert_count: Union[int, None, UnsetType] = UNSET
     """Number of alerts associated with this monitor."""
 
-    mc_monitor_priority: str | None | UnsetType = UNSET
+    mc_monitor_priority: Union[str, None, UnsetType] = UNSET
     """Priority of this monitor."""
 
-    mc_monitor_is_ootb: bool | None | UnsetType = UNSET
+    mc_monitor_is_ootb: Union[bool, None, UnsetType] = UNSET
     """Whether the monitor is OOTB or not"""
 
-    mc_monitor_notification_channels: list[str] | None | UnsetType = UNSET
+    mc_monitor_notification_channels: Union[List[str], None, UnsetType] = UNSET
     """Channels through which notifications are sent for this monitor (e.g., email, slack, webhook)."""
 
-    mc_labels: list[str] | None | UnsetType = UNSET
+    mc_labels: Union[List[str], None, UnsetType] = UNSET
     """List of labels for this Monte Carlo asset."""
 
-    mc_asset_qualified_names: list[str] | None | UnsetType = UNSET
+    mc_asset_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of unique names of assets that are part of this Monte Carlo asset."""
 
-    dq_is_part_of_contract: bool | None | UnsetType = UNSET
+    dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 
 
 class MCMonitorRelationshipAttributes(AssetRelationshipAttributes):
     """MCMonitor-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """Incidents that exist within this monitor."""
 
-    mc_monitor_assets: list[RelatedAsset] | None | UnsetType = UNSET
+    mc_monitor_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Assets impacted by this monitor."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class MCMonitorNested(AssetNested):
     """MCMonitor in nested API format for high-performance serialization."""
 
-    attributes: MCMonitorAttributes | UnsetType = UNSET
-    relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[MCMonitorAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[MCMonitorRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        MCMonitorRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        MCMonitorRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_MC_MONITOR_REL_FIELDS: list[str] = [
+_MC_MONITOR_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

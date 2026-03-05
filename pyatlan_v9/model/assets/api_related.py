@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, List, Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -37,28 +39,28 @@ class RelatedAPI(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "API" so it serializes correctly
 
-    api_spec_type: str | None | UnsetType = UNSET
+    api_spec_type: Union[str, None, UnsetType] = UNSET
     """Type of API, for example: OpenAPI, GraphQL, etc."""
 
-    api_spec_version: str | None | UnsetType = UNSET
+    api_spec_version: Union[str, None, UnsetType] = UNSET
     """Version of the API specification."""
 
-    api_spec_name: str | None | UnsetType = UNSET
+    api_spec_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the API spec, if this asset is contained in an API spec."""
 
-    api_spec_qualified_name: str | None | UnsetType = UNSET
+    api_spec_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the API spec, if this asset is contained in an API spec."""
 
-    api_external_docs: dict[str, str] | None | UnsetType = UNSET
+    api_external_docs: Union[Dict[str, str], None, UnsetType] = UNSET
     """External documentation of the API."""
 
-    api_is_auth_optional: bool | None | UnsetType = UNSET
+    api_is_auth_optional: Union[bool, None, UnsetType] = UNSET
     """Whether authentication is optional (true) or required (false)."""
 
-    api_is_object_reference: bool | None | UnsetType = UNSET
+    api_is_object_reference: Union[bool, None, UnsetType] = UNSET
     """If this asset refers to an APIObject"""
 
-    api_object_qualified_name: str | None | UnsetType = UNSET
+    api_object_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
 
     def __post_init__(self) -> None:
@@ -76,34 +78,34 @@ class RelatedAPISpec(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APISpec" so it serializes correctly
 
-    api_spec_terms_of_service_url: str | None | UnsetType = msgspec.field(
+    api_spec_terms_of_service_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="apiSpecTermsOfServiceURL"
     )
     """URL to the terms of service for the API specification."""
 
-    api_spec_contact_email: str | None | UnsetType = UNSET
+    api_spec_contact_email: Union[str, None, UnsetType] = UNSET
     """Email address for a contact responsible for the API specification."""
 
-    api_spec_contact_name: str | None | UnsetType = UNSET
+    api_spec_contact_name: Union[str, None, UnsetType] = UNSET
     """Name of the contact responsible for the API specification."""
 
-    api_spec_contact_url: str | None | UnsetType = msgspec.field(
+    api_spec_contact_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="apiSpecContactURL"
     )
     """URL pointing to the contact information."""
 
-    api_spec_license_name: str | None | UnsetType = UNSET
+    api_spec_license_name: Union[str, None, UnsetType] = UNSET
     """Name of the license under which the API specification is available."""
 
-    api_spec_license_url: str | None | UnsetType = msgspec.field(
+    api_spec_license_url: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="apiSpecLicenseURL"
     )
     """URL to the license under which the API specification is available."""
 
-    api_spec_contract_version: str | None | UnsetType = UNSET
+    api_spec_contract_version: Union[str, None, UnsetType] = UNSET
     """Version of the contract for the API specification."""
 
-    api_spec_service_alias: str | None | UnsetType = UNSET
+    api_spec_service_alias: Union[str, None, UnsetType] = UNSET
     """Service alias for the API specification."""
 
     def __post_init__(self) -> None:
@@ -121,24 +123,24 @@ class RelatedAPIPath(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APIPath" so it serializes correctly
 
-    api_path_summary: str | None | UnsetType = UNSET
+    api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: str | None | UnsetType = msgspec.field(
+    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="apiPathRawURI"
     )
     """Absolute path to an individual endpoint."""
 
-    api_path_is_templated: bool | None | UnsetType = UNSET
+    api_path_is_templated: Union[bool, None, UnsetType] = UNSET
     """Whether the endpoint's path contains replaceable parameters (true) or not (false)."""
 
-    api_path_available_operations: list[str] | None | UnsetType = UNSET
+    api_path_available_operations: Union[List[str], None, UnsetType] = UNSET
     """List of the operations available on the endpoint."""
 
-    api_path_available_response_codes: dict[str, str] | None | UnsetType = UNSET
+    api_path_available_response_codes: Union[Dict[str, str], None, UnsetType] = UNSET
     """Response codes available on the path across all operations."""
 
-    api_path_is_ingress_exposed: bool | None | UnsetType = UNSET
+    api_path_is_ingress_exposed: Union[bool, None, UnsetType] = UNSET
     """Whether the path is exposed as an ingress (true) or not (false)."""
 
     def __post_init__(self) -> None:
@@ -156,13 +158,13 @@ class RelatedAPIField(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APIField" so it serializes correctly
 
-    api_field_type: str | None | UnsetType = UNSET
+    api_field_type: Union[str, None, UnsetType] = UNSET
     """Type of APIField, as free text (e.g. STRING, NUMBER etc)."""
 
-    api_field_type_secondary: str | None | UnsetType = UNSET
+    api_field_type_secondary: Union[str, None, UnsetType] = UNSET
     """Secondary type of APIField (e.g. LIST/STRING, then LIST would be the secondary type)."""
 
-    api_query_param_type: str | None | UnsetType = UNSET
+    api_query_param_type: Union[str, None, UnsetType] = UNSET
     """If parent relationship type is APIQuery, then this attribute denotes if this is input or output parameter."""
 
     def __post_init__(self) -> None:
@@ -180,7 +182,7 @@ class RelatedAPIObject(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APIObject" so it serializes correctly
 
-    api_field_count: int | None | UnsetType = UNSET
+    api_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the APIField of this object."""
 
     def __post_init__(self) -> None:
@@ -198,13 +200,13 @@ class RelatedAPIQuery(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APIQuery" so it serializes correctly
 
-    api_input_field_count: int | None | UnsetType = UNSET
+    api_input_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the APIField of this query that are input to it."""
 
-    api_query_output_type: str | None | UnsetType = UNSET
+    api_query_output_type: Union[str, None, UnsetType] = UNSET
     """Type of APIQueryOutput, as free text (e.g. STRING, NUMBER etc)."""
 
-    api_query_output_type_secondary: str | None | UnsetType = UNSET
+    api_query_output_type_secondary: Union[str, None, UnsetType] = UNSET
     """Secondary Type of APIQueryOutput (e.g. LIST/STRING then LIST would be the secondary type)."""
 
     def __post_init__(self) -> None:

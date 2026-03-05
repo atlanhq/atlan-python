@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -120,165 +120,171 @@ class AirflowTask(Asset):
 
     type_name: Union[str, UnsetType] = "AirflowTask"
 
-    airflow_task_operator_class: str | None | UnsetType = UNSET
+    airflow_task_operator_class: Union[str, None, UnsetType] = UNSET
     """Class name for the operator this task uses."""
 
-    airflow_dag_name: str | None | UnsetType = UNSET
+    airflow_dag_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the DAG this task is contained within."""
 
-    airflow_dag_qualified_name: str | None | UnsetType = UNSET
+    airflow_dag_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the DAG this task is contained within."""
 
-    airflow_task_connection_id: str | None | UnsetType = UNSET
+    airflow_task_connection_id: Union[str, None, UnsetType] = UNSET
     """Identifier for the connection this task accesses."""
 
-    airflow_task_sql: str | None | UnsetType = UNSET
+    airflow_task_sql: Union[str, None, UnsetType] = UNSET
     """SQL code that executes through this task."""
 
-    airflow_task_retry_number: int | None | UnsetType = UNSET
+    airflow_task_retry_number: Union[int, None, UnsetType] = UNSET
     """Retry count for this task running."""
 
-    airflow_task_pool: str | None | UnsetType = UNSET
+    airflow_task_pool: Union[str, None, UnsetType] = UNSET
     """Pool on which this run happened."""
 
-    airflow_task_pool_slots: int | None | UnsetType = UNSET
+    airflow_task_pool_slots: Union[int, None, UnsetType] = UNSET
     """Pool slots used for the run."""
 
-    airflow_task_queue: str | None | UnsetType = UNSET
+    airflow_task_queue: Union[str, None, UnsetType] = UNSET
     """Queue on which this run happened."""
 
-    airflow_task_priority_weight: int | None | UnsetType = UNSET
+    airflow_task_priority_weight: Union[int, None, UnsetType] = UNSET
     """Priority of the run."""
 
-    airflow_task_trigger_rule: str | None | UnsetType = UNSET
+    airflow_task_trigger_rule: Union[str, None, UnsetType] = UNSET
     """Trigger for the run."""
 
-    airflow_task_group_name: str | None | UnsetType = UNSET
+    airflow_task_group_name: Union[str, None, UnsetType] = UNSET
     """Group name for the task."""
 
-    airflow_tags: list[str] | None | UnsetType = UNSET
+    airflow_tags: Union[List[str], None, UnsetType] = UNSET
     """Tags assigned to the asset in Airflow."""
 
-    airflow_run_version: str | None | UnsetType = UNSET
+    airflow_run_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in Airflow."""
 
-    airflow_run_open_lineage_version: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in OpenLineage."""
 
-    airflow_run_name: str | None | UnsetType = UNSET
+    airflow_run_name: Union[str, None, UnsetType] = UNSET
     """Name of the run."""
 
-    airflow_run_type: str | None | UnsetType = UNSET
+    airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
 
-    airflow_run_start_time: int | None | UnsetType = UNSET
+    airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
 
-    airflow_run_end_time: int | None | UnsetType = UNSET
+    airflow_run_end_time: Union[int, None, UnsetType] = UNSET
     """End time of the run."""
 
-    airflow_run_open_lineage_state: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
-    airflow_dag: RelatedAirflowDag | None | UnsetType = UNSET
+    airflow_dag: Union[RelatedAirflowDag, None, UnsetType] = UNSET
     """DAG in which this task exists."""
 
-    process: RelatedProcess | None | UnsetType = UNSET
+    process: Union[RelatedProcess, None, UnsetType] = UNSET
     """Process in which this task exists."""
 
-    inputs: list[RelatedCatalog] | None | UnsetType = UNSET
+    inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
     """Assets that are inputs to this task."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    outputs: list[RelatedCatalog] | None | UnsetType = UNSET
+    outputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
     """Assets that are outputs from this task."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    spark_orchestrated_assets: list[RelatedSpark] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    spark_orchestrated_assets: Union[List[RelatedSpark], None, UnsetType] = UNSET
     """Spark assets that are executed by this airflow asset."""
 
     def __post_init__(self) -> None:
@@ -381,190 +387,196 @@ class AirflowTask(Asset):
 class AirflowTaskAttributes(AssetAttributes):
     """AirflowTask-specific attributes for nested API format."""
 
-    airflow_task_operator_class: str | None | UnsetType = UNSET
+    airflow_task_operator_class: Union[str, None, UnsetType] = UNSET
     """Class name for the operator this task uses."""
 
-    airflow_dag_name: str | None | UnsetType = UNSET
+    airflow_dag_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the DAG this task is contained within."""
 
-    airflow_dag_qualified_name: str | None | UnsetType = UNSET
+    airflow_dag_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the DAG this task is contained within."""
 
-    airflow_task_connection_id: str | None | UnsetType = UNSET
+    airflow_task_connection_id: Union[str, None, UnsetType] = UNSET
     """Identifier for the connection this task accesses."""
 
-    airflow_task_sql: str | None | UnsetType = UNSET
+    airflow_task_sql: Union[str, None, UnsetType] = UNSET
     """SQL code that executes through this task."""
 
-    airflow_task_retry_number: int | None | UnsetType = UNSET
+    airflow_task_retry_number: Union[int, None, UnsetType] = UNSET
     """Retry count for this task running."""
 
-    airflow_task_pool: str | None | UnsetType = UNSET
+    airflow_task_pool: Union[str, None, UnsetType] = UNSET
     """Pool on which this run happened."""
 
-    airflow_task_pool_slots: int | None | UnsetType = UNSET
+    airflow_task_pool_slots: Union[int, None, UnsetType] = UNSET
     """Pool slots used for the run."""
 
-    airflow_task_queue: str | None | UnsetType = UNSET
+    airflow_task_queue: Union[str, None, UnsetType] = UNSET
     """Queue on which this run happened."""
 
-    airflow_task_priority_weight: int | None | UnsetType = UNSET
+    airflow_task_priority_weight: Union[int, None, UnsetType] = UNSET
     """Priority of the run."""
 
-    airflow_task_trigger_rule: str | None | UnsetType = UNSET
+    airflow_task_trigger_rule: Union[str, None, UnsetType] = UNSET
     """Trigger for the run."""
 
-    airflow_task_group_name: str | None | UnsetType = UNSET
+    airflow_task_group_name: Union[str, None, UnsetType] = UNSET
     """Group name for the task."""
 
-    airflow_tags: list[str] | None | UnsetType = UNSET
+    airflow_tags: Union[List[str], None, UnsetType] = UNSET
     """Tags assigned to the asset in Airflow."""
 
-    airflow_run_version: str | None | UnsetType = UNSET
+    airflow_run_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in Airflow."""
 
-    airflow_run_open_lineage_version: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in OpenLineage."""
 
-    airflow_run_name: str | None | UnsetType = UNSET
+    airflow_run_name: Union[str, None, UnsetType] = UNSET
     """Name of the run."""
 
-    airflow_run_type: str | None | UnsetType = UNSET
+    airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
 
-    airflow_run_start_time: int | None | UnsetType = UNSET
+    airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
 
-    airflow_run_end_time: int | None | UnsetType = UNSET
+    airflow_run_end_time: Union[int, None, UnsetType] = UNSET
     """End time of the run."""
 
-    airflow_run_open_lineage_state: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
 
 class AirflowTaskRelationshipAttributes(AssetRelationshipAttributes):
     """AirflowTask-specific relationship attributes for nested API format."""
 
-    airflow_dag: RelatedAirflowDag | None | UnsetType = UNSET
+    airflow_dag: Union[RelatedAirflowDag, None, UnsetType] = UNSET
     """DAG in which this task exists."""
 
-    process: RelatedProcess | None | UnsetType = UNSET
+    process: Union[RelatedProcess, None, UnsetType] = UNSET
     """Process in which this task exists."""
 
-    inputs: list[RelatedCatalog] | None | UnsetType = UNSET
+    inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
     """Assets that are inputs to this task."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    outputs: list[RelatedCatalog] | None | UnsetType = UNSET
+    outputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
     """Assets that are outputs from this task."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    spark_orchestrated_assets: list[RelatedSpark] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    spark_orchestrated_assets: Union[List[RelatedSpark], None, UnsetType] = UNSET
     """Spark assets that are executed by this airflow asset."""
 
 
 class AirflowTaskNested(AssetNested):
     """AirflowTask in nested API format for high-performance serialization."""
 
-    attributes: AirflowTaskAttributes | UnsetType = UNSET
-    relationship_attributes: AirflowTaskRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AirflowTaskRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    remove_relationship_attributes: AirflowTaskRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    attributes: Union[AirflowTaskAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[AirflowTaskRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AirflowTaskRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AirflowTaskRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_AIRFLOW_TASK_REL_FIELDS: list[str] = [
+_AIRFLOW_TASK_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "airflow_dag",
     "process",

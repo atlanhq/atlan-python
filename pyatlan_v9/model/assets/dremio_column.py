@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -236,463 +236,475 @@ class DremioColumn(Asset):
 
     type_name: Union[str, UnsetType] = "DremioColumn"
 
-    dremio_id: str | None | UnsetType = UNSET
+    dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 
-    dremio_space_qualified_name: str | None | UnsetType = UNSET
+    dremio_space_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Space containing this asset."""
 
-    dremio_space_name: str | None | UnsetType = UNSET
+    dremio_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Space containing this asset."""
 
-    dremio_source_qualified_name: str | None | UnsetType = UNSET
+    dremio_source_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Source containing this asset."""
 
-    dremio_source_name: str | None | UnsetType = UNSET
+    dremio_source_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Source containing this asset."""
 
-    dremio_parent_folder_qualified_name: str | None | UnsetType = UNSET
+    dremio_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the immediate parent folder containing this asset."""
 
-    dremio_folder_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    dremio_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
-    dremio_labels: list[str] | None | UnsetType = UNSET
+    dremio_labels: Union[List[str], None, UnsetType] = UNSET
     """Dremio Labels associated with this asset."""
 
-    query_count: int | None | UnsetType = UNSET
+    query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
-    query_user_count: int | None | UnsetType = UNSET
+    query_user_count: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have queried this asset."""
 
-    query_user_map: dict[str, int] | None | UnsetType = UNSET
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
     """Map of unique users who have queried this asset to the number of times they have queried it."""
 
-    query_count_updated_at: int | None | UnsetType = UNSET
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the query count was last updated, in milliseconds."""
 
-    database_name: str | None | UnsetType = UNSET
+    database_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    database_qualified_name: str | None | UnsetType = UNSET
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    schema_name: str | None | UnsetType = UNSET
+    schema_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    schema_qualified_name: str | None | UnsetType = UNSET
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    table_name: str | None | UnsetType = UNSET
+    table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    table_qualified_name: str | None | UnsetType = UNSET
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    view_name: str | None | UnsetType = UNSET
+    view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    view_qualified_name: str | None | UnsetType = UNSET
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    calculation_view_name: str | None | UnsetType = UNSET
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    calculation_view_qualified_name: str | None | UnsetType = UNSET
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    is_profiled: bool | None | UnsetType = UNSET
+    is_profiled: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has been profiled (true) or not (false)."""
 
-    last_profiled_at: int | None | UnsetType = UNSET
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
-    sql_is_secure: bool | None | UnsetType = UNSET
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
-    data_type: str | None | UnsetType = UNSET
+    data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
 
-    sub_data_type: str | None | UnsetType = UNSET
+    sub_data_type: Union[str, None, UnsetType] = UNSET
     """Sub-data type of this column."""
 
-    column_compression: str | None | UnsetType = UNSET
+    column_compression: Union[str, None, UnsetType] = UNSET
     """Compression type of this column."""
 
-    column_encoding: str | None | UnsetType = UNSET
+    column_encoding: Union[str, None, UnsetType] = UNSET
     """Encoding type of this column."""
 
-    raw_data_type_definition: str | None | UnsetType = UNSET
+    raw_data_type_definition: Union[str, None, UnsetType] = UNSET
     """Raw data type definition of this column."""
 
-    order: int | None | UnsetType = UNSET
+    order: Union[int, None, UnsetType] = UNSET
     """Order (position) in which this column appears in the table (starting at 1)."""
 
-    nested_column_order: str | None | UnsetType = UNSET
+    nested_column_order: Union[str, None, UnsetType] = UNSET
     """Order (position) in which this column appears in the nested Column (nest level starts at 1)."""
 
-    nested_column_count: int | None | UnsetType = UNSET
+    nested_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns nested within this (STRUCT or NESTED) column."""
 
-    column_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    column_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of top-level upstream nested columns."""
 
-    is_partition: bool | None | UnsetType = UNSET
+    is_partition: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a partition column (true) or not (false)."""
 
-    partition_order: int | None | UnsetType = UNSET
+    partition_order: Union[int, None, UnsetType] = UNSET
     """Order (position) of this partition column in the table."""
 
-    is_clustered: bool | None | UnsetType = UNSET
+    is_clustered: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a clustered column (true) or not (false)."""
 
-    is_primary: bool | None | UnsetType = UNSET
+    is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the table."""
 
-    is_foreign: bool | None | UnsetType = UNSET
+    is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is a foreign key to another table. NOTE: this must be true when using the foreignKeyTo relationship to specify columns that refer to this column as a foreign key."""
 
-    is_indexed: bool | None | UnsetType = UNSET
+    is_indexed: Union[bool, None, UnsetType] = UNSET
     """When true, this column is indexed in the database."""
 
-    is_sort: bool | None | UnsetType = UNSET
+    is_sort: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a sort column (true) or not (false)."""
 
-    is_dist: bool | None | UnsetType = UNSET
+    is_dist: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a distribution column (true) or not (false)."""
 
-    is_pinned: bool | None | UnsetType = UNSET
+    is_pinned: Union[bool, None, UnsetType] = UNSET
     """Whether this column is pinned (true) or not (false)."""
 
-    pinned_by: str | None | UnsetType = UNSET
+    pinned_by: Union[str, None, UnsetType] = UNSET
     """User who pinned this column."""
 
-    pinned_at: int | None | UnsetType = UNSET
+    pinned_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this column was pinned, in milliseconds."""
 
-    precision: int | None | UnsetType = UNSET
+    precision: Union[int, None, UnsetType] = UNSET
     """Total number of digits allowed, when the dataType is numeric."""
 
-    default_value: str | None | UnsetType = UNSET
+    default_value: Union[str, None, UnsetType] = UNSET
     """Default value for this column."""
 
-    is_nullable: bool | None | UnsetType = UNSET
+    is_nullable: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
-    numeric_scale: float | None | UnsetType = UNSET
+    numeric_scale: Union[float, None, UnsetType] = UNSET
     """Number of digits allowed to the right of the decimal point."""
 
-    max_length: int | None | UnsetType = UNSET
+    max_length: Union[int, None, UnsetType] = UNSET
     """Maximum length of a value in this column."""
 
-    validations: dict[str, str] | None | UnsetType = UNSET
+    validations: Union[Dict[str, str], None, UnsetType] = UNSET
     """Validations for this column."""
 
-    parent_column_qualified_name: str | None | UnsetType = UNSET
+    parent_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    parent_column_name: str | None | UnsetType = UNSET
+    parent_column_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    column_distinct_values_count: int | None | UnsetType = UNSET
+    column_distinct_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_distinct_values_count_long: int | None | UnsetType = UNSET
+    column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_histogram: dict[str, Any] | None | UnsetType = UNSET
+    column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    column_max: float | None | UnsetType = UNSET
+    column_max: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min: float | None | UnsetType = UNSET
+    column_min: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean: float | None | UnsetType = UNSET
+    column_mean: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum: float | None | UnsetType = UNSET
+    column_sum: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median: float | None | UnsetType = UNSET
+    column_median: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation: float | None | UnsetType = UNSET
+    column_standard_deviation: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_unique_values_count: int | None | UnsetType = UNSET
+    column_unique_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_unique_values_count_long: int | None | UnsetType = UNSET
+    column_unique_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_average: float | None | UnsetType = UNSET
+    column_average: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_average_length: float | None | UnsetType = UNSET
+    column_average_length: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_duplicate_values_count: int | None | UnsetType = UNSET
+    column_duplicate_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_duplicate_values_count_long: int | None | UnsetType = UNSET
+    column_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_maximum_string_length: int | None | UnsetType = UNSET
+    column_maximum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the longest value in a string column."""
 
-    column_maxs: list[str] | None | UnsetType = UNSET
+    column_maxs: Union[List[str], None, UnsetType] = UNSET
     """List of the greatest values in a column."""
 
-    column_minimum_string_length: int | None | UnsetType = UNSET
+    column_minimum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the shortest value in a string column."""
 
-    column_mins: list[str] | None | UnsetType = UNSET
+    column_mins: Union[List[str], None, UnsetType] = UNSET
     """List of the least values in a column."""
 
-    column_missing_values_count: int | None | UnsetType = UNSET
+    column_missing_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_count_long: int | None | UnsetType = UNSET
+    column_missing_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_percentage: float | None | UnsetType = UNSET
+    column_missing_values_percentage: Union[float, None, UnsetType] = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    column_uniqueness_percentage: float | None | UnsetType = UNSET
+    column_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    column_variance: float | None | UnsetType = UNSET
+    column_variance: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_top_values: list[dict[str, Any]] | None | UnsetType = UNSET
+    column_top_values: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of top values in this column."""
 
-    column_max_value: float | None | UnsetType = UNSET
+    column_max_value: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min_value: float | None | UnsetType = UNSET
+    column_min_value: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean_value: float | None | UnsetType = UNSET
+    column_mean_value: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum_value: float | None | UnsetType = UNSET
+    column_sum_value: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median_value: float | None | UnsetType = UNSET
+    column_median_value: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation_value: float | None | UnsetType = UNSET
+    column_standard_deviation_value: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_average_value: float | None | UnsetType = UNSET
+    column_average_value: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_variance_value: float | None | UnsetType = UNSET
+    column_variance_value: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_average_length_value: float | None | UnsetType = UNSET
+    column_average_length_value: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_distribution_histogram: dict[str, Any] | None | UnsetType = UNSET
+    column_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    column_depth_level: int | None | UnsetType = UNSET
+    column_depth_level: Union[int, None, UnsetType] = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
-    nosql_collection_name: str | None | UnsetType = UNSET
+    nosql_collection_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    nosql_collection_qualified_name: str | None | UnsetType = UNSET
+    nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    column_is_measure: bool | None | UnsetType = UNSET
+    column_is_measure: Union[bool, None, UnsetType] = UNSET
     """When true, this column is of type measure/calculated."""
 
-    column_measure_type: str | None | UnsetType = UNSET
+    column_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
-    )
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    metric_timestamps: list[RelatedMetric] | None | UnsetType = UNSET
+    metric_timestamps: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    data_quality_metric_dimensions: list[RelatedMetric] | None | UnsetType = UNSET
+    data_quality_metric_dimensions: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_base_column_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
-    dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
 
-    sql_dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """Assets related to the model."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this asset."""
 
-    dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlDBTSources"
     )
     """Sources related to this asset."""
 
-    dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
+    dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
     """Metrics related to this model column."""
 
-    dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
-    dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
-        default=UNSET, name="mongoDBCollection"
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
     )
     """Collection in which the columns exist."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    table: RelatedTable | None | UnsetType = UNSET
-    """Table in which this column exists."""
-
-    nested_columns: list[RelatedColumn] | None | UnsetType = UNSET
-    """Nested columns that exist within this column."""
-
-    parent_column: RelatedColumn | None | UnsetType = UNSET
-    """Column in which this sub-column is nested."""
-
-    table_partition: RelatedTablePartition | None | UnsetType = UNSET
-    """Table partition that contains this column."""
-
-    view: RelatedView | None | UnsetType = UNSET
-    """View in which this column exists."""
-
-    calculation_view: RelatedCalculationView | None | UnsetType = UNSET
-    """Calculate view in which this column exists."""
-
-    materialised_view: RelatedMaterialisedView | None | UnsetType = UNSET
-    """Materialized view in which this column exists."""
-
-    foreign_key_to: list[RelatedColumn] | None | UnsetType = UNSET
-    """Columns that use this column as a foreign key."""
-
-    foreign_key_from: RelatedColumn | None | UnsetType = UNSET
-    """Column this foreign key column refers to."""
-
-    queries: list[RelatedQuery] | None | UnsetType = UNSET
-    """Queries that access this column."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    table: Union[RelatedTable, None, UnsetType] = UNSET
+    """Table in which this column exists."""
+
+    nested_columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
+    """Nested columns that exist within this column."""
+
+    parent_column: Union[RelatedColumn, None, UnsetType] = UNSET
+    """Column in which this sub-column is nested."""
+
+    table_partition: Union[RelatedTablePartition, None, UnsetType] = UNSET
+    """Table partition that contains this column."""
+
+    view: Union[RelatedView, None, UnsetType] = UNSET
+    """View in which this column exists."""
+
+    calculation_view: Union[RelatedCalculationView, None, UnsetType] = UNSET
+    """Calculate view in which this column exists."""
+
+    materialised_view: Union[RelatedMaterialisedView, None, UnsetType] = UNSET
+    """Materialized view in which this column exists."""
+
+    foreign_key_to: Union[List[RelatedColumn], None, UnsetType] = UNSET
+    """Columns that use this column as a foreign key."""
+
+    foreign_key_from: Union[RelatedColumn, None, UnsetType] = UNSET
+    """Column this foreign key column refers to."""
+
+    queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
+    """Queries that access this column."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: (
-        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
-    ) = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -753,488 +765,502 @@ class DremioColumn(Asset):
 class DremioColumnAttributes(AssetAttributes):
     """DremioColumn-specific attributes for nested API format."""
 
-    dremio_id: str | None | UnsetType = UNSET
+    dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 
-    dremio_space_qualified_name: str | None | UnsetType = UNSET
+    dremio_space_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Space containing this asset."""
 
-    dremio_space_name: str | None | UnsetType = UNSET
+    dremio_space_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Space containing this asset."""
 
-    dremio_source_qualified_name: str | None | UnsetType = UNSET
+    dremio_source_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the Dremio Source containing this asset."""
 
-    dremio_source_name: str | None | UnsetType = UNSET
+    dremio_source_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Dremio Source containing this asset."""
 
-    dremio_parent_folder_qualified_name: str | None | UnsetType = UNSET
+    dremio_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique qualified name of the immediate parent folder containing this asset."""
 
-    dremio_folder_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    dremio_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
-    dremio_labels: list[str] | None | UnsetType = UNSET
+    dremio_labels: Union[List[str], None, UnsetType] = UNSET
     """Dremio Labels associated with this asset."""
 
-    query_count: int | None | UnsetType = UNSET
+    query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
-    query_user_count: int | None | UnsetType = UNSET
+    query_user_count: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have queried this asset."""
 
-    query_user_map: dict[str, int] | None | UnsetType = UNSET
+    query_user_map: Union[Dict[str, int], None, UnsetType] = UNSET
     """Map of unique users who have queried this asset to the number of times they have queried it."""
 
-    query_count_updated_at: int | None | UnsetType = UNSET
+    query_count_updated_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the query count was last updated, in milliseconds."""
 
-    database_name: str | None | UnsetType = UNSET
+    database_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    database_qualified_name: str | None | UnsetType = UNSET
+    database_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    schema_name: str | None | UnsetType = UNSET
+    schema_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    schema_qualified_name: str | None | UnsetType = UNSET
+    schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    table_name: str | None | UnsetType = UNSET
+    table_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    table_qualified_name: str | None | UnsetType = UNSET
+    table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    view_name: str | None | UnsetType = UNSET
+    view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    view_qualified_name: str | None | UnsetType = UNSET
+    view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    calculation_view_name: str | None | UnsetType = UNSET
+    calculation_view_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    calculation_view_qualified_name: str | None | UnsetType = UNSET
+    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    is_profiled: bool | None | UnsetType = UNSET
+    is_profiled: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has been profiled (true) or not (false)."""
 
-    last_profiled_at: int | None | UnsetType = UNSET
+    last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
-    sql_is_secure: bool | None | UnsetType = UNSET
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
-    data_type: str | None | UnsetType = UNSET
+    data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
 
-    sub_data_type: str | None | UnsetType = UNSET
+    sub_data_type: Union[str, None, UnsetType] = UNSET
     """Sub-data type of this column."""
 
-    column_compression: str | None | UnsetType = UNSET
+    column_compression: Union[str, None, UnsetType] = UNSET
     """Compression type of this column."""
 
-    column_encoding: str | None | UnsetType = UNSET
+    column_encoding: Union[str, None, UnsetType] = UNSET
     """Encoding type of this column."""
 
-    raw_data_type_definition: str | None | UnsetType = UNSET
+    raw_data_type_definition: Union[str, None, UnsetType] = UNSET
     """Raw data type definition of this column."""
 
-    order: int | None | UnsetType = UNSET
+    order: Union[int, None, UnsetType] = UNSET
     """Order (position) in which this column appears in the table (starting at 1)."""
 
-    nested_column_order: str | None | UnsetType = UNSET
+    nested_column_order: Union[str, None, UnsetType] = UNSET
     """Order (position) in which this column appears in the nested Column (nest level starts at 1)."""
 
-    nested_column_count: int | None | UnsetType = UNSET
+    nested_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns nested within this (STRUCT or NESTED) column."""
 
-    column_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
+    column_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of top-level upstream nested columns."""
 
-    is_partition: bool | None | UnsetType = UNSET
+    is_partition: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a partition column (true) or not (false)."""
 
-    partition_order: int | None | UnsetType = UNSET
+    partition_order: Union[int, None, UnsetType] = UNSET
     """Order (position) of this partition column in the table."""
 
-    is_clustered: bool | None | UnsetType = UNSET
+    is_clustered: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a clustered column (true) or not (false)."""
 
-    is_primary: bool | None | UnsetType = UNSET
+    is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the table."""
 
-    is_foreign: bool | None | UnsetType = UNSET
+    is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is a foreign key to another table. NOTE: this must be true when using the foreignKeyTo relationship to specify columns that refer to this column as a foreign key."""
 
-    is_indexed: bool | None | UnsetType = UNSET
+    is_indexed: Union[bool, None, UnsetType] = UNSET
     """When true, this column is indexed in the database."""
 
-    is_sort: bool | None | UnsetType = UNSET
+    is_sort: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a sort column (true) or not (false)."""
 
-    is_dist: bool | None | UnsetType = UNSET
+    is_dist: Union[bool, None, UnsetType] = UNSET
     """Whether this column is a distribution column (true) or not (false)."""
 
-    is_pinned: bool | None | UnsetType = UNSET
+    is_pinned: Union[bool, None, UnsetType] = UNSET
     """Whether this column is pinned (true) or not (false)."""
 
-    pinned_by: str | None | UnsetType = UNSET
+    pinned_by: Union[str, None, UnsetType] = UNSET
     """User who pinned this column."""
 
-    pinned_at: int | None | UnsetType = UNSET
+    pinned_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this column was pinned, in milliseconds."""
 
-    precision: int | None | UnsetType = UNSET
+    precision: Union[int, None, UnsetType] = UNSET
     """Total number of digits allowed, when the dataType is numeric."""
 
-    default_value: str | None | UnsetType = UNSET
+    default_value: Union[str, None, UnsetType] = UNSET
     """Default value for this column."""
 
-    is_nullable: bool | None | UnsetType = UNSET
+    is_nullable: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
-    numeric_scale: float | None | UnsetType = UNSET
+    numeric_scale: Union[float, None, UnsetType] = UNSET
     """Number of digits allowed to the right of the decimal point."""
 
-    max_length: int | None | UnsetType = UNSET
+    max_length: Union[int, None, UnsetType] = UNSET
     """Maximum length of a value in this column."""
 
-    validations: dict[str, str] | None | UnsetType = UNSET
+    validations: Union[Dict[str, str], None, UnsetType] = UNSET
     """Validations for this column."""
 
-    parent_column_qualified_name: str | None | UnsetType = UNSET
+    parent_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    parent_column_name: str | None | UnsetType = UNSET
+    parent_column_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    column_distinct_values_count: int | None | UnsetType = UNSET
+    column_distinct_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_distinct_values_count_long: int | None | UnsetType = UNSET
+    column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_histogram: dict[str, Any] | None | UnsetType = UNSET
+    column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    column_max: float | None | UnsetType = UNSET
+    column_max: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min: float | None | UnsetType = UNSET
+    column_min: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean: float | None | UnsetType = UNSET
+    column_mean: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum: float | None | UnsetType = UNSET
+    column_sum: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median: float | None | UnsetType = UNSET
+    column_median: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation: float | None | UnsetType = UNSET
+    column_standard_deviation: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_unique_values_count: int | None | UnsetType = UNSET
+    column_unique_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_unique_values_count_long: int | None | UnsetType = UNSET
+    column_unique_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_average: float | None | UnsetType = UNSET
+    column_average: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_average_length: float | None | UnsetType = UNSET
+    column_average_length: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_duplicate_values_count: int | None | UnsetType = UNSET
+    column_duplicate_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_duplicate_values_count_long: int | None | UnsetType = UNSET
+    column_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_maximum_string_length: int | None | UnsetType = UNSET
+    column_maximum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the longest value in a string column."""
 
-    column_maxs: list[str] | None | UnsetType = UNSET
+    column_maxs: Union[List[str], None, UnsetType] = UNSET
     """List of the greatest values in a column."""
 
-    column_minimum_string_length: int | None | UnsetType = UNSET
+    column_minimum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the shortest value in a string column."""
 
-    column_mins: list[str] | None | UnsetType = UNSET
+    column_mins: Union[List[str], None, UnsetType] = UNSET
     """List of the least values in a column."""
 
-    column_missing_values_count: int | None | UnsetType = UNSET
+    column_missing_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_count_long: int | None | UnsetType = UNSET
+    column_missing_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_percentage: float | None | UnsetType = UNSET
+    column_missing_values_percentage: Union[float, None, UnsetType] = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    column_uniqueness_percentage: float | None | UnsetType = UNSET
+    column_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    column_variance: float | None | UnsetType = UNSET
+    column_variance: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_top_values: list[dict[str, Any]] | None | UnsetType = UNSET
+    column_top_values: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of top values in this column."""
 
-    column_max_value: float | None | UnsetType = UNSET
+    column_max_value: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min_value: float | None | UnsetType = UNSET
+    column_min_value: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean_value: float | None | UnsetType = UNSET
+    column_mean_value: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum_value: float | None | UnsetType = UNSET
+    column_sum_value: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median_value: float | None | UnsetType = UNSET
+    column_median_value: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation_value: float | None | UnsetType = UNSET
+    column_standard_deviation_value: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_average_value: float | None | UnsetType = UNSET
+    column_average_value: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_variance_value: float | None | UnsetType = UNSET
+    column_variance_value: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_average_length_value: float | None | UnsetType = UNSET
+    column_average_length_value: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_distribution_histogram: dict[str, Any] | None | UnsetType = UNSET
+    column_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    column_depth_level: int | None | UnsetType = UNSET
+    column_depth_level: Union[int, None, UnsetType] = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
-    nosql_collection_name: str | None | UnsetType = UNSET
+    nosql_collection_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    nosql_collection_qualified_name: str | None | UnsetType = UNSET
+    nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    column_is_measure: bool | None | UnsetType = UNSET
+    column_is_measure: Union[bool, None, UnsetType] = UNSET
     """When true, this column is of type measure/calculated."""
 
-    column_measure_type: str | None | UnsetType = UNSET
+    column_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
 
 class DremioColumnRelationshipAttributes(AssetRelationshipAttributes):
     """DremioColumn-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
-    )
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    metric_timestamps: list[RelatedMetric] | None | UnsetType = UNSET
+    metric_timestamps: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    data_quality_metric_dimensions: list[RelatedMetric] | None | UnsetType = UNSET
+    data_quality_metric_dimensions: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_base_column_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
-    dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """(Deprecated) Model containing the assets."""
 
-    sql_dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
+    sql_dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
     """Assets related to the model."""
 
-    dbt_tests: list[RelatedDbtTest] | None | UnsetType = UNSET
+    dbt_tests: Union[List[RelatedDbtTest], None, UnsetType] = UNSET
     """Tests related to this asset."""
 
-    dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
+    dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
         default=UNSET, name="sqlDBTSources"
     )
     """Sources related to this asset."""
 
-    dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
+    dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
     """Metrics related to this model column."""
 
-    dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: list[RelatedDbtModelColumn] | None | UnsetType = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
-    dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
+    dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
-        default=UNSET, name="mongoDBCollection"
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
     )
     """Collection in which the columns exist."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    table: RelatedTable | None | UnsetType = UNSET
-    """Table in which this column exists."""
-
-    nested_columns: list[RelatedColumn] | None | UnsetType = UNSET
-    """Nested columns that exist within this column."""
-
-    parent_column: RelatedColumn | None | UnsetType = UNSET
-    """Column in which this sub-column is nested."""
-
-    table_partition: RelatedTablePartition | None | UnsetType = UNSET
-    """Table partition that contains this column."""
-
-    view: RelatedView | None | UnsetType = UNSET
-    """View in which this column exists."""
-
-    calculation_view: RelatedCalculationView | None | UnsetType = UNSET
-    """Calculate view in which this column exists."""
-
-    materialised_view: RelatedMaterialisedView | None | UnsetType = UNSET
-    """Materialized view in which this column exists."""
-
-    foreign_key_to: list[RelatedColumn] | None | UnsetType = UNSET
-    """Columns that use this column as a foreign key."""
-
-    foreign_key_from: RelatedColumn | None | UnsetType = UNSET
-    """Column this foreign key column refers to."""
-
-    queries: list[RelatedQuery] | None | UnsetType = UNSET
-    """Queries that access this column."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    table: Union[RelatedTable, None, UnsetType] = UNSET
+    """Table in which this column exists."""
+
+    nested_columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
+    """Nested columns that exist within this column."""
+
+    parent_column: Union[RelatedColumn, None, UnsetType] = UNSET
+    """Column in which this sub-column is nested."""
+
+    table_partition: Union[RelatedTablePartition, None, UnsetType] = UNSET
+    """Table partition that contains this column."""
+
+    view: Union[RelatedView, None, UnsetType] = UNSET
+    """View in which this column exists."""
+
+    calculation_view: Union[RelatedCalculationView, None, UnsetType] = UNSET
+    """Calculate view in which this column exists."""
+
+    materialised_view: Union[RelatedMaterialisedView, None, UnsetType] = UNSET
+    """Materialized view in which this column exists."""
+
+    foreign_key_to: Union[List[RelatedColumn], None, UnsetType] = UNSET
+    """Columns that use this column as a foreign key."""
+
+    foreign_key_from: Union[RelatedColumn, None, UnsetType] = UNSET
+    """Column this foreign key column refers to."""
+
+    queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
+    """Queries that access this column."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: (
-        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
-    ) = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class DremioColumnNested(AssetNested):
     """DremioColumn in nested API format for high-performance serialization."""
 
-    attributes: DremioColumnAttributes | UnsetType = UNSET
-    relationship_attributes: DremioColumnRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DremioColumnRelationshipAttributes | UnsetType = (
+    attributes: Union[DremioColumnAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[DremioColumnRelationshipAttributes, UnsetType] = (
         UNSET
     )
-    remove_relationship_attributes: DremioColumnRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    append_relationship_attributes: Union[
+        DremioColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DremioColumnRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_DREMIO_COLUMN_REL_FIELDS: list[str] = [
+_DREMIO_COLUMN_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

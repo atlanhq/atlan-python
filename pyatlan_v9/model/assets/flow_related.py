@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Dict, Union
+
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -39,46 +41,46 @@ class RelatedFlow(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Flow" so it serializes correctly
 
-    flow_started_at: int | None | UnsetType = UNSET
+    flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 
-    flow_finished_at: int | None | UnsetType = UNSET
+    flow_finished_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration finished."""
 
-    flow_status: str | None | UnsetType = UNSET
+    flow_status: Union[str, None, UnsetType] = UNSET
     """Overall status of this point in the data processing or orchestration."""
 
-    flow_schedule: str | None | UnsetType = UNSET
+    flow_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for this point in the data processing or orchestration."""
 
-    flow_project_name: str | None | UnsetType = UNSET
+    flow_project_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the project in which this asset is contained."""
 
-    flow_project_qualified_name: str | None | UnsetType = UNSET
+    flow_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset is contained."""
 
-    flow_folder_name: str | None | UnsetType = UNSET
+    flow_folder_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the folder in which this asset is contained."""
 
-    flow_folder_qualified_name: str | None | UnsetType = UNSET
+    flow_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this asset is contained."""
 
-    flow_reusable_unit_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_reusable_unit_qualified_name: str | None | UnsetType = UNSET
+    flow_reusable_unit_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the reusable grouping of operations in which this ephemeral data is contained."""
 
-    flow_id: str | None | UnsetType = UNSET
+    flow_id: Union[str, None, UnsetType] = UNSET
     """Unique ID for this flow asset, which will remain constant throughout the lifecycle of the asset."""
 
-    flow_run_id: str | None | UnsetType = UNSET
+    flow_run_id: Union[str, None, UnsetType] = UNSET
     """Unique ID of the flow run, which could change on subsequent runs of the same flow."""
 
-    flow_error_message: str | None | UnsetType = UNSET
+    flow_error_message: Union[str, None, UnsetType] = UNSET
     """Optional error message of the flow run."""
 
-    flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
+    flow_input_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Input parameters for the flow run."""
 
     def __post_init__(self) -> None:
@@ -141,10 +143,10 @@ class RelatedFlowReusableUnit(RelatedFlow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FlowReusableUnit" so it serializes correctly
 
-    flow_dataset_count: int | None | UnsetType = UNSET
+    flow_dataset_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of ephemeral datasets contained within this reusable unit."""
 
-    flow_control_operation_count: int | None | UnsetType = UNSET
+    flow_control_operation_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of control flow operations that execute this reusable unit."""
 
     def __post_init__(self) -> None:
@@ -192,16 +194,16 @@ class RelatedFlowDataset(RelatedFlow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FlowDataset" so it serializes correctly
 
-    flow_field_count: int | None | UnsetType = UNSET
+    flow_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of individual fields that make up this ephemeral dataset."""
 
-    flow_type: str | None | UnsetType = UNSET
+    flow_type: Union[str, None, UnsetType] = UNSET
     """Type of the ephemeral piece of data."""
 
-    flow_expression: str | None | UnsetType = UNSET
+    flow_expression: Union[str, None, UnsetType] = UNSET
     """Logic that is applied, injected or otherwise used as part of producing this ephemeral piece of data."""
 
-    flow_query: str | None | UnsetType = UNSET
+    flow_query: Union[str, None, UnsetType] = UNSET
     """Query (e.g. SQL) that was run to produce this ephemeral piece of data."""
 
     def __post_init__(self) -> None:
@@ -219,16 +221,16 @@ class RelatedFlowField(RelatedFlow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "FlowField" so it serializes correctly
 
-    flow_dataset_name: str | None | UnsetType = UNSET
+    flow_dataset_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the ephemeral dataset in which this field is contained."""
 
-    flow_dataset_qualified_name: str | None | UnsetType = UNSET
+    flow_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the ephemeral dataset in which this field is contained."""
 
-    flow_data_type: str | None | UnsetType = UNSET
+    flow_data_type: Union[str, None, UnsetType] = UNSET
     """Type of the data captured in this field."""
 
-    flow_expression: str | None | UnsetType = UNSET
+    flow_expression: Union[str, None, UnsetType] = UNSET
     """Logic that is applied, injected or otherwise used as part of producing this ephemeral field of data."""
 
     def __post_init__(self) -> None:

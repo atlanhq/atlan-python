@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -125,168 +125,174 @@ class AdfActivity(Asset):
 
     type_name: Union[str, UnsetType] = "AdfActivity"
 
-    adf_activity_type: str | None | UnsetType = UNSET
+    adf_activity_type: Union[str, None, UnsetType] = UNSET
     """The type of the ADF activity."""
 
-    adf_activity_preceding_dependency: list[str] | None | UnsetType = UNSET
+    adf_activity_preceding_dependency: Union[List[str], None, UnsetType] = UNSET
     """The list of ADF activities on which this ADF activity depends on."""
 
-    adf_activity_policy_timeout: str | None | UnsetType = UNSET
+    adf_activity_policy_timeout: Union[str, None, UnsetType] = UNSET
     """The timout defined for the ADF activity."""
 
-    adf_activity_polict_retry_interval: int | None | UnsetType = UNSET
+    adf_activity_polict_retry_interval: Union[int, None, UnsetType] = UNSET
     """The retry interval in seconds for the ADF activity."""
 
-    adf_activity_state: str | None | UnsetType = UNSET
+    adf_activity_state: Union[str, None, UnsetType] = UNSET
     """Defines the state (Active or Inactive) of an ADF activity whether it is active or not."""
 
-    adf_activity_sources: list[str] | None | UnsetType = UNSET
+    adf_activity_sources: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sources for the ADF activity."""
 
-    adf_activity_sinks: list[str] | None | UnsetType = UNSET
+    adf_activity_sinks: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sinks for the ADF activity."""
 
-    adf_activity_source_type: str | None | UnsetType = UNSET
+    adf_activity_source_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the source of the ADF activtity."""
 
-    adf_activity_sink_type: str | None | UnsetType = UNSET
+    adf_activity_sink_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the sink of the ADF activtity."""
 
-    adf_activity_runs: list[dict[str, str]] | None | UnsetType = UNSET
+    adf_activity_runs: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of objects of activity runs for a particular activity."""
 
-    adf_activity_notebook_path: str | None | UnsetType = UNSET
+    adf_activity_notebook_path: Union[str, None, UnsetType] = UNSET
     """Defines the path of the notebook in the databricks notebook activity."""
 
-    adf_activity_main_class_name: str | None | UnsetType = UNSET
+    adf_activity_main_class_name: Union[str, None, UnsetType] = UNSET
     """Defines the main class of the databricks spark activity."""
 
-    adf_activity_python_file_path: str | None | UnsetType = UNSET
+    adf_activity_python_file_path: Union[str, None, UnsetType] = UNSET
     """Defines the python file path for databricks python activity."""
 
-    adf_activity_first_row_only: bool | None | UnsetType = UNSET
+    adf_activity_first_row_only: Union[bool, None, UnsetType] = UNSET
     """Indicates whether to import only first row only or not in Lookup activity."""
 
-    adf_activity_batch_count: int | None | UnsetType = UNSET
+    adf_activity_batch_count: Union[int, None, UnsetType] = UNSET
     """Defines the batch count of activity to runs in ForEach activity."""
 
-    adf_activity_is_sequential: bool | None | UnsetType = UNSET
+    adf_activity_is_sequential: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the activity processing is sequential or not inside the ForEach activity."""
 
-    adf_activity_sub_activities: list[str] | None | UnsetType = UNSET
+    adf_activity_sub_activities: Union[List[str], None, UnsetType] = UNSET
     """The list of activities to be run inside a ForEach activity."""
 
-    adf_activity_reference_dataflow: str | None | UnsetType = UNSET
+    adf_activity_reference_dataflow: Union[str, None, UnsetType] = UNSET
     """Defines the dataflow that is to be used in dataflow activity."""
 
-    adf_pipeline_qualified_name: str | None | UnsetType = UNSET
+    adf_pipeline_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the pipeline in which this activity exists."""
 
-    adf_factory_name: str | None | UnsetType = UNSET
+    adf_factory_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the factory in which this asset exists."""
 
-    adf_asset_folder_path: str | None | UnsetType = UNSET
+    adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
-    adf_linkedservices: list[RelatedAdfLinkedservice] | None | UnsetType = UNSET
+    adf_linkedservices: Union[List[RelatedAdfLinkedservice], None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Linkedservice."""
 
-    adf_datasets: list[RelatedAdfDataset] | None | UnsetType = UNSET
+    adf_datasets: Union[List[RelatedAdfDataset], None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Dataset."""
 
-    adf_dataflow: RelatedAdfDataflow | None | UnsetType = UNSET
+    adf_dataflow: Union[RelatedAdfDataflow, None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Dataflow."""
 
-    adf_pipeline: RelatedAdfPipeline | None | UnsetType = UNSET
+    adf_pipeline: Union[RelatedAdfPipeline, None, UnsetType] = UNSET
     """ADF Activity that is associated with this ADF Pipeline."""
 
-    processes: list[RelatedProcess] | None | UnsetType = UNSET
+    processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Lineage process that associates this ADF Activity."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -353,193 +359,199 @@ class AdfActivity(Asset):
 class AdfActivityAttributes(AssetAttributes):
     """AdfActivity-specific attributes for nested API format."""
 
-    adf_activity_type: str | None | UnsetType = UNSET
+    adf_activity_type: Union[str, None, UnsetType] = UNSET
     """The type of the ADF activity."""
 
-    adf_activity_preceding_dependency: list[str] | None | UnsetType = UNSET
+    adf_activity_preceding_dependency: Union[List[str], None, UnsetType] = UNSET
     """The list of ADF activities on which this ADF activity depends on."""
 
-    adf_activity_policy_timeout: str | None | UnsetType = UNSET
+    adf_activity_policy_timeout: Union[str, None, UnsetType] = UNSET
     """The timout defined for the ADF activity."""
 
-    adf_activity_polict_retry_interval: int | None | UnsetType = UNSET
+    adf_activity_polict_retry_interval: Union[int, None, UnsetType] = UNSET
     """The retry interval in seconds for the ADF activity."""
 
-    adf_activity_state: str | None | UnsetType = UNSET
+    adf_activity_state: Union[str, None, UnsetType] = UNSET
     """Defines the state (Active or Inactive) of an ADF activity whether it is active or not."""
 
-    adf_activity_sources: list[str] | None | UnsetType = UNSET
+    adf_activity_sources: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sources for the ADF activity."""
 
-    adf_activity_sinks: list[str] | None | UnsetType = UNSET
+    adf_activity_sinks: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sinks for the ADF activity."""
 
-    adf_activity_source_type: str | None | UnsetType = UNSET
+    adf_activity_source_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the source of the ADF activtity."""
 
-    adf_activity_sink_type: str | None | UnsetType = UNSET
+    adf_activity_sink_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the sink of the ADF activtity."""
 
-    adf_activity_runs: list[dict[str, str]] | None | UnsetType = UNSET
+    adf_activity_runs: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of objects of activity runs for a particular activity."""
 
-    adf_activity_notebook_path: str | None | UnsetType = UNSET
+    adf_activity_notebook_path: Union[str, None, UnsetType] = UNSET
     """Defines the path of the notebook in the databricks notebook activity."""
 
-    adf_activity_main_class_name: str | None | UnsetType = UNSET
+    adf_activity_main_class_name: Union[str, None, UnsetType] = UNSET
     """Defines the main class of the databricks spark activity."""
 
-    adf_activity_python_file_path: str | None | UnsetType = UNSET
+    adf_activity_python_file_path: Union[str, None, UnsetType] = UNSET
     """Defines the python file path for databricks python activity."""
 
-    adf_activity_first_row_only: bool | None | UnsetType = UNSET
+    adf_activity_first_row_only: Union[bool, None, UnsetType] = UNSET
     """Indicates whether to import only first row only or not in Lookup activity."""
 
-    adf_activity_batch_count: int | None | UnsetType = UNSET
+    adf_activity_batch_count: Union[int, None, UnsetType] = UNSET
     """Defines the batch count of activity to runs in ForEach activity."""
 
-    adf_activity_is_sequential: bool | None | UnsetType = UNSET
+    adf_activity_is_sequential: Union[bool, None, UnsetType] = UNSET
     """Indicates whether the activity processing is sequential or not inside the ForEach activity."""
 
-    adf_activity_sub_activities: list[str] | None | UnsetType = UNSET
+    adf_activity_sub_activities: Union[List[str], None, UnsetType] = UNSET
     """The list of activities to be run inside a ForEach activity."""
 
-    adf_activity_reference_dataflow: str | None | UnsetType = UNSET
+    adf_activity_reference_dataflow: Union[str, None, UnsetType] = UNSET
     """Defines the dataflow that is to be used in dataflow activity."""
 
-    adf_pipeline_qualified_name: str | None | UnsetType = UNSET
+    adf_pipeline_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the pipeline in which this activity exists."""
 
-    adf_factory_name: str | None | UnsetType = UNSET
+    adf_factory_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the factory in which this asset exists."""
 
-    adf_asset_folder_path: str | None | UnsetType = UNSET
+    adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
 
 class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     """AdfActivity-specific relationship attributes for nested API format."""
 
-    adf_linkedservices: list[RelatedAdfLinkedservice] | None | UnsetType = UNSET
+    adf_linkedservices: Union[List[RelatedAdfLinkedservice], None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Linkedservice."""
 
-    adf_datasets: list[RelatedAdfDataset] | None | UnsetType = UNSET
+    adf_datasets: Union[List[RelatedAdfDataset], None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Dataset."""
 
-    adf_dataflow: RelatedAdfDataflow | None | UnsetType = UNSET
+    adf_dataflow: Union[RelatedAdfDataflow, None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Dataflow."""
 
-    adf_pipeline: RelatedAdfPipeline | None | UnsetType = UNSET
+    adf_pipeline: Union[RelatedAdfPipeline, None, UnsetType] = UNSET
     """ADF Activity that is associated with this ADF Pipeline."""
 
-    processes: list[RelatedProcess] | None | UnsetType = UNSET
+    processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Lineage process that associates this ADF Activity."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class AdfActivityNested(AssetNested):
     """AdfActivity in nested API format for high-performance serialization."""
 
-    attributes: AdfActivityAttributes | UnsetType = UNSET
-    relationship_attributes: AdfActivityRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AdfActivityRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    remove_relationship_attributes: AdfActivityRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    attributes: Union[AdfActivityAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[AdfActivityRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AdfActivityRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AdfActivityRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_ADF_ACTIVITY_REL_FIELDS: list[str] = [
+_ADF_ACTIVITY_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "adf_linkedservices",
     "adf_datasets",

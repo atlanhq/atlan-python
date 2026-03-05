@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -94,102 +94,108 @@ class BusinessPolicy(Asset):
 
     type_name: Union[str, UnsetType] = "BusinessPolicy"
 
-    business_policy_type: str | None | UnsetType = UNSET
+    business_policy_type: Union[str, None, UnsetType] = UNSET
     """Type of business policy"""
 
-    business_policy_long_description: str | None | UnsetType = UNSET
+    business_policy_long_description: Union[str, None, UnsetType] = UNSET
     """Body of the business policy, a long readme like document"""
 
-    business_policy_valid_till: int | None | UnsetType = UNSET
+    business_policy_valid_till: Union[int, None, UnsetType] = UNSET
     """Validity end date of the policy"""
 
-    business_policy_valid_from: int | None | UnsetType = UNSET
+    business_policy_valid_from: Union[int, None, UnsetType] = UNSET
     """Validity start date of the policy"""
 
-    business_policy_version: int | None | UnsetType = UNSET
+    business_policy_version: Union[int, None, UnsetType] = UNSET
     """Version of the policy"""
 
-    business_policy_review_period: str | None | UnsetType = UNSET
+    business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: str | None | UnsetType = msgspec.field(
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicyFilterDSL"
     )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
-    business_policy_base_parent_guid: str | None | UnsetType = UNSET
+    business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: str | None | UnsetType = msgspec.field(
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicySelectedApprovalWF"
     )
     """Selected approval workflow id for business policy"""
 
-    business_policy_rules: list[dict[str, Any]] | None | UnsetType = UNSET
+    business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of rules applied to this business policy."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    related_business_policies: list[RelatedBusinessPolicy] | None | UnsetType = UNSET
+    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = (
+        UNSET
+    )
     """BusinessPolicy that have the same (or relatable) compliance"""
 
-    exceptions_for_business_policy: (
-        list[RelatedBusinessPolicyException] | None | UnsetType
-    ) = UNSET
+    exceptions_for_business_policy: Union[
+        List[RelatedBusinessPolicyException], None, UnsetType
+    ] = UNSET
     """Exception assigned to business polices"""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -250,127 +256,135 @@ class BusinessPolicy(Asset):
 class BusinessPolicyAttributes(AssetAttributes):
     """BusinessPolicy-specific attributes for nested API format."""
 
-    business_policy_type: str | None | UnsetType = UNSET
+    business_policy_type: Union[str, None, UnsetType] = UNSET
     """Type of business policy"""
 
-    business_policy_long_description: str | None | UnsetType = UNSET
+    business_policy_long_description: Union[str, None, UnsetType] = UNSET
     """Body of the business policy, a long readme like document"""
 
-    business_policy_valid_till: int | None | UnsetType = UNSET
+    business_policy_valid_till: Union[int, None, UnsetType] = UNSET
     """Validity end date of the policy"""
 
-    business_policy_valid_from: int | None | UnsetType = UNSET
+    business_policy_valid_from: Union[int, None, UnsetType] = UNSET
     """Validity start date of the policy"""
 
-    business_policy_version: int | None | UnsetType = UNSET
+    business_policy_version: Union[int, None, UnsetType] = UNSET
     """Version of the policy"""
 
-    business_policy_review_period: str | None | UnsetType = UNSET
+    business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: str | None | UnsetType = msgspec.field(
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicyFilterDSL"
     )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
-    business_policy_base_parent_guid: str | None | UnsetType = UNSET
+    business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: str | None | UnsetType = msgspec.field(
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="businessPolicySelectedApprovalWF"
     )
     """Selected approval workflow id for business policy"""
 
-    business_policy_rules: list[dict[str, Any]] | None | UnsetType = UNSET
+    business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of rules applied to this business policy."""
 
 
 class BusinessPolicyRelationshipAttributes(AssetRelationshipAttributes):
     """BusinessPolicy-specific relationship attributes for nested API format."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    related_business_policies: list[RelatedBusinessPolicy] | None | UnsetType = UNSET
+    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = (
+        UNSET
+    )
     """BusinessPolicy that have the same (or relatable) compliance"""
 
-    exceptions_for_business_policy: (
-        list[RelatedBusinessPolicyException] | None | UnsetType
-    ) = UNSET
+    exceptions_for_business_policy: Union[
+        List[RelatedBusinessPolicyException], None, UnsetType
+    ] = UNSET
     """Exception assigned to business polices"""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
+    """"""
+
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
 
 class BusinessPolicyNested(AssetNested):
     """BusinessPolicy in nested API format for high-performance serialization."""
 
-    attributes: BusinessPolicyAttributes | UnsetType = UNSET
-    relationship_attributes: BusinessPolicyRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: BusinessPolicyRelationshipAttributes | UnsetType = (
+    attributes: Union[BusinessPolicyAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[BusinessPolicyRelationshipAttributes, UnsetType] = (
         UNSET
     )
-    remove_relationship_attributes: BusinessPolicyRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    append_relationship_attributes: Union[
+        BusinessPolicyRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        BusinessPolicyRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_BUSINESS_POLICY_REL_FIELDS: list[str] = [
+_BUSINESS_POLICY_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "anomalo_checks",
     "application",

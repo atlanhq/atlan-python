@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -52,34 +52,34 @@ class RelatedKafkaTopic(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "KafkaTopic" so it serializes correctly
 
-    kafka_topic_is_internal: bool | None | UnsetType = UNSET
+    kafka_topic_is_internal: Union[bool, None, UnsetType] = UNSET
     """Whether this topic is an internal topic (true) or not (false)."""
 
-    kafka_topic_compression_type: str | None | UnsetType = UNSET
+    kafka_topic_compression_type: Union[str, None, UnsetType] = UNSET
     """Type of compression used for this topic."""
 
-    kafka_topic_replication_factor: int | None | UnsetType = UNSET
+    kafka_topic_replication_factor: Union[int, None, UnsetType] = UNSET
     """Replication factor for this topic."""
 
-    kafka_topic_segment_bytes: int | None | UnsetType = UNSET
+    kafka_topic_segment_bytes: Union[int, None, UnsetType] = UNSET
     """Segment size for this topic."""
 
-    kafka_topic_retention_time_in_ms: int | None | UnsetType = UNSET
+    kafka_topic_retention_time_in_ms: Union[int, None, UnsetType] = UNSET
     """Amount of time messages will be retained in this topic, in milliseconds."""
 
-    kafka_topic_partitions_count: int | None | UnsetType = UNSET
+    kafka_topic_partitions_count: Union[int, None, UnsetType] = UNSET
     """Number of partitions for this topic."""
 
-    kafka_topic_size_in_bytes: int | None | UnsetType = UNSET
+    kafka_topic_size_in_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this topic, in bytes."""
 
-    kafka_topic_record_count: int | None | UnsetType = UNSET
+    kafka_topic_record_count: Union[int, None, UnsetType] = UNSET
     """Number of (unexpired) messages in this topic."""
 
-    kafka_topic_cleanup_policy: str | None | UnsetType = UNSET
+    kafka_topic_cleanup_policy: Union[str, None, UnsetType] = UNSET
     """Cleanup policy for this topic."""
 
-    kafka_topic_log_cleanup_policy: str | None | UnsetType = UNSET
+    kafka_topic_log_cleanup_policy: Union[str, None, UnsetType] = UNSET
     """Comma seperated Cleanup policy for this topic."""
 
     def __post_init__(self) -> None:
@@ -97,18 +97,18 @@ class RelatedKafkaConsumerGroup(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "KafkaConsumerGroup" so it serializes correctly
 
-    kafka_consumer_group_topic_consumption_properties: (
-        list[dict[str, Any]] | None | UnsetType
-    ) = UNSET
+    kafka_consumer_group_topic_consumption_properties: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
-    kafka_consumer_group_member_count: int | None | UnsetType = UNSET
+    kafka_consumer_group_member_count: Union[int, None, UnsetType] = UNSET
     """Number of members in this consumer group."""
 
-    kafka_topic_names: list[str] | None | UnsetType = UNSET
+    kafka_topic_names: Union[List[str], None, UnsetType] = UNSET
     """Simple names of the topics consumed by this consumer group."""
 
-    kafka_topic_qualified_names: list[str] | None | UnsetType = UNSET
+    kafka_topic_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the topics consumed by this consumer group."""
 
     def __post_init__(self) -> None:
@@ -126,7 +126,7 @@ class RelatedAzureEventHub(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AzureEventHub" so it serializes correctly
 
-    kafka_status: str | None | UnsetType = UNSET
+    kafka_status: Union[str, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:

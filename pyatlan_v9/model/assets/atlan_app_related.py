@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -38,13 +38,13 @@ class RelatedAtlanApp(RelatedApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanApp" so it serializes correctly
 
-    atlan_app_qualified_name: str | None | UnsetType = UNSET
+    atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
 
-    atlan_app_name: str | None | UnsetType = UNSET
+    atlan_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the Atlan application this asset belongs to."""
 
-    atlan_app_metadata: str | None | UnsetType = UNSET
+    atlan_app_metadata: Union[str, None, UnsetType] = UNSET
     """Metadata for the Atlan application (escaped JSON string)."""
 
     def __post_init__(self) -> None:
@@ -62,15 +62,15 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppInstalled" so it serializes correctly
 
-    atlan_app_current_version_id: int | None | UnsetType = UNSET
+    atlan_app_current_version_id: Union[int, None, UnsetType] = UNSET
     """Current version identifier for the atlan application."""
 
-    atlan_app_current_version_uuid: str | None | UnsetType = msgspec.field(
+    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="atlanAppCurrentVersionUUID"
     )
     """Current version uuid for the atlan application. This is externally exposed information."""
 
-    atlan_app_deployment_config: str | None | UnsetType = UNSET
+    atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
     """Configuration settings used by the atlan application."""
 
     def __post_init__(self) -> None:
@@ -88,21 +88,21 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppDeployment" so it serializes correctly
 
-    atlan_app_version_id: int | None | UnsetType = UNSET
+    atlan_app_version_id: Union[int, None, UnsetType] = UNSET
     """Version identifier for deployment."""
 
-    atlan_app_version_uuid: str | None | UnsetType = msgspec.field(
+    atlan_app_version_uuid: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="atlanAppVersionUUID"
     )
     """Version uuid for deployment. This is externally exposed information."""
 
-    atlan_app_status: str | None | UnsetType = UNSET
+    atlan_app_status: Union[str, None, UnsetType] = UNSET
     """Status of deployment."""
 
-    atlan_app_operation: str | None | UnsetType = UNSET
+    atlan_app_operation: Union[str, None, UnsetType] = UNSET
     """Type of operation requested."""
 
-    atlan_app_error_details: str | None | UnsetType = UNSET
+    atlan_app_error_details: Union[str, None, UnsetType] = UNSET
     """Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED."""
 
     def __post_init__(self) -> None:
@@ -120,16 +120,16 @@ class RelatedAtlanAppTool(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppTool" so it serializes correctly
 
-    atlan_app_input_schema: str | None | UnsetType = UNSET
+    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_output_schema: str | None | UnsetType = UNSET
+    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_task_queue: str | None | UnsetType = UNSET
+    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_category: str | None | UnsetType = UNSET
+    atlan_app_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     def __post_init__(self) -> None:
@@ -147,25 +147,25 @@ class RelatedAtlanAppWorkflow(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppWorkflow" so it serializes correctly
 
-    atlan_app_version: str | None | UnsetType = UNSET
+    atlan_app_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
 
-    atlan_app_slug: str | None | UnsetType = UNSET
+    atlan_app_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the workflow."""
 
-    atlan_app_dag: str | None | UnsetType = UNSET
+    atlan_app_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow (escaped JSON string)."""
 
-    atlan_app_status: str | None | UnsetType = UNSET
+    atlan_app_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    atlan_app_error_handling: dict[str, Any] | None | UnsetType = UNSET
+    atlan_app_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow."""
 
-    atlan_app_ownership: str | None | UnsetType = UNSET
+    atlan_app_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
-    atlan_app_triggers: str | None | UnsetType = UNSET
+    atlan_app_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
 
     def __post_init__(self) -> None:

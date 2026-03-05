@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -107,135 +107,141 @@ class GCS(Asset):
 
     type_name: Union[str, UnsetType] = "GCS"
 
-    gcs_storage_class: str | None | UnsetType = UNSET
+    gcs_storage_class: Union[str, None, UnsetType] = UNSET
     """Storage class of this asset."""
 
-    gcs_encryption_type: str | None | UnsetType = UNSET
+    gcs_encryption_type: Union[str, None, UnsetType] = UNSET
     """Encryption algorithm used to encrypt this asset."""
 
-    gcs_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="gcsETag")
+    gcs_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    gcs_requester_pays: bool | None | UnsetType = UNSET
+    gcs_requester_pays: Union[bool, None, UnsetType] = UNSET
     """Whether the requester pays header was sent when this asset was created (true) or not (false)."""
 
-    gcs_access_control: str | None | UnsetType = UNSET
+    gcs_access_control: Union[str, None, UnsetType] = UNSET
     """Access control list for this asset."""
 
-    gcs_meta_generation_id: int | None | UnsetType = UNSET
+    gcs_meta_generation_id: Union[int, None, UnsetType] = UNSET
     """Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset."""
 
-    google_service: str | None | UnsetType = UNSET
+    google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
-    google_project_name: str | None | UnsetType = UNSET
+    google_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which the asset exists."""
 
-    google_project_id: str | None | UnsetType = UNSET
+    google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    google_project_number: int | None | UnsetType = UNSET
+    google_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
-    google_location: str | None | UnsetType = UNSET
+    google_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Google."""
 
-    google_location_type: str | None | UnsetType = UNSET
+    google_location_type: Union[str, None, UnsetType] = UNSET
     """Type of location of this asset in Google."""
 
-    google_labels: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_labels: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of labels that have been applied to the asset in Google."""
 
-    google_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of tags that have been applied to the asset in Google."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -296,156 +302,162 @@ class GCS(Asset):
 class GCSAttributes(AssetAttributes):
     """GCS-specific attributes for nested API format."""
 
-    gcs_storage_class: str | None | UnsetType = UNSET
+    gcs_storage_class: Union[str, None, UnsetType] = UNSET
     """Storage class of this asset."""
 
-    gcs_encryption_type: str | None | UnsetType = UNSET
+    gcs_encryption_type: Union[str, None, UnsetType] = UNSET
     """Encryption algorithm used to encrypt this asset."""
 
-    gcs_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="gcsETag")
+    gcs_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    gcs_requester_pays: bool | None | UnsetType = UNSET
+    gcs_requester_pays: Union[bool, None, UnsetType] = UNSET
     """Whether the requester pays header was sent when this asset was created (true) or not (false)."""
 
-    gcs_access_control: str | None | UnsetType = UNSET
+    gcs_access_control: Union[str, None, UnsetType] = UNSET
     """Access control list for this asset."""
 
-    gcs_meta_generation_id: int | None | UnsetType = UNSET
+    gcs_meta_generation_id: Union[int, None, UnsetType] = UNSET
     """Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset."""
 
-    google_service: str | None | UnsetType = UNSET
+    google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
-    google_project_name: str | None | UnsetType = UNSET
+    google_project_name: Union[str, None, UnsetType] = UNSET
     """Name of the project in which the asset exists."""
 
-    google_project_id: str | None | UnsetType = UNSET
+    google_project_id: Union[str, None, UnsetType] = UNSET
     """ID of the project in which the asset exists."""
 
-    google_project_number: int | None | UnsetType = UNSET
+    google_project_number: Union[int, None, UnsetType] = UNSET
     """Number of the project in which the asset exists."""
 
-    google_location: str | None | UnsetType = UNSET
+    google_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Google."""
 
-    google_location_type: str | None | UnsetType = UNSET
+    google_location_type: Union[str, None, UnsetType] = UNSET
     """Type of location of this asset in Google."""
 
-    google_labels: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_labels: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of labels that have been applied to the asset in Google."""
 
-    google_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    google_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of tags that have been applied to the asset in Google."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
 
 class GCSRelationshipAttributes(AssetRelationshipAttributes):
     """GCS-specific relationship attributes for nested API format."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class GCSNested(AssetNested):
     """GCS in nested API format for high-performance serialization."""
 
-    attributes: GCSAttributes | UnsetType = UNSET
-    relationship_attributes: GCSRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: GCSRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: GCSRelationshipAttributes | UnsetType = UNSET
+    attributes: Union[GCSAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_GCS_REL_FIELDS: list[str] = [
+_GCS_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",

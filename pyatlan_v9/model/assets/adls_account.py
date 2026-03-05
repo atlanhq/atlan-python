@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -113,144 +113,152 @@ class ADLSAccount(Asset):
 
     type_name: Union[str, UnsetType] = "ADLSAccount"
 
-    adls_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="adlsETag")
+    adls_etag: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="adlsETag"
+    )
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    adls_encryption_type: str | None | UnsetType = UNSET
+    adls_encryption_type: Union[str, None, UnsetType] = UNSET
     """Type of encryption for this account."""
 
-    adls_account_resource_group: str | None | UnsetType = UNSET
+    adls_account_resource_group: Union[str, None, UnsetType] = UNSET
     """Resource group for this account."""
 
-    adls_account_subscription: str | None | UnsetType = UNSET
+    adls_account_subscription: Union[str, None, UnsetType] = UNSET
     """Subscription for this account."""
 
-    adls_account_performance: str | None | UnsetType = UNSET
+    adls_account_performance: Union[str, None, UnsetType] = UNSET
     """Performance of this account."""
 
-    adls_account_replication: str | None | UnsetType = UNSET
+    adls_account_replication: Union[str, None, UnsetType] = UNSET
     """Replication of this account."""
 
-    adls_account_kind: str | None | UnsetType = UNSET
+    adls_account_kind: Union[str, None, UnsetType] = UNSET
     """Kind of this account."""
 
-    adls_primary_disk_state: str | None | UnsetType = UNSET
+    adls_primary_disk_state: Union[str, None, UnsetType] = UNSET
     """Primary disk state of this account."""
 
-    adls_account_provision_state: str | None | UnsetType = UNSET
+    adls_account_provision_state: Union[str, None, UnsetType] = UNSET
     """Provision state of this account."""
 
-    adls_account_access_tier: str | None | UnsetType = UNSET
+    adls_account_access_tier: Union[str, None, UnsetType] = UNSET
     """Access tier of this account."""
 
-    adls_account_qualified_name: str | None | UnsetType = UNSET
+    adls_account_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the account for this ADLS asset."""
 
-    adls_account_name: str | None | UnsetType = UNSET
+    adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
 
-    azure_resource_id: str | None | UnsetType = UNSET
+    azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 
-    azure_location: str | None | UnsetType = UNSET
+    azure_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Azure."""
 
-    adls_account_secondary_location: str | None | UnsetType = UNSET
+    adls_account_secondary_location: Union[str, None, UnsetType] = UNSET
     """Secondary location of the ADLS account."""
 
-    azure_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    azure_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Tags that have been applied to this asset in Azure."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
-    adls_containers: list[RelatedADLSContainer] | None | UnsetType = UNSET
+    adls_containers: Union[List[RelatedADLSContainer], None, UnsetType] = UNSET
     """Containers that exist within this account."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -343,169 +351,177 @@ class ADLSAccount(Asset):
 class ADLSAccountAttributes(AssetAttributes):
     """ADLSAccount-specific attributes for nested API format."""
 
-    adls_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="adlsETag")
+    adls_etag: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="adlsETag"
+    )
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    adls_encryption_type: str | None | UnsetType = UNSET
+    adls_encryption_type: Union[str, None, UnsetType] = UNSET
     """Type of encryption for this account."""
 
-    adls_account_resource_group: str | None | UnsetType = UNSET
+    adls_account_resource_group: Union[str, None, UnsetType] = UNSET
     """Resource group for this account."""
 
-    adls_account_subscription: str | None | UnsetType = UNSET
+    adls_account_subscription: Union[str, None, UnsetType] = UNSET
     """Subscription for this account."""
 
-    adls_account_performance: str | None | UnsetType = UNSET
+    adls_account_performance: Union[str, None, UnsetType] = UNSET
     """Performance of this account."""
 
-    adls_account_replication: str | None | UnsetType = UNSET
+    adls_account_replication: Union[str, None, UnsetType] = UNSET
     """Replication of this account."""
 
-    adls_account_kind: str | None | UnsetType = UNSET
+    adls_account_kind: Union[str, None, UnsetType] = UNSET
     """Kind of this account."""
 
-    adls_primary_disk_state: str | None | UnsetType = UNSET
+    adls_primary_disk_state: Union[str, None, UnsetType] = UNSET
     """Primary disk state of this account."""
 
-    adls_account_provision_state: str | None | UnsetType = UNSET
+    adls_account_provision_state: Union[str, None, UnsetType] = UNSET
     """Provision state of this account."""
 
-    adls_account_access_tier: str | None | UnsetType = UNSET
+    adls_account_access_tier: Union[str, None, UnsetType] = UNSET
     """Access tier of this account."""
 
-    adls_account_qualified_name: str | None | UnsetType = UNSET
+    adls_account_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the account for this ADLS asset."""
 
-    adls_account_name: str | None | UnsetType = UNSET
+    adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
 
-    azure_resource_id: str | None | UnsetType = UNSET
+    azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 
-    azure_location: str | None | UnsetType = UNSET
+    azure_location: Union[str, None, UnsetType] = UNSET
     """Location of this asset in Azure."""
 
-    adls_account_secondary_location: str | None | UnsetType = UNSET
+    adls_account_secondary_location: Union[str, None, UnsetType] = UNSET
     """Secondary location of the ADLS account."""
 
-    azure_tags: list[dict[str, Any]] | None | UnsetType = UNSET
+    azure_tags: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Tags that have been applied to this asset in Azure."""
 
-    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
 
 class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     """ADLSAccount-specific relationship attributes for nested API format."""
 
-    adls_containers: list[RelatedADLSContainer] | None | UnsetType = UNSET
+    adls_containers: Union[List[RelatedADLSContainer], None, UnsetType] = UNSET
     """Containers that exist within this account."""
 
-    input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
-    output_from_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
+    output_from_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks from which this asset is output."""
 
-    anomalo_checks: list[RelatedAnomaloCheck] | None | UnsetType = UNSET
+    anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
-    application: RelatedApplication | None | UnsetType = UNSET
+    application: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the Asset."""
 
-    application_field: RelatedApplicationField | None | UnsetType = UNSET
+    application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
-    input_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
+    input_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an input port."""
 
-    model_implemented_entities: list[RelatedModelEntity] | None | UnsetType = UNSET
+    model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
-    metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
     """"""
 
-    dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
+    meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
+    mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
-    mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
+    mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    partial_child_fields: list[RelatedPartialField] | None | UnsetType = UNSET
+    partial_child_fields: Union[List[RelatedPartialField], None, UnsetType] = UNSET
     """Partial fields contained in the asset."""
 
-    partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
+    partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes to which this asset provides input."""
 
-    output_from_processes: list[RelatedProcess] | None | UnsetType = UNSET
+    output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    user_def_relationship_to: list[RelatedReferenceable] | None | UnsetType = UNSET
+    user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: list[RelatedReferenceable] | None | UnsetType = UNSET
-    """"""
-
-    files: list[RelatedFile] | None | UnsetType = UNSET
-    """"""
-
-    links: list[RelatedLink] | None | UnsetType = UNSET
-    """Links that are attached to this asset."""
-
-    readme: RelatedReadme | None | UnsetType = UNSET
-    """README that is linked to this asset."""
-
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
         UNSET
     )
     """"""
 
-    soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
+    files: Union[List[RelatedFile], None, UnsetType] = UNSET
     """"""
 
-    input_to_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    links: Union[List[RelatedLink], None, UnsetType] = UNSET
+    """Links that are attached to this asset."""
+
+    readme: Union[RelatedReadme, None, UnsetType] = UNSET
+    """README that is linked to this asset."""
+
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
+    soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
+    """"""
+
+    input_to_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
+    """"""
+
+    output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
 
 class ADLSAccountNested(AssetNested):
     """ADLSAccount in nested API format for high-performance serialization."""
 
-    attributes: ADLSAccountAttributes | UnsetType = UNSET
-    relationship_attributes: ADLSAccountRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ADLSAccountRelationshipAttributes | UnsetType = (
-        UNSET
-    )
-    remove_relationship_attributes: ADLSAccountRelationshipAttributes | UnsetType = (
-        UNSET
-    )
+    attributes: Union[ADLSAccountAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[ADLSAccountRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        ADLSAccountRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ADLSAccountRelationshipAttributes, UnsetType
+    ] = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_ADLS_ACCOUNT_REL_FIELDS: list[str] = [
+_ADLS_ACCOUNT_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "adls_containers",
     "input_to_airflow_tasks",

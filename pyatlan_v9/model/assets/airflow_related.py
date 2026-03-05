@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import List, Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -33,28 +35,28 @@ class RelatedAirflow(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Airflow" so it serializes correctly
 
-    airflow_tags: list[str] | None | UnsetType = UNSET
+    airflow_tags: Union[List[str], None, UnsetType] = UNSET
     """Tags assigned to the asset in Airflow."""
 
-    airflow_run_version: str | None | UnsetType = UNSET
+    airflow_run_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in Airflow."""
 
-    airflow_run_open_lineage_version: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_version: Union[str, None, UnsetType] = UNSET
     """Version of the run in OpenLineage."""
 
-    airflow_run_name: str | None | UnsetType = UNSET
+    airflow_run_name: Union[str, None, UnsetType] = UNSET
     """Name of the run."""
 
-    airflow_run_type: str | None | UnsetType = UNSET
+    airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
 
-    airflow_run_start_time: int | None | UnsetType = UNSET
+    airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
 
-    airflow_run_end_time: int | None | UnsetType = UNSET
+    airflow_run_end_time: Union[int, None, UnsetType] = UNSET
     """End time of the run."""
 
-    airflow_run_open_lineage_state: str | None | UnsetType = UNSET
+    airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
     def __post_init__(self) -> None:
@@ -72,10 +74,10 @@ class RelatedAirflowDag(RelatedAirflow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AirflowDag" so it serializes correctly
 
-    airflow_dag_schedule: str | None | UnsetType = UNSET
+    airflow_dag_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for the DAG."""
 
-    airflow_dag_schedule_delta: int | None | UnsetType = UNSET
+    airflow_dag_schedule_delta: Union[int, None, UnsetType] = UNSET
     """Duration between scheduled runs, in seconds."""
 
     def __post_init__(self) -> None:
@@ -93,40 +95,40 @@ class RelatedAirflowTask(RelatedAirflow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AirflowTask" so it serializes correctly
 
-    airflow_task_operator_class: str | None | UnsetType = UNSET
+    airflow_task_operator_class: Union[str, None, UnsetType] = UNSET
     """Class name for the operator this task uses."""
 
-    airflow_dag_name: str | None | UnsetType = UNSET
+    airflow_dag_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the DAG this task is contained within."""
 
-    airflow_dag_qualified_name: str | None | UnsetType = UNSET
+    airflow_dag_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the DAG this task is contained within."""
 
-    airflow_task_connection_id: str | None | UnsetType = UNSET
+    airflow_task_connection_id: Union[str, None, UnsetType] = UNSET
     """Identifier for the connection this task accesses."""
 
-    airflow_task_sql: str | None | UnsetType = UNSET
+    airflow_task_sql: Union[str, None, UnsetType] = UNSET
     """SQL code that executes through this task."""
 
-    airflow_task_retry_number: int | None | UnsetType = UNSET
+    airflow_task_retry_number: Union[int, None, UnsetType] = UNSET
     """Retry count for this task running."""
 
-    airflow_task_pool: str | None | UnsetType = UNSET
+    airflow_task_pool: Union[str, None, UnsetType] = UNSET
     """Pool on which this run happened."""
 
-    airflow_task_pool_slots: int | None | UnsetType = UNSET
+    airflow_task_pool_slots: Union[int, None, UnsetType] = UNSET
     """Pool slots used for the run."""
 
-    airflow_task_queue: str | None | UnsetType = UNSET
+    airflow_task_queue: Union[str, None, UnsetType] = UNSET
     """Queue on which this run happened."""
 
-    airflow_task_priority_weight: int | None | UnsetType = UNSET
+    airflow_task_priority_weight: Union[int, None, UnsetType] = UNSET
     """Priority of the run."""
 
-    airflow_task_trigger_rule: str | None | UnsetType = UNSET
+    airflow_task_trigger_rule: Union[str, None, UnsetType] = UNSET
     """Trigger for the run."""
 
-    airflow_task_group_name: str | None | UnsetType = UNSET
+    airflow_task_group_name: Union[str, None, UnsetType] = UNSET
     """Group name for the task."""
 
     def __post_init__(self) -> None:

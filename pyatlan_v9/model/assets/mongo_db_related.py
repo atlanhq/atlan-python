@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 import msgspec
 from msgspec import UNSET, UnsetType
 
@@ -49,7 +51,7 @@ class RelatedMongoDBDatabase(RelatedMongoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MongoDBDatabase" so it serializes correctly
 
-    mongo_db_database_collection_count: int | None | UnsetType = msgspec.field(
+    mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabaseCollectionCount"
     )
     """Number of collections in the database."""
@@ -69,62 +71,62 @@ class RelatedMongoDBCollection(RelatedMongoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MongoDBCollection" so it serializes correctly
 
-    mongo_db_collection_subtype: str | None | UnsetType = msgspec.field(
+    mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionSubtype"
     )
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: bool | None | UnsetType = msgspec.field(
+    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBIsCapped"
     )
     """Whether the collection is capped (true) or not (false)."""
 
-    mongo_db_collection_time_field: str | None | UnsetType = msgspec.field(
+    mongo_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionTimeField"
     )
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: str | None | UnsetType = msgspec.field(
+    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBTimeGranularity"
     )
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: int | None | UnsetType = msgspec.field(
+    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBExpireAfterSeconds"
     )
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: int | None | UnsetType = msgspec.field(
+    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBMaximumDocumentCount"
     )
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: int | None | UnsetType = msgspec.field(
+    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBMaxSize"
     )
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: int | None | UnsetType = msgspec.field(
+    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBNumOrphanDocs"
     )
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: int | None | UnsetType = msgspec.field(
+    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBNumIndexes"
     )
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: int | None | UnsetType = msgspec.field(
+    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBTotalIndexSize"
     )
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: int | None | UnsetType = msgspec.field(
+    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBAverageObjectSize"
     )
     """Average size of an object in the collection."""
 
-    mongo_db_collection_schema_definition: str | None | UnsetType = msgspec.field(
+    mongo_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionSchemaDefinition"
     )
     """Definition of the schema applicable for the collection."""

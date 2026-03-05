@@ -11,6 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -34,10 +36,10 @@ class RelatedMetabase(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Metabase" so it serializes correctly
 
-    metabase_collection_name: str | None | UnsetType = UNSET
+    metabase_collection_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Metabase collection in which this asset exists."""
 
-    metabase_collection_qualified_name: str | None | UnsetType = UNSET
+    metabase_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Metabase collection in which this asset exists."""
 
     def __post_init__(self) -> None:
@@ -55,16 +57,16 @@ class RelatedMetabaseCollection(RelatedMetabase):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MetabaseCollection" so it serializes correctly
 
-    metabase_slug: str | None | UnsetType = UNSET
+    metabase_slug: Union[str, None, UnsetType] = UNSET
     """"""
 
-    metabase_color: str | None | UnsetType = UNSET
+    metabase_color: Union[str, None, UnsetType] = UNSET
     """"""
 
-    metabase_namespace: str | None | UnsetType = UNSET
+    metabase_namespace: Union[str, None, UnsetType] = UNSET
     """"""
 
-    metabase_is_personal_collection: bool | None | UnsetType = UNSET
+    metabase_is_personal_collection: Union[bool, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -82,7 +84,7 @@ class RelatedMetabaseDashboard(RelatedMetabase):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MetabaseDashboard" so it serializes correctly
 
-    metabase_question_count: int | None | UnsetType = UNSET
+    metabase_question_count: Union[int, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
@@ -100,13 +102,13 @@ class RelatedMetabaseQuestion(RelatedMetabase):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MetabaseQuestion" so it serializes correctly
 
-    metabase_dashboard_count: int | None | UnsetType = UNSET
+    metabase_dashboard_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    metabase_query_type: str | None | UnsetType = UNSET
+    metabase_query_type: Union[str, None, UnsetType] = UNSET
     """"""
 
-    metabase_query: str | None | UnsetType = UNSET
+    metabase_query: Union[str, None, UnsetType] = UNSET
     """"""
 
     def __post_init__(self) -> None:
