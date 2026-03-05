@@ -158,7 +158,12 @@ def test_async_atlan_client_proxy_with_ssl_cert_file_from_env(
 
     # Use the fake certificate file
     fake_cert_path = str(
-        Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data" / "fake_certificates" / "fake-cert.pem"
+        Path(__file__).parent.parent.parent.parent
+        / "tests"
+        / "unit"
+        / "data"
+        / "fake_certificates"
+        / "fake-cert.pem"
     )
     monkeypatch.setenv("SSL_CERT_FILE", fake_cert_path)
 
@@ -180,7 +185,12 @@ def test_async_atlan_client_explicit_args_override_env_vars(
 
     # Use the fake certificate file
     fake_cert_path = str(
-        Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data" / "fake_certificates" / "fake-cert.pem"
+        Path(__file__).parent.parent.parent.parent
+        / "tests"
+        / "unit"
+        / "data"
+        / "fake_certificates"
+        / "fake-cert.pem"
     )
 
     # Set environment variables

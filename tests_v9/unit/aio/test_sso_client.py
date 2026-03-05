@@ -3,16 +3,16 @@
 from json import load
 from pathlib import Path
 from re import escape
-from typing import List
 from unittest.mock import AsyncMock, Mock
 
 import msgspec
 import pytest
-from pyatlan_v9.client.aio.sso import V9AsyncSSOClient as AsyncSSOClient
+
 from pyatlan.client.common import AsyncApiCaller
+from pyatlan_v9.client.aio.sso import V9AsyncSSOClient as AsyncSSOClient
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.group import AtlanGroup
-from pyatlan_v9.model.sso import SSOMapper
+
 
 def _strip_none(d):
     """Recursively remove None values from dicts for fixture comparison."""
@@ -27,11 +27,10 @@ def _to_dict(obj):
     """Convert response to dict for comparison with camelCase JSON fixtures."""
     if isinstance(obj, msgspec.Struct):
         return _strip_none(msgspec.to_builtins(obj))
-    elif hasattr(obj, 'dict'):
+    elif hasattr(obj, "dict"):
         return obj.dict(by_alias=True, exclude_none=True)
     else:
         return obj
-
 
 
 TEST_DATA_DIR = Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data"
@@ -294,6 +293,7 @@ async def test_sso_update_group_mapping(
         sso_alias="auth0",
         atlan_group=AtlanGroup(),
         group_map_id="group-map-id",
+        group_map_name="group-map-name",
         sso_group_name="sso-group",
     )
     assert _to_dict(response) == update_group_mapping_json

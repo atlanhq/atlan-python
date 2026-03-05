@@ -5,12 +5,18 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from pyatlan_v9.client.aio.query import V9AsyncQueryClient as AsyncQueryClient
 from pyatlan.client.common import AsyncApiCaller
+from pyatlan_v9.client.aio.query import V9AsyncQueryClient as AsyncQueryClient
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.query import QueryRequest, QueryResponse
 
-QUERY_RESPONSES = Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data" / "query_responses.txt"
+QUERY_RESPONSES = (
+    Path(__file__).parent.parent.parent.parent
+    / "tests"
+    / "unit"
+    / "data"
+    / "query_responses.txt"
+)
 
 
 @pytest.fixture(autouse=True)

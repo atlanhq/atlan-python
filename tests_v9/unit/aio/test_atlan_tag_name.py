@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
-import json as json_lib
 
-import pytest
 import msgspec
+import pytest
+
 import pyatlan.cache.aio.atlan_tag_cache
+from pyatlan.model.constants import DELETED_
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan_v9.model.assets import Purpose
-from pyatlan_v9.model.assets.purpose import _purpose_from_nested, PurposeNested
-from pyatlan.model.constants import DELETED_
+from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 from pyatlan_v9.model.core import AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
@@ -79,8 +79,7 @@ def _assert_asset_tags(asset, is_retranslated=False):
     assert str(tags[2].type_name) == DELETED_
     if not is_retranslated:
         assert (
-            tags[2].source_tag_attachments
-            and len(tags[2].source_tag_attachments) == 1
+            tags[2].source_tag_attachments and len(tags[2].source_tag_attachments) == 1
         )
     assert str(tags[3].type_name) == DELETED_
     if not is_retranslated:

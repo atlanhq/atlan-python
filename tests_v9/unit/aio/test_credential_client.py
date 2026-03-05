@@ -5,15 +5,12 @@ from unittest.mock import Mock
 import msgspec
 import pytest
 
-from pyatlan_v9.client.aio.credential import V9AsyncCredentialClient as AsyncCredentialClient
 from pyatlan.client.common import AsyncApiCaller
-from pyatlan_v9.errors import InvalidRequestError
-from pyatlan_v9.model.credential import (
-    Credential,
-    CredentialListResponse,
-    CredentialResponse,
-    CredentialTestResponse,
+from pyatlan_v9.client.aio.credential import (
+    V9AsyncCredentialClient as AsyncCredentialClient,
 )
+from pyatlan_v9.errors import InvalidRequestError
+from pyatlan_v9.model.credential import Credential, CredentialResponse
 
 TEST_MISSING_TOKEN_ID = (
     "ATLAN-PYTHON-400-032 No ID was provided when attempting to update the API token."
@@ -43,11 +40,10 @@ def _to_dict(obj):
     """Convert msgspec struct or Pydantic model to dict, preserving alias keys."""
     if isinstance(obj, msgspec.Struct):
         return msgspec.to_builtins(obj)
-    elif hasattr(obj, 'dict'):
+    elif hasattr(obj, "dict"):
         return obj.dict()
     else:
         return obj
-
 
 
 @pytest.fixture()

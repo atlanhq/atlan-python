@@ -6,10 +6,10 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from pyatlan_v9.client.aio.task import V9AsyncTaskClient as AsyncTaskClient
 from pyatlan.client.common import AsyncApiCaller
+from pyatlan_v9.client.aio.task import V9AsyncTaskClient as AsyncTaskClient
 from pyatlan_v9.errors import InvalidRequestError
-from pyatlan.model.aio.task import AsyncTaskSearchResponse
+from pyatlan_v9.model.aio.task import AsyncTaskSearchResponse
 from pyatlan_v9.model.enums import AtlanTaskStatus, AtlanTaskType
 from pyatlan_v9.model.fluent_tasks import FluentTasks
 from pyatlan_v9.model.task import AtlanTask, TaskSearchRequest
@@ -133,7 +133,7 @@ async def test_task_search_get_when_given_request(
         assert task.attempt_count == 0
         assert task.entity_guid
         assert task.time_taken_in_seconds
-        assert task.classification_id
+        assert task.parameters.get("__task_classificationTypeName")
         assert task.status == AtlanTaskStatus.COMPLETE
         assert task.type == AtlanTaskType.CLASSIFICATION_PROPAGATION_ADD
     assert mock_async_api_caller._call_api.call_count == 2

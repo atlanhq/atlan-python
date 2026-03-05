@@ -9,8 +9,8 @@ from unittest.mock import Mock, patch
 import pytest
 import pytest_asyncio
 
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan.client.common import AsyncApiCaller
+from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 
 
 @pytest.fixture(autouse=True)
@@ -42,4 +42,3 @@ def mock_async_api_caller():
 def mock_async_custom_metadata_cache():
     with patch.object(AsyncAtlanClient, "custom_metadata_cache") as cache:
         yield cache
-

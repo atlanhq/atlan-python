@@ -22,9 +22,8 @@ from urllib.parse import urlparse
 import httpx
 import pytest
 
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
-from pyatlan.client.oauth import OAuthTokenManager
+from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 
 
 @pytest.fixture

@@ -10,16 +10,20 @@ import msgspec
 import pytest
 from httpx import Headers
 
-from pyatlan_v9.client.aio.asset import V9AsyncAssetClient as AsyncAssetClient
 from pyatlan.client.aio.batch import AsyncBatch
+from pyatlan.client.common import Search
+from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
+from pyatlan.model.aio.asset import AsyncIndexSearchResults
+from pyatlan.utils import get_python_version
+from pyatlan_v9.client.aio.asset import V9AsyncAssetClient as AsyncAssetClient
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.client.aio.group import V9AsyncGroupClient as AsyncGroupClient
-from pyatlan_v9.client.aio.search_log import V9AsyncSearchLogClient as AsyncSearchLogClient
+from pyatlan_v9.client.aio.search_log import (
+    V9AsyncSearchLogClient as AsyncSearchLogClient,
+)
 from pyatlan_v9.client.aio.typedef import V9AsyncTypeDefClient as AsyncTypeDefClient
 from pyatlan_v9.client.aio.user import V9AsyncUserClient as AsyncUserClient
 from pyatlan_v9.client.asset import CustomMetadataHandling
-from pyatlan.client.common import Search
-from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
 from pyatlan_v9.errors import (
     ERROR_CODE_FOR_HTTP_STATUS,
     ApiError,
@@ -27,10 +31,6 @@ from pyatlan_v9.errors import (
     ErrorCode,
     InvalidRequestError,
     NotFoundError,
-)
-from pyatlan.model.aio.asset import AsyncIndexSearchResults
-from pyatlan.model.assets import (
-    AtlasGlossaryTerm as LegacyAtlasGlossaryTerm,
 )
 from pyatlan_v9.model.assets import (
     Asset,
@@ -49,7 +49,6 @@ from pyatlan_v9.model.enums import (
     AtlanConnectorType,
     CertificateStatus,
     LineageDirection,
-    SaveSemantic,
     SortOrder,
 )
 from pyatlan_v9.model.fluent_search import CompoundQuery, FluentSearch
@@ -60,18 +59,6 @@ from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAtt
 from pyatlan_v9.model.search_log import SearchLogRequest
 from pyatlan_v9.model.typedef import EnumDef
 from pyatlan_v9.model.user import AtlanUser, UserRequest
-from pyatlan.utils import get_python_version
-from tests.unit.constants import (
-    TEST_ADMIN_CLIENT_METHODS,
-    TEST_ASSET_CLIENT_METHODS_ASYNC,
-    TEST_AUDIT_CLIENT_METHODS,
-    TEST_GROUP_CLIENT_METHODS,
-    TEST_ROLE_CLIENT_METHODS,
-    TEST_SL_CLIENT_METHODS,
-    TEST_TOKEN_CLIENT_METHODS,
-    TEST_TYPEDEF_CLIENT_METHODS,
-    TEST_USER_CLIENT_METHODS,
-)
 from tests.unit.model.constants import (
     CONNECTION_NAME,
     CONNECTOR_TYPE,
@@ -83,6 +70,17 @@ from tests.unit.model.constants import (
     GLOSSARY_TERM_NAME,
     PERSONA_NAME,
     PURPOSE_NAME,
+)
+from tests_v9.unit.constants import (
+    TEST_ADMIN_CLIENT_METHODS,
+    TEST_ASSET_CLIENT_METHODS_ASYNC,
+    TEST_AUDIT_CLIENT_METHODS,
+    TEST_GROUP_CLIENT_METHODS,
+    TEST_ROLE_CLIENT_METHODS,
+    TEST_SL_CLIENT_METHODS,
+    TEST_TOKEN_CLIENT_METHODS,
+    TEST_TYPEDEF_CLIENT_METHODS,
+    TEST_USER_CLIENT_METHODS,
 )
 
 V9_TEST_ASSET_CLIENT_METHODS_ASYNC = {
@@ -374,7 +372,9 @@ async def test_append_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch(
+    "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+)
 @pytest.mark.asyncio
 async def test_append_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -407,10 +407,12 @@ async def test_append_with_valid_guid_and_no_terms_returns_asset():
     terms = []
 
     with patch(
-        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
+        new_callable=AsyncMock,
     ) as mock_aexecute:
         with patch(
-            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
+            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save",
+            new_callable=AsyncMock,
         ) as mock_save:
             # Set up async mock for search results
             mock_results = AsyncMock()
@@ -447,10 +449,12 @@ async def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_g
     terms = [AtlasGlossaryTerm(qualified_name="term1")]
 
     with patch(
-        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
+        new_callable=AsyncMock,
     ) as mock_aexecute:
         with patch(
-            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
+            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save",
+            new_callable=AsyncMock,
         ) as mock_save:
             # Set up async mock for search results
             mock_results = AsyncMock()
@@ -490,10 +494,12 @@ async def test_append_with_valid_guid_when_terms_present_returns_asset_with_comb
     terms = [new_term]
 
     with patch(
-        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
+        new_callable=AsyncMock,
     ) as mock_aexecute:
         with patch(
-            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
+            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save",
+            new_callable=AsyncMock,
         ) as mock_save:
             # Set up async mock for search results
             mock_results = AsyncMock()
@@ -604,7 +610,9 @@ async def test_replace_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch(
+    "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+)
 @pytest.mark.asyncio
 async def test_replace_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -640,10 +648,12 @@ async def test_replace_terms():
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
     with patch(
-        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
+        new_callable=AsyncMock,
     ) as mock_aexecute:
         with patch(
-            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
+            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save",
+            new_callable=AsyncMock,
         ) as mock_save:
             # Set up async mock for search results
             mock_results = AsyncMock()
@@ -750,7 +760,9 @@ async def test_remove_terms_invalid_parameters_raises_error(
         ),
     ],
 )
-@patch("pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock)
+@patch(
+    "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+)
 @pytest.mark.asyncio
 async def test_remove_terms_asset_retrieval_errors(
     mock_aexecute,
@@ -789,10 +801,12 @@ async def test_remove_with_valid_guid_when_terms_present_returns_asset_with_term
     table.attributes.meanings = [existing_term, other_term]
 
     with patch(
-        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async", new_callable=AsyncMock
+        "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
+        new_callable=AsyncMock,
     ) as mock_aexecute:
         with patch(
-            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save", new_callable=AsyncMock
+            "pyatlan_v9.client.aio.asset.V9AsyncAssetClient.save",
+            new_callable=AsyncMock,
         ) as mock_save:
             # Set up async mock for search results
             mock_results = AsyncMock()
@@ -1147,7 +1161,9 @@ async def test_find_category_fast_by_name(mock_search, caplog):
             GLOSSARY_NAME,
             None,
             "1 validation error for FindCategoryByName\nname\n  ensure this value has at least 1 characters",
-            marks=pytest.mark.skip(reason="v9: name validation happens deeper in call chain, not at model level"),
+            marks=pytest.mark.skip(
+                reason="v9: name validation happens deeper in call chain, not at model level"
+            ),
         ),
         (
             1,
@@ -1448,7 +1464,9 @@ async def test_find_term_fast_by_name(mock_search, caplog):
             GLOSSARY_NAME,
             None,
             "1 validation error for FindTermByName\nname\n  ensure this value has at least 1 characters",
-            marks=pytest.mark.skip(reason="v9: name validation happens deeper in call chain, not at model level"),
+            marks=pytest.mark.skip(
+                reason="v9: name validation happens deeper in call chain, not at model level"
+            ),
         ),
         (
             1,
@@ -2117,7 +2135,9 @@ async def test_user_create_with_info(
     mock_async_api_caller.reset_mock()
 
 
-@pytest.mark.skip(reason="Legacy AsyncTypeDefClient returns pydantic EnumDef, can't compare with v9 msgspec EnumDef")
+@pytest.mark.skip(
+    reason="Legacy AsyncTypeDefClient returns pydantic EnumDef, can't compare with v9 msgspec EnumDef"
+)
 @pytest.mark.asyncio
 async def test_typedef_get_by_name(mock_async_api_caller, type_def_get_by_name_json):
     client = AsyncTypeDefClient(mock_async_api_caller)
@@ -2576,8 +2596,8 @@ class TestBatch:
             assert 0 == len(sut.created)
             assert 0 == len(sut.updated)
 
-    @patch.object(LegacyAtlasGlossaryTerm, "trim_to_required")
-    @patch.object(LegacyAtlasGlossaryTerm, "ref_by_guid")
+    @patch.object(AtlasGlossaryTerm, "trim_to_required")
+    @patch.object(AtlasGlossaryTerm, "ref_by_guid")
     @pytest.mark.asyncio
     async def test_term_add(
         self, mock_ref_by_guid, mock_trim_to_required, mock_async_atlan_client

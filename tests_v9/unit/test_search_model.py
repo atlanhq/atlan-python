@@ -43,12 +43,29 @@ NOW_TIMESTAMP = int(NOW.timestamp() * 1000)
 VALUES_BY_TYPE: Dict[Union[type, object], Union[str, datetime, object]] = {
     str: "abc",
     bool: True,
+    int: 1,
+    float: 1.0,
     datetime: NOW,
     Literal["ACTIVE", "DELETED", "PURGED"]: "ACTIVE",
-    float: 1.0,
     AtlanConnectorType: AtlanConnectorType.SNOWFLAKE,
     CertificateStatus: CertificateStatus.VERIFIED,
 }
+
+
+_STRICT_BUILTINS = {"str": str, "bool": bool, "int": int, "float": float}
+
+
+def _value_for_type(t):
+    """Resolve a value for *t*, mapping pydantic Strict* types to their builtin counterparts."""
+    if t in VALUES_BY_TYPE:
+        return VALUES_BY_TYPE[t]
+    name = getattr(t, "__name__", "")
+    if name.startswith("Strict"):
+        builtin = _STRICT_BUILTINS.get(name[len("Strict") :].lower())
+        if builtin in VALUES_BY_TYPE:
+            return VALUES_BY_TYPE[builtin]
+    raise KeyError(t)
+
 
 INCOMPATIPLE_QUERY: Dict[type, Set[TermAttributes]] = {
     Wildcard: {
@@ -627,7 +644,7 @@ def test_terms_to_dict():
         (
             c,
             a,
-            VALUES_BY_TYPE[a.attribute_type],
+            _value_for_type(a.attribute_type),
             a.value,
             c in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[c],
         )

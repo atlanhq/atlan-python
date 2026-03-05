@@ -322,9 +322,7 @@ async def test_find_runs_by_status_and_time_range(
         from_=10,
         size=5,
     )
-    expected = msgspec.convert(
-        raw_json, AsyncWorkflowSearchResponse, strict=False
-    )
+    expected = msgspec.convert(raw_json, AsyncWorkflowSearchResponse, strict=False)
     assert response.hits == expected.hits
     assert response.shards == expected.shards
     mock_api_caller._call_api.assert_called_once()

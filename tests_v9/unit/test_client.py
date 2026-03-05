@@ -74,21 +74,31 @@ from pyatlan_v9.model.search import DSL, Bool, IndexSearchRequest, Term, TermAtt
 from pyatlan_v9.model.search_log import SearchLogRequest
 from pyatlan_v9.model.typedef import EnumDef
 from pyatlan_v9.model.user import AtlanUser, UserRequest
-from tests.unit.constants import (
+from tests_v9.unit.constants import (
     TEST_ADMIN_CLIENT_METHODS,
     TEST_AUDIT_CLIENT_METHODS,
     TEST_ROLE_CLIENT_METHODS,
     TEST_SL_CLIENT_METHODS,
 )
-from tests.unit.constants import TEST_ASSET_CLIENT_METHODS as _LEGACY_ASSET_METHODS
-from tests.unit.constants import TEST_GROUP_CLIENT_METHODS as _LEGACY_GROUP_METHODS
-from tests.unit.constants import TEST_TOKEN_CLIENT_METHODS as _LEGACY_TOKEN_METHODS
-from tests.unit.constants import TEST_TYPEDEF_CLIENT_METHODS as _LEGACY_TYPEDEF_METHODS
-from tests.unit.constants import TEST_USER_CLIENT_METHODS as _LEGACY_USER_METHODS
+from tests_v9.unit.constants import (
+    TEST_ASSET_CLIENT_METHODS as _V9_ASSET_METHODS,
+)
+from tests_v9.unit.constants import (
+    TEST_GROUP_CLIENT_METHODS as _V9_GROUP_METHODS,
+)
+from tests_v9.unit.constants import (
+    TEST_TOKEN_CLIENT_METHODS as _V9_TOKEN_METHODS,
+)
+from tests_v9.unit.constants import (
+    TEST_TYPEDEF_CLIENT_METHODS as _V9_TYPEDEF_METHODS,
+)
+from tests_v9.unit.constants import (
+    TEST_USER_CLIENT_METHODS as _V9_USER_METHODS,
+)
 
 # v9 uses pyatlan search DSL internally; " " name validation raises WithName not FindXByName
 _V9_WHITESPACE_NAME_MSG = "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters"
-TEST_ASSET_CLIENT_METHODS = dict(_LEGACY_ASSET_METHODS)
+TEST_ASSET_CLIENT_METHODS = dict(_V9_ASSET_METHODS)
 TEST_ASSET_CLIENT_METHODS["find_domain_by_name"] = [
     (
         [None, ["attributes"]],
@@ -119,10 +129,10 @@ def _rename_keys(d: dict) -> dict:
     return {mapping.get(k, k): v for k, v in d.items()}
 
 
-TEST_GROUP_CLIENT_METHODS = _rename_keys(_LEGACY_GROUP_METHODS)
-TEST_TOKEN_CLIENT_METHODS = _rename_keys(_LEGACY_TOKEN_METHODS)
-TEST_TYPEDEF_CLIENT_METHODS = _rename_keys(_LEGACY_TYPEDEF_METHODS)
-TEST_USER_CLIENT_METHODS = _rename_keys(_LEGACY_USER_METHODS)
+TEST_GROUP_CLIENT_METHODS = _rename_keys(_V9_GROUP_METHODS)
+TEST_TOKEN_CLIENT_METHODS = _rename_keys(_V9_TOKEN_METHODS)
+TEST_TYPEDEF_CLIENT_METHODS = _rename_keys(_V9_TYPEDEF_METHODS)
+TEST_USER_CLIENT_METHODS = _rename_keys(_V9_USER_METHODS)
 from tests.unit.model.constants import (
     CONNECTION_NAME,
     CONNECTOR_TYPE,
@@ -2575,17 +2585,16 @@ class TestBatch:
         assert 0 == len(sut.updated)
 
     @patch(
-        "pyatlan.model.assets.AtlasGlossaryTerm.trim_to_required",
+        "pyatlan_v9.model.assets.atlas_glossary_term.AtlasGlossaryTerm.trim_to_required",
     )
     @patch(
-        "pyatlan.model.assets.AtlasGlossaryTerm.ref_by_guid",
+        "pyatlan_v9.model.assets.atlas_glossary_term.AtlasGlossaryTerm.ref_by_guid",
     )
     def test_term_add(self, mock_ref_by_guid, mock_trim_to_required, mock_atlan_client):
         """Test batch term add with tracking enabled.
 
         Uses v9 AtlasGlossaryTerm models as input. The Batch class
-        internally uses the legacy AtlasGlossaryTerm.ref_by_guid for
-        tracking, which is patched via module path.
+        internally uses type(candidate).ref_by_guid for tracking.
         """
         mutated_entities = Mock()
         mock_response = Mock(spec=AssetMutationResponse)

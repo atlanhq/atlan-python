@@ -7,17 +7,22 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from pyatlan_v9.client.aio.audit import V9AsyncAuditClient as AsyncAuditClient
 from pyatlan.client.common import AsyncApiCaller
 from pyatlan.client.common.audit import LOGGER
+from pyatlan_v9.client.aio.audit import V9AsyncAuditClient as AsyncAuditClient
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.aio.audit import AsyncAuditSearchResults
 from pyatlan_v9.model.audit import AuditSearchRequest
 from pyatlan_v9.model.enums import SortOrder
-from pyatlan_v9.model.search import DSL
-from pyatlan_v9.model.search import Bool, SortItem, Term
+from pyatlan_v9.model.search import DSL, Bool, SortItem, Term
 
-SEARCH_RESPONSES_DIR = Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data" / "search_responses"
+SEARCH_RESPONSES_DIR = (
+    Path(__file__).parent.parent.parent.parent
+    / "tests"
+    / "unit"
+    / "data"
+    / "search_responses"
+)
 AUDIT_SEARCH_PAGING_JSON = "audit_search_paging.json"
 
 

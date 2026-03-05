@@ -7,16 +7,24 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from pyatlan_v9.client.aio.search_log import V9AsyncSearchLogClient as AsyncSearchLogClient
 from pyatlan.client.common import AsyncApiCaller
 from pyatlan.client.common.search_log import LOGGER
+from pyatlan_v9.client.aio.search_log import (
+    V9AsyncSearchLogClient as AsyncSearchLogClient,
+)
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.aio.search_log import AsyncSearchLogResults
 from pyatlan_v9.model.enums import SortOrder
 from pyatlan_v9.model.search import SortItem
 from pyatlan_v9.model.search_log import SearchLogRequest
 
-SEARCH_RESPONSES_DIR = Path(__file__).parent.parent.parent.parent / "tests" / "unit" / "data" / "search_responses"
+SEARCH_RESPONSES_DIR = (
+    Path(__file__).parent.parent.parent.parent
+    / "tests"
+    / "unit"
+    / "data"
+    / "search_responses"
+)
 SEARCH_LOGS_JSON = "search_log_search_paging.json"
 
 
