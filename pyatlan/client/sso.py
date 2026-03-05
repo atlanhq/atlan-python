@@ -1,5 +1,7 @@
 from typing import List
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     ApiCaller,
     SSOCheckExistingMappings,
@@ -12,7 +14,6 @@ from pyatlan.client.common import (
 from pyatlan.errors import ErrorCode
 from pyatlan.model.group import AtlanGroup
 from pyatlan.model.sso import SSOMapper
-from pyatlan.validate import validate_arguments
 
 
 class SSOClient:

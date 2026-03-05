@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Optional, Set
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     ApiCaller,
     TokenCreate,
@@ -16,7 +18,6 @@ from pyatlan.client.common import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenResponse
-from pyatlan.validate import validate_arguments
 
 
 class TokenClient:

@@ -6,6 +6,8 @@ import asyncio
 from logging import Logger
 from typing import List, Optional, Union, overload
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     AsyncApiCaller,
     WorkflowDelete,
@@ -42,7 +44,6 @@ from pyatlan.model.workflow import (
     WorkflowSearchResultDetail,
 )
 from pyatlan.utils import validate_type
-from pyatlan.validate import validate_arguments
 
 MONITOR_SLEEP_SECONDS = 5
 

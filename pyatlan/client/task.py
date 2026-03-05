@@ -1,7 +1,8 @@
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import ApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
 from pyatlan.model.task import TaskSearchRequest, TaskSearchResponse
-from pyatlan.validate import validate_arguments
 
 
 class TaskClient:

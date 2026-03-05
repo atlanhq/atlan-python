@@ -19,7 +19,15 @@ from warnings import warn
 
 import httpx
 from httpx_retries import Retry
-from pydantic.v1 import BaseSettings, Field, HttpUrl, PrivateAttr, StrictStr, constr
+from pydantic.v1 import (
+    BaseSettings,
+    Field,
+    HttpUrl,
+    PrivateAttr,
+    StrictStr,
+    constr,
+    validate_arguments,
+)
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.cache.connection_cache import ConnectionCache
@@ -84,7 +92,6 @@ from pyatlan.utils import (
     RequestIdAdapter,
     get_python_version,
 )
-from pyatlan.validate import validate_arguments
 
 request_id_var = ContextVar("request_id", default=None)
 

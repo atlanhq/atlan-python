@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     ApiCaller,
     OAuthClientCreate,
@@ -19,7 +21,6 @@ from pyatlan.model.oauth_client import (
     OAuthClientListResponse,
     OAuthClientResponse,
 )
-from pyatlan.validate import validate_arguments
 
 
 class OAuthClient:

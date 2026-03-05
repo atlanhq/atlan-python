@@ -2,6 +2,8 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from typing import Any, Dict, Optional
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     ApiCaller,
     CredentialCreate,
@@ -19,7 +21,6 @@ from pyatlan.model.credential import (
     CredentialResponse,
     CredentialTestResponse,
 )
-from pyatlan.validate import validate_arguments
 
 
 class CredentialClient:

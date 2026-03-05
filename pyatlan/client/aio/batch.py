@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.asset import (
     AssetCreationHandling,
     AssetIdentity,
@@ -15,7 +17,6 @@ from pyatlan.model.assets import Asset, AtlasGlossaryTerm, MaterialisedView, Tab
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import DSL
-from pyatlan.validate import _is_model_instance, validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient
@@ -409,10 +410,11 @@ class AsyncBatch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if _is_model_instance(candidate, AtlasGlossaryTerm):
-            # trim_to_required for AtlasGlossaryTerm requires anchor
-            # which is not include in AssetMutationResponse
-            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
+        if (
+            isinstance(candidate, AtlasGlossaryTerm)
+            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
+        ):
+            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         asset.name = candidate.name

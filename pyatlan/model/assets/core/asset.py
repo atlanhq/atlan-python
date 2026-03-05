@@ -40,7 +40,6 @@ from pyatlan.model.structs import (
     StarredDetails,
 )
 from pyatlan.utils import init_guid, validate_required_fields
-from pyatlan.validate import _is_model_instance
 
 from .referenceable import Referenceable
 
@@ -164,9 +163,9 @@ class Asset(Referenceable):
         if isinstance(data, Asset):
             return data
 
-        # Accept v9 msgspec models as-is — they share the same class name
-        # hierarchy and are compatible via the dual-model support layer.
-        if _is_model_instance(data, Asset):
+        import msgspec
+
+        if isinstance(data, msgspec.Struct) and hasattr(data, "type_name"):
             return data
 
         if isinstance(data, list):  # Recursively process lists

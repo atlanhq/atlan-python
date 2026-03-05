@@ -1,7 +1,8 @@
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import ApiCaller, QueryStream
 from pyatlan.errors import ErrorCode
 from pyatlan.model.query import QueryRequest, QueryResponse
-from pyatlan.validate import validate_arguments
 
 
 class QueryClient:

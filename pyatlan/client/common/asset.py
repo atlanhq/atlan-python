@@ -59,7 +59,6 @@ from pyatlan.model.search import (
     with_active_term,
 )
 from pyatlan.utils import unflatten_custom_metadata_for_entity
-from pyatlan.validate import _is_model_instance
 
 if TYPE_CHECKING:
     from pyatlan.client.aio import AsyncAtlanClient
@@ -112,7 +111,7 @@ class Search:
             criteria
             and criteria.dsl
             and criteria.dsl.query
-            and _is_model_instance(criteria.dsl.query, Bool)
+            and isinstance(criteria.dsl.query, Bool)
         ):
             return
 
@@ -126,8 +125,7 @@ class Search:
 
         def needs_type_filter(clause: Optional[List]) -> bool:
             return not any(
-                (_is_model_instance(f, Term) or _is_model_instance(f, Terms))
-                and f.field in (type_name_fields)
+                isinstance(f, (Term, Terms)) and f.field in (type_name_fields)
                 for f in clause or []
             )
 
@@ -333,7 +331,8 @@ class FindAssetsByName:
                 assets := [
                     asset
                     for asset in (search_results.current_page() or search_results)
-                    if _is_model_instance(asset, asset_type)
+                    if isinstance(asset, asset_type)
+                    or getattr(asset, "type_name", None) == asset_type.__name__
                 ]
             )
         ):
@@ -537,7 +536,7 @@ class GetByQualifiedName:
         """
         if search_results and search_results.current_page():
             first_result = search_results.current_page()[0]
-            if _is_model_instance(first_result, asset_type):
+            if isinstance(first_result, asset_type):
                 return first_result
             else:
                 raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
@@ -566,7 +565,10 @@ class GetByQualifiedName:
                 asset_type.__name__, qualified_name
             )
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if not _is_model_instance(asset, asset_type):
+        if (
+            not isinstance(asset, asset_type)
+            and getattr(asset, "type_name", None) != asset_type.__name__
+        ):
             raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
                 asset_type.__name__, qualified_name
             )
@@ -646,7 +648,7 @@ class GetByGuid:
         """
         if search_results and search_results.current_page():
             first_result = search_results.current_page()[0]
-            if _is_model_instance(first_result, asset_type):
+            if isinstance(first_result, asset_type):
                 return first_result
             else:
                 raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
@@ -669,7 +671,10 @@ class GetByGuid:
         :raises NotFoundError: if asset not found or wrong type
         """
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if not _is_model_instance(asset, asset_type):
+        if (
+            not isinstance(asset, asset_type)
+            and getattr(asset, "type_name", None) != asset_type.__name__
+        ):
             raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                 guid, asset_type.__name__
             )
@@ -1159,66 +1164,17 @@ class ModifyAtlanTags:
         return [AtlasGlossaryTerm.ANCHOR]  # type: ignore[arg-type]
 
     @staticmethod
-    def process_save_response(response, asset_type: Type[A], updated_asset: A) -> A:
+    def process_save_response(response, asset_type: Type[A], updated_asset):
         """
         Process the save response to extract the updated asset.
 
         :param response: AssetMutationResponse from save operation
         :param asset_type: type of asset that was updated
         :param updated_asset: the asset updater that was saved
-        :returns: the updated asset with guid properly set
+        :returns: the updated asset or the updater if no assets found
         """
-        import logging
-
-        LOGGER = logging.getLogger(__name__)
-
         if assets := response.assets_updated(asset_type=asset_type):
-            LOGGER.debug(f"Found {len(assets)} updated assets in response")
             return assets[0]
-
-        LOGGER.debug(
-            f"No assets in assets_updated, checking guid_assignments and mutated_entities"
-        )
-
-        # If no assets in response, try to get guid from guid_assignments or mutated_entities
-        result_guid = None
-
-        # Check guid_assignments first (maps temp ID to actual GUID)
-        if response.guid_assignments:
-            LOGGER.debug(f"guid_assignments: {response.guid_assignments}")
-            # Get the first guid assignment (usually for the asset we just updated)
-            for temp_id, guid in response.guid_assignments.items():
-                if guid:
-                    result_guid = guid
-                    LOGGER.debug(f"Found guid from guid_assignments: {result_guid}")
-                    break
-
-        # If still no guid, check mutated_entities.UPDATE for any entity with a guid
-        if (
-            not result_guid
-            and response.mutated_entities
-            and response.mutated_entities.UPDATE
-        ):
-            LOGGER.debug(
-                f"Checking mutated_entities.UPDATE ({len(response.mutated_entities.UPDATE)} entities)"
-            )
-            for entity in response.mutated_entities.UPDATE:
-                if hasattr(entity, "guid") and entity.guid:
-                    from msgspec import UnsetType
-
-                    if not isinstance(entity.guid, UnsetType):
-                        result_guid = entity.guid
-                        LOGGER.debug(f"Found guid from mutated_entities: {result_guid}")
-                        break
-
-        # If we found a guid, set it on the updated_asset
-        if result_guid:
-            LOGGER.debug(f"Setting guid={result_guid} on updated_asset")
-            updated_asset.guid = result_guid
-        else:
-            LOGGER.warning(f"No guid found in response for {asset_type.__name__}")
-
-        LOGGER.debug(f"Returning updated_asset with guid={updated_asset.guid}")
         return updated_asset
 
 
@@ -1256,14 +1212,18 @@ class ManageAssetAttributes:
         :param glossary_guid: GUID of the glossary
         :raises AtlanError: if glossary_guid is required but missing
         """
-        if _is_model_instance(asset, AtlasGlossaryTerm) or _is_model_instance(
-            asset, AtlasGlossaryCategory
-        ):
-            if not glossary_guid:
-                raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
-                    asset_type_name
-                )
+        if asset_type_name not in ("AtlasGlossaryTerm", "AtlasGlossaryCategory"):
+            return
+        if not glossary_guid:
+            raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
+                asset_type_name
+            )
+        if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
             asset.anchor = AtlasGlossary.ref_by_guid(glossary_guid)
+        elif hasattr(asset, "anchor"):
+            from pyatlan_v9.model.assets.gtc_related import RelatedAtlasGlossary
+
+            asset.anchor = RelatedAtlasGlossary(guid=glossary_guid)
 
 
 class UpdateCertificate:
@@ -1614,7 +1574,7 @@ class ManageTerms:
         """
         if results and results.current_page():
             first_result = results.current_page()[0]
-            if not _is_model_instance(first_result, asset_type):
+            if not isinstance(first_result, asset_type):
                 if guid is None:
                     raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
                         asset_type.__name__, qualified_name
@@ -1665,49 +1625,10 @@ class ManageTerms:
         :param response: AssetMutationResponse from save operation
         :param asset_type: type of asset that was updated
         :param updated_asset: the asset updater that was saved
-        :returns: the updated asset with guid properly set
+        :returns: the updated asset or the updater if no assets found
         """
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
-
-        # If no assets in response, try to get guid from various sources
-        result_guid = None
-
-        # Check guid_assignments first (maps temp ID to actual GUID)
-        if response.guid_assignments:
-            for temp_id, guid in response.guid_assignments.items():
-                if guid:
-                    result_guid = guid
-                    break
-
-        # If still no guid, check mutated_entities.UPDATE
-        if (
-            not result_guid
-            and response.mutated_entities
-            and response.mutated_entities.UPDATE
-        ):
-            for entity in response.mutated_entities.UPDATE:
-                if hasattr(entity, "guid") and entity.guid:
-                    from msgspec import UnsetType
-
-                    if not isinstance(entity.guid, UnsetType):
-                        result_guid = entity.guid
-                        break
-
-        # If still no guid, check partial_updated_entities
-        if not result_guid and response.partial_updated_entities:
-            for entity in response.partial_updated_entities:
-                if hasattr(entity, "guid") and entity.guid:
-                    from msgspec import UnsetType
-
-                    if not isinstance(entity.guid, UnsetType):
-                        result_guid = entity.guid
-                        break
-
-        # Set the guid if we found one
-        if result_guid:
-            updated_asset.guid = result_guid
-
         return updated_asset
 
 
@@ -1757,7 +1678,8 @@ class SearchForAssetWithName:
                 assets := [
                     asset
                     for asset in (results.current_page() or results)
-                    if _is_model_instance(asset, asset_type)
+                    if isinstance(asset, asset_type)
+                    or getattr(asset, "type_name", None) == asset_type.__name__
                 ]
             )
         ):
@@ -1800,13 +1722,17 @@ class SearchForAssetWithName:
                 assets = [
                     asset
                     for asset in current_page
-                    if _is_model_instance(asset, asset_type)
+                    if isinstance(asset, asset_type)
+                    or getattr(asset, "type_name", None) == asset_type.__name__
                 ]
             else:
                 # Otherwise, collect from async iterator
                 assets = []
                 async for asset in results:
-                    if _is_model_instance(asset, asset_type):
+                    if (
+                        isinstance(asset, asset_type)
+                        or getattr(asset, "type_name", None) == asset_type.__name__
+                    ):
                         assets.append(asset)
 
             if assets:
@@ -1991,11 +1917,13 @@ class GetHierarchy:
         category_dict = {}
 
         for category in filter(
-            lambda a: _is_model_instance(a, AtlasGlossaryCategory), response
+            lambda a: isinstance(a, AtlasGlossaryCategory)
+            or getattr(a, "type_name", None) == "AtlasGlossaryCategory",
+            response,
         ):
             guid = category.guid
             category_dict[guid] = category
-            if category.parent_category is None:
+            if not category.parent_category:
                 top_categories.add(guid)
 
         if not top_categories:
@@ -2028,19 +1956,23 @@ class GetHierarchy:
             categories = [
                 asset
                 for asset in response.current_page()
-                if _is_model_instance(asset, AtlasGlossaryCategory)
+                if isinstance(asset, AtlasGlossaryCategory)
+                or getattr(asset, "type_name", None) == "AtlasGlossaryCategory"
             ]
         else:
             # Collect from async iterator
             categories = []
             async for asset in response:
-                if _is_model_instance(asset, AtlasGlossaryCategory):
+                if (
+                    isinstance(asset, AtlasGlossaryCategory)
+                    or getattr(asset, "type_name", None) == "AtlasGlossaryCategory"
+                ):
                     categories.append(asset)
 
         for category in categories:
             guid = category.guid
             category_dict[guid] = category
-            if category.parent_category is None:
+            if not category.parent_category:
                 top_categories.add(guid)
 
         if not top_categories:

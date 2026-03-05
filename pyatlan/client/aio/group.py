@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic.v1 import parse_obj_as
+from pydantic.v1 import parse_obj_as, validate_arguments
 
 from pyatlan.client.common import (
     AsyncApiCaller,
@@ -20,7 +20,6 @@ from pyatlan.model.aio.group import AsyncGroupResponse
 from pyatlan.model.aio.user import AsyncUserResponse
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.user import UserRequest
-from pyatlan.validate import validate_arguments
 
 
 class AsyncGroupClient:

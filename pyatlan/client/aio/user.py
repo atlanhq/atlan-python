@@ -6,6 +6,8 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, List, Optional
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.aio.atlan import client_connection
 from pyatlan.client.common import (
     AsyncApiCaller,
@@ -30,7 +32,6 @@ from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.group import GroupRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserRequest
-from pyatlan.validate import validate_arguments
 
 if TYPE_CHECKING:
     pass

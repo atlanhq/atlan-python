@@ -4,6 +4,8 @@ from logging import Logger
 from time import sleep
 from typing import List, Optional, Union, overload
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     ApiCaller,
     WorkflowDelete,
@@ -40,7 +42,6 @@ from pyatlan.model.workflow import (
     WorkflowSearchResultDetail,
 )
 from pyatlan.utils import validate_type
-from pyatlan.validate import _is_model_instance, validate_arguments
 
 MONITOR_SLEEP_SECONDS = 5
 
@@ -264,7 +265,7 @@ class WorkflowClient:
                 raise ErrorCode.NO_PRIOR_RUN_AVAILABLE.exception_with_parameters(
                     workflow.value
                 )
-        elif _is_model_instance(workflow, WorkflowSearchResult):
+        elif isinstance(workflow, WorkflowSearchResult):
             detail = workflow.source
         else:
             detail = workflow

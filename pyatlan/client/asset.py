@@ -25,7 +25,13 @@ from typing import (
 )
 from warnings import warn
 
-from pydantic.v1 import StrictStr, ValidationError, constr, parse_obj_as
+from pydantic.v1 import (
+    StrictStr,
+    ValidationError,
+    constr,
+    parse_obj_as,
+    validate_arguments,
+)
 from tenacity import (
     RetryError,
     retry,
@@ -110,7 +116,6 @@ from pyatlan.model.lineage import LineageListRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, Range, SortItem
 from pyatlan.utils import API, unflatten_custom_metadata_for_entity
-from pyatlan.validate import _is_model_instance, validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
@@ -2565,10 +2570,11 @@ class Batch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if _is_model_instance(candidate, AtlasGlossaryTerm):
-            # trim_to_required for AtlasGlossaryTerm requires anchor
-            # which is not include in AssetMutationResponse
-            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
+        if (
+            isinstance(candidate, AtlasGlossaryTerm)
+            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
+        ):
+            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         asset.name = candidate.name
@@ -2668,8 +2674,8 @@ class CategoryHierarchy:
                 full_parent = self._categories.get(parent_guid, stub_dict[parent_guid])
                 children: List[AtlasGlossaryCategory] = (
                     []
-                    if full_parent.children_categories is None
-                    else full_parent.children_categories.copy()
+                    if not full_parent.children_categories
+                    else list(full_parent.children_categories)
                 )
                 if category not in children:
                     children.append(category)

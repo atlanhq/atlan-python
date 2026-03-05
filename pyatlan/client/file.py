@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import ApiCaller, FileDownload, FilePresignedUrl, FileUpload
 from pyatlan.errors import ErrorCode
 from pyatlan.model.file import PresignedURLRequest
-from pyatlan.validate import validate_arguments
 
 
 class FileClient:

@@ -2,6 +2,8 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from __future__ import annotations
 
+from pydantic.v1 import validate_arguments
+
 from pyatlan.client.common import (
     AsyncApiCaller,
     FileDownload,
@@ -10,7 +12,6 @@ from pyatlan.client.common import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.file import PresignedURLRequest
-from pyatlan.validate import validate_arguments
 
 
 class AsyncFileClient:
