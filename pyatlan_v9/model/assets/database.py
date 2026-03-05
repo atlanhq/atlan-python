@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan_v9.model.conversion_utils import (
@@ -123,6 +124,7 @@ class Database(Asset):
     README: ClassVar[Any] = None
     SCHEMAS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -290,6 +292,11 @@ class Database(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -582,6 +589,11 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -640,6 +652,7 @@ _DATABASE_REL_FIELDS: list[str] = [
     "readme",
     "schemas",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -861,6 +874,9 @@ Database.LINKS = RelationField("links")
 Database.README = RelationField("readme")
 Database.SCHEMAS = RelationField("schemas")
 Database.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+Database.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Database.SODA_CHECKS = RelationField("sodaChecks")
 Database.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Database.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

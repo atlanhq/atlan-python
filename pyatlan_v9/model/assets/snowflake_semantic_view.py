@@ -4,12 +4,12 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-Procedure asset model with flattened inheritance.
+SnowflakeSemanticView asset model with flattened inheritance.
 
 This module provides:
-- Procedure: Flat asset class (easy to use)
-- ProcedureAttributes: Nested attributes struct (extends AssetAttributes)
-- ProcedureNested: Nested API format struct
+- SnowflakeSemanticView: Flat asset class (easy to use)
+- SnowflakeSemanticViewAttributes: Nested attributes struct (extends AssetAttributes)
+- SnowflakeSemanticViewNested: Nested API format struct
 """
 
 from __future__ import annotations
@@ -48,18 +48,22 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
+from .semantic_related import (
+    RelatedSemanticDimension,
+    RelatedSemanticEntity,
+    RelatedSemanticMeasure,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_related import RelatedSchema
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .sql_related import RelatedSchema
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -67,23 +71,12 @@ from .sql_related import RelatedSchema
 
 
 @register_asset
-class Procedure(Asset):
+class SnowflakeSemanticView(Asset):
     """
-    Instance of a stored procedure (routine) in Atlan.
+    Instance of a Snowflake semantic view in Atlan.
     """
 
-    DEFINITION: ClassVar[Any] = None
-    SQL_LANGUAGE: ClassVar[Any] = None
-    SQL_RUNTIME_VERSION: ClassVar[Any] = None
-    SQL_OWNER_ROLE_TYPE: ClassVar[Any] = None
-    SQL_ARGUMENTS: ClassVar[Any] = None
-    SQL_PROCEDURE_RETURN: ClassVar[Any] = None
-    SQL_EXTERNAL_ACCESS_INTEGRATIONS: ClassVar[Any] = None
-    SQL_SECRETS: ClassVar[Any] = None
-    SQL_PACKAGES: ClassVar[Any] = None
-    SQL_INSTALLED_PACKAGES: ClassVar[Any] = None
-    SQL_SCHEMA_ID: ClassVar[Any] = None
-    SQL_CATALOG_ID: ClassVar[Any] = None
+    SNOWFLAKE_DEFINITION: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -132,51 +125,20 @@ class Procedure(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
-    ATLAN_SCHEMA: ClassVar[Any] = None
-    SQL_PROCESSES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SEMANTIC_DIMENSIONS: ClassVar[Any] = None
+    SEMANTIC_MEASURES: ClassVar[Any] = None
+    SEMANTIC_ENTITIES: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_VIEW_SCHEMA: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Procedure"
+    type_name: Union[str, UnsetType] = "SnowflakeSemanticView"
 
-    definition: str | None | UnsetType = UNSET
-    """SQL definition of the procedure."""
-
-    sql_language: str | None | UnsetType = UNSET
-    """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
-
-    sql_runtime_version: str | None | UnsetType = UNSET
-    """Version of the language runtime used by the procedure."""
-
-    sql_owner_role_type: str | None | UnsetType = UNSET
-    """Type of role that owns the procedure."""
-
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
-    """List of procedure arguments with name and type information."""
-
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
-    """Detailed information about the procedure's return type."""
-
-    sql_external_access_integrations: str | None | UnsetType = UNSET
-    """Names of external access integrations used by the procedure."""
-
-    sql_secrets: str | None | UnsetType = UNSET
-    """Secret variables used by the procedure."""
-
-    sql_packages: str | None | UnsetType = UNSET
-    """Packages requested by the procedure."""
-
-    sql_installed_packages: str | None | UnsetType = UNSET
-    """Packages actually installed for the procedure."""
-
-    sql_schema_id: str | None | UnsetType = UNSET
-    """Internal ID for the schema containing the procedure."""
-
-    sql_catalog_id: str | None | UnsetType = UNSET
-    """Internal ID for the database containing the procedure."""
+    snowflake_definition: str | None | UnsetType = UNSET
+    """DDL definition of the semantic view (via GET_DDL)."""
 
     query_count: int | None | UnsetType = UNSET
     """Number of times this asset has been queried."""
@@ -326,21 +288,27 @@ class Procedure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
     schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
         UNSET
     )
     """"""
 
+    semantic_dimensions: list[RelatedSemanticDimension] | None | UnsetType = UNSET
+    """Dimensions that exist within this semantic model."""
+
+    semantic_measures: list[RelatedSemanticMeasure] | None | UnsetType = UNSET
+    """Measures that exist within this semantic model."""
+
+    semantic_entities: list[RelatedSemanticEntity] | None | UnsetType = UNSET
+    """Entities that exist within this semantic model."""
+
+    snowflake_semantic_view_schema: RelatedSchema | None | UnsetType = UNSET
+    """Schema containing the semantic view."""
+
     snowflake_semantic_logical_tables: (
         list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
     ) = UNSET
-    """Semantic logical tables that reference this physical table or view."""
+    """Logical tables contained in the semantic view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -352,94 +320,15 @@ class Procedure(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "Procedure"
+        self.type_name = "SnowflakeSemanticView"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/_procedures_/[^/]+$"
+        r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        definition: str,
-        schema_qualified_name: str,
-        schema_name: str | None = None,
-        database_name: str | None = None,
-        database_qualified_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "Procedure":
-        validate_required_fields(
-            ["name", "definition", "schema_qualified_name"],
-            [name, definition, schema_qualified_name],
-        )
-
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/_procedures_/{name}"
-
-        return cls(
-            name=name,
-            definition=definition,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
-            schema_qualified_name=schema_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
-        )
-
-    @classmethod
-    def updater(
-        cls,
-        *,
-        qualified_name: str,
-        name: str,
-        definition: str = "",
-    ) -> "Procedure":
-        validate_required_fields(
-            ["qualified_name", "name"],
-            [qualified_name, name],
-        )
-        proc = cls(qualified_name=qualified_name, name=name)
-        if definition:
-            proc.definition = definition
-        return proc
-
-    def trim_to_required(self) -> "Procedure":
-        return Procedure.updater(
-            qualified_name=self.qualified_name or "",
-            name=self.name or "",
-            definition=self.definition or "",
-        )
-
-    @classmethod
-    def create(cls, **kwargs) -> "Procedure":
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "Procedure":
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -467,10 +356,12 @@ class Procedure(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _procedure_to_nested_bytes(self, serde)
+        return _snowflake_semantic_view_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> Procedure:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SnowflakeSemanticView:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -479,13 +370,13 @@ class Procedure(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            Procedure instance
+            SnowflakeSemanticView instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _procedure_from_nested_bytes(json_data, serde)
+        return _snowflake_semantic_view_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -493,44 +384,11 @@ class Procedure(Asset):
 # =============================================================================
 
 
-class ProcedureAttributes(AssetAttributes):
-    """Procedure-specific attributes for nested API format."""
+class SnowflakeSemanticViewAttributes(AssetAttributes):
+    """SnowflakeSemanticView-specific attributes for nested API format."""
 
-    definition: str | None | UnsetType = UNSET
-    """SQL definition of the procedure."""
-
-    sql_language: str | None | UnsetType = UNSET
-    """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
-
-    sql_runtime_version: str | None | UnsetType = UNSET
-    """Version of the language runtime used by the procedure."""
-
-    sql_owner_role_type: str | None | UnsetType = UNSET
-    """Type of role that owns the procedure."""
-
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
-    """List of procedure arguments with name and type information."""
-
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
-    """Detailed information about the procedure's return type."""
-
-    sql_external_access_integrations: str | None | UnsetType = UNSET
-    """Names of external access integrations used by the procedure."""
-
-    sql_secrets: str | None | UnsetType = UNSET
-    """Secret variables used by the procedure."""
-
-    sql_packages: str | None | UnsetType = UNSET
-    """Packages requested by the procedure."""
-
-    sql_installed_packages: str | None | UnsetType = UNSET
-    """Packages actually installed for the procedure."""
-
-    sql_schema_id: str | None | UnsetType = UNSET
-    """Internal ID for the schema containing the procedure."""
-
-    sql_catalog_id: str | None | UnsetType = UNSET
-    """Internal ID for the database containing the procedure."""
+    snowflake_definition: str | None | UnsetType = UNSET
+    """DDL definition of the semantic view (via GET_DDL)."""
 
     query_count: int | None | UnsetType = UNSET
     """Number of times this asset has been queried."""
@@ -589,8 +447,8 @@ class ProcedureAttributes(AssetAttributes):
     """Whether this asset is secure (true) or not (false)."""
 
 
-class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
-    """Procedure-specific relationship attributes for nested API format."""
+class SnowflakeSemanticViewRelationshipAttributes(AssetRelationshipAttributes):
+    """SnowflakeSemanticView-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
     """Tasks to which this asset provides input."""
@@ -684,21 +542,27 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
     schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
         UNSET
     )
     """"""
 
+    semantic_dimensions: list[RelatedSemanticDimension] | None | UnsetType = UNSET
+    """Dimensions that exist within this semantic model."""
+
+    semantic_measures: list[RelatedSemanticMeasure] | None | UnsetType = UNSET
+    """Measures that exist within this semantic model."""
+
+    semantic_entities: list[RelatedSemanticEntity] | None | UnsetType = UNSET
+    """Entities that exist within this semantic model."""
+
+    snowflake_semantic_view_schema: RelatedSchema | None | UnsetType = UNSET
+    """Schema containing the semantic view."""
+
     snowflake_semantic_logical_tables: (
         list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
     ) = UNSET
-    """Semantic logical tables that reference this physical table or view."""
+    """Logical tables contained in the semantic view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -710,20 +574,26 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
 
-class ProcedureNested(AssetNested):
-    """Procedure in nested API format for high-performance serialization."""
+class SnowflakeSemanticViewNested(AssetNested):
+    """SnowflakeSemanticView in nested API format for high-performance serialization."""
 
-    attributes: ProcedureAttributes | UnsetType = UNSET
-    relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
+    attributes: SnowflakeSemanticViewAttributes | UnsetType = UNSET
+    relationship_attributes: SnowflakeSemanticViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        SnowflakeSemanticViewRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SnowflakeSemanticViewRelationshipAttributes | UnsetType
+    ) = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_PROCEDURE_REL_FIELDS: list[str] = [
+_SNOWFLAKE_SEMANTIC_VIEW_REL_FIELDS: list[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -755,9 +625,11 @@ _PROCEDURE_REL_FIELDS: list[str] = [
     "files",
     "links",
     "readme",
-    "atlan_schema",
-    "sql_processes",
     "schema_registry_subjects",
+    "semantic_dimensions",
+    "semantic_measures",
+    "semantic_entities",
+    "snowflake_semantic_view_schema",
     "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
@@ -765,21 +637,12 @@ _PROCEDURE_REL_FIELDS: list[str] = [
 ]
 
 
-def _populate_procedure_attrs(attrs: ProcedureAttributes, obj: Procedure) -> None:
-    """Populate Procedure-specific attributes on the attrs struct."""
+def _populate_snowflake_semantic_view_attrs(
+    attrs: SnowflakeSemanticViewAttributes, obj: SnowflakeSemanticView
+) -> None:
+    """Populate SnowflakeSemanticView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.definition = obj.definition
-    attrs.sql_language = obj.sql_language
-    attrs.sql_runtime_version = obj.sql_runtime_version
-    attrs.sql_owner_role_type = obj.sql_owner_role_type
-    attrs.sql_arguments = obj.sql_arguments
-    attrs.sql_procedure_return = obj.sql_procedure_return
-    attrs.sql_external_access_integrations = obj.sql_external_access_integrations
-    attrs.sql_secrets = obj.sql_secrets
-    attrs.sql_packages = obj.sql_packages
-    attrs.sql_installed_packages = obj.sql_installed_packages
-    attrs.sql_schema_id = obj.sql_schema_id
-    attrs.sql_catalog_id = obj.sql_catalog_id
+    attrs.snowflake_definition = obj.snowflake_definition
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -800,21 +663,12 @@ def _populate_procedure_attrs(attrs: ProcedureAttributes, obj: Procedure) -> Non
     attrs.sql_is_secure = obj.sql_is_secure
 
 
-def _extract_procedure_attrs(attrs: ProcedureAttributes) -> dict:
-    """Extract all Procedure attributes from the attrs struct into a flat dict."""
+def _extract_snowflake_semantic_view_attrs(
+    attrs: SnowflakeSemanticViewAttributes,
+) -> dict:
+    """Extract all SnowflakeSemanticView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["definition"] = attrs.definition
-    result["sql_language"] = attrs.sql_language
-    result["sql_runtime_version"] = attrs.sql_runtime_version
-    result["sql_owner_role_type"] = attrs.sql_owner_role_type
-    result["sql_arguments"] = attrs.sql_arguments
-    result["sql_procedure_return"] = attrs.sql_procedure_return
-    result["sql_external_access_integrations"] = attrs.sql_external_access_integrations
-    result["sql_secrets"] = attrs.sql_secrets
-    result["sql_packages"] = attrs.sql_packages
-    result["sql_installed_packages"] = attrs.sql_installed_packages
-    result["sql_schema_id"] = attrs.sql_schema_id
-    result["sql_catalog_id"] = attrs.sql_catalog_id
+    result["snowflake_definition"] = attrs.snowflake_definition
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -843,34 +697,38 @@ def _extract_procedure_attrs(attrs: ProcedureAttributes) -> dict:
 # =============================================================================
 
 
-def _procedure_to_nested(procedure: Procedure) -> ProcedureNested:
-    """Convert flat Procedure to nested format."""
-    attrs = ProcedureAttributes()
-    _populate_procedure_attrs(attrs, procedure)
+def _snowflake_semantic_view_to_nested(
+    snowflake_semantic_view: SnowflakeSemanticView,
+) -> SnowflakeSemanticViewNested:
+    """Convert flat SnowflakeSemanticView to nested format."""
+    attrs = SnowflakeSemanticViewAttributes()
+    _populate_snowflake_semantic_view_attrs(attrs, snowflake_semantic_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        procedure, _PROCEDURE_REL_FIELDS, ProcedureRelationshipAttributes
+        snowflake_semantic_view,
+        _SNOWFLAKE_SEMANTIC_VIEW_REL_FIELDS,
+        SnowflakeSemanticViewRelationshipAttributes,
     )
-    return ProcedureNested(
-        guid=procedure.guid,
-        type_name=procedure.type_name,
-        status=procedure.status,
-        version=procedure.version,
-        create_time=procedure.create_time,
-        update_time=procedure.update_time,
-        created_by=procedure.created_by,
-        updated_by=procedure.updated_by,
-        classifications=procedure.classifications,
-        classification_names=procedure.classification_names,
-        meanings=procedure.meanings,
-        labels=procedure.labels,
-        business_attributes=procedure.business_attributes,
-        custom_attributes=procedure.custom_attributes,
-        pending_tasks=procedure.pending_tasks,
-        proxy=procedure.proxy,
-        is_incomplete=procedure.is_incomplete,
-        provenance_type=procedure.provenance_type,
-        home_id=procedure.home_id,
+    return SnowflakeSemanticViewNested(
+        guid=snowflake_semantic_view.guid,
+        type_name=snowflake_semantic_view.type_name,
+        status=snowflake_semantic_view.status,
+        version=snowflake_semantic_view.version,
+        create_time=snowflake_semantic_view.create_time,
+        update_time=snowflake_semantic_view.update_time,
+        created_by=snowflake_semantic_view.created_by,
+        updated_by=snowflake_semantic_view.updated_by,
+        classifications=snowflake_semantic_view.classifications,
+        classification_names=snowflake_semantic_view.classification_names,
+        meanings=snowflake_semantic_view.meanings,
+        labels=snowflake_semantic_view.labels,
+        business_attributes=snowflake_semantic_view.business_attributes,
+        custom_attributes=snowflake_semantic_view.custom_attributes,
+        pending_tasks=snowflake_semantic_view.pending_tasks,
+        proxy=snowflake_semantic_view.proxy,
+        is_incomplete=snowflake_semantic_view.is_incomplete,
+        provenance_type=snowflake_semantic_view.provenance_type,
+        home_id=snowflake_semantic_view.home_id,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -878,20 +736,24 @@ def _procedure_to_nested(procedure: Procedure) -> ProcedureNested:
     )
 
 
-def _procedure_from_nested(nested: ProcedureNested) -> Procedure:
-    """Convert nested format to flat Procedure."""
+def _snowflake_semantic_view_from_nested(
+    nested: SnowflakeSemanticViewNested,
+) -> SnowflakeSemanticView:
+    """Convert nested format to flat SnowflakeSemanticView."""
     attrs = (
-        nested.attributes if nested.attributes is not UNSET else ProcedureAttributes()
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SnowflakeSemanticViewAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _PROCEDURE_REL_FIELDS,
-        ProcedureRelationshipAttributes,
+        _SNOWFLAKE_SEMANTIC_VIEW_REL_FIELDS,
+        SnowflakeSemanticViewRelationshipAttributes,
     )
-    return Procedure(
+    return SnowflakeSemanticView(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -911,21 +773,25 @@ def _procedure_from_nested(nested: ProcedureNested) -> Procedure:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        **_extract_procedure_attrs(attrs),
+        **_extract_snowflake_semantic_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _procedure_to_nested_bytes(procedure: Procedure, serde: Serde) -> bytes:
-    """Convert flat Procedure to nested JSON bytes."""
-    return serde.encode(_procedure_to_nested(procedure))
+def _snowflake_semantic_view_to_nested_bytes(
+    snowflake_semantic_view: SnowflakeSemanticView, serde: Serde
+) -> bytes:
+    """Convert flat SnowflakeSemanticView to nested JSON bytes."""
+    return serde.encode(_snowflake_semantic_view_to_nested(snowflake_semantic_view))
 
 
-def _procedure_from_nested_bytes(data: bytes, serde: Serde) -> Procedure:
-    """Convert nested JSON bytes to flat Procedure."""
-    nested = serde.decode(data, ProcedureNested)
-    return _procedure_from_nested(nested)
+def _snowflake_semantic_view_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SnowflakeSemanticView:
+    """Convert nested JSON bytes to flat SnowflakeSemanticView."""
+    nested = serde.decode(data, SnowflakeSemanticViewNested)
+    return _snowflake_semantic_view_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -934,103 +800,103 @@ def _procedure_from_nested_bytes(data: bytes, serde: Serde) -> Procedure:
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
 )
 
-Procedure.DEFINITION = KeywordField("definition", "definition")
-Procedure.SQL_LANGUAGE = KeywordTextField(
-    "sqlLanguage", "sqlLanguage", "sqlLanguage.text"
+SnowflakeSemanticView.SNOWFLAKE_DEFINITION = KeywordField(
+    "snowflakeDefinition", "snowflakeDefinition"
 )
-Procedure.SQL_RUNTIME_VERSION = KeywordTextField(
-    "sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text"
+SnowflakeSemanticView.QUERY_COUNT = NumericField("queryCount", "queryCount")
+SnowflakeSemanticView.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
 )
-Procedure.SQL_OWNER_ROLE_TYPE = KeywordTextField(
-    "sqlOwnerRoleType", "sqlOwnerRoleType", "sqlOwnerRoleType.text"
-)
-Procedure.SQL_ARGUMENTS = KeywordField("sqlArguments", "sqlArguments")
-Procedure.SQL_PROCEDURE_RETURN = KeywordField(
-    "sqlProcedureReturn", "sqlProcedureReturn"
-)
-Procedure.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
-    "sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations"
-)
-Procedure.SQL_SECRETS = KeywordField("sqlSecrets", "sqlSecrets")
-Procedure.SQL_PACKAGES = KeywordField("sqlPackages", "sqlPackages")
-Procedure.SQL_INSTALLED_PACKAGES = KeywordField(
-    "sqlInstalledPackages", "sqlInstalledPackages"
-)
-Procedure.SQL_SCHEMA_ID = KeywordField("sqlSchemaId", "sqlSchemaId")
-Procedure.SQL_CATALOG_ID = KeywordField("sqlCatalogId", "sqlCatalogId")
-Procedure.QUERY_COUNT = NumericField("queryCount", "queryCount")
-Procedure.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
-Procedure.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Procedure.QUERY_COUNT_UPDATED_AT = NumericField(
+SnowflakeSemanticView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
+SnowflakeSemanticView.QUERY_COUNT_UPDATED_AT = NumericField(
     "queryCountUpdatedAt", "queryCountUpdatedAt"
 )
-Procedure.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Procedure.DATABASE_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticView.DATABASE_NAME = KeywordField("databaseName", "databaseName")
+SnowflakeSemanticView.DATABASE_QUALIFIED_NAME = KeywordField(
     "databaseQualifiedName", "databaseQualifiedName"
 )
-Procedure.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Procedure.SCHEMA_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticView.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
+SnowflakeSemanticView.SCHEMA_QUALIFIED_NAME = KeywordField(
     "schemaQualifiedName", "schemaQualifiedName"
 )
-Procedure.TABLE_NAME = KeywordField("tableName", "tableName")
-Procedure.TABLE_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticView.TABLE_NAME = KeywordField("tableName", "tableName")
+SnowflakeSemanticView.TABLE_QUALIFIED_NAME = KeywordField(
     "tableQualifiedName", "tableQualifiedName"
 )
-Procedure.VIEW_NAME = KeywordField("viewName", "viewName")
-Procedure.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Procedure.CALCULATION_VIEW_NAME = KeywordField(
+SnowflakeSemanticView.VIEW_NAME = KeywordField("viewName", "viewName")
+SnowflakeSemanticView.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SnowflakeSemanticView.CALCULATION_VIEW_NAME = KeywordField(
     "calculationViewName", "calculationViewName"
 )
-Procedure.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
     "calculationViewQualifiedName", "calculationViewQualifiedName"
 )
-Procedure.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-Procedure.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Procedure.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticView.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
+SnowflakeSemanticView.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+SnowflakeSemanticView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
-Procedure.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-Procedure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-Procedure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-Procedure.ANOMALO_CHECKS = RelationField("anomaloChecks")
-Procedure.APPLICATION = RelationField("application")
-Procedure.APPLICATION_FIELD = RelationField("applicationField")
-Procedure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-Procedure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-Procedure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-Procedure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
-Procedure.METRICS = RelationField("metrics")
-Procedure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-Procedure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Procedure.DBT_MODELS = RelationField("dbtModels")
-Procedure.SQL_DBT_MODELS = RelationField("sqlDbtModels")
-Procedure.DBT_TESTS = RelationField("dbtTests")
-Procedure.DBT_SOURCES = RelationField("dbtSources")
-Procedure.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
-Procedure.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-Procedure.MEANINGS = RelationField("meanings")
-Procedure.MC_MONITORS = RelationField("mcMonitors")
-Procedure.MC_INCIDENTS = RelationField("mcIncidents")
-Procedure.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-Procedure.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-Procedure.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-Procedure.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-Procedure.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-Procedure.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-Procedure.FILES = RelationField("files")
-Procedure.LINKS = RelationField("links")
-Procedure.README = RelationField("readme")
-Procedure.ATLAN_SCHEMA = RelationField("atlanSchema")
-Procedure.SQL_PROCESSES = RelationField("sqlProcesses")
-Procedure.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Procedure.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+SnowflakeSemanticView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+SnowflakeSemanticView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+SnowflakeSemanticView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
+SnowflakeSemanticView.ANOMALO_CHECKS = RelationField("anomaloChecks")
+SnowflakeSemanticView.APPLICATION = RelationField("application")
+SnowflakeSemanticView.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeSemanticView.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+SnowflakeSemanticView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+SnowflakeSemanticView.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SnowflakeSemanticView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
+SnowflakeSemanticView.METRICS = RelationField("metrics")
+SnowflakeSemanticView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+SnowflakeSemanticView.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+SnowflakeSemanticView.DBT_MODELS = RelationField("dbtModels")
+SnowflakeSemanticView.SQL_DBT_MODELS = RelationField("sqlDbtModels")
+SnowflakeSemanticView.DBT_TESTS = RelationField("dbtTests")
+SnowflakeSemanticView.DBT_SOURCES = RelationField("dbtSources")
+SnowflakeSemanticView.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
+SnowflakeSemanticView.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+SnowflakeSemanticView.MEANINGS = RelationField("meanings")
+SnowflakeSemanticView.MC_MONITORS = RelationField("mcMonitors")
+SnowflakeSemanticView.MC_INCIDENTS = RelationField("mcIncidents")
+SnowflakeSemanticView.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+SnowflakeSemanticView.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+SnowflakeSemanticView.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+SnowflakeSemanticView.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+SnowflakeSemanticView.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+SnowflakeSemanticView.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
+SnowflakeSemanticView.FILES = RelationField("files")
+SnowflakeSemanticView.LINKS = RelationField("links")
+SnowflakeSemanticView.README = RelationField("readme")
+SnowflakeSemanticView.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SnowflakeSemanticView.SEMANTIC_DIMENSIONS = RelationField("semanticDimensions")
+SnowflakeSemanticView.SEMANTIC_MEASURES = RelationField("semanticMeasures")
+SnowflakeSemanticView.SEMANTIC_ENTITIES = RelationField("semanticEntities")
+SnowflakeSemanticView.SNOWFLAKE_SEMANTIC_VIEW_SCHEMA = RelationField(
+    "snowflakeSemanticViewSchema"
+)
+SnowflakeSemanticView.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )
-Procedure.SODA_CHECKS = RelationField("sodaChecks")
-Procedure.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-Procedure.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+SnowflakeSemanticView.SODA_CHECKS = RelationField("sodaChecks")
+SnowflakeSemanticView.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+SnowflakeSemanticView.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan_v9.model.conversion_utils import (
@@ -134,6 +135,7 @@ class MaterialisedView(Asset):
     COLUMNS: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -334,6 +336,11 @@ class MaterialisedView(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -709,6 +716,11 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -771,6 +783,7 @@ _MATERIALISED_VIEW_REL_FIELDS: list[str] = [
     "columns",
     "atlan_schema",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1043,6 +1056,9 @@ MaterialisedView.README = RelationField("readme")
 MaterialisedView.COLUMNS = RelationField("columns")
 MaterialisedView.ATLAN_SCHEMA = RelationField("atlanSchema")
 MaterialisedView.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+MaterialisedView.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 MaterialisedView.SODA_CHECKS = RelationField("sodaChecks")
 MaterialisedView.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 MaterialisedView.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

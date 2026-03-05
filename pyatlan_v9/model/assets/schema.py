@@ -53,6 +53,8 @@ from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
     RelatedSnowflakeDynamicTable,
     RelatedSnowflakePipe,
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeSemanticView,
     RelatedSnowflakeStage,
     RelatedSnowflakeStream,
     RelatedSnowflakeTag,
@@ -156,6 +158,8 @@ class Schema(Asset):
     SNOWFLAKE_STREAMS: ClassVar[Any] = None
     SNOWFLAKE_TAGS: ClassVar[Any] = None
     SNOWFLAKE_AI_MODEL_CONTEXTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_VIEWS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -377,6 +381,16 @@ class Schema(Asset):
         list[RelatedSnowflakeAIModelContext] | None | UnsetType
     ) = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
+
+    snowflake_semantic_views: list[RelatedSnowflakeSemanticView] | None | UnsetType = (
+        UNSET
+    )
+    """Snowflake semantic views contained in the schema."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -763,6 +777,16 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     ) = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
 
+    snowflake_semantic_views: list[RelatedSnowflakeSemanticView] | None | UnsetType = (
+        UNSET
+    )
+    """Snowflake semantic views contained in the schema."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -834,6 +858,8 @@ _SCHEMA_REL_FIELDS: list[str] = [
     "snowflake_streams",
     "snowflake_tags",
     "snowflake_ai_model_contexts",
+    "snowflake_semantic_views",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1079,6 +1105,10 @@ Schema.SNOWFLAKE_STAGES = RelationField("snowflakeStages")
 Schema.SNOWFLAKE_STREAMS = RelationField("snowflakeStreams")
 Schema.SNOWFLAKE_TAGS = RelationField("snowflakeTags")
 Schema.SNOWFLAKE_AI_MODEL_CONTEXTS = RelationField("snowflakeAIModelContexts")
+Schema.SNOWFLAKE_SEMANTIC_VIEWS = RelationField("snowflakeSemanticViews")
+Schema.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Schema.SODA_CHECKS = RelationField("sodaChecks")
 Schema.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Schema.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

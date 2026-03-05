@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan_v9.model.conversion_utils import (
@@ -139,6 +140,7 @@ class TablePartition(Asset):
     CHILD_TABLE_PARTITIONS: ClassVar[Any] = None
     PARENT_TABLE_PARTITION: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -354,6 +356,11 @@ class TablePartition(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -750,6 +757,11 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -814,6 +826,7 @@ _TABLE_PARTITION_REL_FIELDS: list[str] = [
     "child_table_partitions",
     "parent_table_partition",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1101,6 +1114,9 @@ TablePartition.PARENT_TABLE = RelationField("parentTable")
 TablePartition.CHILD_TABLE_PARTITIONS = RelationField("childTablePartitions")
 TablePartition.PARENT_TABLE_PARTITION = RelationField("parentTablePartition")
 TablePartition.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+TablePartition.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 TablePartition.SODA_CHECKS = RelationField("sodaChecks")
 TablePartition.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 TablePartition.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

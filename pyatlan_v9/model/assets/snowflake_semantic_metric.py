@@ -4,12 +4,12 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-Procedure asset model with flattened inheritance.
+SnowflakeSemanticMetric asset model with flattened inheritance.
 
 This module provides:
-- Procedure: Flat asset class (easy to use)
-- ProcedureAttributes: Nested attributes struct (extends AssetAttributes)
-- ProcedureNested: Nested API format struct
+- SnowflakeSemanticMetric: Flat asset class (easy to use)
+- SnowflakeSemanticMetricAttributes: Nested attributes struct (extends AssetAttributes)
+- SnowflakeSemanticMetricNested: Nested API format struct
 """
 
 from __future__ import annotations
@@ -32,6 +32,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .asset_related import RelatedAsset
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -48,18 +49,17 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_related import RelatedColumn
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .sql_related import RelatedSchema
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -67,23 +67,18 @@ from .sql_related import RelatedSchema
 
 
 @register_asset
-class Procedure(Asset):
+class SnowflakeSemanticMetric(Asset):
     """
-    Instance of a stored procedure (routine) in Atlan.
+    Instance of a Snowflake semantic metric in Atlan.
     """
 
-    DEFINITION: ClassVar[Any] = None
-    SQL_LANGUAGE: ClassVar[Any] = None
-    SQL_RUNTIME_VERSION: ClassVar[Any] = None
-    SQL_OWNER_ROLE_TYPE: ClassVar[Any] = None
-    SQL_ARGUMENTS: ClassVar[Any] = None
-    SQL_PROCEDURE_RETURN: ClassVar[Any] = None
-    SQL_EXTERNAL_ACCESS_INTEGRATIONS: ClassVar[Any] = None
-    SQL_SECRETS: ClassVar[Any] = None
-    SQL_PACKAGES: ClassVar[Any] = None
-    SQL_INSTALLED_PACKAGES: ClassVar[Any] = None
-    SQL_SCHEMA_ID: ClassVar[Any] = None
-    SQL_CATALOG_ID: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_VIEW_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_TABLE_NAME: ClassVar[Any] = None
+    SNOWFLAKE_METRIC_ADDITIVE_DIMENSIONS: ClassVar[Any] = None
+    SNOWFLAKE_METRIC_NON_ADDITIVE_DIMENSIONS: ClassVar[Any] = None
+    SNOWFLAKE_METRIC_USING_RELATIONSHIPS: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -102,6 +97,11 @@ class Procedure(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    METRIC_TYPE: ClassVar[Any] = None
+    METRIC_SQL: ClassVar[Any] = None
+    METRIC_FILTERS: ClassVar[Any] = None
+    METRIC_TIME_GRAINS: ClassVar[Any] = None
+    DQ_IS_PART_OF_CONTRACT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -111,7 +111,10 @@ class Procedure(Asset):
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[Any] = None
+    ASSETS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
+    METRIC_TIMESTAMP_COLUMN: ClassVar[Any] = None
+    METRIC_DIMENSION_COLUMNS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     DBT_MODELS: ClassVar[Any] = None
@@ -132,51 +135,35 @@ class Procedure(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
-    ATLAN_SCHEMA: ClassVar[Any] = None
-    SQL_PROCESSES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLE: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Procedure"
+    type_name: Union[str, UnsetType] = "SnowflakeSemanticMetric"
 
-    definition: str | None | UnsetType = UNSET
-    """SQL definition of the procedure."""
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this metric exists."""
 
-    sql_language: str | None | UnsetType = UNSET
-    """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this metric exists."""
 
-    sql_runtime_version: str | None | UnsetType = UNSET
-    """Version of the language runtime used by the procedure."""
+    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the logical table in which this metric exists."""
 
-    sql_owner_role_type: str | None | UnsetType = UNSET
-    """Type of role that owns the procedure."""
+    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    """Simple name of the logical table in which this metric exists."""
 
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
-    """List of procedure arguments with name and type information."""
+    snowflake_metric_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric can be additively aggregated."""
 
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
-    """Detailed information about the procedure's return type."""
+    snowflake_metric_non_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric cannot be additively aggregated."""
 
-    sql_external_access_integrations: str | None | UnsetType = UNSET
-    """Names of external access integrations used by the procedure."""
-
-    sql_secrets: str | None | UnsetType = UNSET
-    """Secret variables used by the procedure."""
-
-    sql_packages: str | None | UnsetType = UNSET
-    """Packages requested by the procedure."""
-
-    sql_installed_packages: str | None | UnsetType = UNSET
-    """Packages actually installed for the procedure."""
-
-    sql_schema_id: str | None | UnsetType = UNSET
-    """Internal ID for the schema containing the procedure."""
-
-    sql_catalog_id: str | None | UnsetType = UNSET
-    """Internal ID for the database containing the procedure."""
+    snowflake_metric_using_relationships: list[str] | None | UnsetType = UNSET
+    """Relationships used by the metric for cross-table computation."""
 
     query_count: int | None | UnsetType = UNSET
     """Number of times this asset has been queried."""
@@ -234,6 +221,21 @@ class Procedure(Asset):
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    metric_type: str | None | UnsetType = UNSET
+    """Type of the metric."""
+
+    metric_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="metricSQL")
+    """SQL query used to compute the metric."""
+
+    metric_filters: str | None | UnsetType = UNSET
+    """Filters to be applied to the metric query."""
+
+    metric_time_grains: list[str] | None | UnsetType = UNSET
+    """List of time grains to be applied to the metric query."""
+
+    dq_is_part_of_contract: bool | None | UnsetType = UNSET
+    """Whether this data quality is part of contract (true) or not (false)."""
+
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
     """Tasks to which this asset provides input."""
 
@@ -261,7 +263,16 @@ class Procedure(Asset):
     model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
     """Attributes implemented by this asset."""
 
+    assets: list[RelatedAsset] | None | UnsetType = UNSET
+    """"""
+
     metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    """"""
+
+    metric_timestamp_column: RelatedColumn | None | UnsetType = UNSET
+    """"""
+
+    metric_dimension_columns: list[RelatedColumn] | None | UnsetType = UNSET
     """"""
 
     dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
@@ -326,16 +337,15 @@ class Procedure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
     schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_table: (
+        RelatedSnowflakeSemanticLogicalTable | None | UnsetType
+    ) = UNSET
+    """Logical table containing the metric."""
 
     snowflake_semantic_logical_tables: (
         list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
@@ -352,94 +362,15 @@ class Procedure(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "Procedure"
+        self.type_name = "SnowflakeSemanticMetric"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/_procedures_/[^/]+$"
+        r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        definition: str,
-        schema_qualified_name: str,
-        schema_name: str | None = None,
-        database_name: str | None = None,
-        database_qualified_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "Procedure":
-        validate_required_fields(
-            ["name", "definition", "schema_qualified_name"],
-            [name, definition, schema_qualified_name],
-        )
-
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/_procedures_/{name}"
-
-        return cls(
-            name=name,
-            definition=definition,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
-            schema_qualified_name=schema_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
-        )
-
-    @classmethod
-    def updater(
-        cls,
-        *,
-        qualified_name: str,
-        name: str,
-        definition: str = "",
-    ) -> "Procedure":
-        validate_required_fields(
-            ["qualified_name", "name"],
-            [qualified_name, name],
-        )
-        proc = cls(qualified_name=qualified_name, name=name)
-        if definition:
-            proc.definition = definition
-        return proc
-
-    def trim_to_required(self) -> "Procedure":
-        return Procedure.updater(
-            qualified_name=self.qualified_name or "",
-            name=self.name or "",
-            definition=self.definition or "",
-        )
-
-    @classmethod
-    def create(cls, **kwargs) -> "Procedure":
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "Procedure":
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -467,10 +398,12 @@ class Procedure(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _procedure_to_nested_bytes(self, serde)
+        return _snowflake_semantic_metric_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> Procedure:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SnowflakeSemanticMetric:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -479,13 +412,13 @@ class Procedure(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            Procedure instance
+            SnowflakeSemanticMetric instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _procedure_from_nested_bytes(json_data, serde)
+        return _snowflake_semantic_metric_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -493,44 +426,29 @@ class Procedure(Asset):
 # =============================================================================
 
 
-class ProcedureAttributes(AssetAttributes):
-    """Procedure-specific attributes for nested API format."""
+class SnowflakeSemanticMetricAttributes(AssetAttributes):
+    """SnowflakeSemanticMetric-specific attributes for nested API format."""
 
-    definition: str | None | UnsetType = UNSET
-    """SQL definition of the procedure."""
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this metric exists."""
 
-    sql_language: str | None | UnsetType = UNSET
-    """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this metric exists."""
 
-    sql_runtime_version: str | None | UnsetType = UNSET
-    """Version of the language runtime used by the procedure."""
+    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the logical table in which this metric exists."""
 
-    sql_owner_role_type: str | None | UnsetType = UNSET
-    """Type of role that owns the procedure."""
+    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    """Simple name of the logical table in which this metric exists."""
 
-    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
-    """List of procedure arguments with name and type information."""
+    snowflake_metric_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric can be additively aggregated."""
 
-    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
-    """Detailed information about the procedure's return type."""
+    snowflake_metric_non_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric cannot be additively aggregated."""
 
-    sql_external_access_integrations: str | None | UnsetType = UNSET
-    """Names of external access integrations used by the procedure."""
-
-    sql_secrets: str | None | UnsetType = UNSET
-    """Secret variables used by the procedure."""
-
-    sql_packages: str | None | UnsetType = UNSET
-    """Packages requested by the procedure."""
-
-    sql_installed_packages: str | None | UnsetType = UNSET
-    """Packages actually installed for the procedure."""
-
-    sql_schema_id: str | None | UnsetType = UNSET
-    """Internal ID for the schema containing the procedure."""
-
-    sql_catalog_id: str | None | UnsetType = UNSET
-    """Internal ID for the database containing the procedure."""
+    snowflake_metric_using_relationships: list[str] | None | UnsetType = UNSET
+    """Relationships used by the metric for cross-table computation."""
 
     query_count: int | None | UnsetType = UNSET
     """Number of times this asset has been queried."""
@@ -588,9 +506,24 @@ class ProcedureAttributes(AssetAttributes):
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    metric_type: str | None | UnsetType = UNSET
+    """Type of the metric."""
 
-class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
-    """Procedure-specific relationship attributes for nested API format."""
+    metric_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="metricSQL")
+    """SQL query used to compute the metric."""
+
+    metric_filters: str | None | UnsetType = UNSET
+    """Filters to be applied to the metric query."""
+
+    metric_time_grains: list[str] | None | UnsetType = UNSET
+    """List of time grains to be applied to the metric query."""
+
+    dq_is_part_of_contract: bool | None | UnsetType = UNSET
+    """Whether this data quality is part of contract (true) or not (false)."""
+
+
+class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes):
+    """SnowflakeSemanticMetric-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
     """Tasks to which this asset provides input."""
@@ -619,7 +552,16 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_attributes: list[RelatedModelAttribute] | None | UnsetType = UNSET
     """Attributes implemented by this asset."""
 
+    assets: list[RelatedAsset] | None | UnsetType = UNSET
+    """"""
+
     metrics: list[RelatedMetric] | None | UnsetType = UNSET
+    """"""
+
+    metric_timestamp_column: RelatedColumn | None | UnsetType = UNSET
+    """"""
+
+    metric_dimension_columns: list[RelatedColumn] | None | UnsetType = UNSET
     """"""
 
     dq_base_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
@@ -684,16 +626,15 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    atlan_schema: RelatedSchema | None | UnsetType = UNSET
-    """Schema in which this stored procedure exists."""
-
-    sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
-    """Processes that utilize this procedure."""
-
     schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_table: (
+        RelatedSnowflakeSemanticLogicalTable | None | UnsetType
+    ) = UNSET
+    """Logical table containing the metric."""
 
     snowflake_semantic_logical_tables: (
         list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
@@ -710,20 +651,26 @@ class ProcedureRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
 
-class ProcedureNested(AssetNested):
-    """Procedure in nested API format for high-performance serialization."""
+class SnowflakeSemanticMetricNested(AssetNested):
+    """SnowflakeSemanticMetric in nested API format for high-performance serialization."""
 
-    attributes: ProcedureAttributes | UnsetType = UNSET
-    relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ProcedureRelationshipAttributes | UnsetType = UNSET
+    attributes: SnowflakeSemanticMetricAttributes | UnsetType = UNSET
+    relationship_attributes: (
+        SnowflakeSemanticMetricRelationshipAttributes | UnsetType
+    ) = UNSET
+    append_relationship_attributes: (
+        SnowflakeSemanticMetricRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SnowflakeSemanticMetricRelationshipAttributes | UnsetType
+    ) = UNSET
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_PROCEDURE_REL_FIELDS: list[str] = [
+_SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS: list[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -734,7 +681,10 @@ _PROCEDURE_REL_FIELDS: list[str] = [
     "input_port_data_products",
     "model_implemented_entities",
     "model_implemented_attributes",
+    "assets",
     "metrics",
+    "metric_timestamp_column",
+    "metric_dimension_columns",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
     "dbt_models",
@@ -755,9 +705,8 @@ _PROCEDURE_REL_FIELDS: list[str] = [
     "files",
     "links",
     "readme",
-    "atlan_schema",
-    "sql_processes",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_table",
     "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
@@ -765,21 +714,28 @@ _PROCEDURE_REL_FIELDS: list[str] = [
 ]
 
 
-def _populate_procedure_attrs(attrs: ProcedureAttributes, obj: Procedure) -> None:
-    """Populate Procedure-specific attributes on the attrs struct."""
+def _populate_snowflake_semantic_metric_attrs(
+    attrs: SnowflakeSemanticMetricAttributes, obj: SnowflakeSemanticMetric
+) -> None:
+    """Populate SnowflakeSemanticMetric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.definition = obj.definition
-    attrs.sql_language = obj.sql_language
-    attrs.sql_runtime_version = obj.sql_runtime_version
-    attrs.sql_owner_role_type = obj.sql_owner_role_type
-    attrs.sql_arguments = obj.sql_arguments
-    attrs.sql_procedure_return = obj.sql_procedure_return
-    attrs.sql_external_access_integrations = obj.sql_external_access_integrations
-    attrs.sql_secrets = obj.sql_secrets
-    attrs.sql_packages = obj.sql_packages
-    attrs.sql_installed_packages = obj.sql_installed_packages
-    attrs.sql_schema_id = obj.sql_schema_id
-    attrs.sql_catalog_id = obj.sql_catalog_id
+    attrs.snowflake_semantic_view_qualified_name = (
+        obj.snowflake_semantic_view_qualified_name
+    )
+    attrs.snowflake_semantic_view_name = obj.snowflake_semantic_view_name
+    attrs.snowflake_semantic_table_qualified_name = (
+        obj.snowflake_semantic_table_qualified_name
+    )
+    attrs.snowflake_semantic_table_name = obj.snowflake_semantic_table_name
+    attrs.snowflake_metric_additive_dimensions = (
+        obj.snowflake_metric_additive_dimensions
+    )
+    attrs.snowflake_metric_non_additive_dimensions = (
+        obj.snowflake_metric_non_additive_dimensions
+    )
+    attrs.snowflake_metric_using_relationships = (
+        obj.snowflake_metric_using_relationships
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -798,23 +754,35 @@ def _populate_procedure_attrs(attrs: ProcedureAttributes, obj: Procedure) -> Non
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.metric_type = obj.metric_type
+    attrs.metric_sql = obj.metric_sql
+    attrs.metric_filters = obj.metric_filters
+    attrs.metric_time_grains = obj.metric_time_grains
+    attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
 
 
-def _extract_procedure_attrs(attrs: ProcedureAttributes) -> dict:
-    """Extract all Procedure attributes from the attrs struct into a flat dict."""
+def _extract_snowflake_semantic_metric_attrs(
+    attrs: SnowflakeSemanticMetricAttributes,
+) -> dict:
+    """Extract all SnowflakeSemanticMetric attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["definition"] = attrs.definition
-    result["sql_language"] = attrs.sql_language
-    result["sql_runtime_version"] = attrs.sql_runtime_version
-    result["sql_owner_role_type"] = attrs.sql_owner_role_type
-    result["sql_arguments"] = attrs.sql_arguments
-    result["sql_procedure_return"] = attrs.sql_procedure_return
-    result["sql_external_access_integrations"] = attrs.sql_external_access_integrations
-    result["sql_secrets"] = attrs.sql_secrets
-    result["sql_packages"] = attrs.sql_packages
-    result["sql_installed_packages"] = attrs.sql_installed_packages
-    result["sql_schema_id"] = attrs.sql_schema_id
-    result["sql_catalog_id"] = attrs.sql_catalog_id
+    result["snowflake_semantic_view_qualified_name"] = (
+        attrs.snowflake_semantic_view_qualified_name
+    )
+    result["snowflake_semantic_view_name"] = attrs.snowflake_semantic_view_name
+    result["snowflake_semantic_table_qualified_name"] = (
+        attrs.snowflake_semantic_table_qualified_name
+    )
+    result["snowflake_semantic_table_name"] = attrs.snowflake_semantic_table_name
+    result["snowflake_metric_additive_dimensions"] = (
+        attrs.snowflake_metric_additive_dimensions
+    )
+    result["snowflake_metric_non_additive_dimensions"] = (
+        attrs.snowflake_metric_non_additive_dimensions
+    )
+    result["snowflake_metric_using_relationships"] = (
+        attrs.snowflake_metric_using_relationships
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -835,6 +803,11 @@ def _extract_procedure_attrs(attrs: ProcedureAttributes) -> dict:
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["metric_type"] = attrs.metric_type
+    result["metric_sql"] = attrs.metric_sql
+    result["metric_filters"] = attrs.metric_filters
+    result["metric_time_grains"] = attrs.metric_time_grains
+    result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
 
 
@@ -843,34 +816,38 @@ def _extract_procedure_attrs(attrs: ProcedureAttributes) -> dict:
 # =============================================================================
 
 
-def _procedure_to_nested(procedure: Procedure) -> ProcedureNested:
-    """Convert flat Procedure to nested format."""
-    attrs = ProcedureAttributes()
-    _populate_procedure_attrs(attrs, procedure)
+def _snowflake_semantic_metric_to_nested(
+    snowflake_semantic_metric: SnowflakeSemanticMetric,
+) -> SnowflakeSemanticMetricNested:
+    """Convert flat SnowflakeSemanticMetric to nested format."""
+    attrs = SnowflakeSemanticMetricAttributes()
+    _populate_snowflake_semantic_metric_attrs(attrs, snowflake_semantic_metric)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        procedure, _PROCEDURE_REL_FIELDS, ProcedureRelationshipAttributes
+        snowflake_semantic_metric,
+        _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS,
+        SnowflakeSemanticMetricRelationshipAttributes,
     )
-    return ProcedureNested(
-        guid=procedure.guid,
-        type_name=procedure.type_name,
-        status=procedure.status,
-        version=procedure.version,
-        create_time=procedure.create_time,
-        update_time=procedure.update_time,
-        created_by=procedure.created_by,
-        updated_by=procedure.updated_by,
-        classifications=procedure.classifications,
-        classification_names=procedure.classification_names,
-        meanings=procedure.meanings,
-        labels=procedure.labels,
-        business_attributes=procedure.business_attributes,
-        custom_attributes=procedure.custom_attributes,
-        pending_tasks=procedure.pending_tasks,
-        proxy=procedure.proxy,
-        is_incomplete=procedure.is_incomplete,
-        provenance_type=procedure.provenance_type,
-        home_id=procedure.home_id,
+    return SnowflakeSemanticMetricNested(
+        guid=snowflake_semantic_metric.guid,
+        type_name=snowflake_semantic_metric.type_name,
+        status=snowflake_semantic_metric.status,
+        version=snowflake_semantic_metric.version,
+        create_time=snowflake_semantic_metric.create_time,
+        update_time=snowflake_semantic_metric.update_time,
+        created_by=snowflake_semantic_metric.created_by,
+        updated_by=snowflake_semantic_metric.updated_by,
+        classifications=snowflake_semantic_metric.classifications,
+        classification_names=snowflake_semantic_metric.classification_names,
+        meanings=snowflake_semantic_metric.meanings,
+        labels=snowflake_semantic_metric.labels,
+        business_attributes=snowflake_semantic_metric.business_attributes,
+        custom_attributes=snowflake_semantic_metric.custom_attributes,
+        pending_tasks=snowflake_semantic_metric.pending_tasks,
+        proxy=snowflake_semantic_metric.proxy,
+        is_incomplete=snowflake_semantic_metric.is_incomplete,
+        provenance_type=snowflake_semantic_metric.provenance_type,
+        home_id=snowflake_semantic_metric.home_id,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -878,20 +855,24 @@ def _procedure_to_nested(procedure: Procedure) -> ProcedureNested:
     )
 
 
-def _procedure_from_nested(nested: ProcedureNested) -> Procedure:
-    """Convert nested format to flat Procedure."""
+def _snowflake_semantic_metric_from_nested(
+    nested: SnowflakeSemanticMetricNested,
+) -> SnowflakeSemanticMetric:
+    """Convert nested format to flat SnowflakeSemanticMetric."""
     attrs = (
-        nested.attributes if nested.attributes is not UNSET else ProcedureAttributes()
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SnowflakeSemanticMetricAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _PROCEDURE_REL_FIELDS,
-        ProcedureRelationshipAttributes,
+        _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS,
+        SnowflakeSemanticMetricRelationshipAttributes,
     )
-    return Procedure(
+    return SnowflakeSemanticMetric(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -911,21 +892,25 @@ def _procedure_from_nested(nested: ProcedureNested) -> Procedure:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        **_extract_procedure_attrs(attrs),
+        **_extract_snowflake_semantic_metric_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _procedure_to_nested_bytes(procedure: Procedure, serde: Serde) -> bytes:
-    """Convert flat Procedure to nested JSON bytes."""
-    return serde.encode(_procedure_to_nested(procedure))
+def _snowflake_semantic_metric_to_nested_bytes(
+    snowflake_semantic_metric: SnowflakeSemanticMetric, serde: Serde
+) -> bytes:
+    """Convert flat SnowflakeSemanticMetric to nested JSON bytes."""
+    return serde.encode(_snowflake_semantic_metric_to_nested(snowflake_semantic_metric))
 
 
-def _procedure_from_nested_bytes(data: bytes, serde: Serde) -> Procedure:
-    """Convert nested JSON bytes to flat Procedure."""
-    nested = serde.decode(data, ProcedureNested)
-    return _procedure_from_nested(nested)
+def _snowflake_semantic_metric_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SnowflakeSemanticMetric:
+    """Convert nested JSON bytes to flat SnowflakeSemanticMetric."""
+    nested = serde.decode(data, SnowflakeSemanticMetricNested)
+    return _snowflake_semantic_metric_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -934,103 +919,138 @@ def _procedure_from_nested_bytes(data: bytes, serde: Serde) -> Procedure:
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
 )
 
-Procedure.DEFINITION = KeywordField("definition", "definition")
-Procedure.SQL_LANGUAGE = KeywordTextField(
-    "sqlLanguage", "sqlLanguage", "sqlLanguage.text"
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME = KeywordField(
+    "snowflakeSemanticViewQualifiedName", "snowflakeSemanticViewQualifiedName"
 )
-Procedure.SQL_RUNTIME_VERSION = KeywordTextField(
-    "sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text"
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_NAME = KeywordField(
+    "snowflakeSemanticViewName", "snowflakeSemanticViewName"
 )
-Procedure.SQL_OWNER_ROLE_TYPE = KeywordTextField(
-    "sqlOwnerRoleType", "sqlOwnerRoleType", "sqlOwnerRoleType.text"
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME = KeywordField(
+    "snowflakeSemanticTableQualifiedName", "snowflakeSemanticTableQualifiedName"
 )
-Procedure.SQL_ARGUMENTS = KeywordField("sqlArguments", "sqlArguments")
-Procedure.SQL_PROCEDURE_RETURN = KeywordField(
-    "sqlProcedureReturn", "sqlProcedureReturn"
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_NAME = KeywordField(
+    "snowflakeSemanticTableName", "snowflakeSemanticTableName"
 )
-Procedure.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
-    "sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations"
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_ADDITIVE_DIMENSIONS = KeywordField(
+    "snowflakeMetricAdditiveDimensions", "snowflakeMetricAdditiveDimensions"
 )
-Procedure.SQL_SECRETS = KeywordField("sqlSecrets", "sqlSecrets")
-Procedure.SQL_PACKAGES = KeywordField("sqlPackages", "sqlPackages")
-Procedure.SQL_INSTALLED_PACKAGES = KeywordField(
-    "sqlInstalledPackages", "sqlInstalledPackages"
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_NON_ADDITIVE_DIMENSIONS = KeywordField(
+    "snowflakeMetricNonAdditiveDimensions", "snowflakeMetricNonAdditiveDimensions"
 )
-Procedure.SQL_SCHEMA_ID = KeywordField("sqlSchemaId", "sqlSchemaId")
-Procedure.SQL_CATALOG_ID = KeywordField("sqlCatalogId", "sqlCatalogId")
-Procedure.QUERY_COUNT = NumericField("queryCount", "queryCount")
-Procedure.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
-Procedure.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Procedure.QUERY_COUNT_UPDATED_AT = NumericField(
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_USING_RELATIONSHIPS = KeywordField(
+    "snowflakeMetricUsingRelationships", "snowflakeMetricUsingRelationships"
+)
+SnowflakeSemanticMetric.QUERY_COUNT = NumericField("queryCount", "queryCount")
+SnowflakeSemanticMetric.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
+SnowflakeSemanticMetric.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
+SnowflakeSemanticMetric.QUERY_COUNT_UPDATED_AT = NumericField(
     "queryCountUpdatedAt", "queryCountUpdatedAt"
 )
-Procedure.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Procedure.DATABASE_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticMetric.DATABASE_NAME = KeywordField("databaseName", "databaseName")
+SnowflakeSemanticMetric.DATABASE_QUALIFIED_NAME = KeywordField(
     "databaseQualifiedName", "databaseQualifiedName"
 )
-Procedure.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Procedure.SCHEMA_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticMetric.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
+SnowflakeSemanticMetric.SCHEMA_QUALIFIED_NAME = KeywordField(
     "schemaQualifiedName", "schemaQualifiedName"
 )
-Procedure.TABLE_NAME = KeywordField("tableName", "tableName")
-Procedure.TABLE_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticMetric.TABLE_NAME = KeywordField("tableName", "tableName")
+SnowflakeSemanticMetric.TABLE_QUALIFIED_NAME = KeywordField(
     "tableQualifiedName", "tableQualifiedName"
 )
-Procedure.VIEW_NAME = KeywordField("viewName", "viewName")
-Procedure.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Procedure.CALCULATION_VIEW_NAME = KeywordField(
+SnowflakeSemanticMetric.VIEW_NAME = KeywordField("viewName", "viewName")
+SnowflakeSemanticMetric.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SnowflakeSemanticMetric.CALCULATION_VIEW_NAME = KeywordField(
     "calculationViewName", "calculationViewName"
 )
-Procedure.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticMetric.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
     "calculationViewQualifiedName", "calculationViewQualifiedName"
 )
-Procedure.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-Procedure.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Procedure.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+SnowflakeSemanticMetric.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
+SnowflakeSemanticMetric.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+SnowflakeSemanticMetric.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
-Procedure.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-Procedure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-Procedure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-Procedure.ANOMALO_CHECKS = RelationField("anomaloChecks")
-Procedure.APPLICATION = RelationField("application")
-Procedure.APPLICATION_FIELD = RelationField("applicationField")
-Procedure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-Procedure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-Procedure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-Procedure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
-Procedure.METRICS = RelationField("metrics")
-Procedure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-Procedure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Procedure.DBT_MODELS = RelationField("dbtModels")
-Procedure.SQL_DBT_MODELS = RelationField("sqlDbtModels")
-Procedure.DBT_TESTS = RelationField("dbtTests")
-Procedure.DBT_SOURCES = RelationField("dbtSources")
-Procedure.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
-Procedure.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-Procedure.MEANINGS = RelationField("meanings")
-Procedure.MC_MONITORS = RelationField("mcMonitors")
-Procedure.MC_INCIDENTS = RelationField("mcIncidents")
-Procedure.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-Procedure.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-Procedure.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-Procedure.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-Procedure.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-Procedure.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-Procedure.FILES = RelationField("files")
-Procedure.LINKS = RelationField("links")
-Procedure.README = RelationField("readme")
-Procedure.ATLAN_SCHEMA = RelationField("atlanSchema")
-Procedure.SQL_PROCESSES = RelationField("sqlProcesses")
-Procedure.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Procedure.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+SnowflakeSemanticMetric.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+SnowflakeSemanticMetric.METRIC_TYPE = KeywordField("metricType", "metricType")
+SnowflakeSemanticMetric.METRIC_SQL = KeywordField("metricSQL", "metricSQL")
+SnowflakeSemanticMetric.METRIC_FILTERS = KeywordField("metricFilters", "metricFilters")
+SnowflakeSemanticMetric.METRIC_TIME_GRAINS = KeywordField(
+    "metricTimeGrains", "metricTimeGrains"
+)
+SnowflakeSemanticMetric.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
+SnowflakeSemanticMetric.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+SnowflakeSemanticMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
+SnowflakeSemanticMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
+SnowflakeSemanticMetric.APPLICATION = RelationField("application")
+SnowflakeSemanticMetric.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeSemanticMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+SnowflakeSemanticMetric.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
+SnowflakeSemanticMetric.ASSETS = RelationField("assets")
+SnowflakeSemanticMetric.METRICS = RelationField("metrics")
+SnowflakeSemanticMetric.METRIC_TIMESTAMP_COLUMN = RelationField("metricTimestampColumn")
+SnowflakeSemanticMetric.METRIC_DIMENSION_COLUMNS = RelationField(
+    "metricDimensionColumns"
+)
+SnowflakeSemanticMetric.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+SnowflakeSemanticMetric.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+SnowflakeSemanticMetric.DBT_MODELS = RelationField("dbtModels")
+SnowflakeSemanticMetric.SQL_DBT_MODELS = RelationField("sqlDbtModels")
+SnowflakeSemanticMetric.DBT_TESTS = RelationField("dbtTests")
+SnowflakeSemanticMetric.DBT_SOURCES = RelationField("dbtSources")
+SnowflakeSemanticMetric.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
+SnowflakeSemanticMetric.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+SnowflakeSemanticMetric.MEANINGS = RelationField("meanings")
+SnowflakeSemanticMetric.MC_MONITORS = RelationField("mcMonitors")
+SnowflakeSemanticMetric.MC_INCIDENTS = RelationField("mcIncidents")
+SnowflakeSemanticMetric.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+SnowflakeSemanticMetric.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+SnowflakeSemanticMetric.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+SnowflakeSemanticMetric.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
+SnowflakeSemanticMetric.FILES = RelationField("files")
+SnowflakeSemanticMetric.LINKS = RelationField("links")
+SnowflakeSemanticMetric.README = RelationField("readme")
+SnowflakeSemanticMetric.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField(
+    "snowflakeSemanticLogicalTable"
+)
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
 )
-Procedure.SODA_CHECKS = RelationField("sodaChecks")
-Procedure.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-Procedure.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+SnowflakeSemanticMetric.SODA_CHECKS = RelationField("sodaChecks")
+SnowflakeSemanticMetric.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+SnowflakeSemanticMetric.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

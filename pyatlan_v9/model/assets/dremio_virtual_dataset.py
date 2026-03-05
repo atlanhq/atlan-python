@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema
@@ -141,6 +142,7 @@ class DremioVirtualDataset(Asset):
     QUERIES: ClassVar[Any] = None
     ATLAN_SCHEMA: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -362,6 +364,11 @@ class DremioVirtualDataset(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -658,6 +665,11 @@ class DremioVirtualDatasetRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -725,6 +737,7 @@ _DREMIO_VIRTUAL_DATASET_REL_FIELDS: list[str] = [
     "queries",
     "atlan_schema",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1038,6 +1051,9 @@ DremioVirtualDataset.COLUMNS = RelationField("columns")
 DremioVirtualDataset.QUERIES = RelationField("queries")
 DremioVirtualDataset.ATLAN_SCHEMA = RelationField("atlanSchema")
 DremioVirtualDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DremioVirtualDataset.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DremioVirtualDataset.SODA_CHECKS = RelationField("sodaChecks")
 DremioVirtualDataset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DremioVirtualDataset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

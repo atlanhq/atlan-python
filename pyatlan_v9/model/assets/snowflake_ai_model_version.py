@@ -58,7 +58,10 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .snowflake_related import RelatedSnowflakeAIModelContext
+from .snowflake_related import (
+    RelatedSnowflakeAIModelContext,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -134,6 +137,7 @@ class SnowflakeAIModelVersion(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_AI_MODEL_CONTEXT: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -350,6 +354,11 @@ class SnowflakeAIModelVersion(Asset):
         msgspec.field(default=UNSET, name="snowflakeAIModelContext")
     )
     """Context containing the version."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -643,6 +652,11 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     )
     """Context containing the version."""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -707,6 +721,7 @@ _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS: list[str] = [
     "readme",
     "schema_registry_subjects",
     "snowflake_ai_model_context",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1037,6 +1052,9 @@ SnowflakeAIModelVersion.SCHEMA_REGISTRY_SUBJECTS = RelationField(
 )
 SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_CONTEXT = RelationField(
     "snowflakeAIModelContext"
+)
+SnowflakeAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
 )
 SnowflakeAIModelVersion.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeAIModelVersion.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

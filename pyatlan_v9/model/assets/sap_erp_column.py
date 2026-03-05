@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan_v9.model.conversion_utils import (
@@ -144,6 +145,7 @@ class SapErpColumn(Asset):
     SAP_ERP_VIEW: ClassVar[Any] = None
     SAP_ERP_CDS_VIEW: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -377,6 +379,11 @@ class SapErpColumn(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -683,6 +690,11 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -746,6 +758,7 @@ _SAP_ERP_COLUMN_REL_FIELDS: list[str] = [
     "sap_erp_view",
     "sap_erp_cds_view",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1060,6 +1073,9 @@ SapErpColumn.SAP_ERP_TABLE = RelationField("sapErpTable")
 SapErpColumn.SAP_ERP_VIEW = RelationField("sapErpView")
 SapErpColumn.SAP_ERP_CDS_VIEW = RelationField("sapErpCdsView")
 SapErpColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SapErpColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 SapErpColumn.SODA_CHECKS = RelationField("sodaChecks")
 SapErpColumn.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SapErpColumn.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

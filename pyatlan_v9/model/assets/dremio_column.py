@@ -51,7 +51,10 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import (
@@ -226,6 +229,7 @@ class DremioColumn(Asset):
     QUERIES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLE: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -676,6 +680,11 @@ class DremioColumn(Asset):
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -1193,6 +1202,11 @@ class DremioColumnRelationshipAttributes(AssetRelationshipAttributes):
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -1273,6 +1287,7 @@ _DREMIO_COLUMN_REL_FIELDS: list[str] = [
     "queries",
     "schema_registry_subjects",
     "snowflake_dynamic_table",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1818,6 +1833,9 @@ DremioColumn.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 DremioColumn.QUERIES = RelationField("queries")
 DremioColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 DremioColumn.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
+DremioColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DremioColumn.SODA_CHECKS = RelationField("sodaChecks")
 DremioColumn.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DremioColumn.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

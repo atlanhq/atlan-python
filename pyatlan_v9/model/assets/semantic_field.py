@@ -62,6 +62,11 @@ class SemanticField(Asset):
 
     SEMANTIC_EXPRESSION: ClassVar[Any] = None
     SEMANTIC_TYPE: ClassVar[Any] = None
+    SEMANTIC_SYNONYMS: ClassVar[Any] = None
+    SEMANTIC_SAMPLE_VALUES: ClassVar[Any] = None
+    SEMANTIC_ACCESS_MODIFIER: ClassVar[Any] = None
+    SEMANTIC_DATA_TYPE: ClassVar[Any] = None
+    SEMANTIC_LABELS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -98,6 +103,21 @@ class SemanticField(Asset):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
+    semantic_synonyms: list[str] | None | UnsetType = UNSET
+    """Alternative names or terms for the semantic field."""
+
+    semantic_sample_values: list[str] | None | UnsetType = UNSET
+    """Sample values for the semantic field."""
+
+    semantic_access_modifier: str | None | UnsetType = UNSET
+    """Access level for the semantic field (e.g., public_access/private_access)."""
+
+    semantic_data_type: str | None | UnsetType = UNSET
+    """Data type of the semantic field."""
+
+    semantic_labels: list[str] | None | UnsetType = UNSET
+    """Labels associated with the semantic field."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
     """Tasks to which this asset provides input."""
@@ -249,6 +269,21 @@ class SemanticFieldAttributes(AssetAttributes):
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
 
+    semantic_synonyms: list[str] | None | UnsetType = UNSET
+    """Alternative names or terms for the semantic field."""
+
+    semantic_sample_values: list[str] | None | UnsetType = UNSET
+    """Sample values for the semantic field."""
+
+    semantic_access_modifier: str | None | UnsetType = UNSET
+    """Access level for the semantic field (e.g., public_access/private_access)."""
+
+    semantic_data_type: str | None | UnsetType = UNSET
+    """Data type of the semantic field."""
+
+    semantic_labels: list[str] | None | UnsetType = UNSET
+    """Labels associated with the semantic field."""
+
 
 class SemanticFieldRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticField-specific relationship attributes for nested API format."""
@@ -397,6 +432,11 @@ def _populate_semantic_field_attrs(
     _populate_asset_attrs(attrs, obj)
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
+    attrs.semantic_synonyms = obj.semantic_synonyms
+    attrs.semantic_sample_values = obj.semantic_sample_values
+    attrs.semantic_access_modifier = obj.semantic_access_modifier
+    attrs.semantic_data_type = obj.semantic_data_type
+    attrs.semantic_labels = obj.semantic_labels
 
 
 def _extract_semantic_field_attrs(attrs: SemanticFieldAttributes) -> dict:
@@ -404,6 +444,11 @@ def _extract_semantic_field_attrs(attrs: SemanticFieldAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
+    result["semantic_synonyms"] = attrs.semantic_synonyms
+    result["semantic_sample_values"] = attrs.semantic_sample_values
+    result["semantic_access_modifier"] = attrs.semantic_access_modifier
+    result["semantic_data_type"] = attrs.semantic_data_type
+    result["semantic_labels"] = attrs.semantic_labels
     return result
 
 
@@ -507,12 +552,22 @@ def _semantic_field_from_nested_bytes(data: bytes, serde: Serde) -> SemanticFiel
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
     RelationField,
+    TextField,
 )
 
 SemanticField.SEMANTIC_EXPRESSION = KeywordField(
     "semanticExpression", "semanticExpression"
 )
 SemanticField.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
+SemanticField.SEMANTIC_SYNONYMS = KeywordField("semanticSynonyms", "semanticSynonyms")
+SemanticField.SEMANTIC_SAMPLE_VALUES = TextField(
+    "semanticSampleValues", "semanticSampleValues"
+)
+SemanticField.SEMANTIC_ACCESS_MODIFIER = KeywordField(
+    "semanticAccessModifier", "semanticAccessModifier"
+)
+SemanticField.SEMANTIC_DATA_TYPE = KeywordField("semanticDataType", "semanticDataType")
+SemanticField.SEMANTIC_LABELS = KeywordField("semanticLabels", "semanticLabels")
 SemanticField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SemanticField.ANOMALO_CHECKS = RelationField("anomaloChecks")

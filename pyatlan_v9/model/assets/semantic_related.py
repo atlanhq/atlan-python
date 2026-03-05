@@ -72,6 +72,21 @@ class RelatedSemanticField(RelatedSemantic):
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
 
+    semantic_synonyms: list[str] | None | UnsetType = UNSET
+    """Alternative names or terms for the semantic field."""
+
+    semantic_sample_values: list[str] | None | UnsetType = UNSET
+    """Sample values for the semantic field."""
+
+    semantic_access_modifier: str | None | UnsetType = UNSET
+    """Access level for the semantic field (e.g., public_access/private_access)."""
+
+    semantic_data_type: str | None | UnsetType = UNSET
+    """Data type of the semantic field."""
+
+    semantic_labels: list[str] | None | UnsetType = UNSET
+    """Labels associated with the semantic field."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SemanticField"

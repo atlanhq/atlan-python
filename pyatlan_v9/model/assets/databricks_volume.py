@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
@@ -125,6 +126,7 @@ class DatabricksVolume(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -300,6 +302,11 @@ class DatabricksVolume(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -552,6 +559,11 @@ class DatabricksVolumeRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -614,6 +626,7 @@ _DATABRICKS_VOLUME_REL_FIELDS: list[str] = [
     "links",
     "readme",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -859,6 +872,9 @@ DatabricksVolume.FILES = RelationField("files")
 DatabricksVolume.LINKS = RelationField("links")
 DatabricksVolume.README = RelationField("readme")
 DatabricksVolume.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DatabricksVolume.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DatabricksVolume.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksVolume.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksVolume.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

@@ -53,7 +53,10 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
@@ -224,6 +227,7 @@ class Column(Asset):
     QUERIES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLE: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -650,6 +654,11 @@ class Column(Asset):
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -1347,6 +1356,11 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -1423,6 +1437,7 @@ _COLUMN_REL_FIELDS: list[str] = [
     "queries",
     "schema_registry_subjects",
     "snowflake_dynamic_table",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1906,6 +1921,9 @@ Column.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 Column.QUERIES = RelationField("queries")
 Column.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Column.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
+Column.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Column.SODA_CHECKS = RelationField("sodaChecks")
 Column.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Column.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

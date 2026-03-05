@@ -25,6 +25,11 @@ __all__ = [
     "RelatedSnowflakeTag",
     "RelatedSnowflakeAIModelContext",
     "RelatedSnowflakeAIModelVersion",
+    "RelatedSnowflakeSemanticView",
+    "RelatedSnowflakeSemanticLogicalTable",
+    "RelatedSnowflakeSemanticFact",
+    "RelatedSnowflakeSemanticDimension",
+    "RelatedSnowflakeSemanticMetric",
 ]
 
 
@@ -200,3 +205,141 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeAIModelVersion"
+
+
+class RelatedSnowflakeSemanticView(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeSemanticView assets.
+
+    Extends RelatedSnowflake with SnowflakeSemanticView-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeSemanticView" so it serializes correctly
+
+    snowflake_definition: str | None | UnsetType = UNSET
+    """DDL definition of the semantic view (via GET_DDL)."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeSemanticView"
+
+
+class RelatedSnowflakeSemanticLogicalTable(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeSemanticLogicalTable assets.
+
+    Extends RelatedSnowflake with SnowflakeSemanticLogicalTable-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeSemanticLogicalTable" so it serializes correctly
+
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this logical table exists."""
+
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this logical table exists."""
+
+    snowflake_semantic_table_primary_keys: list[str] | None | UnsetType = UNSET
+    """Comma separated list of primary key columns for the logical table."""
+
+    snowflake_semantic_table_unique_keys: list[str] | None | UnsetType = UNSET
+    """Unique key columns for the logical table."""
+
+    snowflake_semantic_table_distinct_ranges: list[str] | None | UnsetType = UNSET
+    """Distinct ranges defined for the logical table."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeSemanticLogicalTable"
+
+
+class RelatedSnowflakeSemanticFact(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeSemanticFact assets.
+
+    Extends RelatedSnowflake with SnowflakeSemanticFact-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeSemanticFact" so it serializes correctly
+
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this fact exists."""
+
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this fact exists."""
+
+    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the logical table in which this fact exists."""
+
+    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    """Simple name of the logical table in which this fact exists."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeSemanticFact"
+
+
+class RelatedSnowflakeSemanticDimension(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeSemanticDimension assets.
+
+    Extends RelatedSnowflake with SnowflakeSemanticDimension-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeSemanticDimension" so it serializes correctly
+
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this dimension exists."""
+
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this dimension exists."""
+
+    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the logical table in which this dimension exists."""
+
+    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    """Simple name of the logical table in which this dimension exists."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeSemanticDimension"
+
+
+class RelatedSnowflakeSemanticMetric(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeSemanticMetric assets.
+
+    Extends RelatedSnowflake with SnowflakeSemanticMetric-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeSemanticMetric" so it serializes correctly
+
+    snowflake_semantic_view_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the semantic view in which this metric exists."""
+
+    snowflake_semantic_view_name: str | None | UnsetType = UNSET
+    """Simple name of the semantic view in which this metric exists."""
+
+    snowflake_semantic_table_qualified_name: str | None | UnsetType = UNSET
+    """Unique name of the logical table in which this metric exists."""
+
+    snowflake_semantic_table_name: str | None | UnsetType = UNSET
+    """Simple name of the logical table in which this metric exists."""
+
+    snowflake_metric_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric can be additively aggregated."""
+
+    snowflake_metric_non_additive_dimensions: list[str] | None | UnsetType = UNSET
+    """Dimensions over which the metric cannot be additively aggregated."""
+
+    snowflake_metric_using_relationships: list[str] | None | UnsetType = UNSET
+    """Relationships used by the metric for cross-table computation."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeSemanticMetric"

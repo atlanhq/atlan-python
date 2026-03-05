@@ -52,7 +52,10 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import (
@@ -228,6 +231,7 @@ class DynamoDBAttribute(Asset):
     QUERIES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLE: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -689,6 +693,11 @@ class DynamoDBAttribute(Asset):
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -1225,6 +1234,11 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
     """Snowflake dynamic table in which this column exists."""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -1306,6 +1320,7 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: list[str] = [
     "queries",
     "schema_registry_subjects",
     "snowflake_dynamic_table",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1864,6 +1879,9 @@ DynamoDBAttribute.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 DynamoDBAttribute.QUERIES = RelationField("queries")
 DynamoDBAttribute.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 DynamoDBAttribute.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
+DynamoDBAttribute.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DynamoDBAttribute.SODA_CHECKS = RelationField("sodaChecks")
 DynamoDBAttribute.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DynamoDBAttribute.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

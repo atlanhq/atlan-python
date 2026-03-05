@@ -14,6 +14,11 @@ from .snowflake_related import (
     RelatedSnowflakeAIModelVersion,
     RelatedSnowflakeDynamicTable,
     RelatedSnowflakePipe,
+    RelatedSnowflakeSemanticDimension,
+    RelatedSnowflakeSemanticFact,
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeSemanticMetric,
+    RelatedSnowflakeSemanticView,
     RelatedSnowflakeStage,
     RelatedSnowflakeStream,
     RelatedSnowflakeTag,
@@ -21,6 +26,11 @@ from .snowflake_related import (
 from .snowflake import Snowflake
 from .snowflake_ai_model_context import SnowflakeAIModelContext
 from .snowflake_ai_model_version import SnowflakeAIModelVersion
+from .snowflake_semantic_dimension import SnowflakeSemanticDimension
+from .snowflake_semantic_fact import SnowflakeSemanticFact
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable
+from .snowflake_semantic_metric import SnowflakeSemanticMetric
+from .snowflake_semantic_view import SnowflakeSemanticView
 
 __all__ = [
     "RelatedSnowflake",
@@ -28,10 +38,20 @@ __all__ = [
     "RelatedSnowflakeAIModelVersion",
     "RelatedSnowflakeDynamicTable",
     "RelatedSnowflakePipe",
+    "RelatedSnowflakeSemanticDimension",
+    "RelatedSnowflakeSemanticFact",
+    "RelatedSnowflakeSemanticLogicalTable",
+    "RelatedSnowflakeSemanticMetric",
+    "RelatedSnowflakeSemanticView",
     "RelatedSnowflakeStage",
     "RelatedSnowflakeStream",
     "RelatedSnowflakeTag",
     "Snowflake",
     "SnowflakeAIModelContext",
     "SnowflakeAIModelVersion",
+    "SnowflakeSemanticDimension",
+    "SnowflakeSemanticFact",
+    "SnowflakeSemanticLogicalTable",
+    "SnowflakeSemanticMetric",
+    "SnowflakeSemanticView",
 ]

@@ -48,6 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import (
@@ -174,6 +175,7 @@ class MongoDBCollection(Asset):
     FACTS: ClassVar[Any] = None
     PARTITIONS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
@@ -506,6 +508,11 @@ class MongoDBCollection(Asset):
         UNSET
     )
     """"""
+
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
@@ -913,6 +920,11 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     )
     """"""
 
+    snowflake_semantic_logical_tables: (
+        list[RelatedSnowflakeSemanticLogicalTable] | None | UnsetType
+    ) = UNSET
+    """Semantic logical tables that reference this physical table or view."""
+
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
 
@@ -981,6 +993,7 @@ _MONGO_DB_COLLECTION_REL_FIELDS: list[str] = [
     "facts",
     "partitions",
     "schema_registry_subjects",
+    "snowflake_semantic_logical_tables",
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
@@ -1406,6 +1419,9 @@ MongoDBCollection.DIMENSIONS = RelationField("dimensions")
 MongoDBCollection.FACTS = RelationField("facts")
 MongoDBCollection.PARTITIONS = RelationField("partitions")
 MongoDBCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+MongoDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 MongoDBCollection.SODA_CHECKS = RelationField("sodaChecks")
 MongoDBCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 MongoDBCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
