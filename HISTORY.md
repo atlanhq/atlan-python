@@ -1,5 +1,57 @@
 ## 8.5.3 (February 17, 2026)
 
+### New Features
+
+- Added `DynamoDBAttribute.creator()` methods.
+
+### Breaking Changes
+
+- `SSOClient.update_group_mapping()` now requires `group_map_name` as a mandatory parameter.
+- Atlan tag task response no longer returns `classification_id`.
+
+### Experimental: `pyatlan_v9` — Next-generation Pyatlan SDK powered by msgspec
+
+Introduced `pyatlan_v9`, a ground-up rebuild of the SDK's data layer replacing Pydantic v1 with [msgspec](https://jcristharif.com/msgspec/). Ships with full functional parity — models, clients, caches, and serde — while delivering **35-50x faster** serialization performance. No implicit validators, fully typed, and extensible by design.
+
+**Key design changes:**
+- All models use `msgspec.Struct` instead of Pydantic `BaseModel`
+- Explicit `UNSET` sentinel replaces Pydantic's implicit unset tracking
+- `omit_defaults=True` and `rename="camel"` handle JSON wire format natively
+- Zero runtime validation overhead — type safety enforced at decode time
+
+**Benchmark results** (Python 3.11, msgspec 0.20.0, macOS):
+
+| Operation | msgspec (v9) | Pydantic v1 | Speedup |
+|---|---|---|---|
+| Object creation | 1.6–2.3 us | 75–102 us | **~40-50x** |
+| Serialization | 0.37–0.42 us | 14–17 us | **~35-46x** |
+| Deserialization | 1.7–1.8 us | 59–65 us | **~35-36x** |
+| Round-trip (ser + deser) | 2.1–2.2 us | 79–85 us | **~37-41x** |
+
+<details>
+<summary>Wall-clock at 1M operations (Connection model)</summary>
+
+| Operation | msgspec | Pydantic v1 |
+|---|---|---|
+| Create 1M objects | 1.9s | 75.2s |
+| Serialize 1M | 0.4s | 17.1s |
+| Deserialize 1M | 1.7s | 60.6s |
+| Round-trip 1M | 2.2s | 81.8s |
+
+</details>
+
+> `pyatlan_v9` is experimental and ships alongside the stable `pyatlan` package. APIs may change in future releases.
+
+### QOL Improvements
+
+- Regenerated latest SDK models.
+- Switched Claude Code review model to Opus.
+- Fixed flaky integration test failures across PR runs.
+- Added Claude Code skill (`/generate-v9-models`) to generate and sync msgspec models for `pyatlan_v9`.
+
+
+## 8.5.3 (February 17, 2026)
+
 ### QOL Improvements
 
 - Added scheduled Trivy scan with Linear ticket creation.
