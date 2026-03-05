@@ -57,15 +57,15 @@ from pyatlan.client.common import (
 )
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
+from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
+from pyatlan.model.fields.atlan_fields import AtlanField
+from pyatlan.utils import unflatten_custom_metadata_for_entity
 from pyatlan_v9.client.asset import (
     _handle_v9_glossary_anchor,
     _is_glossary_category,
     _matches_asset_type,
     _process_find_response_v9,
 )
-from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
-from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.utils import unflatten_custom_metadata_for_entity
 from pyatlan_v9.model.aggregation import Aggregations
 from pyatlan_v9.model.aio.core import AsyncAtlanRequest
 from pyatlan_v9.model.assets import (

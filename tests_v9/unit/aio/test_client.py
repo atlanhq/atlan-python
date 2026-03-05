@@ -10,13 +10,13 @@ import msgspec
 import pytest
 from httpx import Headers
 
-from pyatlan_v9.client.aio.batch import AsyncBatch
 from pyatlan.client.common import Search
 from pyatlan.client.common.asset import LOGGER as SHARED_LOGGER
 from pyatlan.model.aio.asset import AsyncIndexSearchResults
 from pyatlan.utils import get_python_version
 from pyatlan_v9.client.aio.asset import V9AsyncAssetClient as AsyncAssetClient
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
+from pyatlan_v9.client.aio.batch import AsyncBatch
 from pyatlan_v9.client.aio.group import V9AsyncGroupClient as AsyncGroupClient
 from pyatlan_v9.client.aio.search_log import (
     V9AsyncSearchLogClient as AsyncSearchLogClient,

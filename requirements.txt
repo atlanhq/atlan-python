@@ -5,7 +5,7 @@ annotated-types==0.7.0 ; python_full_version < '3.14' and platform_python_implem
     # via pydantic
 anyio==4.10.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via httpx
-authlib==1.6.6 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+authlib==1.6.9 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
 backports-asyncio-runner==1.2.0 ; python_full_version < '3.11' and platform_python_implementation == 'CPython'
     # via pytest-asyncio
@@ -100,6 +100,8 @@ more-itertools==10.7.0 ; python_full_version < '3.14' and platform_machine != 'p
     # via
     #   jaraco-classes
     #   jaraco-functools
+msgspec==0.20.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via pyatlan
 multidict==6.6.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via yarl
 mypy==1.18.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'

@@ -5,8 +5,8 @@ from typing import AsyncGenerator
 import pytest
 import pytest_asyncio
 
-from pyatlan_v9.client.aio.batch import AsyncBatch
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
+from pyatlan_v9.client.aio.batch import AsyncBatch
 from pyatlan_v9.model.assets import (
     Asset,
     Connection,

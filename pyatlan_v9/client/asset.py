@@ -37,7 +37,6 @@ from tenacity import (
 # ---------------------------------------------------------------------------
 from pyatlan.client.asset import (  # noqa: F401
     AssetIdentity,
-    Batch as _LegacyBatch,
     CategoryHierarchy,
     CustomMetadataHandling,
     FailedBatch,
@@ -45,6 +44,7 @@ from pyatlan.client.asset import (  # noqa: F401
     LineageListResults,
     SearchResults,
 )
+from pyatlan.client.asset import Batch as _LegacyBatch
 from pyatlan.client.common import (
     ApiCaller,
     DeleteByGuid,

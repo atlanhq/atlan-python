@@ -2,6 +2,14 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 # Non-validation constants from the legacy test suite.
+from pyatlan_v9.model.assets import AtlasGlossary
+from pyatlan_v9.model.enums import AtlanWorkflowPhase
+from pyatlan_v9.model.workflow import (
+    ScheduleQueriesSearchRequest,
+    WorkflowMetadata,
+    WorkflowResponse,
+    WorkflowSpec,
+)
 from tests.unit.constants import (  # noqa: F401, F403
     APPLICABLE_AI_ASSET_TYPES,
     APPLICABLE_ASSET_TYPES,
@@ -17,15 +25,6 @@ from tests.unit.constants import (  # noqa: F401, F403
     TEST_STRUCT_DEF,
 )
 from tests.unit.model.constants import *  # noqa: F401, F403
-
-from pyatlan_v9.model.assets import AtlasGlossary
-from pyatlan_v9.model.enums import AtlanWorkflowPhase
-from pyatlan_v9.model.workflow import (
-    ScheduleQueriesSearchRequest,
-    WorkflowMetadata,
-    WorkflowResponse,
-    WorkflowSpec,
-)
 
 TEST_ASSET_CLIENT_METHODS = {
     "find_personas_by_name": [

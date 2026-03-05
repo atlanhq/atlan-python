@@ -80,21 +80,11 @@ from tests_v9.unit.constants import (
     TEST_ROLE_CLIENT_METHODS,
     TEST_SL_CLIENT_METHODS,
 )
-from tests_v9.unit.constants import (
-    TEST_ASSET_CLIENT_METHODS as _V9_ASSET_METHODS,
-)
-from tests_v9.unit.constants import (
-    TEST_GROUP_CLIENT_METHODS as _V9_GROUP_METHODS,
-)
-from tests_v9.unit.constants import (
-    TEST_TOKEN_CLIENT_METHODS as _V9_TOKEN_METHODS,
-)
-from tests_v9.unit.constants import (
-    TEST_TYPEDEF_CLIENT_METHODS as _V9_TYPEDEF_METHODS,
-)
-from tests_v9.unit.constants import (
-    TEST_USER_CLIENT_METHODS as _V9_USER_METHODS,
-)
+from tests_v9.unit.constants import TEST_ASSET_CLIENT_METHODS as _V9_ASSET_METHODS
+from tests_v9.unit.constants import TEST_GROUP_CLIENT_METHODS as _V9_GROUP_METHODS
+from tests_v9.unit.constants import TEST_TOKEN_CLIENT_METHODS as _V9_TOKEN_METHODS
+from tests_v9.unit.constants import TEST_TYPEDEF_CLIENT_METHODS as _V9_TYPEDEF_METHODS
+from tests_v9.unit.constants import TEST_USER_CLIENT_METHODS as _V9_USER_METHODS
 
 # v9 uses pyatlan search DSL internally; " " name validation raises WithName not FindXByName
 _V9_WHITESPACE_NAME_MSG = "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters"
