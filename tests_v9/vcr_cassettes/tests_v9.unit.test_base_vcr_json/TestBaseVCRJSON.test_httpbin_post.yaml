@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "interactions": [
+    {
+      "request": {
+        "method": "POST",
+        "uri": "https://httpbin.org/post",
+        "body": "{\"name\":\"atlan\",\"type\":\"integration-test\"}",
+        "headers": {}
+      },
+      "response": {
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "headers": {},
+        "body": {
+          "parsed_json": {
+            "args": {},
+            "data": "{\"name\":\"atlan\",\"type\":\"integration-test\"}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate",
+              "Content-Length": "42",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "User-Agent": "python-httpx/0.28.1",
+              "X-Amzn-Trace-Id": "Root=1-6995eef2-3b74f2fc436ab3ec5af8c570"
+            },
+            "json": {
+              "name": "atlan",
+              "type": "integration-test"
+            },
+            "origin": "103.172.73.42",
+            "url": "https://httpbin.org/post"
+          }
+        }
+      }
+    }
+  ]
+}

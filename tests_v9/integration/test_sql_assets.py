@@ -1,0 +1,924 @@
+import datetime
+import logging
+import time
+from typing import Callable, List, Optional, Type
+
+import msgspec
+import pytest
+
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.model.assets import (
+    Asset,
+    Column,
+    Connection,
+    Database,
+    Procedure,
+    Readme,
+    Schema,
+    Table,
+    TablePartition,
+    View,
+)
+from pyatlan_v9.model.contract import DataContractSpec
+from pyatlan_v9.model.enums import AtlanConnectorType, SourceCostUnitType
+from pyatlan_v9.model.fluent_search import FluentSearch
+from pyatlan_v9.model.response import A, AssetMutationResponse
+from pyatlan_v9.model.structs import PopularityInsights
+from tests_v9.integration.client import TestId
+
+LOGGER = logging.getLogger(__name__)
+
+
+@pytest.fixture(scope="module")
+def upsert(client: AtlanClient):
+    guids: List[str] = []
+
+    def _upsert(asset: Asset) -> AssetMutationResponse:
+        _response = client.asset.save(asset)
+        if (
+            _response
+            and _response.mutated_entities
+            and _response.mutated_entities.CREATE
+        ):
+            guids.append(_response.mutated_entities.CREATE[0].guid)
+        return _response
+
+    yield _upsert
+
+    for guid in reversed(guids):
+        response = client.asset.purge_by_guid(guid)
+        if (
+            not response
+            or not response.mutated_entities
+            or not response.mutated_entities.DELETE
+        ):
+            LOGGER.error(f"Failed to remove asset with GUID {guid}.")
+
+
+def verify_asset_created(response, asset_type: Type[A]):
+    assert response.mutated_entities
+
+
+def verify_asset_updated(response, asset_type: Type[A]):
+    assert response.mutated_entities
+    assert not response.mutated_entities.CREATE
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assets = response.assets_updated(asset_type=asset_type)
+    assert len(assets) == 1
+
+
+class TestConnection:
+    connection: Optional[Connection] = None
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        role = client.role_cache.get_id_for_name("$admin")
+        assert role
+        connection_name = TestId.make_unique("INT")
+        c = Connection.creator(
+            client=client,
+            name=connection_name,
+            connector_type=AtlanConnectorType.SNOWFLAKE,
+            admin_roles=[role],
+        )
+        assert c.guid
+        response = upsert(c)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Connection)
+        assert response.guid_assignments
+        assert c.guid in response.guid_assignments
+        c = response.mutated_entities.CREATE[0]
+        c = client.asset.get_by_guid(c.guid, Connection, ignore_relationships=False)
+        assert isinstance(c, Connection)
+        TestConnection.connection = c
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestConnection.connection
+        assert TestConnection.connection.name
+        connection = TestConnection.connection
+        description = f"{connection.description} more stuff"
+        connection = Connection.create_for_modification(
+            qualified_name=TestConnection.connection.qualified_name or "",
+            name=TestConnection.connection.name,
+        )
+        connection.description = description
+        response = upsert(connection)
+        verify_asset_updated(response, Connection)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestConnection.connection
+        connection = TestConnection.connection.trim_to_required()
+        response = upsert(connection)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestConnection")
+class TestDatabase:
+    database: Optional[Database] = None
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        assert TestConnection.connection
+        connection = TestConnection.connection
+        assert connection
+        assert connection.qualified_name
+        database_name = TestId.make_unique("My_Db")
+        database = Database.creator(
+            name=database_name,
+            connection_qualified_name=connection.qualified_name,
+        )
+        assert database.guid
+        response = upsert(database)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Database)
+        assert response.guid_assignments
+        assert database.guid in response.guid_assignments
+        database = response.mutated_entities.CREATE[0]
+        client.asset.get_by_guid(database.guid, Database, ignore_relationships=False)
+        TestDatabase.database = database
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestDatabase.database
+        assert TestDatabase.database.qualified_name
+        assert TestDatabase.database.name
+        database = Database.create_for_modification(
+            qualified_name=TestDatabase.database.qualified_name,
+            name=TestDatabase.database.name,
+        )
+        description = f"{TestDatabase.database.description} more stuff"
+        database.description = description
+        response = upsert(database)
+        verify_asset_updated(response, Database)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestDatabase.database
+        database = TestDatabase.database.trim_to_required()
+        response = upsert(database)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestDatabase")
+class TestSchema:
+    schema: Optional[Schema] = None
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        schema_name = TestId.make_unique("My_Schema")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.qualified_name
+        schema = Schema.creator(
+            name=schema_name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+        )
+        response = upsert(schema)
+        assert (schemas := response.assets_created(asset_type=Schema))
+        assert len(schemas) == 1
+        schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
+        assert (databases := response.assets_updated(asset_type=Database))
+        assert len(databases) == 1
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
+        assert database.attributes.schemas
+        schemas = database.attributes.schemas
+        assert len(schemas) == 1
+        assert schemas[0].guid == schema.guid
+        TestSchema.schema = schema
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        schema_name = TestId.make_unique("My_Overload_Schema")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        schema = Schema.creator(
+            name=schema_name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            database_name=TestDatabase.database.name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(schema)
+        assert (schemas := response.assets_created(asset_type=Schema))
+        assert len(schemas) == 1
+        overload_schema = client.asset.get_by_guid(
+            schemas[0].guid, Schema, ignore_relationships=False
+        )
+        assert (databases := response.assets_updated(asset_type=Database))
+        assert len(databases) == 1
+        database = client.asset.get_by_guid(
+            databases[0].guid, Database, ignore_relationships=False
+        )
+        assert database.attributes.schemas
+        schemas = database.attributes.schemas
+        assert len(schemas) == 2
+        # `database.attributes.schemas` ordering can differ,
+        # so it's better to use "in" operator
+        schema_guids = [schema.guid for schema in schemas]
+        assert TestSchema.schema and TestSchema.schema.guid in schema_guids
+        assert overload_schema.guid and overload_schema.guid in schema_guids
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestSchema.schema
+        schema = TestSchema.schema
+        assert schema.qualified_name
+        assert schema.name
+        description = f"{schema.description} more stuff"
+        schema = Schema.create_for_modification(
+            qualified_name=schema.qualified_name, name=schema.name
+        )
+        schema.description = description
+        response = upsert(schema)
+        verify_asset_updated(response, Schema)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestSchema.schema
+        schema = TestSchema.schema.trim_to_required()
+        response = upsert(schema)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestSchema")
+class TestTable:
+    table: Optional[Table] = None
+
+    @pytest.fixture(scope="module")
+    def popularity_insight(self):
+        return PopularityInsights(
+            record_user="ernest",
+            record_query_count=2,
+            record_compute_cost=1.00,
+            record_total_user_count=3,
+            record_compute_cost_unit=SourceCostUnitType.BYTES,
+            record_last_timestamp=datetime.datetime.now(),
+            record_query_duration=4,
+            record_warehouse="there",
+        )
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_name = TestId.make_unique("My_Table")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
+        table = Table.creator(
+            name=table_name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+        )
+        response = upsert(table)
+        assert (tables := response.assets_created(asset_type=Table))
+        assert len(tables) == 1
+        table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
+        assert (schemas := response.assets_updated(asset_type=Schema))
+        assert len(schemas) == 1
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
+        assert schema.attributes.tables
+        tables = schema.attributes.tables
+        assert len(tables) == 1
+        assert tables[0].guid == table.guid
+        TestTable.table = table
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_name = TestId.make_unique("My_Overload_Table")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        table = Table.creator(
+            name=table_name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            schema_name=TestSchema.schema.name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(table)
+        assert (tables := response.assets_created(asset_type=Table))
+        assert len(tables) == 1
+        overload_table = client.asset.get_by_guid(
+            guid=tables[0].guid, asset_type=Table, ignore_relationships=False
+        )
+        assert (schemas := response.assets_updated(asset_type=Schema))
+        assert len(schemas) == 1
+        schema = client.asset.get_by_guid(
+            guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
+        )
+        assert schema.attributes.tables
+        tables = schema.attributes.tables
+        assert len(tables) == 2
+        # `schema.attributes.tables` ordering can differ,
+        # so it's better to use "in" operator
+        table_guids = [table.guid for table in tables]
+        assert TestTable.table and TestTable.table.guid in table_guids
+        assert overload_table.guid and overload_table.guid in table_guids
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTable.table
+        table = TestTable.table
+        assert table.qualified_name
+        assert table.name
+        description = f"{table.description} more stuff"
+        table = Table.create_for_modification(
+            qualified_name=table.qualified_name, name=table.name
+        )
+        table.description = description
+        response = upsert(table)
+        verify_asset_updated(response, Table)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTable.table
+        table = TestTable.table.trim_to_required()
+        response = upsert(table)
+        assert not response.mutated_entities
+
+    @pytest.mark.order(after="test_trim_to_required")
+    def test_update_source_read_recent_user_record_list(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        table = TestTable.table.trim_to_required()
+        self.time = popularity_insight.record_last_timestamp
+        table.source_read_recent_user_record_list = [popularity_insight]
+        response = upsert(table)
+        verify_asset_updated(response, Table)
+
+    @pytest.mark.order(after="test_update_source_read_recent_user_record_list")
+    def test_source_read_recent_user_record_list_readable(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        asset = client.asset.get_by_guid(
+            guid=TestTable.table.guid, asset_type=Table, ignore_relationships=False
+        )
+        assert asset.source_read_recent_user_record_list
+        asset_popularity = asset.source_read_recent_user_record_list[0]
+        self.verify_popularity(asset_popularity, popularity_insight)
+
+    @pytest.mark.order(after="test_update_source_read_recent_user_record_list")
+    def test_source_read_recent_user_record_list_readable_with_fluent_search(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+        popularity_insight: PopularityInsights,
+    ):
+        assert TestTable.table
+        assert TestTable.table.qualified_name
+        request = (
+            FluentSearch.select()
+            .where(Asset.QUALIFIED_NAME.eq(TestTable.table.qualified_name))
+            .include_on_results(Asset.SOURCE_READ_RECENT_USER_RECORD_LIST)
+            .to_request()
+        )
+        results = client.asset.search(request)
+        assert results.count == 1
+        for result in results:
+            assert result.source_read_recent_user_record_list
+            asset_popularity = result.source_read_recent_user_record_list[0]
+            self.verify_popularity(asset_popularity, popularity_insight)
+
+    def verify_popularity(self, asset_popularity, popularity_insight):
+        if isinstance(asset_popularity, dict):
+            ap = msgspec.convert(asset_popularity, PopularityInsights)
+        else:
+            ap = asset_popularity
+        assert popularity_insight.record_user == ap.record_user
+        assert popularity_insight.record_query_count == ap.record_query_count
+        assert popularity_insight.record_compute_cost == ap.record_compute_cost
+        assert popularity_insight.record_query_count == ap.record_query_count
+        assert popularity_insight.record_total_user_count == ap.record_total_user_count
+        assert (
+            popularity_insight.record_compute_cost_unit == ap.record_compute_cost_unit
+        )
+        assert popularity_insight.record_query_duration == ap.record_query_duration
+        assert popularity_insight.record_warehouse == ap.record_warehouse
+
+
+@pytest.mark.order(after="TestTable")
+class TestView:
+    view: Optional[View] = None
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        view_name = TestId.make_unique("My_View")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
+        view = View.creator(
+            name=view_name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+        )
+        response = upsert(view)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], View)
+        assert response.guid_assignments
+        view = response.mutated_entities.CREATE[0]
+        TestView.view = view
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        view_name = TestId.make_unique("My_View_Overload")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        view = View.creator(
+            name=view_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(view)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], View)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestView.view
+        view = TestView.view
+        assert view.qualified_name
+        assert view.name
+        description = f"{view.description} more stuff"
+        view = View.create_for_modification(
+            qualified_name=view.qualified_name, name=view.name
+        )
+        view.description = description
+        response = upsert(view)
+        verify_asset_updated(response, View)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestView.view
+        view = TestView.view.trim_to_required()
+        response = upsert(view)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestView")
+class TestProcedure:
+    procedure: Optional[Procedure] = None
+    _DEFINITION = """
+    BEGIN
+    insert into `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME_copy`
+    select * from `atlanhq.testing_lineage.INSTACART_ALCOHOL_ORDER_TIME`;
+    END
+    """
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure")
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+        procedure = response.mutated_entities.CREATE[0]
+        TestProcedure.procedure = procedure
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        procedure_name = TestId.make_unique("My_Procedure_Overload")
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        procedure = Procedure.creator(
+            name=procedure_name,
+            definition=self._DEFINITION,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = upsert(procedure)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], Procedure)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure
+        assert procedure.qualified_name
+        assert procedure.name
+        assert procedure.definition
+        description = f"{procedure.description} more stuff"
+        procedure = Procedure.updater(
+            qualified_name=procedure.qualified_name,
+            name=procedure.name,
+            definition=procedure.definition,
+        )
+        procedure.description = description
+        response = upsert(procedure)
+        verify_asset_updated(response, Procedure)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestProcedure.procedure
+        procedure = TestProcedure.procedure.trim_to_required()
+        response = upsert(procedure)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestView")
+class TestTablePartition:
+    table_partition: Optional[TablePartition] = None
+
+    def test_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition")
+        assert TestTable.table is not None
+        assert TestTable.table.qualified_name
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+        table_partition = response.mutated_entities.CREATE[0]
+        TestTablePartition.table_partition = table_partition
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        table_partition_name = TestId.make_unique("My_Table_Partition_Overload")
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestTable.table is not None
+        assert TestTable.table.name
+        assert TestTable.table.qualified_name
+
+        table_partition = TablePartition.creator(
+            name=table_partition_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
+        )
+        response = upsert(table_partition)
+        assert response.mutated_entities
+        assert response.mutated_entities.CREATE
+        assert len(response.mutated_entities.CREATE) == 1
+        assert isinstance(response.mutated_entities.CREATE[0], TablePartition)
+        assert response.guid_assignments
+
+    @pytest.mark.order(after="test_creator")
+    def test_updater(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition
+        assert table_partition.qualified_name
+        assert table_partition.name
+        description = f"{table_partition.description} more stuff"
+        table_partition = TablePartition.updater(
+            qualified_name=table_partition.qualified_name,
+            name=table_partition.name,
+        )
+        table_partition.description = description
+        response = upsert(table_partition)
+        verify_asset_updated(response, TablePartition)
+
+    @pytest.mark.order(after="test_creator")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTablePartition.table_partition
+        table_partition = TestTablePartition.table_partition.trim_to_required()
+        response = upsert(table_partition)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestView")
+class TestColumn:
+    column: Optional[Column] = None
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        column_name = TestId.make_unique("My_Column")
+        assert TestTable.table is not None
+        assert TestTable.table.qualified_name
+        column = Column.creator(
+            name=column_name,
+            parent_qualified_name=TestTable.table.qualified_name,
+            parent_type=Table,
+            order=1,
+        )
+        response = client.asset.save(column)
+        assert (columns := response.assets_created(asset_type=Column))
+        assert len(columns) == 1
+        column = client.asset.get_by_guid(
+            asset_type=Column, guid=columns[0].guid, ignore_relationships=False
+        )
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
+        assert table.attributes.columns
+        columns = table.attributes.columns
+        assert len(columns) == 1
+        assert columns[0].guid == column.guid
+        TestColumn.column = column
+
+    def _assert_table_contract(self, table_contract, table_column, is_raw=False):
+        if is_raw:
+            assert table_contract.startswith("---\n# Generated by Atlan on")
+        assert table_contract and isinstance(table_contract, str)
+        assert "columns:" in table_contract
+        assert f"- name: {table_column.column.name}" in table_contract
+
+    def test_contact_init_spec(self, client: AtlanClient):
+        assert TestTable.table
+        assert TestColumn.column
+        assert TestColumn.column.name
+        assert TestTable.table.type_name
+        assert TestTable.table.qualified_name
+        # Ensure the column is properly indexed; otherwise,
+        # the generated spec may return empty (columns: []).
+        time.sleep(5)
+        contact_spec_str = client.contracts.generate_initial_spec(asset=TestTable.table)
+        assert contact_spec_str
+        self._assert_table_contract(contact_spec_str, TestColumn)
+
+        # Test spec model yaml conversion
+        contract_spec = DataContractSpec.from_yaml(contact_spec_str)
+        assert (
+            contract_spec
+            and contract_spec.dataset  # type: ignore[union-attr]
+            and contract_spec.dataset == TestTable.table.name  # type: ignore[union-attr]
+            # Ensure non-modeled fields are retained correctly
+            # (enabled by AtlanYamlModel → Config → Extra.allow)
+            and contract_spec.columns
+            and len(contract_spec.columns) >= 1
+            and contract_spec.columns[0].tags == contract_spec.columns[0].terms == []
+        )
+        self._assert_table_contract(contract_spec.to_yaml(), TestColumn, is_raw=False)  # type: ignore[union-attr]
+
+    def test_overload_creator(
+        self,
+        client: AtlanClient,
+    ):
+        column_name = TestId.make_unique("My_Column_Overload")
+        assert TestTable.table is not None
+        assert TestTable.table.name
+        assert TestTable.table.qualified_name
+        assert TestDatabase.database is not None
+        assert TestDatabase.database.name
+        assert TestDatabase.database.qualified_name
+        assert TestSchema.schema is not None
+        assert TestSchema.schema.name
+        assert TestSchema.schema.qualified_name
+        assert TestConnection.connection is not None
+        assert TestConnection.connection.qualified_name
+
+        column = Column.creator(
+            name=column_name,
+            parent_type=Table,
+            order=2,
+            parent_name=TestTable.table.name,
+            parent_qualified_name=TestTable.table.qualified_name,
+            database_name=TestDatabase.database.name,
+            database_qualified_name=TestDatabase.database.qualified_name,
+            schema_name=TestSchema.schema.name,
+            schema_qualified_name=TestSchema.schema.qualified_name,
+            table_name=TestTable.table.name,
+            table_qualified_name=TestTable.table.qualified_name,
+            connection_qualified_name=TestConnection.connection.qualified_name,
+        )
+        response = client.asset.save(column)
+
+        assert (columns := response.assets_created(asset_type=Column))
+        assert len(columns) == 1
+        overload_column = client.asset.get_by_guid(
+            asset_type=Column, guid=columns[0].guid, ignore_relationships=False
+        )
+        table = client.asset.get_by_guid(
+            asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
+        )
+        assert table.attributes.columns
+        columns = table.attributes.columns
+
+        assert len(columns) == 2
+        # `table.attributes.columns` ordering can differ,
+        # so it's better to use "in" operator
+        column_guids = [column.guid for column in columns]
+        assert TestColumn.column and TestColumn.column.guid in column_guids
+        assert overload_column.guid and overload_column.guid in column_guids
+        assert overload_column.attributes
+        assert overload_column.attributes.schema_name == TestSchema.schema.name
+        assert (
+            overload_column.attributes.schema_qualified_name
+            == TestSchema.schema.qualified_name
+        )
+        assert overload_column.attributes.database_name == TestDatabase.database.name
+        assert (
+            overload_column.attributes.database_qualified_name
+            == TestDatabase.database.qualified_name
+        )
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestColumn.column
+        column = TestColumn.column
+        assert column.qualified_name
+        assert column.name
+        description = f"{column.description} more stuff"
+        column = Column.create_for_modification(
+            qualified_name=column.qualified_name, name=column.name
+        )
+        column.description = description
+        response = upsert(column)
+        verify_asset_updated(response, Column)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestColumn.column
+        column = TestColumn.column.trim_to_required()
+        response = upsert(column)
+        assert not response.mutated_entities
+
+
+@pytest.mark.order(after="TestColumn")
+class TestReadme:
+    readme: Optional[Readme] = None
+    CONTENT = "<h1>Important</h1>"
+
+    def test_create(
+        self,
+        client: AtlanClient,
+        upsert: Callable[[Asset], AssetMutationResponse],
+    ):
+        assert TestColumn.column and TestColumn.column.guid
+        readme = Readme.creator(asset=TestColumn.column, content=self.CONTENT)
+        response = upsert(readme)
+        assert (reaadmes := response.assets_created(asset_type=Readme))
+        assert len(reaadmes) == 1
+        assert (columns := response.assets_updated(asset_type=Column))
+        assert len(columns) == 1
+        readme = client.asset.get_by_guid(
+            guid=reaadmes[0].guid, asset_type=Readme, ignore_relationships=False
+        )
+        assert readme.description == self.CONTENT
+        TestReadme.readme = readme
+
+    @pytest.mark.order(after="test_create")
+    def test_create_for_modification(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestReadme.readme
+        readme = TestReadme.readme
+        assert readme.qualified_name
+        assert readme.name
+        description = f"{readme.description} more stuff"
+        readme = Readme.create_for_modification(
+            qualified_name=readme.qualified_name, name=readme.name
+        )
+        readme.description = description
+        response = upsert(readme)
+        verify_asset_updated(response, Readme)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestReadme.readme
+        readme = TestReadme.readme
+        readme = readme.trim_to_required()
+        response = upsert(readme)
+        assert not response.mutated_entities

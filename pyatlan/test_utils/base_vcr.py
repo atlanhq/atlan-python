@@ -265,7 +265,11 @@ class BaseVCR:
 
         :returns: directory path for storing cassettes
         """
-        # Set self._CASSETTES_DIR or use the default directory path based on the test module name
-        return self._CASSETTES_DIR or os.path.join(
-            "tests/vcr_cassettes", request.module.__name__
+        # Set self._CASSETTES_DIR or use the default directory path based on the test module name.
+        # V9 tests (module name starting with tests_v9) use tests_v9/vcr_cassettes; legacy use tests/vcr_cassettes.
+        root = (
+            "tests_v9/vcr_cassettes"
+            if request.module.__name__.startswith("tests_v9")
+            else "tests/vcr_cassettes"
         )
+        return self._CASSETTES_DIR or os.path.join(root, request.module.__name__)

@@ -37,7 +37,8 @@ dependencies = [
     "PyYAML~=6.0.3",
     "httpx~=0.28.1",
     "httpx-retries~=0.4.5",
-    "authlib~=1.6.6",
+    "authlib~=1.6.9",
+    "msgspec~=0.20.0",
 ]
 
 [project.urls]
@@ -99,7 +100,7 @@ plugins = ["pydantic.mypy"]
 [tool.ruff]
 fix = true
 line-length = 88
-exclude = ["env", "venv", "__pycache__"]
+exclude = ["env", "venv", "__pycache__", "pyatlan_v9/model/assets/_overlays"]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
@@ -109,6 +110,8 @@ split-on-trailing-comma = false
 "pyatlan/model/assets.py" = ["S307"]
 "pyatlan/model/assets/**.py" = ["E402", "F811"]
 "pyatlan/model/assets/core/**.py" = ["E402", "F811"]
+"pyatlan_v9/model/assets/**.py" = ["E402", "F821"]
+"pyatlan_v9/model/transform.py" = ["E402"]
 
 [tool.pytest.ini_options]
 addopts = "-p no:name_of_plugin"

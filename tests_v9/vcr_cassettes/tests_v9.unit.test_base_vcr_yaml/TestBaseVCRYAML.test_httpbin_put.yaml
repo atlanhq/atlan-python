@@ -1,0 +1,37 @@
+interactions:
+- request:
+    body: |-
+      {
+        "update": "value"
+      }
+    headers: {}
+    method: PUT
+    uri: https://httpbin.org/put
+  response:
+    body:
+      string: |-
+        {
+          "args": {},
+          "data": "{\"update\":\"value\"}",
+          "files": {},
+          "form": {},
+          "headers": {
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate",
+            "Content-Length": "18",
+            "Content-Type": "application/json",
+            "Host": "httpbin.org",
+            "User-Agent": "python-httpx/0.28.1",
+            "X-Amzn-Trace-Id": "Root=1-6995eefb-3eb277a81a6c74a8727744cd"
+          },
+          "json": {
+            "update": "value"
+          },
+          "origin": "103.172.73.42",
+          "url": "https://httpbin.org/put"
+        }
+    headers: {}
+    status:
+      code: 200
+      message: OK
+version: 1

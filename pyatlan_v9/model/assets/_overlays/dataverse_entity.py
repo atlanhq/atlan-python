@@ -1,0 +1,37 @@
+# INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+    ) -> "DataverseEntity":
+        """Create a new DataverseEntity asset."""
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        connector_name = (
+            connection_qualified_name.split("/")[1]
+            if len(connection_qualified_name.split("/")) > 1
+            else ""
+        )
+        return cls(
+            name=name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connection_qualified_name=connection_qualified_name,
+            connector_name=connector_name,
+        )
+
+    @classmethod
+    def updater(cls, *, qualified_name: str, name: str) -> "DataverseEntity":
+        """Create a DataverseEntity instance for update operations."""
+        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
+        return cls(qualified_name=qualified_name, name=name)
+
+    def trim_to_required(self) -> "DataverseEntity":
+        """Return only fields required for update operations."""
+        return DataverseEntity.updater(
+            qualified_name=self.qualified_name, name=self.name
+        )
