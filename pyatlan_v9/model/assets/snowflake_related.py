@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -42,9 +41,7 @@ class RelatedSnowflake(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Snowflake"
-
+        self.type_name = "Snowflake"
 
 class RelatedSnowflakeDynamicTable(RelatedSnowflake):
     """
@@ -56,14 +53,12 @@ class RelatedSnowflakeDynamicTable(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeDynamicTable" so it serializes correctly
 
-    definition: Union[str, None, UnsetType] = UNSET
+    definition: str | None | UnsetType = UNSET
     """SQL statements used to define the dynamic table."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeDynamicTable"
-
+        self.type_name = "SnowflakeDynamicTable"
 
 class RelatedSnowflakePipe(RelatedSnowflake):
     """
@@ -75,20 +70,18 @@ class RelatedSnowflakePipe(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakePipe" so it serializes correctly
 
-    definition: Union[str, None, UnsetType] = UNSET
+    definition: str | None | UnsetType = UNSET
     """SQL definition of this pipe."""
 
-    snowflake_is_auto_ingest_enabled: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_auto_ingest_enabled: bool | None | UnsetType = UNSET
     """Whether auto-ingest is enabled for this pipe (true) or not (false)."""
 
-    snowflake_pipe_notification_channel_name: Union[str, None, UnsetType] = UNSET
+    snowflake_pipe_notification_channel_name: str | None | UnsetType = UNSET
     """Name of the notification channel for this pipe."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakePipe"
-
+        self.type_name = "SnowflakePipe"
 
 class RelatedSnowflakeStage(RelatedSnowflake):
     """
@@ -100,23 +93,21 @@ class RelatedSnowflakeStage(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStage" so it serializes correctly
 
-    snowflake_external_location: Union[str, None, UnsetType] = UNSET
+    snowflake_external_location: str | None | UnsetType = UNSET
     """The URL or cloud storage path specifying the external location where the stage data files are stored. This is NULL for internal stages."""
 
-    snowflake_external_location_region: Union[str, None, UnsetType] = UNSET
+    snowflake_external_location_region: str | None | UnsetType = UNSET
     """The geographic region identifier where the external stage is located in cloud storage. This is NULL for internal stages."""
 
-    snowflake_storage_integration: Union[str, None, UnsetType] = UNSET
+    snowflake_storage_integration: str | None | UnsetType = UNSET
     """The name of the storage integration associated with the stage; NULL for internal stages or stages that do not use a storage integration."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_type: str | None | UnsetType = UNSET
     """Categorization of the stage type in Snowflake, which can be 'Internal Named' or 'External Named', indicating whether the stage storage is within Snowflake or in external cloud storage."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeStage"
-
+        self.type_name = "SnowflakeStage"
 
 class RelatedSnowflakeStream(RelatedSnowflake):
     """
@@ -128,26 +119,24 @@ class RelatedSnowflakeStream(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStream" so it serializes correctly
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_type: str | None | UnsetType = UNSET
     """Type of this stream, for example: standard, append-only, insert-only, etc."""
 
-    snowflake_source_type: Union[str, None, UnsetType] = UNSET
+    snowflake_source_type: str | None | UnsetType = UNSET
     """Type of the source of this stream."""
 
-    snowflake_mode: Union[str, None, UnsetType] = UNSET
+    snowflake_mode: str | None | UnsetType = UNSET
     """Mode of this stream."""
 
-    snowflake_is_stale: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_stale: bool | None | UnsetType = UNSET
     """Whether this stream is stale (true) or not (false)."""
 
-    snowflake_stale_after: Union[int, None, UnsetType] = UNSET
+    snowflake_stale_after: int | None | UnsetType = UNSET
     """Time (epoch) after which this stream will be stale, in milliseconds."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeStream"
-
+        self.type_name = "SnowflakeStream"
 
 class RelatedSnowflakeTag(RelatedSnowflake):
     """
@@ -161,9 +150,7 @@ class RelatedSnowflakeTag(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeTag"
-
+        self.type_name = "SnowflakeTag"
 
 class RelatedSnowflakeAIModelContext(RelatedSnowflake):
     """
@@ -177,9 +164,7 @@ class RelatedSnowflakeAIModelContext(RelatedSnowflake):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeAIModelContext"
-
+        self.type_name = "SnowflakeAIModelContext"
 
 class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     """
@@ -191,22 +176,21 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeAIModelVersion" so it serializes correctly
 
-    snowflake_name: Union[str, None, UnsetType] = UNSET
+    snowflake_name: str | None | UnsetType = UNSET
     """Version part of the model name."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_type: str | None | UnsetType = UNSET
     """The type of the model version."""
 
-    snowflake_aliases: Union[list[str], None, UnsetType] = UNSET
+    snowflake_aliases: list[str] | None | UnsetType = UNSET
     """The aliases for the model version."""
 
-    snowflake_metrics: Union[dict[str, str], None, UnsetType] = UNSET
+    snowflake_metrics: dict[str, str] | None | UnsetType = UNSET
     """Metrics for an individual experiment."""
 
-    snowflake_functions: Union[list[str], None, UnsetType] = UNSET
+    snowflake_functions: list[str] | None | UnsetType = UNSET
     """Functions used in the model version."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SnowflakeAIModelVersion"
+        self.type_name = "SnowflakeAIModelVersion"

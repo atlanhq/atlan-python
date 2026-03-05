@@ -11,14 +11,19 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedTag", "RelatedTagAttachment", "RelatedSourceTag"]
+__all__ = [
+    "RelatedTag",
+    "RelatedTagAttachment",
+    "RelatedSourceTag",
+]
 
 
 class RelatedTag(RelatedCatalog):
@@ -31,23 +36,21 @@ class RelatedTag(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Tag" so it serializes correctly
 
-    tag_id: Union[str, None, UnsetType] = UNSET
+    tag_id: str | None | UnsetType = UNSET
     """Unique identifier of the tag in the source system."""
 
-    tag_attributes: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    tag_attributes: list[dict[str, Any]] | None | UnsetType = UNSET
     """Attributes associated with the tag in the source system."""
 
-    tag_allowed_values: Union[list[str], None, UnsetType] = UNSET
+    tag_allowed_values: list[str] | None | UnsetType = UNSET
     """Allowed values for the tag in the source system. These are denormalized from tagAttributes for ease of querying."""
 
-    mapped_classification_name: Union[str, None, UnsetType] = UNSET
+    mapped_classification_name: str | None | UnsetType = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Tag"
-
+        self.type_name = "Tag"
 
 class RelatedTagAttachment(RelatedTag):
     """
@@ -59,17 +62,15 @@ class RelatedTagAttachment(RelatedTag):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TagAttachment" so it serializes correctly
 
-    tag_qualified_name: Union[str, None, UnsetType] = UNSET
+    tag_qualified_name: str | None | UnsetType = UNSET
     """Represents associated source tag's qualified name."""
 
-    tag_attachment_string_value: Union[str, None, UnsetType] = UNSET
+    tag_attachment_string_value: str | None | UnsetType = UNSET
     """Represents associated tag value."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TagAttachment"
-
+        self.type_name = "TagAttachment"
 
 class RelatedSourceTag(RelatedTag):
     """
@@ -81,10 +82,9 @@ class RelatedSourceTag(RelatedTag):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SourceTag" so it serializes correctly
 
-    tag_custom_configuration: Union[str, None, UnsetType] = UNSET
+    tag_custom_configuration: str | None | UnsetType = UNSET
     """Specifies custom configuration elements based on the system the tag is being imported from."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SourceTag"
+        self.type_name = "SourceTag"

@@ -11,14 +11,16 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedDataStudio", "RelatedDataStudioAsset"]
+__all__ = [
+    "RelatedDataStudio",
+    "RelatedDataStudioAsset",
+]
 
 
 class RelatedDataStudio(RelatedBI):
@@ -33,9 +35,7 @@ class RelatedDataStudio(RelatedBI):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DataStudio"
-
+        self.type_name = "DataStudio"
 
 class RelatedDataStudioAsset(RelatedDataStudio):
     """
@@ -47,19 +47,18 @@ class RelatedDataStudioAsset(RelatedDataStudio):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataStudioAsset" so it serializes correctly
 
-    data_studio_asset_type: Union[str, None, UnsetType] = UNSET
+    data_studio_asset_type: str | None | UnsetType = UNSET
     """Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE."""
 
-    data_studio_asset_title: Union[str, None, UnsetType] = UNSET
+    data_studio_asset_title: str | None | UnsetType = UNSET
     """Title of the Google Data Studio asset."""
 
-    data_studio_asset_owner: Union[str, None, UnsetType] = UNSET
+    data_studio_asset_owner: str | None | UnsetType = UNSET
     """Owner of the asset, from Google Data Studio."""
 
-    is_trashed_data_studio_asset: Union[bool, None, UnsetType] = UNSET
+    is_trashed_data_studio_asset: bool | None | UnsetType = UNSET
     """Whether the Google Data Studio asset has been trashed (true) or not (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DataStudioAsset"
+        self.type_name = "DataStudioAsset"

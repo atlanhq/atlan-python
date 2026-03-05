@@ -11,14 +11,16 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedCustom", "RelatedCustomEntity"]
+__all__ = [
+    "RelatedCustom",
+    "RelatedCustomEntity",
+]
 
 
 class RelatedCustom(RelatedCatalog):
@@ -33,9 +35,7 @@ class RelatedCustom(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Custom"
-
+        self.type_name = "Custom"
 
 class RelatedCustomEntity(RelatedCustom):
     """
@@ -47,10 +47,9 @@ class RelatedCustomEntity(RelatedCustom):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CustomEntity" so it serializes correctly
 
-    custom_children_subtype: Union[str, None, UnsetType] = UNSET
+    custom_children_subtype: str | None | UnsetType = UNSET
     """Label of the children column for this asset type."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CustomEntity"
+        self.type_name = "CustomEntity"

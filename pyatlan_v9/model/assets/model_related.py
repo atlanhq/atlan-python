@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -39,53 +38,51 @@ class RelatedModel(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Model" so it serializes correctly
 
-    model_name: Union[str, None, UnsetType] = UNSET
+    model_name: str | None | UnsetType = UNSET
     """Simple name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the model in which this asset exists, or empty if it is itself a data model."""
 
-    model_domain: Union[str, None, UnsetType] = UNSET
+    model_domain: str | None | UnsetType = UNSET
     """Model domain in which this asset exists."""
 
-    model_namespace: Union[str, None, UnsetType] = UNSET
+    model_namespace: str | None | UnsetType = UNSET
     """Model namespace in which this asset exists."""
 
-    model_version_name: Union[str, None, UnsetType] = UNSET
+    model_version_name: str | None | UnsetType = UNSET
     """Simple name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_version_agnostic_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_version_agnostic_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the parent in which this asset exists, irrespective of the version (always implies the latest version)."""
 
-    model_version_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_version_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the version in which this asset exists, or empty if it is itself a data model version."""
 
-    model_entity_name: Union[str, None, UnsetType] = UNSET
+    model_entity_name: str | None | UnsetType = UNSET
     """Simple name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_entity_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_entity_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the entity in which this asset exists, or empty if it is itself a data model entity."""
 
-    model_type: Union[str, None, UnsetType] = UNSET
+    model_type: str | None | UnsetType = UNSET
     """Type of the model asset (conceptual, logical, physical)."""
 
-    model_system_date: Union[int, None, UnsetType] = UNSET
+    model_system_date: int | None | UnsetType = UNSET
     """System date for the asset."""
 
-    model_business_date: Union[int, None, UnsetType] = UNSET
+    model_business_date: int | None | UnsetType = UNSET
     """Business date for the asset."""
 
-    model_expired_at_system_date: Union[int, None, UnsetType] = UNSET
+    model_expired_at_system_date: int | None | UnsetType = UNSET
     """System expiration date for the asset."""
 
-    model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
+    model_expired_at_business_date: int | None | UnsetType = UNSET
     """Business expiration date for the asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Model"
-
+        self.type_name = "Model"
 
 class RelatedModelDataModel(RelatedModel):
     """
@@ -97,17 +94,15 @@ class RelatedModelDataModel(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelDataModel" so it serializes correctly
 
-    model_version_count: Union[int, None, UnsetType] = UNSET
+    model_version_count: int | None | UnsetType = UNSET
     """Number of versions of the data model."""
 
-    model_tool: Union[str, None, UnsetType] = UNSET
+    model_tool: str | None | UnsetType = UNSET
     """Tool used to create this data model."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelDataModel"
-
+        self.type_name = "ModelDataModel"
 
 class RelatedModelVersion(RelatedModel):
     """
@@ -119,14 +114,12 @@ class RelatedModelVersion(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelVersion" so it serializes correctly
 
-    model_version_entity_count: Union[int, None, UnsetType] = UNSET
+    model_version_entity_count: int | None | UnsetType = UNSET
     """Number of entities in the version."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelVersion"
-
+        self.type_name = "ModelVersion"
 
 class RelatedModelEntity(RelatedModel):
     """
@@ -138,23 +131,21 @@ class RelatedModelEntity(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelEntity" so it serializes correctly
 
-    model_entity_attribute_count: Union[int, None, UnsetType] = UNSET
+    model_entity_attribute_count: int | None | UnsetType = UNSET
     """Number of attributes in the entity."""
 
-    model_entity_subject_area: Union[str, None, UnsetType] = UNSET
+    model_entity_subject_area: str | None | UnsetType = UNSET
     """Subject area of the entity."""
 
-    model_entity_generalization_name: Union[str, None, UnsetType] = UNSET
+    model_entity_generalization_name: str | None | UnsetType = UNSET
     """Name of the general entity."""
 
-    model_entity_generalization_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_entity_generalization_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier for the general entity."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelEntity"
-
+        self.type_name = "ModelEntity"
 
 class RelatedModelEntityAssociation(RelatedModel):
     """
@@ -166,41 +157,39 @@ class RelatedModelEntityAssociation(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelEntityAssociation" so it serializes correctly
 
-    model_entity_association_cardinality: Union[str, None, UnsetType] = UNSET
+    model_entity_association_cardinality: str | None | UnsetType = UNSET
     """(Deprecated) Cardinality of the data entity association."""
 
-    model_entity_association_label: Union[str, None, UnsetType] = UNSET
+    model_entity_association_label: str | None | UnsetType = UNSET
     """(Deprecated) Label of the data entity association."""
 
-    model_entity_association_to_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_entity_association_to_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the association to which this entity is related."""
 
-    model_entity_association_to_label: Union[str, None, UnsetType] = UNSET
+    model_entity_association_to_label: str | None | UnsetType = UNSET
     """Label when read from the association to which this entity is related."""
 
-    model_entity_association_to_min_cardinality: Union[int, None, UnsetType] = UNSET
+    model_entity_association_to_min_cardinality: int | None | UnsetType = UNSET
     """Minimum cardinality of the data entity to which the association exists."""
 
-    model_entity_association_to_max_cardinality: Union[int, None, UnsetType] = UNSET
+    model_entity_association_to_max_cardinality: int | None | UnsetType = UNSET
     """Maximum cardinality of the data entity to which the association exists."""
 
-    model_entity_association_from_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_entity_association_from_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the association from which this entity is related."""
 
-    model_entity_association_from_label: Union[str, None, UnsetType] = UNSET
+    model_entity_association_from_label: str | None | UnsetType = UNSET
     """Label when read from the association from which this entity is related."""
 
-    model_entity_association_from_min_cardinality: Union[int, None, UnsetType] = UNSET
+    model_entity_association_from_min_cardinality: int | None | UnsetType = UNSET
     """Minimum cardinality of the data entity from which the association exists."""
 
-    model_entity_association_from_max_cardinality: Union[int, None, UnsetType] = UNSET
+    model_entity_association_from_max_cardinality: int | None | UnsetType = UNSET
     """Maximum cardinality of the data entity from which the association exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelEntityAssociation"
-
+        self.type_name = "ModelEntityAssociation"
 
 class RelatedModelAttribute(RelatedModel):
     """
@@ -212,35 +201,33 @@ class RelatedModelAttribute(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelAttribute" so it serializes correctly
 
-    model_attribute_is_nullable: Union[bool, None, UnsetType] = UNSET
+    model_attribute_is_nullable: bool | None | UnsetType = UNSET
     """When true, the values in this attribute can be null."""
 
-    model_attribute_is_primary: Union[bool, None, UnsetType] = UNSET
+    model_attribute_is_primary: bool | None | UnsetType = UNSET
     """When true, this attribute forms the primary key for the entity."""
 
-    model_attribute_is_foreign: Union[bool, None, UnsetType] = UNSET
+    model_attribute_is_foreign: bool | None | UnsetType = UNSET
     """When true, this attribute is a foreign key to another entity."""
 
-    model_attribute_is_derived: Union[bool, None, UnsetType] = UNSET
+    model_attribute_is_derived: bool | None | UnsetType = UNSET
     """When true, the values in this attribute are derived data."""
 
-    model_attribute_precision: Union[int, None, UnsetType] = UNSET
+    model_attribute_precision: int | None | UnsetType = UNSET
     """Precision of the attribute."""
 
-    model_attribute_scale: Union[int, None, UnsetType] = UNSET
+    model_attribute_scale: int | None | UnsetType = UNSET
     """Scale of the attribute."""
 
-    model_attribute_data_type: Union[str, None, UnsetType] = UNSET
+    model_attribute_data_type: str | None | UnsetType = UNSET
     """Type of the attribute."""
 
-    model_attribute_has_relationships: Union[bool, None, UnsetType] = UNSET
+    model_attribute_has_relationships: bool | None | UnsetType = UNSET
     """When true, this attribute has relationships with other attributes."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelAttribute"
-
+        self.type_name = "ModelAttribute"
 
 class RelatedModelAttributeAssociation(RelatedModel):
     """
@@ -252,16 +239,15 @@ class RelatedModelAttributeAssociation(RelatedModel):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModelAttributeAssociation" so it serializes correctly
 
-    model_attribute_association_to_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_attribute_association_to_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the association to which this attribute is related."""
 
-    model_attribute_association_from_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_attribute_association_from_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the association from which this attribute is related."""
 
-    model_entity_association_qualified_name: Union[str, None, UnsetType] = UNSET
+    model_entity_association_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the entity association to which this attribute is related."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModelAttributeAssociation"
+        self.type_name = "ModelAttributeAssociation"

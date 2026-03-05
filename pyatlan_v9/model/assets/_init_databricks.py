@@ -8,13 +8,6 @@ Databricks module exports.
 This module provides convenient imports for all Databricks types and their Related variants.
 """
 
-from .databricks import Databricks
-from .databricks_ai_model_context import DatabricksAIModelContext
-from .databricks_ai_model_version import DatabricksAIModelVersion
-from .databricks_external_location import DatabricksExternalLocation
-from .databricks_external_location_path import DatabricksExternalLocationPath
-from .databricks_metric_view import DatabricksMetricView
-from .databricks_notebook import DatabricksNotebook
 from .databricks_related import (
     RelatedDatabricks,
     RelatedDatabricksAIModelContext,
@@ -27,6 +20,13 @@ from .databricks_related import (
     RelatedDatabricksVolume,
     RelatedDatabricksVolumePath,
 )
+from .databricks import Databricks
+from .databricks_ai_model_context import DatabricksAIModelContext
+from .databricks_ai_model_version import DatabricksAIModelVersion
+from .databricks_external_location import DatabricksExternalLocation
+from .databricks_external_location_path import DatabricksExternalLocationPath
+from .databricks_metric_view import DatabricksMetricView
+from .databricks_notebook import DatabricksNotebook
 from .databricks_volume import DatabricksVolume
 from .databricks_volume_path import DatabricksVolumePath
 

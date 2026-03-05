@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -39,23 +40,21 @@ class RelatedResource(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Resource" so it serializes correctly
 
-    link: Union[str, None, UnsetType] = UNSET
+    link: str | None | UnsetType = UNSET
     """URL to the resource."""
 
-    is_global: Union[bool, None, UnsetType] = UNSET
+    is_global: bool | None | UnsetType = UNSET
     """Whether the resource is global (true) or not (false)."""
 
-    reference: Union[str, None, UnsetType] = UNSET
+    reference: str | None | UnsetType = UNSET
     """Reference to the resource."""
 
-    resource_metadata: Union[dict[str, str], None, UnsetType] = UNSET
+    resource_metadata: dict[str, str] | None | UnsetType = UNSET
     """Metadata of the resource."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Resource"
-
+        self.type_name = "Resource"
 
 class Related__internal(RelatedResource):
     """
@@ -69,9 +68,7 @@ class Related__internal(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "__internal"
-
+        self.type_name = "__internal"
 
 class RelatedBadge(RelatedResource):
     """
@@ -83,17 +80,15 @@ class RelatedBadge(RelatedResource):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Badge" so it serializes correctly
 
-    badge_conditions: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    badge_conditions: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of conditions that determine the colors to diplay for various values."""
 
-    badge_metadata_attribute: Union[str, None, UnsetType] = UNSET
+    badge_metadata_attribute: str | None | UnsetType = UNSET
     """Custom metadata attribute for which to show the badge."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Badge"
-
+        self.type_name = "Badge"
 
 class RelatedFile(RelatedResource):
     """
@@ -105,17 +100,15 @@ class RelatedFile(RelatedResource):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "File" so it serializes correctly
 
-    file_type: Union[str, None, UnsetType] = UNSET
+    file_type: str | None | UnsetType = UNSET
     """Type (extension) of the file."""
 
-    file_path: Union[str, None, UnsetType] = UNSET
+    file_path: str | None | UnsetType = UNSET
     """URL giving the online location where the file can be accessed."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "File"
-
+        self.type_name = "File"
 
 class RelatedLink(RelatedResource):
     """
@@ -127,17 +120,15 @@ class RelatedLink(RelatedResource):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Link" so it serializes correctly
 
-    icon: Union[str, None, UnsetType] = UNSET
+    icon: str | None | UnsetType = UNSET
     """Icon for the link."""
 
-    icon_type: Union[str, None, UnsetType] = UNSET
+    icon_type: str | None | UnsetType = UNSET
     """Type of icon for the link, for example: image or emoji."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Link"
-
+        self.type_name = "Link"
 
 class RelatedReadme(RelatedResource):
     """
@@ -151,9 +142,7 @@ class RelatedReadme(RelatedResource):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Readme"
-
+        self.type_name = "Readme"
 
 class RelatedReadmeTemplate(RelatedResource):
     """
@@ -165,13 +154,12 @@ class RelatedReadmeTemplate(RelatedResource):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ReadmeTemplate" so it serializes correctly
 
-    icon: Union[str, None, UnsetType] = UNSET
+    icon: str | None | UnsetType = UNSET
     """Icon to use for the README template."""
 
-    icon_type: Union[str, None, UnsetType] = UNSET
+    icon_type: str | None | UnsetType = UNSET
     """Type of icon, for example: image or emoji."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ReadmeTemplate"
+        self.type_name = "ReadmeTemplate"

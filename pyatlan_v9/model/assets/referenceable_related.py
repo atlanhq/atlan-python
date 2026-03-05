@@ -11,13 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .related_entity import RelatedEntity
 
-__all__ = ["RelatedReferenceable", "RelatedPersona"]
+__all__ = [
+    "RelatedReferenceable",
+    "RelatedPersona",
+]
 
 
 class RelatedReferenceable(RelatedEntity):
@@ -30,13 +34,13 @@ class RelatedReferenceable(RelatedEntity):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Referenceable" so it serializes correctly
 
-    qualified_name: Union[str, None, UnsetType] = UNSET
+    qualified_name: str | None | UnsetType = UNSET
     """Unique name for this asset. This is typically a concatenation of the asset's name onto its parent's qualifiedName. This must be unique across all assets of the same type."""
 
-    replicated_from: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    replicated_from: list[dict[str, Any]] | None | UnsetType = UNSET
     """Unused. List of servers where this entity is replicated from."""
 
-    replicated_to: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    replicated_to: list[dict[str, Any]] | None | UnsetType = UNSET
     """Unused. List of servers where this entity is replicated to."""
 
     def __post_init__(self) -> None:
@@ -47,8 +51,6 @@ class RelatedReferenceable(RelatedEntity):
         """
         if self.qualified_name is not UNSET and self.unique_attributes is UNSET:
             self.unique_attributes = {"qualifiedName": self.qualified_name}
-
-
 class RelatedPersona(RelatedReferenceable):
     """
     Related entity reference for Persona assets.
@@ -62,5 +64,4 @@ class RelatedPersona(RelatedReferenceable):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Persona"
+        self.type_name = "Persona"

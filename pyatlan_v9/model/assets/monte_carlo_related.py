@@ -11,14 +11,19 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .data_quality_related import RelatedDataQuality
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedMonteCarlo", "RelatedMCMonitor", "RelatedMCIncident"]
+__all__ = [
+    "RelatedMonteCarlo",
+    "RelatedMCMonitor",
+    "RelatedMCIncident",
+]
 
 
 class RelatedMonteCarlo(RelatedDataQuality):
@@ -31,17 +36,15 @@ class RelatedMonteCarlo(RelatedDataQuality):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MonteCarlo" so it serializes correctly
 
-    mc_labels: Union[list[str], None, UnsetType] = UNSET
+    mc_labels: list[str] | None | UnsetType = UNSET
     """List of labels for this Monte Carlo asset."""
 
-    mc_asset_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    mc_asset_qualified_names: list[str] | None | UnsetType = UNSET
     """List of unique names of assets that are part of this Monte Carlo asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MonteCarlo"
-
+        self.type_name = "MonteCarlo"
 
 class RelatedMCMonitor(RelatedMonteCarlo):
     """
@@ -53,74 +56,72 @@ class RelatedMCMonitor(RelatedMonteCarlo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MCMonitor" so it serializes correctly
 
-    mc_monitor_id: Union[str, None, UnsetType] = UNSET
+    mc_monitor_id: str | None | UnsetType = UNSET
     """Unique identifier for this monitor, from Monte Carlo."""
 
-    mc_monitor_status: Union[str, None, UnsetType] = UNSET
+    mc_monitor_status: str | None | UnsetType = UNSET
     """Status of this monitor."""
 
-    mc_monitor_type: Union[str, None, UnsetType] = UNSET
+    mc_monitor_type: str | None | UnsetType = UNSET
     """Type of this monitor, for example: field health (stats) or dimension tracking (categories)."""
 
-    mc_monitor_warehouse: Union[str, None, UnsetType] = UNSET
+    mc_monitor_warehouse: str | None | UnsetType = UNSET
     """Name of the warehouse for this monitor."""
 
-    mc_monitor_schedule_type: Union[str, None, UnsetType] = UNSET
+    mc_monitor_schedule_type: str | None | UnsetType = UNSET
     """Type of schedule for this monitor, for example: fixed or dynamic."""
 
-    mc_monitor_namespace: Union[str, None, UnsetType] = UNSET
+    mc_monitor_namespace: str | None | UnsetType = UNSET
     """Namespace of this monitor."""
 
-    mc_monitor_rule_type: Union[str, None, UnsetType] = UNSET
+    mc_monitor_rule_type: str | None | UnsetType = UNSET
     """Type of rule for this monitor."""
 
-    mc_monitor_rule_custom_sql: Union[str, None, UnsetType] = UNSET
+    mc_monitor_rule_custom_sql: str | None | UnsetType = UNSET
     """SQL code for custom SQL rules."""
 
-    mc_monitor_rule_schedule_config: Union[dict[str, Any], None, UnsetType] = UNSET
+    mc_monitor_rule_schedule_config: dict[str, Any] | None | UnsetType = UNSET
     """Schedule details for the rule."""
 
-    mc_monitor_rule_schedule_config_humanized: Union[str, None, UnsetType] = UNSET
+    mc_monitor_rule_schedule_config_humanized: str | None | UnsetType = UNSET
     """Readable description of the schedule for the rule."""
 
-    mc_monitor_alert_condition: Union[str, None, UnsetType] = UNSET
+    mc_monitor_alert_condition: str | None | UnsetType = UNSET
     """Condition on which the monitor produces an alert."""
 
-    mc_monitor_rule_next_execution_time: Union[int, None, UnsetType] = UNSET
+    mc_monitor_rule_next_execution_time: int | None | UnsetType = UNSET
     """Time at which the next execution of the rule should occur."""
 
-    mc_monitor_rule_previous_execution_time: Union[int, None, UnsetType] = UNSET
+    mc_monitor_rule_previous_execution_time: int | None | UnsetType = UNSET
     """Time at which the previous execution of the rule occurred."""
 
-    mc_monitor_rule_comparisons: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    mc_monitor_rule_comparisons: list[dict[str, Any]] | None | UnsetType = UNSET
     """Comparison logic used for the rule."""
 
-    mc_monitor_rule_is_snoozed: Union[bool, None, UnsetType] = UNSET
+    mc_monitor_rule_is_snoozed: bool | None | UnsetType = UNSET
     """Whether the rule is currently snoozed (true) or not (false)."""
 
-    mc_monitor_breach_rate: Union[float, None, UnsetType] = UNSET
+    mc_monitor_breach_rate: float | None | UnsetType = UNSET
     """Rate at which this monitor is breached."""
 
-    mc_monitor_incident_count: Union[int, None, UnsetType] = UNSET
+    mc_monitor_incident_count: int | None | UnsetType = UNSET
     """Number of incidents associated with this monitor."""
 
-    mc_monitor_alert_count: Union[int, None, UnsetType] = UNSET
+    mc_monitor_alert_count: int | None | UnsetType = UNSET
     """Number of alerts associated with this monitor."""
 
-    mc_monitor_priority: Union[str, None, UnsetType] = UNSET
+    mc_monitor_priority: str | None | UnsetType = UNSET
     """Priority of this monitor."""
 
-    mc_monitor_is_ootb: Union[bool, None, UnsetType] = UNSET
+    mc_monitor_is_ootb: bool | None | UnsetType = UNSET
     """Whether the monitor is OOTB or not"""
 
-    mc_monitor_notification_channels: Union[list[str], None, UnsetType] = UNSET
+    mc_monitor_notification_channels: list[str] | None | UnsetType = UNSET
     """Channels through which notifications are sent for this monitor (e.g., email, slack, webhook)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MCMonitor"
-
+        self.type_name = "MCMonitor"
 
 class RelatedMCIncident(RelatedMonteCarlo):
     """
@@ -132,28 +133,27 @@ class RelatedMCIncident(RelatedMonteCarlo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MCIncident" so it serializes correctly
 
-    mc_incident_id: Union[str, None, UnsetType] = UNSET
+    mc_incident_id: str | None | UnsetType = UNSET
     """Identifier of this incident, from Monte Carlo."""
 
-    mc_incident_type: Union[str, None, UnsetType] = UNSET
+    mc_incident_type: str | None | UnsetType = UNSET
     """Type of this incident."""
 
-    mc_incident_sub_types: Union[list[str], None, UnsetType] = UNSET
+    mc_incident_sub_types: list[str] | None | UnsetType = UNSET
     """Subtypes of this incident."""
 
-    mc_incident_severity: Union[str, None, UnsetType] = UNSET
+    mc_incident_severity: str | None | UnsetType = UNSET
     """Severity of this incident."""
 
-    mc_incident_priority: Union[str, None, UnsetType] = UNSET
+    mc_incident_priority: str | None | UnsetType = UNSET
     """Priority of this incident inherited from monitor."""
 
-    mc_incident_state: Union[str, None, UnsetType] = UNSET
+    mc_incident_state: str | None | UnsetType = UNSET
     """State of this incident."""
 
-    mc_incident_warehouse: Union[str, None, UnsetType] = UNSET
+    mc_incident_warehouse: str | None | UnsetType = UNSET
     """Name of this incident's warehouse."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MCIncident"
+        self.type_name = "MCIncident"

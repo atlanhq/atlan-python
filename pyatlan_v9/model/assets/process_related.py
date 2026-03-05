@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -36,29 +35,27 @@ class RelatedProcess(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Process" so it serializes correctly
 
-    code: Union[str, None, UnsetType] = UNSET
+    code: str | None | UnsetType = UNSET
     """Code that ran within the process."""
 
-    sql: Union[str, None, UnsetType] = UNSET
+    sql: str | None | UnsetType = UNSET
     """SQL query that ran to produce the outputs."""
 
-    parent_connection_process_qualified_name: Union[list[str], None, UnsetType] = UNSET
+    parent_connection_process_qualified_name: list[str] | None | UnsetType = UNSET
     """"""
 
-    ast: Union[str, None, UnsetType] = UNSET
+    ast: str | None | UnsetType = UNSET
     """Parsed AST of the code or SQL statements that describe the logic of this process."""
 
-    additional_etl_context: Union[str, None, UnsetType] = UNSET
+    additional_etl_context: str | None | UnsetType = UNSET
     """Additional Context of the ETL pipeline/notebook which creates the process."""
 
-    ai_dataset_type: Union[str, None, UnsetType] = UNSET
+    ai_dataset_type: str | None | UnsetType = UNSET
     """Dataset type for AI Model - dataset process."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Process"
-
+        self.type_name = "Process"
 
 class RelatedBIProcess(RelatedProcess):
     """
@@ -72,9 +69,7 @@ class RelatedBIProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "BIProcess"
-
+        self.type_name = "BIProcess"
 
 class RelatedColumnProcess(RelatedProcess):
     """
@@ -88,9 +83,7 @@ class RelatedColumnProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ColumnProcess"
-
+        self.type_name = "ColumnProcess"
 
 class RelatedConnectionProcess(RelatedProcess):
     """
@@ -104,5 +97,4 @@ class RelatedConnectionProcess(RelatedProcess):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ConnectionProcess"
+        self.type_name = "ConnectionProcess"

@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -38,17 +37,15 @@ class RelatedSalesforce(RelatedSaaS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Salesforce" so it serializes correctly
 
-    organization_qualified_name: Union[str, None, UnsetType] = UNSET
+    organization_qualified_name: str | None | UnsetType = UNSET
     """Fully-qualified name of the organization in Salesforce."""
 
-    api_name: Union[str, None, UnsetType] = UNSET
+    api_name: str | None | UnsetType = UNSET
     """Name of this asset in the Salesforce API."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Salesforce"
-
+        self.type_name = "Salesforce"
 
 class RelatedSalesforceOrganization(RelatedSalesforce):
     """
@@ -60,14 +57,12 @@ class RelatedSalesforceOrganization(RelatedSalesforce):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SalesforceOrganization" so it serializes correctly
 
-    source_id: Union[str, None, UnsetType] = UNSET
+    source_id: str | None | UnsetType = UNSET
     """Identifier of the organization in Salesforce."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SalesforceOrganization"
-
+        self.type_name = "SalesforceOrganization"
 
 class RelatedSalesforceObject(RelatedSalesforce):
     """
@@ -79,23 +74,21 @@ class RelatedSalesforceObject(RelatedSalesforce):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SalesforceObject" so it serializes correctly
 
-    is_custom: Union[bool, None, UnsetType] = UNSET
+    is_custom: bool | None | UnsetType = UNSET
     """Whether this object is a custom object (true) or not (false)."""
 
-    is_mergable: Union[bool, None, UnsetType] = UNSET
+    is_mergable: bool | None | UnsetType = UNSET
     """Whether this object is mergable (true) or not (false)."""
 
-    is_queryable: Union[bool, None, UnsetType] = UNSET
+    is_queryable: bool | None | UnsetType = UNSET
     """Whether this object is queryable (true) or not (false)."""
 
-    field_count: Union[int, None, UnsetType] = UNSET
+    field_count: int | None | UnsetType = UNSET
     """Number of fields in this object."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SalesforceObject"
-
+        self.type_name = "SalesforceObject"
 
 class RelatedSalesforceField(RelatedSalesforce):
     """
@@ -107,59 +100,57 @@ class RelatedSalesforceField(RelatedSalesforce):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SalesforceField" so it serializes correctly
 
-    data_type: Union[str, None, UnsetType] = UNSET
+    data_type: str | None | UnsetType = UNSET
     """Data type of values in this field."""
 
-    object_qualified_name: Union[str, None, UnsetType] = UNSET
+    object_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the object in which this field exists."""
 
-    order: Union[int, None, UnsetType] = UNSET
+    order: int | None | UnsetType = UNSET
     """Order (position) of this field within the object."""
 
-    inline_help_text: Union[str, None, UnsetType] = UNSET
+    inline_help_text: str | None | UnsetType = UNSET
     """Help text for this field."""
 
-    is_calculated: Union[bool, None, UnsetType] = UNSET
+    is_calculated: bool | None | UnsetType = UNSET
     """Whether this field is calculated (true) or not (false)."""
 
-    formula: Union[str, None, UnsetType] = UNSET
+    formula: str | None | UnsetType = UNSET
     """Formula for this field, if it is a calculated field."""
 
-    is_case_sensitive: Union[bool, None, UnsetType] = UNSET
+    is_case_sensitive: bool | None | UnsetType = UNSET
     """Whether this field is case sensitive (true) or in-sensitive (false)."""
 
-    is_encrypted: Union[bool, None, UnsetType] = UNSET
+    is_encrypted: bool | None | UnsetType = UNSET
     """Whether this field is encrypted (true) or not (false)."""
 
-    max_length: Union[int, None, UnsetType] = UNSET
+    max_length: int | None | UnsetType = UNSET
     """Maximum length of this field."""
 
-    is_nullable: Union[bool, None, UnsetType] = UNSET
+    is_nullable: bool | None | UnsetType = UNSET
     """Whether this field allows null values (true) or not (false)."""
 
-    precision: Union[int, None, UnsetType] = UNSET
+    precision: int | None | UnsetType = UNSET
     """Total number of digits allowed."""
 
-    numeric_scale: Union[float, None, UnsetType] = UNSET
+    numeric_scale: float | None | UnsetType = UNSET
     """Number of digits allowed to the right of the decimal point."""
 
-    is_unique: Union[bool, None, UnsetType] = UNSET
+    is_unique: bool | None | UnsetType = UNSET
     """Whether this field must have unique values (true) or not (false)."""
 
-    picklist_values: Union[list[str], None, UnsetType] = UNSET
+    picklist_values: list[str] | None | UnsetType = UNSET
     """List of values from which a user can pick while adding a record."""
 
-    is_polymorphic_foreign_key: Union[bool, None, UnsetType] = UNSET
+    is_polymorphic_foreign_key: bool | None | UnsetType = UNSET
     """Whether this field references a record of multiple objects (true) or not (false)."""
 
-    default_value_formula: Union[str, None, UnsetType] = UNSET
+    default_value_formula: str | None | UnsetType = UNSET
     """Formula for the default value for this field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SalesforceField"
-
+        self.type_name = "SalesforceField"
 
 class RelatedSalesforceReport(RelatedSalesforce):
     """
@@ -171,20 +162,18 @@ class RelatedSalesforceReport(RelatedSalesforce):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SalesforceReport" so it serializes correctly
 
-    source_id: Union[str, None, UnsetType] = UNSET
+    source_id: str | None | UnsetType = UNSET
     """Identifier of the report in Salesforce."""
 
-    report_type: Union[dict[str, str], None, UnsetType] = UNSET
+    report_type: dict[str, str] | None | UnsetType = UNSET
     """Type of report in Salesforce."""
 
-    detail_columns: Union[list[str], None, UnsetType] = UNSET
+    detail_columns: list[str] | None | UnsetType = UNSET
     """List of column names on the report."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SalesforceReport"
-
+        self.type_name = "SalesforceReport"
 
 class RelatedSalesforceDashboard(RelatedSalesforce):
     """
@@ -196,16 +185,15 @@ class RelatedSalesforceDashboard(RelatedSalesforce):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SalesforceDashboard" so it serializes correctly
 
-    source_id: Union[str, None, UnsetType] = UNSET
+    source_id: str | None | UnsetType = UNSET
     """Identifier of the dashboard in Salesforce."""
 
-    dashboard_type: Union[str, None, UnsetType] = UNSET
+    dashboard_type: str | None | UnsetType = UNSET
     """Type of dashboard in Salesforce."""
 
-    report_count: Union[int, None, UnsetType] = UNSET
+    report_count: int | None | UnsetType = UNSET
     """Number of reports linked to the dashboard in Salesforce."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SalesforceDashboard"
+        self.type_name = "SalesforceDashboard"

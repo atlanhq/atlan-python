@@ -11,14 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedDataverse", "RelatedDataverseEntity", "RelatedDataverseAttribute"]
+__all__ = [
+    "RelatedDataverse",
+    "RelatedDataverseEntity",
+    "RelatedDataverseAttribute",
+]
 
 
 class RelatedDataverse(RelatedSaaS):
@@ -31,20 +34,18 @@ class RelatedDataverse(RelatedSaaS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Dataverse" so it serializes correctly
 
-    dataverse_is_custom: Union[bool, None, UnsetType] = UNSET
+    dataverse_is_custom: bool | None | UnsetType = UNSET
     """Indicator if DataverseEntity is custom built."""
 
-    dataverse_is_customizable: Union[bool, None, UnsetType] = UNSET
+    dataverse_is_customizable: bool | None | UnsetType = UNSET
     """Indicator if DataverseEntity is customizable."""
 
-    dataverse_is_audit_enabled: Union[bool, None, UnsetType] = UNSET
+    dataverse_is_audit_enabled: bool | None | UnsetType = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Dataverse"
-
+        self.type_name = "Dataverse"
 
 class RelatedDataverseEntity(RelatedDataverse):
     """
@@ -56,17 +57,15 @@ class RelatedDataverseEntity(RelatedDataverse):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataverseEntity" so it serializes correctly
 
-    dataverse_entity_schema_name: Union[str, None, UnsetType] = UNSET
+    dataverse_entity_schema_name: str | None | UnsetType = UNSET
     """Schema Name of the DataverseEntity."""
 
-    dataverse_entity_table_type: Union[str, None, UnsetType] = UNSET
+    dataverse_entity_table_type: str | None | UnsetType = UNSET
     """Table Type of the DataverseEntity."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DataverseEntity"
-
+        self.type_name = "DataverseEntity"
 
 class RelatedDataverseAttribute(RelatedDataverse):
     """
@@ -78,22 +77,21 @@ class RelatedDataverseAttribute(RelatedDataverse):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DataverseAttribute" so it serializes correctly
 
-    dataverse_entity_qualified_name: Union[str, None, UnsetType] = UNSET
+    dataverse_entity_qualified_name: str | None | UnsetType = UNSET
     """Entity Qualified Name of the DataverseAttribute."""
 
-    dataverse_attribute_schema_name: Union[str, None, UnsetType] = UNSET
+    dataverse_attribute_schema_name: str | None | UnsetType = UNSET
     """Schema Name of the DataverseAttribute."""
 
-    dataverse_attribute_type: Union[str, None, UnsetType] = UNSET
+    dataverse_attribute_type: str | None | UnsetType = UNSET
     """Type of the DataverseAttribute."""
 
-    dataverse_attribute_is_primary_id: Union[bool, None, UnsetType] = UNSET
+    dataverse_attribute_is_primary_id: bool | None | UnsetType = UNSET
     """Indicator if DataverseAttribute is the primary key."""
 
-    dataverse_attribute_is_searchable: Union[bool, None, UnsetType] = UNSET
+    dataverse_attribute_is_searchable: bool | None | UnsetType = UNSET
     """Indicator if DataverseAttribute is searchable."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DataverseAttribute"
+        self.type_name = "DataverseAttribute"

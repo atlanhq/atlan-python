@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -44,9 +45,7 @@ class RelatedDatabricks(RelatedSQL):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Databricks"
-
+        self.type_name = "Databricks"
 
 class RelatedDatabricksVolume(RelatedDatabricks):
     """
@@ -58,20 +57,18 @@ class RelatedDatabricksVolume(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksVolume" so it serializes correctly
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
+    databricks_owner: str | None | UnsetType = UNSET
     """User or group (principal) currently owning the volume."""
 
-    databricks_external_location: Union[str, None, UnsetType] = UNSET
+    databricks_external_location: str | None | UnsetType = UNSET
     """The storage location where the volume is created."""
 
-    databricks_type: Union[str, None, UnsetType] = UNSET
+    databricks_type: str | None | UnsetType = UNSET
     """Type of the volume."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksVolume"
-
+        self.type_name = "DatabricksVolume"
 
 class RelatedDatabricksVolumePath(RelatedDatabricks):
     """
@@ -83,20 +80,18 @@ class RelatedDatabricksVolumePath(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksVolumePath" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: str | None | UnsetType = UNSET
     """Path of data on the volume."""
 
-    databricks_volume_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the parent volume."""
 
-    databricks_volume_name: Union[str, None, UnsetType] = UNSET
+    databricks_volume_name: str | None | UnsetType = UNSET
     """Name of the parent volume."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksVolumePath"
-
+        self.type_name = "DatabricksVolumePath"
 
 class RelatedDatabricksExternalLocation(RelatedDatabricks):
     """
@@ -108,17 +103,15 @@ class RelatedDatabricksExternalLocation(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksExternalLocation" so it serializes correctly
 
-    databricks_url: Union[str, None, UnsetType] = UNSET
+    databricks_url: str | None | UnsetType = UNSET
     """URL of the external location."""
 
-    databricks_owner: Union[str, None, UnsetType] = UNSET
+    databricks_owner: str | None | UnsetType = UNSET
     """User or group (principal) currently owning the external location."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksExternalLocation"
-
+        self.type_name = "DatabricksExternalLocation"
 
 class RelatedDatabricksExternalLocationPath(RelatedDatabricks):
     """
@@ -130,20 +123,18 @@ class RelatedDatabricksExternalLocationPath(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksExternalLocationPath" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: str | None | UnsetType = UNSET
     """Path of data at the external location."""
 
-    databricks_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    databricks_parent_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the parent external location."""
 
-    databricks_parent_name: Union[str, None, UnsetType] = UNSET
+    databricks_parent_name: str | None | UnsetType = UNSET
     """Name of the parent external location."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksExternalLocationPath"
-
+        self.type_name = "DatabricksExternalLocationPath"
 
 class RelatedDatabricksAIModelContext(RelatedDatabricks):
     """
@@ -155,14 +146,12 @@ class RelatedDatabricksAIModelContext(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksAIModelContext" so it serializes correctly
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_metastore_id: str | None | UnsetType = UNSET
     """The id of the model, common across versions."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksAIModelContext"
-
+        self.type_name = "DatabricksAIModelContext"
 
 class RelatedDatabricksAIModelVersion(RelatedDatabricks):
     """
@@ -174,47 +163,45 @@ class RelatedDatabricksAIModelVersion(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksAIModelVersion" so it serializes correctly
 
-    databricks_id: Union[int, None, UnsetType] = UNSET
+    databricks_id: int | None | UnsetType = UNSET
     """The id of the model, unique to every version."""
 
-    databricks_run_id: Union[str, None, UnsetType] = UNSET
+    databricks_run_id: str | None | UnsetType = UNSET
     """The run id of the model."""
 
-    databricks_run_name: Union[str, None, UnsetType] = UNSET
+    databricks_run_name: str | None | UnsetType = UNSET
     """The run name of the model."""
 
-    databricks_run_start_time: Union[int, None, UnsetType] = UNSET
+    databricks_run_start_time: int | None | UnsetType = UNSET
     """The run start time of the model."""
 
-    databricks_run_end_time: Union[int, None, UnsetType] = UNSET
+    databricks_run_end_time: int | None | UnsetType = UNSET
     """The run end time of the model."""
 
-    databricks_status: Union[str, None, UnsetType] = UNSET
+    databricks_status: str | None | UnsetType = UNSET
     """The status of the model."""
 
-    databricks_aliases: Union[list[str], None, UnsetType] = UNSET
+    databricks_aliases: list[str] | None | UnsetType = UNSET
     """The aliases of the model."""
 
-    databricks_dataset_count: Union[int, None, UnsetType] = UNSET
+    databricks_dataset_count: int | None | UnsetType = UNSET
     """Number of datasets."""
 
-    databricks_source: Union[str, None, UnsetType] = UNSET
+    databricks_source: str | None | UnsetType = UNSET
     """Source artifact link for the model."""
 
-    databricks_artifact_uri: Union[str, None, UnsetType] = UNSET
+    databricks_artifact_uri: str | None | UnsetType = UNSET
     """Artifact uri for the model."""
 
-    databricks_metrics: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    databricks_metrics: list[dict[str, Any]] | None | UnsetType = UNSET
     """Metrics for an individual experiment."""
 
-    databricks_params: Union[dict[str, str], None, UnsetType] = UNSET
+    databricks_params: dict[str, str] | None | UnsetType = UNSET
     """Params with key mapped to value for an individual experiment."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksAIModelVersion"
-
+        self.type_name = "DatabricksAIModelVersion"
 
 class RelatedDatabricksUnityCatalogTag(RelatedDatabricks):
     """
@@ -228,9 +215,7 @@ class RelatedDatabricksUnityCatalogTag(RelatedDatabricks):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksUnityCatalogTag"
-
+        self.type_name = "DatabricksUnityCatalogTag"
 
 class RelatedDatabricksNotebook(RelatedDatabricks):
     """
@@ -242,17 +227,15 @@ class RelatedDatabricksNotebook(RelatedDatabricks):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DatabricksNotebook" so it serializes correctly
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_path: str | None | UnsetType = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_workspace_id: str | None | UnsetType = UNSET
     """Workspace Id of the notebook."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksNotebook"
-
+        self.type_name = "DatabricksNotebook"
 
 class RelatedDatabricksMetricView(RelatedDatabricks):
     """
@@ -266,5 +249,4 @@ class RelatedDatabricksMetricView(RelatedDatabricks):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DatabricksMetricView"
+        self.type_name = "DatabricksMetricView"

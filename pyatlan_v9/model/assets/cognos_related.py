@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,38 +42,36 @@ class RelatedCognos(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Cognos" so it serializes correctly
 
-    cognos_id: Union[str, None, UnsetType] = UNSET
+    cognos_id: str | None | UnsetType = UNSET
     """ID of the asset in Cognos."""
 
-    cognos_path: Union[str, None, UnsetType] = UNSET
+    cognos_path: str | None | UnsetType = UNSET
     """Path of the asset in Cognos (e.g. /content/folder[@name='Folder Name'])."""
 
-    cognos_parent_name: Union[str, None, UnsetType] = UNSET
+    cognos_parent_name: str | None | UnsetType = UNSET
     """Name of the parent of the asset in Cognos."""
 
-    cognos_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    cognos_parent_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the parent asset in Cognos."""
 
-    cognos_version: Union[str, None, UnsetType] = UNSET
+    cognos_version: str | None | UnsetType = UNSET
     """Version of the Cognos asset."""
 
-    cognos_type: Union[str, None, UnsetType] = UNSET
+    cognos_type: str | None | UnsetType = UNSET
     """Type of the Cognos asset (e.g. report, dashboard, package, etc)."""
 
-    cognos_is_hidden: Union[bool, None, UnsetType] = UNSET
+    cognos_is_hidden: bool | None | UnsetType = UNSET
     """Whether the Cognos asset is hidden from the UI."""
 
-    cognos_is_disabled: Union[bool, None, UnsetType] = UNSET
+    cognos_is_disabled: bool | None | UnsetType = UNSET
     """Whether the Cognos asset is disabled."""
 
-    cognos_default_screen_tip: Union[str, None, UnsetType] = UNSET
+    cognos_default_screen_tip: str | None | UnsetType = UNSET
     """Tooltip text present for the Cognos asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Cognos"
-
+        self.type_name = "Cognos"
 
 class RelatedCognosDashboard(RelatedCognos):
     """
@@ -88,9 +85,7 @@ class RelatedCognosDashboard(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosDashboard"
-
+        self.type_name = "CognosDashboard"
 
 class RelatedCognosDatasource(RelatedCognos):
     """
@@ -102,14 +97,12 @@ class RelatedCognosDatasource(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosDatasource" so it serializes correctly
 
-    cognos_connection_string: Union[str, None, UnsetType] = UNSET
+    cognos_connection_string: str | None | UnsetType = UNSET
     """Connection string of a Cognos datasource."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosDatasource"
-
+        self.type_name = "CognosDatasource"
 
 class RelatedCognosExploration(RelatedCognos):
     """
@@ -123,9 +116,7 @@ class RelatedCognosExploration(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosExploration"
-
+        self.type_name = "CognosExploration"
 
 class RelatedCognosFile(RelatedCognos):
     """
@@ -139,9 +130,7 @@ class RelatedCognosFile(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosFile"
-
+        self.type_name = "CognosFile"
 
 class RelatedCognosFolder(RelatedCognos):
     """
@@ -153,17 +142,15 @@ class RelatedCognosFolder(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosFolder" so it serializes correctly
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_sub_folder_count: int | None | UnsetType = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_child_objects_count: int | None | UnsetType = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosFolder"
-
+        self.type_name = "CognosFolder"
 
 class RelatedCognosModule(RelatedCognos):
     """
@@ -177,9 +164,7 @@ class RelatedCognosModule(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosModule"
-
+        self.type_name = "CognosModule"
 
 class RelatedCognosPackage(RelatedCognos):
     """
@@ -193,9 +178,7 @@ class RelatedCognosPackage(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosPackage"
-
+        self.type_name = "CognosPackage"
 
 class RelatedCognosReport(RelatedCognos):
     """
@@ -209,9 +192,7 @@ class RelatedCognosReport(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosReport"
-
+        self.type_name = "CognosReport"
 
 class RelatedCognosColumn(RelatedCognos):
     """
@@ -223,20 +204,18 @@ class RelatedCognosColumn(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosColumn" so it serializes correctly
 
-    cognos_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_datatype: str | None | UnsetType = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_nullable: str | None | UnsetType = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_regular_aggregate: str | None | UnsetType = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosColumn"
-
+        self.type_name = "CognosColumn"
 
 class RelatedCognosDataset(RelatedCognos):
     """
@@ -250,5 +229,4 @@ class RelatedCognosDataset(RelatedCognos):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CognosDataset"
+        self.type_name = "CognosDataset"

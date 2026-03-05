@@ -8,22 +8,26 @@ DynamoDB module exports.
 This module provides convenient imports for all DynamoDB types and their Related variants.
 """
 
-from .dynamo_db import DynamoDB
 from .dynamo_db_related import (
     RelatedDynamoDB,
+    RelatedDynamoDBAttribute,
     RelatedDynamoDBGlobalSecondaryIndex,
     RelatedDynamoDBLocalSecondaryIndex,
     RelatedDynamoDBSecondaryIndex,
     RelatedDynamoDBTable,
 )
+from .dynamo_db import DynamoDB
+from .dynamo_db_attribute import DynamoDBAttribute
 from .dynamo_db_secondary_index import DynamoDBSecondaryIndex
 from .dynamo_db_table import DynamoDBTable
 
 __all__ = [
     "DynamoDB",
+    "DynamoDBAttribute",
     "DynamoDBSecondaryIndex",
     "DynamoDBTable",
     "RelatedDynamoDB",
+    "RelatedDynamoDBAttribute",
     "RelatedDynamoDBGlobalSecondaryIndex",
     "RelatedDynamoDBLocalSecondaryIndex",
     "RelatedDynamoDBSecondaryIndex",

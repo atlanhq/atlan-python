@@ -8,8 +8,16 @@ Spark module exports.
 This module provides convenient imports for all Spark types and their Related variants.
 """
 
+from .spark_related import (
+    RelatedSpark,
+    RelatedSparkJob,
+)
 from .spark import Spark
 from .spark_job import SparkJob
-from .spark_related import RelatedSpark, RelatedSparkJob
 
-__all__ = ["RelatedSpark", "RelatedSparkJob", "Spark", "SparkJob"]
+__all__ = [
+    "RelatedSpark",
+    "RelatedSparkJob",
+    "Spark",
+    "SparkJob",
+]

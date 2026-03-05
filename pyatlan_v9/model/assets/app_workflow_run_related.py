@@ -11,14 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedAppWorkflowRun"]
+__all__ = [
+    "RelatedAppWorkflowRun",
+]
 
 
 class RelatedAppWorkflowRun(RelatedCatalog):
@@ -31,58 +34,57 @@ class RelatedAppWorkflowRun(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AppWorkflowRun" so it serializes correctly
 
-    app_workflow_run_label: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_label: str | None | UnsetType = UNSET
     """Root name for the workflow run."""
 
-    app_workflow_run_status: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_status: str | None | UnsetType = UNSET
     """Overall execution status of the entire workflow run."""
 
-    app_workflow_run_started_at: Union[int, None, UnsetType] = UNSET
+    app_workflow_run_started_at: int | None | UnsetType = UNSET
     """Timestamp when the workflow run began execution."""
 
-    app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_started_by: str | None | UnsetType = UNSET
     """Username of the user who started the workflow run."""
 
-    app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
+    app_workflow_run_completed_at: int | None | UnsetType = UNSET
     """Timestamp when the workflow run finished execution."""
 
-    app_workflow_run_outputs: Union[dict[str, str], None, UnsetType] = UNSET
+    app_workflow_run_outputs: dict[str, str] | None | UnsetType = UNSET
     """Final results produced by the workflow run."""
 
-    app_workflow_run_steps: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    app_workflow_run_steps: list[dict[str, Any]] | None | UnsetType = UNSET
     """Collection of individual workflow steps in this run."""
 
-    app_workflow_run_app_qualified_name: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_name: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_name: str | None | UnsetType = UNSET
     """Name of the application this workflow run belongs to."""
 
-    app_workflow_run_app_workflow_qualified_name: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_workflow_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the parent workflow."""
 
-    app_workflow_run_app_workflow_name: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_workflow_name: str | None | UnsetType = UNSET
     """Name of the parent workflow."""
 
-    app_workflow_run_app_workflow_slug: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_workflow_slug: str | None | UnsetType = UNSET
     """Slug of the parent workflow."""
 
-    app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_app_workflow_version: str | None | UnsetType = UNSET
     """Version of the parent workflow."""
 
-    app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_temporal_run_id: str | None | UnsetType = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
 
-    app_workflow_run_is_test_run: Union[bool, None, UnsetType] = UNSET
+    app_workflow_run_is_test_run: bool | None | UnsetType = UNSET
     """Whether the workflow run is a test run."""
 
-    app_workflow_run_dag: Union[str, None, UnsetType] = UNSET
+    app_workflow_run_dag: str | None | UnsetType = UNSET
     """Map of all activity steps for the workflow run (escaped JSON string)."""
 
-    app_workflow_run_error_handling: Union[dict[str, Any], None, UnsetType] = UNSET
+    app_workflow_run_error_handling: dict[str, Any] | None | UnsetType = UNSET
     """Error handling strategy for the workflow run."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AppWorkflowRun"
+        self.type_name = "AppWorkflowRun"

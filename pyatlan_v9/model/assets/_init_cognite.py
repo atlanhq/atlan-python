@@ -8,11 +8,6 @@ Cognite module exports.
 This module provides convenient imports for all Cognite types and their Related variants.
 """
 
-from .cognite import Cognite
-from .cognite3_d_model import Cognite3DModel
-from .cognite_asset import CogniteAsset
-from .cognite_event import CogniteEvent
-from .cognite_file import CogniteFile
 from .cognite_related import (
     RelatedCognite,
     RelatedCognite3DModel,
@@ -22,6 +17,11 @@ from .cognite_related import (
     RelatedCogniteSequence,
     RelatedCogniteTimeSeries,
 )
+from .cognite import Cognite
+from .cognite3d_model import Cognite3DModel
+from .cognite_asset import CogniteAsset
+from .cognite_event import CogniteEvent
+from .cognite_file import CogniteFile
 from .cognite_sequence import CogniteSequence
 from .cognite_time_series import CogniteTimeSeries
 

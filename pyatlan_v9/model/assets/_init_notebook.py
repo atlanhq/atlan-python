@@ -8,7 +8,10 @@ Notebook module exports.
 This module provides convenient imports for all Notebook types and their Related variants.
 """
 
-from .notebook import Notebook
 from .notebook_related import RelatedNotebook
+from .notebook import Notebook
 
-__all__ = ["Notebook", "RelatedNotebook"]
+__all__ = [
+    "Notebook",
+    "RelatedNotebook",
+]

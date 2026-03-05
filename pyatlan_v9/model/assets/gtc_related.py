@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -35,29 +34,27 @@ class RelatedAtlasGlossary(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlasGlossary" so it serializes correctly
 
-    short_description: Union[str, None, UnsetType] = UNSET
+    short_description: str | None | UnsetType = UNSET
     """Unused. A short definition of the glossary. See 'description' and 'userDescription' instead."""
 
-    long_description: Union[str, None, UnsetType] = UNSET
+    long_description: str | None | UnsetType = UNSET
     """Unused. A longer description of the glossary. See 'readme' instead."""
 
-    language: Union[str, None, UnsetType] = UNSET
+    language: str | None | UnsetType = UNSET
     """Unused. Language of the glossary's contents."""
 
-    usage: Union[str, None, UnsetType] = UNSET
+    usage: str | None | UnsetType = UNSET
     """Unused. Inteded usage for the glossary."""
 
-    additional_attributes: Union[dict[str, str], None, UnsetType] = UNSET
+    additional_attributes: dict[str, str] | None | UnsetType = UNSET
     """Unused. Arbitrary set of additional attributes associated with this glossary."""
 
-    glossary_type: Union[str, None, UnsetType] = UNSET
+    glossary_type: str | None | UnsetType = UNSET
     """"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AtlasGlossary"
-
+        self.type_name = "AtlasGlossary"
 
 class RelatedAtlasGlossaryCategory(RelatedAsset):
     """
@@ -69,23 +66,21 @@ class RelatedAtlasGlossaryCategory(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlasGlossaryCategory" so it serializes correctly
 
-    short_description: Union[str, None, UnsetType] = UNSET
+    short_description: str | None | UnsetType = UNSET
     """Unused. Brief summary of the category. See 'description' and 'userDescription' instead."""
 
-    long_description: Union[str, None, UnsetType] = UNSET
+    long_description: str | None | UnsetType = UNSET
     """Unused. Detailed description of the category. See 'readme' instead."""
 
-    additional_attributes: Union[dict[str, str], None, UnsetType] = UNSET
+    additional_attributes: dict[str, str] | None | UnsetType = UNSET
     """Unused. Arbitrary set of additional attributes associated with the category."""
 
-    category_type: Union[str, None, UnsetType] = UNSET
+    category_type: str | None | UnsetType = UNSET
     """"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AtlasGlossaryCategory"
-
+        self.type_name = "AtlasGlossaryCategory"
 
 class RelatedAtlasGlossaryTerm(RelatedAsset):
     """
@@ -97,28 +92,27 @@ class RelatedAtlasGlossaryTerm(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlasGlossaryTerm" so it serializes correctly
 
-    short_description: Union[str, None, UnsetType] = UNSET
+    short_description: str | None | UnsetType = UNSET
     """Unused. Brief summary of the term. See 'description' and 'userDescription' instead."""
 
-    long_description: Union[str, None, UnsetType] = UNSET
+    long_description: str | None | UnsetType = UNSET
     """Unused. Detailed definition of the term. See 'readme' instead."""
 
-    examples: Union[list[str], None, UnsetType] = UNSET
+    examples: list[str] | None | UnsetType = UNSET
     """Unused. Exmaples of the term."""
 
-    abbreviation: Union[str, None, UnsetType] = UNSET
+    abbreviation: str | None | UnsetType = UNSET
     """Unused. Abbreviation of the term."""
 
-    usage: Union[str, None, UnsetType] = UNSET
+    usage: str | None | UnsetType = UNSET
     """Unused. Intended usage for the term."""
 
-    additional_attributes: Union[dict[str, str], None, UnsetType] = UNSET
+    additional_attributes: dict[str, str] | None | UnsetType = UNSET
     """Unused. Arbitrary set of additional attributes for the terrm."""
 
-    term_type: Union[str, None, UnsetType] = UNSET
+    term_type: str | None | UnsetType = UNSET
     """"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AtlasGlossaryTerm"
+        self.type_name = "AtlasGlossaryTerm"

@@ -11,15 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
 from .sql_related import RelatedProcedure
 from .tag_related import RelatedTag
 
-__all__ = ["RelatedBigqueryTag", "RelatedBigqueryRoutine"]
+__all__ = [
+    "RelatedBigqueryTag",
+    "RelatedBigqueryRoutine",
+]
 
 
 class RelatedBigqueryTag(RelatedTag):
@@ -32,20 +34,18 @@ class RelatedBigqueryTag(RelatedTag):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BigqueryTag" so it serializes correctly
 
-    bigquery_tag_type: Union[str, None, UnsetType] = UNSET
+    bigquery_tag_type: str | None | UnsetType = UNSET
     """The specific type or category of the Bigquery tag, which can be used for classification and organization of Bigquery assets."""
 
-    bigquery_tag_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    bigquery_tag_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level upstream nested bigquery tags."""
 
-    bigquery_tag_taxonomy_properties: Union[dict[str, str], None, UnsetType] = UNSET
+    bigquery_tag_taxonomy_properties: dict[str, str] | None | UnsetType = UNSET
     """Properties of the bigquery tag taxonomy attribute."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "BigqueryTag"
-
+        self.type_name = "BigqueryTag"
 
 class RelatedBigqueryRoutine(RelatedProcedure):
     """
@@ -57,22 +57,21 @@ class RelatedBigqueryRoutine(RelatedProcedure):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BigqueryRoutine" so it serializes correctly
 
-    bigquery_type: Union[str, None, UnsetType] = UNSET
+    bigquery_type: str | None | UnsetType = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: Union[list[str], None, UnsetType] = UNSET
+    bigquery_arguments: list[str] | None | UnsetType = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_return_type: str | None | UnsetType = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_security_type: str | None | UnsetType = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_ddl: str | None | UnsetType = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "BigqueryRoutine"
+        self.type_name = "BigqueryRoutine"

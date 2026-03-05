@@ -8,11 +8,6 @@ Qlik module exports.
 This module provides convenient imports for all Qlik types and their Related variants.
 """
 
-from .qlik import Qlik
-from .qlik_app import QlikApp
-from .qlik_chart import QlikChart
-from .qlik_column import QlikColumn
-from .qlik_dataset import QlikDataset
 from .qlik_related import (
     RelatedQlik,
     RelatedQlikApp,
@@ -23,6 +18,11 @@ from .qlik_related import (
     RelatedQlikSpace,
     RelatedQlikStream,
 )
+from .qlik import Qlik
+from .qlik_app import QlikApp
+from .qlik_chart import QlikChart
+from .qlik_column import QlikColumn
+from .qlik_dataset import QlikDataset
 from .qlik_sheet import QlikSheet
 from .qlik_space import QlikSpace
 

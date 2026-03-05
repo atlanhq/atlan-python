@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -40,9 +39,7 @@ class RelatedSemantic(RelatedCatalog):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Semantic"
-
+        self.type_name = "Semantic"
 
 class RelatedSemanticModel(RelatedSemantic):
     """
@@ -56,9 +53,7 @@ class RelatedSemanticModel(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SemanticModel"
-
+        self.type_name = "SemanticModel"
 
 class RelatedSemanticField(RelatedSemantic):
     """
@@ -70,17 +65,15 @@ class RelatedSemanticField(RelatedSemantic):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SemanticField" so it serializes correctly
 
-    semantic_expression: Union[str, None, UnsetType] = UNSET
+    semantic_expression: str | None | UnsetType = UNSET
     """Column name or SQL expression for the semantic field."""
 
-    semantic_type: Union[str, None, UnsetType] = UNSET
+    semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SemanticField"
-
+        self.type_name = "SemanticField"
 
 class RelatedSemanticMeasure(RelatedSemantic):
     """
@@ -94,9 +87,7 @@ class RelatedSemanticMeasure(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SemanticMeasure"
-
+        self.type_name = "SemanticMeasure"
 
 class RelatedSemanticDimension(RelatedSemantic):
     """
@@ -110,9 +101,7 @@ class RelatedSemanticDimension(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SemanticDimension"
-
+        self.type_name = "SemanticDimension"
 
 class RelatedSemanticEntity(RelatedSemantic):
     """
@@ -126,5 +115,4 @@ class RelatedSemanticEntity(RelatedSemantic):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SemanticEntity"
+        self.type_name = "SemanticEntity"

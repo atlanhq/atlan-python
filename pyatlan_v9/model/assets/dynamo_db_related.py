@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedNoSQL
@@ -20,6 +19,7 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedDynamoDB",
+    "RelatedDynamoDBAttribute",
     "RelatedDynamoDBTable",
     "RelatedDynamoDBSecondaryIndex",
     "RelatedDynamoDBGlobalSecondaryIndex",
@@ -37,26 +37,38 @@ class RelatedDynamoDB(RelatedNoSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DynamoDB" so it serializes correctly
 
-    dynamo_db_status: Union[str, None, UnsetType] = UNSET
-    """Status of the DynamoDB Asset"""
+    dynamo_db_status: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: Union[str, None, UnsetType] = UNSET
-    """Specifies the partition key of the DynamoDB Table/Index"""
+    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: Union[str, None, UnsetType] = UNSET
-    """Specifies the sort key of the DynamoDB Table/Index"""
+    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = UNSET
-    """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException"""
+    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = UNSET
-    """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException"""
+    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DynamoDB"
+        self.type_name = "DynamoDB"
 
+class RelatedDynamoDBAttribute(RelatedDynamoDB):
+    """
+    Related entity reference for DynamoDBAttribute assets.
+
+    Extends RelatedDynamoDB with DynamoDBAttribute-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "DynamoDBAttribute" so it serializes correctly
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "DynamoDBAttribute"
 
 class RelatedDynamoDBTable(RelatedDynamoDB):
     """
@@ -68,17 +80,15 @@ class RelatedDynamoDBTable(RelatedDynamoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DynamoDBTable" so it serializes correctly
 
-    dynamo_dbgsi_count: Union[int, None, UnsetType] = UNSET
+    dynamo_dbgsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBGSICount")
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_dblsi_count: Union[int, None, UnsetType] = UNSET
+    dynamo_dblsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBLSICount")
     """Represents the number of local secondary indexes on the table."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DynamoDBTable"
-
+        self.type_name = "DynamoDBTable"
 
 class RelatedDynamoDBSecondaryIndex(RelatedDynamoDB):
     """
@@ -90,14 +100,12 @@ class RelatedDynamoDBSecondaryIndex(RelatedDynamoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DynamoDBSecondaryIndex" so it serializes correctly
 
-    dynamo_db_projection_type: Union[str, None, UnsetType] = UNSET
-    """Specifies attributes that are projected from the DynamoDB table into the index"""
+    dynamo_db_projection_type: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBProjectionType")
+    """Specifies attributes that are projected from the DynamoDB table into the index."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DynamoDBSecondaryIndex"
-
+        self.type_name = "DynamoDBSecondaryIndex"
 
 class RelatedDynamoDBGlobalSecondaryIndex(RelatedDynamoDB):
     """
@@ -111,9 +119,7 @@ class RelatedDynamoDBGlobalSecondaryIndex(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DynamoDBGlobalSecondaryIndex"
-
+        self.type_name = "DynamoDBGlobalSecondaryIndex"
 
 class RelatedDynamoDBLocalSecondaryIndex(RelatedDynamoDB):
     """
@@ -127,5 +133,4 @@ class RelatedDynamoDBLocalSecondaryIndex(RelatedDynamoDB):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DynamoDBLocalSecondaryIndex"
+        self.type_name = "DynamoDBLocalSecondaryIndex"

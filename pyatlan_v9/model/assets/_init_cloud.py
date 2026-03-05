@@ -8,10 +8,15 @@ Cloud module exports.
 This module provides convenient imports for all Cloud types and their Related variants.
 """
 
+from .cloud_related import (
+    RelatedAWS,
+    RelatedAzure,
+    RelatedCloud,
+    RelatedGoogle,
+)
+from .cloud import Cloud
 from .aws import AWS
 from .azure import Azure
-from .cloud import Cloud
-from .cloud_related import RelatedAWS, RelatedAzure, RelatedCloud, RelatedGoogle
 from .google import Google
 
 __all__ = [

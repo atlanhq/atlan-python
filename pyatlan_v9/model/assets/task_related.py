@@ -11,14 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedTask"]
+__all__ = [
+    "RelatedTask",
+]
 
 
 class RelatedTask(RelatedAsset):
@@ -31,49 +34,48 @@ class RelatedTask(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Task" so it serializes correctly
 
-    task_recipient: Union[str, None, UnsetType] = UNSET
+    task_recipient: str | None | UnsetType = UNSET
     """Recipient of the task."""
 
-    task_type: Union[str, None, UnsetType] = UNSET
+    task_type: str | None | UnsetType = UNSET
     """Type of task."""
 
-    task_requestor: Union[str, None, UnsetType] = UNSET
+    task_requestor: str | None | UnsetType = UNSET
     """Requestor of the task."""
 
-    task_is_read: Union[bool, None, UnsetType] = UNSET
+    task_is_read: bool | None | UnsetType = UNSET
     """Flag to make task read/unread."""
 
-    task_requestor_comment: Union[str, None, UnsetType] = UNSET
+    task_requestor_comment: str | None | UnsetType = UNSET
     """Comment of requestor for the task."""
 
-    task_related_asset_guid: Union[str, None, UnsetType] = UNSET
+    task_related_asset_guid: str | None | UnsetType = UNSET
     """Unique identifier of the asset to preview."""
 
-    task_proposals: Union[str, None, UnsetType] = UNSET
+    task_proposals: str | None | UnsetType = UNSET
     """Contains the payload that is proposed to the task."""
 
-    task_expires_at: Union[int, None, UnsetType] = UNSET
+    task_expires_at: int | None | UnsetType = UNSET
     """Time (epoch) at which the task expires."""
 
-    task_actions: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    task_actions: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of actions associated with this task."""
 
-    task_execution_comment: Union[str, None, UnsetType] = UNSET
+    task_execution_comment: str | None | UnsetType = UNSET
     """Comment for the action executed by user."""
 
-    task_execution_action: Union[str, None, UnsetType] = UNSET
+    task_execution_action: str | None | UnsetType = UNSET
     """Action executed by the recipient."""
 
-    task_integration_config: Union[str, None, UnsetType] = UNSET
+    task_integration_config: str | None | UnsetType = UNSET
     """Contains external integration config for the task."""
 
-    task_created_by: Union[str, None, UnsetType] = UNSET
+    task_created_by: str | None | UnsetType = UNSET
     """Username of the user who created this task."""
 
-    task_updated_by: Union[str, None, UnsetType] = UNSET
+    task_updated_by: str | None | UnsetType = UNSET
     """Username of the user who updated this task."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Task"
+        self.type_name = "Task"

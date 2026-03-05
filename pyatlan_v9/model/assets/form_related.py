@@ -11,14 +11,18 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedForm", "RelatedResponse"]
+__all__ = [
+    "RelatedForm",
+    "RelatedResponse",
+]
 
 
 class RelatedForm(RelatedAsset):
@@ -31,17 +35,15 @@ class RelatedForm(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Form" so it serializes correctly
 
-    form_fields: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    form_fields: list[dict[str, Any]] | None | UnsetType = UNSET
     """Fields in a form."""
 
-    form_options: Union[dict[str, str], None, UnsetType] = UNSET
+    form_options: dict[str, str] | None | UnsetType = UNSET
     """Options of the form."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Form"
-
+        self.type_name = "Form"
 
 class RelatedResponse(RelatedForm):
     """
@@ -53,16 +55,15 @@ class RelatedResponse(RelatedForm):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Response" so it serializes correctly
 
-    form_guid: Union[str, None, UnsetType] = UNSET
+    form_guid: str | None | UnsetType = UNSET
     """Unique identifier of the form."""
 
-    response_values: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    response_values: list[dict[str, Any]] | None | UnsetType = UNSET
     """Fields in a form."""
 
-    response_options: Union[dict[str, str], None, UnsetType] = UNSET
+    response_options: dict[str, str] | None | UnsetType = UNSET
     """Options of the response to a form."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Response"
+        self.type_name = "Response"

@@ -299,6 +299,35 @@ class ReferenceableNested(
 
 
 # =============================================================================
+# CONVERSION HELPERS & CONSTANTS
+# =============================================================================
+
+_REFERENCEABLE_REL_FIELDS: list[str] = [
+    "meanings",
+    "user_def_relationship_to",
+    "user_def_relationship_from",
+]
+
+
+def _populate_referenceable_attrs(
+    attrs: ReferenceableAttributes, obj: Referenceable
+) -> None:
+    """Populate Referenceable-specific attributes on the attrs struct."""
+    attrs.qualified_name = obj.qualified_name
+    attrs.replicated_from = obj.replicated_from
+    attrs.replicated_to = obj.replicated_to
+
+
+def _extract_referenceable_attrs(attrs: ReferenceableAttributes) -> dict:
+    """Extract all Referenceable attributes from the attrs struct into a flat dict."""
+    result = {}
+    result["qualified_name"] = attrs.qualified_name
+    result["replicated_from"] = attrs.replicated_from
+    result["replicated_to"] = attrs.replicated_to
+    return result
+
+
+# =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
@@ -311,9 +340,8 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         replicated_to=referenceable.replicated_to,
     )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
-    rel_fields: list[str] = ["user_def_relationship_to", "user_def_relationship_from"]
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        referenceable, rel_fields, ReferenceableRelationshipAttributes
+        referenceable, _REFERENCEABLE_REL_FIELDS, ReferenceableRelationshipAttributes
     )
     return ReferenceableNested(
         guid=referenceable.guid,

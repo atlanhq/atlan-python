@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -41,9 +40,7 @@ class RelatedCatalog(RelatedAsset):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Catalog"
-
+        self.type_name = "Catalog"
 
 class RelatedBI(RelatedCatalog):
     """
@@ -52,11 +49,12 @@ class RelatedBI(RelatedCatalog):
     Extends RelatedCatalog with BI-specific attributes.
     """
 
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "BI" so it serializes correctly
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "BI"
-
+        self.type_name = "BI"
 
 class RelatedEventStore(RelatedCatalog):
     """
@@ -65,11 +63,12 @@ class RelatedEventStore(RelatedCatalog):
     Extends RelatedCatalog with EventStore-specific attributes.
     """
 
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "EventStore" so it serializes correctly
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "EventStore"
-
+        self.type_name = "EventStore"
 
 class RelatedInsight(RelatedCatalog):
     """
@@ -78,11 +77,12 @@ class RelatedInsight(RelatedCatalog):
     Extends RelatedCatalog with Insight-specific attributes.
     """
 
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "Insight" so it serializes correctly
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Insight"
-
+        self.type_name = "Insight"
 
 class RelatedNoSQL(RelatedCatalog):
     """
@@ -91,14 +91,15 @@ class RelatedNoSQL(RelatedCatalog):
     Extends RelatedCatalog with NoSQL-specific attributes.
     """
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = UNSET
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "NoSQL" so it serializes correctly
+
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "NoSQL"
-
+        self.type_name = "NoSQL"
 
 class RelatedObjectStore(RelatedCatalog):
     """
@@ -107,11 +108,12 @@ class RelatedObjectStore(RelatedCatalog):
     Extends RelatedCatalog with ObjectStore-specific attributes.
     """
 
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "ObjectStore" so it serializes correctly
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ObjectStore"
-
+        self.type_name = "ObjectStore"
 
 class RelatedSaaS(RelatedCatalog):
     """
@@ -120,7 +122,9 @@ class RelatedSaaS(RelatedCatalog):
     Extends RelatedCatalog with SaaS-specific attributes.
     """
 
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SaaS" so it serializes correctly
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SaaS"
+        self.type_name = "SaaS"

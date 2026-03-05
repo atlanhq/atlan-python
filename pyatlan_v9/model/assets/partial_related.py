@@ -11,14 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedPartial", "RelatedPartialObject", "RelatedPartialField"]
+__all__ = [
+    "RelatedPartial",
+    "RelatedPartialObject",
+    "RelatedPartialField",
+]
 
 
 class RelatedPartial(RelatedCatalog):
@@ -31,26 +34,24 @@ class RelatedPartial(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Partial" so it serializes correctly
 
-    partial_structure_json: Union[str, None, UnsetType] = UNSET
+    partial_structure_json: str | None | UnsetType = msgspec.field(default=UNSET, name="partialStructureJSON")
     """Complete JSON structure of this partial asset, as a string."""
 
-    partial_resolved_type_name: Union[str, None, UnsetType] = UNSET
+    partial_resolved_type_name: str | None | UnsetType = UNSET
     """Atlan-mapped type name of this partial asset."""
 
-    partial_unknown_attributes_hash_id: Union[str, None, UnsetType] = UNSET
+    partial_unknown_attributes_hash_id: str | None | UnsetType = UNSET
     """Hash ID of the unknown attributes for this partial asset."""
 
-    partial_parent_type: Union[str, None, UnsetType] = UNSET
+    partial_parent_type: str | None | UnsetType = UNSET
     """Type of the field's parent asset."""
 
-    partial_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    partial_parent_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the field's parent asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Partial"
-
+        self.type_name = "Partial"
 
 class RelatedPartialObject(RelatedPartial):
     """
@@ -64,9 +65,7 @@ class RelatedPartialObject(RelatedPartial):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "PartialObject"
-
+        self.type_name = "PartialObject"
 
 class RelatedPartialField(RelatedPartial):
     """
@@ -78,10 +77,9 @@ class RelatedPartialField(RelatedPartial):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PartialField" so it serializes correctly
 
-    partial_data_type: Union[str, None, UnsetType] = UNSET
+    partial_data_type: str | None | UnsetType = UNSET
     """Type of data captured as values in the field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "PartialField"
+        self.type_name = "PartialField"

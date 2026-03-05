@@ -8,7 +8,10 @@ Connection module exports.
 This module provides convenient imports for all Connection types and their Related variants.
 """
 
-from .connection import Connection
 from .connection_related import RelatedConnection
+from .connection import Connection
 
-__all__ = ["Connection", "RelatedConnection"]
+__all__ = [
+    "Connection",
+    "RelatedConnection",
+]

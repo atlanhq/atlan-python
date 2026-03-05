@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -36,14 +35,12 @@ class RelatedRedash(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Redash" so it serializes correctly
 
-    redash_is_published: Union[bool, None, UnsetType] = UNSET
+    redash_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Redash"
-
+        self.type_name = "Redash"
 
 class RelatedRedashVisualization(RelatedRedash):
     """
@@ -55,20 +52,18 @@ class RelatedRedashVisualization(RelatedRedash):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "RedashVisualization" so it serializes correctly
 
-    redash_visualization_type: Union[str, None, UnsetType] = UNSET
+    redash_visualization_type: str | None | UnsetType = UNSET
     """Type of this visualization."""
 
-    redash_query_name: Union[str, None, UnsetType] = UNSET
+    redash_query_name: str | None | UnsetType = UNSET
     """Simple name of the query from which this visualization is created."""
 
-    redash_query_qualified_name: Union[str, None, UnsetType] = UNSET
+    redash_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query from which this visualization is created."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "RedashVisualization"
-
+        self.type_name = "RedashVisualization"
 
 class RelatedRedashDashboard(RelatedRedash):
     """
@@ -80,14 +75,12 @@ class RelatedRedashDashboard(RelatedRedash):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "RedashDashboard" so it serializes correctly
 
-    redash_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
+    redash_dashboard_widget_count: int | None | UnsetType = UNSET
     """Number of widgets in this dashboard."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "RedashDashboard"
-
+        self.type_name = "RedashDashboard"
 
 class RelatedRedashQuery(RelatedRedash):
     """
@@ -99,25 +92,24 @@ class RelatedRedashQuery(RelatedRedash):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "RedashQuery" so it serializes correctly
 
-    redash_query_sql: Union[str, None, UnsetType] = UNSET
+    redash_query_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="redashQuerySQL")
     """SQL code of this query."""
 
-    redash_query_parameters: Union[str, None, UnsetType] = UNSET
+    redash_query_parameters: str | None | UnsetType = UNSET
     """Parameters of this query."""
 
-    redash_query_schedule: Union[dict[str, str], None, UnsetType] = UNSET
+    redash_query_schedule: dict[str, str] | None | UnsetType = UNSET
     """Schedule for this query."""
 
-    redash_query_last_execution_runtime: Union[float, None, UnsetType] = UNSET
+    redash_query_last_execution_runtime: float | None | UnsetType = UNSET
     """Elapsed time of the last execution of this query."""
 
-    redash_query_last_executed_at: Union[int, None, UnsetType] = UNSET
+    redash_query_last_executed_at: int | None | UnsetType = UNSET
     """Time (epoch) when this query was last executed, in milliseconds."""
 
-    redash_query_schedule_humanized: Union[str, None, UnsetType] = UNSET
+    redash_query_schedule_humanized: str | None | UnsetType = UNSET
     """Schdule for this query in readable text for overview tab and filtering."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "RedashQuery"
+        self.type_name = "RedashQuery"

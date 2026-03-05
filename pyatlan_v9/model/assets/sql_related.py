@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -44,65 +45,63 @@ class RelatedSQL(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SQL" so it serializes correctly
 
-    query_count: Union[int, None, UnsetType] = UNSET
+    query_count: int | None | UnsetType = UNSET
     """Number of times this asset has been queried."""
 
-    query_user_count: Union[int, None, UnsetType] = UNSET
+    query_user_count: int | None | UnsetType = UNSET
     """Number of unique users who have queried this asset."""
 
-    query_user_map: Union[dict[str, int], None, UnsetType] = UNSET
+    query_user_map: dict[str, int] | None | UnsetType = UNSET
     """Map of unique users who have queried this asset to the number of times they have queried it."""
 
-    query_count_updated_at: Union[int, None, UnsetType] = UNSET
+    query_count_updated_at: int | None | UnsetType = UNSET
     """Time (epoch) at which the query count was last updated, in milliseconds."""
 
-    database_name: Union[str, None, UnsetType] = UNSET
+    database_name: str | None | UnsetType = UNSET
     """Simple name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    database_qualified_name: Union[str, None, UnsetType] = UNSET
+    database_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the database in which this SQL asset exists, or empty if it does not exist within a database."""
 
-    schema_name: Union[str, None, UnsetType] = UNSET
+    schema_name: str | None | UnsetType = UNSET
     """Simple name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    schema_qualified_name: Union[str, None, UnsetType] = UNSET
+    schema_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the schema in which this SQL asset exists, or empty if it does not exist within a schema."""
 
-    table_name: Union[str, None, UnsetType] = UNSET
+    table_name: str | None | UnsetType = UNSET
     """Simple name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    table_qualified_name: Union[str, None, UnsetType] = UNSET
+    table_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the table in which this SQL asset exists, or empty if it does not exist within a table."""
 
-    view_name: Union[str, None, UnsetType] = UNSET
+    view_name: str | None | UnsetType = UNSET
     """Simple name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    view_qualified_name: Union[str, None, UnsetType] = UNSET
+    view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the view in which this SQL asset exists, or empty if it does not exist within a view."""
 
-    calculation_view_name: Union[str, None, UnsetType] = UNSET
+    calculation_view_name: str | None | UnsetType = UNSET
     """Simple name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    calculation_view_qualified_name: Union[str, None, UnsetType] = UNSET
+    calculation_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the calculation view in which this SQL asset exists, or empty if it does not exist within a calculation view."""
 
-    is_profiled: Union[bool, None, UnsetType] = UNSET
+    is_profiled: bool | None | UnsetType = UNSET
     """Whether this asset has been profiled (true) or not (false)."""
 
-    last_profiled_at: Union[int, None, UnsetType] = UNSET
+    last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
-    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SQL"
-
+        self.type_name = "SQL"
 
 class RelatedCalculationView(RelatedSQL):
     """
@@ -114,26 +113,24 @@ class RelatedCalculationView(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CalculationView" so it serializes correctly
 
-    column_count: Union[int, None, UnsetType] = UNSET
+    column_count: int | None | UnsetType = UNSET
     """Number of columns in this calculation view."""
 
-    sql_version_id: Union[int, None, UnsetType] = UNSET
+    sql_version_id: int | None | UnsetType = UNSET
     """The version ID of this calculation view."""
 
-    sql_activated_by: Union[str, None, UnsetType] = UNSET
+    sql_activated_by: str | None | UnsetType = UNSET
     """The owner who activated the calculation view"""
 
-    sql_activated_at: Union[int, None, UnsetType] = UNSET
+    sql_activated_at: int | None | UnsetType = UNSET
     """Time at which this calculation view was activated at"""
 
-    sql_package_id: Union[str, None, UnsetType] = UNSET
+    sql_package_id: str | None | UnsetType = UNSET
     """The full package id path to which a calculation view belongs/resides in the repository."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CalculationView"
-
+        self.type_name = "CalculationView"
 
 class RelatedColumn(RelatedSQL):
     """
@@ -145,215 +142,213 @@ class RelatedColumn(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Column" so it serializes correctly
 
-    data_type: Union[str, None, UnsetType] = UNSET
+    data_type: str | None | UnsetType = UNSET
     """Data type of values in this column."""
 
-    sub_data_type: Union[str, None, UnsetType] = UNSET
+    sub_data_type: str | None | UnsetType = UNSET
     """Sub-data type of this column."""
 
-    sql_compression: Union[str, None, UnsetType] = UNSET
+    sql_compression: str | None | UnsetType = UNSET
     """Compression type of this column."""
 
-    sql_encoding: Union[str, None, UnsetType] = UNSET
+    sql_encoding: str | None | UnsetType = UNSET
     """Encoding type of this column."""
 
-    raw_data_type_definition: Union[str, None, UnsetType] = UNSET
+    raw_data_type_definition: str | None | UnsetType = UNSET
     """Raw data type definition of this column."""
 
-    order: Union[int, None, UnsetType] = UNSET
+    order: int | None | UnsetType = UNSET
     """Order (position) in which this column appears in the table (starting at 1)."""
 
-    nested_column_order: Union[str, None, UnsetType] = UNSET
+    nested_column_order: str | None | UnsetType = UNSET
     """Order (position) in which this column appears in the nested Column (nest level starts at 1)."""
 
-    nested_column_count: Union[int, None, UnsetType] = UNSET
+    nested_column_count: int | None | UnsetType = UNSET
     """Number of columns nested within this (STRUCT or NESTED) column."""
 
-    column_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    column_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level upstream nested columns."""
 
-    is_partition: Union[bool, None, UnsetType] = UNSET
+    is_partition: bool | None | UnsetType = UNSET
     """Whether this column is a partition column (true) or not (false)."""
 
-    partition_order: Union[int, None, UnsetType] = UNSET
+    partition_order: int | None | UnsetType = UNSET
     """Order (position) of this partition column in the table."""
 
-    is_clustered: Union[bool, None, UnsetType] = UNSET
+    is_clustered: bool | None | UnsetType = UNSET
     """Whether this column is a clustered column (true) or not (false)."""
 
-    is_primary: Union[bool, None, UnsetType] = UNSET
+    is_primary: bool | None | UnsetType = UNSET
     """When true, this column is the primary key for the table."""
 
-    is_foreign: Union[bool, None, UnsetType] = UNSET
+    is_foreign: bool | None | UnsetType = UNSET
     """When true, this column is a foreign key to another table. NOTE: this must be true when using the foreignKeyTo relationship to specify columns that refer to this column as a foreign key."""
 
-    is_indexed: Union[bool, None, UnsetType] = UNSET
+    is_indexed: bool | None | UnsetType = UNSET
     """When true, this column is indexed in the database."""
 
-    is_sort: Union[bool, None, UnsetType] = UNSET
+    is_sort: bool | None | UnsetType = UNSET
     """Whether this column is a sort column (true) or not (false)."""
 
-    is_dist: Union[bool, None, UnsetType] = UNSET
+    is_dist: bool | None | UnsetType = UNSET
     """Whether this column is a distribution column (true) or not (false)."""
 
-    is_pinned: Union[bool, None, UnsetType] = UNSET
+    is_pinned: bool | None | UnsetType = UNSET
     """Whether this column is pinned (true) or not (false)."""
 
-    pinned_by: Union[str, None, UnsetType] = UNSET
+    pinned_by: str | None | UnsetType = UNSET
     """User who pinned this column."""
 
-    pinned_at: Union[int, None, UnsetType] = UNSET
+    pinned_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this column was pinned, in milliseconds."""
 
-    precision: Union[int, None, UnsetType] = UNSET
+    precision: int | None | UnsetType = UNSET
     """Total number of digits allowed, when the dataType is numeric."""
 
-    default_value: Union[str, None, UnsetType] = UNSET
+    default_value: str | None | UnsetType = UNSET
     """Default value for this column."""
 
-    is_nullable: Union[bool, None, UnsetType] = UNSET
+    is_nullable: bool | None | UnsetType = UNSET
     """When true, the values in this column can be null."""
 
-    numeric_scale: Union[float, None, UnsetType] = UNSET
+    numeric_scale: float | None | UnsetType = UNSET
     """Number of digits allowed to the right of the decimal point."""
 
-    max_length: Union[int, None, UnsetType] = UNSET
+    max_length: int | None | UnsetType = UNSET
     """Maximum length of a value in this column."""
 
-    validations: Union[dict[str, str], None, UnsetType] = UNSET
+    validations: dict[str, str] | None | UnsetType = UNSET
     """Validations for this column."""
 
-    parent_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    parent_column_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    parent_column_name: Union[str, None, UnsetType] = UNSET
+    parent_column_name: str | None | UnsetType = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    sql_distinct_values_count: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count: int | None | UnsetType = UNSET
     """Number of rows that contain distinct values."""
 
-    sql_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count_long: int | None | UnsetType = UNSET
     """Number of rows that contain distinct values."""
 
-    sql_histogram: Union[dict[str, Any], None, UnsetType] = UNSET
+    sql_histogram: dict[str, Any] | None | UnsetType = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    sql_max: Union[float, None, UnsetType] = UNSET
+    sql_max: float | None | UnsetType = UNSET
     """Greatest value in a numeric column."""
 
-    sql_min: Union[float, None, UnsetType] = UNSET
+    sql_min: float | None | UnsetType = UNSET
     """Least value in a numeric column."""
 
-    sql_mean: Union[float, None, UnsetType] = UNSET
+    sql_mean: float | None | UnsetType = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    sql_sum: Union[float, None, UnsetType] = UNSET
+    sql_sum: float | None | UnsetType = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    sql_median: Union[float, None, UnsetType] = UNSET
+    sql_median: float | None | UnsetType = UNSET
     """Calculated median of the values in a numeric column."""
 
-    sql_standard_deviation: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation: float | None | UnsetType = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    sql_unique_values_count: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count: int | None | UnsetType = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    sql_unique_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count_long: int | None | UnsetType = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    sql_average: Union[float, None, UnsetType] = UNSET
+    sql_average: float | None | UnsetType = UNSET
     """Average value in this column."""
 
-    sql_average_length: Union[float, None, UnsetType] = UNSET
+    sql_average_length: float | None | UnsetType = UNSET
     """Average length of values in a string column."""
 
-    sql_duplicate_values_count: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count: int | None | UnsetType = UNSET
     """Number of rows that contain duplicate values."""
 
-    sql_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count_long: int | None | UnsetType = UNSET
     """Number of rows that contain duplicate values."""
 
-    sql_maximum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_maximum_string_length: int | None | UnsetType = UNSET
     """Length of the longest value in a string column."""
 
-    column_maxs: Union[list[str], None, UnsetType] = UNSET
+    column_maxs: list[str] | None | UnsetType = UNSET
     """List of the greatest values in a column."""
 
-    sql_minimum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_minimum_string_length: int | None | UnsetType = UNSET
     """Length of the shortest value in a string column."""
 
-    column_mins: Union[list[str], None, UnsetType] = UNSET
+    column_mins: list[str] | None | UnsetType = UNSET
     """List of the least values in a column."""
 
-    sql_missing_values_count: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count: int | None | UnsetType = UNSET
     """Number of rows in a column that do not contain content."""
 
-    sql_missing_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count_long: int | None | UnsetType = UNSET
     """Number of rows in a column that do not contain content."""
 
-    sql_missing_values_percentage: Union[float, None, UnsetType] = UNSET
+    sql_missing_values_percentage: float | None | UnsetType = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    sql_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
+    sql_uniqueness_percentage: float | None | UnsetType = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    sql_variance: Union[float, None, UnsetType] = UNSET
+    sql_variance: float | None | UnsetType = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_top_values: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    column_top_values: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of top values in this column."""
 
-    sql_max_value: Union[float, None, UnsetType] = UNSET
+    sql_max_value: float | None | UnsetType = UNSET
     """Greatest value in a numeric column."""
 
-    sql_min_value: Union[float, None, UnsetType] = UNSET
+    sql_min_value: float | None | UnsetType = UNSET
     """Least value in a numeric column."""
 
-    sql_mean_value: Union[float, None, UnsetType] = UNSET
+    sql_mean_value: float | None | UnsetType = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    sql_sum_value: Union[float, None, UnsetType] = UNSET
+    sql_sum_value: float | None | UnsetType = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    sql_median_value: Union[float, None, UnsetType] = UNSET
+    sql_median_value: float | None | UnsetType = UNSET
     """Calculated median of the values in a numeric column."""
 
-    sql_standard_deviation_value: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation_value: float | None | UnsetType = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    sql_average_value: Union[float, None, UnsetType] = UNSET
+    sql_average_value: float | None | UnsetType = UNSET
     """Average value in this column."""
 
-    sql_variance_value: Union[float, None, UnsetType] = UNSET
+    sql_variance_value: float | None | UnsetType = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    sql_average_length_value: Union[float, None, UnsetType] = UNSET
+    sql_average_length_value: float | None | UnsetType = UNSET
     """Average length of values in a string column."""
 
-    sql_distribution_histogram: Union[dict[str, Any], None, UnsetType] = UNSET
+    sql_distribution_histogram: dict[str, Any] | None | UnsetType = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    sql_depth_level: Union[int, None, UnsetType] = UNSET
+    sql_depth_level: int | None | UnsetType = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
-    nosql_collection_name: Union[str, None, UnsetType] = UNSET
+    nosql_collection_name: str | None | UnsetType = UNSET
     """Simple name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
+    nosql_collection_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    sql_is_measure: Union[bool, None, UnsetType] = UNSET
+    sql_is_measure: bool | None | UnsetType = UNSET
     """When true, this column is of type measure/calculated."""
 
-    sql_measure_type: Union[str, None, UnsetType] = UNSET
+    sql_measure_type: str | None | UnsetType = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Column"
-
+        self.type_name = "Column"
 
 class RelatedDatabase(RelatedSQL):
     """
@@ -365,14 +360,12 @@ class RelatedDatabase(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Database" so it serializes correctly
 
-    schema_count: Union[int, None, UnsetType] = UNSET
+    schema_count: int | None | UnsetType = UNSET
     """Number of schemas in this database."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Database"
-
+        self.type_name = "Database"
 
 class RelatedFunction(RelatedSQL):
     """
@@ -384,53 +377,51 @@ class RelatedFunction(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Function" so it serializes correctly
 
-    function_definition: Union[str, None, UnsetType] = UNSET
+    function_definition: str | None | UnsetType = UNSET
     """Code or set of statements that determine the output of the function."""
 
-    sql_return_type: Union[str, None, UnsetType] = UNSET
+    sql_return_type: str | None | UnsetType = UNSET
     """Data type of the value returned by the function."""
 
-    sql_arguments: Union[list[str], None, UnsetType] = UNSET
+    sql_arguments: list[str] | None | UnsetType = UNSET
     """Arguments that are passed in to the function."""
 
-    sql_language: Union[str, None, UnsetType] = UNSET
+    sql_language: str | None | UnsetType = UNSET
     """Programming language in which the function is written."""
 
-    sql_type: Union[str, None, UnsetType] = UNSET
+    sql_type: str | None | UnsetType = UNSET
     """Type of function."""
 
-    sql_is_external: Union[bool, None, UnsetType] = UNSET
+    sql_is_external: bool | None | UnsetType = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = UNSET
+    sql_is_dmf: bool | None | UnsetType = msgspec.field(default=UNSET, name="sqlIsDMF")
     """Whether the function is a data metric function."""
 
-    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    sql_is_secure: bool | None | UnsetType = UNSET
     """Whether sensitive information of the function is omitted for unauthorized users (true) or not (false)."""
 
-    sql_is_memoizable: Union[bool, None, UnsetType] = UNSET
+    sql_is_memoizable: bool | None | UnsetType = UNSET
     """Whether the function must re-compute if there are no underlying changes in the values (false) or not (true)."""
 
-    sql_runtime_version: Union[str, None, UnsetType] = UNSET
+    sql_runtime_version: str | None | UnsetType = UNSET
     """Version of the language runtime used by the function."""
 
-    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
+    sql_external_access_integrations: str | None | UnsetType = UNSET
     """Names of external access integrations used by the function."""
 
-    sql_secrets: Union[str, None, UnsetType] = UNSET
+    sql_secrets: str | None | UnsetType = UNSET
     """Secret variables used by the function."""
 
-    sql_packages: Union[str, None, UnsetType] = UNSET
+    sql_packages: str | None | UnsetType = UNSET
     """Packages requested by the function."""
 
-    sql_installed_packages: Union[str, None, UnsetType] = UNSET
+    sql_installed_packages: str | None | UnsetType = UNSET
     """Packages actually installed for the function."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Function"
-
+        self.type_name = "Function"
 
 class RelatedMaterialisedView(RelatedSQL):
     """
@@ -442,47 +433,45 @@ class RelatedMaterialisedView(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MaterialisedView" so it serializes correctly
 
-    refresh_mode: Union[str, None, UnsetType] = UNSET
+    refresh_mode: str | None | UnsetType = UNSET
     """Refresh mode for this materialized view."""
 
-    refresh_method: Union[str, None, UnsetType] = UNSET
+    refresh_method: str | None | UnsetType = UNSET
     """Refresh method for this materialized view."""
 
-    staleness: Union[str, None, UnsetType] = UNSET
+    staleness: str | None | UnsetType = UNSET
     """Staleness of this materialized view."""
 
-    stale_since_date: Union[int, None, UnsetType] = UNSET
+    stale_since_date: int | None | UnsetType = UNSET
     """Time (epoch) from which this materialized view is stale, in milliseconds."""
 
-    column_count: Union[int, None, UnsetType] = UNSET
+    column_count: int | None | UnsetType = UNSET
     """Number of columns in this materialized view."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
+    row_count: int | None | UnsetType = UNSET
     """Number of rows in this materialized view."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
+    size_bytes: int | None | UnsetType = UNSET
     """Size of this materialized view, in bytes."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
+    is_query_preview: bool | None | UnsetType = UNSET
     """Whether it's possible to run a preview query on this materialized view (true) or not (false)."""
 
-    query_preview_config: Union[dict[str, str], None, UnsetType] = UNSET
+    query_preview_config: dict[str, str] | None | UnsetType = UNSET
     """Configuration for the query preview of this materialized view."""
 
-    alias: Union[str, None, UnsetType] = UNSET
+    alias: str | None | UnsetType = UNSET
     """Alias for this materialized view."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
+    is_temporary: bool | None | UnsetType = UNSET
     """Whether this materialized view is temporary (true) or not (false)."""
 
-    definition: Union[str, None, UnsetType] = UNSET
+    definition: str | None | UnsetType = UNSET
     """SQL definition of this materialized view."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MaterialisedView"
-
+        self.type_name = "MaterialisedView"
 
 class RelatedProcedure(RelatedSQL):
     """
@@ -494,47 +483,45 @@ class RelatedProcedure(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Procedure" so it serializes correctly
 
-    definition: Union[str, None, UnsetType] = UNSET
+    definition: str | None | UnsetType = UNSET
     """SQL definition of the procedure."""
 
-    sql_language: Union[str, None, UnsetType] = UNSET
+    sql_language: str | None | UnsetType = UNSET
     """Programming language used for the procedure (e.g., SQL, JavaScript, Python, Scala)."""
 
-    sql_runtime_version: Union[str, None, UnsetType] = UNSET
+    sql_runtime_version: str | None | UnsetType = UNSET
     """Version of the language runtime used by the procedure."""
 
-    sql_owner_role_type: Union[str, None, UnsetType] = UNSET
+    sql_owner_role_type: str | None | UnsetType = UNSET
     """Type of role that owns the procedure."""
 
-    sql_arguments: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    sql_arguments: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of procedure arguments with name and type information."""
 
-    sql_procedure_return: Union[dict[str, Any], None, UnsetType] = UNSET
+    sql_procedure_return: dict[str, Any] | None | UnsetType = UNSET
     """Detailed information about the procedure's return type."""
 
-    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
+    sql_external_access_integrations: str | None | UnsetType = UNSET
     """Names of external access integrations used by the procedure."""
 
-    sql_secrets: Union[str, None, UnsetType] = UNSET
+    sql_secrets: str | None | UnsetType = UNSET
     """Secret variables used by the procedure."""
 
-    sql_packages: Union[str, None, UnsetType] = UNSET
+    sql_packages: str | None | UnsetType = UNSET
     """Packages requested by the procedure."""
 
-    sql_installed_packages: Union[str, None, UnsetType] = UNSET
+    sql_installed_packages: str | None | UnsetType = UNSET
     """Packages actually installed for the procedure."""
 
-    sql_schema_id: Union[str, None, UnsetType] = UNSET
+    sql_schema_id: str | None | UnsetType = UNSET
     """Internal ID for the schema containing the procedure."""
 
-    sql_catalog_id: Union[str, None, UnsetType] = UNSET
+    sql_catalog_id: str | None | UnsetType = UNSET
     """Internal ID for the database containing the procedure."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Procedure"
-
+        self.type_name = "Procedure"
 
 class RelatedQuery(RelatedSQL):
     """
@@ -546,47 +533,45 @@ class RelatedQuery(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Query" so it serializes correctly
 
-    raw_query: Union[str, None, UnsetType] = UNSET
+    raw_query: str | None | UnsetType = UNSET
     """Deprecated. See 'longRawQuery' instead."""
 
-    long_raw_query: Union[str, None, UnsetType] = UNSET
+    long_raw_query: str | None | UnsetType = UNSET
     """Raw SQL query string."""
 
-    raw_query_text: Union[str, None, UnsetType] = UNSET
+    raw_query_text: str | None | UnsetType = UNSET
     """"""
 
-    default_schema_qualified_name: Union[str, None, UnsetType] = UNSET
+    default_schema_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the default schema to use for this query."""
 
-    default_database_qualified_name: Union[str, None, UnsetType] = UNSET
+    default_database_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the default database to use for this query."""
 
-    variables_schema_base64: Union[str, None, UnsetType] = UNSET
+    variables_schema_base64: str | None | UnsetType = UNSET
     """Base64-encoded string of the variables to use in this query."""
 
-    is_private: Union[bool, None, UnsetType] = UNSET
+    is_private: bool | None | UnsetType = UNSET
     """Whether this query is private (true) or shared (false)."""
 
-    is_sql_snippet: Union[bool, None, UnsetType] = UNSET
+    is_sql_snippet: bool | None | UnsetType = UNSET
     """Whether this query is a SQL snippet (true) or not (false)."""
 
-    parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    parent_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the parent collection or folder in which this query exists."""
 
-    collection_qualified_name: Union[str, None, UnsetType] = UNSET
+    collection_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the collection in which this query exists."""
 
-    is_visual_query: Union[bool, None, UnsetType] = UNSET
+    is_visual_query: bool | None | UnsetType = UNSET
     """Whether this query is a visual query (true) or not (false)."""
 
-    visual_builder_schema_base64: Union[str, None, UnsetType] = UNSET
+    visual_builder_schema_base64: str | None | UnsetType = UNSET
     """Base64-encoded string for the visual query builder."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Query"
-
+        self.type_name = "Query"
 
 class RelatedSchema(RelatedSQL):
     """
@@ -598,23 +583,21 @@ class RelatedSchema(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Schema" so it serializes correctly
 
-    table_count: Union[int, None, UnsetType] = UNSET
+    table_count: int | None | UnsetType = UNSET
     """Number of tables in this schema."""
 
-    sql_external_location: Union[str, None, UnsetType] = UNSET
+    sql_external_location: str | None | UnsetType = UNSET
     """External location of this schema, for example: an S3 object location."""
 
-    views_count: Union[int, None, UnsetType] = UNSET
+    views_count: int | None | UnsetType = UNSET
     """Number of views in this schema."""
 
-    linked_schema_qualified_name: Union[str, None, UnsetType] = UNSET
+    linked_schema_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the Linked Schema on which this Schema is dependent. This concept is mostly applicable for linked datasets/datasource in Google BigQuery via Analytics Hub Listing"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Schema"
-
+        self.type_name = "Schema"
 
 class RelatedTable(RelatedSQL):
     """
@@ -626,92 +609,90 @@ class RelatedTable(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Table" so it serializes correctly
 
-    column_count: Union[int, None, UnsetType] = UNSET
+    column_count: int | None | UnsetType = UNSET
     """Number of columns in this table."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
+    row_count: int | None | UnsetType = UNSET
     """Number of rows in this table."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
+    size_bytes: int | None | UnsetType = UNSET
     """Size of this table, in bytes."""
 
-    sql_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: int | None | UnsetType = UNSET
     """Number of objects in this table."""
 
-    alias: Union[str, None, UnsetType] = UNSET
+    alias: str | None | UnsetType = UNSET
     """Alias for this table."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
+    is_temporary: bool | None | UnsetType = UNSET
     """Whether this table is temporary (true) or not (false)."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
+    is_query_preview: bool | None | UnsetType = UNSET
     """Whether preview queries are allowed for this table (true) or not (false)."""
 
-    query_preview_config: Union[dict[str, str], None, UnsetType] = UNSET
+    query_preview_config: dict[str, str] | None | UnsetType = UNSET
     """Configuration for preview queries."""
 
-    external_location: Union[str, None, UnsetType] = UNSET
+    external_location: str | None | UnsetType = UNSET
     """External location of this table, for example: an S3 object location."""
 
-    external_location_region: Union[str, None, UnsetType] = UNSET
+    external_location_region: str | None | UnsetType = UNSET
     """Region of the external location of this table, for example: S3 region."""
 
-    external_location_format: Union[str, None, UnsetType] = UNSET
+    external_location_format: str | None | UnsetType = UNSET
     """Format of the external location of this table, for example: JSON, CSV, PARQUET, etc."""
 
-    is_partitioned: Union[bool, None, UnsetType] = UNSET
+    is_partitioned: bool | None | UnsetType = UNSET
     """Whether this table is partitioned (true) or not (false)."""
 
-    partition_strategy: Union[str, None, UnsetType] = UNSET
+    partition_strategy: str | None | UnsetType = UNSET
     """Partition strategy for this table."""
 
-    partition_count: Union[int, None, UnsetType] = UNSET
+    partition_count: int | None | UnsetType = UNSET
     """Number of partitions in this table."""
 
-    table_definition: Union[str, None, UnsetType] = UNSET
+    table_definition: str | None | UnsetType = UNSET
     """Definition of the table."""
 
-    partition_list: Union[str, None, UnsetType] = UNSET
+    partition_list: str | None | UnsetType = UNSET
     """List of partitions in this table."""
 
-    is_sharded: Union[bool, None, UnsetType] = UNSET
+    is_sharded: bool | None | UnsetType = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    sql_type: Union[str, None, UnsetType] = UNSET
+    sql_type: str | None | UnsetType = UNSET
     """Type of the table."""
 
-    iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
+    iceberg_catalog_name: str | None | UnsetType = UNSET
     """Iceberg table catalog name (can be any user defined name)"""
 
-    iceberg_table_type: Union[str, None, UnsetType] = UNSET
+    iceberg_table_type: str | None | UnsetType = UNSET
     """Iceberg table type (managed vs unmanaged)"""
 
-    iceberg_catalog_source: Union[str, None, UnsetType] = UNSET
+    iceberg_catalog_source: str | None | UnsetType = UNSET
     """Iceberg table catalog type (glue, polaris, snowflake)"""
 
-    iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
+    iceberg_catalog_table_name: str | None | UnsetType = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    sql_impala_parameters: Union[dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: dict[str, str] | None | UnsetType = UNSET
     """Extra attributes for Impala"""
 
-    iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
+    iceberg_catalog_table_namespace: str | None | UnsetType = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: str | None | UnsetType = UNSET
     """External volume name for the table."""
 
-    iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
+    iceberg_table_base_location: str | None | UnsetType = UNSET
     """Iceberg table base location inside the external volume."""
 
-    sql_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: int | None | UnsetType = UNSET
     """Data retention time in days."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Table"
-
+        self.type_name = "Table"
 
 class RelatedTablePartition(RelatedSQL):
     """
@@ -723,56 +704,54 @@ class RelatedTablePartition(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TablePartition" so it serializes correctly
 
-    constraint: Union[str, None, UnsetType] = UNSET
+    constraint: str | None | UnsetType = UNSET
     """Constraint that defines this table partition."""
 
-    column_count: Union[int, None, UnsetType] = UNSET
+    column_count: int | None | UnsetType = UNSET
     """Number of columns in this partition."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
+    row_count: int | None | UnsetType = UNSET
     """Number of rows in this partition."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
+    size_bytes: int | None | UnsetType = UNSET
     """Size of this partition, in bytes."""
 
-    alias: Union[str, None, UnsetType] = UNSET
+    alias: str | None | UnsetType = UNSET
     """Alias for this partition."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
+    is_temporary: bool | None | UnsetType = UNSET
     """Whether this partition is temporary (true) or not (false)."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
+    is_query_preview: bool | None | UnsetType = UNSET
     """Whether preview queries for this partition are allowed (true) or not (false)."""
 
-    query_preview_config: Union[dict[str, str], None, UnsetType] = UNSET
+    query_preview_config: dict[str, str] | None | UnsetType = UNSET
     """Configuration for the preview queries."""
 
-    external_location: Union[str, None, UnsetType] = UNSET
+    external_location: str | None | UnsetType = UNSET
     """External location of this partition, for example: an S3 object location."""
 
-    external_location_region: Union[str, None, UnsetType] = UNSET
+    external_location_region: str | None | UnsetType = UNSET
     """Region of the external location of this partition, for example: S3 region."""
 
-    external_location_format: Union[str, None, UnsetType] = UNSET
+    external_location_format: str | None | UnsetType = UNSET
     """Format of the external location of this partition, for example: JSON, CSV, PARQUET, etc."""
 
-    is_partitioned: Union[bool, None, UnsetType] = UNSET
+    is_partitioned: bool | None | UnsetType = UNSET
     """Whether this partition is further partitioned (true) or not (false)."""
 
-    partition_strategy: Union[str, None, UnsetType] = UNSET
+    partition_strategy: str | None | UnsetType = UNSET
     """Partition strategy of this partition."""
 
-    partition_count: Union[int, None, UnsetType] = UNSET
+    partition_count: int | None | UnsetType = UNSET
     """Number of sub-partitions of this partition."""
 
-    partition_list: Union[str, None, UnsetType] = UNSET
+    partition_list: str | None | UnsetType = UNSET
     """List of sub-partitions in this partition."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TablePartition"
-
+        self.type_name = "TablePartition"
 
 class RelatedView(RelatedSQL):
     """
@@ -784,31 +763,30 @@ class RelatedView(RelatedSQL):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "View" so it serializes correctly
 
-    column_count: Union[int, None, UnsetType] = UNSET
+    column_count: int | None | UnsetType = UNSET
     """Number of columns in this view."""
 
-    row_count: Union[int, None, UnsetType] = UNSET
+    row_count: int | None | UnsetType = UNSET
     """Number of rows in this view."""
 
-    size_bytes: Union[int, None, UnsetType] = UNSET
+    size_bytes: int | None | UnsetType = UNSET
     """Size of this view, in bytes."""
 
-    is_query_preview: Union[bool, None, UnsetType] = UNSET
+    is_query_preview: bool | None | UnsetType = UNSET
     """Whether preview queries are allowed on this view (true) or not (false)."""
 
-    query_preview_config: Union[dict[str, str], None, UnsetType] = UNSET
+    query_preview_config: dict[str, str] | None | UnsetType = UNSET
     """Configuration for preview queries on this view."""
 
-    alias: Union[str, None, UnsetType] = UNSET
+    alias: str | None | UnsetType = UNSET
     """Alias for this view."""
 
-    is_temporary: Union[bool, None, UnsetType] = UNSET
+    is_temporary: bool | None | UnsetType = UNSET
     """Whether this view is temporary (true) or not (false)."""
 
-    definition: Union[str, None, UnsetType] = UNSET
+    definition: str | None | UnsetType = UNSET
     """SQL definition of this view."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "View"
+        self.type_name = "View"

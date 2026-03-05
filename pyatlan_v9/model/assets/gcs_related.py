@@ -11,14 +11,17 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedObjectStore
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedGCS", "RelatedGCSBucket", "RelatedGCSObject"]
+__all__ = [
+    "RelatedGCS",
+    "RelatedGCSBucket",
+    "RelatedGCSObject",
+]
 
 
 class RelatedGCS(RelatedObjectStore):
@@ -31,29 +34,27 @@ class RelatedGCS(RelatedObjectStore):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "GCS" so it serializes correctly
 
-    gcs_storage_class: Union[str, None, UnsetType] = UNSET
+    gcs_storage_class: str | None | UnsetType = UNSET
     """Storage class of this asset."""
 
-    gcs_encryption_type: Union[str, None, UnsetType] = UNSET
+    gcs_encryption_type: str | None | UnsetType = UNSET
     """Encryption algorithm used to encrypt this asset."""
 
-    gcs_e_tag: Union[str, None, UnsetType] = UNSET
+    gcs_etag: str | None | UnsetType = msgspec.field(default=UNSET, name="gcsETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
-    gcs_requester_pays: Union[bool, None, UnsetType] = UNSET
+    gcs_requester_pays: bool | None | UnsetType = UNSET
     """Whether the requester pays header was sent when this asset was created (true) or not (false)."""
 
-    gcs_access_control: Union[str, None, UnsetType] = UNSET
+    gcs_access_control: str | None | UnsetType = UNSET
     """Access control list for this asset."""
 
-    gcs_meta_generation_id: Union[int, None, UnsetType] = UNSET
+    gcs_meta_generation_id: int | None | UnsetType = UNSET
     """Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "GCS"
-
+        self.type_name = "GCS"
 
 class RelatedGCSBucket(RelatedGCS):
     """
@@ -65,32 +66,30 @@ class RelatedGCSBucket(RelatedGCS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "GCSBucket" so it serializes correctly
 
-    gcs_object_count: Union[int, None, UnsetType] = UNSET
+    gcs_object_count: int | None | UnsetType = UNSET
     """Number of objects within the bucket."""
 
-    gcs_bucket_versioning_enabled: Union[bool, None, UnsetType] = UNSET
+    gcs_bucket_versioning_enabled: bool | None | UnsetType = UNSET
     """Whether versioning is enabled on the bucket (true) or not (false)."""
 
-    gcs_bucket_retention_locked: Union[bool, None, UnsetType] = UNSET
+    gcs_bucket_retention_locked: bool | None | UnsetType = UNSET
     """Whether retention is locked for this bucket (true) or not (false)."""
 
-    gcs_bucket_retention_period: Union[int, None, UnsetType] = UNSET
+    gcs_bucket_retention_period: int | None | UnsetType = UNSET
     """Retention period for objects in this bucket."""
 
-    gcs_bucket_retention_effective_time: Union[int, None, UnsetType] = UNSET
+    gcs_bucket_retention_effective_time: int | None | UnsetType = UNSET
     """Effective time for retention of objects in this bucket."""
 
-    gcs_bucket_lifecycle_rules: Union[str, None, UnsetType] = UNSET
+    gcs_bucket_lifecycle_rules: str | None | UnsetType = UNSET
     """Lifecycle rules for this bucket."""
 
-    gcs_bucket_retention_policy: Union[str, None, UnsetType] = UNSET
+    gcs_bucket_retention_policy: str | None | UnsetType = UNSET
     """Retention policy for this bucket."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "GCSBucket"
-
+        self.type_name = "GCSBucket"
 
 class RelatedGCSObject(RelatedGCS):
     """
@@ -102,52 +101,51 @@ class RelatedGCSObject(RelatedGCS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "GCSObject" so it serializes correctly
 
-    gcs_bucket_name: Union[str, None, UnsetType] = UNSET
+    gcs_bucket_name: str | None | UnsetType = UNSET
     """Simple name of the bucket in which this object exists."""
 
-    gcs_bucket_qualified_name: Union[str, None, UnsetType] = UNSET
+    gcs_bucket_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the bucket in which this object exists."""
 
-    gcs_object_size: Union[int, None, UnsetType] = UNSET
+    gcs_object_size: int | None | UnsetType = UNSET
     """Object size in bytes."""
 
-    gcs_object_key: Union[str, None, UnsetType] = UNSET
+    gcs_object_key: str | None | UnsetType = UNSET
     """Key of this object, in GCS."""
 
-    gcs_object_media_link: Union[str, None, UnsetType] = UNSET
+    gcs_object_media_link: str | None | UnsetType = UNSET
     """Media link to this object."""
 
-    gcs_object_hold_type: Union[str, None, UnsetType] = UNSET
+    gcs_object_hold_type: str | None | UnsetType = UNSET
     """Type of hold on this object."""
 
-    gcs_object_generation_id: Union[int, None, UnsetType] = UNSET
+    gcs_object_generation_id: int | None | UnsetType = UNSET
     """Generation ID of this object."""
 
-    gcs_object_crc32_c_hash: Union[str, None, UnsetType] = UNSET
+    gcs_object_crc32c_hash: str | None | UnsetType = msgspec.field(default=UNSET, name="gcsObjectCRC32CHash")
     """CRC32C hash of this object."""
 
-    gcs_object_md5_hash: Union[str, None, UnsetType] = UNSET
+    gcs_object_md5_hash: str | None | UnsetType = msgspec.field(default=UNSET, name="gcsObjectMD5Hash")
     """MD5 hash of this object."""
 
-    gcs_object_data_last_modified_time: Union[int, None, UnsetType] = UNSET
+    gcs_object_data_last_modified_time: int | None | UnsetType = UNSET
     """Time (epoch) at which this object's data was last modified, in milliseconds."""
 
-    gcs_object_content_type: Union[str, None, UnsetType] = UNSET
+    gcs_object_content_type: str | None | UnsetType = UNSET
     """Type of content in this object."""
 
-    gcs_object_content_encoding: Union[str, None, UnsetType] = UNSET
+    gcs_object_content_encoding: str | None | UnsetType = UNSET
     """Content encoding of this object."""
 
-    gcs_object_content_disposition: Union[str, None, UnsetType] = UNSET
+    gcs_object_content_disposition: str | None | UnsetType = UNSET
     """Information about how this object's content should be presented."""
 
-    gcs_object_content_language: Union[str, None, UnsetType] = UNSET
+    gcs_object_content_language: str | None | UnsetType = UNSET
     """Language of this object's contents."""
 
-    gcs_object_retention_expiration_date: Union[int, None, UnsetType] = UNSET
+    gcs_object_retention_expiration_date: int | None | UnsetType = UNSET
     """Retention expiration date of this object."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "GCSObject"
+        self.type_name = "GCSObject"

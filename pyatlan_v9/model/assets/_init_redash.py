@@ -8,15 +8,15 @@ Redash module exports.
 This module provides convenient imports for all Redash types and their Related variants.
 """
 
-from .redash import Redash
-from .redash_dashboard import RedashDashboard
-from .redash_query import RedashQuery
 from .redash_related import (
     RelatedRedash,
     RelatedRedashDashboard,
     RelatedRedashQuery,
     RelatedRedashVisualization,
 )
+from .redash import Redash
+from .redash_dashboard import RedashDashboard
+from .redash_query import RedashQuery
 from .redash_visualization import RedashVisualization
 
 __all__ = [

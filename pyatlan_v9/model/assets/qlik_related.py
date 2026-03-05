@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -40,35 +39,33 @@ class RelatedQlik(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Qlik" so it serializes correctly
 
-    qlik_id: Union[str, None, UnsetType] = UNSET
+    qlik_id: str | None | UnsetType = UNSET
     """Identifier of this asset, from Qlik."""
 
-    qlik_qri: Union[str, None, UnsetType] = UNSET
+    qlik_qri: str | None | UnsetType = msgspec.field(default=UNSET, name="qlikQRI")
     """Unique QRI of this asset, from Qlik."""
 
-    qlik_space_id: Union[str, None, UnsetType] = UNSET
+    qlik_space_id: str | None | UnsetType = UNSET
     """Identifier of the space in which this asset exists, from Qlik."""
 
-    qlik_space_qualified_name: Union[str, None, UnsetType] = UNSET
+    qlik_space_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the space in which this asset exists."""
 
-    qlik_app_id: Union[str, None, UnsetType] = UNSET
+    qlik_app_id: str | None | UnsetType = UNSET
     """Identifier of the app in which this asset belongs, from Qlik."""
 
-    qlik_app_qualified_name: Union[str, None, UnsetType] = UNSET
+    qlik_app_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the app where this asset belongs."""
 
-    qlik_owner_id: Union[str, None, UnsetType] = UNSET
+    qlik_owner_id: str | None | UnsetType = UNSET
     """Identifier of the owner of this asset, in Qlik."""
 
-    qlik_is_published: Union[bool, None, UnsetType] = UNSET
+    qlik_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Qlik (true) or not (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Qlik"
-
+        self.type_name = "Qlik"
 
 class RelatedQlikChart(RelatedQlik):
     """
@@ -80,23 +77,21 @@ class RelatedQlikChart(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikChart" so it serializes correctly
 
-    qlik_chart_subtitle: Union[str, None, UnsetType] = UNSET
+    qlik_chart_subtitle: str | None | UnsetType = UNSET
     """Subtitle of this chart."""
 
-    qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
+    qlik_chart_footnote: str | None | UnsetType = UNSET
     """Footnote of this chart."""
 
-    qlik_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_orientation: str | None | UnsetType = UNSET
     """Orientation of this chart."""
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: str | None | UnsetType = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikChart"
-
+        self.type_name = "QlikChart"
 
 class RelatedQlikSheet(RelatedQlik):
     """
@@ -108,14 +103,12 @@ class RelatedQlikSheet(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikSheet" so it serializes correctly
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_is_approved: bool | None | UnsetType = UNSET
     """Whether this is approved (true) or not (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikSheet"
-
+        self.type_name = "QlikSheet"
 
 class RelatedQlikSpace(RelatedQlik):
     """
@@ -127,14 +120,12 @@ class RelatedQlikSpace(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikSpace" so it serializes correctly
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: str | None | UnsetType = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikSpace"
-
+        self.type_name = "QlikSpace"
 
 class RelatedQlikStream(RelatedQlik):
     """
@@ -148,9 +139,7 @@ class RelatedQlikStream(RelatedQlik):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikStream"
-
+        self.type_name = "QlikStream"
 
 class RelatedQlikApp(RelatedQlik):
     """
@@ -162,26 +151,24 @@ class RelatedQlikApp(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikApp" so it serializes correctly
 
-    qlik_has_section_access: Union[bool, None, UnsetType] = UNSET
+    qlik_has_section_access: bool | None | UnsetType = UNSET
     """Whether section access or data masking is enabled on the source (true) or not (false)."""
 
-    qlik_origin_app_id: Union[str, None, UnsetType] = UNSET
+    qlik_origin_app_id: str | None | UnsetType = UNSET
     """Value of originAppId for this app."""
 
-    qlik_is_encrypted: Union[bool, None, UnsetType] = UNSET
+    qlik_is_encrypted: bool | None | UnsetType = UNSET
     """Whether this app is encrypted (true) or not (false)."""
 
-    qlik_is_direct_query_mode: Union[bool, None, UnsetType] = UNSET
+    qlik_is_direct_query_mode: bool | None | UnsetType = UNSET
     """Whether this app is in direct query mode (true) or not (false)."""
 
-    qlik_app_static_byte_size: Union[int, None, UnsetType] = UNSET
+    qlik_app_static_byte_size: int | None | UnsetType = UNSET
     """Static space used by this app, in bytes."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikApp"
-
+        self.type_name = "QlikApp"
 
 class RelatedQlikDataset(RelatedQlik):
     """
@@ -193,26 +180,24 @@ class RelatedQlikDataset(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikDataset" so it serializes correctly
 
-    qlik_dataset_technical_name: Union[str, None, UnsetType] = UNSET
+    qlik_dataset_technical_name: str | None | UnsetType = UNSET
     """Technical name of this asset."""
 
-    qlik_dataset_type: Union[str, None, UnsetType] = UNSET
+    qlik_dataset_type: str | None | UnsetType = UNSET
     """Type of this data asset, for example: qix-df, snowflake, etc."""
 
-    qlik_dataset_uri: Union[str, None, UnsetType] = UNSET
+    qlik_dataset_uri: str | None | UnsetType = UNSET
     """URI of this dataset."""
 
-    qlik_dataset_subtype: Union[str, None, UnsetType] = UNSET
+    qlik_dataset_subtype: str | None | UnsetType = UNSET
     """Subtype this dataset asset."""
 
-    qlik_is_implicit: Union[bool, None, UnsetType] = UNSET
+    qlik_is_implicit: bool | None | UnsetType = UNSET
     """Whether the Qlik dataset is an implicit dataset"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikDataset"
-
+        self.type_name = "QlikDataset"
 
 class RelatedQlikColumn(RelatedQlik):
     """
@@ -224,19 +209,18 @@ class RelatedQlikColumn(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikColumn" so it serializes correctly
 
-    qlik_column_name: Union[str, None, UnsetType] = UNSET
+    qlik_column_name: str | None | UnsetType = UNSET
     """Qlik Column name."""
 
-    qlik_data_type: Union[str, None, UnsetType] = UNSET
+    qlik_data_type: str | None | UnsetType = UNSET
     """Data type of the Qlik Column."""
 
-    qlik_column_type: Union[str, None, UnsetType] = UNSET
+    qlik_column_type: str | None | UnsetType = UNSET
     """Column type can be: Dimension, Measure or Normal."""
 
-    qlik_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    qlik_parent_qualified_name: str | None | UnsetType = UNSET
     """Parent Qualified name of column."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "QlikColumn"
+        self.type_name = "QlikColumn"

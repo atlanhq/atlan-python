@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -39,29 +38,27 @@ class RelatedSigma(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Sigma" so it serializes correctly
 
-    sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    sigma_workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this asset exists."""
 
-    sigma_workbook_name: Union[str, None, UnsetType] = UNSET
+    sigma_workbook_name: str | None | UnsetType = UNSET
     """Simple name of the workbook in which this asset exists."""
 
-    sigma_page_qualified_name: Union[str, None, UnsetType] = UNSET
+    sigma_page_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the page on which this asset exists."""
 
-    sigma_page_name: Union[str, None, UnsetType] = UNSET
+    sigma_page_name: str | None | UnsetType = UNSET
     """Simple name of the page on which this asset exists."""
 
-    sigma_data_element_qualified_name: Union[str, None, UnsetType] = UNSET
+    sigma_data_element_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the data element in which this asset exists."""
 
-    sigma_data_element_name: Union[str, None, UnsetType] = UNSET
+    sigma_data_element_name: str | None | UnsetType = UNSET
     """Simple name of the data element in which this asset exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Sigma"
-
+        self.type_name = "Sigma"
 
 class RelatedSigmaDataElement(RelatedSigma):
     """
@@ -73,20 +70,18 @@ class RelatedSigmaDataElement(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataElement" so it serializes correctly
 
-    sigma_data_element_query: Union[str, None, UnsetType] = UNSET
+    sigma_data_element_query: str | None | UnsetType = UNSET
     """"""
 
-    sigma_data_element_type: Union[str, None, UnsetType] = UNSET
+    sigma_data_element_type: str | None | UnsetType = UNSET
     """"""
 
-    sigma_data_element_field_count: Union[int, None, UnsetType] = UNSET
+    sigma_data_element_field_count: int | None | UnsetType = UNSET
     """Number of fields in this data element."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaDataElement"
-
+        self.type_name = "SigmaDataElement"
 
 class RelatedSigmaDataElementField(RelatedSigma):
     """
@@ -98,17 +93,15 @@ class RelatedSigmaDataElementField(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataElementField" so it serializes correctly
 
-    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_is_hidden: bool | None | UnsetType = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
-    sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
+    sigma_data_element_field_formula: str | None | UnsetType = UNSET
     """"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaDataElementField"
-
+        self.type_name = "SigmaDataElementField"
 
 class RelatedSigmaDataset(RelatedSigma):
     """
@@ -120,14 +113,12 @@ class RelatedSigmaDataset(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataset" so it serializes correctly
 
-    sigma_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_column_count: int | None | UnsetType = UNSET
     """Number of columns in this dataset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaDataset"
-
+        self.type_name = "SigmaDataset"
 
 class RelatedSigmaDatasetColumn(RelatedSigma):
     """
@@ -139,17 +130,15 @@ class RelatedSigmaDatasetColumn(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDatasetColumn" so it serializes correctly
 
-    sigma_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sigma_dataset_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dataset in which this column exists."""
 
-    sigma_dataset_name: Union[str, None, UnsetType] = UNSET
+    sigma_dataset_name: str | None | UnsetType = UNSET
     """Simple name of the dataset in which this column exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaDatasetColumn"
-
+        self.type_name = "SigmaDatasetColumn"
 
 class RelatedSigmaPage(RelatedSigma):
     """
@@ -161,14 +150,12 @@ class RelatedSigmaPage(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaPage" so it serializes correctly
 
-    sigma_data_element_count: Union[int, None, UnsetType] = UNSET
+    sigma_data_element_count: int | None | UnsetType = UNSET
     """Number of data elements on this page."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaPage"
-
+        self.type_name = "SigmaPage"
 
 class RelatedSigmaWorkbook(RelatedSigma):
     """
@@ -180,10 +167,9 @@ class RelatedSigmaWorkbook(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaWorkbook" so it serializes correctly
 
-    sigma_page_count: Union[int, None, UnsetType] = UNSET
+    sigma_page_count: int | None | UnsetType = UNSET
     """Number of pages in this workbook."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "SigmaWorkbook"
+        self.type_name = "SigmaWorkbook"

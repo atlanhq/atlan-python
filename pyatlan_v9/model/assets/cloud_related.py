@@ -11,14 +11,20 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
 from .referenceable_related import RelatedReferenceable
 
-__all__ = ["RelatedCloud", "RelatedAWS", "RelatedAzure", "RelatedGoogle"]
+__all__ = [
+    "RelatedCloud",
+    "RelatedAWS",
+    "RelatedAzure",
+    "RelatedGoogle",
+]
 
 
 class RelatedCloud(RelatedAsset):
@@ -31,11 +37,12 @@ class RelatedCloud(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Cloud" so it serializes correctly
 
+    cloud_uniform_resource_name: str | None | UnsetType = UNSET
+    """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Cloud"
-
+        self.type_name = "Cloud"
 
 class RelatedAWS(RelatedCloud):
     """
@@ -47,38 +54,36 @@ class RelatedAWS(RelatedCloud):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AWS" so it serializes correctly
 
-    aws_arn: Union[str, None, UnsetType] = UNSET
-    """Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances."""
+    aws_arn: str | None | UnsetType = UNSET
+    """DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead."""
 
-    aws_partition: Union[str, None, UnsetType] = UNSET
+    aws_partition: str | None | UnsetType = UNSET
     """Group of AWS region and service objects."""
 
-    aws_service: Union[str, None, UnsetType] = UNSET
+    aws_service: str | None | UnsetType = UNSET
     """Type of service in which the asset exists."""
 
-    aws_region: Union[str, None, UnsetType] = UNSET
+    aws_region: str | None | UnsetType = UNSET
     """Physical region where the data center in which the asset exists is clustered."""
 
-    aws_account_id: Union[str, None, UnsetType] = UNSET
+    aws_account_id: str | None | UnsetType = UNSET
     """12-digit number that uniquely identifies an AWS account."""
 
-    aws_resource_id: Union[str, None, UnsetType] = UNSET
+    aws_resource_id: str | None | UnsetType = UNSET
     """Unique resource ID assigned when a new resource is created."""
 
-    aws_owner_name: Union[str, None, UnsetType] = UNSET
+    aws_owner_name: str | None | UnsetType = UNSET
     """Root user's name."""
 
-    aws_owner_id: Union[str, None, UnsetType] = UNSET
+    aws_owner_id: str | None | UnsetType = UNSET
     """Root user's ID."""
 
-    aws_tags: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    aws_tags: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of tags that have been applied to the asset in AWS."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AWS"
-
+        self.type_name = "AWS"
 
 class RelatedAzure(RelatedCloud):
     """
@@ -90,23 +95,21 @@ class RelatedAzure(RelatedCloud):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Azure" so it serializes correctly
 
-    azure_resource_id: Union[str, None, UnsetType] = UNSET
+    azure_resource_id: str | None | UnsetType = UNSET
     """Resource identifier of this asset in Azure."""
 
-    azure_location: Union[str, None, UnsetType] = UNSET
+    azure_location: str | None | UnsetType = UNSET
     """Location of this asset in Azure."""
 
-    adls_account_secondary_location: Union[str, None, UnsetType] = UNSET
+    adls_account_secondary_location: str | None | UnsetType = UNSET
     """Secondary location of the ADLS account."""
 
-    azure_tags: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    azure_tags: list[dict[str, Any]] | None | UnsetType = UNSET
     """Tags that have been applied to this asset in Azure."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Azure"
-
+        self.type_name = "Azure"
 
 class RelatedGoogle(RelatedCloud):
     """
@@ -118,31 +121,30 @@ class RelatedGoogle(RelatedCloud):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Google" so it serializes correctly
 
-    google_service: Union[str, None, UnsetType] = UNSET
+    google_service: str | None | UnsetType = UNSET
     """Service in Google in which the asset exists."""
 
-    google_project_name: Union[str, None, UnsetType] = UNSET
+    google_project_name: str | None | UnsetType = UNSET
     """Name of the project in which the asset exists."""
 
-    google_project_id: Union[str, None, UnsetType] = UNSET
+    google_project_id: str | None | UnsetType = UNSET
     """ID of the project in which the asset exists."""
 
-    cloud_project_number: Union[int, None, UnsetType] = UNSET
+    cloud_project_number: int | None | UnsetType = UNSET
     """Number of the project in which the asset exists."""
 
-    google_location: Union[str, None, UnsetType] = UNSET
+    google_location: str | None | UnsetType = UNSET
     """Location of this asset in Google."""
 
-    google_location_type: Union[str, None, UnsetType] = UNSET
+    google_location_type: str | None | UnsetType = UNSET
     """Type of location of this asset in Google."""
 
-    google_labels: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    google_labels: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of labels that have been applied to the asset in Google."""
 
-    google_tags: Union[list[dict[str, Any]], None, UnsetType] = UNSET
+    google_tags: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of tags that have been applied to the asset in Google."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Google"
+        self.type_name = "Google"

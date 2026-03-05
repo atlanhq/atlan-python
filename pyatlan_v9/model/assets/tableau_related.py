@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -45,14 +44,12 @@ class RelatedTableau(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Tableau" so it serializes correctly
 
-    tableau_project_hierarchy_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Tableau"
-
+        self.type_name = "Tableau"
 
 class RelatedTableauCalculatedField(RelatedTableau):
     """
@@ -64,44 +61,42 @@ class RelatedTableauCalculatedField(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauCalculatedField" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this calculated field exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this calculated field exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this calculated field exists."""
 
-    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this calculated field exists."""
 
-    datasource_qualified_name: Union[str, None, UnsetType] = UNSET
+    datasource_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the datasource in which this calculated field exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects and their nested projects."""
 
-    data_category: Union[str, None, UnsetType] = UNSET
+    data_category: str | None | UnsetType = UNSET
     """Data category of this field."""
 
-    role: Union[str, None, UnsetType] = UNSET
+    role: str | None | UnsetType = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_data_type: Union[str, None, UnsetType] = UNSET
+    tableau_data_type: str | None | UnsetType = UNSET
     """Data type of the field, from Tableau."""
 
-    formula: Union[str, None, UnsetType] = UNSET
+    formula: str | None | UnsetType = UNSET
     """Formula for this calculated field."""
 
-    upstream_fields: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """List of fields that are upstream to this calculated field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauCalculatedField"
-
+        self.type_name = "TableauCalculatedField"
 
 class RelatedTableauDashboard(RelatedTableau):
     """
@@ -113,26 +108,24 @@ class RelatedTableauDashboard(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauDashboard" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this dashboard exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this dashboard exists."""
 
-    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this dashboard exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this dashboard exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects and their nested child projects."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauDashboard"
-
+        self.type_name = "TableauDashboard"
 
 class RelatedTableauDashboardField(RelatedTableau):
     """
@@ -144,60 +137,54 @@ class RelatedTableauDashboardField(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauDashboardField" so it serializes correctly
 
-    tableau_site_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this dashboard field exists."""
 
-    tableau_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this dashboard field exists."""
 
-    tableau_top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this dashboard field exists."""
 
-    tableau_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the datasource in which this dashboard field exists."""
 
-    tableau_project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    tableau_project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects and their nested child projects."""
 
-    tableau_fully_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_fully_qualified_name: str | None | UnsetType = UNSET
     """Name used internally in Tableau to uniquely identify this field."""
 
-    tableau_dashboard_field_data_category: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_data_category: str | None | UnsetType = UNSET
     """Data category of this field."""
 
-    tableau_dashboard_field_role: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_role: str | None | UnsetType = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_dashboard_field_data_type: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_data_type: str | None | UnsetType = UNSET
     """Data type of this field."""
 
-    tableau_upstream_tables: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    tableau_upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
     """Tables upstream to this worksheet field."""
 
-    tableau_dashboard_field_formula: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_formula: str | None | UnsetType = UNSET
     """Formula for this field."""
 
-    tableau_dashboard_field_bin_size: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_bin_size: str | None | UnsetType = UNSET
     """Bin size of this field."""
 
-    tableau_dashboard_field_upstream_columns: Union[
-        list[dict[str, str]], None, UnsetType
-    ] = UNSET
+    tableau_dashboard_field_upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
     """Columns upstream to this field."""
 
-    tableau_dashboard_field_upstream_fields: Union[
-        list[dict[str, str]], None, UnsetType
-    ] = UNSET
+    tableau_dashboard_field_upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """Fields upstream to this field."""
 
-    tableau_dashboard_field_type: Union[str, None, UnsetType] = UNSET
+    tableau_dashboard_field_type: str | None | UnsetType = UNSET
     """Type of this dashboard field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauDashboardField"
-
+        self.type_name = "TableauDashboardField"
 
 class RelatedTableauDatasource(RelatedTableau):
     """
@@ -209,50 +196,48 @@ class RelatedTableauDatasource(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauDatasource" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this datasource exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this datasource exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this datasource exists."""
 
-    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this datasource exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
-    is_published: Union[bool, None, UnsetType] = UNSET
+    is_published: bool | None | UnsetType = UNSET
     """Whether this datasource is published (true) or embedded (false)."""
 
-    has_extracts: Union[bool, None, UnsetType] = UNSET
+    has_extracts: bool | None | UnsetType = UNSET
     """Whether this datasource has extracts (true) or not (false)."""
 
-    is_certified: Union[bool, None, UnsetType] = UNSET
+    is_certified: bool | None | UnsetType = UNSET
     """Whether this datasource is certified in Tableau (true) or not (false)."""
 
-    certifier: Union[dict[str, str], None, UnsetType] = UNSET
+    certifier: dict[str, str] | None | UnsetType = UNSET
     """Users that have marked this datasource as cerified, in Tableau."""
 
-    certification_note: Union[str, None, UnsetType] = UNSET
+    certification_note: str | None | UnsetType = UNSET
     """Notes related to this datasource being cerfified, in Tableau."""
 
-    certifier_display_name: Union[str, None, UnsetType] = UNSET
+    certifier_display_name: str | None | UnsetType = UNSET
     """Name of the user who cerified this datasource, in Tableau."""
 
-    upstream_tables: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
     """List of tables that are upstream of this datasource."""
 
-    upstream_datasources: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_datasources: list[dict[str, str]] | None | UnsetType = UNSET
     """List of datasources that are upstream of this datasource."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauDatasource"
-
+        self.type_name = "TableauDatasource"
 
 class RelatedTableauDatasourceField(RelatedTableau):
     """
@@ -264,59 +249,57 @@ class RelatedTableauDatasourceField(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauDatasourceField" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this datasource field exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this datasource field exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this datasource field exists."""
 
-    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this datasource field exists."""
 
-    datasource_qualified_name: Union[str, None, UnsetType] = UNSET
+    datasource_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the datasource in which this datasource field exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects and their nested child projects."""
 
-    fully_qualified_name: Union[str, None, UnsetType] = UNSET
+    fully_qualified_name: str | None | UnsetType = UNSET
     """Name used internally in Tableau to uniquely identify this field."""
 
-    tableau_datasource_field_data_category: Union[str, None, UnsetType] = UNSET
+    tableau_datasource_field_data_category: str | None | UnsetType = UNSET
     """Data category of this field."""
 
-    tableau_datasource_field_role: Union[str, None, UnsetType] = UNSET
+    tableau_datasource_field_role: str | None | UnsetType = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_datasource_field_data_type: Union[str, None, UnsetType] = UNSET
+    tableau_datasource_field_data_type: str | None | UnsetType = UNSET
     """Data type of this field."""
 
-    upstream_tables: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
     """Tables upstream to this datasource field."""
 
-    tableau_datasource_field_formula: Union[str, None, UnsetType] = UNSET
+    tableau_datasource_field_formula: str | None | UnsetType = UNSET
     """Formula for this field."""
 
-    tableau_datasource_field_bin_size: Union[str, None, UnsetType] = UNSET
+    tableau_datasource_field_bin_size: str | None | UnsetType = UNSET
     """Bin size of this field."""
 
-    upstream_columns: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
     """Columns upstream to this field."""
 
-    upstream_fields: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """Fields upstream to this field."""
 
-    datasource_field_type: Union[str, None, UnsetType] = UNSET
+    datasource_field_type: str | None | UnsetType = UNSET
     """Type of this datasource field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauDatasourceField"
-
+        self.type_name = "TableauDatasourceField"
 
 class RelatedTableauFlow(RelatedTableau):
     """
@@ -328,32 +311,30 @@ class RelatedTableauFlow(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauFlow" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this flow exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this flow exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this flow exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
-    input_fields: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    input_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """List of fields that are inputs to this flow."""
 
-    output_fields: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    output_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """List of fields that are outputs from this flow."""
 
-    output_steps: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    output_steps: list[dict[str, str]] | None | UnsetType = UNSET
     """List of steps that are outputs from this flow."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauFlow"
-
+        self.type_name = "TableauFlow"
 
 class RelatedTableauMetric(RelatedTableau):
     """
@@ -365,23 +346,21 @@ class RelatedTableauMetric(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauMetric" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this metric exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this metric exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this metric exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauMetric"
-
+        self.type_name = "TableauMetric"
 
 class RelatedTableauProject(RelatedTableau):
     """
@@ -393,23 +372,21 @@ class RelatedTableauProject(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauProject" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this project exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this project exists, if this is a nested project."""
 
-    is_top_level_project: Union[bool, None, UnsetType] = UNSET
+    is_top_level_project: bool | None | UnsetType = UNSET
     """Whether this project is a top-level project (true) or not (false)."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauProject"
-
+        self.type_name = "TableauProject"
 
 class RelatedTableauSite(RelatedTableau):
     """
@@ -423,9 +400,7 @@ class RelatedTableauSite(RelatedTableau):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauSite"
-
+        self.type_name = "TableauSite"
 
 class RelatedTableauWorkbook(RelatedTableau):
     """
@@ -437,26 +412,24 @@ class RelatedTableauWorkbook(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauWorkbook" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this workbook exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this workbook exists."""
 
-    top_level_project_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_name: str | None | UnsetType = UNSET
     """Simple name of the top-level project in which this workbook exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this workbook exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauWorkbook"
-
+        self.type_name = "TableauWorkbook"
 
 class RelatedTableauWorksheet(RelatedTableau):
     """
@@ -468,26 +441,24 @@ class RelatedTableauWorksheet(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauWorksheet" so it serializes correctly
 
-    site_qualified_name: Union[str, None, UnsetType] = UNSET
+    site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this worksheet exists."""
 
-    project_qualified_name: Union[str, None, UnsetType] = UNSET
+    project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this worksheet exists."""
 
-    top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this worksheet exists."""
 
-    project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects with their nested child projects."""
 
-    workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this worksheet exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauWorksheet"
-
+        self.type_name = "TableauWorksheet"
 
 class RelatedTableauWorksheetField(RelatedTableau):
     """
@@ -499,61 +470,54 @@ class RelatedTableauWorksheetField(RelatedTableau):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "TableauWorksheetField" so it serializes correctly
 
-    tableau_site_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_site_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the site in which this worksheet field exists."""
 
-    tableau_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this worksheet field exists."""
 
-    tableau_top_level_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_top_level_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level project in which this worksheet field exists."""
 
-    tableau_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_workbook_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workbook in which this worksheet field exists."""
 
-    tableau_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the datasource in which this worksheet field exists."""
 
-    tableau_project_hierarchy: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    tableau_project_hierarchy: list[dict[str, str]] | None | UnsetType = UNSET
     """List of top-level projects and their nested child projects."""
 
-    tableau_fully_qualified_name: Union[str, None, UnsetType] = UNSET
+    tableau_fully_qualified_name: str | None | UnsetType = UNSET
     """Name used internally in Tableau to uniquely identify this field."""
 
-    tableau_worksheet_field_data_category: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_data_category: str | None | UnsetType = UNSET
     """Data category of this field."""
 
-    tableau_worksheet_field_role: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_role: str | None | UnsetType = UNSET
     """Role of this field, for example: 'dimension', 'measure', or 'unknown'."""
 
-    tableau_worksheet_field_data_type: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_data_type: str | None | UnsetType = UNSET
     """Data type of this field."""
 
-    tableau_worksheet_field_upstream_tables: Union[
-        list[dict[str, str]], None, UnsetType
-    ] = UNSET
+    tableau_worksheet_field_upstream_tables: list[dict[str, str]] | None | UnsetType = UNSET
     """Tables upstream to this worksheet field."""
 
-    tableau_worksheet_field_formula: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_formula: str | None | UnsetType = UNSET
     """Formula for this field."""
 
-    tableau_worksheet_field_bin_size: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_bin_size: str | None | UnsetType = UNSET
     """Bin size of this field."""
 
-    tableau_worksheet_field_upstream_columns: Union[
-        list[dict[str, str]], None, UnsetType
-    ] = UNSET
+    tableau_worksheet_field_upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
     """Columns upstream to this field."""
 
-    tableau_worksheet_field_upstream_fields: Union[
-        list[dict[str, str]], None, UnsetType
-    ] = UNSET
+    tableau_worksheet_field_upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
     """Fields upstream to this field."""
 
-    tableau_worksheet_field_type: Union[str, None, UnsetType] = UNSET
+    tableau_worksheet_field_type: str | None | UnsetType = UNSET
     """Type of this worksheet field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "TableauWorksheetField"
+        self.type_name = "TableauWorksheetField"

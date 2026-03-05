@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -40,23 +39,21 @@ class RelatedThoughtspot(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Thoughtspot" so it serializes correctly
 
-    thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_chart_type: str | None | UnsetType = UNSET
     """"""
 
-    thoughtspot_question_text: Union[str, None, UnsetType] = UNSET
+    thoughtspot_question_text: str | None | UnsetType = UNSET
     """"""
 
-    thoughtspot_join_count: Union[int, None, UnsetType] = UNSET
+    thoughtspot_join_count: int | None | UnsetType = UNSET
     """Total number of data table joins executed for analysis."""
 
-    thoughtspot_column_count: Union[int, None, UnsetType] = UNSET
+    thoughtspot_column_count: int | None | UnsetType = UNSET
     """Number of columns."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Thoughtspot"
-
+        self.type_name = "Thoughtspot"
 
 class RelatedThoughtspotAnswer(RelatedThoughtspot):
     """
@@ -70,9 +67,7 @@ class RelatedThoughtspotAnswer(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotAnswer"
-
+        self.type_name = "ThoughtspotAnswer"
 
 class RelatedThoughtspotDashlet(RelatedThoughtspot):
     """
@@ -84,17 +79,15 @@ class RelatedThoughtspotDashlet(RelatedThoughtspot):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ThoughtspotDashlet" so it serializes correctly
 
-    thoughtspot_liveboard_name: Union[str, None, UnsetType] = UNSET
+    thoughtspot_liveboard_name: str | None | UnsetType = UNSET
     """Simple name of the liveboard in which this dashlet exists."""
 
-    thoughtspot_liveboard_qualified_name: Union[str, None, UnsetType] = UNSET
+    thoughtspot_liveboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the liveboard in which this dashlet exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotDashlet"
-
+        self.type_name = "ThoughtspotDashlet"
 
 class RelatedThoughtspotLiveboard(RelatedThoughtspot):
     """
@@ -108,9 +101,7 @@ class RelatedThoughtspotLiveboard(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotLiveboard"
-
+        self.type_name = "ThoughtspotLiveboard"
 
 class RelatedThoughtspotTable(RelatedThoughtspot):
     """
@@ -124,9 +115,7 @@ class RelatedThoughtspotTable(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotTable"
-
+        self.type_name = "ThoughtspotTable"
 
 class RelatedThoughtspotView(RelatedThoughtspot):
     """
@@ -140,9 +129,7 @@ class RelatedThoughtspotView(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotView"
-
+        self.type_name = "ThoughtspotView"
 
 class RelatedThoughtspotWorksheet(RelatedThoughtspot):
     """
@@ -156,9 +143,7 @@ class RelatedThoughtspotWorksheet(RelatedThoughtspot):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotWorksheet"
-
+        self.type_name = "ThoughtspotWorksheet"
 
 class RelatedThoughtspotColumn(RelatedThoughtspot):
     """
@@ -170,22 +155,21 @@ class RelatedThoughtspotColumn(RelatedThoughtspot):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ThoughtspotColumn" so it serializes correctly
 
-    thoughtspot_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    thoughtspot_table_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the table in which this column exists."""
 
-    thoughtspot_view_qualified_name: Union[str, None, UnsetType] = UNSET
+    thoughtspot_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the view in which this column exists."""
 
-    thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
+    thoughtspot_worksheet_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_data_type: str | None | UnsetType = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_type: str | None | UnsetType = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ThoughtspotColumn"
+        self.type_name = "ThoughtspotColumn"

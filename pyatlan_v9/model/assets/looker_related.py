@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,14 +42,12 @@ class RelatedLooker(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Looker" so it serializes correctly
 
-    looker_slug: Union[str, None, UnsetType] = UNSET
+    looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Looker"
-
+        self.type_name = "Looker"
 
 class RelatedLookerDashboard(RelatedLooker):
     """
@@ -62,32 +59,30 @@ class RelatedLookerDashboard(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerDashboard" so it serializes correctly
 
-    folder_name: Union[str, None, UnsetType] = UNSET
+    folder_name: str | None | UnsetType = UNSET
     """Name of the parent folder in Looker that contains this dashboard."""
 
-    source_user_id: Union[int, None, UnsetType] = UNSET
+    source_user_id: int | None | UnsetType = UNSET
     """Identifier of the user who created this dashboard, from Looker."""
 
-    source_view_count: Union[int, None, UnsetType] = UNSET
+    source_view_count: int | None | UnsetType = UNSET
     """Number of times the dashboard has been viewed through the Looker web UI."""
 
-    source_metadata_id: Union[int, None, UnsetType] = UNSET
+    source_metadata_id: int | None | UnsetType = UNSET
     """Identifier of the dashboard's content metadata, from Looker."""
 
-    sourcelast_updater_id: Union[int, None, UnsetType] = UNSET
+    sourcelast_updater_id: int | None | UnsetType = UNSET
     """Identifier of the user who last updated the dashboard, from Looker."""
 
-    source_last_accessed_at: Union[int, None, UnsetType] = UNSET
+    source_last_accessed_at: int | None | UnsetType = UNSET
     """Timestamp (epoch) when the dashboard was last accessed by a user, in milliseconds."""
 
-    source_last_viewed_at: Union[int, None, UnsetType] = UNSET
+    source_last_viewed_at: int | None | UnsetType = UNSET
     """Timestamp (epoch) when the dashboard was last viewed by a user."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerDashboard"
-
+        self.type_name = "LookerDashboard"
 
 class RelatedLookerExplore(RelatedLooker):
     """
@@ -99,26 +94,24 @@ class RelatedLookerExplore(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerExplore" so it serializes correctly
 
-    project_name: Union[str, None, UnsetType] = UNSET
+    project_name: str | None | UnsetType = UNSET
     """Name of the parent project of this Explore."""
 
-    model_name: Union[str, None, UnsetType] = UNSET
+    model_name: str | None | UnsetType = UNSET
     """Name of the parent model of this Explore."""
 
-    source_connection_name: Union[str, None, UnsetType] = UNSET
+    source_connection_name: str | None | UnsetType = UNSET
     """Connection name for the Explore, from Looker."""
 
-    view_name: Union[str, None, UnsetType] = UNSET
+    view_name: str | None | UnsetType = UNSET
     """Name of the view for the Explore."""
 
-    sql_table_name: Union[str, None, UnsetType] = UNSET
+    sql_table_name: str | None | UnsetType = UNSET
     """Name of the SQL table used to declare the Explore."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerExplore"
-
+        self.type_name = "LookerExplore"
 
 class RelatedLookerView(RelatedLooker):
     """
@@ -130,20 +123,18 @@ class RelatedLookerView(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerView" so it serializes correctly
 
-    project_name: Union[str, None, UnsetType] = UNSET
+    project_name: str | None | UnsetType = UNSET
     """Name of the project in which this view exists."""
 
-    looker_view_file_path: Union[str, None, UnsetType] = UNSET
+    looker_view_file_path: str | None | UnsetType = UNSET
     """File path of this view within the project."""
 
-    looker_file_name: Union[str, None, UnsetType] = UNSET
+    looker_file_name: str | None | UnsetType = UNSET
     """File name of this view."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerView"
-
+        self.type_name = "LookerView"
 
 class RelatedLookerLook(RelatedLooker):
     """
@@ -155,41 +146,39 @@ class RelatedLookerLook(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerLook" so it serializes correctly
 
-    folder_name: Union[str, None, UnsetType] = UNSET
+    folder_name: str | None | UnsetType = UNSET
     """Name of the folder in which the Look is organized."""
 
-    source_user_id: Union[int, None, UnsetType] = UNSET
+    source_user_id: int | None | UnsetType = UNSET
     """Identifier of the user who created the Look, from Looker."""
 
-    source_view_count: Union[int, None, UnsetType] = UNSET
+    source_view_count: int | None | UnsetType = UNSET
     """Number of times the look has been viewed in the Looker web UI."""
 
-    sourcelast_updater_id: Union[int, None, UnsetType] = UNSET
+    sourcelast_updater_id: int | None | UnsetType = UNSET
     """Identifier of the user that last updated the Look, from Looker."""
 
-    source_last_accessed_at: Union[int, None, UnsetType] = UNSET
+    source_last_accessed_at: int | None | UnsetType = UNSET
     """Time (epoch) when the Look was last accessed by a user, in milliseconds."""
 
-    source_last_viewed_at: Union[int, None, UnsetType] = UNSET
+    source_last_viewed_at: int | None | UnsetType = UNSET
     """Time (epoch) when the Look was last viewed by a user, in milliseconds."""
 
-    source_content_metadata_id: Union[int, None, UnsetType] = UNSET
+    source_content_metadata_id: int | None | UnsetType = UNSET
     """Identifier of the Look's content metadata, from Looker."""
 
-    source_query_id: Union[int, None, UnsetType] = UNSET
+    source_query_id: int | None | UnsetType = UNSET
     """(Deprecated) Please use lookerSourceQueryId instead."""
 
-    looker_source_query_id: Union[str, None, UnsetType] = UNSET
+    looker_source_query_id: str | None | UnsetType = UNSET
     """Identifier of the query for the Look, from Looker."""
 
-    model_name: Union[str, None, UnsetType] = UNSET
+    model_name: str | None | UnsetType = UNSET
     """Name of the model in which this Look exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerLook"
-
+        self.type_name = "LookerLook"
 
 class RelatedLookerTile(RelatedLooker):
     """
@@ -201,35 +190,33 @@ class RelatedLookerTile(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerTile" so it serializes correctly
 
-    lookml_link_id: Union[str, None, UnsetType] = UNSET
+    lookml_link_id: str | None | UnsetType = UNSET
     """Identifier for the LoomML link."""
 
-    merge_result_id: Union[str, None, UnsetType] = UNSET
+    merge_result_id: str | None | UnsetType = UNSET
     """Identifier for the merge result."""
 
-    note_text: Union[str, None, UnsetType] = UNSET
+    note_text: str | None | UnsetType = UNSET
     """Text of notes added to the tile."""
 
-    query_id: Union[int, None, UnsetType] = UNSET
+    query_id: int | None | UnsetType = msgspec.field(default=UNSET, name="queryID")
     """(Deprecated) Please use lookerQueryID instead."""
 
-    looker_query_id: Union[str, None, UnsetType] = UNSET
+    looker_query_id: str | None | UnsetType = msgspec.field(default=UNSET, name="lookerQueryID")
     """Identifier of the query for the Look, from Looker."""
 
-    result_maker_id: Union[int, None, UnsetType] = UNSET
+    result_maker_id: int | None | UnsetType = msgspec.field(default=UNSET, name="resultMakerID")
     """Identifier of the ResultMarkerLookup entry, from Looker."""
 
-    subtitle_text: Union[str, None, UnsetType] = UNSET
+    subtitle_text: str | None | UnsetType = UNSET
     """Text for the subtitle for text tiles."""
 
-    look_id: Union[int, None, UnsetType] = UNSET
+    look_id: int | None | UnsetType = UNSET
     """Identifier of the Look used to create this tile, from Looker."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerTile"
-
+        self.type_name = "LookerTile"
 
 class RelatedLookerModel(RelatedLooker):
     """
@@ -241,14 +228,12 @@ class RelatedLookerModel(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerModel" so it serializes correctly
 
-    project_name: Union[str, None, UnsetType] = UNSET
+    project_name: str | None | UnsetType = UNSET
     """Name of the project in which the model exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerModel"
-
+        self.type_name = "LookerModel"
 
 class RelatedLookerProject(RelatedLooker):
     """
@@ -262,9 +247,7 @@ class RelatedLookerProject(RelatedLooker):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerProject"
-
+        self.type_name = "LookerProject"
 
 class RelatedLookerQuery(RelatedLooker):
     """
@@ -276,23 +259,21 @@ class RelatedLookerQuery(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerQuery" so it serializes correctly
 
-    source_definition: Union[str, None, UnsetType] = UNSET
+    source_definition: str | None | UnsetType = UNSET
     """Deprecated."""
 
-    source_definition_database: Union[str, None, UnsetType] = UNSET
+    source_definition_database: str | None | UnsetType = UNSET
     """Deprecated."""
 
-    source_definition_schema: Union[str, None, UnsetType] = UNSET
+    source_definition_schema: str | None | UnsetType = UNSET
     """Deprecated."""
 
-    fields: Union[list[str], None, UnsetType] = UNSET
+    fields: list[str] | None | UnsetType = UNSET
     """Deprecated."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerQuery"
-
+        self.type_name = "LookerQuery"
 
 class RelatedLookerField(RelatedLooker):
     """
@@ -304,50 +285,48 @@ class RelatedLookerField(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerField" so it serializes correctly
 
-    project_name: Union[str, None, UnsetType] = UNSET
+    project_name: str | None | UnsetType = UNSET
     """Name of the project in which this field exists."""
 
-    looker_explore_qualified_name: Union[str, None, UnsetType] = UNSET
+    looker_explore_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the Explore in which this field exists."""
 
-    looker_view_qualified_name: Union[str, None, UnsetType] = UNSET
+    looker_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the view in which this field exists."""
 
-    looker_tile_qualified_name: Union[str, None, UnsetType] = UNSET
+    looker_tile_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the tile in which this field is used."""
 
-    looker_look_qualified_name: Union[str, None, UnsetType] = UNSET
+    looker_look_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the look in which this field is used."""
 
-    looker_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
+    looker_dashboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dashboard in which this field is used."""
 
-    model_name: Union[str, None, UnsetType] = UNSET
+    model_name: str | None | UnsetType = UNSET
     """Name of the model in which this field exists."""
 
-    source_definition: Union[str, None, UnsetType] = UNSET
+    source_definition: str | None | UnsetType = UNSET
     """Deprecated."""
 
-    looker_field_data_type: Union[str, None, UnsetType] = UNSET
+    looker_field_data_type: str | None | UnsetType = UNSET
     """Deprecated."""
 
-    looker_times_used: Union[int, None, UnsetType] = UNSET
+    looker_times_used: int | None | UnsetType = UNSET
     """Deprecated."""
 
-    looker_field_is_refined: Union[bool, None, UnsetType] = UNSET
+    looker_field_is_refined: bool | None | UnsetType = UNSET
     """Whether the looker field asset is coming from a refinement"""
 
-    looker_field_refinement_file_path: Union[str, None, UnsetType] = UNSET
+    looker_field_refinement_file_path: str | None | UnsetType = UNSET
     """Absolute path of the file where the refinement of the field is declared."""
 
-    looker_field_refinement_line_number: Union[str, None, UnsetType] = UNSET
+    looker_field_refinement_line_number: str | None | UnsetType = UNSET
     """Line number in the lookerFieldRefinementFilePath where this refinement of the field is declared."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerField"
-
+        self.type_name = "LookerField"
 
 class RelatedLookerFolder(RelatedLooker):
     """
@@ -359,19 +338,18 @@ class RelatedLookerFolder(RelatedLooker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "LookerFolder" so it serializes correctly
 
-    source_content_metadata_id: Union[int, None, UnsetType] = UNSET
+    source_content_metadata_id: int | None | UnsetType = UNSET
     """Identifier for the folder's content metadata in Looker."""
 
-    source_creator_id: Union[int, None, UnsetType] = UNSET
+    source_creator_id: int | None | UnsetType = UNSET
     """Identifier of the user who created the folder, from Looker."""
 
-    source_child_count: Union[int, None, UnsetType] = UNSET
+    source_child_count: int | None | UnsetType = UNSET
     """Number of subfolders in this folder."""
 
-    source_parent_id: Union[int, None, UnsetType] = UNSET
+    source_parent_id: int | None | UnsetType = msgspec.field(default=UNSET, name="sourceParentID")
     """Identifier of the parent folder of this folder, from Looker."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "LookerFolder"
+        self.type_name = "LookerFolder"

@@ -8,12 +8,6 @@ Semantic module exports.
 This module provides convenient imports for all Semantic types and their Related variants.
 """
 
-from .semantic import Semantic
-from .semantic_dimension import SemanticDimension
-from .semantic_entity import SemanticEntity
-from .semantic_field import SemanticField
-from .semantic_measure import SemanticMeasure
-from .semantic_model import SemanticModel
 from .semantic_related import (
     RelatedSemantic,
     RelatedSemanticDimension,
@@ -22,6 +16,12 @@ from .semantic_related import (
     RelatedSemanticMeasure,
     RelatedSemanticModel,
 )
+from .semantic import Semantic
+from .semantic_dimension import SemanticDimension
+from .semantic_entity import SemanticEntity
+from .semantic_field import SemanticField
+from .semantic_measure import SemanticMeasure
+from .semantic_model import SemanticModel
 
 __all__ = [
     "RelatedSemantic",

@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -38,38 +37,36 @@ class RelatedMode(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Mode" so it serializes correctly
 
-    mode_id: Union[str, None, UnsetType] = UNSET
+    mode_id: str | None | UnsetType = UNSET
     """Unique identifier for the Mode asset."""
 
-    mode_token: Union[str, None, UnsetType] = UNSET
+    mode_token: str | None | UnsetType = UNSET
     """Token for the Mode asset."""
 
-    mode_workspace_name: Union[str, None, UnsetType] = UNSET
+    mode_workspace_name: str | None | UnsetType = UNSET
     """Simple name of the workspace for the Mode asset."""
 
-    mode_workspace_username: Union[str, None, UnsetType] = UNSET
+    mode_workspace_username: str | None | UnsetType = UNSET
     """Username of the workspace for the Mode asset."""
 
-    mode_workspace_qualified_name: Union[str, None, UnsetType] = UNSET
+    mode_workspace_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the workspace for the Mode asset."""
 
-    mode_report_name: Union[str, None, UnsetType] = UNSET
+    mode_report_name: str | None | UnsetType = UNSET
     """Simple name of the report for the Mode asset."""
 
-    mode_report_qualified_name: Union[str, None, UnsetType] = UNSET
+    mode_report_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the report for the Mode asset."""
 
-    mode_query_name: Union[str, None, UnsetType] = UNSET
+    mode_query_name: str | None | UnsetType = UNSET
     """Simple name of the query for the Mode asset."""
 
-    mode_query_qualified_name: Union[str, None, UnsetType] = UNSET
+    mode_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query for the Mode asset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Mode"
-
+        self.type_name = "Mode"
 
 class RelatedModeCollection(RelatedMode):
     """
@@ -81,17 +78,15 @@ class RelatedModeCollection(RelatedMode):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModeCollection" so it serializes correctly
 
-    mode_collection_type: Union[str, None, UnsetType] = UNSET
+    mode_collection_type: str | None | UnsetType = UNSET
     """Type of this collection."""
 
-    mode_collection_state: Union[str, None, UnsetType] = UNSET
+    mode_collection_state: str | None | UnsetType = UNSET
     """State of this collection."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModeCollection"
-
+        self.type_name = "ModeCollection"
 
 class RelatedModeQuery(RelatedMode):
     """
@@ -103,17 +98,15 @@ class RelatedModeQuery(RelatedMode):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModeQuery" so it serializes correctly
 
-    mode_raw_query: Union[str, None, UnsetType] = UNSET
+    mode_raw_query: str | None | UnsetType = UNSET
     """Raw query for the Mode asset."""
 
-    mode_report_import_count: Union[int, None, UnsetType] = UNSET
+    mode_report_import_count: int | None | UnsetType = UNSET
     """Number of reports imported into this query."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModeQuery"
-
+        self.type_name = "ModeQuery"
 
 class RelatedModeReport(RelatedMode):
     """
@@ -125,35 +118,33 @@ class RelatedModeReport(RelatedMode):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModeReport" so it serializes correctly
 
-    mode_collection_token: Union[str, None, UnsetType] = UNSET
+    mode_collection_token: str | None | UnsetType = UNSET
     """Token for the Mode collection."""
 
-    mode_report_published_at: Union[int, None, UnsetType] = UNSET
+    mode_report_published_at: int | None | UnsetType = UNSET
     """Date and time when the report was published."""
 
-    mode_query_count: Union[int, None, UnsetType] = UNSET
+    mode_query_count: int | None | UnsetType = UNSET
     """Number of queries in this report."""
 
-    mode_chart_count: Union[int, None, UnsetType] = UNSET
+    mode_chart_count: int | None | UnsetType = UNSET
     """Number of charts in this report."""
 
-    mode_query_preview: Union[str, None, UnsetType] = UNSET
+    mode_query_preview: str | None | UnsetType = UNSET
     """Preview of the query for the Mode asset."""
 
-    mode_is_public: Union[bool, None, UnsetType] = UNSET
+    mode_is_public: bool | None | UnsetType = UNSET
     """Whether the report is public."""
 
-    mode_is_shared: Union[bool, None, UnsetType] = UNSET
+    mode_is_shared: bool | None | UnsetType = UNSET
     """Whether the report is shared."""
 
-    mode_is_archived: Union[bool, None, UnsetType] = UNSET
+    mode_is_archived: bool | None | UnsetType = UNSET
     """Whether the report is archived."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModeReport"
-
+        self.type_name = "ModeReport"
 
 class RelatedModeWorkspace(RelatedMode):
     """
@@ -165,14 +156,12 @@ class RelatedModeWorkspace(RelatedMode):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModeWorkspace" so it serializes correctly
 
-    mode_collection_count: Union[int, None, UnsetType] = UNSET
+    mode_collection_count: int | None | UnsetType = UNSET
     """Number of collections in this workspace."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModeWorkspace"
-
+        self.type_name = "ModeWorkspace"
 
 class RelatedModeChart(RelatedMode):
     """
@@ -184,10 +173,9 @@ class RelatedModeChart(RelatedMode):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ModeChart" so it serializes correctly
 
-    mode_chart_type: Union[str, None, UnsetType] = UNSET
+    mode_chart_type: str | None | UnsetType = UNSET
     """Type of chart."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "ModeChart"
+        self.type_name = "ModeChart"

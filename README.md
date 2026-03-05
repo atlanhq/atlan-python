@@ -218,6 +218,44 @@ This will:
 - 🎨 Format code automatically
 - ⚡ Support incremental updates
 
+## 🏗️ pyatlan_v9 Model Generation (msgspec)
+
+The `pyatlan_v9` package uses [msgspec](https://jcristharris.com/msgspec/) `Struct`-based models generated from Pkl type definitions in the [atlanhq/models](https://github.com/atlanhq/models) repo.
+
+### Using Claude Code
+
+The recommended way to regenerate models is via the Claude Code skill:
+
+```bash
+# From the atlan-python repo root:
+/generate-v9-models              # Generate from models@master
+/generate-v9-models <branch>     # Generate from a specific models branch
+/generate-v9-models test         # Generate and run tests
+/generate-v9-models <branch> test
+```
+
+The skill will:
+1. Clone/update `atlanhq/models` at `../models`
+2. Run the Pkl code generator with SDK mode (`pkl eval typedefs/*.pkl -m . -p sdk=true`)
+3. Selectively sync generated files to `pyatlan_v9/model/assets/` (excluding hand-written types)
+4. Apply post-sync patches (e.g., `set[str]` fields in `asset.py`)
+5. Optionally run `tests_v9/unit/` tests
+
+### Overlay Files
+
+Custom methods (`creator()`, `updater()`, policy helpers, etc.) live in `pyatlan_v9/model/assets/_overlays/`. These are Python files read by the Pkl renderer and injected into generated classes. Each overlay file uses import directives:
+
+- `# IMPORT:` — external imports (not remapped)
+- `# INTERNAL_IMPORT:` — internal imports (remapped to `pyatlan_v9.*`)
+- `# STDLIB_IMPORT:` — standard library imports
+
+### Hand-written Types
+
+Some types are not yet fully generated and are maintained by hand:
+- Infrastructure: `__init__.py`, `entity.py`, `referenceable.py`
+- GTC types: `atlas_glossary.py`, `atlas_glossary_term.py`, `atlas_glossary_category.py`
+- Others: `persona.py`, `purpose.py`, `badge.py`, `access_control.py`, `auth_policy.py`, etc.
+
 ## 📁 Project Structure
 
 Understanding the codebase layout will help you navigate and contribute effectively:

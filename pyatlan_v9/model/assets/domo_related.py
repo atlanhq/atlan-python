@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -37,17 +36,15 @@ class RelatedDomo(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Domo" so it serializes correctly
 
-    domo_id: Union[str, None, UnsetType] = UNSET
+    domo_id: str | None | UnsetType = UNSET
     """Id of the Domo dataset."""
 
-    domo_owner_id: Union[str, None, UnsetType] = UNSET
+    domo_owner_id: str | None | UnsetType = UNSET
     """Id of the owner of the Domo dataset."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Domo"
-
+        self.type_name = "Domo"
 
 class RelatedDomoCard(RelatedDomo):
     """
@@ -59,20 +56,18 @@ class RelatedDomoCard(RelatedDomo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DomoCard" so it serializes correctly
 
-    domo_card_type: Union[str, None, UnsetType] = UNSET
+    domo_card_type: str | None | UnsetType = UNSET
     """Type of the Domo Card."""
 
-    domo_card_type_value: Union[str, None, UnsetType] = UNSET
+    domo_card_type_value: str | None | UnsetType = UNSET
     """Type of the Domo Card."""
 
-    domo_card_dashboard_count: Union[int, None, UnsetType] = UNSET
+    domo_card_dashboard_count: int | None | UnsetType = UNSET
     """Number of dashboards linked to this card."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DomoCard"
-
+        self.type_name = "DomoCard"
 
 class RelatedDomoDashboard(RelatedDomo):
     """
@@ -84,14 +79,12 @@ class RelatedDomoDashboard(RelatedDomo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DomoDashboard" so it serializes correctly
 
-    domo_dashboard_card_count: Union[int, None, UnsetType] = UNSET
+    domo_dashboard_card_count: int | None | UnsetType = UNSET
     """Number of cards linked to this dashboard."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DomoDashboard"
-
+        self.type_name = "DomoDashboard"
 
 class RelatedDomoDataset(RelatedDomo):
     """
@@ -103,26 +96,24 @@ class RelatedDomoDataset(RelatedDomo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DomoDataset" so it serializes correctly
 
-    domo_dataset_row_count: Union[int, None, UnsetType] = UNSET
+    domo_dataset_row_count: int | None | UnsetType = UNSET
     """Number of rows in the Domo dataset."""
 
-    domo_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    domo_dataset_column_count: int | None | UnsetType = UNSET
     """Number of columns in the Domo dataset."""
 
-    domo_dataset_type: Union[str, None, UnsetType] = UNSET
+    domo_dataset_type: str | None | UnsetType = UNSET
     """Type of Domo dataset."""
 
-    domo_dataset_card_count: Union[int, None, UnsetType] = UNSET
+    domo_dataset_card_count: int | None | UnsetType = UNSET
     """Number of cards linked to the Domo dataset."""
 
-    domo_dataset_last_run: Union[str, None, UnsetType] = UNSET
+    domo_dataset_last_run: str | None | UnsetType = UNSET
     """An ISO-8601 representation of the time the DataSet was last run."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DomoDataset"
-
+        self.type_name = "DomoDataset"
 
 class RelatedDomoDatasetColumn(RelatedDomo):
     """
@@ -134,19 +125,18 @@ class RelatedDomoDatasetColumn(RelatedDomo):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DomoDatasetColumn" so it serializes correctly
 
-    domo_dataset_column_type: Union[str, None, UnsetType] = UNSET
+    domo_dataset_column_type: str | None | UnsetType = UNSET
     """Type of Domo Dataset Column."""
 
-    domo_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    domo_dataset_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of domo dataset of this column."""
 
-    domo_dataset_column_expression: Union[str, None, UnsetType] = UNSET
+    domo_dataset_column_expression: str | None | UnsetType = UNSET
     """Expression used to create this calculated column."""
 
-    domo_dataset_column_is_calculated: Union[bool, None, UnsetType] = UNSET
+    domo_dataset_column_is_calculated: bool | None | UnsetType = UNSET
     """If the column is a calculated column."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "DomoDatasetColumn"
+        self.type_name = "DomoDatasetColumn"

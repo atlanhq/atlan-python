@@ -1,0 +1,161 @@
+# IMPORT: from pyatlan.model.enums import AuthPolicyCategory, AuthPolicyResourceCategory, AuthPolicyType, DataAction, PersonaDomainAction, PersonaGlossaryAction, PersonaMetadataAction
+# INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str) -> "Persona":
+        validate_required_fields(["name"], [name])
+        return cls(
+            qualified_name=name,
+            name=name,
+            display_name=name,
+            is_access_control_enabled=True,
+            description="",
+        )
+
+    @classmethod
+    def updater(
+        cls, *, qualified_name: str, name: str, is_enabled: bool = True
+    ) -> "Persona":
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            qualified_name=qualified_name,
+            name=name,
+            is_access_control_enabled=is_enabled,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls,
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> "Persona":
+        warn(
+            (
+                "This method is deprecated, please use 'updater' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.updater(
+            qualified_name=qualified_name, name=name, is_enabled=is_enabled
+        )
+
+    @classmethod
+    def create_metadata_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaMetadataAction],
+        connection_qualified_name: str,
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "metadata"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_data_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        connection_qualified_name: str,
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "resources"],
+            [name, persona_id, policy_type, resources],
+        )
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resources.add("entity-type:*")
+        policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
+        policy.policy_service_name = "heka"
+        policy.policy_sub_category = "data"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_glossary_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaGlossaryAction],
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_domain_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        actions: Set[PersonaDomainAction],
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "actions", "resources"],
+            [name, persona_id, actions, resources],
+        )
+        policy = AuthPolicy._create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = AuthPolicyType.ALLOW
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "domain"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    def trim_to_required(self) -> "Persona":
+        return Persona.updater(qualified_name=self.qualified_name, name=self.name)

@@ -8,8 +8,18 @@ Tag module exports.
 This module provides convenient imports for all Tag types and their Related variants.
 """
 
-from .source_tag import SourceTag
+from .tag_related import (
+    RelatedSourceTag,
+    RelatedTag,
+    RelatedTagAttachment,
+)
 from .tag import Tag
-from .tag_related import RelatedSourceTag, RelatedTag, RelatedTagAttachment
+from .source_tag import SourceTag
 
-__all__ = ["RelatedSourceTag", "RelatedTag", "RelatedTagAttachment", "SourceTag", "Tag"]
+__all__ = [
+    "RelatedSourceTag",
+    "RelatedTag",
+    "RelatedTagAttachment",
+    "SourceTag",
+    "Tag",
+]

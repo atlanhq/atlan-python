@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,32 +42,30 @@ class RelatedAnaplan(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Anaplan" so it serializes correctly
 
-    anaplan_workspace_qualified_name: Union[str, None, UnsetType] = UNSET
+    anaplan_workspace_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
 
-    anaplan_workspace_name: Union[str, None, UnsetType] = UNSET
+    anaplan_workspace_name: str | None | UnsetType = UNSET
     """Simple name of the AnaplanWorkspace asset that contains this asset (AnaplanModel and everything under its hierarchy)."""
 
-    anaplan_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    anaplan_model_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
 
-    anaplan_model_name: Union[str, None, UnsetType] = UNSET
+    anaplan_model_name: str | None | UnsetType = UNSET
     """Simple name of the AnaplanModel asset that contains this asset (AnaplanModule and everything under its hierarchy)."""
 
-    anaplan_module_qualified_name: Union[str, None, UnsetType] = UNSET
+    anaplan_module_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
 
-    anaplan_module_name: Union[str, None, UnsetType] = UNSET
+    anaplan_module_name: str | None | UnsetType = UNSET
     """Simple name of the AnaplanModule asset that contains this asset (AnaplanLineItem, AnaplanList, AnaplanView and everything under their hierarchy)."""
 
-    anaplan_source_id: Union[str, None, UnsetType] = UNSET
+    anaplan_source_id: str | None | UnsetType = UNSET
     """Id/Guid of the Anaplan asset in the source system."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Anaplan"
-
+        self.type_name = "Anaplan"
 
 class RelatedAnaplanWorkspace(RelatedAnaplan):
     """
@@ -80,17 +77,15 @@ class RelatedAnaplanWorkspace(RelatedAnaplan):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AnaplanWorkspace" so it serializes correctly
 
-    anaplan_workspace_current_size: Union[int, None, UnsetType] = UNSET
+    anaplan_workspace_current_size: int | None | UnsetType = UNSET
     """Current size of the AnaplanWorkspace from the source system, estimated in MB."""
 
-    anaplan_workspace_allowance_size: Union[int, None, UnsetType] = UNSET
+    anaplan_workspace_allowance_size: int | None | UnsetType = UNSET
     """Alloted size quota for the AnaplanWorkspace from the source system, estimated in MB."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanWorkspace"
-
+        self.type_name = "AnaplanWorkspace"
 
 class RelatedAnaplanApp(RelatedAnaplan):
     """
@@ -104,9 +99,7 @@ class RelatedAnaplanApp(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanApp"
-
+        self.type_name = "AnaplanApp"
 
 class RelatedAnaplanPage(RelatedAnaplan):
     """
@@ -118,20 +111,18 @@ class RelatedAnaplanPage(RelatedAnaplan):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AnaplanPage" so it serializes correctly
 
-    anaplan_app_qualified_name: Union[str, None, UnsetType] = UNSET
+    anaplan_app_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the AnaplanApp asset that contains this asset."""
 
-    anaplan_page_category_name: Union[str, None, UnsetType] = UNSET
+    anaplan_page_category_name: str | None | UnsetType = UNSET
     """Category name of the AnaplanPage from the source system."""
 
-    anaplan_page_type: Union[str, None, UnsetType] = UNSET
+    anaplan_page_type: str | None | UnsetType = UNSET
     """Type of the AnaplanPage from the source system."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanPage"
-
+        self.type_name = "AnaplanPage"
 
 class RelatedAnaplanModel(RelatedAnaplan):
     """
@@ -145,9 +136,7 @@ class RelatedAnaplanModel(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanModel"
-
+        self.type_name = "AnaplanModel"
 
 class RelatedAnaplanModule(RelatedAnaplan):
     """
@@ -161,9 +150,7 @@ class RelatedAnaplanModule(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanModule"
-
+        self.type_name = "AnaplanModule"
 
 class RelatedAnaplanList(RelatedAnaplan):
     """
@@ -175,14 +162,12 @@ class RelatedAnaplanList(RelatedAnaplan):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AnaplanList" so it serializes correctly
 
-    anaplan_list_item_count: Union[int, None, UnsetType] = UNSET
+    anaplan_list_item_count: int | None | UnsetType = UNSET
     """Item Count of the AnaplanList from the source system."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanList"
-
+        self.type_name = "AnaplanList"
 
 class RelatedAnaplanSystemDimension(RelatedAnaplan):
     """
@@ -196,9 +181,7 @@ class RelatedAnaplanSystemDimension(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanSystemDimension"
-
+        self.type_name = "AnaplanSystemDimension"
 
 class RelatedAnaplanDimension(RelatedAnaplan):
     """
@@ -212,9 +195,7 @@ class RelatedAnaplanDimension(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanDimension"
-
+        self.type_name = "AnaplanDimension"
 
 class RelatedAnaplanLineItem(RelatedAnaplan):
     """
@@ -226,14 +207,12 @@ class RelatedAnaplanLineItem(RelatedAnaplan):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AnaplanLineItem" so it serializes correctly
 
-    anaplan_line_item_formula: Union[str, None, UnsetType] = UNSET
+    anaplan_line_item_formula: str | None | UnsetType = UNSET
     """Formula of the AnaplanLineItem from the source system."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanLineItem"
-
+        self.type_name = "AnaplanLineItem"
 
 class RelatedAnaplanView(RelatedAnaplan):
     """
@@ -247,5 +226,4 @@ class RelatedAnaplanView(RelatedAnaplan):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "AnaplanView"
+        self.type_name = "AnaplanView"

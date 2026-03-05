@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -37,29 +36,27 @@ class RelatedMultiDimensionalDataset(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MultiDimensionalDataset" so it serializes correctly
 
-    cube_name: Union[str, None, UnsetType] = UNSET
+    cube_name: str | None | UnsetType = UNSET
     """Simple name of the cube in which this asset exists, or empty if it is itself a cube."""
 
-    cube_qualified_name: Union[str, None, UnsetType] = UNSET
+    cube_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the cube in which this asset exists, or empty if it is itself a cube."""
 
-    cube_dimension_name: Union[str, None, UnsetType] = UNSET
+    cube_dimension_name: str | None | UnsetType = UNSET
     """Simple name of the cube dimension in which this asset exists, or empty if it is itself a dimension."""
 
-    cube_dimension_qualified_name: Union[str, None, UnsetType] = UNSET
+    cube_dimension_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the cube dimension in which this asset exists, or empty if it is itself a dimension."""
 
-    cube_hierarchy_name: Union[str, None, UnsetType] = UNSET
+    cube_hierarchy_name: str | None | UnsetType = UNSET
     """Simple name of the dimension hierarchy in which this asset exists, or empty if it is itself a hierarchy."""
 
-    cube_hierarchy_qualified_name: Union[str, None, UnsetType] = UNSET
+    cube_hierarchy_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dimension hierarchy in which this asset exists, or empty if it is itself a hierarchy."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MultiDimensionalDataset"
-
+        self.type_name = "MultiDimensionalDataset"
 
 class RelatedCube(RelatedMultiDimensionalDataset):
     """
@@ -71,14 +68,12 @@ class RelatedCube(RelatedMultiDimensionalDataset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Cube" so it serializes correctly
 
-    cube_dimension_count: Union[int, None, UnsetType] = UNSET
+    cube_dimension_count: int | None | UnsetType = UNSET
     """Number of dimensions in the cube."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "Cube"
-
+        self.type_name = "Cube"
 
 class RelatedCubeDimension(RelatedMultiDimensionalDataset):
     """
@@ -90,14 +85,12 @@ class RelatedCubeDimension(RelatedMultiDimensionalDataset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CubeDimension" so it serializes correctly
 
-    cube_hierarchy_count: Union[int, None, UnsetType] = UNSET
+    cube_hierarchy_count: int | None | UnsetType = UNSET
     """Number of hierarchies in the cube dimension."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CubeDimension"
-
+        self.type_name = "CubeDimension"
 
 class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
     """
@@ -109,14 +102,12 @@ class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CubeHierarchy" so it serializes correctly
 
-    cube_field_count: Union[int, None, UnsetType] = UNSET
+    cube_field_count: int | None | UnsetType = UNSET
     """Number of total fields in the cube hierarchy."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CubeHierarchy"
-
+        self.type_name = "CubeHierarchy"
 
 class RelatedCubeField(RelatedMultiDimensionalDataset):
     """
@@ -128,25 +119,24 @@ class RelatedCubeField(RelatedMultiDimensionalDataset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CubeField" so it serializes correctly
 
-    cube_parent_field_name: Union[str, None, UnsetType] = UNSET
+    cube_parent_field_name: str | None | UnsetType = UNSET
     """Name of the parent field in which this field is nested."""
 
-    cube_parent_field_qualified_name: Union[str, None, UnsetType] = UNSET
+    cube_parent_field_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the parent field in which this field is nested."""
 
-    cube_field_level: Union[int, None, UnsetType] = UNSET
+    cube_field_level: int | None | UnsetType = UNSET
     """Level of the field in the cube hierarchy."""
 
-    cube_field_generation: Union[int, None, UnsetType] = UNSET
+    cube_field_generation: int | None | UnsetType = UNSET
     """Generation of the field in the cube hierarchy."""
 
-    cube_field_measure_expression: Union[str, None, UnsetType] = UNSET
+    cube_field_measure_expression: str | None | UnsetType = UNSET
     """Expression used to calculate this measure."""
 
-    cube_sub_field_count: Union[int, None, UnsetType] = UNSET
+    cube_sub_field_count: int | None | UnsetType = UNSET
     """Number of sub-fields that are direct children of this field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "CubeField"
+        self.type_name = "CubeField"

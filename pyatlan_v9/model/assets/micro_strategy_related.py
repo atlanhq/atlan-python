@@ -11,8 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
-
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,41 +42,39 @@ class RelatedMicroStrategy(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategy" so it serializes correctly
 
-    micro_strategy_project_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_project_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the project in which this asset exists."""
 
-    micro_strategy_project_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_project_name: str | None | UnsetType = UNSET
     """Simple name of the project in which this asset exists."""
 
-    micro_strategy_cube_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_cube_qualified_names: list[str] | None | UnsetType = UNSET
     """Unique names of the cubes related to this asset."""
 
-    micro_strategy_cube_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_cube_names: list[str] | None | UnsetType = UNSET
     """Simple names of the cubes related to this asset."""
 
-    micro_strategy_report_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_report_qualified_names: list[str] | None | UnsetType = UNSET
     """Unique names of the reports related to this asset."""
 
-    micro_strategy_report_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_report_names: list[str] | None | UnsetType = UNSET
     """Simple names of the reports related to this asset."""
 
-    micro_strategy_is_certified: Union[bool, None, UnsetType] = UNSET
+    micro_strategy_is_certified: bool | None | UnsetType = UNSET
     """Whether the asset is certified in MicroStrategy (true) or not (false)."""
 
-    micro_strategy_certified_by: Union[str, None, UnsetType] = UNSET
+    micro_strategy_certified_by: str | None | UnsetType = UNSET
     """User who certified this asset, in MicroStrategy."""
 
-    micro_strategy_certified_at: Union[int, None, UnsetType] = UNSET
+    micro_strategy_certified_at: int | None | UnsetType = UNSET
     """Time (epoch) this asset was certified in MicroStrategy, in milliseconds."""
 
-    micro_strategy_location: Union[list[dict[str, str]], None, UnsetType] = UNSET
+    micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
     """Location of this asset in MicroStrategy."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategy"
-
+        self.type_name = "MicroStrategy"
 
 class RelatedMicroStrategyProject(RelatedMicroStrategy):
     """
@@ -91,9 +88,7 @@ class RelatedMicroStrategyProject(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyProject"
-
+        self.type_name = "MicroStrategyProject"
 
 class RelatedMicroStrategyDocument(RelatedMicroStrategy):
     """
@@ -107,9 +102,7 @@ class RelatedMicroStrategyDocument(RelatedMicroStrategy):
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyDocument"
-
+        self.type_name = "MicroStrategyDocument"
 
 class RelatedMicroStrategyReport(RelatedMicroStrategy):
     """
@@ -121,14 +114,12 @@ class RelatedMicroStrategyReport(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyReport" so it serializes correctly
 
-    micro_strategy_report_type: Union[str, None, UnsetType] = UNSET
+    micro_strategy_report_type: str | None | UnsetType = UNSET
     """Type of report, for example: Grid or Chart."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyReport"
-
+        self.type_name = "MicroStrategyReport"
 
 class RelatedMicroStrategyCube(RelatedMicroStrategy):
     """
@@ -140,17 +131,15 @@ class RelatedMicroStrategyCube(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyCube" so it serializes correctly
 
-    micro_strategy_cube_type: Union[str, None, UnsetType] = UNSET
+    micro_strategy_cube_type: str | None | UnsetType = UNSET
     """Type of cube, for example: OLAP or MTDI."""
 
-    micro_strategy_cube_query: Union[str, None, UnsetType] = UNSET
+    micro_strategy_cube_query: str | None | UnsetType = UNSET
     """Query used to create the cube."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyCube"
-
+        self.type_name = "MicroStrategyCube"
 
 class RelatedMicroStrategyDossier(RelatedMicroStrategy):
     """
@@ -162,14 +151,12 @@ class RelatedMicroStrategyDossier(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyDossier" so it serializes correctly
 
-    micro_strategy_dossier_chapter_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_dossier_chapter_names: list[str] | None | UnsetType = UNSET
     """List of chapter names in this dossier."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyDossier"
-
+        self.type_name = "MicroStrategyDossier"
 
 class RelatedMicroStrategyFact(RelatedMicroStrategy):
     """
@@ -181,14 +168,12 @@ class RelatedMicroStrategyFact(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyFact" so it serializes correctly
 
-    micro_strategy_fact_expressions: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_fact_expressions: list[str] | None | UnsetType = UNSET
     """List of expressions for this fact."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyFact"
-
+        self.type_name = "MicroStrategyFact"
 
 class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
     """
@@ -200,14 +185,12 @@ class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyAttribute" so it serializes correctly
 
-    micro_strategy_attribute_forms: Union[str, None, UnsetType] = UNSET
+    micro_strategy_attribute_forms: str | None | UnsetType = UNSET
     """JSON string specifying the attribute's name, description, displayFormat, etc."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyAttribute"
-
+        self.type_name = "MicroStrategyAttribute"
 
 class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
     """
@@ -219,20 +202,18 @@ class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyVisualization" so it serializes correctly
 
-    micro_strategy_visualization_type: Union[str, None, UnsetType] = UNSET
+    micro_strategy_visualization_type: str | None | UnsetType = UNSET
     """Type of visualization."""
 
-    micro_strategy_dossier_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_dossier_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dossier in which this visualization exists."""
 
-    micro_strategy_dossier_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_dossier_name: str | None | UnsetType = UNSET
     """Simple name of the dossier in which this visualization exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyVisualization"
-
+        self.type_name = "MicroStrategyVisualization"
 
 class RelatedMicroStrategyMetric(RelatedMicroStrategy):
     """
@@ -244,34 +225,30 @@ class RelatedMicroStrategyMetric(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyMetric" so it serializes correctly
 
-    micro_strategy_metric_expression: Union[str, None, UnsetType] = UNSET
+    micro_strategy_metric_expression: str | None | UnsetType = UNSET
     """Text specifiying this metric's expression."""
 
-    micro_strategy_attribute_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_attribute_qualified_names: list[str] | None | UnsetType = UNSET
     """List of unique names of attributes related to this metric."""
 
-    micro_strategy_attribute_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_attribute_names: list[str] | None | UnsetType = UNSET
     """List of simple names of attributes related to this metric."""
 
-    micro_strategy_fact_qualified_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_fact_qualified_names: list[str] | None | UnsetType = UNSET
     """List of unique names of facts related to this metric."""
 
-    micro_strategy_fact_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_fact_names: list[str] | None | UnsetType = UNSET
     """List of simple names of facts related to this metric."""
 
-    micro_strategy_metric_parent_qualified_names: Union[list[str], None, UnsetType] = (
-        UNSET
-    )
+    micro_strategy_metric_parent_qualified_names: list[str] | None | UnsetType = UNSET
     """List of unique names of parent metrics of this metric."""
 
-    micro_strategy_metric_parent_names: Union[list[str], None, UnsetType] = UNSET
+    micro_strategy_metric_parent_names: list[str] | None | UnsetType = UNSET
     """List of simple names of parent metrics of this metric."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyMetric"
-
+        self.type_name = "MicroStrategyMetric"
 
 class RelatedMicroStrategyColumn(RelatedMicroStrategy):
     """
@@ -283,43 +260,42 @@ class RelatedMicroStrategyColumn(RelatedMicroStrategy):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "MicroStrategyColumn" so it serializes correctly
 
-    micro_strategy_column_id: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_id: str | None | UnsetType = UNSET
     """Unique identifier of the column in MicroStrategy."""
 
-    micro_strategy_column_type: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_type: str | None | UnsetType = UNSET
     """Type of the column (Eg attribute_column, fact_column, metric_column etc)."""
 
-    micro_strategy_data_type: Union[str, None, UnsetType] = UNSET
+    micro_strategy_data_type: str | None | UnsetType = UNSET
     """Data type of the column."""
 
-    micro_strategy_column_attribute_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_attribute_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Attribute in which this column exists."""
 
-    micro_strategy_column_fact_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_fact_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Fact in which this column exists."""
 
-    micro_strategy_column_metric_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_metric_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Metric in which this column exists."""
 
-    micro_strategy_column_cube_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_cube_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Cube in which this column exists."""
 
-    micro_strategy_column_report_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_report_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Report in which this column exists."""
 
-    micro_strategy_column_dossier_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_dossier_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Dossier in which this column exists."""
 
-    micro_strategy_column_document_qualified_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_document_qualified_name: str | None | UnsetType = UNSET
     """Unique identifier of the Document in which this column exists."""
 
-    micro_strategy_parent_name: Union[str, None, UnsetType] = UNSET
+    micro_strategy_parent_name: str | None | UnsetType = UNSET
     """Name of the parent asset."""
 
-    micro_strategy_column_expression: Union[str, None, UnsetType] = UNSET
+    micro_strategy_column_expression: str | None | UnsetType = UNSET
     """Expression or formula used to define this column."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
-        if self.type_name is UNSET or self.type_name is None:
-            self.type_name = "MicroStrategyColumn"
+        self.type_name = "MicroStrategyColumn"
