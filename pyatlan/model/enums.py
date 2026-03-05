@@ -387,6 +387,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     AI = ("ai", AtlanConnectionCategory.AI)
     SAP_ECC = ("sap-ecc", AtlanConnectionCategory.ERP)
     CLOUDSQL_POSTGRES = ("cloudsql-postgres", AtlanConnectionCategory.DATABASE)
+    ALLOYDB_POSTGRES = ("alloydb-postgres", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
@@ -2225,6 +2226,7 @@ class WorkflowPackage(str, Enum):
     AZURE_EVENT_HUB = "atlan-azure-event-hub"
     BIGQUERY = "atlan-bigquery"
     BIGQUERY_MINER = "atlan-bigquery-miner"
+    ALLOYDB_POSTGRES = "atlan-alloydb-postgres"
     CLOUDSQL_POSTGRES = "atlan-cloudsql-postgres"
     CONNECTION_DELETE = "atlan-connection-delete"
     DATABRICKS = "atlan-databricks"
