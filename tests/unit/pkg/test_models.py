@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.pkg.models import CustomPackage, PackageConfig, PackageWriter, generate
 from pyatlan.pkg.ui import UIConfig, UIStep
@@ -98,7 +99,7 @@ class TestPackageConfig:
         indirect=["good_or_bad_labels", "good_or_bad_annotations"],
     )
     def test_validation(self, good_or_bad_labels, good_or_bad_annotations, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             PackageConfig(
                 labels=good_or_bad_labels, annotations=good_or_bad_annotations
             )
@@ -157,7 +158,7 @@ class TestPackageWriter:
 def test_generate_parameter_validation(
     good_or_bad_custom_package, path, operation, msg
 ):
-    with pytest.raises(ValueError, match=msg):
+    with pytest.raises(ValidationError, match=msg):
         generate(pkg=good_or_bad_custom_package, path=path, operation=operation)
 
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.task import TaskClient
@@ -71,13 +72,10 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [
-        [None, "none is not an allowed value"],
-        ["123", "value is not a valid dict"],
-    ],
+    [[None, "none is not an allowed value"], ["123", "value is not a valid dict"]],
 )
 def test_task_seaech_wrong_params_raises_validation_error(test_request, error_msg):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         TaskClient.search(request=test_request)
     assert error_msg in str(err.value)
 

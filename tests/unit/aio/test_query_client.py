@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, Mock
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.aio.query import AsyncQueryClient
 from pyatlan.client.common import AsyncApiCaller
@@ -71,16 +72,13 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 
 @pytest.mark.parametrize(
     "test_request, error_msg",
-    [
-        [None, "none is not an allowed value"],
-        ["123", "value is not a valid dict"],
-    ],
+    [[None, "none is not an allowed value"], ["123", "value is not a valid dict"]],
 )
 def test_query_stream_wrong_params_raises_validation_error(
     test_request, error_msg, mock_async_api_caller
 ):
     client = AsyncQueryClient(client=mock_async_api_caller)
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.stream(request=test_request)
     assert error_msg in str(err.value)
 

@@ -1,6 +1,7 @@
 from typing import Dict
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.pkg.ui import UIConfig, UIRule, UIStep
 from pyatlan.pkg.widgets import AbstractUIElement, TextInput
@@ -82,7 +83,7 @@ class TestUIConfig:
         indirect=["good_or_bad_step", "good_or_bad_rule"],
     )
     def test_validation(self, good_or_bad_step, good_or_bad_rule, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             UIConfig(steps=good_or_bad_step, rules=good_or_bad_rule)
 
 
@@ -109,7 +110,7 @@ class TestUIRule:
         ],
     )
     def test_validation(self, when_inputs, required, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             UIRule(when_inputs=when_inputs, required=required)
 
 
@@ -177,7 +178,8 @@ class TestUIStep:
                 TITLE,
                 {"qn_prefix": "oioi"},
                 "",
-                r"\d+ validation error.* for Init\ninputs -> qn_prefix",
+                r"18 validation errors for Init\ninputs -> qn_prefix\n  instance of APITokenSelector, tuple or dict "
+                r"expected",
             ),
             (
                 TITLE,
@@ -194,5 +196,5 @@ class TestUIStep:
         ],
     )
     def test_validation(self, title, input, description, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             UIStep(title=title, inputs=input, description=description)

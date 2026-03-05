@@ -632,7 +632,8 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nstarting_guid\n  none is not an allowed value",
+                r"1 validation error for Init\nstarting_guid\n  none is not an allowed value "
+                r"\(type=type_error.none.not_allowed\)",
             ),
             (
                 BAD_STRING,
@@ -646,7 +647,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nstarting_guid\n  str type expected",
+                r"1 validation error for Init\nstarting_guid\n  str type expected \(type=type_error.str\)",
             ),
             (
                 GOOD_GUID,
@@ -660,7 +661,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\ndepth\n  value is not a valid integer",
+                r"1 validation error for Init\ndepth\n  value is not a valid integer \(type=type_error.integer\)",
             ),
             (
                 GOOD_GUID,
@@ -688,7 +689,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nsize\n  value is not a valid integer",
+                r"1 validation error for Init\nsize\n  value is not a valid integer \(type=type_error.integer\)",
             ),
             (
                 GOOD_GUID,
@@ -702,7 +703,8 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nexclude_meanings\n  value is not a valid boolean",
+                r"1 validation error for Init\nexclude_meanings\n  value is not a valid boolean "
+                r"\(type=value_error.strictbool\)",
             ),
             (
                 GOOD_GUID,
@@ -716,7 +718,8 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nexclude_atlan_tags\n  value is not a valid boolean",
+                r"1 validation error for Init\nexclude_atlan_tags\n  value is not a valid boolean "
+                r"\(type=value_error.strictbool\)",
             ),
             (
                 GOOD_GUID,
@@ -730,7 +733,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"\d+ validation error.* for Init\nincludes_in_results",
+                r"3 validation errors for Init\nincludes_in_results",
             ),
             (
                 GOOD_GUID,
@@ -744,7 +747,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"\d+ validation error.* for Init\nincludes_on_results",
+                r"4 validation errors for Init\nincludes_on_results",
             ),
             (
                 GOOD_GUID,
@@ -758,7 +761,7 @@ class TestFluentLineage:
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"\d+ validation error.* for Init\nincludes_on_relations",
+                r"4 validation errors for Init\nincludes_on_relations",
             ),
             (
                 GOOD_GUID,
@@ -772,7 +775,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"\d+ validation error.* for Init\nwhere_assets",
+                r"3 validation errors for Init\nwhere_assets",
             ),
             (
                 GOOD_GUID,
@@ -786,7 +789,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 BAD_LINEAGE_FILTER_LIST,
-                r"\d+ validation error.* for Init\nwhere_relationships",
+                r"3 validation errors for Init\nwhere_relationships",
             ),
         ],
     )

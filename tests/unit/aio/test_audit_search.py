@@ -47,21 +47,23 @@ def audit_search_paging_json():
 async def _assert_audit_search_results(
     results: AsyncAuditSearchResults, response_json, sorts, bulk=False
 ):
-    first = response_json["entityAudits"][0]
     async for audit in results:
-        assert audit.entity_id == first["entityId"]
-        assert audit.entity_qualified_name == first["entityQualifiedName"]
-        assert audit.type_name == first["typeName"]
+        assert audit.entity_id == response_json["entityAudits"][0]["entity_id"]
+        assert (
+            audit.entity_qualified_name
+            == response_json["entityAudits"][0]["entity_qualified_name"]
+        )
+        assert audit.type_name == response_json["entityAudits"][0]["type_name"]
         expected_timestamp = datetime.fromtimestamp(
-            first["timestamp"] / 1000, tz=timezone.utc
+            response_json["entityAudits"][0]["timestamp"] / 1000, tz=timezone.utc
         )
         assert audit.timestamp == expected_timestamp
         expected_created = datetime.fromtimestamp(
-            first["created"] / 1000, tz=timezone.utc
+            response_json["entityAudits"][0]["created"] / 1000, tz=timezone.utc
         )
         assert audit.created == expected_created
-        assert audit.user == first["user"]
-        assert audit.action == first["action"]
+        assert audit.user == response_json["entityAudits"][0]["user"]
+        assert audit.action == response_json["entityAudits"][0]["action"]
 
     assert results.total_count == response_json["totalCount"]
     assert results._bulk == bulk

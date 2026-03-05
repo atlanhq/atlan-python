@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.credential import CredentialClient
@@ -21,20 +22,12 @@ TEST_INVALID_CREDENTIALS = (
     "ATLAN-PYTHON-400-054 Credentials provided did not work: failed"
 )
 TEST_INVALID_GUID_GET_VALIDATION_ERR = (
-    "1 validation error for Get\nguid\n  str type expected"
+    "1 validation error for Get\nguid\n  str type expected (type=type_error.str)"
 )
-TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
-    "1 validation error for PurgeByGuid\nguid\n  str type expected"
-)
-TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
-    "1 validation error for Test\ncredential\n  value is not a valid dict"
-)
-TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
-    "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict"
-)
-TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
-    "1 validation error for Creator\ncredential\n  value is not a valid dict"
-)
+TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = "1 validation error for PurgeByGuid\nguid\n  str type expected (type=type_error.str)"
+TEST_INVALID_CRED_TEST_VALIDATION_ERR = "1 validation error for Test\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict (type=type_error.dict)"
+TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = "1 validation error for Creator\ncredential\n  value is not a valid dict (type=type_error.dict)"
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
 )
@@ -100,27 +93,27 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 def test_cred_get_wrong_params_raises_validation_error(
     test_guid, client: CredentialClient
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.get(guid=test_guid)
-    assert TEST_INVALID_GUID_GET_VALIDATION_ERR in str(err.value)
+    assert TEST_INVALID_GUID_GET_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
 def test_cred_test_wrong_params_raises_validation_error(
     test_credentials, client: CredentialClient
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.test(credential=test_credentials)
-    assert TEST_INVALID_CRED_TEST_VALIDATION_ERR in str(err.value)
+    assert TEST_INVALID_CRED_TEST_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
 def test_cred_test_and_update_wrong_params_raises_validation_error(
     test_credentials, client: CredentialClient
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.test_and_update(credential=test_credentials)
-    assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR in str(err.value)
+    assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -246,7 +239,7 @@ def test_cred_get_all_invalid_response(mock_api_caller):
 def test_cred_get_all_invalid_params_raises_validation_error(
     test_filter, test_limit, test_offset, client: CredentialClient
 ):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         client.get_all(filter=test_filter, limit=test_limit, offset=test_offset)
 
 
@@ -284,7 +277,7 @@ def test_cred_get_all_partial_response(mock_api_caller):
 def test_cred_get_all_invalid_filter_type(mock_api_caller):
     client = CredentialClient(mock_api_caller)
 
-    with pytest.raises(ValueError, match="value is not a valid dict"):
+    with pytest.raises(ValidationError, match="value is not a valid dict"):
         client.get_all(filter="invalid_filter")
 
 
@@ -303,9 +296,9 @@ def test_cred_get_all_no_results(mock_api_caller):
 def test_cred_creator_wrong_params_raises_validation_error(
     create_credentials, client: CredentialClient
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.creator(credential=create_credentials)
-    assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR in str(err.value)
+    assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR == str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -381,9 +374,9 @@ def test_cred_creator_with_test_false_with_username_password(
 def test_cred_purge_by_guid_wrong_params_raises_validation_error(
     test_guid, client: CredentialClient
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         client.purge_by_guid(guid=test_guid)
-    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR in str(err.value)
+    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR == str(err.value)
 
 
 def test_cred_purge_by_guid_when_given_guid(

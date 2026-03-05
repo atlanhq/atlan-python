@@ -41,58 +41,58 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None], "none is not an allowed value"),
     ],
     "upsert": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "none is not an allowed value"),
     ],
     "save": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "none is not an allowed value"),
     ],
     "upsert_merging_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "save_merging_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "update_merging_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "argument of type"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "upsert_replacing_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "save_replacing_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "entity -> 0\n  none is not an allowed value"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "update_replacing_cm": [
-        ([123], "argument of type"),
+        ([123], "entity\n  argument of type 'int' is not iterable"),
         ([None], "none is not an allowed value"),
-        ([[123]], "argument of type"),
-        ([[None]], "argument of type"),
+        ([[123]], "entity\n  argument of type 'int' is not iterable"),
+        ([[None]], "'NoneType' is not iterable"),
     ],
     "purge_by_guid": [
         ([int], "guid\n  str type expected"),
         ([None], "none is not an allowed value"),
-        ([[int]], "guid -> 0\n  str type expected"),
-        ([[None]], "guid -> 0\n  none is not an allowed value"),
+        ([[int]], "guid\n  str type expected"),
+        ([[None]], "guid\n  str type expected"),
     ],
     "restore": [
         (["asset-type", [123]], "name\n  str type expected"),
@@ -214,7 +214,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "argument of type",
+            "terms -> 0\n  argument of type 'int' is not iterable",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -223,7 +223,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "argument of type",
+            "terms -> 0\n  argument of type 'int' is not iterable",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -232,7 +232,7 @@ TEST_ASSET_CLIENT_METHODS = {
         ([None, "cm"], "none is not an allowed value"),
         (
             [AtlasGlossary, [123]],
-            "argument of type",
+            "terms -> 0\n  argument of type 'int' is not iterable",
         ),
         ([AtlasGlossary, None], "none is not an allowed value"),
     ],
@@ -292,10 +292,7 @@ TEST_ASSET_CLIENT_METHODS = {
 
 TEST_ADMIN_CLIENT_METHODS = {
     "get_keycloak_events": [
-        (
-            ["keycloak-req"],
-            "keycloak_request\n  value is not a valid dict",
-        ),
+        (["keycloak-req"], "keycloak_request\n  value is not a valid dict"),
         ([None], "none is not an allowed value"),
     ],
     "get_admin_events": [
@@ -313,7 +310,7 @@ TEST_AUDIT_CLIENT_METHODS = {
 
 TEST_GROUP_CLIENT_METHODS = {
     "create": [
-        ("group", "positional arguments expected but"),
+        ("group", "group\n  value is not a valid dict"),
         ([None], "none is not an allowed value"),
     ],
     "update": [
@@ -330,11 +327,11 @@ TEST_GROUP_CLIENT_METHODS = {
             "count\n  value could not be parsed to a boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_all": [
-        (["limit"], "limit\n  value is not a valid int"),
+        (["limit"], "limit\n  value is not a valid integer"),
         ([None], "none is not an allowed value"),
     ],
     "get_by_name": [
@@ -353,14 +350,14 @@ TEST_GROUP_CLIENT_METHODS = {
 
 TEST_ROLE_CLIENT_METHODS = {
     "get": [
-        (["limit", None, None, True, 123], "limit\n  value is not a valid int"),
+        (["limit", None, None, True, 123], "limit\n  value is not a valid integer"),
         ([None, None, None, True, 123], "none is not an allowed value"),
         (
             [123, None, None, "count", 123],
             "count\n  value could not be parsed to a boolean",
         ),
         ([123, None, None, None, "offset"], "none is not an allowed value"),
-        ([123, None, None, True, "offset"], "offset\n  value is not a valid int"),
+        ([123, None, None, True, "offset"], "offset\n  value is not a valid integer"),
         ([123, None, None, True, None], "none is not an allowed value"),
     ],
 }
@@ -379,7 +376,7 @@ TEST_TOKEN_CLIENT_METHODS = {
             "count\n  value could not be parsed to a boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_by_name": [
@@ -453,11 +450,11 @@ TEST_USER_CLIENT_METHODS = {
             "count\n  value could not be parsed to a boolean",
         ),
         ([None, None, None, None, 123], "none is not an allowed value"),
-        ([None, None, None, True, "offset"], "offset\n  value is not a valid int"),
+        ([None, None, None, True, "offset"], "offset\n  value is not a valid integer"),
         ([None, None, None, True, None], "none is not an allowed value"),
     ],
     "get_all": [
-        (["limit"], "limit\n  value is not a valid int"),
+        (["limit"], "limit\n  value is not a valid integer"),
         ([None], "none is not an allowed value"),
     ],
     "get_by_email": [
@@ -562,7 +559,7 @@ TEST_WORKFLOW_CLIENT_METHODS = {
     "find_schedule_query": [
         ([[123], 10], "saved_query_id\n  str type expected"),
         ([None, 10], "none is not an allowed value"),
-        (["test-query-id", [123]], "max_results\n  value is not a valid int"),
+        (["test-query-id", [123]], "max_results\n  value is not a valid integer"),
         (["test-query-id", None], "none is not an allowed value"),
     ],
     "re_run_schedule_query": [

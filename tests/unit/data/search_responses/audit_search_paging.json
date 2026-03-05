@@ -2,9 +2,9 @@
   "totalCount": 1,
   "entityAudits": [
     {
-      "entityQualifiedName": "sample_entity_1",
-      "typeName": "AtlasGlossaryTerm",
-      "entityId": "guid_1",
+      "entity_qualified_name": "sample_entity_1",
+      "type_name": "AtlasGlossaryTerm",
+      "entity_id": "guid_1",
       "timestamp": 1733491479782,
       "created": 1733491480576,
       "user": "user1",

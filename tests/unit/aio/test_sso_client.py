@@ -7,7 +7,7 @@ from typing import List
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from pydantic.v1 import parse_obj_as
+from pydantic.v1 import ValidationError, parse_obj_as
 
 from pyatlan.client.aio.sso import AsyncSSOClient
 from pyatlan.client.common import AsyncApiCaller
@@ -86,7 +86,7 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
 def test_sso_get_group_mapping_wrong_params_raises_validation_error(
     sso_alias, group_map_id, error_msg
 ):
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValidationError) as err:
         AsyncSSOClient.get_group_mapping(sso_alias=sso_alias, group_map_id=group_map_id)
     assert error_msg in str(err.value)
 
@@ -101,7 +101,7 @@ def test_sso_get_group_mapping_wrong_params_raises_validation_error(
 def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
     sso_alias, error_msg
 ):
-    with pytest.raises(ValueError, match=error_msg):
+    with pytest.raises(ValidationError, match=error_msg):
         AsyncSSOClient.get_all_group_mappings(sso_alias=sso_alias)
 
 
@@ -119,7 +119,7 @@ def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
 def test_sso_create_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, sso_group_name, error_msg
 ):
-    with pytest.raises(ValueError, match=error_msg):
+    with pytest.raises(ValidationError, match=error_msg):
         AsyncSSOClient.create_group_mapping(
             sso_alias=sso_alias, atlan_group=atlan_group, sso_group_name=sso_group_name
         )
@@ -160,7 +160,7 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
 def test_sso_update_group_mapping_wrong_params_raises_validation_error(
     sso_alias, atlan_group, group_map_id, sso_group_name, error_msg
 ):
-    with pytest.raises(ValueError, match=error_msg):
+    with pytest.raises(ValidationError, match=error_msg):
         AsyncSSOClient.update_group_mapping(
             sso_alias=sso_alias,
             atlan_group=atlan_group,
@@ -181,7 +181,7 @@ def test_sso_update_group_mapping_wrong_params_raises_validation_error(
 def test_sso_delete_group_mapping_wrong_params_raises_validation_error(
     sso_alias, group_map_id, error_msg
 ):
-    with pytest.raises(ValueError, match=error_msg):
+    with pytest.raises(ValidationError, match=error_msg):
         AsyncSSOClient.delete_group_mapping(
             sso_alias=sso_alias, group_map_id=group_map_id
         )

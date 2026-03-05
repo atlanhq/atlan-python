@@ -1,4 +1,5 @@
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.pkg.widgets import (
     APITokenSelector,
@@ -136,7 +137,7 @@ class TestAPITokenSelector:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             APITokenSelector(
                 label=label, required=required, hidden=hidden, help=help_, grid=grid
             )
@@ -231,7 +232,7 @@ class TestBooleanInput:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             BooleanInput(
                 label=label, required=required, hidden=hidden, help=help_, grid=grid
             )
@@ -326,7 +327,7 @@ class TestConnectionCreator:
         ],
     )
     def test_validation(self, label, required, hidden, help_, placeholder, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             ConnectionCreator(
                 label=label,
                 required=required,
@@ -465,7 +466,7 @@ class TestConnectionSelector:
     def test_validation(
         self, label, required, hidden, help_, placeholder, grid, start, msg
     ):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             ConnectionSelector(
                 label=label,
                 required=required,
@@ -584,7 +585,7 @@ class TestConnectorTypeSelector:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, start, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             ConnectorTypeSelector(
                 label=label,
                 required=required,
@@ -758,7 +759,7 @@ class TestDateInput:
     def test_validation(
         self, label, required, hidden, help_, min, max, default, start, grid, msg
     ):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             DateInput(
                 label=label,
                 required=required,
@@ -891,7 +892,7 @@ class TestDropDown:
     def test_validation(
         self, label, possible_values, required, hidden, help_, multi_select, grid, msg
     ):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             DropDown(
                 label=label,
                 possible_values=possible_values,
@@ -1003,7 +1004,7 @@ class TestFileUploader:
     def test_validation(
         self, label, file_types, required, hidden, help_, placeholder, msg
     ):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             FileUploader(
                 label=label,
                 file_types=file_types,
@@ -1097,7 +1098,7 @@ class TestKeygenInput:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             KeygenInput(
                 label=label,
                 required=required,
@@ -1190,7 +1191,7 @@ class TestMultipleGroups:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             MultipleGroups(
                 label=label,
                 required=required,
@@ -1283,7 +1284,7 @@ class TestMultipleUsers:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             MultipleUsers(
                 label=label,
                 required=required,
@@ -1393,7 +1394,7 @@ class TestNumericInput:
         ],
     )
     def test_validation(self, label, required, hidden, help_, placeholder, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             NumericInput(
                 label=label,
                 required=required,
@@ -1487,7 +1488,7 @@ class TestPasswordInput:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             PasswordInput(
                 label=label,
                 required=required,
@@ -1599,7 +1600,7 @@ class TestRadio:
     def test_validation(
         self, label, possible_values, default, required, hidden, help_, msg
     ):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             Radio(
                 label=label,
                 posssible_values=possible_values,
@@ -1693,7 +1694,7 @@ class TestSingleGroup:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             SingleGroup(
                 label=label,
                 required=required,
@@ -1786,7 +1787,7 @@ class TestSingleUser:
         ],
     )
     def test_validation(self, label, required, hidden, help_, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             SingleUser(
                 label=label,
                 required=required,
@@ -1896,7 +1897,7 @@ class TestTextInput:
         ],
     )
     def test_validation(self, label, required, hidden, help_, placeholder, grid, msg):
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(ValidationError, match=msg):
             TextInput(
                 label=label,
                 required=required,

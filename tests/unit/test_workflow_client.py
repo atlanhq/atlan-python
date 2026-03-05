@@ -3,6 +3,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
+from pydantic.v1 import ValidationError
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.common import ApiCaller
@@ -175,7 +176,7 @@ def update_response() -> WorkflowResponse:
 def test_workflow_client_methods_validation_error(method, params):
     client_method = getattr(AtlanClient().workflow, method)
     for param_values, error_msg in params:
-        with pytest.raises(ValueError, match=error_msg):
+        with pytest.raises(ValidationError, match=error_msg):
             client_method(*param_values)
 
 
