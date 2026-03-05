@@ -8,15 +8,11 @@ import pytest_asyncio
 from httpx import Headers
 
 from pyatlan import __version__ as VERSION
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
-from pyatlan_v9.client.aio.atlan import DEFAULT_RETRY
 from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
-from pyatlan.client.common.search_log import (
-    AssetViews,
-    SearchLogRequest,
-    SearchLogViewResults,
-)
+from pyatlan.pkg.utils import get_client_async
+from pyatlan.utils import get_python_version
+from pyatlan_v9.client.aio.atlan import DEFAULT_RETRY, AsyncAtlanClient
 from pyatlan_v9.errors import AuthenticationError, InvalidRequestError, NotFoundError
 from pyatlan_v9.model.aio.audit import AsyncAuditSearchResults
 from pyatlan_v9.model.aio.search_log import AsyncSearchLogResults
@@ -32,19 +28,27 @@ from pyatlan_v9.model.assets import (
 )
 from pyatlan_v9.model.audit import AuditSearchRequest
 from pyatlan_v9.model.core import Announcement
-from pyatlan_v9.model.enums import AnnouncementType, AtlanConnectorType, SortOrder, UTMTags
+from pyatlan_v9.model.enums import (
+    AnnouncementType,
+    AtlanConnectorType,
+    SortOrder,
+    UTMTags,
+)
 from pyatlan_v9.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan_v9.model.search import (
     DSL,
     Bool,
     IndexSearchRequest,
+    IndexSearchRequestMetadata,  # Legacy: FluentSearch returns Pydantic IndexSearchRequest
     SortItem,
     Term,
 )
-from pyatlan_v9.model.search import IndexSearchRequestMetadata  # Legacy: FluentSearch returns Pydantic IndexSearchRequest
+from pyatlan_v9.model.search_log import (
+    AssetViews,
+    SearchLogRequest,
+    SearchLogViewResults,
+)
 from pyatlan_v9.model.user import UserMinimalResponse
-from pyatlan.pkg.utils import get_client_async
-from pyatlan.utils import get_python_version
 from tests_v9.integration.aio.utils import (
     async_search_with_retry,
     create_database_async,

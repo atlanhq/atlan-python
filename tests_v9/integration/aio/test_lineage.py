@@ -141,7 +141,9 @@ async def view(
     schema: Schema,
 ) -> AsyncGenerator[View, None]:
     assert schema.qualified_name
-    to_create = View.creator(name=VIEW_NAME, schema_qualified_name=schema.qualified_name)
+    to_create = View.creator(
+        name=VIEW_NAME, schema_qualified_name=schema.qualified_name
+    )
     result = await client.asset.save(to_create)
     v = result.assets_created(asset_type=View)[0]
     yield v

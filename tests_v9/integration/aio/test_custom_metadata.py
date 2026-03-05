@@ -6,12 +6,12 @@ from typing import AsyncGenerator, List, Optional, Tuple
 import pytest
 import pytest_asyncio
 
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
-from pyatlan_v9.errors import AtlanError
 from pyatlan.model.aio.custom_metadata import (
     AsyncCustomMetadataDict,
     AsyncCustomMetadataField,
 )
+from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
+from pyatlan_v9.errors import AtlanError
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossary,

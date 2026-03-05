@@ -3,6 +3,7 @@ from json import dumps
 from typing import Generator
 
 import pytest
+from msgspec import UNSET
 
 from pyatlan_v9.client.asset import IndexSearchResults
 from pyatlan_v9.client.atlan import AtlanClient
@@ -15,7 +16,6 @@ from pyatlan_v9.model.assets import (
     DataProduct,
     Table,
 )
-from msgspec import UNSET
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
 from pyatlan_v9.model.enums import (
@@ -358,7 +358,11 @@ def test_contract(
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
-    dc_guid = table_data_contract.guid if hasattr(table_data_contract, "guid") else table_data_contract.get("guid")
+    dc_guid = (
+        table_data_contract.guid
+        if hasattr(table_data_contract, "guid")
+        else table_data_contract.get("guid")
+    )
     assert contract and table_data_contract
     assert table.name and contract.name and table.name in contract.name
     assert contract.guid == dc_guid
@@ -377,7 +381,11 @@ def test_update_contract(
     assert table.has_contract
     assert table.data_contract_latest
     table_data_contract = table.data_contract_latest
-    dc_guid = table_data_contract.guid if hasattr(table_data_contract, "guid") else table_data_contract.get("guid")
+    dc_guid = (
+        table_data_contract.guid
+        if hasattr(table_data_contract, "guid")
+        else table_data_contract.get("guid")
+    )
     assert table.name and updated_contract and table_data_contract
     assert updated_contract.name and table.name in updated_contract.name
     assert updated_contract.guid == dc_guid
@@ -415,8 +423,9 @@ def test_update_product(
         ),
     )
     assert updated
-    if str(updated.certificate_status_message) not in (str(UNSET), "None"):
-        assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
+    assert updated.announcement_title == ANNOUNCEMENT_TITLE
+    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert product.qualified_name
     assert product.name
 

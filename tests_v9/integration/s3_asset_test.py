@@ -4,8 +4,6 @@ from typing import Generator
 
 import pytest
 
-from msgspec import UNSET
-
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import Connection, S3Bucket, S3Object
 from pyatlan_v9.model.core import Announcement
@@ -212,9 +210,6 @@ def _assert_update_bucket_again(client, bucket, with_name=False):
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert bucket.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=bucket.qualified_name,

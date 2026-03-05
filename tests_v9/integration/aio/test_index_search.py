@@ -13,10 +13,10 @@ import pytest_asyncio
 from httpx_retries import Retry
 
 from pyatlan.cache.aio.source_tag_cache import AsyncSourceTagName
-from pyatlan_v9.client.aio.asset import AsyncIndexSearchResults
 from pyatlan.client.aio.atlan import client_connection
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan.client.common.asset import LOGGER
+from pyatlan_v9.client.aio.asset import AsyncIndexSearchResults
+from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossaryTerm,

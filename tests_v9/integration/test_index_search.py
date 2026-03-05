@@ -12,10 +12,9 @@ import pytest
 from httpx_retries import Retry
 
 from pyatlan.cache.source_tag_cache import SourceTagName
-from pyatlan_v9.client.asset import IndexSearchResults
-from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.client.atlan import client_connection
 from pyatlan.client.common.asset import LOGGER
+from pyatlan_v9.client.asset import IndexSearchResults
+from pyatlan_v9.client.atlan import AtlanClient, client_connection
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossaryTerm,

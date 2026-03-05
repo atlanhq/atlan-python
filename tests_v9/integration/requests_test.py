@@ -60,7 +60,9 @@ def test_create_token(client: AtlanClient, token: ApiToken):
 @pytest.mark.order(after="test_create_token")
 def test_update_token(client: AtlanClient, token: ApiToken):
     description = "Now with a revised description."
-    revised = client.token.updater(str(token.guid), str(token.display_name), description)
+    revised = client.token.updater(
+        str(token.guid), str(token.display_name), description
+    )
     assert revised
     assert revised.attributes
     assert revised.attributes.description == description

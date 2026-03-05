@@ -451,9 +451,7 @@ class TestTable:
         assert popularity_insight.record_query_count == ap.record_query_count
         assert popularity_insight.record_compute_cost == ap.record_compute_cost
         assert popularity_insight.record_query_count == ap.record_query_count
-        assert (
-            popularity_insight.record_total_user_count == ap.record_total_user_count
-        )
+        assert popularity_insight.record_total_user_count == ap.record_total_user_count
         assert (
             popularity_insight.record_compute_cost_unit == ap.record_compute_cost_unit
         )

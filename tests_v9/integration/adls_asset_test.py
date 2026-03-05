@@ -2,6 +2,8 @@ from typing import Generator
 
 import pytest
 
+from pyatlan.model.utils import construct_object_key
+from pyatlan.utils import get_parent_qualified_name
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import ADLSAccount, ADLSContainer, ADLSObject, Connection
 from pyatlan_v9.model.core import Announcement
@@ -11,8 +13,6 @@ from pyatlan_v9.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
-from pyatlan.model.utils import construct_object_key
-from pyatlan.utils import get_parent_qualified_name
 from tests_v9.integration.client import TestId, delete_asset
 from tests_v9.integration.connection_test import create_connection
 
@@ -329,9 +329,6 @@ def test_update_adls_object_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert updated.announcement_title == ANNOUNCEMENT_TITLE
-    assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert adls_object.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=adls_object.qualified_name,

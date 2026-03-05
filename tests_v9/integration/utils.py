@@ -13,8 +13,8 @@ from tenacity import (
     wait_random_exponential,
 )
 
-from pyatlan_v9.errors import AtlanError, NotFoundError
 from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.errors import AtlanError, NotFoundError
 from pyatlan_v9.model.assets import Persona, Purpose
 from pyatlan_v9.model.fluent_search import FluentSearch
 from pyatlan_v9.model.search import IndexSearchRequest

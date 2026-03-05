@@ -5,8 +5,7 @@ from typing import Generator
 
 import pytest
 
-from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.client.atlan import client_connection
+from pyatlan_v9.client.atlan import AtlanClient, client_connection
 from pyatlan_v9.model.api_tokens import ApiToken
 from pyatlan_v9.model.assets import AuthPolicy, Column, Purpose
 from pyatlan_v9.model.constants import SERVICE_ACCOUNT_

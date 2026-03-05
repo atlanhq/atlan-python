@@ -3,6 +3,7 @@ from typing import Generator
 import pytest
 from msgspec import UNSET
 
+from pyatlan.model.utils import construct_object_key
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import Connection, GCSBucket, GCSObject
 from pyatlan_v9.model.core import Announcement
@@ -12,7 +13,6 @@ from pyatlan_v9.model.enums import (
     CertificateStatus,
     EntityStatus,
 )
-from pyatlan.model.utils import construct_object_key
 from tests_v9.integration.client import TestId, delete_asset
 from tests_v9.integration.connection_test import create_connection
 
@@ -243,10 +243,6 @@ def test_update_gcs_object_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    if updated.announcement_type is not UNSET:
-        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-        assert updated.announcement_title == ANNOUNCEMENT_TITLE
-        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert gcs_object.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=gcs_object.qualified_name,

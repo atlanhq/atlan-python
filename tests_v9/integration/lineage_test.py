@@ -137,7 +137,9 @@ def view(
     schema: Schema,
 ) -> Generator[View, None, None]:
     assert schema.qualified_name
-    to_create = View.creator(name=VIEW_NAME, schema_qualified_name=schema.qualified_name)
+    to_create = View.creator(
+        name=VIEW_NAME, schema_qualified_name=schema.qualified_name
+    )
     result = client.asset.save(to_create)
     v = result.assets_created(asset_type=View)[0]
     yield v

@@ -7,7 +7,12 @@ from typing import Generator
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.group import AtlanGroup, CreateGroupResponse, GroupAttributes, GroupRequest
+from pyatlan_v9.model.group import (
+    AtlanGroup,
+    CreateGroupResponse,
+    GroupAttributes,
+    GroupRequest,
+)
 from pyatlan_v9.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
 from pyatlan_v9.model.user import UserRequest
 from tests_v9.integration.client import TestId

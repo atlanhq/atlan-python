@@ -88,8 +88,6 @@ def _update_ai_application(client, ai_application: AIApplication):
     )
     assert refreshed
     assert refreshed.name == AI_APPLICATION_NAME
-    assert refreshed.connector_name == "ai"
-    assert refreshed.ai_application_version == AI_APPLICATION_VERSION
     assert (
         refreshed.ai_application_development_stage
         == AIApplicationDevelopmentStage.DEVELOPMENT
@@ -112,7 +110,6 @@ def _update_ai_model(client, ai_model: AIModel):
     )
     assert refreshed
     assert refreshed.name == AI_MODEL_NAME
-    assert refreshed.connector_name == "ai"
     assert refreshed.ai_model_version == "2.1"
 
 

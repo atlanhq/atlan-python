@@ -5,12 +5,12 @@ from typing import Generator
 
 import pytest
 
-from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan.client.common.sso import (
     GROUP_MAPPER_ATTRIBUTE,
     GROUP_MAPPER_SYNC_MODE,
     IDP_GROUP_MAPPER,
 )
+from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.enums import AtlanSSO
 from pyatlan_v9.model.group import AtlanGroup
@@ -53,7 +53,8 @@ def group(client: AtlanClient) -> Generator[AtlanGroup, None, None]:
 
 @pytest.fixture(scope="module")
 def sso_mapping(
-    client: AtlanClient, group: AtlanGroup
+    client: AtlanClient,
+    group: AtlanGroup,
 ) -> Generator[SSOMapper, None, None]:
     assert group
     assert group.id
@@ -92,9 +93,10 @@ def _assert_sso_group_mapping(
     assert sso_mapping.config.sync_mode == GROUP_MAPPER_SYNC_MODE
     assert sso_mapping.config.attribute_name == GROUP_MAPPER_ATTRIBUTE
     if is_updated:
-        assert sso_mapping.name is None
+        assert sso_mapping.name
         assert sso_mapping.config.attribute_value == SSO_GROUP_NAME_UPDATED
     else:
+        assert sso_mapping.name
         assert group.id and (group.id in str(sso_mapping.name))
         assert sso_mapping.config.attribute_value == SSO_GROUP_NAME
 
@@ -117,7 +119,6 @@ def test_sso_create_group_mapping_again_raises_invalid_request_error(
 ):
     assert group
     assert sso_mapping
-
     with pytest.raises(InvalidRequestError) as err:
         client.sso.create_group_mapping(
             sso_alias=AtlanSSO.JUMPCLOUD,
@@ -187,11 +188,13 @@ def test_update_group_mapping(
     assert group
     assert sso_mapping
     assert sso_mapping.id
+    assert sso_mapping.name
 
     updated_mapping = client.sso.update_group_mapping(
         sso_alias=AtlanSSO.JUMPCLOUD,
         atlan_group=group,
         group_map_id=sso_mapping.id,
+        group_map_name=sso_mapping.name,
         sso_group_name=SSO_GROUP_NAME_UPDATED,
     )
     _assert_sso_group_mapping(group, updated_mapping, True)

@@ -10,7 +10,11 @@ from pyatlan import utils
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.model.assets import Connection
 from pyatlan_v9.model.credential import Credential, CredentialResponse
-from pyatlan_v9.model.enums import AtlanConnectorType, AtlanWorkflowPhase, WorkflowPackage
+from pyatlan_v9.model.enums import (
+    AtlanConnectorType,
+    AtlanWorkflowPhase,
+    WorkflowPackage,
+)
 from pyatlan_v9.model.packages.snowflake_miner import SnowflakeMiner
 from pyatlan_v9.model.workflow import WorkflowResponse, WorkflowSchedule
 from tests_v9.integration.aio.utils import delete_asset_async

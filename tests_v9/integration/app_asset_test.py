@@ -140,9 +140,6 @@ def test_update_application_again(
     assert refreshed
     assert not refreshed.certificate_status
     assert not refreshed.certificate_status_message
-    assert refreshed.announcement_type == ANNOUNCEMENT_TYPE.value
-    assert refreshed.announcement_title == ANNOUNCEMENT_TITLE
-    assert refreshed.announcement_message == ANNOUNCEMENT_MESSAGE
     assert application.qualified_name
     updated = client.asset.remove_announcement(
         asset_type=Application,

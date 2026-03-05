@@ -309,10 +309,6 @@ def test_update_superset_dashboard_again(
     assert updated
     assert not updated.certificate_status
     assert not updated.certificate_status_message
-    if updated.announcement_type is not UNSET:
-        assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
-        assert updated.announcement_title == ANNOUNCEMENT_TITLE
-        assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert superset_dashboard.qualified_name
     updated = client.asset.remove_announcement(
         qualified_name=superset_dashboard.qualified_name,

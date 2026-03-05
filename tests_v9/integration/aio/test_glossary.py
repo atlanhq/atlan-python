@@ -11,7 +11,11 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fi
 
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.errors import InvalidRequestError, NotFoundError
-from pyatlan_v9.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
+from pyatlan_v9.model.assets import (
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+)
 from pyatlan_v9.model.assets.relations import UserDefRelationship
 from pyatlan_v9.model.enums import SaveSemantic
 from pyatlan_v9.model.fields.atlan_fields import AtlanField

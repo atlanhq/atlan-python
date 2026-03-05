@@ -6,7 +6,11 @@ from typing import Generator
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.model.assets import AzureEventHub, AzureEventHubConsumerGroup, Connection
+from pyatlan_v9.model.assets import (
+    AzureEventHub,
+    AzureEventHubConsumerGroup,
+    Connection,
+)
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.enums import (
     AnnouncementType,

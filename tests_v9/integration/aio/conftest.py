@@ -8,8 +8,7 @@ from typing import Any, AsyncGenerator, Callable, Coroutine, Optional
 
 import pytest_asyncio
 
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
-from pyatlan_v9.client.aio.atlan import DEFAULT_RETRY
+from pyatlan_v9.client.aio.atlan import DEFAULT_RETRY, AsyncAtlanClient
 from pyatlan_v9.errors import AtlanError
 from pyatlan_v9.model.assets import Connection, Database, Schema, Table
 from pyatlan_v9.model.atlan_image import AtlanImage

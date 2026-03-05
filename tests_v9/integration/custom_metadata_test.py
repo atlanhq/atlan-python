@@ -441,6 +441,7 @@ def cm_dq(
 @pytest.fixture(scope="module")
 def cm_sql(
     client: AtlanClient,
+    term: AtlasGlossaryTerm,
 ) -> Generator[CustomMetadataDef, None, None]:
     attribute_defs = [
         AttributeDef.creator(
@@ -458,6 +459,7 @@ def cm_sql(
         locked=False,
     )
     yield cm
+    client.asset.remove_custom_metadata(term.guid, cm_name=CM_SQL)
     wait_for_successful_custometadatadef_purge(CM_SQL, client=client)
 
 

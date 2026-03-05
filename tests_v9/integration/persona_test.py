@@ -2,6 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Generator, Optional
 
+import msgspec
 import pytest
 
 from pyatlan_v9.client.atlan import AtlanClient
@@ -12,8 +13,6 @@ from pyatlan_v9.model.assets import (
     Connection,
     Persona,
 )
-import msgspec
-
 from pyatlan_v9.model.enums import (
     AssetSidebarTab,
     AtlanConnectorType,

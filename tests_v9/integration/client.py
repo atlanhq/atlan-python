@@ -7,8 +7,7 @@ from typing import Generator, Type
 
 import pytest
 
-from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.client.atlan import DEFAULT_RETRY
+from pyatlan_v9.client.atlan import DEFAULT_RETRY, AtlanClient
 from pyatlan_v9.model.enums import AtlanDeleteType
 from pyatlan_v9.model.response import A
 

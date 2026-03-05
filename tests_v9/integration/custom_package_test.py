@@ -5,12 +5,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from pyatlan_v9.client.atlan import AtlanClient
-from pyatlan_v9.client.impersonate import V9ImpersonationClient as ImpersonationClient
 from pyatlan.pkg.models import CustomPackage, generate
 from pyatlan.pkg.ui import UIConfig, UIStep
-from pyatlan.pkg.utils import get_client, set_package_headers
 from pyatlan.pkg.widgets import TextInput
+from pyatlan_v9.client.atlan import AtlanClient
+from pyatlan_v9.client.impersonate import V9ImpersonationClient
+from pyatlan_v9.pkg.utils import get_client, set_package_headers
 
 
 @pytest.fixture
@@ -109,7 +109,7 @@ def test_set_package_headers(client: AtlanClient, mock_pkg_env):
     assert updated_client == mock_client
 
 
-@patch.object(ImpersonationClient, "user", return_value="some-api-key")
+@patch.object(V9ImpersonationClient, "user", return_value="some-api-key")
 def test_get_client_user_id_handling(
     mock_impersonate_client,
     mock_pkg_env,

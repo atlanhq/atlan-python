@@ -9,11 +9,15 @@ from typing import Optional, Type
 
 from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
 
-from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan.model.aio import AsyncIndexSearchResults
+from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.model.api_tokens import ApiToken
 from pyatlan_v9.model.assets import Asset, AtlasGlossary, Connection, Database
-from pyatlan_v9.model.enums import AtlanConnectorType, AtlanDeleteType, CertificateStatus
+from pyatlan_v9.model.enums import (
+    AtlanConnectorType,
+    AtlanDeleteType,
+    CertificateStatus,
+)
 from pyatlan_v9.model.search import DSL, IndexSearchRequest
 
 LOGGER = logging.getLogger(__name__)
