@@ -76,7 +76,7 @@ def test_init_when_wrong_class_raises_exception(test_api_caller):
     "test_request, error_msg",
     [
         [None, "none is not an allowed value"],
-        ["123", "instance of QueryRequest expected"],
+        ["123", "value is not a valid dict"],
     ],
 )
 def test_query_stream_wrong_params_raises_validation_error(

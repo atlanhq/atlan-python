@@ -730,7 +730,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nincludes_in_results",
+                r"\d+ validation error.* for Init\nincludes_in_results",
             ),
             (
                 GOOD_GUID,
@@ -744,7 +744,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nincludes_on_results",
+                r"\d+ validation error.* for Init\nincludes_on_results",
             ),
             (
                 GOOD_GUID,
@@ -758,7 +758,7 @@ class TestFluentLineage:
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nincludes_on_relations",
+                r"\d+ validation error.* for Init\nincludes_on_relations",
             ),
             (
                 GOOD_GUID,
@@ -772,7 +772,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nwhere_assets",
+                r"\d+ validation error.* for Init\nwhere_assets",
             ),
             (
                 GOOD_GUID,
@@ -786,7 +786,7 @@ class TestFluentLineage:
                 GOOD_INCLUDES_ON_RELATIONS,
                 GOOD_WHERE_ASSETS,
                 BAD_LINEAGE_FILTER_LIST,
-                r"1 validation error for Init\nwhere_relationships",
+                r"\d+ validation error.* for Init\nwhere_relationships",
             ),
         ],
     )

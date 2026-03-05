@@ -43,15 +43,34 @@ from tests.unit.model.constants import (
 
 NOW = datetime.now()
 NOW_TIMESTAMP = int(NOW.timestamp() * 1000)
+_STRICT_TO_BUILTIN: Dict[type, type] = {}
+try:
+    from pydantic.v1 import StrictBool, StrictFloat, StrictInt, StrictStr
+
+    _STRICT_TO_BUILTIN = {
+        StrictStr: str,
+        StrictBool: bool,
+        StrictInt: int,
+        StrictFloat: float,
+    }
+except ImportError:
+    pass
+
 VALUES_BY_TYPE: Dict[Union[type, object], Union[str, datetime, object]] = {
     str: "abc",
     bool: True,
+    int: 1,
+    float: 1.0,
     datetime: NOW,
     Literal["ACTIVE", "DELETED", "PURGED"]: "ACTIVE",
-    float: 1.0,
     AtlanConnectorType: AtlanConnectorType.SNOWFLAKE,
     CertificateStatus: CertificateStatus.VERIFIED,
 }
+
+
+def _value_for_type(t):
+    return VALUES_BY_TYPE.get(t) or VALUES_BY_TYPE[_STRICT_TO_BUILTIN[t]]
+
 
 INCOMPATIPLE_QUERY: Dict[type, Set[TermAttributes]] = {
     Wildcard: {
@@ -589,7 +608,7 @@ def test_terms_to_dict():
         (
             c,
             a,
-            VALUES_BY_TYPE[a.attribute_type],
+            _value_for_type(a.attribute_type),
             a.value,
             c in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[c],
         )

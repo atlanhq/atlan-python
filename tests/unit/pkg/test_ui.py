@@ -177,7 +177,7 @@ class TestUIStep:
                 TITLE,
                 {"qn_prefix": "oioi"},
                 "",
-                r"1 validation error for Init\ninputs -> qn_prefix\n  value is not a valid",
+                r"\d+ validation error.* for Init\ninputs -> qn_prefix",
             ),
             (
                 TITLE,

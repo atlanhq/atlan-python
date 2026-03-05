@@ -112,7 +112,7 @@ def test_sso_get_all_group_mapping_wrong_params_raises_validation_error(
         ["auth0", None, "sso-group", "none is not an allowed value"],
         ["auth0", "atlan-group", None, "none is not an allowed value"],
         [[123], "atlan-group", "sso-group", "so_alias\n  str type expected"],
-        ["auth0", [123], "sso-group", "atlan_group\n  instance of AtlanGroup expected"],
+        ["auth0", [123], "sso-group", "atlan_group\n  value is not a valid dict"],
         ["auth0", AtlanGroup(), [123], "sso_group_name\n  str type expected"],
     ],
 )
@@ -139,7 +139,7 @@ def test_sso_create_group_mapping_wrong_params_raises_validation_error(
             [123],
             "map-id",
             "sso-group",
-            "atlan_group\n  instance of AtlanGroup expected",
+            "atlan_group\n  value is not a valid dict",
         ],
         [
             "auth0",

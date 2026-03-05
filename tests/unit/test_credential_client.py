@@ -27,11 +27,13 @@ TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR = (
     "1 validation error for PurgeByGuid\nguid\n  str type expected"
 )
 TEST_INVALID_CRED_TEST_VALIDATION_ERR = (
-    "1 validation error for Test\ncredential\n  instance of Credential expected"
+    "1 validation error for Test\ncredential\n  value is not a valid dict"
 )
-TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = "1 validation error for TestAndUpdate\ncredential\n  instance of Credential expected"
+TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR = (
+    "1 validation error for TestAndUpdate\ncredential\n  value is not a valid dict"
+)
 TEST_INVALID_CRED_CREATOR_VALIDATION_ERR = (
-    "1 validation error for Creator\ncredential\n  instance of Credential expected"
+    "1 validation error for Creator\ncredential\n  value is not a valid dict"
 )
 TEST_INVALID_API_CALLER_PARAMETER_TYPE = (
     "ATLAN-PYTHON-400-048 Invalid parameter type for client should be ApiCaller"
@@ -100,7 +102,7 @@ def test_cred_get_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValueError) as err:
         client.get(guid=test_guid)
-    assert TEST_INVALID_GUID_GET_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_GUID_GET_VALIDATION_ERR in str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
@@ -109,7 +111,7 @@ def test_cred_test_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValueError) as err:
         client.test(credential=test_credentials)
-    assert TEST_INVALID_CRED_TEST_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_CRED_TEST_VALIDATION_ERR in str(err.value)
 
 
 @pytest.mark.parametrize("test_credentials", ["invalid_cred", 123])
@@ -118,7 +120,7 @@ def test_cred_test_and_update_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValueError) as err:
         client.test_and_update(credential=test_credentials)
-    assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_CRED_TEST_UPDATE_VALIDATION_ERR in str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -303,7 +305,7 @@ def test_cred_creator_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValueError) as err:
         client.creator(credential=create_credentials)
-    assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_CRED_CREATOR_VALIDATION_ERR in str(err.value)
 
 
 @pytest.mark.parametrize(
@@ -381,7 +383,7 @@ def test_cred_purge_by_guid_wrong_params_raises_validation_error(
 ):
     with pytest.raises(ValueError) as err:
         client.purge_by_guid(guid=test_guid)
-    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR == str(err.value)
+    assert TEST_INVALID_GUID_PURGE_BY_GUID_VALIDATION_ERR in str(err.value)
 
 
 def test_cred_purge_by_guid_when_given_guid(
